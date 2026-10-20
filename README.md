@@ -8,9 +8,7 @@ The full-game design targets an **18 m piloted mecha**. The current playable mil
 
 ## Watch the assembly
 
-[![Watch the FA-01 construction and deconstruction film](models/foot-fa01/output/foot-fa01-exploded.png)](models/foot-fa01/output/foot-fa01-build-and-explode.mp4)
-
-[Watch or download the construction film](models/foot-fa01/output/foot-fa01-build-and-explode.mp4) — 41 seconds, 1280 × 720, 24 fps. The sequence builds the foot, holds the assembled pose, and separates it into an exploded view. Motion illustrates the build order; it is schematic rather than a collision-validated installation simulation.
+![FA-01 foot separating from its assembled form into an exploded view](models/foot-fa01/output/foot-fa01-exploding.gif)
 
 ## Play the heel-pad demo
 
