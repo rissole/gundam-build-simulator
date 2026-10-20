@@ -395,7 +395,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			player.rotate_y(-event.relative.x*0.0022)
 			camera.rotation.x = clampf(camera.rotation.x-event.relative.y*0.0022,-1.35,1.35)
 	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT: attach()
+		# macOS reports Control + left click as right + Control. Control is
+		# also our crouch key, so accept that event as a placement click.
+		var control_click = OS.has_feature("macos") and event.button_index == MOUSE_BUTTON_RIGHT and event.ctrl_pressed
+		if event.button_index == MOUSE_BUTTON_LEFT or control_click: attach()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP: camera.fov = maxf(42,camera.fov-5)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN: camera.fov = minf(85,camera.fov+5)
 

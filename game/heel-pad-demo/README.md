@@ -72,7 +72,7 @@ Pockets hold up to 20 small pieces; this scenario supplies 12. The heel pad occu
 
 - [Delivery audit](verification/delivery-audit.json): 57 passing state checks, 92 passing rendered interaction checks, unchanged source GLB, and checksums for the verified code.
 - [State audit](verification/state-audit.json): prerequisite rejection, independent order, finite stock, capacity, identity conservation, complete construction, and complete undo.
-- [Rendered interaction audit](verification/demo-audit.json): public input handlers, actual camera targeting and physics, collecting/dropping/recollecting, preparation, parent installation, washers/bolts, reach, occlusion, rotation, manual/help controls, undo, solid carrying/placement, grip stability while moving/turning, crouch/headroom, double-tap versus drag behavior, action-bar models/counts, fullscreen mode, and restart cancellation.
+- [Rendered interaction audit](verification/demo-audit.json): public input handlers, actual camera targeting and physics, collecting/dropping/recollecting, preparation, parent installation, washers/bolts, reach, occlusion, rotation, manual/help controls, undo, solid carrying/placement, grip stability while moving/turning, crouch/headroom, crouched pad and hardware placement (including macOS Control-click), double-tap versus drag behavior, action-bar models/counts, fullscreen mode, and restart cancellation.
 - Captured rendered states: [workshop](verification/01-workshop.png), [preparation](verification/02-pad-preparation.png), [mounting preview](verification/03-mount-preview.png), [completion](verification/04-complete.png), [controls](verification/05-controls.png), [pause menu](verification/06-paused.png).
 
 The interaction runner scripts camera locations and sends the same key/click handlers used in play. It checks the actual world queries and inventory results. This verifies functionality; a human play session is still needed to judge comfort and enjoyment.
@@ -84,7 +84,7 @@ To reproduce the checks from the repository root:
 ./play-heel-pad.command -- --demo-test
 ```
 
-The second command opens a rendered test window, saves the six images and audit, then exits. A headless alternative is `./play-heel-pad.command --headless -- --demo-test`; this runs 90 interaction checks, skipping the two display checks, and does not produce images. Generated verification files are local diagnostics.
+The second command opens a rendered test window, saves the six images and audit, then exits. A headless alternative is `./play-heel-pad.command --headless -- --demo-test`; this runs 100 interaction checks, skipping the two display checks, and does not produce images. Generated verification files are local diagnostics.
 
 ## Scope and current limits
 

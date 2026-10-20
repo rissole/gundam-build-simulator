@@ -21,11 +21,22 @@ func key(code: Key, shift: bool = false) -> void:
 	event.shift_pressed = shift
 	game._unhandled_input(event)
 
-func click() -> void:
+func click(button: MouseButton = MOUSE_BUTTON_LEFT, ctrl: bool = false, pressed: bool = true) -> void:
 	var event = InputEventMouseButton.new()
-	event.button_index = MOUSE_BUTTON_LEFT
-	event.pressed = true
+	event.button_index = button
+	event.ctrl_pressed = ctrl
+	event.pressed = pressed
 	game._unhandled_input(event)
+
+func crouched_click(point: Vector3) -> void:
+	hold(KEY_CTRL,true)
+	await frames(18)
+	await aim(point)
+	expect(game.crouched and game.ghost.visible,"Crouched placement has a reachable, visible preview")
+	# Godot's macOS backend reports Control + left click as right + Control.
+	click(MOUSE_BUTTON_RIGHT if OS.has_feature("macos") else MOUSE_BUTTON_LEFT,true)
+	hold(KEY_CTRL,false)
+	await frames(18)
 
 func release(code: Key) -> void:
 	var event = InputEventKey.new()
@@ -152,19 +163,26 @@ func run(workshop: Node) -> void:
 	game._update_target()
 	game._update_ghost()
 	expect(game.target.get("type")=="prep" and game.ghost.visible,"Small station previews held pad placement")
-	click()
-	expect(game.state.pad_location=="prep","Click suspends pad in preparation station")
+	await crouched_click(game.prep.global_position)
+	expect(game.state.pad_location=="prep","Crouched click suspends pad in preparation station")
 	key(KEY_3)
 	await aim(game.connection(0))
 	click()
 	expect(game.state.installed("bolt")==0 and game.hud.toast_label.text.contains("carrier"),"Premature bolt placement explains missing receiving assembly")
 	key(KEY_1)
+	await aim(game.connection(2))
+	var before_secondary_click = game.state.history.size()
+	click(MOUSE_BUTTON_RIGHT)
+	expect(game.state.history.size()==before_secondary_click,"Unmodified right click does not place hardware")
+	click(MOUSE_BUTTON_RIGHT,true,false)
+	expect(game.state.history.size()==before_secondary_click,"Control-click release does not place hardware")
 	for i in [2,0,3,1]:
 		await aim(game.connection(i)+Vector3(0.065,0,0))
 		expect(game.target.get("index",-1)==i,"Generous targeting selects sleeve socket %d"%i)
 		expect(game.ghost.visible,"Valid sleeve socket %d displays actual mesh ghost"%i)
 		if i==0:await capture("02-pad-preparation")
-		click()
+		if i==2:await crouched_click(game.connection(i))
+		else:click()
 		expect(game.state.slots.sleeve[i]!="","Click installs sleeve %d"%i)
 	expect(game.state.prepared(),"Prepared subassembly reaches four sleeves")
 	key(KEY_Z)
@@ -218,11 +236,14 @@ func run(workshop: Node) -> void:
 		key(KEY_2)
 		await aim(game.connection(i))
 		expect(game.target.get("index",-1)==i,"Foot targeting selects mount %d"%i)
-		click()
+		if i==3:await crouched_click(game.connection(i))
+		else:click()
+		expect(game.state.slots.washer[i]!="","Click installs washer %d"%i)
 		key(KEY_3)
 		await aim(game.connection(i))
 		expect(game.ghost.visible,"Bolt ghost available after local washer %d"%i)
-		click()
+		if i==3:await crouched_click(game.connection(i))
+		else:click()
 		expect(game.state.slots.bolt[i]!="","Independent fastening order accepted at %d"%i)
 	expect(game.state.complete(),"Complete build achieved through public interaction handlers")
 	expect(game.state.pocket_count()==0,"Exactly the original twelve pocket items consumed")
