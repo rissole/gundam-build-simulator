@@ -1,0 +1,85 @@
+{
+  "revision": "FA-01",
+  "scope": "Sampled reference envelopes, not full part collision or strength validation.",
+  "sample_counts": {
+    "combined_ankle_poses": 861,
+    "forefoot_poses": 61
+  },
+  "actuators": {
+    "pitch": {
+      "minimum_length_mm": 665.31,
+      "maximum_length_mm": 809.97,
+      "specified_length_limits_mm": [
+        640,
+        860
+      ],
+      "retraction_margin_mm": 25.31,
+      "extension_margin_mm": 50.03,
+      "monotonic_over_sampled_range": true,
+      "passes": true
+    },
+    "roll": {
+      "minimum_length_mm": 496.48,
+      "maximum_length_mm": 615.2,
+      "specified_length_limits_mm": [
+        480,
+        640
+      ],
+      "retraction_margin_mm": 16.48,
+      "extension_margin_mm": 24.8,
+      "monotonic_over_sampled_range": true,
+      "passes": true
+    },
+    "forefoot": {
+      "minimum_length_mm": 494.55,
+      "maximum_length_mm": 612.05,
+      "specified_length_limits_mm": [
+        470,
+        640
+      ],
+      "retraction_margin_mm": 24.55,
+      "extension_margin_mm": 27.95,
+      "monotonic_over_sampled_range": true,
+      "passes": true
+    }
+  },
+  "clearances": {
+    "lower_shin_to_guard": {
+      "minimum_lateral_clearance_mm": 31.59,
+      "limiting_pitch_roll_degrees": [
+        -20,
+        -10
+      ],
+      "passes": true
+    },
+    "moving_toe_to_fixed_hinge_lug": {
+      "minimum_fore_aft_clearance_mm": 29.7,
+      "passes": true
+    },
+    "toe_shell_to_fixed_upper_plate": {
+      "minimum_fore_aft_clearance_mm": 116.24,
+      "passes": true
+    },
+    "forefoot_pad_to_ground": {
+      "minimum_height_mm": 0.0,
+      "passes": true
+    },
+    "shin_flange_above_ring_boss_envelope": {
+      "minimum_vertical_clearance_in_ring_frame_mm": 169.99,
+      "passes": true
+    },
+    "roll_actuator_base_above_heel_cover": {
+      "minimum_vertical_clearance_mm": 50.14,
+      "passes": true
+    }
+  },
+  "inventory": {
+    "component_pieces_and_modules": 229,
+    "bolts_and_screws": 258,
+    "fastener_washers": 258,
+    "total_assembly_objects": 745,
+    "documented_schedule_matches_csv": true,
+    "passes": true
+  },
+  "all_listed_checks_pass": true
+}

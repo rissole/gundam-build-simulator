@@ -1,0 +1,23 @@
+{
+  "foot-fa01-assembled.glb": {
+    "part_nodes": 745,
+    "distinct_meshes": 745,
+    "sha256": "48bdde67fc5ac8ac34e46cd9d1137fb9156e6a4f0a64fa7e285d8de02a9c5f00",
+    "animations": 0,
+    "maximum_pose_error_m": 0.0
+  },
+  "foot-fa01-animated.glb": {
+    "part_nodes": 745,
+    "distinct_meshes": 745,
+    "sha256": "c09954fa5fe0759af42b7950867d4341d14da399b89f1edbb6e5028520856815",
+    "animations": 1,
+    "animated_part_nodes": 745,
+    "maximum_pose_error_m": 2.3365020762611266e-07,
+    "duration_seconds": 40.95833333209157
+  },
+  "individual-parts-745.zip": {
+    "obj_files": 745,
+    "archive_integrity": "passed"
+  },
+  "passed": true
+}

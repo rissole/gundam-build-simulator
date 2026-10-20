@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "date": "2026-10-21",
+  "engine": "4.7.2-stable (official)",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "state_checks": 57,
+  "rendered_interaction_checks": 92,
+  "source_glb_unchanged": true,
+  "source_glb_sha256": "48bdde67fc5ac8ac34e46cd9d1137fb9156e6a4f0a64fa7e285d8de02a9c5f00",
+  "script_sha256": {
+    "game/heel-pad-demo/scripts/loose_part.gd": "e132007b7400e4320a71ffe809e9b460fa13e46db2caca987a0ff26123ce6366",
+    "game/heel-pad-demo/scripts/hud.gd": "f2d1747d3b9a8a30b8e0c356f12f48222f17b64e8768760801bdee72dcf4233c",
+    "game/heel-pad-demo/scripts/assembly_state.gd": "bf6efc51b2d4177009eb00867302b8093017688fa6f278481b175e3a5c76f8ef",
+    "game/heel-pad-demo/scripts/manual_diagram.gd": "f0b2d3414fbaf4d622d15f13a439b1ac15c9a62614d4cb43fd9291e4d88b50cb",
+    "game/heel-pad-demo/scripts/workshop.gd": "2b7bf0a5c6ae1fa65b6dbede9c11b48aa91ea04a634310773c9f74461e14ef93",
+    "game/heel-pad-demo/tests/state_test.gd": "f83a51016b3f46d7b6fc2244f8f328158168c6f7da719c3dc47c7877a943f552",
+    "game/heel-pad-demo/tests/demo_test.gd": "3afb950ecb5abb883640c541dc2693df9c202a333cb477b0863d7a38dd80a267",
+    "game/heel-pad-demo/project.godot": "07ebcab27d1a721aa80b11ad62bb267b91db2f07747b506814a8d048ad2c849a",
+    "game/heel-pad-demo/assets/heel-pad.json": "198c96426b5e86c5ece2b249b0c5f1bb4538449b94b109a37add9f092b771c17",
+    "play-heel-pad.command": "0c5bacb3f6f5e9409be5263eaa2323b6de3895c12f37a7f02b33bc40586d4b72",
+    "edit-heel-pad.command": "5f43c370a0c3ca5094a9b04b0f0beee90c408d183a30debd2531fc1b6d77f88f"
+  },
+  "verification_scope": "57 state checks and 92 rendered interaction checks with scripted camera placement, including fullscreen, model action slots, firm grip movement/rotation, wall collision, crouch/headroom, contextual rotation guidance, double-tap reset versus drag, and restart cancellation. Six captured views; visual inspection of fullscreen HUD, model icons, mounting preview, and controls. Human assessment of revised feel remains pending."
+}

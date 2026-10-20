@@ -1,0 +1,7 @@
+Use case: precise-object-edit.
+Edit the supplied FOOT STRUCTURE / JOINTS technical sheet. Preserve the page layout, all structural geometry, all labels and dimensions except the erroneous small nut-plate caption, and the restrained illustration style.
+Make exactly these hardware-reference corrections:
+1. Under "10 TWO-HOLE NUT PLATES", REMOVE the incorrect text "(2 PER CROSSMEMBER END, 4 FOR CRADLE)" entirely. Replace it with these two correct lines: "6 REAR + 4 FOREFOOT" and "1 PLATE PER TWO-BOLT CONNECTION". Keep text legible without overlapping the border. The main bolt quantities are twelve rear frame, eight forefoot, each pair uses ONE two-hole nut plate.
+2. In the bottom-right hardware legend, replace the three external-hex-head bolts with CYLINDRICAL HEX-SOCKET-HEAD screws. Each head is a short smooth round cylinder with a recessed internal hexagonal drive. Keep labels "M36 — FRAME", "M24 — MECHANISMS", "M12 — COVERS / SERVICES" and preserve their size order. Elsewhere any bolt shown should use the same cylindrical internal-hex socket head.
+3. The cradle-to-ring pitch pins and ring-to-adapter roll pins are four separate SHORT straight pins with smooth cylindrical bearing journals, integral shoulders, and one antirotation flat each. Remove any threaded or spring-like surface on these four main pin journals. Keep their current schematic exploded placement; do not add long crossing shafts.
+No other additions or changes. Do not add filler captions.

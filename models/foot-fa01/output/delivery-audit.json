@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "scene_parts": 745,
+  "independent_meshes": 745,
+  "animated_glb_parts": 745,
+  "individual_obj_files": 745,
+  "video_frames": 984,
+  "video_fps": 24,
+  "video_seconds": 41,
+  "rendered_from_current_blend": true,
+  "sha256": {
+    "foot-fa01.blend": "989e89b53ad1a06c26c2856732ae062e67ea9597077ba3767e3e8a818273900b",
+    "foot-fa01-animated.glb": "c09954fa5fe0759af42b7950867d4341d14da399b89f1edbb6e5028520856815",
+    "foot-fa01-assembled.glb": "48bdde67fc5ac8ac34e46cd9d1137fb9156e6a4f0a64fa7e285d8de02a9c5f00",
+    "individual-parts-745.zip": "b5510358419fc25084dc8520996dfc46579a4a7a5cc4143bdcb112d5165c7e73",
+    "foot-fa01-build-and-explode.mp4": "566241efb6f9f3337c10fd7d8b0e2bf86bc908a3ecb04e489f03b01538ddaa10",
+    "foot-fa01-assembled.png": "b8595dc5e522209700d8e43735886d2014d566661f826a491a6b43d9f72c93b6",
+    "foot-fa01-exploded.png": "a7353c0e60a65e56c51a0a00f635f683917e3fa60954d12ba91a8daaf1d03077",
+    "foot-fa01-skeleton.png": "351b068798e3350c950f4589bbcd0f070886b26178b7ed598946a201f4c73c1d",
+    "parts-manifest.csv": "769323c1d7316870a01b8935cb30cb28d6eb14d182ad2af188a7423ac829c713",
+    "parts-manifest.json": "e6c52c4ad2dfb95f993eac508f584e1e4a9fe31c70fd2e6c5d97288c5a14bc0d",
+    "scene-audit.json": "a9a4ccbd5f94e650fc2d58791295caf5c7f43acb462612fb56f0278c64d858fc",
+    "export-audit.json": "46a040d07da206268fea4d43e3040fbb52c89b131be9819358c9e3e980e61038",
+    "video-audit.json": "8cc4cda2acf8be5370ed057518fb99b2f09409c243b3419e536ec4c25edf95d1"
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "checks": [
+    {
+      "check": "13 physical source identities",
+      "passed": true
+    },
+    {
+      "check": "Finite bins transfer all twelve hardware pieces",
+      "passed": true
+    },
+    {
+      "check": "Empty bin cannot create extra inventory",
+      "passed": true
+    },
+    {
+      "check": "Incomplete pad cannot mount",
+      "passed": true
+    },
+    {
+      "check": "Bolts cannot attach on an unsupported pad",
+      "passed": true
+    },
+    {
+      "check": "Sleeve 3 can install in independent order",
+      "passed": true
+    },
+    {
+      "check": "Sleeve 0 can install in independent order",
+      "passed": true
+    },
+    {
+      "check": "Sleeve 2 can install in independent order",
+      "passed": true
+    },
+    {
+      "check": "Sleeve 1 can install in independent order",
+      "passed": true
+    },
+    {
+      "check": "Four sleeves complete the prepared pad",
+      "passed": true
+    },
+    {
+      "check": "Occupied socket rejects duplicate placement",
+      "passed": true
+    },
+    {
+      "check": "Prepared carried pad mounts",
+      "passed": true
+    },
+    {
+      "check": "Each bolt requires its own washer",
+      "passed": true
+    },
+    {
+      "check": "Washer 1 installs",
+      "passed": true
+    },
+    {
+      "check": "Bolt 1 follows its local washer",
+      "passed": true
+    },
+    {
+      "check": "Washer 3 installs",
+      "passed": true
+    },
+    {
+      "check": "Bolt 3 follows its local washer",
+      "passed": true
+    },
+    {
+      "check": "Washer 0 installs",
+      "passed": true
+    },
+    {
+      "check": "Bolt 0 follows its local washer",
+      "passed": true
+    },
+    {
+      "check": "Washer 2 installs",
+      "passed": true
+    },
+    {
+      "check": "Bolt 2 follows its local washer",
+      "passed": true
+    },
+    {
+      "check": "Four valid mounts complete the heel pad",
+      "passed": true
+    },
+    {
+      "check": "Completed inventory has no duplicates or invalid dependencies",
+      "passed": true
+    },
+    {
+      "check": "Completion consumes exactly twelve hardware pieces",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 0",
+      "passed": true
+    },
+    {
+      "check": "Undo 0 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 1",
+      "passed": true
+    },
+    {
+      "check": "Undo 1 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 2",
+      "passed": true
+    },
+    {
+      "check": "Undo 2 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 3",
+      "passed": true
+    },
+    {
+      "check": "Undo 3 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 4",
+      "passed": true
+    },
+    {
+      "check": "Undo 4 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 5",
+      "passed": true
+    },
+    {
+      "check": "Undo 5 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 6",
+      "passed": true
+    },
+    {
+      "check": "Undo 6 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 7",
+      "passed": true
+    },
+    {
+      "check": "Undo 7 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 8",
+      "passed": true
+    },
+    {
+      "check": "Undo 8 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 9",
+      "passed": true
+    },
+    {
+      "check": "Undo 9 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 10",
+      "passed": true
+    },
+    {
+      "check": "Undo 10 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 11",
+      "passed": true
+    },
+    {
+      "check": "Undo 11 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Build history undo 12",
+      "passed": true
+    },
+    {
+      "check": "Undo 12 preserves identities and dependencies",
+      "passed": true
+    },
+    {
+      "check": "Undo restores unfinished build",
+      "passed": true
+    },
+    {
+      "check": "Undo returns hardware without rewinding walking or storage",
+      "passed": true
+    },
+    {
+      "check": "Empty history is harmless",
+      "passed": true
+    },
+    {
+      "check": "Dropping changes ownership without creating an item",
+      "passed": true
+    },
+    {
+      "check": "Recollecting preserves physical identity",
+      "passed": true
+    },
+    {
+      "check": "Storage return supported",
+      "passed": true
+    },
+    {
+      "check": "Pocket capacity is enforced",
+      "passed": true
+    }
+  ],
+  "engine": "4.7.2-stable (official)",
+  "passed": true
+}

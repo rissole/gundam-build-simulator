@@ -1,0 +1,17 @@
+{
+  "path": "foot-fa01-build-and-explode.mp4",
+  "width": 1280,
+  "height": 720,
+  "frames": 984,
+  "fps": 24.0,
+  "bytes": 5148665,
+  "decoded_sample_frames": [
+    1,
+    260,
+    440,
+    750,
+    984
+  ],
+  "duration_seconds": 41.0,
+  "passed": true
+}

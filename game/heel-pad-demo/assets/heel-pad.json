@@ -1,0 +1,350 @@
+{
+  "source_revision": "FA-01-3D-01",
+  "source_inventory_count": 745,
+  "pad_id": "FA-302__001",
+  "pocket_capacity": 20,
+  "reach_m": 2.35,
+  "parts": [
+    {
+      "part_id": "FA-302",
+      "instance_id": "FA-302__001",
+      "label": "Heel pad",
+      "assembly_group": "05 Soles",
+      "assembly_phase": 9.6,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.05
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "object_name": "FA-302__001__Heel_pad",
+      "mesh_name": "FA-302__001__Heel_pad_mesh",
+      "vertices": 436,
+      "polygons": 232,
+      "kind": "pad",
+      "carry_class": "two_hand",
+      "gltf_position": [
+        -0.320000022649765,
+        0.07000000029802322,
+        0.4300000071525574
+      ]
+    },
+    {
+      "part_id": "FA-305",
+      "instance_id": "FA-305__001",
+      "label": "Pad compression sleeve",
+      "assembly_group": "05 Soles",
+      "assembly_phase": 9.5,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.23
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "object_name": "FA-305__001__Pad_compression_sleeve",
+      "mesh_name": "FA-305__001__Pad_compression_sleeve_mesh",
+      "vertices": 160,
+      "polygons": 160,
+      "kind": "sleeve",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.5200000405311584,
+        0.10200000554323196,
+        0.6600000262260437
+      ]
+    },
+    {
+      "part_id": "FA-305",
+      "instance_id": "FA-305__002",
+      "label": "Pad compression sleeve",
+      "assembly_group": "05 Soles",
+      "assembly_phase": 9.5,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.23
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "object_name": "FA-305__002__Pad_compression_sleeve",
+      "mesh_name": "FA-305__002__Pad_compression_sleeve_mesh",
+      "vertices": 160,
+      "polygons": 160,
+      "kind": "sleeve",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.5200000405311584,
+        0.10200000554323196,
+        0.20000000298023224
+      ]
+    },
+    {
+      "part_id": "FA-305",
+      "instance_id": "FA-305__003",
+      "label": "Pad compression sleeve",
+      "assembly_group": "05 Soles",
+      "assembly_phase": 9.5,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.23
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "object_name": "FA-305__003__Pad_compression_sleeve",
+      "mesh_name": "FA-305__003__Pad_compression_sleeve_mesh",
+      "vertices": 160,
+      "polygons": 160,
+      "kind": "sleeve",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.12000000476837158,
+        0.10200000554323196,
+        0.6600000262260437
+      ]
+    },
+    {
+      "part_id": "FA-305",
+      "instance_id": "FA-305__004",
+      "label": "Pad compression sleeve",
+      "assembly_group": "05 Soles",
+      "assembly_phase": 9.5,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.23
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "object_name": "FA-305__004__Pad_compression_sleeve",
+      "mesh_name": "FA-305__004__Pad_compression_sleeve_mesh",
+      "vertices": 160,
+      "polygons": 160,
+      "kind": "sleeve",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.12000000476837158,
+        0.10200000554323196,
+        0.20000000298023224
+      ]
+    },
+    {
+      "part_id": "H-24120",
+      "instance_id": "H-24120__001",
+      "label": "Sole pad mounts",
+      "assembly_group": "08 Fasteners",
+      "assembly_phase": 9.8,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.47
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "hardware_use": "Sole pad mounts",
+      "owner_instance": "FA-302__001__Heel_pad",
+      "object_name": "H-24120__001__Sole_pad_mounts",
+      "mesh_name": "H-24120__001__Sole_pad_mounts_mesh",
+      "vertices": 2019,
+      "polygons": 1962,
+      "kind": "bolt",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.5200000405311584,
+        0.1080000028014183,
+        0.6600000262260437
+      ]
+    },
+    {
+      "part_id": "W-24",
+      "instance_id": "W-24__035",
+      "label": "Fastener washer",
+      "assembly_group": "08 Fasteners",
+      "assembly_phase": 9.72,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.425
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "hardware_use": "Sole pad mounts",
+      "owner_instance": "FA-302__001__Heel_pad",
+      "object_name": "W-24__035__Fastener_washer",
+      "mesh_name": "W-24__035__Fastener_washer_mesh",
+      "vertices": 96,
+      "polygons": 96,
+      "kind": "washer",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.5200000405311584,
+        0.06200000271201134,
+        0.6600000262260437
+      ]
+    },
+    {
+      "part_id": "H-24120",
+      "instance_id": "H-24120__002",
+      "label": "Sole pad mounts",
+      "assembly_group": "08 Fasteners",
+      "assembly_phase": 9.825000000000001,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.476
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "hardware_use": "Sole pad mounts",
+      "owner_instance": "FA-302__001__Heel_pad",
+      "object_name": "H-24120__002__Sole_pad_mounts",
+      "mesh_name": "H-24120__002__Sole_pad_mounts_mesh",
+      "vertices": 2019,
+      "polygons": 1962,
+      "kind": "bolt",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.5200000405311584,
+        0.1080000028014183,
+        0.20000000298023224
+      ]
+    },
+    {
+      "part_id": "W-24",
+      "instance_id": "W-24__036",
+      "label": "Fastener washer",
+      "assembly_group": "08 Fasteners",
+      "assembly_phase": 9.745000000000001,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.431
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "hardware_use": "Sole pad mounts",
+      "owner_instance": "FA-302__001__Heel_pad",
+      "object_name": "W-24__036__Fastener_washer",
+      "mesh_name": "W-24__036__Fastener_washer_mesh",
+      "vertices": 96,
+      "polygons": 96,
+      "kind": "washer",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.5200000405311584,
+        0.06200000271201134,
+        0.20000000298023224
+      ]
+    },
+    {
+      "part_id": "H-24120",
+      "instance_id": "H-24120__003",
+      "label": "Sole pad mounts",
+      "assembly_group": "08 Fasteners",
+      "assembly_phase": 9.850000000000001,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.482
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "hardware_use": "Sole pad mounts",
+      "owner_instance": "FA-302__001__Heel_pad",
+      "object_name": "H-24120__003__Sole_pad_mounts",
+      "mesh_name": "H-24120__003__Sole_pad_mounts_mesh",
+      "vertices": 2019,
+      "polygons": 1962,
+      "kind": "bolt",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.12000000476837158,
+        0.1080000028014183,
+        0.6600000262260437
+      ]
+    },
+    {
+      "part_id": "W-24",
+      "instance_id": "W-24__037",
+      "label": "Fastener washer",
+      "assembly_group": "08 Fasteners",
+      "assembly_phase": 9.770000000000001,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.437
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "hardware_use": "Sole pad mounts",
+      "owner_instance": "FA-302__001__Heel_pad",
+      "object_name": "W-24__037__Fastener_washer",
+      "mesh_name": "W-24__037__Fastener_washer_mesh",
+      "vertices": 96,
+      "polygons": 96,
+      "kind": "washer",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.12000000476837158,
+        0.06200000271201134,
+        0.6600000262260437
+      ]
+    },
+    {
+      "part_id": "H-24120",
+      "instance_id": "H-24120__004",
+      "label": "Sole pad mounts",
+      "assembly_group": "08 Fasteners",
+      "assembly_phase": 9.875,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.488
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "hardware_use": "Sole pad mounts",
+      "owner_instance": "FA-302__001__Heel_pad",
+      "object_name": "H-24120__004__Sole_pad_mounts",
+      "mesh_name": "H-24120__004__Sole_pad_mounts_mesh",
+      "vertices": 2019,
+      "polygons": 1962,
+      "kind": "bolt",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.12000000476837158,
+        0.1080000028014183,
+        0.20000000298023224
+      ]
+    },
+    {
+      "part_id": "W-24",
+      "instance_id": "W-24__038",
+      "label": "Fastener washer",
+      "assembly_group": "08 Fasteners",
+      "assembly_phase": 9.795,
+      "explosion_offset_m": [
+        -0.36,
+        0.0,
+        -1.443
+      ],
+      "is_assembly_part": true,
+      "spec_revision": "FA-01",
+      "hardware_use": "Sole pad mounts",
+      "owner_instance": "FA-302__001__Heel_pad",
+      "object_name": "W-24__038__Fastener_washer",
+      "mesh_name": "W-24__038__Fastener_washer_mesh",
+      "vertices": 96,
+      "polygons": 96,
+      "kind": "washer",
+      "carry_class": "pocket",
+      "gltf_position": [
+        -0.12000000476837158,
+        0.06200000271201134,
+        0.20000000298023224
+      ]
+    }
+  ]
+}

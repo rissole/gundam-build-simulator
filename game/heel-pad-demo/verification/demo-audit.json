@@ -1,0 +1,377 @@
+{
+  "checks": [
+    {
+      "check": "Full source inventory imported at separate part identities",
+      "passed": true
+    },
+    {
+      "check": "Exactly thirteen active source objects removed from context",
+      "passed": true
+    },
+    {
+      "check": "Welcome/help interface available on launch",
+      "passed": true
+    },
+    {
+      "check": "Launch uses non-exclusive fullscreen",
+      "passed": true
+    },
+    {
+      "check": "Pause card fits the display",
+      "passed": true
+    },
+    {
+      "check": "Four numbered action-bar slots replace text inventory",
+      "passed": true
+    },
+    {
+      "check": "Action slot renders source mesh and part ID: sleeve",
+      "passed": true
+    },
+    {
+      "check": "Action slot renders source mesh and part ID: washer",
+      "passed": true
+    },
+    {
+      "check": "Action slot renders source mesh and part ID: bolt",
+      "passed": true
+    },
+    {
+      "check": "Action slot renders source mesh and part ID: pad",
+      "passed": true
+    },
+    {
+      "check": "HUD manual toggles closed",
+      "passed": true
+    },
+    {
+      "check": "HUD manual toggles open",
+      "passed": true
+    },
+    {
+      "check": "W input moves the first-person collision body",
+      "passed": true
+    },
+    {
+      "check": "Hold Ctrl lowers camera and collision capsule",
+      "passed": true
+    },
+    {
+      "check": "Cannot stand through an overhead obstacle",
+      "passed": true
+    },
+    {
+      "check": "Release Ctrl restores standing when clearance allows",
+      "passed": true
+    },
+    {
+      "check": "Actual aim identifies sleeve bin",
+      "passed": true
+    },
+    {
+      "check": "Collect four sleeve from finite physical bin",
+      "passed": true
+    },
+    {
+      "check": "Actual aim identifies washer bin",
+      "passed": true
+    },
+    {
+      "check": "Collect four washer from finite physical bin",
+      "passed": true
+    },
+    {
+      "check": "Actual aim identifies bolt bin",
+      "passed": true
+    },
+    {
+      "check": "Collect four bolt from finite physical bin",
+      "passed": true
+    },
+    {
+      "check": "Pockets hold all twelve demo hardware pieces",
+      "passed": true
+    },
+    {
+      "check": "Action-bar counts track collected stock",
+      "passed": true
+    },
+    {
+      "check": "Q creates a real loose washer without duplication",
+      "passed": true
+    },
+    {
+      "check": "Loose washer can be recollected from tray",
+      "passed": true
+    },
+    {
+      "check": "E picks up the two-handed heel pad",
+      "passed": true
+    },
+    {
+      "check": "Firm grip stays within 2 cm of its target while moving fast",
+      "passed": true
+    },
+    {
+      "check": "Held orientation follows view without spring lag",
+      "passed": true
+    },
+    {
+      "check": "Two-hand slot shows occupied hands during firm carry",
+      "passed": true
+    },
+    {
+      "check": "Small station previews held pad placement",
+      "passed": true
+    },
+    {
+      "check": "Click suspends pad in preparation station",
+      "passed": true
+    },
+    {
+      "check": "Premature bolt placement explains missing receiving assembly",
+      "passed": true
+    },
+    {
+      "check": "Generous targeting selects sleeve socket 2",
+      "passed": true
+    },
+    {
+      "check": "Valid sleeve socket 2 displays actual mesh ghost",
+      "passed": true
+    },
+    {
+      "check": "Click installs sleeve 2",
+      "passed": true
+    },
+    {
+      "check": "Generous targeting selects sleeve socket 0",
+      "passed": true
+    },
+    {
+      "check": "Valid sleeve socket 0 displays actual mesh ghost",
+      "passed": true
+    },
+    {
+      "check": "Click installs sleeve 0",
+      "passed": true
+    },
+    {
+      "check": "Generous targeting selects sleeve socket 3",
+      "passed": true
+    },
+    {
+      "check": "Valid sleeve socket 3 displays actual mesh ghost",
+      "passed": true
+    },
+    {
+      "check": "Click installs sleeve 3",
+      "passed": true
+    },
+    {
+      "check": "Generous targeting selects sleeve socket 1",
+      "passed": true
+    },
+    {
+      "check": "Valid sleeve socket 1 displays actual mesh ghost",
+      "passed": true
+    },
+    {
+      "check": "Click installs sleeve 1",
+      "passed": true
+    },
+    {
+      "check": "Prepared subassembly reaches four sleeves",
+      "passed": true
+    },
+    {
+      "check": "Undo removes exactly one sleeve and returns it",
+      "passed": true
+    },
+    {
+      "check": "Undo can be followed by valid reconstruction",
+      "passed": true
+    },
+    {
+      "check": "Station rotation changes the real assembly orientation",
+      "passed": true
+    },
+    {
+      "check": "Looking at a nearby station shows the contextual rotation tutorial",
+      "passed": true
+    },
+    {
+      "check": "Single R tap does not reset the assembly",
+      "passed": true
+    },
+    {
+      "check": "Double-tap R restores station working orientation",
+      "passed": true
+    },
+    {
+      "check": "Rotation drag followed by a tap is not mistaken for a double tap",
+      "passed": true
+    },
+    {
+      "check": "Prepared pad picked up with all its child components",
+      "passed": true
+    },
+    {
+      "check": "Aim selects the rear sole carrier",
+      "passed": true
+    },
+    {
+      "check": "Ready pad previews at the actual receiving transform",
+      "passed": true
+    },
+    {
+      "check": "Selecting pocket hardware cannot accidentally mount the carried pad",
+      "passed": true
+    },
+    {
+      "check": "Prepared assembly mounts to full-size foot",
+      "passed": true
+    },
+    {
+      "check": "Missing washer produces descriptive compatible-part error",
+      "passed": true
+    },
+    {
+      "check": "Foot targeting selects mount 3",
+      "passed": true
+    },
+    {
+      "check": "Bolt ghost available after local washer 3",
+      "passed": true
+    },
+    {
+      "check": "Independent fastening order accepted at 3",
+      "passed": true
+    },
+    {
+      "check": "Foot targeting selects mount 1",
+      "passed": true
+    },
+    {
+      "check": "Bolt ghost available after local washer 1",
+      "passed": true
+    },
+    {
+      "check": "Independent fastening order accepted at 1",
+      "passed": true
+    },
+    {
+      "check": "Foot targeting selects mount 0",
+      "passed": true
+    },
+    {
+      "check": "Bolt ghost available after local washer 0",
+      "passed": true
+    },
+    {
+      "check": "Independent fastening order accepted at 0",
+      "passed": true
+    },
+    {
+      "check": "Foot targeting selects mount 2",
+      "passed": true
+    },
+    {
+      "check": "Bolt ghost available after local washer 2",
+      "passed": true
+    },
+    {
+      "check": "Independent fastening order accepted at 2",
+      "passed": true
+    },
+    {
+      "check": "Complete build achieved through public interaction handlers",
+      "passed": true
+    },
+    {
+      "check": "Exactly the original twelve pocket items consumed",
+      "passed": true
+    },
+    {
+      "check": "No missing/duplicate pieces or invalid ownership after complete run",
+      "passed": true
+    },
+    {
+      "check": "Completion feedback and manual state agree",
+      "passed": true
+    },
+    {
+      "check": "Undo after completion clears completion and returns exact bolt",
+      "passed": true
+    },
+    {
+      "check": "Attachment is blocked outside character reach",
+      "passed": true
+    },
+    {
+      "check": "Close-range replacement completes build again",
+      "passed": true
+    },
+    {
+      "check": "Escape opens pause/help",
+      "passed": true
+    },
+    {
+      "check": "Pause hides contextual rotation hints",
+      "passed": true
+    },
+    {
+      "check": "Restart requires confirmation without losing current build",
+      "passed": true
+    },
+    {
+      "check": "Paused input cannot change the build",
+      "passed": true
+    },
+    {
+      "check": "Escape resumes workshop",
+      "passed": true
+    },
+    {
+      "check": "Resuming cancels pending restart",
+      "passed": true
+    },
+    {
+      "check": "Back-facing connection is occluded by solid workpiece",
+      "passed": true
+    },
+    {
+      "check": "Undo hardware then parent mount returns prepared pad to station",
+      "passed": true
+    },
+    {
+      "check": "Parent undo preserves child build and counts",
+      "passed": true
+    },
+    {
+      "check": "Firm grip reaches the wall and solid pad cannot pass through it",
+      "passed": true
+    },
+    {
+      "check": "Snap approach cannot teleport a carried pad through scenery",
+      "passed": true
+    },
+    {
+      "check": "Prepared pad can be set down without losing build state",
+      "passed": true
+    },
+    {
+      "check": "Putting the pad down restores ordinary rigid-body physics",
+      "passed": true
+    },
+    {
+      "check": "Unfinished/resumable assembly state follows physical pad",
+      "passed": true
+    }
+  ],
+  "engine": "4.7.2-stable (official)",
+  "inventory_errors": [],
+  "passed": true,
+  "rendered": true,
+  "renderer": "gl_compatibility"
+}

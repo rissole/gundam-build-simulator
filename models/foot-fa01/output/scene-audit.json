@@ -1,0 +1,98 @@
+{
+  "checks": {
+    "every_inventory_family_matches": true,
+    "745_separate_objects": true,
+    "745_independent_meshes": true,
+    "all_are_meshes": true,
+    "all_have_geometry": true,
+    "all_have_animation": true,
+    "unique_ids": true,
+    "all_render_enabled_at_assembled": true,
+    "assembled_positions_match_manifest": true,
+    "exploded_positions_match_manifest": true,
+    "every_part_moves": true,
+    "deconstruction_returns_to_explosion": true,
+    "all_coordinates_finite": true,
+    "sampled_camera_contains_every_part": true
+  },
+  "passed": true,
+  "object_count": 745,
+  "mesh_vertices": 424606,
+  "mesh_polygons": 394826,
+  "sampled_frames": [
+    1,
+    120,
+    230,
+    280,
+    350,
+    440,
+    600,
+    750,
+    984
+  ],
+  "camera_sample_count": 166,
+  "minimum_camera_border_fraction": 0.06931496092026523,
+  "critical_bounds_m": {
+    "FA-300": {
+      "min": [
+        -0.6100000143051147,
+        -0.7600000500679016,
+        0.14000000059604645
+      ],
+      "max": [
+        0.6100000143051147,
+        1.100000023841858,
+        0.20000000298023224
+      ]
+    },
+    "FA-301": {
+      "min": [
+        -0.6100000143051147,
+        1.3100000619888306,
+        0.14000000059604645
+      ],
+      "max": [
+        0.6100000143051147,
+        2.190000057220459,
+        0.20000000298023224
+      ]
+    },
+    "FA-400": {
+      "min": [
+        -0.64000004529953,
+        1.3400001525878906,
+        0.19999998807907104
+      ],
+      "max": [
+        0.64000004529953,
+        2.200000047683716,
+        0.6000000238418579
+      ]
+    },
+    "FA-403": {
+      "min": [
+        0.6040000319480896,
+        -0.6500000357627869,
+        0.6000000238418579
+      ],
+      "max": [
+        0.6500000357627869,
+        0.8500000834465027,
+        1.600000023841858
+      ]
+    },
+    "FA-404": {
+      "min": [
+        -0.6500000357627869,
+        -0.6500000357627869,
+        0.6000000238418579
+      ],
+      "max": [
+        -0.6040000319480896,
+        0.8500000834465027,
+        1.600000023841858
+      ]
+    }
+  },
+  "scope": "Part completeness, mesh independence, saved animation transforms and key dimensions. Not a full collision or strength certification."
+}

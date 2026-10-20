@@ -1,0 +1,27 @@
+use,bolt_id,thread,length_mm,quantity_per_foot,washer_id
+Rear frame joints,H-36140,M36,140,12,W-36
+Forefoot frame joints,H-36140,M36,140,8,W-36
+Shin flange,H-36090,M36,90,4,W-36
+Ankle pin caps,H-24060,M24,60,8,W-24
+Forefoot axle cap,H-24060,M24,60,2,W-24
+Actuator clevis mounts,H-24070,M24,70,12,W-24
+Mechanical stops,H-24070,M24,70,12,W-24
+Sole carrier mounts,H-24070,M24,70,10,W-24
+Sole pad mounts,H-24120,M24,120,24,W-24
+Armor captive bolts,H-12050-C,M12,50,20,W-12
+Actuator front and rear caps,H-12050,M12,50,24,W-12
+Nut plate keepers,H-12030,M12,30,20,W-12
+Actuator attachment pin keepers,H-12030,M12,30,6,W-12
+Cable clips,H-12030,M12,30,12,W-12
+Actuator coupling clamps,H-12030,M12,30,6,W-12
+Actuator antirotation guides,H-12030,M12,30,6,W-12
+Actuator end sensors,H-12030,M12,30,6,W-12
+Actuator split shaft collars,H-12030,M12,30,6,W-12
+Motor flanges,H-12040,M12,40,12,W-12
+Gearbox flanges,H-12040,M12,40,12,W-12
+Travelling nut to output rod,H-12040,M12,40,6,W-12
+Actuator bearing retainer plates,H-12040,M12,40,6,W-12
+Actuator eye housings,H-12040,M12,40,12,W-12
+Junction box mounting,H-12040,M12,40,4,W-12
+Junction box lid,H-12040,M12,40,4,W-12
+Controller board mounting,H-12040,M12,40,4,W-12

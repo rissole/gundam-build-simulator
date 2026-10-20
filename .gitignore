@@ -1,0 +1,20 @@
+.godot/
+.tools/
+.DS_Store
+artifacts/*.log
+artifacts/*.png
+builds/
+
+# Reproducible render intermediates and inspection previews.
+models/foot-fa01/output/frames/
+models/foot-fa01/previews/
+
+# Local diagnostics, Python bytecode, and Blender backup files.
+*.log
+__pycache__/
+*.py[cod]
+*.blend[0-9]*
+
+# Regenerable model exports and delivery archives; retain the game GLB and Blender scene.
+models/foot-fa01/output/*.glb
+models/foot-fa01/output/*.zip
