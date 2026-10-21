@@ -39,6 +39,7 @@ Prepare two independent heel pads at either station, then secure them at either 
 | Q | Set down a carried part or drop hardware |
 | Hold R + mouse / F | Rotate / reset the station |
 | Tab or M | Toggle the manual |
+| N | Browse the manual tree and steps |
 | Enter / Backspace | Open child / parent manual |
 | C / V | Cycle manuals / open inspected build |
 | Z | Undo in the selected manual |

@@ -108,16 +108,18 @@ func rebuild_stage(owner: String, service: bool, preview: bool, exposed: bool = 
 	for child in game.bodies.pitch.get_children():
 		if child is MeshInstance3D:
 			if owner == "foot" and game.builds.pitch.pad_location != "foot":continue
-			if exposed and not child.has_meta("component_uid"):continue
-			copy_mesh(child,service,not child.has_meta("component_uid"))
+			var casing: bool = child.get_meta("source_uid","")=="FA-510__001"
+			if exposed and casing:continue
+			if not service and not exposed and not child.visible:continue
+			copy_mesh(child,service,casing)
 	if owner == "foot":
 		for child in game.foot.find_children("*","MeshInstance3D",true,false):
 			if String(child.name).begins_with("FA-103__") or String(child.name).begins_with("FA-200__"):
 				copy_mesh(child,false)
-		for child in game.components.parent_visuals.get_children():
-			if child is MeshInstance3D:copy_mesh(child,service)
+		for child in game.assembly_node("foot").get_children():
+			if child is MeshInstance3D and child.has_meta("component_uid"):copy_mesh(child,service)
 	if preview and game.ghost.visible:
-		copy_mesh(game.ghost,service)
+		if game.ghost.mesh != null:copy_mesh(game.ghost,service)
 		for child in game.ghost.get_children():
 			if child is MeshInstance3D and child.visible:copy_mesh(child,service)
 
@@ -171,9 +173,15 @@ func review_checkpoint(owner: String, phase: String, sid: String = "") -> void:
 		if owner == "foot":midpoint = game.components.slot_pose("foot",step.slots[0]).origin
 		if owner == "foot":await aim_parent_work(midpoint)
 		else:await aim(midpoint,1.1)
+	game.hud.refresh()
+	record["hud_page_count"] = game.hud.page_count.text
+	record["filled_slots"] = step.slots.filter(func(slot):return not game.model.assemblies[owner].slots[slot].is_empty()).size()
+	record["process_frame"] = Engine.get_process_frames()
 	await get_tree().process_frame
-	# Force both the manual's subviewport and its compositing frame.
+	# Let deferred CanvasItem/layout updates reach the renderer between the
+	# manual subviewport draw and the window's compositing draw.
 	RenderingServer.force_draw(false)
+	await get_tree().process_frame
 	RenderingServer.force_draw(false)
 	if sid.is_empty() or phase == "mount-preview":
 		var path = stem+"-hud.png"

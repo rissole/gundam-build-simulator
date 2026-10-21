@@ -18,17 +18,19 @@ var station_id: String:
 	get:return model.assemblies[build_id].location.trim_prefix("station:")
 var mount_slot: String:
 	get:return model.assemblies[build_id].parent_slot
+var parent_id: String:
+	get:return model.assemblies[build_id].parent
 var history: Array:
-	get:return model.assemblies["foot" if pad_location == "foot" else build_id].history
+	get:return model.assemblies[parent_id if not parent_id.is_empty() else build_id].history
 var slots: Dictionary:
 	get:
 		var result = {}
 		for kind in KINDS:
 			result[kind] = []
 			for i in range(4):
-				var owner = build_id if kind == "sleeve" else "foot"
+				var owner = build_id if kind == "sleeve" else parent_id
 				var sid = "%s_%d" % [kind,i] if kind == "sleeve" else "%s/%s_%d" % [mount_slot,kind,i]
-				result[kind].append(model.assemblies[owner].slots.get(sid,""))
+				result[kind].append(model.assemblies[owner].slots.get(sid,"") if model.assemblies.has(owner) else "")
 		return result
 
 static func scenario(single: bool = false) -> Dictionary:
@@ -72,7 +74,7 @@ func return_to_bin(kind: String) -> String:return model.transfer(kind,"pocket","
 func move_pad(where: String) -> String:return model.move_assembly(build_id,"station:prep" if where == "prep" else where)
 func installed(kind: String) -> int:return slots[kind].size()-slots[kind].count("")
 func prepared() -> bool:return model.milestone(build_id,"prepared")
-func complete() -> bool:return not mount_slot.is_empty() and model.milestone("foot",mount_slot+"_secured")
+func complete() -> bool:return not mount_slot.is_empty() and model.milestone(parent_id,mount_slot+"_secured")
 func compatible(index: int) -> String:
 	for kind in KINDS:
 		if slots[kind][index].is_empty():return TITLES[kind]
@@ -81,15 +83,15 @@ func reason(kind: String, index: int) -> String:
 	if not KINDS.has(kind) or index < 0 or index >= slots.sleeve.size():return "Choose hardware and aim at a connection."
 	if not ["prep","foot"].has(pad_location):return "Suspend this build at a preparation station first."
 	if kind != "sleeve" and mount_slot.is_empty():return "Mount the prepared pad on the rear sole carrier first."
-	var owner = build_id if kind == "sleeve" else "foot"
+	var owner = build_id if kind == "sleeve" else parent_id
 	var sid = "%s_%d" % [kind,index] if kind == "sleeve" else "%s/%s_%d" % [mount_slot,kind,index]
 	return model.placement_error(owner,sid,find_item(kind,"pocket"))
 func install(kind: String, index: int) -> Dictionary:
 	var error = reason(kind,index)
 	if not error.is_empty():return {"ok":false,"error":error}
-	var owner = build_id if kind == "sleeve" else "foot"
+	var owner = build_id if kind == "sleeve" else parent_id
 	var sid = "%s_%d" % [kind,index] if kind == "sleeve" else "%s/%s_%d" % [mount_slot,kind,index]
 	return model.install(owner,sid,find_item(kind,"pocket"))
-func mount(destination: String = "heel_1") -> Dictionary:return model.install("foot",destination,build_id)
-func undo() -> Dictionary:return model.undo("foot" if pad_location == "foot" else build_id,"station:prep")
+func mount(destination: String = "heel_1", owner: String = "foot") -> Dictionary:return model.install(owner,destination,build_id)
+func undo() -> Dictionary:return model.undo(parent_id if not parent_id.is_empty() else build_id,"station:prep")
 func integrity_errors() -> Array[String]:return model.integrity_errors()

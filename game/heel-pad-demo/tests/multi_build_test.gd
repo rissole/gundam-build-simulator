@@ -1,8 +1,59 @@
 extends "res://tests/demo_test.gd"
 ## Two physical instances, public controls, shared stock and nested manuals.
+var pad_review: bool = false
+var review_images: Array[Dictionary] = []
+const PAD_REVIEW_DIR = "res://verification/pad-runtime-review/"
+
+func capture(name: String) -> void:
+	if not pad_review:
+		await super.capture(name)
+		return
+	if not rendered:return
+	await get_tree().process_frame
+	game._update_target()
+	game._update_ghost()
+	game.hud.refresh()
+	await frames(4)
+	RenderingServer.force_draw(false)
+	game.get_viewport().get_texture().get_image().save_png(PAD_REVIEW_DIR+name+".png")
+	_record_review(name,["pad_1","pad_2"])
+
+func _record_review(name: String, owners: Array) -> void:
+	var builds: Dictionary = {}
+	for owner in owners:
+		var a: Dictionary = game.model.assemblies[owner]
+		builds[owner] = {"parent":a.parent,"parent_slot":a.parent_slot,"location":a.location,"slots":a.slots.duplicate(),"body_pose":str(game.bodies[owner].global_transform)}
+	review_images.append({"image":name+".png","manual_id":game.hud.manual_id,"page":game.hud.page,"builds":builds,"parent_slots":game.model.assemblies.foot.slots.duplicate()})
+
+func inspect_pads(name: String, side: float, owners: Array = ["pad_1","pad_2"]) -> void:
+	if not pad_review or not rendered:return
+	var saved_player: Transform3D = game.player.global_transform
+	var saved_camera: Transform3D = game.camera.global_transform
+	var saved_paused: bool = game.paused
+	var saved_hud: bool = game.hud.visible
+	game.paused = true
+	game.hud.visible = false
+	game.ghost.visible = false
+	var center = Vector3.ZERO
+	for owner in owners:center += game.bodies[owner].global_position
+	center /= owners.size()
+	var frame: Basis = game.foot.global_basis if owners.size() > 1 else game.bodies[owners[0]].global_basis
+	game.camera.global_position = center+frame*Vector3(side,-1.5,-0.30)
+	game.camera.look_at(center)
+	await frames(4)
+	RenderingServer.force_draw(false)
+	game.get_viewport().get_texture().get_image().save_png(PAD_REVIEW_DIR+name+".png")
+	_record_review(name,owners)
+	game.player.global_transform = saved_player
+	game.camera.global_transform = saved_camera
+	game.paused = saved_paused
+	game.hud.visible = saved_hud
+
 func run(workshop: Node) -> void:
 	game = workshop
 	rendered = DisplayServer.get_name() != "headless"
+	pad_review = OS.get_cmdline_user_args().has("--pad-review")
+	if pad_review:DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(PAD_REVIEW_DIR))
 	await frames(15)
 	expect(game.active_ids.size()==26 and game.source.size()==745,"Both pads' 26 identities are removed from the 745-object context")
 	expect(game.builds.size()==2 and game.stations.size()==2,"Two builds and two interchangeable preparation stations")
@@ -118,6 +169,8 @@ func run(workshop: Node) -> void:
 	expect(game.model.milestone("foot","complete") and game.hud.page_count.text.contains("2 / 2"),"Parent completion derives from both secured installations")
 	expect(game.model.pocket_count()==0 and game.model.integrity_errors().is_empty(),"Exactly 26 original pieces remain accounted for after completion")
 	await capture("08-two-pads-complete")
+	await inspect_pads("09-complete-left",-0.5)
+	await inspect_pads("10-complete-right",0.5)
 	# Physics must not overwrite a mounted child's local pose after its parent moves.
 	# Exercise awake bodies too; sleeping can hide a competing physics transform.
 	for body in game.bodies.values():
@@ -138,6 +191,8 @@ func run(workshop: Node) -> void:
 			if not game.bodies[id].global_transform.is_equal_approx(expected):follows_during_drag = false
 	release(KEY_R)
 	expect(follows_during_drag,"Both mounted pads follow a continuous R-drag between physics ticks")
+	await inspect_pads("11-continuous-rotation-left",-0.5)
+	await inspect_pads("12-continuous-rotation-right",0.5)
 	for delta in [Vector2(80,45),Vector2(-35,90),Vector2(55,-60)]:
 		var before_rotation: Basis = game.foot.basis
 		game._rotate_station(delta)
@@ -160,11 +215,15 @@ func run(workshop: Node) -> void:
 	for i in range(16):key(KEY_Z)
 	expect(game.builds.pad_2.pad_location=="prep" and game.builds.pad_2.prepared(),"Undo parent fasteners and latest mount retains prepared child")
 	expect(game.model.assemblies.foot.slots.heel_2=="pad_1","Undo does not detach the other mounted child")
+	await inspect_pads("13-undo-restored-pad",-0.4,["pad_2"])
+	await inspect_pads("14-remaining-mounted-pad",0.4,["pad_1"])
 	key(KEY_Z)
 	expect(game.builds.pad_1.pad_location=="prep" and game.builds.pad_1.prepared(),"Next mount undo selects the other free station")
 	expect(game.builds.pad_1.station_id != game.builds.pad_2.station_id,"Undo output never overlaps station occupants")
 	expect(game.model.integrity_errors().is_empty(),"Nested undo conserves all physical identities and dependencies")
 	var passed = checks.all(func(c):return c.passed)
+	if pad_review:
+		FileAccess.open(PAD_REVIEW_DIR+"capture.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":rendered,"engine":Engine.get_version_info().string,"images":review_images},"  "))
 	FileAccess.open("res://verification/multi-build-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":rendered},"  "))
 	print("MULTI_BUILD_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	await finish(passed)

@@ -1,5 +1,6 @@
 extends CanvasLayer
 const Diagram = preload("res://scripts/manual_diagram.gd")
+const ManualBrowser = preload("res://scripts/manual_browser.gd")
 var game: Node
 var root: Control
 var manual: PanelContainer
@@ -28,6 +29,8 @@ var manual_id: String = "foot"
 var pages: Dictionary = {}
 var breadcrumb: Label
 var manual_hint: Label
+var browser: Control
+var browse_button: Button
 var page: int:
 	get:return pages.get(manual_id,0)
 	set(value):pages[manual_id] = value
@@ -77,7 +80,7 @@ func _ready() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
-	if game.single_pad:manual_id = "pad_1"
+	manual_id = "pad_1" if game.single_pad else game.config.parent.id
 	_make_manual()
 	_make_action_bar()
 	target_panel = panel_at(root,Vector2(0.5,0.64),Rect2(-280,0,560,0))
@@ -103,6 +106,8 @@ func _ready() -> void:
 	hint_col.add_child(rotation_label)
 	rotation_hint.visible = false
 	_make_pause()
+	browser = ManualBrowser.new(self)
+	root.add_child(browser)
 
 func _make_manual() -> void:
 	manual = panel_at(root,Vector2(1,0),Rect2(-366,24,342,0))
@@ -113,7 +118,13 @@ func _make_manual() -> void:
 	breadcrumb = label("",12,tone)
 	breadcrumb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(breadcrumb)
+	browse_button = button("Browse manuals   N")
+	browse_button.custom_minimum_size.y = 30
+	browse_button.add_theme_font_size_override("font_size",13)
+	browse_button.pressed.connect(func():browser.open_browser())
+	column.add_child(browse_button)
 	page_title = label("",23)
+	page_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(page_title)
 	diagram = Diagram.new()
 	diagram.custom_minimum_size = Vector2(290,205)
@@ -155,8 +166,8 @@ func _make_action_bar() -> void:
 		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card.add_child(content)
 		var texture = TextureRect.new()
-		texture.position = Vector2(13,20)
-		texture.size = Vector2(42,42)
+		texture.position = Vector2(15,17)
+		texture.size = Vector2(38,38)
 		texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -170,11 +181,16 @@ func _make_action_bar() -> void:
 		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		content.add_child(count)
 		var id_label = label("Empty",11,muted)
-		id_label.position = Vector2(0,63)
+		id_label.position = Vector2(0,53)
 		id_label.size.x = 68
 		id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		content.add_child(id_label)
-		action_slots.append({"card":card,"model":texture,"count":count,"id":id_label,"kind":""})
+		var variant_label = label("",10,tone)
+		variant_label.position = Vector2(0,66)
+		variant_label.size.x = 68
+		variant_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		content.add_child(variant_label)
+		action_slots.append({"card":card,"model":texture,"count":count,"id":id_label,"variant":variant_label,"kind":""})
 	carry_label = label("",13)
 	root.add_child(carry_label)
 	carry_label.anchor_left = 0.5
@@ -275,7 +291,7 @@ func _make_pause() -> void:
 		["Left click","Attach at the preview"],["Hold R + mouse","Rotate the aimed-at station"],
 		["R, then R","Reset station rotation"],["Z","Undo in selected manual"]]))
 	grid.add_child(_control_group("Manual & menu",[
-		["Tab / M","Open / close manual"],["← / →","Previous / next page"],
+		["Tab / M · N","Manual · browse tree"],["← / →","Previous / next page"],
 		["Enter / Backspace","Open child / parent manual"],["C / V","Cycle builds / inspect manual"],["Esc","Pause / resume"]]))
 	var footer = HBoxContainer.new()
 	footer.add_theme_constant_override("separation",12)
@@ -325,6 +341,7 @@ func refresh() -> void:
 			slot.kind = kind
 			slot.model.texture = game.storage.picture(kind)
 		slot.id.text = "Empty" if kind.is_empty() else game.model.definitions.parts[kind].family
+		slot.variant.text = "" if kind.is_empty() else game.model.definitions.parts[kind].get("variant_label","")
 		var count: int = game.model.pocket_size(i)
 		slot.count.text = "×%d"%count if count>0 else ""
 		var selected: bool = game.model.selected_pocket == i
@@ -339,8 +356,48 @@ func refresh() -> void:
 	_refresh_manual()
 	game.components.update_service_view()
 
+func manual_name(id: String) -> String:
+	return "FA-01 · Foot" if id == "foot" else game.build_label(id)
+
 func manual_title() -> String:
-	return "FA-01 · Foot" if manual_id == "foot" else game.build_label(manual_id)
+	return manual_name(manual_id)
+
+func manual_parent(id: String) -> String:
+	var instance: Dictionary = game.model.assemblies[id]
+	if not instance.parent.is_empty():return instance.parent
+	# Only an unambiguous receiving build supplies a suggested breadcrumb.
+	# Physical ownership always wins when several identical parents are present.
+	var parents: Array[String] = []
+	for candidate in game.model.assemblies:
+		if candidate == id:continue
+		for spec in game.components.definition(candidate).slots.values():
+			if spec.get("assembly","") == instance.definition and not parents.has(candidate):parents.append(candidate)
+	if parents.size() == 1:return parents[0]
+	return ""
+
+func manual_path(id: String) -> Array[String]:
+	var result: Array[String] = []
+	while not id.is_empty() and not result.has(id):
+		result.push_front(id)
+		id = manual_parent(id)
+	return result
+
+func handle_manual_browser_input(event: InputEvent) -> bool:
+	if browser == null:return false
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_N:
+			if browser.visible:browser.close_browser()
+			elif not game.paused:browser.open_browser()
+			return true
+		if browser.visible:
+			match event.physical_keycode:
+				KEY_ESCAPE, KEY_TAB, KEY_M:browser.close_browser()
+				KEY_BACKSPACE:browser.navigate_parent()
+				KEY_C:cycle_candidate(1,browser.suggestions)
+				KEY_LEFT:turn_page(-1);refresh();browser.sync_selection()
+				KEY_RIGHT:turn_page(1);refresh();browser.sync_selection()
+			return true
+	return browser.visible
 
 func page_total() -> int:
 	return game.model.definitions.assemblies[game.model.assemblies[manual_id].definition].manual.size()
@@ -359,23 +416,101 @@ func turn_page(direction: int) -> void:
 	body_scroll.scroll_vertical = 0
 
 func cycle_build() -> void:
-	var ids: Array = ["foot"]+game.builds.keys()
-	open_manual(ids[(ids.find(manual_id)+1)%ids.size()])
+	cycle_candidate(1)
+
+func candidate_manuals(context: Dictionary = {}) -> Array[Dictionary]:
+	# Capture context once when browsing. Aiming and model changes can update
+	# suggestions, but never open a different manual or alter remembered pages.
+	if context.is_empty():context = discovery_context()
+	var kind: String = context.get("kind","")
+	var focused: String = context.get("owner","")
+	var child_definition: String = context.get("assembly","")
+	var result: Array[Dictionary] = []
+	for id in game.model.assemblies:
+		if not focused.is_empty() and id != focused:continue
+		var a: Dictionary = game.model.assemblies[id]
+		var d: Dictionary = game.components.definition(id)
+		var matched: Array[int] = []
+		var ready: int = 0
+		for i in range(d.manual.size()):
+			var step: Dictionary = d.manual[i]
+			if step.get("view","") in ["overview","prepared"]:continue
+			var remaining: bool = false
+			for sid in step.slots:
+				if not a.slots[sid].is_empty():continue
+				var slot: Dictionary = game.model.slot_definition(id,sid)
+				if not kind.is_empty() and slot.get("accepts","") != kind:continue
+				if not child_definition.is_empty() and slot.get("assembly","") != child_definition:continue
+				remaining = true
+				if slot.get("requires",[]).all(func(r):return not a.slots[r].is_empty()):ready += 1
+			if remaining:matched.append(i)
+		# A focused finished build still offers its manual for inspection/undo.
+		if matched.is_empty() and (not focused.is_empty() or (kind.is_empty() and child_definition.is_empty())):
+			for i in range(d.manual.size()):matched.append(i)
+		if matched.is_empty():continue
+		result.append({"id":id,"pages":matched,"ready":ready,"filled":a.slots.size()-a.slots.values().count("")})
+	return result
+
+func discovery_context() -> Dictionary:
+	var result: Dictionary = {}
+	var held: String = game.model.held_item()
+	var kind: String = game.selected_kind
+	if not held.is_empty():kind = game.model.items[held].kind
+	if not kind.is_empty():result.kind = kind
+	var carried: String = game.held_build()
+	if not carried.is_empty():
+		if game.model.milestone(carried,"prepared"):
+			return {"assembly":game.model.assemblies[carried].definition,"child":carried}
+		return {"owner":carried}
+	var aimed: Dictionary = game.target
+	var owner: String = aimed.get("owner",aimed.get("build",""))
+	if aimed.get("type","") == "slot" and game.model.assemblies.has(owner) and not game.model.assemblies[owner].parent.is_empty():
+		owner = game.model.assemblies[owner].parent
+	if not owner.is_empty() and game.model.assemblies.has(owner):result.owner = owner
+	elif aimed.get("type","") == "loose":result.kind = game.model.items[aimed.uid].kind
+	elif aimed.get("type","") == "bin":result.kind = aimed.kind
+	return result
+
+func candidate_summary(context: Dictionary) -> String:
+	if context.has("owner"):
+		var id: String = context.owner
+		var a: Dictionary = game.model.assemblies[id]
+		return "%s · %d fitted"%[manual_name(id),a.slots.size()-a.slots.values().count("")]
+	if context.has("child"):return manual_name(context.child)+" · compatible receiving manuals"
+	if context.has("kind"):return "Matching "+game.components.title(context.kind)
+	return "All available builds · aim at a build or select a component to narrow"
+
+func cycle_candidate(direction: int, suggestions: Array[Dictionary] = []) -> void:
+	if suggestions.is_empty():suggestions = candidate_manuals()
+	if suggestions.is_empty():return
+	var ids: Array[String] = []
+	for candidate in suggestions:ids.append(candidate.id)
+	var current: int = ids.find(manual_id)
+	var next_index: int = posmod(current+direction,ids.size()) if current >= 0 else (0 if direction >= 0 else ids.size()-1)
+	open_manual(ids[next_index])
+	if browser.visible:browser.sync_selection()
 
 func open_selected_child() -> void:
-	if manual_id != "foot":return
-	var step: Dictionary = game.components.definition("foot").manual[page]
-	var sid: String = step.get("child_slot",game.config.mounts[0].id)
-	var child: String = game.model.assemblies.foot.slots[sid]
+	var step: Dictionary = game.components.definition(manual_id).manual[page]
+	var sid: String = step.get("child_slot","")
+	if sid.is_empty():
+		for candidate in step.slots:
+			if game.model.slot_definition(manual_id,candidate).has("assembly"):sid = candidate;break
+	if sid.is_empty():return
+	var child: String = game.model.assemblies[manual_id].slots[sid]
 	if child.is_empty():
-		for id in game.builds:
-			if game.model.assemblies[id].definition == game.model.slot_definition("foot",sid).assembly and game.builds[id].mount_slot.is_empty():child = id;break
+		for id in game.model.assemblies:
+			var instance: Dictionary = game.model.assemblies[id]
+			if instance.definition == game.model.slot_definition(manual_id,sid).assembly and instance.parent.is_empty():child = id;break
 	if not child.is_empty():open_manual(child)
 
 func _refresh_manual() -> void:
 	page = clampi(page,0,page_total()-1)
-	breadcrumb.text = "FA-01 / FOOT"+(" / "+game.build_label(manual_id).to_upper() if manual_id != "foot" else "")
-	manual_hint.text = "← / → pages · PgUp / PgDn scroll\nEnter child · Backspace parent · C builds · Tab close"
+	var path: Array[String] = []
+	for id in manual_path(manual_id):path.append(manual_name(id))
+	breadcrumb.text = "  ›  ".join(path)
+	manual_hint.text = "← / → pages · PgUp / PgDn scroll\nN browse / narrow · Enter child · Backspace parent
+C suggested builds · Tab close"
 	var entries: Array = []
 	var a: Dictionary = game.model.assemblies[manual_id]
 	var definition: Dictionary = game.components.definition(manual_id)
@@ -405,23 +540,37 @@ func _refresh_manual() -> void:
 	if step.get("view","") == "overview":
 		var lines: Array[String] = [step.body,""]
 		var secured = 0
-		for id in game.builds:
-			var view: HeelAssemblyState = game.builds[id]
-			var progress = "%d / %d pieces"%[game.model.assemblies[id].slots.size()-game.model.assemblies[id].slots.values().count(""),game.model.assemblies[id].slots.size()]
-			if not game.components.is_component_build(id):progress = "%d / 4 sleeves"%view.installed("sleeve")
-			lines.append(game.build_label(id)+": "+("secured" if view.complete() else ("seated" if view.pad_location == "foot" else ("prepared" if view.prepared() else progress))))
-			if view.complete():secured += 1
+		var children: Array[String] = []
+		for id in game.model.assemblies:
+			if manual_parent(id) == manual_id:children.append(id)
+		for id in children:
+			var child: Dictionary = game.model.assemblies[id]
+			var progress = "%d / %d pieces"%[child.slots.size()-child.slots.values().count(""),child.slots.size()]
+			if child.definition == "heel_pad":progress = "%d / 4 sleeves"%game.builds[id].installed("sleeve")
+			var status: String = "seated" if child.parent == manual_id else ("prepared" if game.model.milestone(id,"prepared") else progress)
+			var secured_child: bool = false
+			if child.parent == manual_id:
+				var mount: Dictionary = game.model.slot_definition(manual_id,child.parent_slot)
+				var retention: Array = mount.get("secured_by",[])
+				if retention.is_empty():
+					for sid in definition.slots:
+						if sid.begins_with(child.parent_slot+"/"):retention.append(sid)
+				secured_child = not retention.is_empty() and retention.all(func(sid):return not a.slots[sid].is_empty())
+			if secured_child:secured += 1;status = "secured"
+			lines.append(manual_name(id)+": "+status)
 		page_body.text = "\n".join(lines)
-		page_count.text = "%d / %d builds secured"%[secured,game.builds.size()]
-		for mount in game.config.mounts:entries.append({"source":mount.source,"highlight":true,"installed":not a.slots[mount.id].is_empty()})
+		page_count.text = "%d / %d builds secured"%[secured,children.size()]
+		for sid in step.slots:
+			var slot: Dictionary = game.model.slot_definition(manual_id,sid)
+			if slot.has("assembly"):entries.append({"source":slot.pose_source,"highlight":true,"installed":not a.slots[sid].is_empty()})
 	else:
 		var component_view: bool = step.get("view","") == "components"
-		var display_slots: Array = step.slots.duplicate() if manual_id == "foot" or component_view else definition.slots.keys()
+		var display_slots: Array = step.slots.duplicate() if not definition.has("root_slot") or component_view else definition.slots.keys()
 		if component_view and definition.has("root_slot"):display_slots.push_front(definition.root_slot)
 		for sid in display_slots:
 			var d: Dictionary = definition.slots[sid]
 			entries.append({"source":d.pose_source,"highlight":step.slots.has(sid),"installed":not a.slots[sid].is_empty(),"faint":sid == definition.get("root_slot","") and component_view})
-		if manual_id != "foot" and not a.parent.is_empty():page_body.text += "\n\nInstalled. Fastening and undo belong to the foot manual."
+		if not a.parent.is_empty():page_body.text += "\n\nInstalled in "+manual_name(a.parent)+". Undo its mounting there before dismantling."
 	var context: Array = step.get("context_sources",definition.get("context_sources",[]))
 	for uid in context:entries.append({"source":uid,"highlight":false,"installed":true,"faint":true})
 	diagram.show_parts(game,entries,step.get("diagram_views",[]))

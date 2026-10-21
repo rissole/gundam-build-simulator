@@ -6,6 +6,7 @@ var kind: String = ""
 var held: bool = false
 var carry_target: Vector3
 var carry_basis: Basis = Basis.IDENTITY
+var max_surface_travel: float = 0.025
 
 func _ready() -> void:
 	continuous_cd = true
@@ -23,18 +24,15 @@ func update_grip(delta: float) -> void:
 	var collision = move_and_collide((carry_target-global_position).limit_length(12.0*delta))
 	if collision:
 		move_and_collide(collision.get_remainder().slide(collision.get_normal()))
-	# Test intermediate orientations as well as the endpoint so turning beside
-	# a wall cannot swing the held object through it.
+	# Long arms use finer angular increments according to their furthest solid.
 	var from = global_basis.get_rotation_quaternion()
 	var to = carry_basis.get_rotation_quaternion()
-	var steps = maxi(1,ceili(from.angle_to(to)/deg_to_rad(3.0)))
-	var query = PhysicsShapeQueryParameters3D.new()
-	query.shape = (get_node("CollisionShape3D") as CollisionShape3D).shape
-	query.collision_mask = collision_mask
-	query.exclude = [get_rid()]
-	query.margin = 0.002
+	var envelope = SolidHandling.bounds(self)
+	var radius = envelope.get_center().length()+envelope.size.length()/2
+	var steps = SolidHandling.sweep_steps(global_transform,Transform3D(carry_basis,global_position),radius,max_surface_travel)
+	var excluded: Array[RID] = [get_rid()]
+	for exception in get_collision_exceptions():excluded.append(exception.get_rid())
 	for i in range(1,steps+1):
 		var pose = Transform3D(Basis(from.slerp(to,float(i)/steps)),global_position)
-		query.transform = pose*get_node("CollisionShape3D").transform
-		if not get_world_3d().direct_space_state.intersect_shape(query,1).is_empty():break
+		if not SolidHandling.sweep_error(self,pose,excluded,collision_mask,max_surface_travel).is_empty():break
 		global_basis = pose.basis

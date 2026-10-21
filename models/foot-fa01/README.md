@@ -39,6 +39,19 @@ On this Mac, double-click [open-in-blender.command](open-in-blender.command) to 
 
 Read [modeling decisions and scope](MODELING_NOTES.md) for resolved dimensions and the distinction between a visualization model and fabrication geometry.
 
+Source identities are fixed by [source-identities.json](src/source-identities.json).
+Each part or named hardware site resolves an explicit semantic role to its existing
+ID; generator emission order no longer assigns identity. Add new roles with unused
+IDs deliberately, and preserve old mappings when changing labels or geometry.
+[source_connections.py](src/source_connections.py) records pitch hardware sites and
+bolt/washer pairs independently of manifest order. Unknown roles, duplicate claims
+and reused IDs fail before export.
+
+The gameplay asset merger compacts obsolete resources and verifies repeated merges
+are byte-identical. Its audit compares retained geometry, materials and transforms
+independently of GLB resource indices. See the [workshop source-update procedure](../../game/heel-pad-demo/README.md#data-model-and-project-structure)
+for scoped exports, checks and current generated-artifact boundaries.
+
 ## Reproduce the build
 
 The generator uses Blender's built-in Python API, without third-party Python packages. Blender 4.5.14 LTS was downloaded from the [official release directory](https://download.blender.org/release/Blender4.5/) and checked against its official SHA-256 manifest. The installed task-local executable is:

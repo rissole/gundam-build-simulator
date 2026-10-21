@@ -7,14 +7,14 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 import bpy
 import build
 import geometry as g
+from source_connections import pitch_instance_ids
 import frame_parts, actuator_parts, finish_parts
 
 g.init()
 for fn in [frame_parts.build_frames,frame_parts.build_ankle,frame_parts.build_toe_joint,frame_parts.build_stops,actuator_parts.build,finish_parts.build_soles,finish_parts.build_electrical,finish_parts.build_armor]: fn()
 build.inventory_audit()
-start=next(i for i,o in enumerate(g.PARTS) if o['label']=='P Barrel')
-end=next(i for i,o in enumerate(g.PARTS) if o['label']=='R Barrel')
-selected=g.PARTS[start:end]+[g.find_part('FA-103'),g.find_part('FA-200')]
+source_ids=pitch_instance_ids()
+selected=[o for o in g.PARTS if o['instance_id'] in source_ids]+[g.find_part('FA-103'),g.find_part('FA-200')]
 assert len(selected)==111
 bpy.ops.object.select_all(action='DESELECT')
 for o in selected:o.select_set(True)

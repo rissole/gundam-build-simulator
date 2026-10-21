@@ -1,4 +1,13 @@
 extends "res://tests/demo_test.gd"
+var review_dir = ""
+
+func review_labels(name: String) -> void:
+	if review_dir.is_empty():return
+	game.hud.refresh()
+	await frames(3)
+	RenderingServer.force_draw(false)
+	RenderingServer.force_draw(false)
+	game.get_viewport().get_texture().get_image().save_png(review_dir.path_join(name+".png"))
 
 func drawer(kind: String) -> void:
 	await aim(game.bins[kind].global_position+Vector3(0,0.13,0.27),1.25)
@@ -8,11 +17,25 @@ func drawer(kind: String) -> void:
 func run(workshop: Node) -> void:
 	game = workshop
 	rendered = DisplayServer.get_name() != "headless"
+	if "--pockets-review" in OS.get_cmdline_user_args():
+		if not rendered:
+			push_error("Pocket label review requires a real renderer")
+			get_tree().quit(2)
+			return
+		review_dir = "res://verification/part-labels-%s-%s"%[Time.get_datetime_string_from_system().replace(":","-"),Time.get_ticks_usec()]
+		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(review_dir))
+		print("LABEL_REVIEW_OUTPUT ",ProjectSettings.globalize_path(review_dir))
 	await frames(10)
 	game.set_paused(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	expect(game.hud.action_slots.size()==10 and game.model.pockets.count("")==10,"Ten visible empty pockets on launch")
-	expect(game.storage.drawer_kinds.size()==23 and game.storage.shelf_kinds.size()==17,"Small parts use drawers; hand-sized components use shelves")
+	var storage_matches = true
+	for kind in game.storage.drawer_kinds:storage_matches = storage_matches and game.model.definitions.parts[kind].carry_class == "pocket"
+	for kind in game.storage.shelf_kinds:storage_matches = storage_matches and game.model.definitions.parts[kind].carry_class != "pocket"
+	expect(storage_matches,"Small parts use drawers; hand-sized components use shelves")
+	for family in ["FA-526","FA-527","FA-528","FA-221","FA-222"]:
+		var kind: String = game.model.items[family+"__001"].kind
+		expect(game.bins.has(kind) and game.bin_labels[kind].text=="2 available","Identical pair has one labelled storage location with two copies: "+family)
 	var labels_ok = true
 	var heights: Array = []
 	var no_small_props = true
@@ -35,6 +58,19 @@ func run(workshop: Node) -> void:
 	key(KEY_BACKSPACE)
 	key(KEY_C)
 	expect(game.model.pockets==contents and game.hud.action_slots[0].kind=="w-12" and game.hud.action_slots[1].kind=="h-12040","Changing manuals and pages never changes the action bar's contents")
+	await drawer("fa-527-pitch")
+	var ring_pocket: int = game.model.pocket_for("fa-527-pitch")
+	expect(game.hud.action_slots[ring_pocket].count.text=="×2","Both retaining rings share one displayed pocket stack")
+	game.hud.open_manual("pitch",11)
+	await review_labels("shared-rings")
+	for family in ["FA-524","FA-529"]:
+		for number in ["001","002"]:
+			var kind: String = game.model.items[family+"__"+number].kind
+			await drawer(kind)
+			var index: int = game.model.pocket_for(kind)
+			expect(not game.hud.action_slots[index].variant.text.is_empty() and game.hud.action_slots[index].variant.text==game.model.definitions.parts[kind].variant_label,"Pocket distinguishes real variant: "+kind)
+			game.hud.open_manual("pitch",3 if family=="FA-524" else 9)
+			await review_labels(kind)
 	for kind in game.storage.drawer_kinds:
 		if game.model.pockets.has(kind):continue
 		if not game.model.pockets.has(""):break
@@ -61,13 +97,13 @@ func run(workshop: Node) -> void:
 	var before: Array = game.model.pockets.duplicate()
 	key(KEY_Q)
 	expect(game.model.pockets==before and game.loose.is_empty(),"Q cannot spawn pocket-sized physics objects")
-	await drawer("fa-513__001")
-	expect(game.model.held_item()=="FA-513__001" and game.model.pockets==before,"Shelf pickup carries motor separately from pockets")
+	await drawer("fa-510__001")
+	expect(game.model.held_item()=="FA-510__001" and game.model.pockets==before,"Shelf pickup carries barrel separately from pockets")
 	key(KEY_B)
-	expect(game.model.held_item()=="FA-513__001" and game.model.pockets[9].is_empty(),"B clears selected pocket while preserving the carried component")
+	expect(game.model.held_item()=="FA-510__001" and game.model.pockets[9].is_empty(),"B clears selected pocket while preserving the carried component")
 	key(KEY_Q)
-	expect(game.model.held_item().is_empty() and game.loose.has("FA-513__001"),"Q sets down a hand-sized component")
-	game.hud.open_manual("pitch",4)
+	expect(game.model.held_item().is_empty() and game.loose.has("FA-510__001"),"Q sets down a carried component")
+	game.hud.open_manual("pitch",6)
 	await frames(3)
 	expect(game.hud.page_body.text.contains("FA-523") and game.hud.page_body.text.contains("W-12") and game.hud.page_body.text.contains("H-12040"),"Manual uses the same IDs as storage labels")
 	key(KEY_PAGEDOWN)

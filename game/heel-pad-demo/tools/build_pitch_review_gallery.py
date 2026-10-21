@@ -69,7 +69,10 @@ def main():
             for i,(path,label) in enumerate(batch):tile(canvas,path,((i%3)*480,(i//3)*390),(480,390),label)
             name=f'{key}-overview-{start//6+1}.jpg';canvas.save(OUT/name,quality=94)
             sheets.setdefault(key,[]).append(name)
-        slots=[r for r in rows if r['phase']=='preview']
+        # Interrupted/failed gameplay runs can still contain useful diagnostic
+        # pages. Only paired placements belong in the before/after sheet.
+        slots=[r for r in rows if r['phase']=='preview' and any(
+            end['phase']=='installed' and end['slot']==r['slot'] for end in rows)]
         for start in range(0,len(slots),2):
             batch=slots[start:start+2]
             canvas=Image.new('RGB',(1440,1160),'#111a22')

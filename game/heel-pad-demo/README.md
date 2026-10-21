@@ -4,7 +4,7 @@ Godot 4.7.2 · GDScript · Jolt Physics · macOS desktop · Shared assembly mode
 
 A first-person workshop using the existing full-size foot model. Prepare two independent heel pads and a complete **91-piece pitch actuator**, then install them on the foot. The actuator installation adds **18 mounting pieces**, for **135 playable source identities**. The other 610 source pieces remain preassembled context or staged armor. No source objects have been removed from the 745-piece inventory.
 
-The FA-510 actuator barrel starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Its manual has 14 pages covering the internal drive, shaft retention, rod, sensors, seals, closure, eyes, and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
+The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
 
 ## Launch
 
@@ -27,11 +27,13 @@ The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tool
 2. Press **E** on a drawer to fill a pocket with up to **20 copies** from the available stock. A matching pocket is topped up; otherwise an empty pocket is used and selected. When all ten pockets are occupied, E replaces the selected stack and returns the displaced pieces to their drawer. An empty drawer never evicts stock.
 3. The **ten persistent pockets** are hotkeyed to **1 2 3 4 5 6 7 8 9 0**. Their images, IDs and quantities show what you actually have. Switching manuals or pages never changes the bar. There is no shared item-count limit.
 4. **B clears the selected pocket anywhere**, returning the whole stack to its drawer. Small parts never become loose world objects. **Q** sets down a carried shelf component or assembly. Hands operate separately from the hotbar; no numbered key is reserved for hands.
-5. Open the **Foot** manual. **C** cycles the foot and individual builds; **Enter** opens the linked child and **Backspace** returns to the foot. Arrows turn pages; **Page Up / Page Down** scroll longer instructions. Each page lists the same part IDs as the drawers and shelves, with names as clarification.
+5. **N** opens the large manual browser: expand build folders, select a step, or use the clickable breadcrumbs to return to a parent. **Suggested only** filters builds and unfinished steps using the selected/carried component or the assembly you are looking at; turn it off to see every manual. **C** cycles matching build manuals while retaining each build's last page. N or Escape returns to play. **Enter** opens the linked child and **Backspace** returns to its parent. Arrows turn pages; **Page Up / Page Down** scroll longer instructions. Each page lists the same part IDs as the drawers and shelves, with names as clarification.
 6. Carry either FA-302 heel pad with E and click an empty preparation station. Stock FA-305, W-24 and H-24120 in separate pockets. Fit four FA-305 sleeves, seat the pad at either heel position, then fit W-24 before H-24120 at each connection.
-7. Pick up FA-510 from the floor beside preparation C and suspend it there to start the FA-500-P pitch build. Follow its 14 child pages, collecting the displayed IDs. Internal retention, sensors and seals precede cap closure. The foot manual then covers both FA-220 clevises, seating FA-500-P, and retaining both ends with FA-221, FA-222, W-12 and H-12030.
+7. Pick up FA-513 from the floor beside preparation C and suspend it there to start the FA-500-P pitch build. Assemble the exposed drive using the fixture for support. Fit FA-510 after the rod, fasten the motor through the open rear and the retainer from outside, then add the guide, sensors, seals and caps. The foot manual then covers both FA-220 clevises, seating FA-500-P, and retaining both ends with FA-221, FA-222, W-12 and H-12030.
 
 **Undo follows the selected manual.** Mounted children must be detached through the parent history before editing their internals. A detached child returns intact to a free preparation station. Small undone parts return to their matching or an empty pocket; if no suitable pocket has space, they return to their drawer. Undo never replaces another stack. Larger undone components appear on the output tray.
+
+**Placement does not follow the selected manual.** Any compatible connection whose prerequisites and physical access rules are satisfied can be built, including on another page or assembly. Aiming and adding components refine manual suggestions without silently switching the reader. Assemblies retain their chosen recipes; suggestions do not infer a new recipe or allocate stock.
 
 The earlier scenarios remain available:
 
@@ -56,10 +58,11 @@ The earlier scenarios remain available:
 | Double-tap R | Restore that station's working orientation (F remains an alternate binding) |
 | Mouse wheel | Inspect zoom |
 | Tab or M | Open/close HUD manual |
+| N | Open/close the large manual tree browser; Escape also closes it |
 | Left/right arrows | Change page in the selected manual |
 | Page Up / Page Down | Scroll longer instructions and part lists |
-| Enter / Backspace | Open child / return to parent foot manual |
-| C | Cycle the foot and individual build manuals |
+| Enter / Backspace | Open child / return to its parent manual |
+| C | Cycle matching build manuals; suggestions use the selected component or aimed assembly |
 | V | Open the inspected build manual |
 | Z | Undo the latest action in the selected manual |
 | Escape | Open grouped controls, resume, restart the build, or quit; restarting asks for confirmation |
@@ -80,10 +83,24 @@ Each of the ten pockets holds one small-part type, with up to 20 copies per stac
 - Suspended and mounted assemblies use static freeze mode to follow their parent through continuous rotation. Pickup restores the collision-aware carrying mode; dropping restores dynamic physics.
 - A shared, input-independent assembly model for slot prerequisites, compatible types/variants, milestones, unique ownership, and undo. Two pad instances use one authored definition; their parent owns the seating and fastening slots.
 - Independent mounting-point order, a ghost preview, reach/occlusion checks, and explicit failure feedback.
+- A filesystem-style manual browser with expandable build folders, step progress and clickable breadcrumbs. It pauses play, reuses the existing diagram viewports and preserves each selected page.
+- Authored diagrams retain their meshes when only installation progress changes. Once both caps are secured, the opaque actuator hides explicitly enclosed components; undo restores them. Exterior fittings remain visible, including the radial retainer screws. Ordinary gameplay is capped at 60 FPS.
 - A parent foot manual and three independent child manual sessions, with authored steps, remembered pages, model-based illustrations, automatic progress, and completion sound/glow.
 - Manual-scoped build undo: small hardware returns to pockets or its drawer; undoing a mounting action returns the prepared child to an empty station. Walking, carrying, and storage arrangement are not rewound.
 
 ## Verification
+
+Run the headless regression set from the repository root:
+
+```sh
+python3 game/heel-pad-demo/tools/run_regressions.py
+```
+
+The runner discovers standalone test scripts and also executes the single-pad,
+two-pad, pitch, swapped-stock and pocket desktop scenarios. `--list` shows case
+names; `--only NAME ...` reruns selected cases. It retains separate logs and input
+hashes in a unique `verification/regressions-*` directory, rejects script errors
+even when Godot exits successfully, and does not imply rendered approval.
 
 The linked test scripts generate local JSON audits under `verification/`. Generated audits, screenshots, meshes and review galleries are excluded from new commits. Previously tracked evidence remains historical.
 
@@ -92,7 +109,11 @@ The linked test scripts generate local JSON audits under `verification/`. Genera
 - [Pocket workshop audit](tests/pockets_workshop_test.gd): all ten number keys, immediate hotbar counts, manual independence, drawer/shelf images and IDs, two storage rows, clearing away from storage, separate carrying, scrolling and layout. Hotbar/catalogue images use no live 3D viewports.
 
 - [Pitch model audit](tests/pitch_model_test.gd): inventory counts, manual construction order, cap dependencies, carrying exclusivity, long-part recovery, and combined 135-piece completion.
-- [Pitch desktop audit](tests/pitch_build_test.gd): 286 checks. Collects and fits all 90 pieces onto the barrel through desktop controls, compares actual installed vertices against the source at every construction page, previews all fitted child meshes and installs the completed actuator with all 18 mounting parts, checks station/foot rotation, and undoes the parent installation while retaining child progress.
+- [Part compatibility audit](tests/part_variants_test.gd): pooled stock, both copies at opposite compatible endpoints, exact identity on undo/reinstall, incompatible variants at ready connections, and actual imported geometry equivalence.
+- [Pitch desktop audit](tests/pitch_build_test.gd): Collects and fits all 90 additions around the starting motor through desktop controls, compares actual installed vertices against the source at every construction page, previews all fitted child meshes and installs the completed actuator with all 18 mounting parts, checks station/foot rotation, and undoes the parent installation while retaining child progress. It also checks the housing-free first step, enclosed-part visibility, complete preview visibility and recovery on reopening the housing.
+
+- [Manual navigation audit](tests/manual_navigation_test.gd): 22 checks of tree navigation, breadcrumbs, per-build page memory, pause/input behavior and unchanged inventory.
+- [Diagram cache audit](tests/manual_diagram_cache_test.gd): 10 checks; authored figures reuse their panels and meshes through progress changes, while changed views and automatic diagrams still refresh.
 
 - [Original state regression](tests/state_test.gd): 57 checks through the new model, including independent order, finite stock, pocket clearing/refilling, identity, completion, and full undo.
 - [Generic model audit](tests/assembly_model_test.gd): 45 checks including invalid references/cycles, duplicate ownership, incompatible variants, shared stock, nested undo, and a separate three-slot recipe with a differently named parent. The alternate recipe is a state-level fixture, not new playable content.
@@ -104,17 +125,37 @@ The linked test scripts generate local JSON audits under `verification/`. Genera
 ./play-heel-pad.command --headless --script tests/state_test.gd
 ./play-heel-pad.command --headless --script tests/assembly_model_test.gd
 ./play-heel-pad.command --headless --script tests/pitch_model_test.gd
+./play-heel-pad.command --headless --script tests/part_variants_test.gd
 ./play-heel-pad.command --headless --script tests/pitch_interface_test.gd
 ./play-heel-pad.command --headless --script tests/pockets_model_test.gd
+./play-heel-pad.command --headless --script tests/manual_navigation_test.gd
+./play-heel-pad.command --headless --script tests/manual_diagram_cache_test.gd
 ./play-heel-pad.command --headless -- --single-pad --demo-test
 ./play-heel-pad.command --headless -- --multi-test
 ./play-heel-pad.command --headless -- --pitch-test
+./play-heel-pad.command --headless --fixed-fps 60 -- --pitch-test --swap-identical-parts
 ./play-heel-pad.command --headless -- --pockets-test
 ```
 
-All nine commands run headlessly. The last four exercise the desktop input adapter and actual physics/targeting without opening a window. Test input is isolated from live desktop events. The pitch test can also use `--fixed-fps 60` to advance simulated time faster. Headless runs skip audio playback. Rendered verification is a separate, explicitly requested check. Automated checks verify functionality; human play remains the test of pacing and comfort.
+These commands run headlessly. The scenario tests exercise the desktop input adapter and actual physics/targeting without opening a window. Test input is isolated from live desktop events. The pitch test can also use `--fixed-fps 60` to advance simulated time faster. `--swap-identical-parts` supplies the second copy first through normal collection and checks the installed receiving geometry. Headless runs skip audio playback. Rendered verification is a separate, explicitly requested check. Automated checks verify functionality; human play remains the test of pacing and comfort.
 
-The repaired actuator passed the 2026-10-21 [visual review](verification/pitch-visual-review/review.md): all 14 child pages and three parent installation pages, every component placement, both receiving frames, full assembly preview and continuous rotation. The [gallery](verification/pitch-visual-review/index.html) contains current rendered evidence; the report records per-page decisions and exact hashes. Receiving holes, seats, fastener access, sensor/cap clearance and eye/pin interfaces were repaired in the source models. Step-specific diagrams now expose those connections. Source geometry agreement alone remains insufficient for visual approval.
+For a focused rendered storage/pocket-label review, run `./play-heel-pad.command --disable-render-loop --fixed-fps 60 -- --pockets-test --pockets-review`. It prints a unique `LABEL_REVIEW_OUTPUT` directory containing the shared retaining-ring stack and both collar/gasket variants beside their storage labels and manual. The flag rejects the headless dummy renderer.
+
+The repaired actuator passed the 2026-10-21 [visual review](verification/pitch-visual-review/review.md): all 14 child pages and three parent installation pages, every component placement, both receiving frames, full assembly preview and continuous rotation. The [gallery](verification/pitch-visual-review/index.html) retains that accepted baseline; the report records per-page decisions and exact hashes. Receiving holes, seats, fastener access, sensor/cap clearance and eye/pin interfaces were repaired in the source models. Step-specific diagrams now expose those connections. Source geometry agreement alone remains insufficient for visual approval.
+
+The later [motor-first review](verification/motor-first-review/review.md) covers the changed sequence, rear motor/radial retainer fastening, rear-cap clearance, opaque visibility and final mounting. It records 117 model, 290 desktop and 113 geometry checks, plus the scoped rendered inspection. Closed-actuator visibility drops from 203,291 to 128,528 triangles (36.78%); this does not measure whole-scene FPS or laptop temperature. The [manual browser review](verification/manual-navigation/review.md) records navigation and layout checks.
+
+The [scalability review](verification/scalability-review/review.json) verifies stable
+source identities, generic nested mounting, structural collision and carrying,
+manual-independent placement with suggested manuals, and repeatable asset repair.
+The final headless suite passes 17 cases / 1,790 checks; source tools pass 11 Python
+tests and a real Blender reordered-generation audit of all 745 identities.
+Inspected renderer evidence covers five child pages, all three parent installation
+pages, both pads through rotation and undo, the suggestion browser, and a synthetic
+four-level assembly with a large hollow frame. Source geometry is unchanged by
+compaction: all 745 instances match, while the GLB falls from 68.36 to 60.09 MB.
+The report preserves exact inputs, per-page decisions and the limits of this scope;
+it makes no whole-robot performance claim.
 
 Reproduce the actuator captures using the real renderer, then generate the review gallery (Pillow required):
 
@@ -133,7 +174,7 @@ This milestone delivers increments 1–3 of the multiple-build plan. Save/resume
 
 The reusable construction model owns prerequisites, inventory, carrying capacity, milestones and undo. `component_interaction.gd` projects arbitrary authored component slots into desktop collection, grip, placement, and service views. Pad connections retain their established four-opening adapter. The generic model supports the new content without requiring pad-shaped rules.
 
-Collision uses simplified shapes. Internal work uses an assisted service view through the enclosing build, while scenery and carried-part approaches remain solid. It does not simulate threading, torque, or the real insertion of each sealed internal component. Actuator motion and external wiring are outside this build/install milestone. The revised cabinet layout and manual pacing still need human playtesting. The visual review does not measure an on-screen frame-rate improvement. Earlier pad captures are historical.
+Carried collision uses structural primitive compounds; authored fixed receiving frames can use exact mesh openings. Internal work uses an explicit assisted service policy, while scenery and carried-part approaches remain solid. It does not simulate threading, torque, or the real insertion of each sealed internal component. Actuator motion and external wiring are outside this build/install milestone. The revised cabinet layout and manual pacing still need human playtesting. Hidden mesh/triangle counts and diagram reuse are measured separately from visual review. Laptop temperature and on-screen frame-time improvement still need measurement during normal play; the detailed surrounding foot remains a substantial rendering cost. The current pad review covers parenting, rotation and undo; older captures remain historical evidence for their recorded scope.
 
 The room is a functional workshop blockout. Its layout, lighting, carrying distances, and targeting tolerance remain suitable subjects for the first human playtest. Completion feedback is intentionally a sound and glow.
 
@@ -143,8 +184,11 @@ The room is a functional workshop blockout. Its layout, lighting, carrying dista
 - [part_storage.gd](scripts/part_storage.gd): low cabinets, shelves, cached catalogue images and stock labels. Images are generated from the source GLB by `python3 game/heel-pad-demo/tools/render_part_images.py` (Pillow required only for regeneration).
 - [component_interaction.gd](scripts/component_interaction.gd): authored component targeting, shelf-piece carrying, incremental installed visuals, and service views.
 - [assembly_model.gd](scripts/assembly_model.gd): reusable ownership, transfer, placement validation, milestones, and scoped history.
+- [assembly_runtime.gd](scripts/assembly_runtime.gd): scene nodes and coordinate frames keyed by assembly identity, parent-slot mounting, descendant visuals and nested previews.
+- [solid_handling.gd](scripts/solid_handling.gd): primitive compound collision, current assembly bounds, size-aware carrying and conservative rotation/placement sweeps.
 - [assembly_state.gd](scripts/assembly_state.gd): pad-specific desktop projection over the shared model, plus the single-pad regression configuration.
 - [loose_part.gd](scripts/loose_part.gd): solid carried and dropped objects.
+- [manual_browser.gd](scripts/manual_browser.gd): expandable manual hierarchy, breadcrumbs and the large paused reader.
 - [hud.gd](scripts/hud.gd) and [manual_diagram.gd](scripts/manual_diagram.gd): instructions, inventory, tooltips, help, and live illustrations.
 - [assembly-definitions.json](assets/assembly-definitions.json): part types, child and parent slots, prerequisites, milestone sets, work locations, geometry references, and manual steps.
 - [heel-pads.json](assets/heel-pads.json): 26 source identities, physical build instances, starting positions, and parent destinations.
@@ -154,21 +198,73 @@ The room is a functional workshop blockout. Its layout, lighting, carrying dista
 
 A slot accepts one part-type key (which includes a specific variant) or a child assembly definition with a required milestone. `requires` lists local slot IDs. Slots refer to imported GLB transforms through `pose_source`; accessible targets are authored separately. Manual steps reference the same slot IDs. Root parts begin assigned to their child assembly; logical containers never create extra physical inventory. Child placement transfers that container into a parent slot while retaining all descendant identities.
 
+Part types describe compatibility; physical instance IDs describe individual stock. The pitch bearings, retaining rings, end sensors, eye pins and keepers share one type per family and either copy fits either matching slot. Pocket-sized copies stack together; larger copies share a shelf and are carried one at a time. Collar halves, eye housings, cap gaskets and clevises retain distinct fits with functional names. Pocket labels show the distinguishing variant beneath the family ID. Keep the slot's mesh/pose source separate from its consumed identity, including when the two copies are swapped.
+
+The [component pipeline skill](../../.agents/skills/gundam-component-pipeline/SKILL.md) captures the path from a component's high-level Markdown through detailed interfaces/inventory, exploded references, source models and playable manuals. Its [foot/ankle precedent](../../.agents/skills/gundam-component-pipeline/references/foot-ankle-precedent.md) records the current proof-of-concept boundaries and revision differences.
+
 Stations provide occupancy, rotation, and work-volume checks. Collection and construction rules do not depend on keyboard bindings or camera transforms; desktop targeting supplies the reach/occlusion and placement poses. Future AR input can call the same model operations.
+
+The scene projection mounts a child into an explicit `(parent, slot)` and retains
+its descendant identities and local frames. Only the top assembly supplies active
+carrying collision; mounted child bodies inherit its transform. The current
+workshop layout still presents the foot scenario, while the nested runtime
+regression exercises four levels and two distinct receiving fixtures.
+
+Authoring extensions for future modules:
+
+| Field | Meaning |
+| --- | --- |
+| Scenario part `source_id` | Reusable geometry key, separate from unique physical `instance_id` |
+| Scenario `parents` | Multiple fixture records; legacy `parent` is still accepted |
+| Scenario `context_collision` | Source ID → `mesh` for fixed receiving frames that need exact openings; other context uses bounds. Carried assemblies use primitive compounds |
+| Slot `snap_position`, `snap_rotation_degrees` | Explicit pose in the owner's local frame, otherwise derived from `pose_source`; an assembly destination places the child's logical frame |
+| Assembly slot `child_anchor_slot` | Optional child connection used as the mounting anchor instead of the child's logical frame |
+| Slot `target` (alias `target_position`) | Accessible interaction point in the owner's local frame; reach is measured here |
+| Slot `target_offset` | Accessible interaction point in the source mesh's local coordinates, transformed by the slot pose; an explicit owner-local `target` takes priority. This changes aiming, not the installed pose |
+| Part/slot `collision_shapes` | Authored primitive compound in the piece's mesh-local coordinates, preserving structural openings; individual source bounds are the fallback |
+| Part/assembly `handling` | Assisted carry position settings; default distance grows with the current compound bounds |
+| Assembly/slot `access_policy` | Mounted interiors remain locked by default; `mounted` explicitly permits work through a mounted owner subject to work-location rules |
+| Assembly/slot `service_access` | `surface` requires an exposed connection; `open_station` allows fixture-assisted internal access until enclosure; `assisted` is an explicit unconditional receiver exception. All modes still test unrelated scenery. |
+
+Pocket hardware remains visible and individually owned without automatically
+adding a collider for every screw. Structural pieces supply carrying collision;
+hardware can opt into an authored proxy when it affects the outer envelope.
+Manual selection never supplies construction permission or service access.
 
 The game GLB preserves the original export except for the 109 pitch pieces and their FA-103/FA-200 receiving frames. `models/foot-fa01/src/pitch_interfaces.py` repairs those specific instances without changing shared hardware templates or the roll/forefoot actuators. The merge audit checks that all other node records and mesh bytes are preserved. Imported transforms govern placement; the source manifest's Blender-axis custom position metadata must not be applied directly as Godot coordinates. Animation phases are not gameplay dependencies.
 
-For source geometry revisions, take a snapshot of the current game GLB once before iterating, then regenerate the selected pieces (substitute your Blender executable):
+For source geometry revisions, regenerate the selected pieces from the current
+authoritative source before merging (substitute your Blender executable):
 
 ```sh
-cp game/heel-pad-demo/assets/foot-fa01.glb models/foot-fa01/output/pitch-game-base.glb
 blender --background --factory-startup --python-exit-code 1 --python models/foot-fa01/src/export_pitch_revision.py
-python3 game/heel-pad-demo/tools/merge_pitch_meshes.py --base models/foot-fa01/output/pitch-game-base.glb
+python3 game/heel-pad-demo/tools/merge_pitch_meshes.py
 python3 game/heel-pad-demo/tools/author_pitch_actuator.py
 python3 game/heel-pad-demo/tools/render_part_images.py
 ```
 
-Keep the same snapshot for subsequent iterations so unused replacement buffers do not accumulate. The exporter retains all 745 inventory identities and updates the selected records in the JSON manifest; the full Blender scene, film, CSV and standalone exports remain historical until the full model build is rerun. The [pitch interface repair](../../design/game/pitch-interface-repair.md) records the revised packaging and connections. `pitch_interface_test.gd` checks actual imported triangles for receiving holes, surrounding material and key seat/access clearances; it complements the rendered review.
+The merger removes unreferenced mesh, material, accessor and buffer records.
+Repeating the same revision produces byte-identical output. Its audit compares
+retained transforms, metadata, material records and geometry bytes independently
+of their resource indices; it rejects unsupported animated/textured/extension
+formats before writing. `--base`, `--revision`, `--output` and `--audit` allow
+explicit inputs and a separate output for review. Always regenerate a revision
+before applying it: compaction does not make stale geometry current.
+
+Source identities are allocated by the checked-in [semantic role registry](../../models/foot-fa01/src/source-identities.json), not generation order. New roles need explicit unused IDs; existing IDs remain fixed. Hardware connections name their bolt/washer pairs. Scenario `instance_id` identifies a physical item, while optional `source_id` identifies reusable geometry (defaulting to `instance_id` for existing scenarios). Slot `pose_source` still selects the receiving geometry and orientation independently of the consumed item.
+
+The exporter retains all 745 inventory identities and updates the selected records in the JSON manifest; the full Blender scene, film, CSV and standalone exports remain historical until the full model build is rerun. The [pitch interface repair](../../design/game/pitch-interface-repair.md) records the revised packaging and connections. `pitch_interface_test.gd` checks actual imported triangles for receiving holes, surrounding material and key seat/access clearances; it complements the rendered review.
+
+Check identity stability and asset compaction independently of gameplay:
+
+```sh
+python3 -B -m unittest discover -s game/heel-pad-demo/tests -p 'test_source_assets.py'
+blender --background --factory-startup --python-exit-code 1 --python models/foot-fa01/src/verify_source_identity.py
+```
+
+The Blender audit deliberately changes generator order and checks the current
+identity/role mapping, paired hardware and labels without
+exporting replacement assets.
 
 Godot is used under its [MIT license](https://godotengine.org/license/). Engine references: [GLB import](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html), [Jolt Physics](https://docs.godotengine.org/en/stable/tutorials/physics/using_jolt_physics.html), [3D collision shapes](https://docs.godotengine.org/en/stable/tutorials/physics/collision_shapes_3d.html), and [rigid-body behavior](https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html).
 

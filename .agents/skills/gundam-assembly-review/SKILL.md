@@ -4,11 +4,11 @@ description: >-
   Design, implement and verify assembly manuals and module builds in Gundam Build
   Simulator. Use when adding or changing module recipes, manual steps, part
   allocation, attachment geometry, or mounted assembly behavior. Includes
-  step-specific component audits and rendered visual review. Does not apply to
+  step-specific component audits and optional rendered visual review. Does not apply to
   unrelated UI, general documentation, or other games' manuals.
 ---
 
-# Gundam assembly and visual review
+# Gundam assembly review
 
 Keep collecting pieces and following the manual at the center of play. Preserve
 the desktop-playable, future-AR direction and comfortable assisted handling.
@@ -24,11 +24,11 @@ symlink. Read the relevant design and construction files before authoring a buil
   concrete verification plan. Do not implement content or run a capture campaign
   merely because this skill is active.
 - **New or changed build implementation:** complete the relevant authoring,
-  inventory/manual audit, gameplay checks and visual review below. Shared geometry
-  or parenting changes also affect other builds using that behavior.
+  inventory/manual audit and gameplay checks. Shared geometry or parenting changes
+  also affect other builds using that behavior. Rendered review is optional and runs
+  only when the user explicitly asks for it; it is never a commit or push gate.
 - **Small instruction edit:** audit the affected instructions and component lists.
-  Run broader gameplay or rendered checks when the edit changes sequence, targets,
-  quantities or visual presentation.
+  Run broader gameplay checks when the edit changes sequence, targets or quantities.
 
 ## Keep review proportional
 
@@ -40,25 +40,16 @@ effects span the module. Shared code changes require an impact assessment, not a
 automatic review of the entire workshop.
 
 - Batch related repairs before export/import. Run cheap geometry/data checks
-  before rendering. Iterate with selected pages; reserve a complete capture for
-  integration evidence when the scope requires it.
-- Inspect contact sheets first. Open individual images only when the connection
-  is too small or ambiguous. Cover every affected placement, including distinct
-  receiving geometry and variants; do not repeatedly inspect identical images.
-- Fix findings together, then recapture affected pages and dependent interfaces.
-  Rerun passing tests only for new changes or unresolved concerns. After two
-  unsuccessful repair/capture cycles, reassess the cause and narrow the diagnostic
-  case before another run; continue authorized work without a permission loop.
-- Separate visual inputs from provenance. A report, skill, hash-list or test-only
-  change does not itself require fresh game images. Retain original capture
-  hashes and record the later change and why it cannot affect the depicted result;
-  never relabel old evidence as freshly captured. Changed rendering/camera logic
-  needs a focused capture check.
+  before broader gameplay checks. Rerun passing tests only for new changes or
+  unresolved concerns.
+- When visual review is explicitly requested, inspect contact sheets first and
+  open individual images only for ambiguous connections. Retain capture hashes;
+  never relabel old evidence as freshly captured.
 - Keep logs, fingerprints, image inventories and page decisions in files. Read
   summaries and failures into context, not full manifests or successful logs.
   Maintain one compact review status with remaining findings and evidence paths
   so a continuation can resume without replaying completed work.
-- Stop when the requested scope has inspected evidence and relevant checks pass.
+- Stop when relevant checks for the requested scope pass.
   Report unrelated findings separately rather than extending the task. If work
   expands materially, explain the cause and revised scope in a short update.
 
@@ -67,6 +58,16 @@ automatic review of the entire workshop.
 Use the source manifest and construction design to identify exact physical
 instances, compatible variants, receiving connections and starting context. Derive
 current quantities from data; historical totals are not acceptance criteria.
+
+Separate compatible part types from physical instance IDs. Pool interchangeable
+copies in one storage location and pocket stack (when pocket-sized); accept any
+copy at matching slots while retaining the consumed identity. Distinct types need
+an actual fit/function difference, verified against geometry and interfaces. Use
+functional variant names consistently across storage, pockets, instructions and
+placement feedback; keep source instance numbers internal. Test swapped copies,
+wrong variants at ready slots, and undo when changing compatibility. For the wider
+component-design-to-model workflow, use
+[gundam-component-pipeline](../gundam-component-pipeline/SKILL.md).
 
 Keep ownership and prerequisites distinct. Every physical piece has one location
 and owner. An assembly groups those pieces without adding another physical item.
@@ -117,10 +118,10 @@ change followed by settling. Check child body, mesh and physics poses through
 rotation, reset, pickup, mounting, undo and reinstallation, including multiple
 mounted children. Preserve solid carrying and scenery obstruction checks.
 
-## Review the rendered construction
+## Rendered construction review, when explicitly requested
 
-Follow the repository's **Manual and assembly visual review** plan linked in the
-project map. For implemented build changes, capture and inspect the affected pages
+If the user explicitly requests visual review, follow the repository's **Manual
+and assembly visual review** plan linked in the project map. Capture the affected pages
 with the actual renderer: beginning of the step, valid preview and installed result;
 the HUD/manual and working view; close-ups of individual fasteners; and at least
 two unobstructed inspection angles. Check internal work in opaque and service
@@ -134,8 +135,8 @@ a shared view obscures the connection. Test the affected compatible placements a
 physical instances rather than assuming a shared recipe proves them all.
 
 Keep routine tests headless and respect the current execution preferences. Prefer
-unattended/offscreen rendered capture when supported. If the task includes visual
-verification and capture support is missing, implement the smallest reusable
+unattended/offscreen rendered capture when supported. If visual verification was
+explicitly requested and capture support is missing, implement the smallest reusable
 capture path needed within that task's authorized scope. A design-only task should
 specify that work instead. If rendering cannot run under current constraints,
 finish independent work and record the exact missing evidence and runnable next
@@ -150,13 +151,12 @@ normal collection and placement, reach/occlusion, independent order, shared stoc
 carrying, rotation and nested undo as affected. Prefer regressions that reproduce
 a reported failure and compare real geometry/state over tests of generated wording.
 
-Keep a per-page result with page/build/slot IDs, required quantities, consumed
-identities, capture paths, inspection views, reviewer/date, findings, engine version
-and verified code/asset hashes. Distinguish authored-data checks, headless behavior,
-captured images and completed visual inspection. Fix findings and recapture affected
-and dependent steps; retain accepted baselines. Shared geometry, snap poses,
-parenting or framing changes invalidate the relevant baselines.
+When visual review was explicitly requested, keep a per-page result with page/build/
+slot IDs, required quantities, consumed identities, capture paths, inspection views,
+reviewer/date, findings, engine version and verified code/asset hashes. Distinguish
+authored-data checks, headless behavior, captured images and completed visual inspection.
 
-Report what changed, what actually ran, visual findings and remaining review work.
-Do not mark a build visually verified until its rendered evidence has been inspected.
+Report what changed and what actually ran. If visual review was requested, report its
+findings and remaining work. Do not mark a build visually verified until its rendered
+evidence has been inspected.
 Do not report historical check totals or stale captures as results of the current run.

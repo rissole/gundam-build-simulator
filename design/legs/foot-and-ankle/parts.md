@@ -8,6 +8,15 @@ Quantities are for **one foot**, including its ankle adapter and four shin-inter
 
 An ID identifies a part family. Add `-IN/-OUT`, `-F/-R`, `-P/-R/-F` or an instance number where the table calls for handed or sized variants. A family quantity is the total across its variants, not the count of each variant. For example FA-220 comprises exactly six clevises.
 
+For gameplay, classify compatibility separately from physical instance numbers.
+Interchangeable copies share stock and accept either copy at matching connections.
+Use functional names for actual variants, such as base/rod eye housing or
+front/rear cap gasket, consistently in storage, pockets and manuals. Source
+instance numbers remain internal identity/provenance; they do not create a new
+part type. Matching family IDs alone do not prove compatibility across actuator
+sizes. The playable pitch mapping is authored in
+[`author_pitch_actuator.py`](../../../game/heel-pad-demo/tools/author_pitch_actuator.py).
+
 Hardware is listed separately after the component tables. Do not add the FA-500 actuator assembly labels as extra parts: their contents are already counted here. Integral tabs, ledges, keys, bosses and locating tongues are features of their parent parts.
 
 ## Frame

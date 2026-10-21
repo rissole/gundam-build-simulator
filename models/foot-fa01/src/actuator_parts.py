@@ -53,11 +53,12 @@ def build_one(kind, base, rod_eye, od, barrel_length, guide, rod_radius, rod_len
         o["actuator"]=kind
         local_parts.append(o)
         return o
-    def bolts(use,points,zphase,direction=(0,0,-1),offset=(0,0,0),owner=None):
+    def bolts(use,points,zphase,direction=(0,0,-1),offset=(0,0,0),owner=None,*,sites,role=None):
         a=u*direction[0]+v*direction[1]+d*direction[2]
         before=len(PARTS)
         hardware(use,[world(p) for p in points],a,zphase,
-                 vec(ex)+u*offset[0]+v*offset[1]+d*offset[2],owner=owner)
+                 vec(ex)+u*offset[0]+v*offset[1]+d*offset[2],owner=owner,sites=sites,
+                 role=role or (owner["source_role"] if owner is not None else f"{kind}/{use}"))
         for o in PARTS[before:]:o["actuator"]=kind
 
     radial=[(bolt_r*math.cos(i*math.pi/2),bolt_r*math.sin(i*math.pi/2)) for i in range(4)]
@@ -149,13 +150,13 @@ def build_one(kind, base, rod_eye, od, barrel_length, guide, rod_radius, rod_len
         points=[(-eye_width*.3,0,z+(45 if index==0 else -45)),
                 (eye_width*.3,0,z+(45 if index==0 else -45))]
         bolts("Actuator eye housings",points,7.92,
-              direction=(0,0,-1 if index==0 else 1),offset=off,owner=eye)
+              direction=(0,0,-1 if index==0 else 1),offset=off,owner=eye,sites=("negative", "positive"))
     for i,z in enumerate((start+40,end-40)):
         sensor=part("FA-528",f"End_sensor_{i+1}",
                     Mesh().box((radius-14,0,z),(12,20,20)).cyl((radius-6,0,z),4,4,(1,0,0),mat=1),
                     7.6,(180+i*70,-200,0),("Frame","Indicator"),1)
         bolts("Actuator end sensors",[(radius-5,0,z)],7.62,direction=(-1,0,0),
-              offset=(260+i*70,-200,0),owner=sensor)
+              offset=(260+i*70,-200,0),owner=sensor,sites=("mount",))
     for i,z in enumerate((start-1,end+1)):
         part("FA-529",f"Cap_gasket_{i+1}",Mesh().tube((0,0,z),radius,radius-6,2),
              7.7,(0,0,-280 if i==0 else 280),("Rubber",),0)
@@ -166,24 +167,27 @@ def build_one(kind, base, rod_eye, od, barrel_length, guide, rod_radius, rod_len
 
     for z,sgn in [(start-22,1),(end+22,-1)]:
         bolts("Actuator front and rear caps",[(x,y,z) for x,y in radial],7.82,
-              direction=(0,0,sgn),offset=(0,0,-390 if sgn==1 else 420))
+              direction=(0,0,sgn),offset=(0,0,-390 if sgn==1 else 420),
+              sites=("x-positive", "y-positive", "x-negative", "y-negative"),
+              role=f"{kind}/caps/{'rear' if sgn==1 else 'front'}")
     r1=motor_r*.65
     for use,z,delta in [("Motor flanges",motor_z-motor_len/2-3,-150),
                         ("Gearbox flanges",gz-gl/2-3,-40)]:
         bolts(use,[(r1*math.cos(a*math.pi/2),r1*math.sin(a*math.pi/2),z) for a in range(4)],
-              7.18,direction=(0,0,1),offset=(0,320,delta))
+              7.18,direction=(0,0,1),offset=(0,320,delta),
+              sites=("x-positive", "y-positive", "x-negative", "y-negative"))
     bolts("Actuator coupling clamps",[(26 if kind=="P" else 21,y,cz) for y in (-6,6)],
-          7.23,direction=(-1,0,0),offset=(200,360,0))
+          7.23,direction=(-1,0,0),offset=(200,360,0),sites=("rear", "front"))
     bolts("Travelling nut to output rod",[(-rod_radius*.65,0,rear+25),(rod_radius*.65,0,rear+25)],
-          7.45,offset=(0,-370,150),owner=nut)
+          7.45,offset=(0,-370,150),owner=nut,sites=("negative", "positive"))
     bolts("Actuator bearing retainer plates",[(-30 if kind=="P" else -24,0,bz+20),
                                                (30 if kind=="P" else 24,0,bz+20)],
-          7.27,offset=(0,480,120))
+          7.27,offset=(0,480,120),sites=("negative", "positive"))
     bolts("Actuator split shaft collars",[(0,s*(screw_r+10),bz-12) for s in (-1,1)],
-          7.28,direction=(0,-1,0),offset=(0,500,20))
+          7.28,direction=(0,-1,0),offset=(0,500,20),sites=("negative", "positive"))
     bolts("Actuator antirotation guides",[(0,key_y+5,start+barrel_length*.35),
                                          (0,key_y+5,start+barrel_length*.65)],
-          7.55,direction=(0,-1,0),offset=(0,650,0))
+          7.55,direction=(0,-1,0),offset=(0,650,0),sites=("rear", "front"))
 
     # Six separately modeled clevis brackets, pins, and keeper plates.
     for index,p in enumerate((b,tip)):
@@ -215,7 +219,7 @@ def build_one(kind, base, rod_eye, od, barrel_length, guide, rod_radius, rod_len
         pts=[anchor+Vector((s*40,0,0))+normal*19 for s in (-1,1)]
         bore(clevis,[(q,12.5,80,normal) for q in pts])
         hardware("Actuator clevis mounts",pts,-normal,8.1,
-                 vec(ex)+u*(-450 if index==0 else 450),owner=clevis)
+                 vec(ex)+u*(-450 if index==0 else 450),owner=clevis,sites=("negative", "positive"))
         m=Mesh().cyl(p,pin_dia/2,span,u)
         m.cyl(p-u*(span/2+5),pin_dia*.66,10,u)
         pin=emit("FA-221",f"{kind}_Eye_pin_{index+1}",m,GROUP,8.3,
@@ -225,7 +229,7 @@ def build_one(kind, base, rod_eye, od, barrel_length, guide, rod_radius, rod_len
                     Mesh().box(keeper_center,(10,45,60),basis=(u,v,d)),GROUP,8.4,
                     vec(ex)+u*650,("Steel",),1)
         hardware("Actuator attachment pin keepers",[keeper_center+u*7],-u,8.5,
-                 vec(ex)+u*760,owner=keeper)
+                 vec(ex)+u*760,owner=keeper,sites=("mount",))
     return local_parts
 
 

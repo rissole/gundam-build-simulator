@@ -24,6 +24,10 @@ func _initialize() -> void:
 	expect(sources.filter(func(uid):return uid.begins_with("H-")).size()==32,"All 32 internal screws retained")
 	expect(sources.filter(func(uid):return uid.begins_with("W-")).size()==32,"All 32 internal washers retained")
 	model.move_assembly("pitch","station:prep3")
+	expect(model.assemblies.pitch.slots.base=="FA-513__001" and model.items["FA-510__001"].location=="bin","Motor starts the assembly; housing remains available stock")
+	model.carry_item("FA-510__001")
+	expect(not model.install("pitch","FA-510__001","FA-510__001").ok,"Housing waits for the exposed drive assembly")
+	model.release_item("bin")
 	model.move_assembly("pad_1","held")
 	expect(not model.carry_item("FA-516__001").is_empty(),"Carried assembly prevents acquiring a long loose part")
 	model.move_assembly("pad_1","loose")
@@ -45,6 +49,8 @@ func _initialize() -> void:
 		if data.parts[d.accepts].carry_class == "pocket":model.transfer(d.accepts,"bin","pocket",uid)
 		else:model.carry_item(uid)
 		expect(model.install("pitch",sid,uid).ok,"Manual order is constructible: "+sid)
+		if sid == recipe.manual[0].slots[-1]:
+			expect(model.assemblies.pitch.slots["FA-510__001"].is_empty(),"Manual step one completes without the casing")
 		if sid == "FA-516__001":
 			var result = model.undo("pitch")
 			expect(result.ok and model.items[uid].location=="loose","Undo returns a long component to the output instead of pockets")

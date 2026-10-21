@@ -12,6 +12,7 @@ const WORLD_MASK = 7
 const PAD_HOME = Vector3(-1.0,1.09,3.25)
 
 var model = AssemblyModel.new()
+var runtime: AssemblyRuntime
 var components: Node
 var storage: Node
 var pitch_workshop: bool = false
@@ -81,21 +82,21 @@ func _ready() -> void:
 	add_child(components)
 	var errors = model.configure(data,config)
 	assert(errors.is_empty(),str(errors))
-	for build in config.builds:
-		var view = HeelAssemblyState.new()
-		view.bind(model,build.id)
-		builds[build.id] = view
+	runtime = AssemblyRuntime.new(model,source)
+	bind_build_views(config)
+	active_build = config.builds[0].id
 	state = builds[active_build]
 	for definition in config.parts:
 		active_ids.append(definition.instance_id)
 		part_defs[definition.instance_id] = definition
 	_make_world()
 	_load_foot()
+	_register_parent_fixtures()
 	_make_player()
 	for build in config.builds:
 		_activate(build.id)
 		_make_pad()
-	_activate("pad_1")
+	_activate(config.builds[0].id)
 	components.setup()
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
@@ -306,8 +307,9 @@ func _load_foot() -> void:
 		if sections.size() < 2: continue
 		var uid: String = sections[0]+"__"+sections[1]
 		source[uid] = {"mesh": node.mesh, "transform": node.transform, "family": sections[0]}
-		if active_ids.has(uid):
-			if sections[0] != "FA-302":type_sources[part_defs[uid].kind] = uid
+		if model.items.values().any(func(item):return item.source_id == uid):
+			for item_uid in model.items:
+				if source_uid(item_uid) == uid and sections[0] != "FA-302":type_sources[model.items[item_uid].kind] = uid
 			visual.remove_child(node)
 			node.free()
 			continue
@@ -320,19 +322,57 @@ func _load_foot() -> void:
 			node.position -= FOOT_CENTER
 			continue
 		if ["FA-100","FA-101","FA-102","FA-103","FA-104","FA-105","FA-106","FA-200","FA-201","FA-300","FA-301","FA-302","FA-303","FA-304","FA-400","FA-401","FA-402","FA-403","FA-404"].has(family):
-			var aabb: AABB = node.mesh.get_aabb()
-			var shape = BoxShape3D.new()
-			shape.size = aabb.size.max(Vector3(0.02,0.02,0.02))
+			var collision_mode: String = config.get("context_collision",{}).get(uid,"bounds")
 			var col = CollisionShape3D.new()
-			col.shape = shape
 			col.transform = node.transform
-			col.position += aabb.get_center()-FOOT_CENTER
+			if collision_mode == "mesh":
+				# Explicit fixed receiving frames need their actual openings. Concave
+				# source triangles are confined to context fixtures, never carried bodies.
+				var shape = node.mesh.create_trimesh_shape()
+				shape.backface_collision = true
+				col.shape = shape
+				col.position -= FOOT_CENTER
+			else:
+				var aabb: AABB = node.mesh.get_aabb()
+				var shape = BoxShape3D.new()
+				shape.size = aabb.size.max(Vector3(0.02,0.02,0.02))
+				col.shape = shape
+				col.position += aabb.get_center()-FOOT_CENTER
+			col.set_meta("source_uid",uid)
+			col.set_meta("context_collision",collision_mode)
 			foot.add_child(col)
 	for kind in HeelAssemblyState.KINDS:
 		for i in range(4):
 			var definition = model.definitions.assemblies.heel_pad.slots["sleeve_%d"%i] if kind == "sleeve" else model.definitions.assemblies.foot.slots["heel_1/%s_%d"%[kind,i]]
 			slot_sources[kind].append(definition.pose_source)
 	assert(source.size() == 745,"Foot source must retain the full inventory.")
+
+func _register_parent_fixtures() -> void:
+	var index = 0
+	for record in AssemblyModel.scenario_parents(config):
+		var body: AnimatableBody3D = foot if index == 0 else AnimatableBody3D.new()
+		if index > 0:
+			body.collision_layer = 4
+			body.collision_mask = 0
+			body.sync_to_physics = false
+			add_child(body)
+			body.position = FOOT_POSITION+Vector3.RIGHT*index*4.0
+		if record.has("home"):body.position = AssemblyRuntime.vec(record.home)
+		if record.has("rotation_degrees"):body.basis = Basis.from_euler(AssemblyRuntime.vec(record.rotation_degrees)*PI/180.0)
+		var d: Dictionary = model.definitions.assemblies[record.definition]
+		var source_frame = null
+		if record.has("frame_offset"):source_frame = Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(record.frame_offset))
+		elif not d.has("root_slot") and index == 0:source_frame = Transform3D(Basis.IDENTITY,-FOOT_CENTER)
+		runtime.register_node(record.id,body,source_frame)
+		if d.has("root_slot"):
+			var uid: String = model.assemblies[record.id].slots[d.root_slot]
+			var visual = _mesh(d.slots[d.root_slot].get("pose_source",source_uid(uid)))
+			visual.transform = runtime.local_slot_pose(record.id,d.root_slot)
+			visual.set_meta("component_uid",uid)
+			visual.set_meta("slot_id",d.root_slot)
+			body.add_child(visual)
+			refresh_assembly_collision(record.id)
+		index += 1
 
 func _make_player() -> void:
 	player = CharacterBody3D.new()
@@ -358,7 +398,9 @@ func _make_player() -> void:
 
 func _mesh(uid: String) -> MeshInstance3D:
 	var mesh = MeshInstance3D.new()
+	uid = source_uid(uid)
 	mesh.mesh = source[uid].mesh
+	mesh.set_meta("source_uid",uid)
 	return mesh
 
 func _make_pad() -> void:
@@ -371,23 +413,17 @@ func _make_pad() -> void:
 	add_child(pad)
 	pad_mesh = _mesh(state.pad_id)
 	pad.add_child(pad_mesh)
-	var col = CollisionShape3D.new()
-	var bounds = BoxShape3D.new()
-	var dimensions: Array = model.definitions.assemblies[model.assemblies[active_build].definition].bounds
-	bounds.size = Vector3(dimensions[0],dimensions[1],dimensions[2])
+	pad_mesh.set_meta("component_uid",state.pad_id)
 	if components.is_component_build(active_build):
-		# The loose starting barrel rests on its own geometry. The station restores
-		# the full assembly envelope when construction begins.
-		var root_bounds = pad_mesh.mesh.get_aabb()
-		bounds.size = root_bounds.size
-		col.position = root_bounds.get_center()
-	col.name = "CollisionShape3D"
-	col.shape = bounds
-	pad.add_child(col)
+		pad_mesh.transform = source[components.frame_source(active_build)].transform.affine_inverse()*source[source_uid(state.pad_id)].transform
+		pad_mesh.set_meta("component_uid",state.pad_id)
+		pad_mesh.set_meta("slot_id",components.definition(active_build).root_slot)
 	pad.add_collision_exception_with(player)
 	player.add_collision_exception_with(pad)
 	pad.position = home_position(active_build)
 	bodies[active_build] = pad
+	runtime.register_node(active_build,pad)
+	refresh_assembly_collision(active_build)
 
 func _make_audio() -> void:
 	chime = AudioStreamPlayer.new()
@@ -428,6 +464,7 @@ func movement_pressed(code: Key) -> bool:
 func handle_desktop_input(event: InputEvent) -> void:
 	if automated_test and event is InputEventKey:scripted_controls[event.physical_keycode] = event.pressed
 	if not started: return
+	if hud.handle_manual_browser_input(event): return
 	if event is InputEventKey and event.physical_keycode == KEY_R and not event.echo:
 		if not paused: _rotation_key(event.pressed)
 		return
@@ -457,13 +494,13 @@ func handle_desktop_input(event: InputEvent) -> void:
 			KEY_RIGHT: hud.turn_page(1)
 			KEY_PAGEUP: hud.body_scroll.scroll_vertical -= 140
 			KEY_PAGEDOWN: hud.body_scroll.scroll_vertical += 140
-			KEY_BACKSPACE: hud.open_manual("foot")
+			KEY_BACKSPACE: hud.open_manual(hud.manual_parent(hud.manual_id))
 			KEY_ENTER: hud.open_selected_child()
 			KEY_C: hud.cycle_build()
 			KEY_V:
 				if target.has("owner"):hud.open_manual(target.owner)
 				elif target.has("build"):hud.open_manual(target.build)
-				else:hud.open_manual("foot")
+				else:hud.open_manual(default_parent_id())
 			KEY_F: reset_station()
 		hud.refresh()
 	if paused: return
@@ -503,9 +540,7 @@ func _physics_process(delta: float) -> void:
 	var held = held_build()
 	if not held.is_empty():
 		_activate(held)
-		pad.carry_target = camera.global_position+camera.global_basis*Vector3(0.63,-0.34,-1.25)
-		pad.carry_basis = camera.global_basis*PREP_BASIS
-		if not paused: pad.update_grip(delta)
+		if not paused:apply_carry_intent(pad,delta)
 	_activate(previous_build)
 	# A dropped piece cannot disappear permanently under the floor.
 	for uid in loose.keys():
@@ -563,6 +598,12 @@ func _visible(point: Vector3, allowed: Array = [], allow_body_hit: bool = false)
 	for body in bodies.values():
 		if body.held:excluded.append(body.get_rid())
 	if is_instance_valid(components.held_body):excluded.append(components.held_body.get_rid())
+	if allow_body_hit:
+		for receiver in allowed:
+			if not is_instance_valid(receiver):continue
+			if receiver is CollisionObject3D:excluded.append(receiver.get_rid())
+			for body in bodies.values():
+				if receiver.is_ancestor_of(body):excluded.append(body.get_rid())
 	query.exclude = excluded
 	var hit = get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty(): return true
@@ -572,6 +613,13 @@ func _visible(point: Vector3, allowed: Array = [], allow_body_hit: bool = false)
 		# before the target is an occlusion, even on the same assembly.
 		return hit.position.distance_to(point) < 0.065
 	return hit.position.distance_to(point) < 0.025
+
+func bind_build_views(scenario: Dictionary) -> void:
+	builds.clear()
+	for build in scenario.builds:
+		var view = HeelAssemblyState.new()
+		view.bind(model,build.id)
+		builds[build.id] = view
 
 func _activate(id: String) -> void:
 	active_build = id
@@ -595,25 +643,111 @@ func build_label(id: String) -> String:
 		if build.id == id:
 			var definition: Dictionary = model.definitions.assemblies[build.definition]
 			var family: String = definition.get("part_id",model.definitions.parts[definition.slots[definition.root_slot].accepts].family)
-			return family+" · "+build.label
-	return "Foot"
+			return family+" · "+build.get("label",definition.get("title",id))
+	if model.assemblies.has(id):return model.definitions.assemblies[model.assemblies[id].definition].get("title",id)
+	return id
 
 func connection(index: int) -> Vector3:
 	var point: Array = model.definitions.assemblies.heel_pad.slots["sleeve_%d"%index].target
 	return pad.global_transform*Vector3(point[0],point[1],point[2])
 
-func mount_transform(slot: String = "") -> Transform3D:
+func default_parent_id() -> String:
+	var parents = AssemblyModel.scenario_parents(config)
+	return parents[0].id if not parents.is_empty() else ""
+
+func source_uid(uid: String) -> String:
+	return model.source_uid(uid)
+
+func assembly_node(owner: String) -> Node3D:
+	return runtime.node(owner)
+
+func assembly_frame(owner: String) -> Transform3D:
+	return runtime.frame_transform(owner)
+
+func slot_pose(owner: String, sid: String) -> Transform3D:
+	return runtime.slot_pose(owner,sid)
+
+func interactable_assembly(owner: String) -> bool:
+	if not model.assemblies.has(owner):return false
+	var top: String = model.top_level(owner)
+	if top.is_empty():return false
+	var location: String = model.assemblies[top].location
+	return location == "fixture" or location.begins_with("station:")
+
+func mount_transform(slot: String = "", owner: String = "", child: String = "") -> Transform3D:
+	if owner.is_empty():owner = target.get("owner",model.assemblies[active_build].parent)
+	if owner.is_empty():owner = default_parent_id()
 	if slot.is_empty():slot = target.get("mount",state.mount_slot)
 	if slot.is_empty():slot = "heel_1"
-	var uid: String = model.slot_definition("foot",slot).pose_source
-	if model.slot_definition("foot",slot).assembly != "heel_pad":return foot.global_transform*Transform3D(Basis.IDENTITY,-FOOT_CENTER)*source[uid].transform
-	return foot.global_transform*Transform3D(Basis.IDENTITY,source[uid].transform.origin-FOOT_CENTER)
+	if child.is_empty():child = active_build
+	return runtime.mount_pose(owner,slot,child)
 
-func mount_point(slot: String = "") -> Vector3:
-	return mount_transform(slot)*Vector3(0,-0.085,0)
+func mount_point(slot: String = "", owner: String = "", child: String = "") -> Vector3:
+	if owner.is_empty():owner = target.get("owner",default_parent_id())
+	if slot.is_empty():slot = target.get("mount",state.mount_slot)
+	if slot.is_empty():
+		for sid in model.assemblies[owner].slots:
+			if model.slot_definition(owner,sid).get("assembly","") == model.assemblies[active_build if child.is_empty() else child].definition:
+				slot = sid
+				break
+	var definition: Dictionary = model.slot_definition(owner,slot)
+	if definition.has("target") or definition.has("target_position"):
+		return assembly_node(owner).global_transform*AssemblyRuntime.vec(definition.get("target",definition.get("target_position",[])))
+	return mount_transform(slot,owner,child)*Vector3(0,-0.085,0) if definition.get("assembly","") == "heel_pad" else slot_pose(owner,slot).origin
 
 func placement_destination() -> Transform3D:
 	return stations[target.get("station","prep")].global_transform if target.type == "prep" else mount_transform()
+
+func apply_carry_intent(body: WorkshopPart, delta: float) -> void:
+	var profile: Dictionary = model.definitions.assemblies[model.assemblies[body.get_meta("assembly_id")].definition].get("handling",{}).duplicate() if body.has_meta("assembly_id") else model.definitions.parts[body.kind].get("handling",{}).duplicate()
+	var grip_basis = PREP_BASIS if body.has_meta("assembly_id") else Basis.IDENTITY
+	profile["basis"] = grip_basis
+	if body.has_meta("assembly_id"):
+		profile["lateral"] = profile.get("lateral",0.63)
+		profile["height"] = profile.get("height",-0.34)
+		profile["distance"] = profile.get("distance",1.25)
+	body.carry_target = camera.global_position+camera.global_basis*SolidHandling.carry_offset(body,camera.global_basis,profile)
+	body.carry_basis = camera.global_basis*grip_basis
+	body.max_surface_travel = float(profile.get("rotation_step_travel",0.025))
+	body.update_grip(delta)
+
+func refresh_assembly_collision(owner: String) -> void:
+	if not runtime or not runtime.nodes.has(owner):return
+	var root: String = model.top_level(owner)
+	for member in runtime.descendants(root):
+		var body: CollisionObject3D = runtime.node(member)
+		# Child bodies are frozen scene frames. The top owner carries the compound,
+		# so carrying cannot leave competing solid child bodies behind.
+		if body is RigidBody3D:
+			body.collision_layer = 2 if member == root else 0
+			body.collision_mask = WORLD_MASK if member == root else 0
+		for col in body.get_children():
+			if col is CollisionShape3D and (body is WorkshopPart or col.has_meta("assembly_collision")):
+				body.remove_child(col)
+				col.queue_free()
+		body.set_meta("collision_revision",int(body.get_meta("collision_revision",0))+1)
+	var carrier: CollisionObject3D = runtime.node(root)
+	var index = 0
+	for piece in runtime.visual_pieces(root):
+		var visual: MeshInstance3D = piece.visual
+		var uid: String = visual.get_meta("component_uid",visual.get_meta("installed_uid",""))
+		var profile: Array = []
+		if model.items.has(uid):profile = model.definitions.parts[model.items[uid].kind].get("collision_shapes",[])
+		var sid: String = visual.get_meta("slot_id","")
+		if not sid.is_empty():profile = model.slot_definition(piece.owner,sid).get("collision_shapes",profile)
+		# Pocket hardware remains visible and owned, with carrying collision only
+		# when its part or receiving slot authors a deliberate proxy.
+		if model.items.has(uid) and model.definitions.parts[model.items[uid].kind].carry_class == "pocket" and profile.is_empty():continue
+		for entry in SolidHandling.authored_shapes(profile,visual.mesh.get_aabb()):
+			var col = CollisionShape3D.new()
+			col.name = "CollisionShape3D" if index == 0 else "AssemblySolid%d"%index
+			col.shape = entry.shape
+			col.transform = piece.transform*entry.transform
+			col.set_meta("assembly_collision",true)
+			col.set_meta("physical_uid",uid)
+			carrier.add_child(col)
+			index += 1
+	carrier.set_meta("collision_revision",int(carrier.get_meta("collision_revision",0))+1)
 
 func _update_target() -> void:
 	target = {}
@@ -631,8 +765,14 @@ func _update_target() -> void:
 		_activate(held)
 		for station in stations:
 			candidates.append({"type":"prep","build":held,"station":station,"point":stations[station].global_position,"radius":0.48})
-		for mount in config.mounts:
-			if model.slot_definition("foot",mount.id).assembly == model.assemblies[held].definition and model.assemblies.foot.slots[mount.id].is_empty():candidates.append({"type":"mount","build":held,"mount":mount.id,"point":mount_point(mount.id),"radius":0.30})
+		for owner in model.assemblies:
+			if owner == held or not interactable_assembly(owner):continue
+			for sid in model.assemblies[owner].slots:
+				var slot: Dictionary = model.slot_definition(owner,sid)
+				if slot.get("assembly","") != model.assemblies[held].definition or not model.assemblies[owner].slots[sid].is_empty():continue
+				if not model.assembly_access_error(owner,sid).is_empty():continue
+				candidates.append({"type":"mount","owner":owner,"build":held,"mount":sid,"point":mount_point(sid,owner,held),"radius":0.30})
+
 	_activate(previous_build if held.is_empty() else held)
 	for kind in bins:candidates.append({"type":"bin","kind":kind,"point":bins[kind].global_position+Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in loose:
@@ -643,7 +783,9 @@ func _update_target() -> void:
 		var score = _aim_score(candidate.point,candidate.radius)
 		# While holding hardware, a nearby socket wins over the pad's center.
 		if candidate.type == "slot": score -= 0.12
-		if candidate.type == "component": score -= 1.0
+		if candidate.type == "component":
+			score -= 1.0 if candidate.get("compatible",false) else 0.12
+			if score != INF and not _visible(candidate.point,components.receiving_bodies(candidate.owner,candidate.sid),components.service_access(candidate.owner,candidate.sid)):score += 1.0
 		if score < best:
 			best = score
 			target = candidate
@@ -658,8 +800,8 @@ func _update_target() -> void:
 		"loose": text = components.title(state.items[target.uid].kind)+"\nE collect / carry"
 		"prep": text = "PREPARATION STATION\nClick to suspend · R + mouse to rotate"
 		"mount":
-			var reason: String = model.placement_error("foot",target.mount,active_build)
-			text = model.slot_definition("foot",target.mount).label+"\n"+("Click to seat this assembly" if reason.is_empty() else reason)
+			var reason: String = model.placement_error(target.get("owner",default_parent_id()),target.mount,active_build)
+			text = model.slot_definition(target.get("owner",default_parent_id()),target.mount).get("label",target.mount)+"\n"+("Click to seat this assembly" if reason.is_empty() else reason)
 		"component":
 			var d = model.slot_definition(target.owner,target.sid)
 			var reason: String = model.placement_error(target.owner,target.sid,components.selected_uid(selected_kind))
@@ -675,7 +817,8 @@ func _update_target() -> void:
 		var allowed: Array = [pad,foot]
 		if target.type == "bin":allowed = [bins[target.kind]]
 		elif target.type == "loose":allowed = [loose[target.uid]]
-		elif target.type == "component":allowed = [foot if target.owner == "foot" else bodies[target.owner]]
+		elif target.type == "component":allowed = components.receiving_bodies(target.owner,target.sid)
+		elif target.type == "mount":allowed = [pad,assembly_node(model.top_level(target.owner))]
 		if not _visible(target.point,allowed,_target_allows_body_hit()):text += "\nView obstructed · approach the exposed side"
 		elif target.type in ["prep","mount"] and state.pad_location == "held":
 			var carry_error = _carry_placement_error(placement_destination())
@@ -683,7 +826,9 @@ func _update_target() -> void:
 	hud.target_label.text = text
 
 func _target_allows_body_hit() -> bool:
-	return target.get("type","") in ["pad","loose","component"] or (target.get("type","") == "mount" and model.slot_definition("foot",target.mount).assembly != "heel_pad")
+	if target.get("type","") == "component":return components.service_access(target.owner,target.sid)
+	if target.get("type","") == "mount":return components.service_access(target.get("owner",default_parent_id()),target.mount)
+	return target.get("type","") in ["pad","loose"]
 
 func _access(allowed: Array = []) -> String:
 	if target.is_empty(): return "Aim near a part, bin, or mounting point."
@@ -692,53 +837,28 @@ func _access(allowed: Array = []) -> String:
 	if not _visible(target.point,allowed,_target_allows_body_hit()): return "Connection is obstructed. Rotate the assembly or approach its exposed side."
 	if target.type == "prep":
 		var station: Node3D = stations[target.get("station","prep")]
-		var envelope: Vector3 = pad.get_node("CollisionShape3D").shape.size
+		var envelope: Vector3 = SolidHandling.bounds(pad).size
 		var volume: Vector3 = station.get_meta("work_volume")
 		if envelope.x > volume.x or envelope.y > volume.y or envelope.z > volume.z:return "This assembly needs a larger work volume."
 		for id in builds:
 			if id != active_build and model.assemblies[id].location == "station:"+target.get("station","prep"):return "This station is occupied. Move its assembly first."
 	if target.type in ["prep","mount"] and state.pad_location == "held":
-		return _carry_placement_error(placement_destination())
+		return _carry_placement_error(placement_destination(),pad,assembly_node(target.owner) if target.has("owner") else null)
 	return ""
 
 func _carry_placement_error(destination: Transform3D, carried: WorkshopPart = null, receiving: PhysicsBody3D = null) -> String:
 	if carried == null:carried = pad
-	if carried.global_position.distance_to(camera.global_position) > REACH+0.75:
+	if carried.global_position.distance_to(camera.global_position) > REACH+0.75+maxf(0.0,SolidHandling.bounds(carried).size.length()-1.0)*0.7:
 		return "The carried assembly is caught or too far away. Bring it alongside you first."
-	var shape: Shape3D = carried.get_node("CollisionShape3D").shape
-	var query = PhysicsShapeQueryParameters3D.new()
-	query.shape = shape
-	query.transform = carried.global_transform*carried.get_node("CollisionShape3D").transform
-	# The receiving foot uses layer 4. It may accept the assisted placement;
-	# scenery and other loose objects must remain solid along the approach.
-	query.collision_mask = 3
 	var excluded: Array[RID] = [carried.get_rid()]
+	for exception in carried.get_collision_exceptions():excluded.append(exception.get_rid())
 	if receiving:
+		if receiving.has_meta("assembly_id"):receiving = assembly_node(model.top_level(receiving.get_meta("assembly_id")))
 		excluded.append(receiving.get_rid())
-		# Installed children are part of the receiving workpiece, not loose obstacles.
 		for body in bodies.values():
 			if receiving.is_ancestor_of(body):excluded.append(body.get_rid())
-	query.exclude = excluded
-	query.margin = 0.002
-	var space = get_world_3d().direct_space_state
-	# Shape casts ignore bodies already overlapping at the start. A held body
-	# pressed against a wall can penetrate by the solver's contact tolerance.
-	# Reject that contact before sweeping so it cannot become a snap loophole.
-	if not space.intersect_shape(query,1).is_empty():
-		return "The carried assembly is touching an obstacle. Pull it clear before placing it."
-	var center_path = PhysicsRayQueryParameters3D.create(carried.global_position,destination.origin,3)
-	center_path.exclude = query.exclude
-	if not space.intersect_ray(center_path).is_empty():
-		return "The assembly's approach is blocked by scenery. Reposition before placing it."
-	query.motion = destination.origin-carried.global_position
-	var fractions = space.cast_motion(query)
-	if fractions.size() == 2 and fractions[0] < 0.99:
-		return "The assembly's approach is blocked by scenery. Reposition before placing it."
-	query.transform = destination*carried.get_node("CollisionShape3D").transform
-	query.motion = Vector3.ZERO
-	if not space.intersect_shape(query,1).is_empty():
-		return "The placement space is occupied. Move the loose obstacle first."
-	return ""
+	# Only actual receiving owners are excluded; other fixtures stay solid.
+	return SolidHandling.sweep_error(carried,destination,excluded,WORLD_MASK)
 
 func interact(all_stock: bool = false) -> void:
 	if target.is_empty(): hud.toast("Look at a drawer, shelf or loose component, then press E."); return
@@ -771,7 +891,10 @@ func interact(all_stock: bool = false) -> void:
 
 func attach() -> void:
 	if target.get("type","") == "component":components.attach();return
-	var error = _access([pad,foot])
+	var allowed: Array = [pad]
+	if target.has("owner"):allowed.append(assembly_node(model.top_level(target.owner)))
+	elif is_instance_valid(foot):allowed.append(foot)
+	var error = _access(allowed)
 	if not error.is_empty():hud.toast(error);return
 	if target.type == "prep" and state.pad_location == "held":
 		var station: String = target.get("station","prep")
@@ -780,11 +903,11 @@ func attach() -> void:
 		_set_pad_station(station)
 		hud.toast("Assembly suspended. Open its manual with V to follow the next step.",true)
 	elif target.type == "mount" and state.pad_location == "held":
-		var result = state.mount(target.get("mount","heel_1"))
+		var result = model.install(target.get("owner",default_parent_id()),target.get("mount","heel_1"),active_build)
 		if not result.ok:hud.toast(result.error);return
 		_set_pad_foot()
-		if single_pad:hud.open_manual("foot",1)
-		hud.toast("Assembly seated. Follow the foot manual to secure its connections.",true)
+		if single_pad:hud.open_manual(model.assemblies[active_build].parent,1)
+		hud.toast("Assembly seated. Follow the receiving manual to secure its connections.",true)
 	elif target.type == "slot":
 		var was_prepared = state.prepared()
 		var was_complete = state.complete()
@@ -795,14 +918,10 @@ func attach() -> void:
 		if state.prepared() == was_prepared and state.complete() == was_complete:
 			hud.toast("Fitted %s · mounting point %d" % [components.title(kind),target.index+1],true)
 	else:
-		hud.toast("Open the receiving build manual, select a part for its current step, and aim near its preview.")
+		hud.toast("Select a compatible part and aim at a ready connection. N finds matching instructions.")
 	hud.refresh()
 
 func _set_pad_station(station: String = "prep") -> void:
-	var col: CollisionShape3D = pad.get_node("CollisionShape3D")
-	var dimensions: Array = model.definitions.assemblies[model.assemblies[active_build].definition].bounds
-	col.position = Vector3.ZERO
-	col.shape.size = Vector3(dimensions[0],dimensions[1],dimensions[2])
 	pad.held = false
 	# Attached assemblies inherit their parent's pose; the carrying mode can write
 	# an older world pose back between input and physics ticks during rotation.
@@ -813,15 +932,12 @@ func _set_pad_station(station: String = "prep") -> void:
 	pad.angular_velocity = Vector3.ZERO
 	pad.reparent(stations[station])
 	pad.transform = Transform3D.IDENTITY
+	refresh_assembly_collision(active_build)
 
 func _set_pad_foot() -> void:
-	pad.held = false
-	pad.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
-	pad.freeze = true
-	pad.linear_velocity = Vector3.ZERO
-	pad.angular_velocity = Vector3.ZERO
-	pad.reparent(foot)
-	pad.global_transform = mount_transform(state.mount_slot)
+	var parent: String = model.assemblies[active_build].parent
+	runtime.mount(parent,state.mount_slot,active_build)
+	refresh_assembly_collision(parent)
 
 func _sync_installed_visuals() -> void:
 	if components.is_component_build(active_build):components.sync(active_build);return
@@ -839,6 +955,8 @@ func _sync_installed_visuals() -> void:
 			visual.transform = source["FA-302__001"].transform.affine_inverse()*source[slot_sources[kind][i]].transform
 			visual.set_meta("installed_uid",uid)
 			pad.add_child(visual)
+	pad.set_meta("visual_revision",int(pad.get_meta("visual_revision",0))+1)
+	refresh_assembly_collision(active_build)
 
 func drop_selected() -> void:
 	if not model.held_item().is_empty():components.drop();return
@@ -861,13 +979,15 @@ func _spawn_loose(uid: String, at_output: bool = false) -> void:
 	item.collision_mask = WORLD_MASK
 	add_child(item)
 	item.add_child(_mesh(uid))
-	var col = CollisionShape3D.new()
-	col.name = "CollisionShape3D"
-	var shape = BoxShape3D.new()
-	shape.size = source[uid].mesh.get_aabb().size.max(Vector3(0.012,0.012,0.012))
-	col.shape = shape
-	col.position = source[uid].mesh.get_aabb().get_center()
-	item.add_child(col)
+	var profile: Array = model.definitions.parts[item.kind].get("collision_shapes",[])
+	var shape_index = 0
+	for entry in SolidHandling.authored_shapes(profile,source[source_uid(uid)].mesh.get_aabb()):
+		var col = CollisionShape3D.new()
+		col.name = "CollisionShape3D" if shape_index == 0 else "Solid%d"%shape_index
+		col.shape = entry.shape
+		col.transform = entry.transform
+		item.add_child(col)
+		shape_index += 1
 	var desired = camera.global_position-camera.global_basis.z*0.70
 	var query = PhysicsRayQueryParameters3D.create(camera.global_position,desired,WORLD_MASK)
 	query.exclude = [player.get_rid(),item.get_rid()]
@@ -887,13 +1007,14 @@ func undo_build() -> void:
 		for a in model.assemblies.values():
 			if a.location == "station:"+station:occupied = true
 		if not occupied:destination = station;break
-	if owner == "foot" and not model.assemblies.foot.history.is_empty() and model.assemblies.foot.history.back().action == "mount" and destination.is_empty():
+	if model.assemblies.has(owner) and not model.assemblies[owner].history.is_empty() and model.assemblies[owner].history.back().action == "mount" and destination.is_empty():
 		hud.toast("Clear a preparation station before undoing the mount.");return
 	var result = model.undo(owner,"station:"+destination)
 	if not result.ok:hud.toast(result.error);return
 	if result.step.action == "mount":
 		_activate(result.step.uid)
 		_set_pad_station(destination)
+		refresh_assembly_collision(owner)
 		if single_pad:hud.open_manual(active_build,1)
 	else:
 		var uid: String = result.step.uid
@@ -903,7 +1024,7 @@ func undo_build() -> void:
 		_activate(id)
 		_sync_installed_visuals()
 	_activate(previous_build)
-	if pitch_workshop:components.sync("foot")
+	for parent in AssemblyModel.scenario_parents(config):components.sync(parent.id)
 	hud.toast("Undid the last action in "+hud.manual_title()+".",true)
 
 func _state_changed() -> void:
@@ -912,7 +1033,7 @@ func _state_changed() -> void:
 	var previous_build = active_build
 	for id in builds:
 		_activate(id)
-		if state.prepared() and not prepared_flags.get(id,false):_milestone(build_label(id)+" prepared. E to carry; Backspace for the foot manual.")
+		if state.prepared() and not prepared_flags.get(id,false):_milestone(build_label(id)+" prepared. E to carry; Backspace for the parent manual.")
 		if state.complete() and not completed_flags.get(id,false):_milestone(build_label(id)+" installation COMPLETE")
 		prepared_flags[id] = state.prepared()
 		completed_flags[id] = state.complete()
@@ -946,7 +1067,10 @@ func _update_ghost() -> void:
 		ghost.visible = true
 		return
 	if target.is_empty():return
-	if not _access([pad,foot]).is_empty():return
+	var allowed: Array = [pad]
+	if target.has("owner"):allowed.append(assembly_node(model.top_level(target.owner)))
+	elif is_instance_valid(foot):allowed.append(foot)
+	if not _access(allowed).is_empty():return
 	if target.type == "slot" and HeelAssemblyState.KINDS.has(selected_kind):
 		if not state.reason(selected_kind,target.index).is_empty() or state.count_at(selected_kind,"pocket") == 0:return
 		var uid: String = slot_sources[selected_kind][target.index]
@@ -954,38 +1078,41 @@ func _update_ghost() -> void:
 		var pose: Transform3D = source["FA-302__001"].transform.affine_inverse()*source[uid].transform
 		ghost.global_transform = pad.global_transform*pose
 		ghost.visible = true
-	elif target.type == "mount" and state.pad_location == "held" and model.placement_error("foot",target.mount,active_build).is_empty():
-		ghost.mesh = source[state.pad_id].mesh
+	elif target.type == "mount" and state.pad_location == "held" and model.placement_error(target.get("owner",default_parent_id()),target.mount,active_build).is_empty():
+		ghost.mesh = source[source_uid(state.pad_id)].mesh
 		ghost.global_transform = mount_transform()
 		ghost.visible = true
 		_show_assembly_ghost()
 	elif target.type == "prep" and state.pad_location == "held":
-		ghost.mesh = source[state.pad_id].mesh
+		ghost.mesh = source[source_uid(state.pad_id)].mesh
 		ghost.global_transform = stations[target.get("station","prep")].global_transform
 		ghost.visible = true
 		_show_assembly_ghost()
 
 func _show_assembly_ghost() -> void:
-	# Carrying an assembly previews its fitted pieces at the same relative poses.
-	# Keep the existing root mesh/transform interface used by targeting.
-	if not components.is_component_build(active_build):return
-	var body: Node3D = bodies[active_build]
-	var key = active_build+":"+str(body.get_child_count())
+	ghost.mesh = null
+	var pieces = runtime.visual_pieces(active_build)
+	var key = active_build
+	for member in runtime.descendants(active_build):key += ":"+member+":"+str(assembly_node(member).get_meta("visual_revision",0))
 	if key != ghost_assembly_signature:
 		for child in ghost.get_children():
 			ghost.remove_child(child)
 			child.queue_free()
-		for child in body.get_children():
-			if not child is MeshInstance3D or not child.has_meta("component_uid"):continue
+		for piece in pieces:
+			var visual: MeshInstance3D = piece.visual
 			var preview = MeshInstance3D.new()
-			preview.mesh = child.mesh
-			preview.transform = child.transform
+			preview.mesh = visual.mesh
+			preview.transform = piece.transform
 			preview.material_override = ghost_material
 			preview.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			preview.set_meta("component_uid",child.get_meta("component_uid"))
+			preview.set_meta("component_uid",visual.get_meta("component_uid",visual.get_meta("installed_uid","")))
+			preview.set_meta("source_uid",visual.get_meta("source_uid",""))
+			preview.set_meta("body_visual",visual)
 			ghost.add_child(preview)
 		ghost_assembly_signature = key
-	for child in ghost.get_children():child.visible = true
+	for child in ghost.get_children():
+		var visual = child.get_meta("body_visual")
+		child.visible = is_instance_valid(visual) and visual.visible
 
 func _update_markers() -> void:
 	var previous_build = active_build

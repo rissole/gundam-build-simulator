@@ -1,6 +1,6 @@
 # Pitch actuator interface repair
 
-The repaired pitch build passed rendered review on 2026-10-21: all 14 child pages
+The original interface repair passed rendered review on 2026-10-21: all 14 child pages
 and the three parent installation pages. The [accepted report](../../game/heel-pad-demo/verification/pitch-visual-review/review.md)
 records per-page findings, capture paths and exact input hashes. The original
 failed findings and the sensor-conflict negative control are preserved in the
@@ -29,11 +29,11 @@ roll and forefoot geometry remain reference models awaiting their own reviews.
 | Interface | Receiving geometry and access |
 | --- | --- |
 | FA-510 barrel | 90–550; 460 mm tube, 140 mm outside diameter. Integral motor, thrust-bearing and guide seats, cap bosses and guide/sensor lands. Base/rod pin centers and 570 mm front guide datum retained. |
-| FA-513 motor | Rear flange 110–118 on housing seat. Upper flange has access cutouts for the four lower screws. Gearbox closes these accesses only after motor fastening. |
+| FA-513 motor | Rear flange 110–118 on housing seat. The motor starts the exposed cartridge. After fitting the housing, four screws enter from the open rear on a 48 mm bolt circle; the rear cap has internal head/washer recesses. Gearbox installation does not obstruct their approach. |
 | FA-514 gearbox | Flange 158–166 seats on motor. Output journal 194–220. Upper screws sit outside the cartridge core. |
 | FA-515 coupling | Split clamp 194–245; two distinct transverse screws 26 mm apart. Receives gearbox journal and lead-screw journal, each 24 mm diameter. |
 | FA-516 screw | Journal 220–245, bearing/collar journal 245–304; threaded section begins beyond collar. |
-| FA-522 / 523 / 524 | Bearing 250–272 in housing seat; retainer 272–280, two screws on a separate bolt axis; split collar 280–304, screws through joining ears. |
+| FA-522 / 523 / 524 | Bearing 250–272 in housing seat; retainer 272–280 with reinforced ears at y ±46 and two radial screws through exterior housing lands at z 276. These remain accessible after drive assembly. Split collar 280–304 retains its joining-ear screws. |
 | FA-517 / 518 | Nut and rod meet at the original nut datum. Flange pockets expose axial screw heads. Rod now ends 68 mm before rod-eye center to clear the eye neck. |
 | FA-521 guide | Tongue engages a real longitudinal rod slot. Offset ears fasten to fixed housing lands without crossing the moving rod. |
 | FA-528 / 530 | Sensor probes retain their sensing datums; mounting ears and screws move 28 mm sideways to clear cap bolts. Rear sensor land starts at the 90 mm barrel face, clear of the rear cap. Connector has its own bulkhead opening and flange. |
@@ -47,6 +47,10 @@ Assisted placement remains unchanged; the game does not require threading or too
 alignment as player mechanics.
 
 ## Verification
+
+The figures below record the retained original repair baseline. The later motor-first
+sequence changes motor/retainer fastening and rear-cap recesses; its focused follow-up
+[review](../../game/heel-pad-demo/verification/motor-first-review/review.md) records the new geometry and changed pages separately: 113 geometry checks, 290 desktop checks, and inspected captures for exposed-drive construction, enclosure, closure and mounting.
 
 The accepted report records 69 imported-triangle clearance checks, 286 headless
 pitch desktop checks, 114 model checks, 65 two-pad interaction checks and 44

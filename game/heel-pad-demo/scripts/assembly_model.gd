@@ -14,7 +14,7 @@ var expected_ids: Array = []
 func configure(data: Dictionary, scenario: Dictionary) -> Array[String]:
 	var errors = validate_definitions(data)
 	if not errors.is_empty(): return errors
-	if scenario.get("version",0) != 1 or not scenario.has("builds") or not scenario.has("parent") or not scenario.has("parts"):
+	if scenario.get("version",0) != 1 or not scenario.has("builds") or not scenario.has("parts") or (not scenario.has("parent") and not scenario.has("parents")):
 		return ["Unsupported or incomplete scenario."]
 	var ids: Array = []
 	var roots: Array = []
@@ -22,20 +22,27 @@ func configure(data: Dictionary, scenario: Dictionary) -> Array[String]:
 	for part in scenario.parts:
 		if physical.has(part.instance_id):errors.append("Duplicate source identity: "+part.instance_id)
 		physical[part.instance_id] = part
+		if String(part.get("source_id",part.instance_id)).is_empty():errors.append("Missing mesh source: "+part.instance_id)
 		if not data.parts.has(part.kind):errors.append("Unknown part type: "+part.kind)
 		elif part.get("part_id",data.parts[part.kind].family) != data.parts[part.kind].family:errors.append("Part family mismatch: "+part.instance_id)
-	for build in scenario.builds:
+	var records: Array = scenario.builds.duplicate()
+	for parent in scenario_parents(scenario):records.append(parent)
+	for build in records:
 		if ids.has(build.id):errors.append("Duplicate assembly identity: "+build.id)
+		if physical.has(build.id):errors.append("Assembly and physical item identities overlap: "+build.id)
 		ids.append(build.id)
 		if not data.assemblies.has(build.definition):errors.append("Unknown build definition: "+build.definition);continue
 		var definition: Dictionary = data.assemblies[build.definition]
 		var root: String = definition.get("root_slot","")
+		if root.is_empty():
+			if scenario.builds.has(build):errors.append("Movable builds need a physical root: "+build.id)
+			continue
 		if not definition.slots.has(root):errors.append("Missing root slot: "+build.definition);continue
-		if not physical.has(build.base):errors.append("Missing root part: "+build.base);continue
-		if roots.has(build.base):errors.append("Duplicate root ownership: "+build.base)
-		roots.append(build.base)
-		if physical[build.base].kind != definition.slots[root].get("accepts",""):errors.append("Wrong root part: "+build.base)
-	if ids.has(scenario.parent.id) or not data.assemblies.has(scenario.parent.definition):errors.append("Invalid parent assembly.")
+		var base: String = build.get("base","")
+		if not physical.has(base):errors.append("Missing root part: "+base);continue
+		if roots.has(base):errors.append("Duplicate root ownership: "+base)
+		roots.append(base)
+		if physical[base].kind != definition.slots[root].get("accepts",""):errors.append("Wrong root part: "+base)
 	if not errors.is_empty():return errors
 	definitions = data.duplicate(true)
 	pockets.assign(["","","","","","","","","",""])
@@ -44,16 +51,46 @@ func configure(data: Dictionary, scenario: Dictionary) -> Array[String]:
 	assemblies.clear()
 	expected_ids.clear()
 	for part in scenario.parts:
-		items[part.instance_id] = {"kind":part.kind,"location":"bin","owner":"","slot":"","pocket":-1}
-	for build in scenario.builds:
+		items[part.instance_id] = {"source_id":part.get("source_id",part.instance_id),"kind":part.kind,"location":"bin","owner":"","slot":"","pocket":-1}
+	for build in records:
 		_add_assembly(build.id,build.definition)
-		var root: String = definitions.assemblies[build.definition].root_slot
-		_set_part(build.base,build.id,root)
-	_add_assembly(scenario.parent.id,scenario.parent.definition)
-	assemblies[scenario.parent.id].location = "fixture"
+		var root: String = definitions.assemblies[build.definition].get("root_slot","")
+		if not root.is_empty():_set_part(build.base,build.id,root)
+		assemblies[build.id].location = build.get("location","fixture" if scenario_parents(scenario).has(build) else "loose")
 	expected_ids = items.keys()
 	errors.append_array(integrity_errors())
 	return errors
+
+static func scenario_parents(scenario: Dictionary) -> Array:
+	var result: Array = scenario.get("parents",[]).duplicate()
+	if scenario.has("parent"):result.push_front(scenario.parent)
+	return result
+
+func source_uid(uid: String) -> String:
+	return items[uid].source_id if items.has(uid) else uid
+
+func top_level(assembly: String) -> String:
+	var visited: Array = []
+	while assemblies.has(assembly) and not assemblies[assembly].parent.is_empty():
+		if visited.has(assembly):return ""
+		visited.append(assembly)
+		assembly = assemblies[assembly].parent
+	return assembly
+
+func assembly_access_error(assembly: String, slot: String = "") -> String:
+	if not assemblies.has(assembly):return "Unknown build."
+	var a: Dictionary = assemblies[assembly]
+	var d: Dictionary = definitions.assemblies[a.definition]
+	var policy: String = slot_definition(assembly,slot).get("access_policy",d.get("access_policy","independent"))
+	if not a.parent.is_empty() and policy != "mounted":return "This child is installed. Undo its parent installation before changing its internals."
+	var root: String = top_level(assembly)
+	if root.is_empty():return "Invalid assembly ownership."
+	var root_location: String = assemblies[root].location
+	if root_location in ["held","loose","parent"]:return "Suspend this build at a preparation station first."
+	var locations: Array = d.get("work_locations",[])
+	var location: String = "station" if root_location.begins_with("station:") else root_location
+	if not locations.is_empty() and not locations.has(location):return "Suspend this build at a preparation station first."
+	return ""
 
 func _add_assembly(id: String, definition: String) -> void:
 	var slots: Dictionary = {}
@@ -76,6 +113,7 @@ static func validate_definitions(data: Dictionary) -> Array[String]:
 			if s.has("assembly"):
 				if not data.assemblies.has(s.assembly): errors.append("Unknown child definition: "+sid)
 				elif not data.assemblies[s.assembly].get("milestones",{}).has(s.get("milestone","")): errors.append("Unknown child milestone: "+sid)
+				elif s.has("child_anchor_slot") and not data.assemblies[s.assembly].slots.has(s.child_anchor_slot):errors.append("Unknown child anchor: "+sid)
 			elif not data.parts.has(s.get("accepts","")): errors.append("Unknown accepted part: "+sid)
 			for required in s.get("requires",[]):
 				if not slots.has(required): errors.append("Unknown prerequisite: "+required)
@@ -260,10 +298,8 @@ func placement_error(assembly: String, slot: String, uid: String) -> String:
 	var s = slot_definition(assembly,slot)
 	if s.is_empty():return "Unknown attachment slot."
 	var a: Dictionary = assemblies[assembly]
-	var locations: Array = definitions.assemblies[a.definition].get("work_locations",[])
-	var location: String = "station" if a.location.begins_with("station:") else a.location
-	if not a.parent.is_empty():return "This child is installed. Undo its parent installation before changing its internals."
-	if not locations.is_empty() and not locations.has(location):return "Suspend this build at a preparation station first."
+	var access_error = assembly_access_error(assembly,slot)
+	if not access_error.is_empty():return access_error
 	if not a.slots[slot].is_empty():return "Already installed here. Choose an unfinished connection."
 	for required in s.get("requires",[]):
 		if a.slots[required].is_empty():
@@ -271,6 +307,7 @@ func placement_error(assembly: String, slot: String, uid: String) -> String:
 			return "Missing prerequisite: "+(dependency.get("label","prepared assembly on the carrier") if dependency.has("assembly") else definitions.parts[dependency.accepts].title)
 	if s.has("assembly"):
 		if not assemblies.has(uid) or assemblies[uid].definition != s.assembly:return "Requires a compatible completed subassembly."
+		if uid == assembly or top_level(assembly) == uid:return "An assembly cannot be mounted inside itself."
 		if not assemblies[uid].parent.is_empty():return "That assembly already has a parent."
 		if assemblies[uid].location != "held":return "Pick up the prepared assembly before mounting it."
 		if not milestone(uid,s.milestone):return "Prepare this assembly first: "+s.milestone
@@ -384,5 +421,6 @@ func integrity_errors() -> Array[String]:
 		if items[uid].location == "installed" and not seen.has(uid):errors.append("Unowned installed piece: "+uid)
 	for id in assemblies:
 		if not assemblies[id].parent.is_empty() and not children.has(id):errors.append("Unowned child: "+id)
+		if top_level(id).is_empty():errors.append("Cyclic runtime ownership: "+id)
 	if held > 1:errors.append("Hand capacity exceeded.")
 	return errors

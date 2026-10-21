@@ -38,7 +38,7 @@ def build_frames():
                            (sign*700,1050 if is_fore else 0,-260),("Steel",),2)
                 bore(plate,[((sign*350,y+dy,323),18,80,(0,0,1)) for dy in (-s/2,s/2)])
                 hardware("Nut plate keepers",keeperpoints,phase=5.2 if is_fore else .9,
-                         explosion=(sign*700,1050 if is_fore else 0,-400),owner=plate)
+                         explosion=(sign*700,1050 if is_fore else 0,-400),owner=plate,sites=("rear", "front"))
 
     for family,label,y,spacing,is_fore in [
         ("FA-101","Rear_crossmember",-500,100,False),
@@ -73,7 +73,7 @@ def build_frames():
         if family=="FA-106":
             bore(o,[((s*380,1200,350),75,160,(1,0,0)) for s in (-1,1)])
         hardware("Forefoot frame joints" if is_fore else "Rear frame joints",
-                 centers,phase=phase+.25,explosion=ex,owner=o)
+                 centers,phase=phase+.25,explosion=ex,owner=o,sites=("out-rear", "out-front", "in-rear", "in-front"))
 
     # Cradle is a single cast/fabricated component with open center and outriggers.
     m=Mesh()
@@ -91,7 +91,7 @@ def build_frames():
     bore(cradle,[((s*500,0,1000),60,120,(1,0,0)) for s in (-1,1)]
          +[((s*350,y,410),19,70,(0,0,1)) for s in (-1,1) for y in (-100,100)])
     hardware("Rear frame joints",[(s*350,y,436) for s in (-1,1) for y in (-100,100)],
-             phase=2.2,explosion=(0,0,900),owner=cradle)
+             phase=2.2,explosion=(0,0,900),owner=cradle,sites=("out-rear", "out-front", "in-rear", "in-front"))
     return cradle
 
 
@@ -122,34 +122,34 @@ def build_ankle():
         # Pitch journal, short pin; central region remains empty.
         m=Mesh().cyl((s*425,0,1000),60,250,(1,0,0))
         m.cyl((s*562.5,0,1000),78,25,(1,0,0))
-        pin=emit("FA-202","Pitch_pin",m,ANKLE,4.1,(s*1500,0,1000),("Pin",),1)
+        pin=emit("FA-202","Pitch_pin",m,ANKLE,4.1,(s*1500,0,1000),("Pin",),1,role=f"FA-202/Pitch_pin/{'negative' if s<0 else 'positive'}")
         emit("FA-204","Pitch_bushing",Mesh().tube((s*370,0,1000),75,60,140,(1,0,0)),
-             ANKLE,3.5,(s*900,0,1300),("Bronze",),.8)
+             ANKLE,3.5,(s*900,0,1300),("Bronze",),.8,role=f"FA-204/Pitch_bushing/{'negative' if s<0 else 'positive'}")
         emit("FA-206","Pitch_thrust_washer",Mesh().tube((s*444,0,1000),85,61,8,(1,0,0)),
-             ANKLE,3.7,(s*1100,0,1200),("Steel",),.4)
+             ANKLE,3.7,(s*1100,0,1200),("Steel",),.4,role=f"FA-206/Pitch_thrust_washer/{'negative' if s<0 else 'positive'}")
         capmesh=Mesh().cyl((s*585,0,1000),83,20,(1,0,0))
         for y in (-110,110):capmesh.box((s*568,y,1000),(54,70,70))
-        cap=emit("FA-208","Pitch_pin_cap",capmesh,ANKLE,4.3,(s*1750,0,1000),("Steel",),3)
+        cap=emit("FA-208","Pitch_pin_cap",capmesh,ANKLE,4.3,(s*1750,0,1000),("Steel",),3,role=f"FA-208/Pitch_pin_cap/{'negative' if s<0 else 'positive'}")
         points=[(s*571,y,1000) for y in (-110,110)]
         bore(cap,[((s*584,y,1000),20,28,(1,0,0)) for y in (-110,110)])
         hardware("Ankle pin caps",points,axis=(-s,0,0),phase=4.4,
-                 explosion=(s*1900,0,1000),owner=cap)
+                 explosion=(s*1900,0,1000),owner=cap,sites=("negative", "positive"))
 
         m=Mesh().cyl((0,s*235,1000),50,250,(0,1,0))
         m.cyl((0,s*372.5,1000),66,25,(0,1,0))
-        emit("FA-203","Roll_pin",m,ANKLE,3.45,(0,s*1000,1650),("Pin",),1)
+        emit("FA-203","Roll_pin",m,ANKLE,3.45,(0,s*1000,1650),("Pin",),1,role=f"FA-203/Roll_pin/{'negative' if s<0 else 'positive'}")
         emit("FA-205","Roll_bushing",Mesh().tube((0,s*160,1000),65,50,100,(0,1,0)),
-             ANKLE,3,(0,s*600,1900),("Bronze",),.8)
+             ANKLE,3,(0,s*600,1900),("Bronze",),.8,role=f"FA-205/Roll_bushing/{'negative' if s<0 else 'positive'}")
         emit("FA-207","Roll_thrust_washer",Mesh().tube((0,s*214,1000),75,51,8,(0,1,0)),
-             ANKLE,3.35,(0,s*800,1800),("Steel",),.4)
+             ANKLE,3.35,(0,s*800,1800),("Steel",),.4,role=f"FA-207/Roll_thrust_washer/{'negative' if s<0 else 'positive'}")
         m=Mesh().cyl((0,s*395,1000),72,20,(0,1,0))
         for x in (-90,90):m.box((x,s*378,1000),(60,54,65))
-        cap=emit("FA-209","Roll_pin_cap",m,ANKLE,3.55,(0,s*1300,1700),("Steel",),3)
+        cap=emit("FA-209","Roll_pin_cap",m,ANKLE,3.55,(0,s*1300,1700),("Steel",),3,role=f"FA-209/Roll_pin_cap/{'negative' if s<0 else 'positive'}")
         bore(cap,[((x,s*394,1000),20,28,(0,1,0)) for x in (-90,90)])
         hardware("Ankle pin caps",[(x,s*381,1000) for x in (-90,90)],axis=(0,-s,0),
-                 phase=3.65,explosion=(0,s*1450,1700),owner=cap)
+                 phase=3.65,explosion=(0,s*1450,1700),owner=cap,sites=("negative", "positive"))
     hardware("Shin flange",[(x,y,1386) for x in (-200,200) for y in (-150,150)],
-             phase=11.3,explosion=(0,0,2550),owner=adapter)
+             phase=11.3,explosion=(0,0,2550),owner=adapter,sites=("out-rear", "out-front", "in-rear", "in-front"))
     return ring,adapter
 
 
@@ -159,15 +159,15 @@ def build_toe_joint():
     axle=emit("FA-210","Continuous_forefoot_axle",m,FORE,6.2,(-1600,1050,300),("Pin",),1)
     for s in (-1,1):
         emit("FA-211","Forefoot_bushing",Mesh().tube((s*380,1200,350),75,60,140,(1,0,0)),
-             FORE,5.7,(s*600,1050,350),("Bronze",),.7)
+             FORE,5.7,(s*600,1050,350),("Bronze",),.7,role=f"FA-211/Forefoot_bushing/{'negative' if s<0 else 'positive'}")
         emit("FA-212","Forefoot_thrust_washer",Mesh().tube((s*454,1200,350),85,61,8,(1,0,0)),
-             FORE,6,(s*900,1050,350),("Steel",),.4)
+             FORE,6,(s*900,1050,350),("Steel",),.4,role=f"FA-212/Forefoot_thrust_washer/{'negative' if s<0 else 'positive'}")
     m=Mesh().cyl((590,1200,350),80,20,(1,0,0))
     for z in (240,460):m.box((575,1200,z),(50,65,70))
     cap=emit("FA-213","Forefoot_axle_cap",m,FORE,6.4,(1400,1050,300),("Steel",),3)
     bore(cap,[((587,1200,z),20,28,(1,0,0)) for z in (240,460)])
     hardware("Forefoot axle cap",[(576,1200,z) for z in (240,460)],axis=(-1,0,0),
-             phase=6.5,explosion=(1550,1050,300),owner=cap)
+             phase=6.5,explosion=(1550,1050,300),owner=cap,sites=("negative", "positive"))
 
 
 def build_stops():
@@ -187,4 +187,4 @@ def build_stops():
                    phase,ex,("Steel",),3)
         holes=[(p[0],p[1]+dy,p[2]+19) for dy in (-40,40)]
         bore(block,[(h,12.5,70,(0,0,1)) for h in holes])
-        hardware("Mechanical stops",holes,phase=phase+.1,explosion=ex,owner=block)
+        hardware("Mechanical stops",holes,phase=phase+.1,explosion=ex,owner=block,sites=("rear", "front"))

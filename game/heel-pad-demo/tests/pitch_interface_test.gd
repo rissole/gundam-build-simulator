@@ -14,6 +14,20 @@ func from_model(p: Vector3) -> Vector3:
 	var relative = Vector3(p.x,p.z,-p.y)*0.001-origin
 	return Vector3(relative.x,relative.dot(side),relative.dot(axial))*1000.0
 
+func material_between(uid: String, begin: Vector3, end: Vector3, label: String) -> void:
+	var node: MeshInstance3D = source[uid]
+	var inverse = node.transform.affine_inverse()
+	var a = inverse*point(begin)*1000.0
+	var b = inverse*point(end)*1000.0
+	var faces = node.mesh.get_faces()
+	var found = false
+	for i in range(0,faces.size(),3):
+		if Geometry3D.segment_intersects_triangle(a,b,faces[i]*1000.0,faces[i+1]*1000.0,faces[i+2]*1000.0) != null:
+			found = true
+			break
+	checks.append({"passed":found,"check":label,"receiver":uid})
+	if not found:push_error(label+" — missing material in "+uid)
+
 func clear_bore(uid: String, begin: Vector3, end: Vector3, radius: float, label: String, witness_radius: float = -1.0, require_material: bool = true) -> void:
 	var node: MeshInstance3D = source[uid]
 	var inverse = node.transform.affine_inverse()
@@ -56,11 +70,18 @@ func _initialize() -> void:
 			var sections = String(node.name).split("__")
 			source[sections[0]+"__"+sections[1]] = node
 	for i in range(4):
-		var x = 50*cos(PI/4+i*PI/2)
-		var y = 50*sin(PI/4+i*PI/2)
+		var x = 48*cos(PI/4+i*PI/2)
+		var y = 48*sin(PI/4+i*PI/2)
 		clear_bore("FA-513__001",Vector3(x,y,108),Vector3(x,y,120),5.5,"Motor flange screw %d"%i)
-		clear_bore("FA-512__001",Vector3(x,y,80),Vector3(x,y,90),5.8,"Rear cap clearance for motor screw tip %d"%i)
-		clear_bore("FA-513__001",Vector3(x,y,144),Vector3(x,y,160),11,"Motor screw access corridor %d"%i)
+		clear_bore("FA-512__001",Vector3(x,y,75),Vector3(x,y,90),11.8,"Rear cap pocket clears motor head and washer %d"%i,14)
+		material_between("FA-512__001",Vector3(x,y,66),Vector3(x,y,73),"Rear cap pocket preserves opaque outer face %d"%i)
+		clear_bore("FA-510__001",Vector3(x,y,88),Vector3(x,y,112),5.8,"Motor screw passes rear housing seat %d"%i)
+		clear_bore("FA-510__001",Vector3(x,y,40),Vector3(x,y,87.4),8.8,"Rear motor tool approach %d"%i,-1,false)
+		material_between("H-12040__%03d"%(i+5),Vector3(x+7,y,75),Vector3(x+7,y,76),"Motor screw head faces the rear approach %d"%i)
+		material_between("W-12__%03d"%(i+35),Vector3(x+8,y,87),Vector3(x+8,y,90.2),"Motor washer seats on rear housing face %d"%i)
+		for uid in ["H-12040__001","H-12040__002"]:
+			clear_bore(uid,Vector3(x,y,75.5),Vector3(x,y,127.5),8.8,"Motor screw clears base eye fastener %d / %s"%[i,uid],-1,false)
+			clear_bore(uid,Vector3(x,y,87.6),Vector3(x,y,89.9),11.8,"Motor washer clears base eye fastener %d / %s"%[i,uid],-1,false)
 		x = 48*cos(i*PI/2); y = 48*sin(i*PI/2)
 		clear_bore("FA-514__001",Vector3(x,y,156),Vector3(x,y,168),5.5,"Gearbox flange screw %d"%i)
 	for z in [207,233]:clear_bore("FA-515__001",Vector3(24,-19,z),Vector3(24,19,z),5.5,"Separate coupling clamp bore %d"%z)
@@ -69,9 +90,15 @@ func _initialize() -> void:
 	clear_bore("FA-510__001",Vector3(0,0,250.1),Vector3(0,0,271.9),33.8,"Thrust bearing seat clears integral retainer bosses")
 	clear_bore("FA-510__001",Vector3(0,0,534.1),Vector3(0,0,549.9),49.8,"Guide bushing seat clears integral cap bosses")
 	clear_bore("FA-515__001",Vector3(0,0,192),Vector3(0,0,247),11.5,"Coupling accepts both shaft journals")
-	for y in [-42,42]:
-		clear_bore("FA-523__001",Vector3(0,y,270),Vector3(0,y,282),5.5,"Retainer receiving hole %d"%y)
-		clear_bore("FA-510__001",Vector3(0,y,238),Vector3(0,y,274),5.5,"Retainer housing boss %d"%y)
+	for sign in [-1,1]:
+		clear_bore("FA-523__001",Vector3(0,sign*32.5,276),Vector3(0,sign*60,276),5.5,"Radial retainer receiving hole %d"%sign)
+		clear_bore("FA-510__001",Vector3(0,sign*58,276),Vector3(0,sign*71,276),5.8,"Radial retainer housing land %d"%sign)
+		clear_bore("FA-510__001",Vector3(0,sign*72.4,276),Vector3(0,sign*105,276),8.8,"Retainer tool approach outside housing %d"%sign,-1,false)
+		material_between("FA-510__001",Vector3(10,sign*71,276),Vector3(10,sign*69,276),"Retainer washer has a flat bearing face %d"%sign)
+		material_between("H-12040__%03d"%(15 if sign<0 else 16),Vector3(7,sign*85,276),Vector3(7,sign*83,276),"Retainer screw head faces outward %d"%sign)
+		material_between("W-12__%03d"%(47 if sign<0 else 48),Vector3(8,sign*73,276),Vector3(8,sign*69,276),"Retainer washer seats on exterior land %d"%sign)
+		for uid in ["FA-524__001","FA-524__002"]:
+			clear_bore(uid,Vector3(0,sign*32.5,276),Vector3(0,sign*72.5,276),5.8,"Retainer screw clears shaft collar %d / %s"%[sign,uid],-1,false)
 	for x in [-29,29]:
 		for uid in ["FA-524__001","FA-524__002"]:clear_bore(uid,Vector3(x,-16,292),Vector3(x,16,292),5.5,"Collar joining hole %d"%x)
 	var length = Vector2(500,520).length()

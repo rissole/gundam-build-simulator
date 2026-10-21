@@ -18,7 +18,7 @@ def build_soles():
             m=Mesh().prism(chamfer_rect(x0,x1,y0,y1,20),0,140)
             ex=(s*360,400 if family=="FA-304" else 0,-1050-(0 if family=="FA-302" else 140))
             pad=emit(family,("Heel" if family=="FA-302" else "Midfoot" if family=="FA-303" else "Forefoot")+"_pad",
-                     m,SOLE,9.6,ex,("Rubber",),4)
+                     m,SOLE,9.6,ex,("Rubber",),4,role=f"{family}/pad/{'out' if s<0 else 'in'}")
             bore(pad,[(vec(p)+Vector((0,0,40)),21,100,(0,0,1)) for p in pts]
                  +[((p[0],p[1],25),28,78,(0,0,1)) for p in pts])
             # Tread grooves are cut from the ground-facing surface.
@@ -30,12 +30,14 @@ def build_soles():
                     grooves.box(((x0+x1)/2,y,5),(x1-x0-80,30,14))
                 y+=120
             if grooves.v:cut(pad,grooves)
-            for p in pts:
+            pad_sites=("out-rear", "out-front", "in-rear", "in-front")
+            for site,p in zip(pad_sites,pts):
                 emit("FA-305","Pad_compression_sleeve",
                      Mesh().tube((p[0],p[1],102),21,13,76),
-                     SOLE,9.5,vec(ex)+Vector((0,0,-180)),("Steel",),.5)
+                     SOLE,9.5,vec(ex)+Vector((0,0,-180)),("Steel",),.5,
+                     role=f"FA-305/{pad['source_role']}/{site}")
             hardware("Sole pad mounts",pts,axis=(0,0,1),phase=9.8,
-                     explosion=vec(ex)+Vector((0,0,-330)),owner=pad)
+                     explosion=vec(ex)+Vector((0,0,-330)),owner=pad,sites=pad_sites)
     for family,y0,y1,pts,phase,ex in [
         ("FA-300",-760,1100,rearpoints,9,(0,0,-500)),
         ("FA-301",1310,2190,frontpoints,9.1,(0,650,-650))]:
@@ -47,7 +49,7 @@ def build_soles():
              +[((p[0],p[1],185),13,60,(0,0,1)) for p in pts]
              +[((p[0],p[1],149),28,38,(0,0,1)) for p in pts])
         hardware("Sole carrier mounts",pts,axis=(0,0,1),phase=phase+.2,
-                 explosion=vec(ex)+Vector((0,0,-160)),owner=carrier)
+                 explosion=vec(ex)+Vector((0,0,-160)),owner=carrier,sites=("out-rear", "out-middle", "out-front", "in-rear", "in-middle", "in-front") if family=="FA-300" else ("out-rear", "out-front", "in-rear", "in-front"))
 
 
 def wedge_shell(outline, low, height_fn, thickness=20):
@@ -129,10 +131,11 @@ def build_armor():
             a=vec(a);p=vec(p)
             # Captive bolts remain independent geometry and have their own collars.
             hardware("Armor captive bolts",[p],a,12.15+index*.13,
-                     vec(ex)-a*(120+i*20),owner=panel)
+                     vec(ex)-a*(120+i*20),owner=panel,sites=(f"mount-{i+1}",))
             collarpos=p+a*22
             emit("FA-405",name+"_captive_collar",Mesh().tube(collarpos,11,6,4,a,n=24),
-                 ARMOR,12.12+index*.13,vec(ex)+a*110,("Steel",),.4)
+                 ARMOR,12.12+index*.13,vec(ex)+a*110,("Steel",),.4,
+                 role=f"FA-405/{name}/mount-{i+1}")
             if pid in ("FA-403","FA-404"):
                 parent=find_part("FA-103")
                 anchor=Vector((500 if p.x>0 else -500, max(-100,min(100,p.y)),1000))
@@ -181,11 +184,11 @@ def build_electrical():
     for x,y in corners:
         add_feature(case,Mesh().cyl((x,y,489),12,28))
     hardware("Junction box mounting",[(x,y,480.5) for x,y in corners],
-             phase=10.1,explosion=(1100,450,1000),owner=case)
+             phase=10.1,explosion=(1100,450,1000),owner=case,sites=("out-rear", "out-front", "in-rear", "in-front"))
     hardware("Junction box lid",[(x,y,622.5) for x,y in corners],
-             phase=10.9,explosion=(1100,450,1950),owner=lid)
+             phase=10.9,explosion=(1100,450,1950),owner=lid,sites=("out-rear", "out-front", "in-rear", "in-front"))
     hardware("Controller board mounting",[(x,y,510.5) for x in (195,405) for y in (695,905)],
-             phase=10.3,explosion=(1100,450,1550),owner=board)
+             phase=10.3,explosion=(1100,450,1550),owner=board,sites=("out-rear", "out-front", "in-rear", "in-front"))
     for i,p in enumerate(ports):
         m=Mesh().tube(p,18,10,30,(0,1,0))
         m.cyl(vec(p)+Vector((0,12,0)),21,5,(0,1,0))
@@ -217,4 +220,4 @@ def build_electrical():
             hp=p+Vector((28,0,-7))
             bore(clip,[(hp,6.5,20,(0,0,1))])
             hardware("Cable clips",[hp],phase=10.65,
-                     explosion=vec(ex)+Vector((100+i*40,0,250)),owner=clip)
+                     explosion=vec(ex)+Vector((100+i*40,0,250)),owner=clip,sites=("mount",))

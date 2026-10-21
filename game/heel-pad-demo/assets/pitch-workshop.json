@@ -221,12 +221,12 @@
     {
       "instance_id": "FA-526__001",
       "part_id": "FA-526",
-      "kind": "fa-526__001"
+      "kind": "fa-526-pitch"
     },
     {
       "instance_id": "FA-527__001",
       "part_id": "FA-527",
-      "kind": "fa-527__001"
+      "kind": "fa-527-pitch"
     },
     {
       "instance_id": "H-12040__001",
@@ -256,12 +256,12 @@
     {
       "instance_id": "FA-526__002",
       "part_id": "FA-526",
-      "kind": "fa-526__002"
+      "kind": "fa-526-pitch"
     },
     {
       "instance_id": "FA-527__002",
       "part_id": "FA-527",
-      "kind": "fa-527__002"
+      "kind": "fa-527-pitch"
     },
     {
       "instance_id": "H-12040__003",
@@ -286,7 +286,7 @@
     {
       "instance_id": "FA-528__001",
       "part_id": "FA-528",
-      "kind": "fa-528__001"
+      "kind": "fa-528-pitch"
     },
     {
       "instance_id": "H-12030__021",
@@ -301,7 +301,7 @@
     {
       "instance_id": "FA-528__002",
       "part_id": "FA-528",
-      "kind": "fa-528__002"
+      "kind": "fa-528-pitch"
     },
     {
       "instance_id": "H-12030__022",
@@ -616,12 +616,12 @@
     {
       "instance_id": "FA-221__001",
       "part_id": "FA-221",
-      "kind": "fa-221__001"
+      "kind": "fa-221-pitch"
     },
     {
       "instance_id": "FA-222__001",
       "part_id": "FA-222",
-      "kind": "fa-222__001"
+      "kind": "fa-222-pitch"
     },
     {
       "instance_id": "H-12030__029",
@@ -661,12 +661,12 @@
     {
       "instance_id": "FA-221__002",
       "part_id": "FA-221",
-      "kind": "fa-221__002"
+      "kind": "fa-221-pitch"
     },
     {
       "instance_id": "FA-222__002",
       "part_id": "FA-222",
-      "kind": "fa-222__002"
+      "kind": "fa-222-pitch"
     },
     {
       "instance_id": "H-12030__030",
@@ -706,7 +706,7 @@
       "id": "pitch",
       "definition": "pitch_actuator",
       "label": "Pitch actuator",
-      "base": "FA-510__001",
+      "base": "FA-513__001",
       "home": [
         -6.4,
         0.235,
@@ -742,5 +742,9 @@
     "FA-403",
     "FA-404",
     "FA-405"
-  ]
+  ],
+  "context_collision": {
+    "FA-103__001": "mesh",
+    "FA-200__001": "mesh"
+  }
 }

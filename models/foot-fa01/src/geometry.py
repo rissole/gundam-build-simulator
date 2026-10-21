@@ -6,12 +6,14 @@ import csv
 import collections
 from pathlib import Path
 from mathutils import Vector
+from source_identity import SourceRegistry
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = Path(__file__).resolve().parents[1] / "output"
 SPEC = ROOT / "design/legs/foot-and-ankle"
 PARTS = []
 COUNTS = collections.Counter()
+IDENTITIES = SourceRegistry()
 USES = collections.Counter()
 SCHEDULE = {r["use"]: r for r in csv.DictReader((SPEC / "hardware.csv").open())}
 MATERIALS = {}
@@ -176,7 +178,8 @@ def chamfer_rect(x0, x1, y0, y1, b=20):
 def emit(family, label, mesh, group, phase, explosion=(0, 0, 0),
          materials=("Frame",), bevel=2, role=None):
     COUNTS[family] += 1
-    uid = f"{family}__{COUNTS[family]:03d}"
+    source_role = role or f"{family}/{label}"
+    uid = IDENTITIES.claim(source_role, family)
     name = f"{uid}__{label}"
     minv = Vector(tuple(min(p[a] for p in mesh.v) for a in range(3)))
     maxv = Vector(tuple(max(p[a] for p in mesh.v) for a in range(3)))
@@ -197,6 +200,7 @@ def emit(family, label, mesh, group, phase, explosion=(0, 0, 0),
     obj.location = center/1000
     obj["part_id"] = family
     obj["instance_id"] = uid
+    obj["source_role"] = source_role
     obj["label"] = label.replace("_", " ")
     obj["assembly_group"] = group
     obj["assembly_phase"] = phase
@@ -268,21 +272,30 @@ def screw_mesh(p, axis, diameter, length):
 
 
 def hardware(use, points, axis=(0,0,-1), phase=3, explosion=(0,0,800),
-             group="08 Fasteners", owner=None):
+             group="08 Fasteners", owner=None, *, sites, role=None):
     row = SCHEDULE[use]
     diameter = int(row["thread"][1:])
     length = int(row["length_mm"])
     wt = {12:2.5,24:4,36:6}[diameter]
     wi = {12:13,24:26,36:38}[diameter]/2
     wo = {12:24,24:44,36:66}[diameter]/2
-    for idx, point in enumerate(points):
+    if len(sites) != len(points) or len(set(sites)) != len(sites):
+        raise ValueError(f"Hardware sites must be unique and match points: {use}")
+    connection = role or (owner["source_role"] if owner is not None else None)
+    if not connection:
+        raise ValueError(f"Hardware needs an owner or explicit role: {use}")
+    for idx, (site, point) in enumerate(zip(sites, points)):
         d = vec(axis).normalized()
         ex = vec(explosion)+d*(-90-idx*6)
         bolt = emit(row["bolt_id"], use.replace(" ","_"), screw_mesh(point,d,diameter,length),
-                    group, phase+.025*(idx%4), ex, ("Pin",), 0)
+                    group, phase+.025*(idx%4), ex, ("Pin",), 0,
+                    role=f"hardware/{connection}/{use}/{site}/bolt")
         washer = emit(row["washer_id"], "Fastener_washer",
                       Mesh().tube(vec(point)+d*wt/2,wo,wi,wt,d,n=24),
-                      group, phase-.08+.025*(idx%4), ex+d*45, ("Steel",), .3)
+                      group, phase-.08+.025*(idx%4), ex+d*45, ("Steel",), .3,
+                      role=f"hardware/{connection}/{use}/{site}/washer")
+        bolt["paired_instance_id"] = washer["instance_id"]
+        washer["paired_instance_id"] = bolt["instance_id"]
         for obj in (bolt,washer):
             obj["hardware_use"] = use
             if owner: obj["owner_instance"] = owner.name

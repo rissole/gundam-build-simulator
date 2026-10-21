@@ -5,6 +5,7 @@ var stage: Node3D
 var camera: Camera3D
 var signature: String = ""
 var panels: HBoxContainer
+static var context_shader: Shader
 const CONTEXT_SHADER = """
 shader_type spatial;
 render_mode blend_mix, cull_disabled, depth_prepass_alpha;
@@ -58,7 +59,9 @@ func _ready() -> void:
 	camera.current = true
 
 func show_parts(game: Node, entries: Array, views: Array = [], options: Dictionary = {}) -> void:
-	var key = str([entries,views,options])
+	# Authored panels show a fixed instructional figure. Installation progress is
+	# represented by the HUD; it does not change these panels' sources or poses.
+	var key = str(views) if not views.is_empty() else str([entries,views,options])
 	if key == signature:return
 	signature = key
 	if is_instance_valid(panels):
@@ -102,7 +105,7 @@ func show_parts(game: Node, entries: Array, views: Array = [], options: Dictiona
 	var authored = options.has("direction")
 	var context_materials: Array[ShaderMaterial] = []
 	for entry in entries:
-		var ref: Dictionary = game.source[entry.source]
+		var ref: Dictionary = game.source[game.source_uid(entry.source)]
 		var mesh = MeshInstance3D.new()
 		mesh.mesh = ref.mesh
 		mesh.transform = ref.transform
@@ -115,14 +118,17 @@ func show_parts(game: Node, entries: Array, views: Array = [], options: Dictiona
 				var offset = options.offsets[entry.source]
 				mesh.position += Vector3(offset[0],offset[1],offset[2])
 		if entry.get("faint",false):
-			mesh.material_override = game.material(Color(0.6,0.72,0.8,0.38 if authored else 0.16))
-			mesh.material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			if authored:
+				if context_shader == null:
+					context_shader = Shader.new()
+					context_shader.code = CONTEXT_SHADER
 				var context_material = ShaderMaterial.new()
-				context_material.shader = Shader.new()
-				context_material.shader.code = CONTEXT_SHADER
+				context_material.shader = context_shader
 				mesh.material_override = context_material
 				context_materials.append(context_material)
+			else:
+				mesh.material_override = game.material(Color(0.6,0.72,0.8,0.16))
+				mesh.material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		stage.add_child(mesh)
 		var aabb: AABB = mesh.transform*mesh.mesh.get_aabb()
 		if not authored or entry.get("highlight",false):

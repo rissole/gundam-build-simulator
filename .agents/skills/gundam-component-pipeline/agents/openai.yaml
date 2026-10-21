@@ -1,0 +1,3 @@
+interface:
+  display_name: "Gundam Component Pipeline"
+  short_description: "Turn component designs into playable assembly manuals"

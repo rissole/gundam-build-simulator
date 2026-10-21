@@ -1,0 +1,201 @@
+{
+  "passed": true,
+  "case_count": 17,
+  "check_count": 1790,
+  "inputs_unchanged": true,
+  "cases": [
+    {
+      "name": "assembly_model_test",
+      "passed": true,
+      "checks": 45,
+      "seconds": 0.147
+    },
+    {
+      "name": "free_build_targeting_test",
+      "passed": true,
+      "checks": 22,
+      "seconds": 0.491
+    },
+    {
+      "name": "manual_candidates_test",
+      "passed": true,
+      "checks": 22,
+      "seconds": 0.49
+    },
+    {
+      "name": "manual_diagram_cache_test",
+      "passed": true,
+      "checks": 10,
+      "seconds": 0.196
+    },
+    {
+      "name": "manual_navigation_test",
+      "passed": true,
+      "checks": 22,
+      "seconds": 0.372
+    },
+    {
+      "name": "nested_runtime_test",
+      "passed": true,
+      "checks": 36,
+      "seconds": 0.26
+    },
+    {
+      "name": "parent_sequence_test",
+      "passed": true,
+      "checks": 41,
+      "seconds": 1.866
+    },
+    {
+      "name": "part_variants_test",
+      "passed": true,
+      "checks": 414,
+      "seconds": 0.486
+    },
+    {
+      "name": "pitch_interface_test",
+      "passed": true,
+      "checks": 113,
+      "seconds": 1.22
+    },
+    {
+      "name": "pitch_model_test",
+      "passed": true,
+      "checks": 117,
+      "seconds": 0.194
+    },
+    {
+      "name": "pockets_model_test",
+      "passed": true,
+      "checks": 26,
+      "seconds": 0.195
+    },
+    {
+      "name": "state_test",
+      "passed": true,
+      "checks": 57,
+      "seconds": 0.2
+    },
+    {
+      "name": "single_pad_desktop",
+      "passed": true,
+      "checks": 105,
+      "seconds": 0.77
+    },
+    {
+      "name": "multi_build_desktop",
+      "passed": true,
+      "checks": 65,
+      "seconds": 0.756
+    },
+    {
+      "name": "pitch_desktop",
+      "passed": true,
+      "checks": 306,
+      "seconds": 5.769
+    },
+    {
+      "name": "pitch_swapped_desktop",
+      "passed": true,
+      "checks": 335,
+      "seconds": 5.841
+    },
+    {
+      "name": "pockets_desktop",
+      "passed": true,
+      "checks": 54,
+      "seconds": 0.478
+    }
+  ],
+  "tested_input_sha256": {
+    "game/heel-pad-demo/assets/assembly-definitions.json": "210aeed2e7b358fe6fb10df34ec6f7487a120a51c0af5fead040655d71ecf3a2",
+    "game/heel-pad-demo/assets/foot-fa01.glb": "0ed681cab15f857d4e1197ae66cdde1f02263490bfb04c6208d4301a65b86aa0",
+    "game/heel-pad-demo/assets/heel-pad.json": "2c6e9073a576504e3104b0b0d83b2748e6ab0703c7f01c2fc12d12577a341d3f",
+    "game/heel-pad-demo/assets/heel-pads.json": "55ddc5b4941e9a55467aa51e6004bb74b435b4e0d39e8af1deac698c0685f8d8",
+    "game/heel-pad-demo/assets/part-images/bolt.png": "b9b95aa9a400f0dcb51837ba0a57c4ea5e83fb04524570f0f2a79af578cc3ff1",
+    "game/heel-pad-demo/assets/part-images/fa-220__001.png": "f9d859144e3d3b6c41fcc72496e007832c4421d43ab65614e5c5fbb5f2be0f62",
+    "game/heel-pad-demo/assets/part-images/fa-220__002.png": "f543f71088a660116b34a3287b0cb20a6674e445077638893afa31845fde0031",
+    "game/heel-pad-demo/assets/part-images/fa-221-pitch.png": "1a07971696d0ce9e1075f7781d09a6f23283a918d6903e3ec2b7dddaaeb12cdc",
+    "game/heel-pad-demo/assets/part-images/fa-221__001.png": "6877199c9d0d5f31805c0a4c432dfdaee7cd61bbfe1b2654d4afa3c52b7de16c",
+    "game/heel-pad-demo/assets/part-images/fa-221__002.png": "1a07971696d0ce9e1075f7781d09a6f23283a918d6903e3ec2b7dddaaeb12cdc",
+    "game/heel-pad-demo/assets/part-images/fa-222-pitch.png": "59911bd16d2cf0f317df06b7760bdeec47695fb4201dd1c23101903f2ba5d9a1",
+    "game/heel-pad-demo/assets/part-images/fa-222__001.png": "59911bd16d2cf0f317df06b7760bdeec47695fb4201dd1c23101903f2ba5d9a1",
+    "game/heel-pad-demo/assets/part-images/fa-222__002.png": "59911bd16d2cf0f317df06b7760bdeec47695fb4201dd1c23101903f2ba5d9a1",
+    "game/heel-pad-demo/assets/part-images/fa-510__001.png": "01a722a0d654a831f6a3d61bfbf2b58bb7940af5c06d464e6b8b4f5a1782c0ed",
+    "game/heel-pad-demo/assets/part-images/fa-511__001.png": "47815e9affd2aada0732f5c35f36d9b6a4b89611853084924cb6344431090f92",
+    "game/heel-pad-demo/assets/part-images/fa-512__001.png": "22cefa46d09706ccf69237e5225d6952b269151b9063ee7ff19f1fcb65bc9279",
+    "game/heel-pad-demo/assets/part-images/fa-513__001.png": "18079f567e05966c25f730d6b52d9f85b52ca9a8ccd3e6344cea6c58906dc665",
+    "game/heel-pad-demo/assets/part-images/fa-514__001.png": "3a49743f863cd9526708fd09446f9ea03335ac35afa40141b40eb6a05f25c9a8",
+    "game/heel-pad-demo/assets/part-images/fa-515__001.png": "3de87096e68f4bacd521f75fd5a2f303486e40a9328bf83ed4690673b9c956a3",
+    "game/heel-pad-demo/assets/part-images/fa-516__001.png": "60a0428857684af31b73d0731e466f984a7a092c0299b7a496e6cc0a6533ec4e",
+    "game/heel-pad-demo/assets/part-images/fa-517__001.png": "2e5a12bf4742412f1cb9b93bb8bcd06e7af0666f09d50a149f59bec65a0c415e",
+    "game/heel-pad-demo/assets/part-images/fa-518__001.png": "3f5129ee1989edde6b5ff62840e322a451dc05e23472a0c984685098b4b69c4e",
+    "game/heel-pad-demo/assets/part-images/fa-519__001.png": "a282e4722cdfff76c47fc60132c693f03594c33bd919f23499192be514e6867b",
+    "game/heel-pad-demo/assets/part-images/fa-520__001.png": "36f6633dc8be8ca391f2fec6b0f2494d575f257c77bb656e9b7ecb1a5d80d1c2",
+    "game/heel-pad-demo/assets/part-images/fa-521__001.png": "59e5d2d0dd75c621894552eeefcaea8c4a3145ede99c9b99f9c4286222979b50",
+    "game/heel-pad-demo/assets/part-images/fa-522__001.png": "b34e60861fd02a27c50c644fdf8c149910df64cff7c5ba7939b1ab5631c45f4e",
+    "game/heel-pad-demo/assets/part-images/fa-523__001.png": "d8049e3e24b970deac9f7b0141a633f1fab6bbb7c0f5623f6c4ba25409005baf",
+    "game/heel-pad-demo/assets/part-images/fa-524__001.png": "b8dcdd02e2ac240ec2cfe457d6bcbc8f3783297b77d110c0427799b251a5cc46",
+    "game/heel-pad-demo/assets/part-images/fa-524__002.png": "36667980b0c209a73131e471ab0dc4255e1d51c2acc313e8d971391dc6272b8d",
+    "game/heel-pad-demo/assets/part-images/fa-525__001.png": "fb55d963e22afa2ea7090eac64a2dda186b65168d0d6565b2a4cbf7d433f474a",
+    "game/heel-pad-demo/assets/part-images/fa-525__002.png": "c792d7ffa7c386a57389b5ee81919edce009aab6166af11138df192937d1bd96",
+    "game/heel-pad-demo/assets/part-images/fa-526-pitch.png": "86a93d218394dea168eeb7b240d98366a18dcd4ccb802fee51dd8a2261366714",
+    "game/heel-pad-demo/assets/part-images/fa-526__001.png": "86a93d218394dea168eeb7b240d98366a18dcd4ccb802fee51dd8a2261366714",
+    "game/heel-pad-demo/assets/part-images/fa-526__002.png": "86a93d218394dea168eeb7b240d98366a18dcd4ccb802fee51dd8a2261366714",
+    "game/heel-pad-demo/assets/part-images/fa-527-pitch.png": "d99d78cc8ccd13b5f9e4a8696dd20ee0eb050cfafc9b603b4a97510401a64a4f",
+    "game/heel-pad-demo/assets/part-images/fa-527__001.png": "d99d78cc8ccd13b5f9e4a8696dd20ee0eb050cfafc9b603b4a97510401a64a4f",
+    "game/heel-pad-demo/assets/part-images/fa-527__002.png": "d99d78cc8ccd13b5f9e4a8696dd20ee0eb050cfafc9b603b4a97510401a64a4f",
+    "game/heel-pad-demo/assets/part-images/fa-528-pitch.png": "937934609df6d72fc4c4ae75ea11d81226b82b425fd68cc1fa5a27435e60134b",
+    "game/heel-pad-demo/assets/part-images/fa-528__001.png": "5f2fea43a9965b8103a89ead1030e4d3b67fbe9b0884bb98bc97d39de083579b",
+    "game/heel-pad-demo/assets/part-images/fa-528__002.png": "937934609df6d72fc4c4ae75ea11d81226b82b425fd68cc1fa5a27435e60134b",
+    "game/heel-pad-demo/assets/part-images/fa-529__001.png": "d616fb02556db7caa03e2e67dee600b84729280a56ac0063a471e03d0373e610",
+    "game/heel-pad-demo/assets/part-images/fa-529__002.png": "6ae0b6cbb95c93a4a08aca50e5c84022acd916367551f6cee7d68b8539871497",
+    "game/heel-pad-demo/assets/part-images/fa-530__001.png": "85e4b4fe4f964086330e494c78d164ad2eda670f121088f68bd73c2e43f0817b",
+    "game/heel-pad-demo/assets/part-images/h-12030.png": "5ad6c9e0f92ff3496bffcbe78873fce6270411ce97c66e0e65714b616e7f9654",
+    "game/heel-pad-demo/assets/part-images/h-12040.png": "d481f11ba052bed2c3005622981330519b333bdd20c7426b11634247c3973281",
+    "game/heel-pad-demo/assets/part-images/h-12050.png": "7a14db54a198314f24651fb55c2ecd3e4057a29a1a51d2b81561973116d0c638",
+    "game/heel-pad-demo/assets/part-images/h-24070.png": "009d44205720fa75e10dbd5413e4f1ef6b667c7e70f36f20e57f239cfae6e77a",
+    "game/heel-pad-demo/assets/part-images/pad.png": "c2e1dd2854a1c86bbf88f51c8b0b50932ae9dd553eea3347fc6490e6c8bf72d8",
+    "game/heel-pad-demo/assets/part-images/sleeve.png": "8226c93af6448a2848c250cf2f99f364c84a254591c26a6ccb74438262b240ee",
+    "game/heel-pad-demo/assets/part-images/w-12.png": "ebd67b925ba5eda84d97b40d1d39b89a5ea832304f7ab4849656ae6feca7896c",
+    "game/heel-pad-demo/assets/part-images/washer.png": "873187aa4f1f2efeea6a5834aead19c6a38aa061270220f60920b9912e2b5fd7",
+    "game/heel-pad-demo/assets/pitch-actuator-definitions.json": "ecbe73540542fe0eab8b5d4d6e0569e76374884c30b0ebba49c62bb679ee1b89",
+    "game/heel-pad-demo/assets/pitch-workshop.json": "5e67a3b1a152d0c5900541b4722ccef9d9241a1ef6ddc7e73993e05ef3c77604",
+    "game/heel-pad-demo/project.godot": "59e7e492f718885be8518fbf7c87994172903cf88d4187fa8d4a9f0ae506982b",
+    "game/heel-pad-demo/scripts/assembly_model.gd": "ce4bae85de3d4a6e14673d3bdb1041566ddd56928958ec1e1e9321a0f0f78e44",
+    "game/heel-pad-demo/scripts/assembly_runtime.gd": "adc77ced1d46a9362c2165bce270998261c708e9fdee6012731766554108cb6a",
+    "game/heel-pad-demo/scripts/assembly_state.gd": "6e87f99b14ad5a9514e866ea4ea660e12ec86189b01fa2a1545df140647efa63",
+    "game/heel-pad-demo/scripts/component_interaction.gd": "aa665f587fb5c000191c321be93fdae4cdd7976994322d35da08b9b3bd6dbd7e",
+    "game/heel-pad-demo/scripts/hud.gd": "313fa6b4161026812294166eff2b6ba3937fbfdff974a05b7c1099b994d5bcdb",
+    "game/heel-pad-demo/scripts/loose_part.gd": "e3d3c2be58353a4bf1d4fce832606392f4da648ccefd8c6e23b04e3e478fff60",
+    "game/heel-pad-demo/scripts/manual_browser.gd": "75d2e5cfc482eed79fbc001c54f17e5311200a28d3440cfff28f9b9446e0dba4",
+    "game/heel-pad-demo/scripts/manual_diagram.gd": "597a135a97d8962dc25b259ab78a3613a7913b630ac78982cc72bdf7c9d95c38",
+    "game/heel-pad-demo/scripts/part_storage.gd": "733c57629ce0d00e75dc10013e64d8578369c069e92bdec239a4fa6e50678407",
+    "game/heel-pad-demo/scripts/solid_handling.gd": "63fe77154537eca743bf15a97bc4672dfebfde37ab2a9edf1497148219fc58dd",
+    "game/heel-pad-demo/scripts/workshop.gd": "7a9fab00c2cb1770dd970164792d89e9d79d01f670172ef88a74cdc5b57e5658",
+    "game/heel-pad-demo/tests/assembly_model_test.gd": "39180d601ebc16b22efccdbb883779ac2d95fa7ac8e623dfee9b7fb02afe0d31",
+    "game/heel-pad-demo/tests/demo_test.gd": "428f98f9fb0c6bc22f10586113da8de35392b5e756c6340d430d473ae7b33d92",
+    "game/heel-pad-demo/tests/free_build_targeting_test.gd": "a43c2ef07b00ac7cbb7862c613a49cf2db49bbff9fdd205d79c0d09216766559",
+    "game/heel-pad-demo/tests/manual_candidates_test.gd": "88b7098dcfb3360ca321a7f88d14a31e2090a2027bd4dc4380c21dd54065ec7d",
+    "game/heel-pad-demo/tests/manual_diagram_cache_test.gd": "be52cd82e6bdefbdf7603c08bfc7c80c86127dab2b213d722dde28aae3262c3c",
+    "game/heel-pad-demo/tests/manual_navigation_test.gd": "f907d4cb8ecf6e523a13ec13c2ea173b6fd35d36270cf077273e60c30ec7893e",
+    "game/heel-pad-demo/tests/multi_build_test.gd": "ab69cc953c928fcc0a513e60dbc4ff6d5ecc8d5826448d5fdceb89b027479c5e",
+    "game/heel-pad-demo/tests/nested_runtime_test.gd": "03d6c96879faae69275dc706f0a1d79d6b77183dd57333e3bee025515184f65d",
+    "game/heel-pad-demo/tests/parent_sequence_test.gd": "3ff716c18bee12efd43567c24c63fb5f43aaa968752ad3a9185b6dbb00feb5db",
+    "game/heel-pad-demo/tests/part_variants_test.gd": "ddc75fe7d824ab73ddeda35c6e3e73352be855ec19975d64ddc4d33f10d784fd",
+    "game/heel-pad-demo/tests/pitch_build_test.gd": "4b6a8f8991166c2b2c7d23ca528d3c68536a425448fadc6e8ea94ea80a677152",
+    "game/heel-pad-demo/tests/pitch_interface_test.gd": "3bce64a500d7d09fb165b09d717fe98f030163b14ad521cea619ac95d1777e92",
+    "game/heel-pad-demo/tests/pitch_model_test.gd": "6e09ac116c0dca8979cb37b41238e2e9cd4798de5696a2640efb03d3c8500750",
+    "game/heel-pad-demo/tests/pitch_visual_review.gd": "1b2da79f6566547723c2f92a6171ecdded94b5c25ff153b40f6df0bd36b96a83",
+    "game/heel-pad-demo/tests/pockets_model_test.gd": "ff60352e94460ca00a1e8b05327d1e49953f0c7633b3a749d7b822f09a162bec",
+    "game/heel-pad-demo/tests/pockets_workshop_test.gd": "716b23910d74de2b37e5a8c9848c527879e165708a9aa5542527b08712cbec4b",
+    "game/heel-pad-demo/tests/state_test.gd": "36886653abdee759d1fb032c669987f25eae798b25b7c840ff9b928a539e65d6",
+    "game/heel-pad-demo/tests/test_source_assets.py": "1d429984446dc315267ab75c85d6e9b636a80500f5f404a7c9311dcebddcfaf3",
+    "game/heel-pad-demo/tools/author_pitch_actuator.py": "cbddfae484d3e5ff9b01652b4ccd6a614232fb6c6b7ab3f76d062691d2792e08",
+    "game/heel-pad-demo/tools/build_pitch_review_gallery.py": "4d9663f8231e746b65dc5d87c74782df3bd8022596218a7873fe8d132b5f7f06",
+    "game/heel-pad-demo/tools/merge_pitch_meshes.py": "ed15c5ec88f2363da7f8acf24d79a7037919a19350c0e9c95803d54fa49c368e",
+    "game/heel-pad-demo/tools/render_part_images.py": "7e59739721af121348aafb1d4329796a98b52900c2cae5552af5ef36e0aa3609",
+    "game/heel-pad-demo/tools/run_regressions.py": "ff59bb1a627ef2e23bec0766fd6b6e8cecafd5ee1980420bd2476984aacf81df",
+    "play-heel-pad.command": "0c5bacb3f6f5e9409be5263eaa2323b6de3895c12f37a7f02b33bc40586d4b72"
+  }
+}

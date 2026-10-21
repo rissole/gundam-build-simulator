@@ -88,7 +88,7 @@ The complete hangar, elevators, launch sequence, and other body sections follow 
 
 **Proposal following the user's positive heel-pad feedback:** build a desktop workshop containing two heel-pad builds and one complete pitch actuator, with a parent foot manual for their installation. This expands the earlier stage 4 before committing to full-foot content authoring. The interaction priorities remain collecting pieces, following illustrated instructions, and comfortable handling. No headset milestone is required.
 
-**Implementation status:** increments 1–3 below are delivered in the default 135-piece desktop workshop. The source-backed 91-piece pitch actuator and 18 mounting pieces join the two existing pad builds. Authored component targets, pocket and two-hand profiles, staged closure prerequisites, nested manual navigation, and parent undo now cover this longer branch. The pocket/storage rebuild adds ten persistent stacks, ID/image drawers and separate shelf carrying. Save/resume remains next.
+**Implementation status:** increments 1–3 below are delivered in the default 135-piece desktop workshop. The source-backed 91-piece pitch actuator and 18 mounting pieces join the two existing pad builds. Authored component targets, pocket and two-hand profiles, staged closure prerequisites, nested manual navigation, and parent undo now cover this longer branch. The pocket/storage rebuild adds ten persistent stacks, ID/image drawers and separate shelf carrying. The motor-first follow-up builds the exposed drive before fitting its housing, hides enclosed internals after cap closure, caches authored diagrams across snap progress, and adds a large manual tree browser with breadcrumbs. Save/resume remains next.
 
 ### Playable scope
 
