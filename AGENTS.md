@@ -41,3 +41,12 @@ independent work while subagents run, collect and review their results, integrat
 changes, resolve conflicts and perform appropriate final validation. Report what
 was completed and any remaining limitations. Delegation does not expand the
 task's authorization or bypass project skills, permissions or required reviews.
+
+# Working with feedback
+
+Treat feedback as a design problem to evaluate, not a checklist to follow blindly.
+Point out overlooked constraints, conflicting requirements and practical tradeoffs.
+Push back with a concrete reason when a requested change would hurt usability or
+correctness, and ask focused questions when the answer materially changes the work.
+Make reasonable implementation choices and continue authorized work while resolving
+independent questions. This applies to all feedback, not only UI changes.
