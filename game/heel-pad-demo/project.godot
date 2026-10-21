@@ -5,7 +5,7 @@ config_version=5
 config/name="FA-01 • Assembly Workshop"
 run/main_scene="res://scenes/workshop.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/description="A physical, manual-guided heel-pad assembly study."
+config/description="A manual-guided workshop for heel pads and a complete pitch actuator."
 
 [display]
 window/size/viewport_width=1440

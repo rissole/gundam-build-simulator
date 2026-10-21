@@ -35,6 +35,6 @@ func update_grip(delta: float) -> void:
 	query.margin = 0.002
 	for i in range(1,steps+1):
 		var pose = Transform3D(Basis(from.slerp(to,float(i)/steps)),global_position)
-		query.transform = pose
+		query.transform = pose*get_node("CollisionShape3D").transform
 		if not get_world_3d().direct_space_state.intersect_shape(query,1).is_empty():break
 		global_basis = pose.basis

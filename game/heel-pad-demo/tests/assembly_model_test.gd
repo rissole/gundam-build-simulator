@@ -1,0 +1,89 @@
+extends SceneTree
+var checks: Array[Dictionary] = []
+func expect(value: bool, name: String) -> void:
+	checks.append({"check":name,"passed":value})
+	if not value:push_error(name)
+
+func _initialize() -> void:
+	var definitions = HeelAssemblyState.definition_data()
+	var scenario = HeelAssemblyState.scenario()
+	var model = AssemblyModel.new()
+	expect(model.configure(definitions,scenario).is_empty(),"Authoring data validates")
+	expect(model.items.size()==26,"Logical assemblies do not add physical inventory objects")
+	var broken = definitions.duplicate(true)
+	broken.assemblies.heel_pad.slots.base.requires = ["sleeve_0"]
+	expect(not AssemblyModel.validate_definitions(broken).is_empty(),"Dependency cycles are rejected")
+	broken = definitions.duplicate(true)
+	broken.assemblies.heel_pad.slots.sleeve_0.requires = ["missing"]
+	expect(not AssemblyModel.validate_definitions(broken).is_empty(),"Unknown prerequisite references are rejected")
+	broken = definitions.duplicate(true)
+	broken.assemblies.heel_pad.manual[0].slots.append("missing")
+	expect(not AssemblyModel.validate_definitions(broken).is_empty(),"Unknown manual slot references are rejected")
+	broken = definitions.duplicate(true)
+	broken.assemblies.heel_pad.slots.recursion = {"assembly":"foot","milestone":"complete"}
+	expect(not AssemblyModel.validate_definitions(broken).is_empty(),"Recursive child ownership definitions are rejected")
+	var bad_scenario = scenario.duplicate(true)
+	bad_scenario.builds[1].base = bad_scenario.builds[0].base
+	expect(not model.configure(definitions,bad_scenario).is_empty() and model.items.size()==26,"Duplicate base ownership is rejected before changing live state")
+	bad_scenario = scenario.duplicate(true)
+	bad_scenario.parts.append(bad_scenario.parts[0])
+	expect(not model.configure(definitions,bad_scenario).is_empty(),"Duplicate source identities are rejected")
+	bad_scenario = scenario.duplicate(true)
+	bad_scenario.builds[0].definition = "unknown"
+	expect(not model.configure(definitions,bad_scenario).is_empty(),"Unknown scenario definition is rejected")
+	for i in range(8):model.transfer("sleeve","bin","pocket")
+	var first_sleeve = model.find_item("sleeve","pocket")
+	expect(not model.install("pad_1","sleeve_0",first_sleeve).ok,"Work-location rules reject assembly while loose")
+	expect(model.move_assembly("pad_1","station:one").is_empty(),"Station is a location, independent of the recipe")
+	expect(not model.move_assembly("pad_2","station:one").is_empty(),"An occupied station rejects another assembly")
+	expect(model.move_assembly("pad_2","station:two").is_empty(),"Same definition works at a second station")
+	for i in [3,1,0,2]:
+		for id in ["pad_2","pad_1"]:
+			expect(model.install(id,"sleeve_%d"%i,model.find_item("sleeve","pocket")).ok,"Interleaved independent preparation: %s / %d"%[id,i])
+	expect(model.milestone("pad_1","prepared") and model.milestone("pad_2","prepared"),"Both independent instances complete one shared recipe")
+	model.move_assembly("pad_1","held")
+	expect(not model.move_assembly("pad_2","held").is_empty(),"Shared hand capacity rejects a second held assembly")
+	expect(model.install("foot","heel_2","pad_1").ok,"Prepared child accepts opposite compatible parent position")
+	expect(not model.undo("pad_1").ok,"Mounted child cannot undo internal work")
+	expect(not model.install("foot","heel_1","pad_1").ok,"A child cannot have two parents or positions")
+	model.move_assembly("pad_2","held")
+	expect(model.install("foot","heel_1","pad_2").ok,"Remaining child mounts independently")
+	var washer = model.transfer("washer","bin","pocket")
+	var bolt = model.transfer("bolt","bin","pocket")
+	expect(not model.install("foot","heel_1/bolt_0",bolt).ok,"Fastener requires its corresponding washer")
+	expect(not model.install("foot","heel_1/washer_0",bolt).ok,"Wrong hardware cannot fill a slot")
+	expect(model.install("foot","heel_1/washer_0",washer).ok,"Washer installs after parent seating")
+	expect(not model.install("foot","heel_2/washer_0",washer).ok,"One physical washer cannot occupy two slots")
+	expect(model.install("foot","heel_1/bolt_0",bolt).ok,"Correct local fastening dependencies allow installation")
+	expect(model.integrity_errors().is_empty(),"Interleaved child and parent operations conserve identity")
+	model.undo("foot")
+	expect(model.items[bolt].location=="pocket","Undo returns the exact bolt")
+	model.undo("foot")
+	expect(model.items[washer].location=="pocket","Undo restores a matching or empty pocket")
+	var undo_mount = model.undo("foot","station:two")
+	expect(undo_mount.ok and model.assemblies.pad_2.location=="station:two" and model.milestone("pad_2","prepared"),"Detaching child retains all internal components")
+	expect(not model.undo("foot","station:two").ok and model.assemblies.foot.slots.heel_2=="pad_1","Occupied undo destination rejects the entire transaction")
+	expect(model.undo("foot","station:one").ok,"Other child detaches into a free station")
+	expect(model.integrity_errors().is_empty(),"Nested undo maintains valid ownership")
+	# A different recipe with a different number of slots uses the unchanged engine.
+	var alternate = {"version":1,"parts":definitions.parts.duplicate(true),"assemblies":{
+		"widget":{"root_slot":"housing","slots":{"housing":{"accepts":"pad"},"ring":{"accepts":"washer","requires":["housing"]},"retainer":{"accepts":"bolt","requires":["ring"]}},"milestones":{"ready":["housing","ring","retainer"]},"work_locations":["station"]},
+		"rack":{"slots":{"socket":{"assembly":"widget","milestone":"ready"}},"milestones":{"done":["socket"]},"work_locations":["fixture"]}}}
+	alternate.parts.long_bolt = {"family":"H-24120","variant":"long","title":"Long bolt","carry_class":"pocket"}
+	var fixture = {"version":1,"parts":[{"instance_id":"p","kind":"pad"},{"instance_id":"w","kind":"washer"},{"instance_id":"b","kind":"bolt"},{"instance_id":"wrong","kind":"long_bolt"}],"builds":[{"id":"work","definition":"widget","base":"p"}],"parent":{"id":"rack","definition":"rack"}}
+	var other = AssemblyModel.new()
+	expect(other.configure(alternate,fixture).is_empty(),"Different three-slot recipe loads without pad-specific code")
+	other.move_assembly("work","station:test")
+	other.transfer("washer","bin","pocket")
+	other.transfer("bolt","bin","pocket")
+	other.transfer("long_bolt","bin","pocket")
+	expect(other.install("work","ring","w").ok,"Alternate recipe resolves its own named dependencies")
+	expect(not other.install("work","retainer","wrong").ok,"Same family with incompatible variant/type is rejected")
+	expect(other.install("work","retainer","b").ok and other.milestone("work","ready"),"Alternate recipe completion derives from authored slots")
+	other.move_assembly("work","held")
+	expect(other.install("rack","socket","work").ok and other.milestone("rack","done"),"Generic parent mount has no foot or pad identifier dependency")
+	expect(other.integrity_errors().is_empty(),"Alternate hierarchy preserves ownership")
+	var passed = checks.all(func(c):return c.passed)
+	FileAccess.open("res://verification/assembly-model-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks},"  "))
+	print("ASSEMBLY_MODEL_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
+	quit(0 if passed else 1)

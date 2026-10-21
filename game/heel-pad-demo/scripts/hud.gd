@@ -1,13 +1,11 @@
 extends CanvasLayer
 const Diagram = preload("res://scripts/manual_diagram.gd")
-const SLOT_KINDS = ["sleeve","washer","bolt","pad"]
-const SLOT_IDS = ["FA-305","W-24","H-24120","FA-302"]
-const SLOT_NAMES = ["Sleeve","Washer","Bolt","Heel pad"]
 var game: Node
 var root: Control
 var manual: PanelContainer
 var page_title: Label
 var page_body: Label
+var body_scroll: ScrollContainer
 var page_count: Label
 var diagram: Control
 var target_label: Label
@@ -26,7 +24,13 @@ var action_slots: Array[Dictionary] = []
 var carry_label: Label
 var rotation_hint: PanelContainer
 var rotation_label: Label
-var page: int = 0
+var manual_id: String = "foot"
+var pages: Dictionary = {}
+var breadcrumb: Label
+var manual_hint: Label
+var page: int:
+	get:return pages.get(manual_id,0)
+	set(value):pages[manual_id] = value
 var toast_time: float = 0.0
 var entered: bool = false
 var confirm_restart: bool = false
@@ -73,6 +77,7 @@ func _ready() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
+	if game.single_pad:manual_id = "pad_1"
 	_make_manual()
 	_make_action_bar()
 	target_panel = panel_at(root,Vector2(0.5,0.64),Rect2(-280,0,560,0))
@@ -84,7 +89,7 @@ func _ready() -> void:
 	root.add_child(crosshair)
 	crosshair.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	crosshair.position -= Vector2(7,15)
-	toast_panel = panel_at(root,Vector2(0.5,1),Rect2(-340,-234,680,0))
+	toast_panel = panel_at(root,Vector2(0.5,1),Rect2(-340,-196,680,0))
 	toast_label = label("",15,tone)
 	toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -104,19 +109,28 @@ func _make_manual() -> void:
 	var column = VBoxContainer.new()
 	column.add_theme_constant_override("separation",10)
 	manual.add_child(column)
-	column.add_child(label("FIELD MANUAL   /   FA-302",12,tone))
+	breadcrumb = label("",12,tone)
+	breadcrumb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(breadcrumb)
 	page_title = label("",23)
 	column.add_child(page_title)
 	diagram = Diagram.new()
-	diagram.custom_minimum_size = Vector2(290,245)
+	diagram.custom_minimum_size = Vector2(290,205)
 	column.add_child(diagram)
 	page_body = label("",15,Color("d5dfdf"))
 	page_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	page_body.custom_minimum_size.y = 130
-	column.add_child(page_body)
+	body_scroll = ScrollContainer.new()
+	body_scroll.custom_minimum_size = Vector2(0,250)
+	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	body_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(body_scroll)
+	page_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body_scroll.add_child(page_body)
 	page_count = label("",13,tone)
 	column.add_child(page_count)
-	column.add_child(label("← / →  pages     TAB  close",12,muted))
+	manual_hint = label("",12,muted)
+	column.add_child(manual_hint)
 
 func _make_action_bar() -> void:
 	action_bar = HBoxContainer.new()
@@ -125,103 +139,54 @@ func _make_action_bar() -> void:
 	action_bar.anchor_right = 0.5
 	action_bar.anchor_top = 1
 	action_bar.anchor_bottom = 1
-	action_bar.offset_left = -238
-	action_bar.offset_right = 238
-	action_bar.offset_top = -152
+	action_bar.offset_left = -398
+	action_bar.offset_right = 398
+	action_bar.offset_top = -108
 	action_bar.offset_bottom = -24
-	action_bar.add_theme_constant_override("separation",8)
+	action_bar.add_theme_constant_override("separation",4)
 	action_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for i in range(4):
+	for i in range(10):
 		var card = PanelContainer.new()
-		card.custom_minimum_size = Vector2(113,128)
+		card.custom_minimum_size = Vector2(76,84)
 		card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		action_bar.add_child(card)
 		var content = Control.new()
 		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card.add_child(content)
 		var texture = TextureRect.new()
-		texture.position = Vector2(4,15)
-		texture.size = Vector2(97,76)
+		texture.position = Vector2(13,20)
+		texture.size = Vector2(42,42)
 		texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		texture.texture = _model_thumbnail(SLOT_KINDS[i])
 		texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		content.add_child(texture)
-		var key_label = label(str(i+1),15,tone)
-		key_label.position = Vector2(7,2)
+		var key_label = label(str((i+1)%10),13,tone)
+		key_label.position = Vector2(3,0)
 		content.add_child(key_label)
-		var count = label("0",14)
-		count.position = Vector2(64,2)
-		count.size.x = 32
+		var count = label("",13)
+		count.position = Vector2(27,0)
+		count.size.x = 40
 		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		content.add_child(count)
-		var id_label = label(SLOT_IDS[i],14)
-		id_label.position = Vector2(0,89)
-		id_label.size.x = 105
+		var id_label = label("Empty",11,muted)
+		id_label.position = Vector2(0,63)
+		id_label.size.x = 68
 		id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		content.add_child(id_label)
-		var name_label = label(SLOT_NAMES[i],11,muted)
-		name_label.position = Vector2(0,108)
-		name_label.size.x = 105
-		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		content.add_child(name_label)
-		action_slots.append({"card":card,"model":texture,"count":count,"id":id_label,"kind":SLOT_KINDS[i]})
-	carry_label = label("",13,Color("eef2ed"))
+		action_slots.append({"card":card,"model":texture,"count":count,"id":id_label,"kind":""})
+	carry_label = label("",13)
 	root.add_child(carry_label)
 	carry_label.anchor_left = 0.5
 	carry_label.anchor_right = 0.5
 	carry_label.anchor_top = 1
 	carry_label.anchor_bottom = 1
-	carry_label.offset_left = -280
-	carry_label.offset_right = 280
-	carry_label.offset_top = -181
-	carry_label.offset_bottom = -158
+	carry_label.offset_left = -440
+	carry_label.offset_right = 440
+	carry_label.offset_top = -136
+	carry_label.offset_bottom = -112
 	carry_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	carry_label.add_theme_color_override("font_shadow_color",Color("09151e"))
 	carry_label.add_theme_constant_override("shadow_offset_y",2)
-
-func _model_thumbnail(kind: String) -> Texture2D:
-	# Render the actual source mesh once in an isolated world. No icon stand-ins.
-	var viewport = SubViewport.new()
-	viewport.size = Vector2i(240,192)
-	viewport.own_world_3d = true
-	viewport.transparent_bg = true
-	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-	add_child(viewport)
-	var uid: String = game.state.pad_id if kind == "pad" else game.type_sources[kind]
-	var mesh = MeshInstance3D.new()
-	mesh.mesh = game.source[uid].mesh
-	var bounds = mesh.mesh.get_aabb()
-	var model_root = Node3D.new()
-	viewport.add_child(model_root)
-	model_root.add_child(mesh)
-	mesh.position = -bounds.get_center()
-	var factor = 1.7/maxf(bounds.size.x,maxf(bounds.size.y,bounds.size.z))
-	model_root.scale = Vector3.ONE*factor
-	model_root.rotation_degrees = Vector3(25,-25,-15)
-	var environment = WorldEnvironment.new()
-	environment.environment = Environment.new()
-	environment.environment.background_mode = Environment.BG_COLOR
-	environment.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.environment.ambient_light_color = Color("d5e7ec")
-	environment.environment.ambient_light_energy = 0.8
-	viewport.add_child(environment)
-	var light = DirectionalLight3D.new()
-	light.rotation_degrees = Vector3(-45,-35,0)
-	light.light_energy = 1.7
-	viewport.add_child(light)
-	var fill = DirectionalLight3D.new()
-	fill.rotation_degrees = Vector3(30,145,0)
-	fill.light_energy = 0.75
-	viewport.add_child(fill)
-	var cam = Camera3D.new()
-	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
-	cam.size = 2.5
-	viewport.add_child(cam)
-	cam.position = Vector3(0,2.2,3)
-	cam.look_at(Vector3.ZERO)
-	cam.current = true
-	return viewport.get_texture()
 
 func button(text: String, primary: bool = false) -> Button:
 	var node = Button.new()
@@ -288,7 +253,7 @@ func _make_pause() -> void:
 	header.add_child(heading)
 	pause_title = label("Your workshop",30)
 	heading.add_child(pause_title)
-	heading.add_child(label("Prepare the heel pad, then fit it to the foot. Take your time.",15,muted))
+	heading.add_child(label("Prepare the heel pads and pitch actuator, then secure them to the foot.",15,muted))
 	resume_button = button("Start building    →",true)
 	resume_button.custom_minimum_size.x = 200
 	resume_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -303,14 +268,14 @@ func _make_pause() -> void:
 		["W A S D","Walk"],["Mouse","Look around"],["Hold Shift","Walk faster"],
 		["Hold Ctrl","Crouch"],["Mouse wheel","Zoom in / out"]]))
 	grid.add_child(_control_group("Parts & pockets",[
-		["E","Pick up / take one"],["Shift + E","Take remaining bin stock"],
-		["1 · 2 · 3 · 4","Select action-bar slot"],["Q","Put down selected piece"],["B","Return piece to its bin"]]))
+		["E","Stock pocket / carry component"],["1 2 3 4 5 6 7 8 9 0","Select pocket"],
+		["Q","Set down carried component"],["B","Clear selected pocket anywhere"]]))
 	grid.add_child(_control_group("Build & rotate",[
 		["Left click","Attach at the preview"],["Hold R + mouse","Rotate the aimed-at station"],
-		["R, then R","Reset station rotation"],["Z","Undo last build action"]]))
+		["R, then R","Reset station rotation"],["Z","Undo in selected manual"]]))
 	grid.add_child(_control_group("Manual & menu",[
 		["Tab / M","Open / close manual"],["← / →","Previous / next page"],
-		["Esc","Pause / resume"],["4","Select hands / carried pad"]]))
+		["Enter / Backspace","Open child / parent manual"],["C / V","Cycle builds / inspect manual"],["Esc","Pause / resume"]]))
 	var footer = HBoxContainer.new()
 	footer.add_theme_constant_override("separation",12)
 	col.add_child(footer)
@@ -352,23 +317,113 @@ func set_rotation_hint(visible_now: bool, rotating: bool) -> void:
 
 func refresh() -> void:
 	if game == null:return
-	var s: HeelAssemblyState = game.state
-	for slot in action_slots:
-		var count: int = (1 if s.pad_location == "held" else 0) if slot.kind == "pad" else s.count_at(slot.kind,"pocket")
-		var selected: bool = game.selected_kind == slot.kind
+	for i in range(action_slots.size()):
+		var slot = action_slots[i]
+		var kind: String = game.model.pockets[i]
+		if slot.kind != kind:
+			slot.kind = kind
+			slot.model.texture = game.storage.picture(kind)
+		slot.id.text = "Empty" if kind.is_empty() else game.model.definitions.parts[kind].family
+		var count: int = game.model.pocket_size(i)
+		slot.count.text = "×%d"%count if count>0 else ""
+		var selected: bool = game.model.selected_pocket == i
 		slot.card.add_theme_stylebox_override("panel",style(Color("24423eef") if selected else Color("12222bed"),tone if selected else Color("42565f"),4))
-		slot.model.modulate = Color.WHITE if count>0 else Color(0.65,0.7,0.72,0.65)
-		slot.count.text = ("2H" if count>0 else "—") if slot.kind == "pad" else "×%d" % count
-	carry_label.text = "Pockets %d / 20   ·   %s" % [s.pocket_count(),"Both hands occupied" if s.pad_location == "held" else "Hands free"]
-	var titles = ["01 / Prepare", "02 / Bring together", "03 / Secure"]
-	var bodies = ["FA-302  Heel pad ×1\nFA-305  Compression sleeve ×4\n\nCarry the pad to the small station. Fit one sleeve at each opening. Any order works.","Prepared FA-302 pad ×1\nReceiving part: FA-300 sole carrier\n\nUse E to lift the pad. Select hands [4], approach the foot's open heel position, then click to seat it.","W-24  Washer ×4\nH-24120  Mounting bolt ×4\n\nAt each point, fit its washer before its bolt. Finish the points in any order. Click once per piece."]
-	page_title.text = titles[page]
-	page_body.text = bodies[page]
-	page_count.text = ["Sleeves fitted: %d / 4" % s.installed("sleeve"),"Pad mounted" if s.pad_location == "foot" else "Prepare → carry → mount", "Mounts complete: %d / 4" % s.installed("bolt")][page]
-	if s.complete():page_count.text = "Complete · 13 / 13 components fitted"
-	diagram.step = page
-	diagram.state = s
-	diagram.queue_redraw()
+	var held: String = game.model.held_item()
+	var build: String = game.held_build()
+	var carrying: String = "Hands free"
+	if not held.is_empty():carrying = "Carrying "+game.components.title(game.model.items[held].kind)+" · Q set down"
+	elif not build.is_empty():carrying = "Carrying "+game.build_label(build)+" · Q set down"
+	var selected: String = game.selected_kind
+	carry_label.text = (game.components.title(selected) if not selected.is_empty() else "Empty pocket")+" · B clear   |   "+carrying
+	_refresh_manual()
+	game.components.update_service_view()
+
+func manual_title() -> String:
+	return "FA-01 · Foot" if manual_id == "foot" else game.build_label(manual_id)
+
+func page_total() -> int:
+	return game.model.definitions.assemblies[game.model.assemblies[manual_id].definition].manual.size()
+
+func open_manual(id: String, at_page: int = -1) -> void:
+	if not game.model.assemblies.has(id):return
+	manual_id = id
+	body_scroll.scroll_vertical = 0
+	if at_page >= 0:page = at_page
+	page = clampi(page,0,page_total()-1)
+	manual.visible = true
+	refresh()
+
+func turn_page(direction: int) -> void:
+	page = clampi(page+direction,0,page_total()-1)
+	body_scroll.scroll_vertical = 0
+
+func cycle_build() -> void:
+	var ids: Array = ["foot"]+game.builds.keys()
+	open_manual(ids[(ids.find(manual_id)+1)%ids.size()])
+
+func open_selected_child() -> void:
+	if manual_id != "foot":return
+	var step: Dictionary = game.components.definition("foot").manual[page]
+	var sid: String = step.get("child_slot",game.config.mounts[0].id)
+	var child: String = game.model.assemblies.foot.slots[sid]
+	if child.is_empty():
+		for id in game.builds:
+			if game.model.assemblies[id].definition == game.model.slot_definition("foot",sid).assembly and game.builds[id].mount_slot.is_empty():child = id;break
+	if not child.is_empty():open_manual(child)
+
+func _refresh_manual() -> void:
+	page = clampi(page,0,page_total()-1)
+	breadcrumb.text = "FA-01 / FOOT"+(" / "+game.build_label(manual_id).to_upper() if manual_id != "foot" else "")
+	manual_hint.text = "← / → pages · PgUp / PgDn scroll\nEnter child · Backspace parent · C builds · Tab close"
+	var entries: Array = []
+	var a: Dictionary = game.model.assemblies[manual_id]
+	var definition: Dictionary = game.components.definition(manual_id)
+	var step: Dictionary = definition.manual[page]
+	page_title.text = "%02d / %s"%[page+1,step.title]
+	page_body.text = step.body
+	if step.get("view","") not in ["overview","prepared"]:
+		var quantities: Dictionary = {}
+		for sid in step.slots:
+			var spec = game.model.slot_definition(manual_id,sid)
+			var label: String
+			if spec.has("accepts"):label = game.components.title(spec.accepts)
+			else:
+				var child: Dictionary = game.model.definitions.assemblies[spec.assembly]
+				var family: String = child.get("part_id",game.model.definitions.parts[child.slots[child.root_slot].accepts].family)
+				label = child.title if child.title.begins_with(family) else family+" · "+child.title
+				label += " (prepared)"
+			quantities[label] = quantities.get(label,0)+1
+		var lines: Array[String] = []
+		for label in quantities:lines.append("%s ×%d"%[label,quantities[label]])
+		page_body.text += "\n\nParts for this step\n"+"\n".join(lines)
+	var filled = 0
+	for sid in step.slots:
+		if not a.slots[sid].is_empty():filled += 1
+	page_count.text = "%d / %d step components · page %d / %d"%[filled,step.slots.size(),page+1,page_total()]
+	if step.get("view","") == "prepared":page_count.text = "%d / %d assembly components · page %d / %d"%[filled,step.slots.size(),page+1,page_total()]
+	if step.get("view","") == "overview":
+		var lines: Array[String] = [step.body,""]
+		var secured = 0
+		for id in game.builds:
+			var view: HeelAssemblyState = game.builds[id]
+			var progress = "%d / %d pieces"%[game.model.assemblies[id].slots.size()-game.model.assemblies[id].slots.values().count(""),game.model.assemblies[id].slots.size()]
+			if not game.components.is_component_build(id):progress = "%d / 4 sleeves"%view.installed("sleeve")
+			lines.append(game.build_label(id)+": "+("secured" if view.complete() else ("seated" if view.pad_location == "foot" else ("prepared" if view.prepared() else progress))))
+			if view.complete():secured += 1
+		page_body.text = "\n".join(lines)
+		page_count.text = "%d / %d builds secured"%[secured,game.builds.size()]
+		for mount in game.config.mounts:entries.append({"source":mount.source,"highlight":true,"installed":not a.slots[mount.id].is_empty()})
+	else:
+		var component_view: bool = step.get("view","") == "components"
+		var display_slots: Array = step.slots.duplicate() if manual_id == "foot" or component_view else definition.slots.keys()
+		if component_view and definition.has("root_slot"):display_slots.push_front(definition.root_slot)
+		for sid in display_slots:
+			var d: Dictionary = definition.slots[sid]
+			entries.append({"source":d.pose_source,"highlight":step.slots.has(sid),"installed":not a.slots[sid].is_empty(),"faint":sid == definition.get("root_slot","") and component_view})
+		if manual_id != "foot" and not a.parent.is_empty():page_body.text += "\n\nInstalled. Fastening and undo belong to the foot manual."
+	var context: Array = step.get("context_sources",definition.get("context_sources",[]))
+	for uid in context:entries.append({"source":uid,"highlight":false,"installed":true,"faint":true})
+	diagram.show_parts(game,entries)
 
 func toast(text: String, success: bool = false) -> void:
 	toast_label.text = text

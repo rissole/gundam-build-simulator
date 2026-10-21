@@ -19,14 +19,19 @@ func key(code: Key, shift: bool = false) -> void:
 	event.physical_keycode = code
 	event.pressed = true
 	event.shift_pressed = shift
-	game._unhandled_input(event)
+	game.handle_desktop_input(event)
+
+func select_kind(kind: String) -> void:
+	var index: int = game.model.pocket_for(kind)
+	if index < 0:return
+	key([KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_6,KEY_7,KEY_8,KEY_9,KEY_0][index])
 
 func click(button: MouseButton = MOUSE_BUTTON_LEFT, ctrl: bool = false, pressed: bool = true) -> void:
 	var event = InputEventMouseButton.new()
 	event.button_index = button
 	event.ctrl_pressed = ctrl
 	event.pressed = pressed
-	game._unhandled_input(event)
+	game.handle_desktop_input(event)
 
 func crouched_click(point: Vector3) -> void:
 	hold(KEY_CTRL,true)
@@ -42,13 +47,13 @@ func release(code: Key) -> void:
 	var event = InputEventKey.new()
 	event.physical_keycode = code
 	event.pressed = false
-	game._unhandled_input(event)
+	game.handle_desktop_input(event)
 
 func hold(code: Key, pressed: bool) -> void:
 	var event = InputEventKey.new()
 	event.physical_keycode = code
 	event.pressed = pressed
-	Input.parse_input_event(event)
+	game.handle_desktop_input(event)
 
 func aim(point: Vector3, distance: float = 1.35) -> void:
 	game.player.global_position = Vector3(point.x,0.025,point.z+distance)
@@ -63,6 +68,10 @@ func aim(point: Vector3, distance: float = 1.35) -> void:
 func capture(name: String) -> void:
 	if not rendered:return
 	await get_tree().process_frame
+	game._update_target()
+	game._update_ghost()
+	game.hud.refresh()
+	await frames(4)
 	# Fullscreen macOS windows may stop automatic draws when another app is
 	# focused. Explicitly render this inspection frame rather than wait forever.
 	RenderingServer.force_draw(false)
@@ -79,9 +88,9 @@ func run(workshop: Node) -> void:
 		expect(DisplayServer.window_get_mode()==DisplayServer.WINDOW_MODE_FULLSCREEN,"Launch uses non-exclusive fullscreen")
 		expect(game.get_viewport().get_visible_rect().encloses(game.hud.pause_card.get_global_rect()),"Pause card fits the display")
 	await capture("05-controls")
-	expect(game.hud.action_slots.size()==4,"Four numbered action-bar slots replace text inventory")
+	expect(game.hud.action_slots.size()==10,"Ten numbered pockets represent inventory")
 	for slot in game.hud.action_slots:
-		expect(slot.model.texture is ViewportTexture and not slot.id.text.is_empty(),"Action slot renders source mesh and part ID: "+slot.kind)
+		expect(slot.model.texture == null and slot.id.text=="Empty","Unstocked pocket is visibly empty")
 	game.set_paused(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	key(KEY_TAB)
@@ -94,10 +103,10 @@ func run(workshop: Node) -> void:
 	var move_event = InputEventKey.new()
 	move_event.physical_keycode = KEY_W
 	move_event.pressed = true
-	Input.parse_input_event(move_event)
+	game.handle_desktop_input(move_event)
 	await frames(25)
 	move_event.pressed = false
-	Input.parse_input_event(move_event)
+	game.handle_desktop_input(move_event)
 	expect(game.player.position.z < start_z-0.3,"W input moves the first-person collision body")
 	hold(KEY_CTRL,true)
 	await frames(18)
@@ -125,17 +134,14 @@ func run(workshop: Node) -> void:
 		expect(game.state.count_at(kind,"pocket")==4,"Collect four "+kind+" from finite physical bin")
 	expect(game.state.pocket_count()==12,"Pockets hold all twelve demo hardware pieces")
 	expect(game.hud.action_slots[0].count.text=="×4" and game.hud.action_slots[2].count.text=="×4","Action-bar counts track collected stock")
-	# Physically put down and recollect a washer on the preparation tray.
+	# Clearing a pocket works away from storage and does not spawn small bodies.
 	await aim(Vector3(-0.4,1.0,0.6),0.7)
 	key(KEY_2)
-	key(KEY_Q)
-	await frames(60)
-	var loose_uid: String = game.state.find_item("washer","loose")
-	expect(not loose_uid.is_empty(),"Q creates a real loose washer without duplication")
-	if not loose_uid.is_empty():
-		await aim(game.loose[loose_uid].global_position,0.75)
-		key(KEY_E)
-		expect(game.state.items[loose_uid].location=="pocket","Loose washer can be recollected from tray")
+	key(KEY_B)
+	expect(game.model.count_at("washer","pocket")==0 and game.loose.is_empty(),"B clears a pocket anywhere without spawning loose hardware")
+	await aim(game.bins.washer.global_position+Vector3(0,0.13,0.27))
+	key(KEY_E)
+	expect(game.model.count_at("washer","pocket")==4,"E replenishes the empty pocket from a drawer")
 	await aim(game.pad.global_position)
 	key(KEY_E)
 	expect(game.state.pad_location=="held","E picks up the two-handed heel pad")
@@ -151,17 +157,19 @@ func run(workshop: Node) -> void:
 		max_grip_error = maxf(max_grip_error,game.pad.global_position.distance_to(game.pad.carry_target))
 	hold(KEY_D,false)
 	hold(KEY_SHIFT,false)
+	if max_grip_error >= 0.02:print("GRIP_DIAGNOSTIC ",max_grip_error," body=",game.pad.global_position," target=",game.pad.carry_target," player=",game.player.position)
 	expect(max_grip_error<0.02,"Firm grip stays within 2 cm of its target while moving fast")
 	for i in range(12):
 		game.player.rotate_y(0.06)
 		game.camera.rotation.x += 0.02
 		await frames(2)
 	expect(game.pad.global_basis.is_equal_approx(game.pad.carry_basis),"Held orientation follows view without spring lag")
-	expect(game.pad.freeze and game.hud.action_slots[3].count.text=="2H","Two-hand slot shows occupied hands during firm carry")
+	expect(game.pad.freeze and game.hud.carry_label.text.contains("Carrying"),"Carried assembly appears separately from the ten pockets")
 	await aim(game.prep.global_position)
 	await frames(35)
 	game._update_target()
 	game._update_ghost()
+	if not game.ghost.visible:print("STATION_DIAGNOSTIC ",game.target," body=",game.pad.global_position," error=",game._access([game.pad,game.foot]))
 	expect(game.target.get("type")=="prep" and game.ghost.visible,"Small station previews held pad placement")
 	await crouched_click(game.prep.global_position)
 	expect(game.state.pad_location=="prep","Crouched click suspends pad in preparation station")
@@ -204,7 +212,7 @@ func run(workshop: Node) -> void:
 	key(KEY_R)
 	var rotate_motion = InputEventMouseMotion.new()
 	rotate_motion.relative = Vector2(22,12)
-	game._unhandled_input(rotate_motion)
+	game.handle_desktop_input(rotate_motion)
 	release(KEY_R)
 	key(KEY_R)
 	release(KEY_R)
@@ -220,11 +228,6 @@ func run(workshop: Node) -> void:
 	game._update_ghost()
 	expect(game.target.get("type")=="mount","Aim selects the rear sole carrier")
 	expect(game.ghost.visible,"Ready pad previews at the actual receiving transform")
-	key(KEY_3)
-	click()
-	expect(game.state.pad_location=="held","Selecting pocket hardware cannot accidentally mount the carried pad")
-	key(KEY_4)
-	game._update_ghost()
 	await capture("03-mount-preview")
 	click()
 	expect(game.state.pad_location=="foot","Prepared assembly mounts to full-size foot")
@@ -256,6 +259,7 @@ func run(workshop: Node) -> void:
 	await aim(game.connection(2),4.0)
 	click()
 	expect(game.state.slots.bolt[2]=="" and game.hud.toast_label.text.contains("reach"),"Attachment is blocked outside character reach")
+	select_kind("bolt")
 	await aim(game.connection(2))
 	click()
 	expect(game.state.complete(),"Close-range replacement completes build again")
@@ -301,4 +305,11 @@ func run(workshop: Node) -> void:
 	var report = {"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":rendered,"renderer":RenderingServer.get_current_rendering_method(),"inventory_errors":game.state.integrity_errors()}
 	FileAccess.open("res://verification/demo-audit.json",FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
 	print("DEMO_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
+	await finish(passed)
+
+func finish(passed: bool) -> void:
+	# Let the audio mixer release the last completion chord before shutdown.
+	game.chime.stop()
+	game.chime.stream = null
+	await frames(4)
 	get_tree().quit(0 if passed else 1)

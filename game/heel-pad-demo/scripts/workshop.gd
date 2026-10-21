@@ -2,7 +2,6 @@ extends Node3D
 
 const Part = preload("res://scripts/loose_part.gd")
 const HUD = preload("res://scripts/hud.gd")
-const CONFIG_PATH = "res://assets/heel-pad.json"
 const FOOT_CENTER = Vector3(0,0.8,-0.7)
 const PREP_POSITION = Vector3(-2.3,1.35,-1.2)
 const FOOT_POSITION = Vector3(2.3,2.0,-1.8)
@@ -12,14 +11,26 @@ const REACH = 2.35
 const WORLD_MASK = 7
 const PAD_HOME = Vector3(-1.0,1.09,3.25)
 
-var state = HeelAssemblyState.new()
+var model = AssemblyModel.new()
+var components: Node
+var storage: Node
+var pitch_workshop: bool = false
+var builds: Dictionary = {}
+var bodies: Dictionary = {}
+var stations: Dictionary = {}
+var state: HeelAssemblyState
+var active_build: String = "pad_1"
+var prepared_flags: Dictionary = {}
+var completed_flags: Dictionary = {}
+var single_pad: bool = false
+var automated_test: bool = false
+var scripted_controls: Dictionary = {}
 var config: Dictionary
 var source: Dictionary = {}
 var active_ids: Array[String] = []
 var part_defs: Dictionary = {}
 var type_sources: Dictionary = {}
 var slot_sources: Dictionary = {"sleeve": [], "washer": [], "bolt": []}
-var pad_origin: Vector3
 var pad: WorkshopPart
 var pad_mesh: MeshInstance3D
 var ghost: MeshInstance3D
@@ -40,28 +51,54 @@ var rotate_press_time: int = 0
 var last_rotate_tap: int = -1000
 var last_rotate_station: String = ""
 var hud: CanvasLayer
-var selected_kind: String = "pad"
+var selected_kind: String:
+	get:return model.selected_kind()
+	set(value):
+		var index = model.pocket_for(value)
+		if index >= 0:model.select_pocket(index)
 var paused: bool = true
 var target: Dictionary = {}
 var rotation_station: String = ""
 var completed_before: bool = false
 var prepared_before: bool = false
 var chime: AudioStreamPlayer
-var target_slot: int = -1
 var started: bool = false
 var screenshot_mode: bool = false
 
 func _ready() -> void:
-	config = JSON.parse_string(FileAccess.get_file_as_string(CONFIG_PATH))
-	state.configure(config)
+	single_pad = OS.get_cmdline_user_args().has("--single-pad")
+	automated_test = OS.get_cmdline_user_args().has("--demo-test") or OS.get_cmdline_user_args().has("--multi-test") or OS.get_cmdline_user_args().has("--pitch-test") or OS.get_cmdline_user_args().has("--pockets-test")
+	config = HeelAssemblyState.scenario(single_pad)
+	pitch_workshop = not single_pad and not OS.get_cmdline_user_args().has("--pads-only") and not OS.get_cmdline_user_args().has("--multi-test")
+	var data = HeelAssemblyState.definition_data(single_pad)
+	if pitch_workshop:
+		config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
+		var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(config.definitions))
+		data.parts.merge(overlay.parts,true)
+		data.assemblies.merge(overlay.assemblies,true)
+	components = preload("res://scripts/component_interaction.gd").new(self)
+	add_child(components)
+	var errors = model.configure(data,config)
+	assert(errors.is_empty(),str(errors))
+	for build in config.builds:
+		var view = HeelAssemblyState.new()
+		view.bind(model,build.id)
+		builds[build.id] = view
+	state = builds[active_build]
 	for definition in config.parts:
 		active_ids.append(definition.instance_id)
 		part_defs[definition.instance_id] = definition
 	_make_world()
 	_load_foot()
 	_make_player()
-	_make_pad()
-	_make_bins()
+	for build in config.builds:
+		_activate(build.id)
+		_make_pad()
+	_activate("pad_1")
+	components.setup()
+	storage = preload("res://scripts/part_storage.gd").new(self)
+	add_child(storage)
+	storage.setup()
 	ghost_material = material(Color(0.35,1.0,0.73,0.40),0.0)
 	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
 	ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -71,7 +108,7 @@ func _ready() -> void:
 	ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(ghost)
 	ghost.visible = false
-	for i in range(4):
+	for i in range(4*builds.size()):
 		var marker = MeshInstance3D.new()
 		var sphere = SphereMesh.new()
 		sphere.radius = 0.009
@@ -80,16 +117,33 @@ func _ready() -> void:
 		marker.material_override = material(Color("79d8b8"),0.0,true)
 		marker.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(marker)
+		marker.visible = false
 		socket_markers.append(marker)
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
-	state.changed.connect(_state_changed)
+	model.changed.connect(_state_changed)
 	_make_audio()
 	_state_changed()
 	set_paused(true)
 	started = true
-	if OS.get_cmdline_user_args().has("--demo-test"):
+	if OS.get_cmdline_user_args().has("--pockets-test"):
+		var runner = load("res://tests/pockets_workshop_test.gd").new()
+		add_child(runner)
+		runner.call_deferred("run",self)
+	elif OS.get_cmdline_user_args().has("--pitch-review"):
+		var runner = load("res://tests/pitch_visual_review.gd").new()
+		add_child(runner)
+		runner.call_deferred("run",self)
+	elif OS.get_cmdline_user_args().has("--pitch-test"):
+		var runner = load("res://tests/pitch_build_test.gd").new()
+		add_child(runner)
+		runner.call_deferred("run",self)
+	elif OS.get_cmdline_user_args().has("--multi-test"):
+		var runner = load("res://tests/multi_build_test.gd").new()
+		add_child(runner)
+		runner.call_deferred("run",self)
+	elif OS.get_cmdline_user_args().has("--demo-test"):
 		var test_script = load("res://tests/demo_test.gd")
 		var runner = test_script.new()
 		add_child(runner)
@@ -182,14 +236,8 @@ func _make_world() -> void:
 		box(self,Vector3(x,6.5,-1),Vector3(0.10,0.06,5),material(Color("fff3d5"),0,true))
 	sign_text(self,"FA / 01",Vector3(0,5.3,-6.8),120,Color("3c555c"),0.013)
 	sign_text(self,"COMPONENT ASSEMBLY    /    LOWER LIMB DIVISION",Vector3(0,4.25,-6.8),28,Color("3c555c"),0.01)
-	# Storage shelves and open bins have usable collision surfaces.
-	for x in [-4.45,-1.55]:
-		box(self,Vector3(x,1.1,2.6),Vector3(0.10,2.2,0.6),metal,true)
-	for y in [0.28,1.04,2.1]:
-		box(self,Vector3(-3,y,2.6),Vector3(3.0,0.08,0.80),dark,true)
-	sign_text(self,"01 / COMPONENT STORAGE",Vector3(-3,2.5,2.73),27,Color("21353b"),0.008)
 	# Pad rests on a separate preparation table; the player chooses when to carry it.
-	box(self,Vector3(PAD_HOME.x,0.92,PAD_HOME.z),Vector3(1.55,0.12,1.25),dark,true)
+	box(self,Vector3(-0.1,0.92,PAD_HOME.z),Vector3(3.4,0.12,1.25),dark,true)
 	for x in [PAD_HOME.x-0.6,PAD_HOME.x+0.6]:
 		for z in [PAD_HOME.z-0.5,PAD_HOME.z+0.5]: box(self,Vector3(x,0.43,z),Vector3(0.09,0.86,0.09),metal,true)
 	sign_text(self,"FA-302 / HEEL PAD",Vector3(PAD_HOME.x,0.92,PAD_HOME.z+0.64),19,Color("dfe9e5"),0.006)
@@ -198,12 +246,32 @@ func _make_world() -> void:
 	for x in [-0.85,0.05]: box(self,Vector3(x,0.40,0.6),Vector3(0.07,0.8,0.55),metal,true)
 	for x in [-0.94,0.14]: box(self,Vector3(x,0.96,0.6),Vector3(0.03,0.12,0.70),warm,true)
 	for z in [0.26,0.94]: box(self,Vector3(-0.4,0.96,z),Vector3(1.1,0.12,0.03),warm,true)
-	_station_frame(PREP_POSITION,Vector3(1.05,1.1,0.9),"02 / PAD PREPARATION",dark,warm)
+	_station_frame(PREP_POSITION,Vector3(1.05,1.1,0.9),"02 / PREPARATION A",dark,warm)
 	_station_frame(FOOT_POSITION,Vector3(2.7,3.7,2.8),"03 / FOOT ASSEMBLY",dark,warm)
 	prep = Node3D.new()
 	prep.position = PREP_POSITION
 	prep.basis = PREP_BASIS
 	add_child(prep)
+	stations["prep"] = prep
+	prep.set_meta("work_volume",Vector3(1.05,1.1,0.9))
+	if not single_pad:
+		var pos = Vector3(-4.6,1.35,-1.2)
+		_station_frame(pos,Vector3(1.05,1.1,0.9),"04 / PREPARATION B",dark,warm)
+		var other = Node3D.new()
+		add_child(other)
+		other.position = pos
+		other.basis = PREP_BASIS
+		stations["prep2"] = other
+		other.set_meta("work_volume",Vector3(1.05,1.1,0.9))
+	if pitch_workshop:
+		var pos = Vector3(-6.4,1.5,-1.2)
+		_station_frame(pos,Vector3(1.05,1.1,0.9),"05 / PREPARATION C",dark,warm)
+		var other = Node3D.new()
+		add_child(other)
+		other.position = pos
+		other.basis = PREP_BASIS
+		stations["prep3"] = other
+		other.set_meta("work_volume",Vector3(1.05,1.1,0.9))
 	# Spatial scale cues and a safe open route to the receiving station.
 	for x in [-0.8,5.0]: box(self,Vector3(x,0.008,-1.8),Vector3(0.045,0.01,4.3),warm)
 
@@ -238,15 +306,18 @@ func _load_foot() -> void:
 		var uid: String = sections[0]+"__"+sections[1]
 		source[uid] = {"mesh": node.mesh, "transform": node.transform, "family": sections[0]}
 		if active_ids.has(uid):
-			if sections[0] == "FA-302": pad_origin = node.position
-			else:
-				var kind: String = part_defs[uid].kind
-				slot_sources[kind].append(uid)
-				type_sources[kind] = uid
+			if sections[0] != "FA-302":type_sources[part_defs[uid].kind] = uid
 			visual.remove_child(node)
 			node.free()
 			continue
 		var family: String = sections[0]
+		if config.get("context_storage_families",[]).has(family):
+			var stored = Node3D.new()
+			add_child(stored)
+			stored.position = Vector3(7,2,7.0)
+			node.reparent(stored,false)
+			node.position -= FOOT_CENTER
+			continue
 		if ["FA-100","FA-101","FA-102","FA-103","FA-104","FA-105","FA-106","FA-200","FA-201","FA-300","FA-301","FA-302","FA-303","FA-304","FA-400","FA-401","FA-402","FA-403","FA-404"].has(family):
 			var aabb: AABB = node.mesh.get_aabb()
 			var shape = BoxShape3D.new()
@@ -256,7 +327,10 @@ func _load_foot() -> void:
 			col.transform = node.transform
 			col.position += aabb.get_center()-FOOT_CENTER
 			foot.add_child(col)
-	for kind in HeelAssemblyState.KINDS: slot_sources[kind].sort()
+	for kind in HeelAssemblyState.KINDS:
+		for i in range(4):
+			var definition = model.definitions.assemblies.heel_pad.slots["sleeve_%d"%i] if kind == "sleeve" else model.definitions.assemblies.foot.slots["heel_1/%s_%d"%[kind,i]]
+			slot_sources[kind].append(definition.pose_source)
 	assert(source.size() == 745,"Foot source must retain the full inventory.")
 
 func _make_player() -> void:
@@ -298,40 +372,21 @@ func _make_pad() -> void:
 	pad.add_child(pad_mesh)
 	var col = CollisionShape3D.new()
 	var bounds = BoxShape3D.new()
-	bounds.size = Vector3(0.60,0.14,0.66)
+	var dimensions: Array = model.definitions.assemblies[model.assemblies[active_build].definition].bounds
+	bounds.size = Vector3(dimensions[0],dimensions[1],dimensions[2])
+	if components.is_component_build(active_build):
+		# The loose starting barrel rests on its own geometry. The station restores
+		# the full assembly envelope when construction begins.
+		var root_bounds = pad_mesh.mesh.get_aabb()
+		bounds.size = root_bounds.size
+		col.position = root_bounds.get_center()
 	col.name = "CollisionShape3D"
 	col.shape = bounds
 	pad.add_child(col)
 	pad.add_collision_exception_with(player)
 	player.add_collision_exception_with(pad)
-	pad.position = PAD_HOME
-
-func _make_bins() -> void:
-	for i in range(3):
-		var kind: String = HeelAssemblyState.KINDS[i]
-		var pos = Vector3(-3.9+i*0.9,1.1,2.65)
-		var bin = StaticBody3D.new()
-		bin.set_meta("bin_kind",kind)
-		bin.position = pos
-		add_child(bin)
-		bins[kind] = bin
-		var mat = material(Color("bf9870"))
-		box(bin,Vector3(0,0.015,0),Vector3(0.74,0.03,0.56),mat)
-		for x in [-0.355,0.355]:box(bin,Vector3(x,0.11,0),Vector3(0.03,0.20,0.56),mat)
-		for z in [-0.265,0.265]:box(bin,Vector3(0,0.11,z),Vector3(0.74,0.20,0.03),mat)
-		var col = CollisionShape3D.new()
-		var shape = BoxShape3D.new()
-		shape.size = Vector3(0.74,0.22,0.56)
-		col.shape = shape
-		col.position.y = 0.10
-		bin.add_child(col)
-		var names = {"sleeve":"FA-305 / SLEEVES", "washer":"W-24 / WASHERS", "bolt":"H-24120 / BOLTS"}
-		bin_labels[kind] = sign_text(bin,names[kind]+"\n04 AVAILABLE",Vector3(0,0.11,0.286),20,Color("192c32"),0.0037)
-		for j in range(4):
-			var prop = _mesh(type_sources[kind])
-			prop.name = "Stock"+str(j)
-			prop.position = Vector3(-0.23+(j%2)*0.22,0.095,-0.10+floorf(j/2.0)*0.19)
-			bin.add_child(prop)
+	pad.position = home_position(active_build)
+	bodies[active_build] = pad
 
 func _make_audio() -> void:
 	chime = AudioStreamPlayer.new()
@@ -362,6 +417,15 @@ func set_paused(value: bool) -> void:
 		hud.show_pause(value)
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Verification drives the same adapter explicitly; live desktop events must
+	# not rotate its scripted camera or trigger unrelated build actions.
+	if not automated_test:handle_desktop_input(event)
+
+func movement_pressed(code: Key) -> bool:
+	return bool(scripted_controls.get(code,false)) if automated_test else Input.is_physical_key_pressed(code)
+
+func handle_desktop_input(event: InputEvent) -> void:
+	if automated_test and event is InputEventKey:scripted_controls[event.physical_keycode] = event.pressed
 	if not started: return
 	if event is InputEventKey and event.physical_keycode == KEY_R and not event.echo:
 		if not paused: _rotation_key(event.pressed)
@@ -373,17 +437,32 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if paused: return
 		match event.physical_keycode:
-			KEY_1: selected_kind = "sleeve"
-			KEY_2: selected_kind = "washer"
-			KEY_3: selected_kind = "bolt"
-			KEY_4: selected_kind = "pad"
+			KEY_1: model.select_pocket(0)
+			KEY_2: model.select_pocket(1)
+			KEY_3: model.select_pocket(2)
+			KEY_4: model.select_pocket(3)
+			KEY_5: model.select_pocket(4)
+			KEY_6: model.select_pocket(5)
+			KEY_7: model.select_pocket(6)
+			KEY_8: model.select_pocket(7)
+			KEY_9: model.select_pocket(8)
+			KEY_0: model.select_pocket(9)
 			KEY_E: interact(event.shift_pressed)
 			KEY_Q: drop_selected()
 			KEY_B: deposit()
 			KEY_Z: undo_build()
 			KEY_TAB, KEY_M: hud.manual.visible = not hud.manual.visible
-			KEY_LEFT: hud.page = maxi(0,hud.page-1)
-			KEY_RIGHT: hud.page = mini(2,hud.page+1)
+			KEY_LEFT: hud.turn_page(-1)
+			KEY_RIGHT: hud.turn_page(1)
+			KEY_PAGEUP: hud.body_scroll.scroll_vertical -= 140
+			KEY_PAGEDOWN: hud.body_scroll.scroll_vertical += 140
+			KEY_BACKSPACE: hud.open_manual("foot")
+			KEY_ENTER: hud.open_selected_child()
+			KEY_C: hud.cycle_build()
+			KEY_V:
+				if target.has("owner"):hud.open_manual(target.owner)
+				elif target.has("build"):hud.open_manual(target.build)
+				else:hud.open_manual("foot")
 			KEY_F: reset_station()
 		hud.refresh()
 	if paused: return
@@ -405,10 +484,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	if not started: return
 	if not paused:
-		_update_crouch(Input.is_physical_key_pressed(KEY_CTRL),delta)
-		var move = Vector2(float(Input.is_physical_key_pressed(KEY_D))-float(Input.is_physical_key_pressed(KEY_A)),float(Input.is_physical_key_pressed(KEY_S))-float(Input.is_physical_key_pressed(KEY_W))).normalized()
+		_update_crouch(movement_pressed(KEY_CTRL),delta)
+		var move = Vector2(float(movement_pressed(KEY_D))-float(movement_pressed(KEY_A)),float(movement_pressed(KEY_S))-float(movement_pressed(KEY_W))).normalized()
 		var direction = player.basis*Vector3(move.x,0,move.y)
-		var speed = 4.5 if Input.is_physical_key_pressed(KEY_SHIFT) else 2.8
+		var speed = 4.5 if movement_pressed(KEY_SHIFT) else 2.8
 		if crouched: speed = 1.5
 		player.velocity.x = move_toward(player.velocity.x,direction.x*speed,delta*16)
 		player.velocity.z = move_toward(player.velocity.z,direction.z*speed,delta*16)
@@ -418,18 +497,24 @@ func _physics_process(delta: float) -> void:
 	if not player.is_on_floor():player.velocity.y -= 14*delta
 	else:player.velocity.y = -0.1
 	player.move_and_slide()
-	if state.pad_location == "held":
+	components.physics(delta)
+	var previous_build = active_build
+	var held = held_build()
+	if not held.is_empty():
+		_activate(held)
 		pad.carry_target = camera.global_position+camera.global_basis*Vector3(0.63,-0.34,-1.25)
 		pad.carry_basis = camera.global_basis*PREP_BASIS
 		if not paused: pad.update_grip(delta)
+	_activate(previous_build)
 	# A dropped piece cannot disappear permanently under the floor.
 	for uid in loose.keys():
 		if is_instance_valid(loose[uid]) and loose[uid].global_position.y < -3:
 			loose[uid].global_position = Vector3(-0.4,1.2,0.6)
 			loose[uid].linear_velocity = Vector3.ZERO
-	if pad.global_position.y < -3:
-		pad.global_position = PAD_HOME+Vector3.UP*0.06
-		pad.linear_velocity = Vector3.ZERO
+	for id in bodies:
+		if bodies[id].global_position.y < -3:
+			bodies[id].global_position = home_position(id)+Vector3.UP*0.06
+			bodies[id].linear_velocity = Vector3.ZERO
 
 func _process(_delta: float) -> void:
 	if not started or paused: return
@@ -437,7 +522,7 @@ func _process(_delta: float) -> void:
 	_update_ghost()
 	_update_markers()
 	var station = _station_in_view()
-	var node = prep if station == "prep" else foot
+	var node: Node3D = stations.get(station,foot)
 	hud.set_rotation_hint(not station.is_empty() and camera.global_position.distance_to(node.global_position)<5.0,rotate_held)
 
 func _update_crouch(wants_crouch: bool, delta: float) -> void:
@@ -451,8 +536,11 @@ func _update_crouch(wants_crouch: bool, delta: float) -> void:
 		query.shape = shape
 		query.transform = Transform3D(player.global_basis,player.global_position+Vector3.UP*0.87)
 		query.collision_mask = WORLD_MASK
-		query.exclude = [player.get_rid()]
-		if pad.held:query.exclude.append(pad.get_rid())
+		var excluded: Array[RID] = [player.get_rid()]
+		for body in bodies.values():
+			if body.held:excluded.append(body.get_rid())
+		if is_instance_valid(components.held_body):excluded.append(components.held_body.get_rid())
+		query.exclude = excluded
 		query.margin = 0.001
 		wants_crouch = not get_world_3d().direct_space_state.intersect_shape(query,1).is_empty()
 	crouched = wants_crouch
@@ -470,8 +558,11 @@ func _aim_score(point: Vector3, radius: float) -> float:
 
 func _visible(point: Vector3, allowed: Array = [], allow_body_hit: bool = false) -> bool:
 	var query = PhysicsRayQueryParameters3D.create(camera.global_position,point,WORLD_MASK)
-	query.exclude = [player.get_rid()]
-	if state.pad_location == "held": query.exclude.append(pad.get_rid())
+	var excluded: Array[RID] = [player.get_rid()]
+	for body in bodies.values():
+		if body.held:excluded.append(body.get_rid())
+	if is_instance_valid(components.held_body):excluded.append(components.held_body.get_rid())
+	query.exclude = excluded
 	var hit = get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty(): return true
 	if allowed.has(hit.collider):
@@ -481,126 +572,187 @@ func _visible(point: Vector3, allowed: Array = [], allow_body_hit: bool = false)
 		return hit.position.distance_to(point) < 0.065
 	return hit.position.distance_to(point) < 0.025
 
+func _activate(id: String) -> void:
+	active_build = id
+	state = builds[id]
+	if bodies.has(id):
+		pad = bodies[id]
+		pad_mesh = pad.get_child(0)
+
+func held_build() -> String:
+	for id in builds:
+		if builds[id].pad_location == "held":return id
+	return ""
+
+func home_position(id: String) -> Vector3:
+	for build in config.builds:
+		if build.id == id:return Vector3(build.home[0],build.home[1],build.home[2])
+	return PAD_HOME
+
+func build_label(id: String) -> String:
+	for build in config.builds:
+		if build.id == id:
+			var definition: Dictionary = model.definitions.assemblies[build.definition]
+			var family: String = definition.get("part_id",model.definitions.parts[definition.slots[definition.root_slot].accepts].family)
+			return family+" · "+build.label
+	return "Foot"
+
 func connection(index: int) -> Vector3:
-	var uid: String = slot_sources.sleeve[index]
-	var p: Vector3 = source[uid].transform.origin-pad_origin
-	p.y = -0.081
-	return pad.global_transform*p
+	var point: Array = model.definitions.assemblies.heel_pad.slots["sleeve_%d"%index].target
+	return pad.global_transform*Vector3(point[0],point[1],point[2])
 
-func mount_transform() -> Transform3D:
-	return foot.global_transform*Transform3D(Basis.IDENTITY,pad_origin-FOOT_CENTER)
+func mount_transform(slot: String = "") -> Transform3D:
+	if slot.is_empty():slot = target.get("mount",state.mount_slot)
+	if slot.is_empty():slot = "heel_1"
+	var uid: String = model.slot_definition("foot",slot).pose_source
+	if model.slot_definition("foot",slot).assembly != "heel_pad":return foot.global_transform*Transform3D(Basis.IDENTITY,-FOOT_CENTER)*source[uid].transform
+	return foot.global_transform*Transform3D(Basis.IDENTITY,source[uid].transform.origin-FOOT_CENTER)
 
-func mount_point() -> Vector3:
-	return mount_transform()*Vector3(0,-0.085,0)
+func mount_point(slot: String = "") -> Vector3:
+	return mount_transform(slot)*Vector3(0,-0.085,0)
+
+func placement_destination() -> Transform3D:
+	return stations[target.get("station","prep")].global_transform if target.type == "prep" else mount_transform()
 
 func _update_target() -> void:
 	target = {}
 	var best: float = INF
 	var candidates: Array[Dictionary] = []
-	if ["prep","foot"].has(state.pad_location):
-		for i in range(4):candidates.append({"type":"slot","index":i,"point":connection(i),"radius":0.15})
-	if state.pad_location == "held":
-		candidates.append({"type":"prep","point":prep.global_position,"radius":0.48})
-		candidates.append({"type":"mount","point":mount_point(),"radius":0.40})
-	elif state.pad_location != "foot":
-		candidates.append({"type":"pad","point":pad.global_position,"radius":0.40})
+	var previous_build = active_build
+	var held = held_build()
+	for id in builds:
+		_activate(id)
+		if not components.is_component_build(id) and ["prep","foot"].has(state.pad_location):
+			for i in range(4):candidates.append({"type":"slot","build":id,"index":i,"point":connection(i),"radius":0.15})
+		if state.pad_location in ["loose","prep"]:
+			candidates.append({"type":"pad","build":id,"point":pad.global_position,"radius":0.40})
+	if not held.is_empty():
+		_activate(held)
+		for station in stations:
+			candidates.append({"type":"prep","build":held,"station":station,"point":stations[station].global_position,"radius":0.48})
+		for mount in config.mounts:
+			if model.slot_definition("foot",mount.id).assembly == model.assemblies[held].definition and model.assemblies.foot.slots[mount.id].is_empty():candidates.append({"type":"mount","build":held,"mount":mount.id,"point":mount_point(mount.id),"radius":0.30})
+	_activate(previous_build if held.is_empty() else held)
 	for kind in bins:candidates.append({"type":"bin","kind":kind,"point":bins[kind].global_position+Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in loose:
 		if is_instance_valid(loose[uid]):candidates.append({"type":"loose","uid":uid,"point":loose[uid].global_position,"radius":0.12})
+	candidates.append_array(components.candidates())
 	for candidate in candidates:
 		if camera.global_position.distance_to(candidate.point) > 6.0: continue
 		var score = _aim_score(candidate.point,candidate.radius)
 		# While holding hardware, a nearby socket wins over the pad's center.
 		if candidate.type == "slot": score -= 0.12
+		if candidate.type == "component": score -= 1.0
 		if score < best:
 			best = score
 			target = candidate
 	hud.target_panel.visible = not target.is_empty()
 	if target.is_empty(): return
+	if target.has("build"):_activate(target.build)
 	var distance = camera.global_position.distance_to(target.point)
 	var text = ""
 	match target.type:
-		"bin": text = HeelAssemblyState.TITLES[target.kind]+" · %d available\nE take one  /  Shift+E take remaining  /  B return selected" % state.count_at(target.kind,"bin")
-		"pad": text = "FA-302 · %s heel pad\nE carry · two hands" % ("Prepared" if state.prepared() else "Unfinished")
-		"loose": text = HeelAssemblyState.TITLES[state.items[target.uid].kind]+"\nE collect into pockets"
-		"prep": text = "PAD PREPARATION STATION\nClick to suspend the pad · R + mouse to rotate"
-		"mount": text = "FA-300 · Rear sole carrier\n"+("Click to mount the prepared heel pad" if state.prepared() else "Required: prepared FA-302 pad with all four sleeves")
+		"bin": text = components.title(target.kind)+" · %d available\n" % state.count_at(target.kind,"bin")+("E stock pocket · up to 20 · B clears selected pocket" if model.definitions.parts[target.kind].carry_class == "pocket" else "E carry from shelf · Q set down")
+		"pad": text = build_label(active_build)+" · %s\nE carry · two hands · V manual" % ("Prepared" if state.prepared() else "Unfinished")
+		"loose": text = components.title(state.items[target.uid].kind)+"\nE collect / carry"
+		"prep": text = "PREPARATION STATION\nClick to suspend · R + mouse to rotate"
+		"mount":
+			var reason: String = model.placement_error("foot",target.mount,active_build)
+			text = model.slot_definition("foot",target.mount).label+"\n"+("Click to seat this assembly" if reason.is_empty() else reason)
+		"component":
+			var d = model.slot_definition(target.owner,target.sid)
+			var reason: String = model.placement_error(target.owner,target.sid,components.selected_uid(selected_kind))
+			text = components.title(d.accepts)+"\n"+("Click to attach" if reason.is_empty() else reason)
 		"slot":
 			var reason = state.reason(selected_kind,target.index)
-			if state.complete():text = "FA-302 · Heel pad complete\nZ to undo the last build action"
-			elif selected_kind == "pad": text = "FA-302 · Heel pad / mounting point %d\n%s" % [target.index+1,"E carry this assembly" if state.pad_location == "prep" else "Select hardware [1 / 2 / 3]"]
-			else:text = "Mounting point %d · %s\n%s" % [target.index+1,HeelAssemblyState.TITLES[selected_kind],"Click to attach" if reason.is_empty() else reason]
+			if state.complete():text = "FA-302 · Heel pad complete\nZ to undo in the selected manual"
+			elif selected_kind.is_empty(): text = "FA-302 · Heel pad / mounting point %d\n%s" % [target.index+1,"E carry this assembly" if state.pad_location == "prep" else "Select a stocked pocket [1–0]"]
+			else:text = "Mounting point %d · %s\n%s" % [target.index+1,components.title(selected_kind),"Click to attach" if reason.is_empty() else reason]
+	if target.type == "slot":text = build_label(active_build)+" · "+text
 	if distance > REACH:text += "\nMove closer · %.1f m away / %.2f m reach" % [distance,REACH]
 	else:
 		var allowed: Array = [pad,foot]
 		if target.type == "bin":allowed = [bins[target.kind]]
 		elif target.type == "loose":allowed = [loose[target.uid]]
-		if not _visible(target.point,allowed,target.type in ["pad","loose"]):text += "\nView obstructed · approach the exposed side"
+		elif target.type == "component":allowed = [foot if target.owner == "foot" else bodies[target.owner]]
+		if not _visible(target.point,allowed,_target_allows_body_hit()):text += "\nView obstructed · approach the exposed side"
 		elif target.type in ["prep","mount"] and state.pad_location == "held":
-			var carry_error = _carry_placement_error(prep.global_transform if target.type == "prep" else mount_transform())
+			var carry_error = _carry_placement_error(placement_destination())
 			if not carry_error.is_empty():text += "\n"+carry_error
-	if target.type in ["prep","mount"] and selected_kind != "pad":text += "\nSelect hands [4] to place the carried pad"
 	hud.target_label.text = text
+
+func _target_allows_body_hit() -> bool:
+	return target.get("type","") in ["pad","loose","component"] or (target.get("type","") == "mount" and model.slot_definition("foot",target.mount).assembly != "heel_pad")
 
 func _access(allowed: Array = []) -> String:
 	if target.is_empty(): return "Aim near a part, bin, or mounting point."
+	if target.type == "component":return components.access()
 	if camera.global_position.distance_to(target.point) > REACH: return "Out of reach. Move closer to the connection (maximum %.2f m)." % REACH
-	if not _visible(target.point,allowed,target.type in ["pad","loose"]): return "Connection is obstructed. Rotate the assembly or approach its exposed side."
+	if not _visible(target.point,allowed,_target_allows_body_hit()): return "Connection is obstructed. Rotate the assembly or approach its exposed side."
+	if target.type == "prep":
+		var station: Node3D = stations[target.get("station","prep")]
+		var envelope: Vector3 = pad.get_node("CollisionShape3D").shape.size
+		var volume: Vector3 = station.get_meta("work_volume")
+		if envelope.x > volume.x or envelope.y > volume.y or envelope.z > volume.z:return "This assembly needs a larger work volume."
+		for id in builds:
+			if id != active_build and model.assemblies[id].location == "station:"+target.get("station","prep"):return "This station is occupied. Move its assembly first."
 	if target.type in ["prep","mount"] and state.pad_location == "held":
-		return _carry_placement_error(prep.global_transform if target.type == "prep" else mount_transform())
+		return _carry_placement_error(placement_destination())
 	return ""
 
-func _carry_placement_error(destination: Transform3D) -> String:
-	if pad.global_position.distance_to(camera.global_position) > REACH+0.75:
-		return "The carried pad is caught or too far away. Bring it alongside you first."
-	var shape = BoxShape3D.new()
-	shape.size = Vector3(0.60,0.14,0.66)
+func _carry_placement_error(destination: Transform3D, carried: WorkshopPart = null, receiving: PhysicsBody3D = null) -> String:
+	if carried == null:carried = pad
+	if carried.global_position.distance_to(camera.global_position) > REACH+0.75:
+		return "The carried assembly is caught or too far away. Bring it alongside you first."
+	var shape: Shape3D = carried.get_node("CollisionShape3D").shape
 	var query = PhysicsShapeQueryParameters3D.new()
 	query.shape = shape
-	query.transform = pad.global_transform
+	query.transform = carried.global_transform*carried.get_node("CollisionShape3D").transform
 	# The receiving foot uses layer 4. It may accept the assisted placement;
 	# scenery and other loose objects must remain solid along the approach.
 	query.collision_mask = 3
-	query.exclude = [pad.get_rid()]
+	var excluded: Array[RID] = [carried.get_rid()]
+	if receiving:
+		excluded.append(receiving.get_rid())
+		# Installed children are part of the receiving workpiece, not loose obstacles.
+		for body in bodies.values():
+			if receiving.is_ancestor_of(body):excluded.append(body.get_rid())
+	query.exclude = excluded
 	query.margin = 0.002
 	var space = get_world_3d().direct_space_state
 	# Shape casts ignore bodies already overlapping at the start. A held body
 	# pressed against a wall can penetrate by the solver's contact tolerance.
 	# Reject that contact before sweeping so it cannot become a snap loophole.
 	if not space.intersect_shape(query,1).is_empty():
-		return "The carried pad is touching an obstacle. Pull it clear before placing it."
-	var center_path = PhysicsRayQueryParameters3D.create(pad.global_position,destination.origin,3)
-	center_path.exclude = [pad.get_rid()]
+		return "The carried assembly is touching an obstacle. Pull it clear before placing it."
+	var center_path = PhysicsRayQueryParameters3D.create(carried.global_position,destination.origin,3)
+	center_path.exclude = query.exclude
 	if not space.intersect_ray(center_path).is_empty():
-		return "The pad's approach is blocked by scenery. Reposition before placing it."
-	query.motion = destination.origin-pad.global_position
+		return "The assembly's approach is blocked by scenery. Reposition before placing it."
+	query.motion = destination.origin-carried.global_position
 	var fractions = space.cast_motion(query)
 	if fractions.size() == 2 and fractions[0] < 0.99:
-		return "The pad's approach is blocked by scenery. Reposition before placing it."
-	query.transform = destination
+		return "The assembly's approach is blocked by scenery. Reposition before placing it."
+	query.transform = destination*carried.get_node("CollisionShape3D").transform
 	query.motion = Vector3.ZERO
 	if not space.intersect_shape(query,1).is_empty():
 		return "The placement space is occupied. Move the loose obstacle first."
 	return ""
 
 func interact(all_stock: bool = false) -> void:
-	if target.is_empty(): hud.toast("Look at a bin or a loose component, then press E."); return
+	if target.is_empty(): hud.toast("Look at a drawer, shelf or loose component, then press E."); return
 	var allowed: Array = [pad]
 	if target.type == "bin": allowed = [bins[target.kind]]
 	if target.type == "loose": allowed = [loose[target.uid]]
 	var error = _access(allowed)
 	if not error.is_empty(): hud.toast(error);return
 	match target.type:
-		"bin":
-			var taken = 0
-			for i in range(20 if all_stock else 1):
-				if state.take(target.kind).is_empty():break
-				taken += 1
-			selected_kind = target.kind
-			hud.toast("Collected %d × %s" % [taken,HeelAssemblyState.TITLES[target.kind]] if taken else "Bin empty or pockets full.",taken>0)
+		"bin":components.collect(target.kind,all_stock)
 		"pad", "slot":
 			if state.pad_location == "foot":hud.toast("The pad is mounted. Use Z to undo build actions.");return
 			if state.pad_location == "held":return
+			var carry_error = state.move_pad("held")
+			if not carry_error.is_empty():hud.toast(carry_error);return
 			var previous = pad.global_transform
 			pad.reparent(self)
 			pad.global_transform = previous
@@ -612,65 +764,66 @@ func interact(all_stock: bool = false) -> void:
 			pad.gravity_scale = 0
 			pad.collision_layer = 2
 			pad.collision_mask = WORLD_MASK
-			state.move_pad("held")
-			selected_kind = "pad"
-			hud.toast("Heel pad in both hands. Click a station to place it; Q sets it down.",true)
-		"loose":
-			var uid: String = target.uid
-			if state.take(state.items[uid].kind,"loose",uid).is_empty():hud.toast("Pockets full.");return
-			selected_kind = state.items[uid].kind
-			loose[uid].queue_free()
-			loose.erase(uid)
-			hud.toast("Collected "+HeelAssemblyState.TITLES[selected_kind],true)
+			hud.toast(build_label(active_build)+" in both hands. Click a station to place it; Q sets it down.",true)
+		"loose":components.collect(state.items[target.uid].kind,false,target.uid)
 	hud.refresh()
 
 func attach() -> void:
-	if target.get("type","") in ["prep","mount"] and selected_kind != "pad":
-		hud.toast("Select your hands [4] to place the carried heel pad.")
-		return
+	if target.get("type","") == "component":components.attach();return
 	var error = _access([pad,foot])
 	if not error.is_empty():hud.toast(error);return
 	if target.type == "prep" and state.pad_location == "held":
-		_set_pad_station()
-		state.move_pad("prep")
-		hud.page = 0
-		hud.toast("Pad suspended. Select sleeves [1] and aim near each opening.",true)
+		var station: String = target.get("station","prep")
+		var station_error = model.move_assembly(active_build,"station:"+station)
+		if not station_error.is_empty():hud.toast(station_error);return
+		_set_pad_station(station)
+		hud.toast("Assembly suspended. Open its manual with V to follow the next step.",true)
 	elif target.type == "mount" and state.pad_location == "held":
-		var result = state.mount()
+		var result = state.mount(target.get("mount","heel_1"))
 		if not result.ok:hud.toast(result.error);return
 		_set_pad_foot()
-		hud.page = 2
-		hud.toast("Pad seated. Fit a washer [2] then a bolt [3] at each point.",true)
+		if single_pad:hud.open_manual("foot",1)
+		hud.toast("Assembly seated. Follow the foot manual to secure its connections.",true)
 	elif target.type == "slot":
 		var was_prepared = state.prepared()
 		var was_complete = state.complete()
-		var result = state.install(selected_kind,target.index)
+		var kind = selected_kind
+		var result = state.install(kind,target.index)
 		if not result.ok:hud.toast(result.error);return
 		_sync_installed_visuals()
 		if state.prepared() == was_prepared and state.complete() == was_complete:
-			hud.toast("Fitted %s · mounting point %d" % [HeelAssemblyState.TITLES[selected_kind],target.index+1],true)
+			hud.toast("Fitted %s · mounting point %d" % [components.title(kind),target.index+1],true)
 	else:
-		hud.toast("Compatible next components: "+("FA-302 heel pad in the preparation station" if not state.prepared() else "prepared FA-302 heel pad on the rear sole carrier"))
+		hud.toast("Open the receiving build manual, select a part for its current step, and aim near its preview.")
 	hud.refresh()
 
-func _set_pad_station() -> void:
+func _set_pad_station(station: String = "prep") -> void:
+	var col: CollisionShape3D = pad.get_node("CollisionShape3D")
+	var dimensions: Array = model.definitions.assemblies[model.assemblies[active_build].definition].bounds
+	col.position = Vector3.ZERO
+	col.shape.size = Vector3(dimensions[0],dimensions[1],dimensions[2])
 	pad.held = false
+	# Attached assemblies inherit their parent's pose; the carrying mode can write
+	# an older world pose back between input and physics ticks during rotation.
+	pad.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
 	pad.freeze = true
 	pad.gravity_scale = 1
 	pad.linear_velocity = Vector3.ZERO
 	pad.angular_velocity = Vector3.ZERO
-	pad.reparent(prep)
+	pad.reparent(stations[station])
 	pad.transform = Transform3D.IDENTITY
 
 func _set_pad_foot() -> void:
 	pad.held = false
+	pad.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
 	pad.freeze = true
 	pad.linear_velocity = Vector3.ZERO
 	pad.angular_velocity = Vector3.ZERO
 	pad.reparent(foot)
-	pad.transform = Transform3D(Basis.IDENTITY,pad_origin-FOOT_CENTER)
+	pad.global_transform = mount_transform(state.mount_slot)
 
 func _sync_installed_visuals() -> void:
+	if components.is_component_build(active_build):components.sync(active_build);return
 	for child in pad.get_children():
 		if child.has_meta("installed_uid"):
 			pad.remove_child(child)
@@ -679,28 +832,27 @@ func _sync_installed_visuals() -> void:
 		for i in range(4):
 			var uid: String = state.slots[kind][i]
 			if uid.is_empty():continue
-			var visual = _mesh(uid)
-			# Any interchangeable source instance takes this mounting slot's pose.
-			visual.transform = source[slot_sources[kind][i]].transform
-			visual.position -= pad_origin
+			# Source instances can bake different axes into their vertices. Use the
+			# receiving slot's geometry/pose together, retaining inventory UID below.
+			var visual = _mesh(slot_sources[kind][i])
+			visual.transform = source["FA-302__001"].transform.affine_inverse()*source[slot_sources[kind][i]].transform
 			visual.set_meta("installed_uid",uid)
 			pad.add_child(visual)
 
 func drop_selected() -> void:
-	if selected_kind == "pad":
-		if state.pad_location != "held":hud.toast("Your hands are empty. E picks up the loose pad.");return
-		pad.held = false
-		pad.freeze = false
-		pad.sleeping = false
-		pad.gravity_scale = 1
-		pad.linear_velocity = Vector3.ZERO
-		state.move_pad("loose")
-		return
-	var uid = state.drop(selected_kind)
-	if uid.is_empty():hud.toast("No selected item in your pockets.");return
-	_spawn_loose(uid)
+	if not model.held_item().is_empty():components.drop();return
+	var held = held_build()
+	if held.is_empty():hud.toast("Q sets down a carried component. B clears the selected pocket.");return
+	_activate(held)
+	pad.held = false
+	pad.freeze = false
+	pad.sleeping = false
+	pad.gravity_scale = 1
+	pad.linear_velocity = Vector3.ZERO
+	state.move_pad("loose")
 
 func _spawn_loose(uid: String, at_output: bool = false) -> void:
+	assert(model.definitions.parts[model.items[uid].kind].carry_class != "pocket","Small items stay in drawers, pockets or assemblies.")
 	var item = Part.new()
 	item.uid = uid
 	item.kind = state.items[uid].kind
@@ -709,6 +861,7 @@ func _spawn_loose(uid: String, at_output: bool = false) -> void:
 	add_child(item)
 	item.add_child(_mesh(uid))
 	var col = CollisionShape3D.new()
+	col.name = "CollisionShape3D"
 	var shape = BoxShape3D.new()
 	shape.size = source[uid].mesh.get_aabb().size.max(Vector3(0.012,0.012,0.012))
 	col.shape = shape
@@ -722,88 +875,118 @@ func _spawn_loose(uid: String, at_output: bool = false) -> void:
 	loose[uid] = item
 
 func deposit() -> void:
-	if target.is_empty() or target.type != "bin":hud.toast("Look at a labelled bin to return matching hardware.");return
-	var error = _access([bins[target.kind]])
-	if not error.is_empty():hud.toast(error);return
-	if selected_kind != target.kind:hud.toast("This bin accepts "+HeelAssemblyState.TITLES[target.kind]);return
-	var uid = state.return_to_bin(selected_kind)
-	hud.toast("Returned one piece to storage." if not uid.is_empty() else "No matching piece in your pockets.",not uid.is_empty())
+	var count = model.clear_pocket()
+	hud.toast("Returned %d pieces to their drawer."%count if count else "Selected pocket is empty.",count>0)
 
 func undo_build() -> void:
-	var result = state.undo()
+	var owner: String = hud.manual_id
+	var destination = ""
+	for station in stations:
+		var occupied = false
+		for a in model.assemblies.values():
+			if a.location == "station:"+station:occupied = true
+		if not occupied:destination = station;break
+	if owner == "foot" and not model.assemblies.foot.history.is_empty() and model.assemblies.foot.history.back().action == "mount" and destination.is_empty():
+		hud.toast("Clear a preparation station before undoing the mount.");return
+	var result = model.undo(owner,"station:"+destination)
 	if not result.ok:hud.toast(result.error);return
 	if result.step.action == "mount":
-		_set_pad_station()
-		hud.page = 1
+		_activate(result.step.uid)
+		_set_pad_station(destination)
+		if single_pad:hud.open_manual(active_build,1)
 	else:
 		var uid: String = result.step.uid
-		if state.items[uid].location == "loose": _spawn_loose(uid,true)
-	_sync_installed_visuals()
-	hud.toast("Build action undone. Parts and manual progress updated.",true)
+		if model.items[uid].location == "loose":_spawn_loose(uid,true)
+	var previous_build = active_build
+	for id in builds:
+		_activate(id)
+		_sync_installed_visuals()
+	_activate(previous_build)
+	if pitch_workshop:components.sync("foot")
+	hud.toast("Undid the last action in "+hud.manual_title()+".",true)
 
 func _state_changed() -> void:
-	if hud: hud.refresh()
-	for kind in bin_labels:
-		var n = state.count_at(kind,"bin")
-		bin_labels[kind].text = {"sleeve":"FA-305 / SLEEVES", "washer":"W-24 / WASHERS", "bolt":"H-24120 / BOLTS"}[kind]+"\n%02d AVAILABLE" % n
-		for i in range(4):bins[kind].get_node("Stock"+str(i)).visible = i < n
-	if state.prepared() and not prepared_before:
-		_milestone("Pad prepared. Lift it with E and bring it to the foot.")
-		if hud: hud.page = 1; hud.refresh()
-	if state.complete() and not completed_before:_milestone("HEEL PAD COMPLETE · 13 / 13 components fitted")
+	if hud:hud.refresh()
+	if storage:storage.refresh()
+	var previous_build = active_build
+	for id in builds:
+		_activate(id)
+		if state.prepared() and not prepared_flags.get(id,false):_milestone(build_label(id)+" prepared. E to carry; Backspace for the foot manual.")
+		if state.complete() and not completed_flags.get(id,false):_milestone(build_label(id)+" installation COMPLETE")
+		prepared_flags[id] = state.prepared()
+		completed_flags[id] = state.complete()
+	_activate(previous_build)
 	prepared_before = state.prepared()
 	completed_before = state.complete()
-	var errors = state.integrity_errors()
+	var errors = model.integrity_errors()
 	assert(errors.is_empty(),"; ".join(errors))
 
 func _milestone(message: String) -> void:
 	if hud:hud.toast(message,true)
-	if chime:chime.play()
+	if chime and DisplayServer.get_name() != "headless":chime.play()
 	var glow = material(Color(0.25,0.95,0.68,0.6),0,true)
 	glow.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	pad_mesh.material_overlay = glow
+	var glowing_mesh = pad_mesh
+	glowing_mesh.material_overlay = glow
 	var tween = create_tween()
 	tween.tween_property(glow,"albedo_color:a",0.0,1.8)
 	tween.tween_callback(func():
-		if pad_mesh.material_overlay == glow:pad_mesh.material_overlay = null)
+		if is_instance_valid(glowing_mesh) and glowing_mesh.material_overlay == glow:glowing_mesh.material_overlay = null)
 
 func _update_ghost() -> void:
 	ghost.visible = false
+	ghost_material.no_depth_test = target.get("type","") == "component"
+	if target.get("type","") == "component":
+		if not components.access().is_empty():return
+		if not model.placement_error(target.owner,target.sid,components.selected_uid(selected_kind)).is_empty():return
+		ghost.mesh = source[model.slot_definition(target.owner,target.sid).pose_source].mesh
+		ghost.global_transform = components.slot_pose(target.owner,target.sid)
+		ghost.visible = true
+		return
 	if target.is_empty():return
 	if not _access([pad,foot]).is_empty():return
 	if target.type == "slot" and HeelAssemblyState.KINDS.has(selected_kind):
 		if not state.reason(selected_kind,target.index).is_empty() or state.count_at(selected_kind,"pocket") == 0:return
 		var uid: String = slot_sources[selected_kind][target.index]
 		ghost.mesh = source[uid].mesh
-		var pose: Transform3D = source[uid].transform
-		pose.origin -= pad_origin
+		var pose: Transform3D = source["FA-302__001"].transform.affine_inverse()*source[uid].transform
 		ghost.global_transform = pad.global_transform*pose
 		ghost.visible = true
-	elif target.type == "mount" and state.pad_location == "held" and state.prepared() and selected_kind == "pad":
+	elif target.type == "mount" and state.pad_location == "held" and model.placement_error("foot",target.mount,active_build).is_empty():
 		ghost.mesh = source[state.pad_id].mesh
 		ghost.global_transform = mount_transform()
 		ghost.visible = true
-	elif target.type == "prep" and state.pad_location == "held" and selected_kind == "pad":
+	elif target.type == "prep" and state.pad_location == "held":
 		ghost.mesh = source[state.pad_id].mesh
-		ghost.global_transform = prep.global_transform
+		ghost.global_transform = stations[target.get("station","prep")].global_transform
 		ghost.visible = true
 
 func _update_markers() -> void:
-	for i in range(4):
-		var point = connection(i)
-		socket_markers[i].visible = ["prep","foot"].has(state.pad_location) and camera.global_position.distance_to(point)<3.5 and _visible(point,[pad,foot]) and state.slots.bolt[i] == ""
-		socket_markers[i].global_position = point
+	var previous_build = active_build
+	var marker_index = 0
+	for id in builds:
+		if components.is_component_build(id):continue
+		_activate(id)
+		for i in range(4):
+			var point = connection(i)
+			var marker = socket_markers[marker_index]
+			marker_index += 1
+			marker.visible = ["prep","foot"].has(state.pad_location) and camera.global_position.distance_to(point)<3.5 and _visible(point,[pad,foot]) and state.slots.bolt[i] == ""
+			marker.global_position = point
+	_activate(previous_build)
 
 func _station_in_view() -> String:
-	var p = _aim_score(prep.global_position,0.9)
-	var f = _aim_score(foot.global_position,1.9)
-	if p == INF and f == INF:return ""
-	return "prep" if p<f else "foot"
+	var selected = "foot"
+	var best = _aim_score(foot.global_position,1.9)
+	for id in stations:
+		var score = _aim_score(stations[id].global_position,0.9)
+		if score < best:best = score;selected = id
+	return "" if best == INF else selected
 
 func _rotate_station(relative: Vector2) -> void:
 	var station = rotation_station if rotate_held else _station_in_view()
 	if station.is_empty():return
-	var node: Node3D = prep if station == "prep" else foot
+	var node: Node3D = stations.get(station,foot)
 	if camera.global_position.distance_to(node.global_position)>5.0:return
 	node.basis = (Basis(camera.global_basis.y,-relative.x*0.006)*Basis(camera.global_basis.x,-relative.y*0.006)*node.basis).orthonormalized()
 
@@ -829,9 +1012,9 @@ func _rotation_key(pressed: bool) -> void:
 func reset_station(station: String = "") -> void:
 	if station.is_empty():station = _station_in_view()
 	if station.is_empty():return
-	var node = prep if station == "prep" else foot
+	var node: Node3D = stations.get(station,foot)
 	if camera.global_position.distance_to(node.global_position)>5.0:return
-	if station == "prep":prep.basis = PREP_BASIS
+	if stations.has(station):stations[station].basis = PREP_BASIS
 	elif station == "foot":foot.basis = FOOT_BASIS
 	hud.toast("Station returned to its working orientation.",true)
 
