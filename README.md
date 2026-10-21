@@ -12,6 +12,8 @@ The full-game design targets an **18 m piloted mecha**. The current playable mil
 
 ## Play the heel-pad demo
 
+![Heel-pad assembly in the workshop, with the illustrated manual, placement preview and square inventory pockets](docs/images/heel-pad-demo.png)
+
 Use **Godot 4.7.2**. On macOS, double-click [play-heel-pad.command](play-heel-pad.command), or run it from the repository root:
 
 ```sh
@@ -26,16 +28,16 @@ GODOT_BIN=/path/to/godot ./play-heel-pad.command
 
 On other platforms, open [game/heel-pad-demo/project.godot](game/heel-pad-demo/project.godot) in Godot and run the project. The first launch imports the model.
 
-Prepare two independent heel pads at either station, then secure them at either heel position. Shared bins supply eight sleeves, eight washers, and eight bolts. The parent foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
+Prepare two independent heel pads and a pitch actuator at the workshop stations, then secure them to the foot. Labelled drawers supply small hardware; shelves hold larger components. The parent foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
 
 | Input | Action |
 | --- | --- |
 | WASD / mouse | Move / look |
-| E / Shift + E | Pick up a part / collect matching bin stock |
-| 1–3 / 4 | Select sleeves, washers, bolts / hands |
+| E | Stock a small-part pocket / carry a component or assembly |
+| 1–0 | Select one of ten small-part pockets |
 | Left click | Attach at the highlighted point |
-| Q | Set down a carried part or drop hardware |
-| Hold R + mouse / F | Rotate / reset the station |
+| Q / B | Set down carried component / clear selected pocket |
+| Hold R + mouse / double-tap R | Rotate / reset the station |
 | Tab or M | Toggle the manual |
 | N | Browse the manual tree and steps |
 | Enter / Backspace | Open child / parent manual |

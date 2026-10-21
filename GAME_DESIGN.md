@@ -51,7 +51,7 @@ Teleportation is the accepted approach to travel beyond the available physical s
 
 - Small hardware belongs in labelled bins.
 - Larger pieces are available as loose physical objects. Players choose how to organise them on shelves and around the workshop.
-- Looking at a component shows its ID and name in an on-screen tooltip. Recognition by silhouette or distinguishing nearly identical fasteners by eye is not required.
+- Looking at a component shows its ID and name in a compact prompt beside its projected world position. Reachable, usable objects receive a thin outline. Recognition by silhouette or distinguishing nearly identical fasteners by eye is not required.
 - Players can bring supplies over in advance and arrange them beside the current build, including in nearby trays or storage.
 - Freely organising larger pieces has a practical payoff: knowing where items are and reducing repeated storage trips.
 - There is no agreed mandatory layout, sorting score, or automatic re-scattering system.
@@ -59,6 +59,23 @@ Teleportation is the accepted approach to travel beyond the available physical s
 ## Pockets, hands, and carrying
 
 The action bar contains ten persistent small-part pockets, hotkeyed 1–0. Each pocket holds one item type and up to 20 copies. There is no shared item-count limit. Hand-sized components and whole assemblies are carried separately from the bar.
+
+The in-game HUD uses subtle translucent backgrounds, plain engineering typography
+and keyboard keycaps. Pause, help and manual browser windows are opaque, with the
+workshop visible around them and no full-screen backdrop.
+Square pocket cards prioritize part images while retaining readable IDs, functional
+variants and quantities. A separate hands status appears only while carrying a
+component or assembly; it does not repeat the selected pocket or trigger a pickup popup.
+Valid attachment ghosts provide the placement
+cue without a repeated click instruction; unavailable actions keep brief explanations.
+Rotation controls stay in the pause menu without a persistent tutorial banner.
+Hand and two-hand components are held at screen center, accounting for the object's
+actual bounds. Size-aware distance and collision constraints still apply.
+
+With no part selected, unfinished assemblies have one whole-object pickup prompt.
+Selecting a part gives nearby connections priority over their assembly's pickup
+target; the pickup key still acts on the containing assembly. Wrong-part feedback
+remains available, and ordinary reach and obstruction checks apply to both actions.
 
 Size and available carrying slots provide the limitation. Realistic mass does not prevent carrying a huge component. Large held objects remain solid and should collide with the environment; turning them into ghosts that pass through everything was rejected.
 
@@ -158,7 +175,7 @@ The feedback pass implements:
 - Removal of the workshop-title header and permanent general-controls strip.
 - A compact action bar showing part images, IDs, quantities and selection. The later pocket rebuild below establishes ten persistent slots and a separate carrying indicator.
 - A grouped Escape controls menu with a prominent resume action and confirmed restart.
-- Double-tap R to reset the inspected station, alongside hold-R rotation and a contextual tutorial hint.
+- Double-tap R to reset the inspected station, alongside hold-R rotation. The later HUD revision removes the persistent tutorial hint.
 - Hold Ctrl to crouch for better inspection; standing requires overhead clearance.
 - Non-exclusive fullscreen by default so the demo fills the display.
 

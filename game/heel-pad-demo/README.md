@@ -2,6 +2,8 @@
 
 Godot 4.7.2 · GDScript · Jolt Physics · macOS desktop · Shared assembly model and nested manuals
 
+![Heel-pad preparation with the illustrated manual, placement preview and compact inventory HUD](../../docs/images/heel-pad-demo.png)
+
 A first-person workshop using the existing full-size foot model. Prepare two independent heel pads and a complete **91-piece pitch actuator**, then install them on the foot. The actuator installation adds **18 mounting pieces**, for **135 playable source identities**. The other 610 source pieces remain preassembled context or staged armor. No source objects have been removed from the 745-piece inventory.
 
 The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
@@ -73,9 +75,11 @@ Each of the ten pockets holds one small-part type, with up to 20 copies per stac
 
 - Real source geometry and metre scale: 745 source meshes, with exactly 135 identities removed from the preassembled context and used in the playable inventory.
 - Firm two-handed carrying. A collision-aware kinematic grip follows the camera without a spring or angular momentum. Translation is swept against scenery and turning checks intermediate orientations. Dropping restores normal rigid-body physics. Placement still checks the swept approach and destination against scenery and loose obstacles.
-- Stable suspended assemblies with free station rotation, double-tap R to reset, and a contextual rotation tutorial beside nearby stations. Holding R locks rotation to the station you began inspecting.
+- Stable suspended assemblies with free station rotation and double-tap R to reset. Holding R locks rotation to the station you began inspecting; the controls remain available in the pause menu without a persistent rotation banner.
+- Reachable, usable objects under the crosshair get a thin contour. Compact world prompts follow the object and use keyboard keycaps; obstacles hide both. With no part selected, unfinished builds keep one whole-assembly pickup prompt. With a selected part, nearby connections take priority; E still picks up their containing assembly. A valid green attachment preview stands on its own, while blocked or incompatible actions retain explanatory feedback.
+- Translucent in-game manual, notification and inventory panels; opaque pause/help and manual-browser windows with the workshop visible around them. The compact ten-pocket bar uses square cards with readable IDs, functional variants and counts. Hand and two-hand components are centered by their geometry, with size-aware forward clearance and solid collision.
 - Hold-to-crouch movement with a lower camera/collision capsule and an overhead clearance check before standing.
-- Ten persistent pockets with baked part images, IDs and per-stack counts, a separate carrying summary, and a grouped Escape menu with keyboard focus, clear resume/restart actions, and no permanent general-controls strip.
+- Ten persistent pockets with baked part images, IDs and per-stack counts. The separate hands summary appears only while carrying and replaces pickup popups; selected pocket information stays in the action bar. The grouped Escape menu offers keyboard focus and clear resume/restart actions.
 - Non-exclusive fullscreen at launch, with the HUD scaled to the display.
 - Finite labelled drawers for small parts, open shelves for larger components, a preparation tray, and part-ID tooltips. Small stock has no loose 3D meshes or physics bodies; installed parts and attachment previews still use their source geometry.
 - Interchangeable matching hardware. The chosen socket supplies the destination, while the installed object retains its physical identity.
@@ -122,6 +126,8 @@ and inspection of the affected scope.
 - [Original state regression](tests/state_test.gd): 57 checks through the new model, including independent order, finite stock, pocket clearing/refilling, identity, completion, and full undo.
 - [Generic model audit](tests/assembly_model_test.gd): 45 checks including invalid references/cycles, duplicate ownership, incompatible variants, shared stock, nested undo, and a separate three-slot recipe with a differently named parent. The alternate recipe is a state-level fixture, not new playable content.
 - [Original interaction regression](tests/demo_test.gd): the single-pad interaction suite, including movement, firm carrying, reach/occlusion, crouch, station rotation, fullscreen, and restart cancellation.
+- [Interaction feedback](tests/interaction_feedback_test.gd): reachable outlines, world prompt anchoring, obstruction/pause handling, green-preview feedback and compact HUD layout.
+- [Centered carrying](tests/centered_carry_test.gd): off-origin geometry, continuous camera rotation, large components and real wall obstruction.
 - [Two-build interaction audit](tests/multi_build_test.gd): 65 checks through the public controls and real targeting/physics, including shared stock, manual navigation, station exchange, swapped heel positions, completed installations, nested undo, and continuous R-drag between physics ticks. Rotation checks compare body, mesh and physics poses for both mounted pads.
 - Earlier pad captures showed independent builds and completed pads. Those images
   are no longer kept in Git; rerun the affected review when visual evidence is
@@ -208,6 +214,7 @@ The room is a functional workshop blockout. Its layout, lighting, carrying dista
 - [loose_part.gd](scripts/loose_part.gd): solid carried and dropped objects.
 - [manual_browser.gd](scripts/manual_browser.gd): expandable manual hierarchy, breadcrumbs and the large paused reader.
 - [hud.gd](scripts/hud.gd) and [manual_diagram.gd](scripts/manual_diagram.gd): instructions, inventory, tooltips, help, and live illustrations.
+- [interaction_outline.gd](scripts/interaction_outline.gd): depth-tested focus contours without changing source materials or assembly ownership.
 - [assembly-definitions.json](assets/assembly-definitions.json): part types, child and parent slots, prerequisites, milestone sets, work locations, geometry references, and manual steps.
 - [heel-pads.json](assets/heel-pads.json): 26 source identities, physical build instances, starting positions, and parent destinations.
 - [pitch-workshop.json](assets/pitch-workshop.json) and [pitch-actuator-definitions.json](assets/pitch-actuator-definitions.json): 135-piece scenario and the actuator/parent recipe overlay. Regenerate with `python3 game/heel-pad-demo/tools/author_pitch_actuator.py`; the authoring script resolves the exact pitch block in the source manifest and explicitly authors prerequisites separately from animation phases.
@@ -240,7 +247,7 @@ Authoring extensions for future modules:
 | Slot `target` (alias `target_position`) | Accessible interaction point in the owner's local frame; reach is measured here |
 | Slot `target_offset` | Accessible interaction point in the source mesh's local coordinates, transformed by the slot pose; an explicit owner-local `target` takes priority. This changes aiming, not the installed pose |
 | Part/slot `collision_shapes` | Authored primitive compound in the piece's mesh-local coordinates, preserving structural openings; individual source bounds are the fallback |
-| Part/assembly `handling` | Assisted carry position settings; default distance grows with the current compound bounds |
+| Part/assembly `handling` | Centered assisted carrying; `distance` and current compound size set forward clearance. Legacy `offset` retains its forward component; lateral/height offsets no longer shift the grip off center |
 | Assembly/slot `access_policy` | Mounted interiors remain locked by default; `mounted` explicitly permits work through a mounted owner subject to work-location rules |
 | Assembly/slot `service_access` | `surface` requires an exposed connection; `open_station` allows fixture-assisted internal access until enclosure; `assisted` is an explicit unconditional receiver exception. All modes still test unrelated scenery. |
 
