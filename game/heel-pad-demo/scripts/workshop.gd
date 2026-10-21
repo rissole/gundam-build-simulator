@@ -703,8 +703,6 @@ func apply_carry_intent(body: WorkshopPart, delta: float) -> void:
 	var grip_basis = PREP_BASIS if body.has_meta("assembly_id") else Basis.IDENTITY
 	profile["basis"] = grip_basis
 	if body.has_meta("assembly_id"):
-		profile["lateral"] = profile.get("lateral",0.63)
-		profile["height"] = profile.get("height",-0.34)
 		profile["distance"] = profile.get("distance",1.25)
 	body.carry_target = camera.global_position+camera.global_basis*SolidHandling.carry_offset(body,camera.global_basis,profile)
 	body.carry_basis = camera.global_basis*grip_basis

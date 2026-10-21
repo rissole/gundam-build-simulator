@@ -76,13 +76,15 @@ static func sweep_error(body: CollisionObject3D, destination: Transform3D, exclu
 		previous = pose
 	return ""
 
-static func carry_offset(body: CollisionObject3D, view_basis: Basis, profile: Dictionary) -> Vector3:
-	if profile.has("offset"):return AssemblyRuntime.vec(profile.offset)
+static func carry_offset(body: CollisionObject3D, _view_basis: Basis, profile: Dictionary) -> Vector3:
 	var envelope = bounds(body)
 	var orientation: Basis = profile.get("basis",Basis.IDENTITY)
 	var oriented: AABB = Transform3D(orientation,Vector3.ZERO)*envelope
 	var size = oriented.size
 	var extra = maxf(0.0,maxf(size.x,size.z)-0.8)
-	# Larger workpieces use assisted suspension farther forward. The object keeps
-	# its scale, colliders and source geometry; the grip adjusts to its current size.
-	return Vector3(float(profile.get("lateral",0.5))+minf(extra*0.12,0.55),float(profile.get("height",-0.32)), -float(profile.get("distance",1.1))-extra*0.65)-oriented.get_center()
+	var distance = float(profile.get("distance",1.1))
+	if profile.has("offset"):distance = -AssemblyRuntime.vec(profile.offset).z
+	# Center the held geometry, including off-origin source meshes, on the view
+	# axis. Legacy lateral/height offsets no longer move the grip off-screen-center.
+	# Larger workpieces still suspend farther forward and retain solid collision.
+	return Vector3(0,0,-distance-extra*0.65)-oriented.get_center()
