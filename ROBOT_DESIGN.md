@@ -8,7 +8,7 @@ The record is now split by assembly. Start here, read the shared rules, then ope
 
 ## Current status
 
-The main construction concepts and proportions are established for all six body sections. Detailed work is proceeding assembly by assembly. This record governs the robot itself; the agreed workshop gameplay is recorded separately in [GAME_DESIGN.md](GAME_DESIGN.md). The first [Godot heel-pad demo](game/heel-pad-demo/README.md) implements a playable 13-piece preparation and installation loop; the [foot prototype plan](design/game/foot-prototype-plan.md) records the expansion path.
+The main construction concepts and proportions are established for all six body sections. Detailed work is proceeding assembly by assembly. This record governs the robot itself; the agreed workshop gameplay is recorded separately in [GAME_DESIGN.md](GAME_DESIGN.md). The first [Godot heel-pad demo](game/heel-pad-demo/README.md) now implements a playable 135-piece workshop with two pads and the complete pitch actuator with shared construction rules and linked manuals; the [foot prototype plan](design/game/foot-prototype-plan.md) records the expansion path.
 
 **The foot-and-ankle reference-design detail pass is complete (FA-01).** Its linked packet records dimensions, numbered components, 258 fasteners with washers per foot, actuator internals, wiring, assembly order and bounded envelope checks. Three engineering-style reference sheets have been generated for review; see the [image register and prompts](design/legs/foot-and-ankle/images/README.md). Exact CAD validation and real engineering sizing remain outside this milestone. Other body assemblies still need their own detail passes.
 

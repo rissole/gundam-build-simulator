@@ -2,7 +2,7 @@
 
 A first-person mecha workshop prototype: organise parts, follow illustrated manuals, and assemble a giant robot one component at a time.
 
-The full-game design targets an **18 m piloted mecha**. The current playable milestone is a **13-piece heel-pad assembly** in Godot, backed by an FA-01 foot model with **745 separate parts** and a reproducible Blender generation pipeline.
+The full-game design targets an **18 m piloted mecha**. The current playable milestone is a **135-piece workshop with two pads, a complete pitch actuator, and linked manuals** in Godot, backed by an FA-01 foot model with **745 separate parts** and a reproducible Blender generation pipeline.
 
 ![FA-01 assembled foot, with separate armor, frame, ankle mechanisms, and sole pads](models/foot-fa01/output/foot-fa01-assembled.png)
 
@@ -26,7 +26,7 @@ GODOT_BIN=/path/to/godot ./play-heel-pad.command
 
 On other platforms, open [game/heel-pad-demo/project.godot](game/heel-pad-demo/project.godot) in Godot and run the project. The first launch imports the model.
 
-Gather four sleeves, four washers, and four bolts from the labelled bins. Suspend the heel pad in the preparation station, install its sleeves, then carry the prepared pad to the foot and secure it with the washers and bolts. A ghost preview shows valid placements, while the illustrated HUD manual tracks progress.
+Prepare two independent heel pads at either station, then secure them at either heel position. Shared bins supply eight sleeves, eight washers, and eight bolts. The parent foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
 
 ![Heel-pad preparation in the workshop, showing the part inventory and illustrated manual](game/heel-pad-demo/verification/02-pad-preparation.png)
 
@@ -39,7 +39,9 @@ Gather four sleeves, four washers, and four bolts from the labelled bins. Suspen
 | Q | Set down a carried part or drop hardware |
 | Hold R + mouse / F | Rotate / reset the station |
 | Tab or M | Toggle the manual |
-| Z | Undo the latest build action |
+| Enter / Backspace | Open child / parent manual |
+| C / V | Cycle manuals / open inspected build |
+| Z | Undo in the selected manual |
 | Escape | Release the mouse and open help |
 
 See the [demo README](game/heel-pad-demo/README.md) for the complete controls, behavior, verification, and limitations. Progress lasts for the current session. The rest of the foot is preassembled context; full-foot progression and the remaining robot are future work.
@@ -64,11 +66,13 @@ The foot measures approximately **3.0 m long × 1.3 m wide**. Its inventory cont
 
 Open the Godot editor with `./edit-heel-pad.command`. Gameplay scripts, the workshop scene, tests, and source-part metadata live in [game/heel-pad-demo](game/heel-pad-demo/).
 
-Run the existing state checks and rendered interaction checks from the repository root:
+Run the state and interaction checks headlessly from the repository root:
 
 ```sh
 ./play-heel-pad.command --headless --script tests/state_test.gd
-./play-heel-pad.command -- --demo-test
+./play-heel-pad.command --headless --script tests/assembly_model_test.gd
+./play-heel-pad.command --headless -- --single-pad --demo-test
+./play-heel-pad.command --headless -- --multi-test
 ```
 
 The model generator uses Blender's built-in Python API. With **Blender 4.5 or later** available as `blender`, regenerate the scene and exports with:
