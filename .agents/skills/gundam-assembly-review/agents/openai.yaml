@@ -1,0 +1,5 @@
+interface:
+  display_name: "Gundam Assembly and Visual Review"
+  short_description: "Design and verify module builds and assembly manuals"
+policy:
+  allow_implicit_invocation: true
