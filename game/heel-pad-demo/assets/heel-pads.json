@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "definitions": "res://assets/assembly-definitions.json",
+  "source_inventory_count": 745,
+  "parts": [
+    {
+      "instance_id": "FA-302__001",
+      "part_id": "FA-302",
+      "kind": "pad"
+    },
+    {
+      "instance_id": "FA-305__001",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__002",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__003",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__004",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "H-24120__001",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__035",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__002",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__036",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__003",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__037",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__004",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__038",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "FA-302__002",
+      "part_id": "FA-302",
+      "kind": "pad"
+    },
+    {
+      "instance_id": "FA-305__005",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__006",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__007",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__008",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "H-24120__005",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__039",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__006",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__040",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__007",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__041",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__008",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__042",
+      "part_id": "W-24",
+      "kind": "washer"
+    }
+  ],
+  "builds": [
+    {
+      "id": "pad_1",
+      "definition": "heel_pad",
+      "label": "Heel pad A",
+      "base": "FA-302__001",
+      "home": [
+        -1.0,
+        1.09,
+        3.25
+      ]
+    },
+    {
+      "id": "pad_2",
+      "definition": "heel_pad",
+      "label": "Heel pad B",
+      "base": "FA-302__002",
+      "home": [
+        0.8,
+        1.09,
+        3.25
+      ]
+    }
+  ],
+  "parent": {
+    "id": "foot",
+    "definition": "foot"
+  },
+  "mounts": [
+    {
+      "id": "heel_1",
+      "source": "FA-302__001",
+      "label": "Heel position 1"
+    },
+    {
+      "id": "heel_2",
+      "source": "FA-302__002",
+      "label": "Heel position 2"
+    }
+  ]
+}

@@ -1,0 +1,378 @@
+{
+  "version": 1,
+  "parts": {
+    "pad": {
+      "family": "FA-302",
+      "variant": "heel",
+      "title": "FA-302 · Heel pad",
+      "carry_class": "two_hand"
+    },
+    "sleeve": {
+      "family": "FA-305",
+      "variant": "standard",
+      "title": "FA-305 · Compression sleeve",
+      "carry_class": "pocket",
+      "short_title": "Compression sleeve"
+    },
+    "washer": {
+      "family": "W-24",
+      "variant": "standard",
+      "title": "W-24 · Washer",
+      "carry_class": "pocket",
+      "short_title": "Washer"
+    },
+    "bolt": {
+      "family": "H-24120",
+      "variant": "standard",
+      "title": "H-24120 · Mounting bolt",
+      "carry_class": "pocket",
+      "short_title": "Mounting bolt"
+    }
+  },
+  "assemblies": {
+    "heel_pad": {
+      "title": "Heel pad",
+      "root_slot": "base",
+      "bounds": [
+        0.6,
+        0.14,
+        0.66
+      ],
+      "station_class": "small",
+      "slots": {
+        "base": {
+          "accepts": "pad",
+          "requires": [],
+          "pose_source": "FA-302__001"
+        },
+        "sleeve_0": {
+          "accepts": "sleeve",
+          "requires": [
+            "base"
+          ],
+          "pose_source": "FA-305__001",
+          "target": [
+            -0.2,
+            -0.081,
+            0.23
+          ]
+        },
+        "sleeve_1": {
+          "accepts": "sleeve",
+          "requires": [
+            "base"
+          ],
+          "pose_source": "FA-305__002",
+          "target": [
+            -0.2,
+            -0.081,
+            -0.23
+          ]
+        },
+        "sleeve_2": {
+          "accepts": "sleeve",
+          "requires": [
+            "base"
+          ],
+          "pose_source": "FA-305__003",
+          "target": [
+            0.2,
+            -0.081,
+            0.23
+          ]
+        },
+        "sleeve_3": {
+          "accepts": "sleeve",
+          "requires": [
+            "base"
+          ],
+          "pose_source": "FA-305__004",
+          "target": [
+            0.2,
+            -0.081,
+            -0.23
+          ]
+        }
+      },
+      "milestones": {
+        "prepared": [
+          "base",
+          "sleeve_0",
+          "sleeve_1",
+          "sleeve_2",
+          "sleeve_3"
+        ]
+      },
+      "manual": [
+        {
+          "title": "Prepare",
+          "body": "Suspend FA-302 (heel pad) at any preparation station. Collect FA-305 from its drawer with E, then fit one at each opening in any order.",
+          "slots": [
+            "sleeve_0",
+            "sleeve_1",
+            "sleeve_2",
+            "sleeve_3"
+          ],
+          "view": "prepare"
+        },
+        {
+          "title": "Bring together",
+          "body": "Carry the prepared FA-302 with E and click an empty heel position. Backspace opens the foot manual. Hands work separately from your numbered pockets.",
+          "slots": [
+            "base",
+            "sleeve_0",
+            "sleeve_1",
+            "sleeve_2",
+            "sleeve_3"
+          ],
+          "view": "prepared"
+        }
+      ],
+      "work_locations": [
+        "station"
+      ]
+    },
+    "foot": {
+      "title": "Foot · heel installation",
+      "slots": {
+        "heel_1": {
+          "assembly": "heel_pad",
+          "milestone": "prepared",
+          "requires": [],
+          "pose_source": "FA-302__001",
+          "label": "Heel position 1"
+        },
+        "heel_1/washer_0": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__035"
+        },
+        "heel_1/bolt_0": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_0"
+          ],
+          "pose_source": "H-24120__001"
+        },
+        "heel_1/washer_1": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__036"
+        },
+        "heel_1/bolt_1": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_1"
+          ],
+          "pose_source": "H-24120__002"
+        },
+        "heel_1/washer_2": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__037"
+        },
+        "heel_1/bolt_2": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_2"
+          ],
+          "pose_source": "H-24120__003"
+        },
+        "heel_1/washer_3": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__038"
+        },
+        "heel_1/bolt_3": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_3"
+          ],
+          "pose_source": "H-24120__004"
+        },
+        "heel_2": {
+          "assembly": "heel_pad",
+          "milestone": "prepared",
+          "requires": [],
+          "pose_source": "FA-302__002",
+          "label": "Heel position 2"
+        },
+        "heel_2/washer_0": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__039"
+        },
+        "heel_2/bolt_0": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_0"
+          ],
+          "pose_source": "H-24120__005"
+        },
+        "heel_2/washer_1": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__040"
+        },
+        "heel_2/bolt_1": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_1"
+          ],
+          "pose_source": "H-24120__006"
+        },
+        "heel_2/washer_2": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__041"
+        },
+        "heel_2/bolt_2": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_2"
+          ],
+          "pose_source": "H-24120__007"
+        },
+        "heel_2/washer_3": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__042"
+        },
+        "heel_2/bolt_3": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_3"
+          ],
+          "pose_source": "H-24120__008"
+        }
+      },
+      "milestones": {
+        "complete": [
+          "heel_1",
+          "heel_1/washer_0",
+          "heel_1/bolt_0",
+          "heel_1/washer_1",
+          "heel_1/bolt_1",
+          "heel_1/washer_2",
+          "heel_1/bolt_2",
+          "heel_1/washer_3",
+          "heel_1/bolt_3",
+          "heel_2",
+          "heel_2/washer_0",
+          "heel_2/bolt_0",
+          "heel_2/washer_1",
+          "heel_2/bolt_1",
+          "heel_2/washer_2",
+          "heel_2/bolt_2",
+          "heel_2/washer_3",
+          "heel_2/bolt_3"
+        ],
+        "heel_1_secured": [
+          "heel_1",
+          "heel_1/washer_0",
+          "heel_1/bolt_0",
+          "heel_1/washer_1",
+          "heel_1/bolt_1",
+          "heel_1/washer_2",
+          "heel_1/bolt_2",
+          "heel_1/washer_3",
+          "heel_1/bolt_3"
+        ],
+        "heel_2_secured": [
+          "heel_2",
+          "heel_2/washer_0",
+          "heel_2/bolt_0",
+          "heel_2/washer_1",
+          "heel_2/bolt_1",
+          "heel_2/washer_2",
+          "heel_2/bolt_2",
+          "heel_2/washer_3",
+          "heel_2/bolt_3"
+        ]
+      },
+      "work_locations": [
+        "fixture"
+      ],
+      "context_sources": [
+        "FA-300__001"
+      ],
+      "manual": [
+        {
+          "title": "Heel installation",
+          "body": "Prepare each pad at either station, then install it at either empty heel position.",
+          "view": "overview",
+          "slots": [
+            "heel_1",
+            "heel_1/washer_0",
+            "heel_1/bolt_0",
+            "heel_1/washer_1",
+            "heel_1/bolt_1",
+            "heel_1/washer_2",
+            "heel_1/bolt_2",
+            "heel_1/washer_3",
+            "heel_1/bolt_3",
+            "heel_2",
+            "heel_2/washer_0",
+            "heel_2/bolt_0",
+            "heel_2/washer_1",
+            "heel_2/bolt_1",
+            "heel_2/washer_2",
+            "heel_2/bolt_2",
+            "heel_2/washer_3",
+            "heel_2/bolt_3"
+          ]
+        },
+        {
+          "title": "Heel position 1",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). E stocks a pocket from its drawer; 1–0 selects a pocket. Any connection order works.",
+          "child_slot": "heel_1",
+          "slots": [
+            "heel_1",
+            "heel_1/washer_0",
+            "heel_1/bolt_0",
+            "heel_1/washer_1",
+            "heel_1/bolt_1",
+            "heel_1/washer_2",
+            "heel_1/bolt_2",
+            "heel_1/washer_3",
+            "heel_1/bolt_3"
+          ],
+          "view": "install"
+        },
+        {
+          "title": "Heel position 2",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). E stocks a pocket from its drawer; 1–0 selects a pocket. Any connection order works.",
+          "child_slot": "heel_2",
+          "slots": [
+            "heel_2",
+            "heel_2/washer_0",
+            "heel_2/bolt_0",
+            "heel_2/washer_1",
+            "heel_2/bolt_1",
+            "heel_2/washer_2",
+            "heel_2/bolt_2",
+            "heel_2/washer_3",
+            "heel_2/bolt_3"
+          ],
+          "view": "install"
+        }
+      ]
+    }
+  }
+}

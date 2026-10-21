@@ -1,0 +1,746 @@
+{
+  "version": 1,
+  "definitions": "res://assets/pitch-actuator-definitions.json",
+  "source_inventory_count": 745,
+  "parts": [
+    {
+      "instance_id": "FA-302__001",
+      "part_id": "FA-302",
+      "kind": "pad"
+    },
+    {
+      "instance_id": "FA-305__001",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__002",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__003",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__004",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "H-24120__001",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__035",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__002",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__036",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__003",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__037",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__004",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__038",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "FA-302__002",
+      "part_id": "FA-302",
+      "kind": "pad"
+    },
+    {
+      "instance_id": "FA-305__005",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__006",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__007",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "FA-305__008",
+      "part_id": "FA-305",
+      "kind": "sleeve"
+    },
+    {
+      "instance_id": "H-24120__005",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__039",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__006",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__040",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__007",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__041",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24120__008",
+      "part_id": "H-24120",
+      "kind": "bolt"
+    },
+    {
+      "instance_id": "W-24__042",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "FA-510__001",
+      "part_id": "FA-510",
+      "kind": "fa-510__001"
+    },
+    {
+      "instance_id": "FA-511__001",
+      "part_id": "FA-511",
+      "kind": "fa-511__001"
+    },
+    {
+      "instance_id": "FA-512__001",
+      "part_id": "FA-512",
+      "kind": "fa-512__001"
+    },
+    {
+      "instance_id": "FA-513__001",
+      "part_id": "FA-513",
+      "kind": "fa-513__001"
+    },
+    {
+      "instance_id": "FA-514__001",
+      "part_id": "FA-514",
+      "kind": "fa-514__001"
+    },
+    {
+      "instance_id": "FA-515__001",
+      "part_id": "FA-515",
+      "kind": "fa-515__001"
+    },
+    {
+      "instance_id": "FA-522__001",
+      "part_id": "FA-522",
+      "kind": "fa-522__001"
+    },
+    {
+      "instance_id": "FA-523__001",
+      "part_id": "FA-523",
+      "kind": "fa-523__001"
+    },
+    {
+      "instance_id": "FA-516__001",
+      "part_id": "FA-516",
+      "kind": "fa-516__001"
+    },
+    {
+      "instance_id": "FA-517__001",
+      "part_id": "FA-517",
+      "kind": "fa-517__001"
+    },
+    {
+      "instance_id": "FA-518__001",
+      "part_id": "FA-518",
+      "kind": "fa-518__001"
+    },
+    {
+      "instance_id": "FA-519__001",
+      "part_id": "FA-519",
+      "kind": "fa-519__001"
+    },
+    {
+      "instance_id": "FA-520__001",
+      "part_id": "FA-520",
+      "kind": "fa-520__001"
+    },
+    {
+      "instance_id": "FA-521__001",
+      "part_id": "FA-521",
+      "kind": "fa-521__001"
+    },
+    {
+      "instance_id": "FA-524__001",
+      "part_id": "FA-524",
+      "kind": "fa-524__001"
+    },
+    {
+      "instance_id": "FA-524__002",
+      "part_id": "FA-524",
+      "kind": "fa-524__002"
+    },
+    {
+      "instance_id": "FA-525__001",
+      "part_id": "FA-525",
+      "kind": "fa-525__001"
+    },
+    {
+      "instance_id": "FA-526__001",
+      "part_id": "FA-526",
+      "kind": "fa-526__001"
+    },
+    {
+      "instance_id": "FA-527__001",
+      "part_id": "FA-527",
+      "kind": "fa-527__001"
+    },
+    {
+      "instance_id": "H-12040__001",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__021",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__002",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__022",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "FA-525__002",
+      "part_id": "FA-525",
+      "kind": "fa-525__002"
+    },
+    {
+      "instance_id": "FA-526__002",
+      "part_id": "FA-526",
+      "kind": "fa-526__002"
+    },
+    {
+      "instance_id": "FA-527__002",
+      "part_id": "FA-527",
+      "kind": "fa-527__002"
+    },
+    {
+      "instance_id": "H-12040__003",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__023",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__004",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__024",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "FA-528__001",
+      "part_id": "FA-528",
+      "kind": "fa-528__001"
+    },
+    {
+      "instance_id": "H-12030__021",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__025",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "FA-528__002",
+      "part_id": "FA-528",
+      "kind": "fa-528__002"
+    },
+    {
+      "instance_id": "H-12030__022",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__026",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "FA-529__001",
+      "part_id": "FA-529",
+      "kind": "fa-529__001"
+    },
+    {
+      "instance_id": "FA-529__002",
+      "part_id": "FA-529",
+      "kind": "fa-529__002"
+    },
+    {
+      "instance_id": "FA-530__001",
+      "part_id": "FA-530",
+      "kind": "fa-530__001"
+    },
+    {
+      "instance_id": "H-12050__001",
+      "part_id": "H-12050",
+      "kind": "h-12050"
+    },
+    {
+      "instance_id": "W-12__027",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12050__002",
+      "part_id": "H-12050",
+      "kind": "h-12050"
+    },
+    {
+      "instance_id": "W-12__028",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12050__003",
+      "part_id": "H-12050",
+      "kind": "h-12050"
+    },
+    {
+      "instance_id": "W-12__029",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12050__004",
+      "part_id": "H-12050",
+      "kind": "h-12050"
+    },
+    {
+      "instance_id": "W-12__030",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12050__005",
+      "part_id": "H-12050",
+      "kind": "h-12050"
+    },
+    {
+      "instance_id": "W-12__031",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12050__006",
+      "part_id": "H-12050",
+      "kind": "h-12050"
+    },
+    {
+      "instance_id": "W-12__032",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12050__007",
+      "part_id": "H-12050",
+      "kind": "h-12050"
+    },
+    {
+      "instance_id": "W-12__033",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12050__008",
+      "part_id": "H-12050",
+      "kind": "h-12050"
+    },
+    {
+      "instance_id": "W-12__034",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__005",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__035",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__006",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__036",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__007",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__037",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__008",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__038",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__009",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__039",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__010",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__040",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__011",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__041",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__012",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__042",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12030__023",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__043",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12030__024",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__044",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__013",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__045",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__014",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__046",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__015",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__047",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12040__016",
+      "part_id": "H-12040",
+      "kind": "h-12040"
+    },
+    {
+      "instance_id": "W-12__048",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12030__025",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__049",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12030__026",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__050",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12030__027",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__051",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "H-12030__028",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__052",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "FA-220__001",
+      "part_id": "FA-220",
+      "kind": "fa-220__001"
+    },
+    {
+      "instance_id": "H-24070__013",
+      "part_id": "H-24070",
+      "kind": "h-24070"
+    },
+    {
+      "instance_id": "W-24__023",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24070__014",
+      "part_id": "H-24070",
+      "kind": "h-24070"
+    },
+    {
+      "instance_id": "W-24__024",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "FA-221__001",
+      "part_id": "FA-221",
+      "kind": "fa-221__001"
+    },
+    {
+      "instance_id": "FA-222__001",
+      "part_id": "FA-222",
+      "kind": "fa-222__001"
+    },
+    {
+      "instance_id": "H-12030__029",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__053",
+      "part_id": "W-12",
+      "kind": "w-12"
+    },
+    {
+      "instance_id": "FA-220__002",
+      "part_id": "FA-220",
+      "kind": "fa-220__002"
+    },
+    {
+      "instance_id": "H-24070__015",
+      "part_id": "H-24070",
+      "kind": "h-24070"
+    },
+    {
+      "instance_id": "W-24__025",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "H-24070__016",
+      "part_id": "H-24070",
+      "kind": "h-24070"
+    },
+    {
+      "instance_id": "W-24__026",
+      "part_id": "W-24",
+      "kind": "washer"
+    },
+    {
+      "instance_id": "FA-221__002",
+      "part_id": "FA-221",
+      "kind": "fa-221__002"
+    },
+    {
+      "instance_id": "FA-222__002",
+      "part_id": "FA-222",
+      "kind": "fa-222__002"
+    },
+    {
+      "instance_id": "H-12030__030",
+      "part_id": "H-12030",
+      "kind": "h-12030"
+    },
+    {
+      "instance_id": "W-12__054",
+      "part_id": "W-12",
+      "kind": "w-12"
+    }
+  ],
+  "builds": [
+    {
+      "id": "pad_1",
+      "definition": "heel_pad",
+      "label": "Heel pad A",
+      "base": "FA-302__001",
+      "home": [
+        -1.0,
+        1.09,
+        3.25
+      ]
+    },
+    {
+      "id": "pad_2",
+      "definition": "heel_pad",
+      "label": "Heel pad B",
+      "base": "FA-302__002",
+      "home": [
+        0.8,
+        1.09,
+        3.25
+      ]
+    },
+    {
+      "id": "pitch",
+      "definition": "pitch_actuator",
+      "label": "Pitch actuator",
+      "base": "FA-510__001",
+      "home": [
+        -6.4,
+        0.235,
+        0.4
+      ]
+    }
+  ],
+  "parent": {
+    "id": "foot",
+    "definition": "foot"
+  },
+  "mounts": [
+    {
+      "id": "heel_1",
+      "source": "FA-302__001",
+      "label": "Heel position 1"
+    },
+    {
+      "id": "heel_2",
+      "source": "FA-302__002",
+      "label": "Heel position 2"
+    },
+    {
+      "id": "pitch",
+      "source": "FA-510__001",
+      "label": "Pitch actuator"
+    }
+  ],
+  "context_storage_families": [
+    "FA-400",
+    "FA-401",
+    "FA-402",
+    "FA-403",
+    "FA-404",
+    "FA-405"
+  ]
+}

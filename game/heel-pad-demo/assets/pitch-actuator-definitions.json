@@ -1,0 +1,2127 @@
+{
+  "version": 1,
+  "parts": {
+    "fa-510__001": {
+      "family": "FA-510",
+      "variant": "pitch-FA-510__001",
+      "title": "FA-510 · Barrel",
+      "short_title": "Barrel",
+      "carry_class": "two_hand"
+    },
+    "fa-511__001": {
+      "family": "FA-511",
+      "variant": "pitch-FA-511__001",
+      "title": "FA-511 · Front cap",
+      "short_title": "Front cap",
+      "carry_class": "hand"
+    },
+    "fa-512__001": {
+      "family": "FA-512",
+      "variant": "pitch-FA-512__001",
+      "title": "FA-512 · Rear cap",
+      "short_title": "Rear cap",
+      "carry_class": "hand"
+    },
+    "fa-513__001": {
+      "family": "FA-513",
+      "variant": "pitch-FA-513__001",
+      "title": "FA-513 · Motor with encoder",
+      "short_title": "Motor with encoder",
+      "carry_class": "hand"
+    },
+    "fa-514__001": {
+      "family": "FA-514",
+      "variant": "pitch-FA-514__001",
+      "title": "FA-514 · Reduction gearbox",
+      "short_title": "Reduction gearbox",
+      "carry_class": "hand"
+    },
+    "fa-515__001": {
+      "family": "FA-515",
+      "variant": "pitch-FA-515__001",
+      "title": "FA-515 · Clamp coupling",
+      "short_title": "Clamp coupling",
+      "carry_class": "pocket"
+    },
+    "fa-522__001": {
+      "family": "FA-522",
+      "variant": "pitch-FA-522__001",
+      "title": "FA-522 · Thrust bearing cartridge",
+      "short_title": "Thrust bearing cartridge",
+      "carry_class": "pocket"
+    },
+    "fa-523__001": {
+      "family": "FA-523",
+      "variant": "pitch-FA-523__001",
+      "title": "FA-523 · Bearing retainer",
+      "short_title": "Bearing retainer",
+      "carry_class": "pocket"
+    },
+    "fa-516__001": {
+      "family": "FA-516",
+      "variant": "pitch-FA-516__001",
+      "title": "FA-516 · Lead screw",
+      "short_title": "Lead screw",
+      "carry_class": "two_hand"
+    },
+    "fa-517__001": {
+      "family": "FA-517",
+      "variant": "pitch-FA-517__001",
+      "title": "FA-517 · Travelling nut",
+      "short_title": "Travelling nut",
+      "carry_class": "hand"
+    },
+    "fa-518__001": {
+      "family": "FA-518",
+      "variant": "pitch-FA-518__001",
+      "title": "FA-518 · Hollow output rod",
+      "short_title": "Hollow output rod",
+      "carry_class": "two_hand"
+    },
+    "fa-519__001": {
+      "family": "FA-519",
+      "variant": "pitch-FA-519__001",
+      "title": "FA-519 · Front guide bushing",
+      "short_title": "Front guide bushing",
+      "carry_class": "hand"
+    },
+    "fa-520__001": {
+      "family": "FA-520",
+      "variant": "pitch-FA-520__001",
+      "title": "FA-520 · Rod wiper",
+      "short_title": "Rod wiper",
+      "carry_class": "pocket"
+    },
+    "fa-521__001": {
+      "family": "FA-521",
+      "variant": "pitch-FA-521__001",
+      "title": "FA-521 · Antirotation key",
+      "short_title": "Antirotation key",
+      "carry_class": "hand"
+    },
+    "fa-524__001": {
+      "family": "FA-524",
+      "variant": "pitch-FA-524__001",
+      "title": "FA-524 · Shaft collar half 1",
+      "short_title": "Shaft collar half 1",
+      "carry_class": "pocket"
+    },
+    "fa-524__002": {
+      "family": "FA-524",
+      "variant": "pitch-FA-524__002",
+      "title": "FA-524 · Shaft collar half 2",
+      "short_title": "Shaft collar half 2",
+      "carry_class": "pocket"
+    },
+    "fa-525__001": {
+      "family": "FA-525",
+      "variant": "pitch-FA-525__001",
+      "title": "FA-525 · Eye housing 1",
+      "short_title": "Eye housing 1",
+      "carry_class": "hand"
+    },
+    "fa-526__001": {
+      "family": "FA-526",
+      "variant": "pitch-FA-526__001",
+      "title": "FA-526 · Spherical eye bearing 1",
+      "short_title": "Spherical eye bearing 1",
+      "carry_class": "hand"
+    },
+    "fa-527__001": {
+      "family": "FA-527",
+      "variant": "pitch-FA-527__001",
+      "title": "FA-527 · Eye retaining ring 1",
+      "short_title": "Eye retaining ring 1",
+      "carry_class": "pocket"
+    },
+    "h-12040": {
+      "family": "H-12040",
+      "variant": "standard",
+      "title": "H-12040 · M12 × 40 screw",
+      "short_title": "M12 × 40 screw",
+      "carry_class": "pocket"
+    },
+    "w-12": {
+      "family": "W-12",
+      "variant": "standard",
+      "title": "W-12 · M12 washer",
+      "short_title": "M12 washer",
+      "carry_class": "pocket"
+    },
+    "fa-525__002": {
+      "family": "FA-525",
+      "variant": "pitch-FA-525__002",
+      "title": "FA-525 · Eye housing 2",
+      "short_title": "Eye housing 2",
+      "carry_class": "hand"
+    },
+    "fa-526__002": {
+      "family": "FA-526",
+      "variant": "pitch-FA-526__002",
+      "title": "FA-526 · Spherical eye bearing 2",
+      "short_title": "Spherical eye bearing 2",
+      "carry_class": "hand"
+    },
+    "fa-527__002": {
+      "family": "FA-527",
+      "variant": "pitch-FA-527__002",
+      "title": "FA-527 · Eye retaining ring 2",
+      "short_title": "Eye retaining ring 2",
+      "carry_class": "pocket"
+    },
+    "fa-528__001": {
+      "family": "FA-528",
+      "variant": "pitch-FA-528__001",
+      "title": "FA-528 · End sensor 1",
+      "short_title": "End sensor 1",
+      "carry_class": "pocket"
+    },
+    "h-12030": {
+      "family": "H-12030",
+      "variant": "standard",
+      "title": "H-12030 · M12 × 30 screw",
+      "short_title": "M12 × 30 screw",
+      "carry_class": "pocket"
+    },
+    "fa-528__002": {
+      "family": "FA-528",
+      "variant": "pitch-FA-528__002",
+      "title": "FA-528 · End sensor 2",
+      "short_title": "End sensor 2",
+      "carry_class": "pocket"
+    },
+    "fa-529__001": {
+      "family": "FA-529",
+      "variant": "pitch-FA-529__001",
+      "title": "FA-529 · Cap gasket 1",
+      "short_title": "Cap gasket 1",
+      "carry_class": "pocket"
+    },
+    "fa-529__002": {
+      "family": "FA-529",
+      "variant": "pitch-FA-529__002",
+      "title": "FA-529 · Cap gasket 2",
+      "short_title": "Cap gasket 2",
+      "carry_class": "pocket"
+    },
+    "fa-530__001": {
+      "family": "FA-530",
+      "variant": "pitch-FA-530__001",
+      "title": "FA-530 · Keyed connector",
+      "short_title": "Keyed connector",
+      "carry_class": "pocket"
+    },
+    "h-12050": {
+      "family": "H-12050",
+      "variant": "standard",
+      "title": "H-12050 · M12 × 50 cap screw",
+      "short_title": "M12 × 50 cap screw",
+      "carry_class": "pocket"
+    },
+    "fa-220__001": {
+      "family": "FA-220",
+      "variant": "pitch-FA-220__001",
+      "title": "FA-220 · Clevis 1",
+      "short_title": "Clevis 1",
+      "carry_class": "two_hand"
+    },
+    "h-24070": {
+      "family": "H-24070",
+      "variant": "standard",
+      "title": "H-24070 · M24 × 70 clevis bolt",
+      "short_title": "M24 × 70 clevis bolt",
+      "carry_class": "pocket"
+    },
+    "washer": {
+      "family": "W-24",
+      "variant": "standard",
+      "title": "W-24 · M24 washer",
+      "short_title": "M24 washer",
+      "carry_class": "pocket"
+    },
+    "fa-221__001": {
+      "family": "FA-221",
+      "variant": "pitch-FA-221__001",
+      "title": "FA-221 · Eye pin 1",
+      "short_title": "Eye pin 1",
+      "carry_class": "hand"
+    },
+    "fa-222__001": {
+      "family": "FA-222",
+      "variant": "pitch-FA-222__001",
+      "title": "FA-222 · Pin keeper 1",
+      "short_title": "Pin keeper 1",
+      "carry_class": "pocket"
+    },
+    "fa-220__002": {
+      "family": "FA-220",
+      "variant": "pitch-FA-220__002",
+      "title": "FA-220 · Clevis 2",
+      "short_title": "Clevis 2",
+      "carry_class": "two_hand"
+    },
+    "fa-221__002": {
+      "family": "FA-221",
+      "variant": "pitch-FA-221__002",
+      "title": "FA-221 · Eye pin 2",
+      "short_title": "Eye pin 2",
+      "carry_class": "hand"
+    },
+    "fa-222__002": {
+      "family": "FA-222",
+      "variant": "pitch-FA-222__002",
+      "title": "FA-222 · Pin keeper 2",
+      "short_title": "Pin keeper 2",
+      "carry_class": "pocket"
+    }
+  },
+  "assemblies": {
+    "pitch_actuator": {
+      "part_id": "FA-500-P",
+      "title": "FA-500-P · Pitch actuator",
+      "root_slot": "base",
+      "bounds": [
+        0.24,
+        0.8,
+        0.8
+      ],
+      "interaction": "components",
+      "work_locations": [
+        "station"
+      ],
+      "slots": {
+        "base": {
+          "accepts": "fa-510__001",
+          "requires": [],
+          "pose_source": "FA-510__001",
+          "label": "Barrel"
+        },
+        "FA-513__001": {
+          "accepts": "fa-513__001",
+          "requires": [
+            "base"
+          ],
+          "pose_source": "FA-513__001",
+          "label": "Motor with encoder"
+        },
+        "W-12__035": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-513__001"
+          ],
+          "pose_source": "W-12__035",
+          "label": "M12 washer"
+        },
+        "H-12040__005": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__035"
+          ],
+          "pose_source": "H-12040__005",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__036": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-513__001"
+          ],
+          "pose_source": "W-12__036",
+          "label": "M12 washer"
+        },
+        "H-12040__006": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__036"
+          ],
+          "pose_source": "H-12040__006",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__037": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-513__001"
+          ],
+          "pose_source": "W-12__037",
+          "label": "M12 washer"
+        },
+        "H-12040__007": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__037"
+          ],
+          "pose_source": "H-12040__007",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__038": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-513__001"
+          ],
+          "pose_source": "W-12__038",
+          "label": "M12 washer"
+        },
+        "H-12040__008": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__038"
+          ],
+          "pose_source": "H-12040__008",
+          "label": "M12 × 40 screw"
+        },
+        "FA-514__001": {
+          "accepts": "fa-514__001",
+          "requires": [
+            "FA-513__001",
+            "W-12__035",
+            "H-12040__005",
+            "W-12__036",
+            "H-12040__006",
+            "W-12__037",
+            "H-12040__007",
+            "W-12__038",
+            "H-12040__008"
+          ],
+          "pose_source": "FA-514__001",
+          "label": "Reduction gearbox"
+        },
+        "W-12__039": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-514__001"
+          ],
+          "pose_source": "W-12__039",
+          "label": "M12 washer"
+        },
+        "H-12040__009": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__039"
+          ],
+          "pose_source": "H-12040__009",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__040": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-514__001"
+          ],
+          "pose_source": "W-12__040",
+          "label": "M12 washer"
+        },
+        "H-12040__010": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__040"
+          ],
+          "pose_source": "H-12040__010",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__041": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-514__001"
+          ],
+          "pose_source": "W-12__041",
+          "label": "M12 washer"
+        },
+        "H-12040__011": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__041"
+          ],
+          "pose_source": "H-12040__011",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__042": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-514__001"
+          ],
+          "pose_source": "W-12__042",
+          "label": "M12 washer"
+        },
+        "H-12040__012": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__042"
+          ],
+          "pose_source": "H-12040__012",
+          "label": "M12 × 40 screw"
+        },
+        "FA-515__001": {
+          "accepts": "fa-515__001",
+          "requires": [
+            "FA-514__001",
+            "W-12__039",
+            "H-12040__009",
+            "W-12__040",
+            "H-12040__010",
+            "W-12__041",
+            "H-12040__011",
+            "W-12__042",
+            "H-12040__012"
+          ],
+          "pose_source": "FA-515__001",
+          "label": "Clamp coupling"
+        },
+        "FA-522__001": {
+          "accepts": "fa-522__001",
+          "requires": [
+            "FA-514__001",
+            "W-12__039",
+            "H-12040__009",
+            "W-12__040",
+            "H-12040__010",
+            "W-12__041",
+            "H-12040__011",
+            "W-12__042",
+            "H-12040__012"
+          ],
+          "pose_source": "FA-522__001",
+          "label": "Thrust bearing cartridge"
+        },
+        "FA-516__001": {
+          "accepts": "fa-516__001",
+          "requires": [
+            "FA-515__001",
+            "FA-522__001"
+          ],
+          "pose_source": "FA-516__001",
+          "label": "Lead screw"
+        },
+        "W-12__043": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-516__001"
+          ],
+          "pose_source": "W-12__043",
+          "label": "M12 washer"
+        },
+        "H-12030__023": {
+          "accepts": "h-12030",
+          "requires": [
+            "W-12__043"
+          ],
+          "pose_source": "H-12030__023",
+          "label": "M12 × 30 screw"
+        },
+        "W-12__044": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-516__001"
+          ],
+          "pose_source": "W-12__044",
+          "label": "M12 washer"
+        },
+        "H-12030__024": {
+          "accepts": "h-12030",
+          "requires": [
+            "W-12__044"
+          ],
+          "pose_source": "H-12030__024",
+          "label": "M12 × 30 screw"
+        },
+        "FA-523__001": {
+          "accepts": "fa-523__001",
+          "requires": [
+            "FA-516__001",
+            "W-12__043",
+            "H-12030__023",
+            "W-12__044",
+            "H-12030__024"
+          ],
+          "pose_source": "FA-523__001",
+          "label": "Bearing retainer"
+        },
+        "FA-524__001": {
+          "accepts": "fa-524__001",
+          "requires": [
+            "FA-516__001",
+            "W-12__043",
+            "H-12030__023",
+            "W-12__044",
+            "H-12030__024"
+          ],
+          "pose_source": "FA-524__001",
+          "label": "Shaft collar half 1"
+        },
+        "FA-524__002": {
+          "accepts": "fa-524__002",
+          "requires": [
+            "FA-516__001",
+            "W-12__043",
+            "H-12030__023",
+            "W-12__044",
+            "H-12030__024"
+          ],
+          "pose_source": "FA-524__002",
+          "label": "Shaft collar half 2"
+        },
+        "W-12__047": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-523__001",
+            "FA-524__001",
+            "FA-524__002"
+          ],
+          "pose_source": "W-12__047",
+          "label": "M12 washer"
+        },
+        "H-12040__015": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__047"
+          ],
+          "pose_source": "H-12040__015",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__048": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-523__001",
+            "FA-524__001",
+            "FA-524__002"
+          ],
+          "pose_source": "W-12__048",
+          "label": "M12 washer"
+        },
+        "H-12040__016": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__048"
+          ],
+          "pose_source": "H-12040__016",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__049": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-523__001",
+            "FA-524__001",
+            "FA-524__002"
+          ],
+          "pose_source": "W-12__049",
+          "label": "M12 washer"
+        },
+        "H-12030__025": {
+          "accepts": "h-12030",
+          "requires": [
+            "W-12__049"
+          ],
+          "pose_source": "H-12030__025",
+          "label": "M12 × 30 screw"
+        },
+        "W-12__050": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-523__001",
+            "FA-524__001",
+            "FA-524__002"
+          ],
+          "pose_source": "W-12__050",
+          "label": "M12 washer"
+        },
+        "H-12030__026": {
+          "accepts": "h-12030",
+          "requires": [
+            "W-12__050"
+          ],
+          "pose_source": "H-12030__026",
+          "label": "M12 × 30 screw"
+        },
+        "FA-517__001": {
+          "accepts": "fa-517__001",
+          "requires": [
+            "FA-523__001",
+            "FA-524__001",
+            "FA-524__002",
+            "W-12__047",
+            "H-12040__015",
+            "W-12__048",
+            "H-12040__016",
+            "W-12__049",
+            "H-12030__025",
+            "W-12__050",
+            "H-12030__026"
+          ],
+          "pose_source": "FA-517__001",
+          "label": "Travelling nut"
+        },
+        "FA-518__001": {
+          "accepts": "fa-518__001",
+          "requires": [
+            "FA-517__001"
+          ],
+          "pose_source": "FA-518__001",
+          "label": "Hollow output rod"
+        },
+        "W-12__045": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-518__001"
+          ],
+          "pose_source": "W-12__045",
+          "label": "M12 washer"
+        },
+        "H-12040__013": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__045"
+          ],
+          "pose_source": "H-12040__013",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__046": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-518__001"
+          ],
+          "pose_source": "W-12__046",
+          "label": "M12 washer"
+        },
+        "H-12040__014": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__046"
+          ],
+          "pose_source": "H-12040__014",
+          "label": "M12 × 40 screw"
+        },
+        "FA-521__001": {
+          "accepts": "fa-521__001",
+          "requires": [
+            "FA-518__001",
+            "W-12__045",
+            "H-12040__013",
+            "W-12__046",
+            "H-12040__014"
+          ],
+          "pose_source": "FA-521__001",
+          "label": "Antirotation key"
+        },
+        "W-12__051": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-521__001"
+          ],
+          "pose_source": "W-12__051",
+          "label": "M12 washer"
+        },
+        "H-12030__027": {
+          "accepts": "h-12030",
+          "requires": [
+            "W-12__051"
+          ],
+          "pose_source": "H-12030__027",
+          "label": "M12 × 30 screw"
+        },
+        "W-12__052": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-521__001"
+          ],
+          "pose_source": "W-12__052",
+          "label": "M12 washer"
+        },
+        "H-12030__028": {
+          "accepts": "h-12030",
+          "requires": [
+            "W-12__052"
+          ],
+          "pose_source": "H-12030__028",
+          "label": "M12 × 30 screw"
+        },
+        "FA-528__001": {
+          "accepts": "fa-528__001",
+          "requires": [
+            "FA-521__001",
+            "W-12__051",
+            "H-12030__027",
+            "W-12__052",
+            "H-12030__028"
+          ],
+          "pose_source": "FA-528__001",
+          "label": "End sensor 1"
+        },
+        "FA-528__002": {
+          "accepts": "fa-528__002",
+          "requires": [
+            "FA-521__001",
+            "W-12__051",
+            "H-12030__027",
+            "W-12__052",
+            "H-12030__028"
+          ],
+          "pose_source": "FA-528__002",
+          "label": "End sensor 2"
+        },
+        "FA-530__001": {
+          "accepts": "fa-530__001",
+          "requires": [
+            "FA-521__001",
+            "W-12__051",
+            "H-12030__027",
+            "W-12__052",
+            "H-12030__028"
+          ],
+          "pose_source": "FA-530__001",
+          "label": "Keyed connector"
+        },
+        "W-12__025": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-528__001",
+            "FA-528__002",
+            "FA-530__001"
+          ],
+          "pose_source": "W-12__025",
+          "label": "M12 washer"
+        },
+        "H-12030__021": {
+          "accepts": "h-12030",
+          "requires": [
+            "W-12__025"
+          ],
+          "pose_source": "H-12030__021",
+          "label": "M12 × 30 screw"
+        },
+        "W-12__026": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-528__001",
+            "FA-528__002",
+            "FA-530__001"
+          ],
+          "pose_source": "W-12__026",
+          "label": "M12 washer"
+        },
+        "H-12030__022": {
+          "accepts": "h-12030",
+          "requires": [
+            "W-12__026"
+          ],
+          "pose_source": "H-12030__022",
+          "label": "M12 × 30 screw"
+        },
+        "FA-519__001": {
+          "accepts": "fa-519__001",
+          "requires": [
+            "FA-528__001",
+            "FA-528__002",
+            "FA-530__001",
+            "W-12__025",
+            "H-12030__021",
+            "W-12__026",
+            "H-12030__022"
+          ],
+          "pose_source": "FA-519__001",
+          "label": "Front guide bushing"
+        },
+        "FA-520__001": {
+          "accepts": "fa-520__001",
+          "requires": [
+            "FA-528__001",
+            "FA-528__002",
+            "FA-530__001",
+            "W-12__025",
+            "H-12030__021",
+            "W-12__026",
+            "H-12030__022",
+            "FA-519__001"
+          ],
+          "pose_source": "FA-520__001",
+          "label": "Rod wiper"
+        },
+        "FA-529__001": {
+          "accepts": "fa-529__001",
+          "requires": [
+            "FA-528__001",
+            "FA-528__002",
+            "FA-530__001",
+            "W-12__025",
+            "H-12030__021",
+            "W-12__026",
+            "H-12030__022"
+          ],
+          "pose_source": "FA-529__001",
+          "label": "Cap gasket 1"
+        },
+        "FA-529__002": {
+          "accepts": "fa-529__002",
+          "requires": [
+            "FA-528__001",
+            "FA-528__002",
+            "FA-530__001",
+            "W-12__025",
+            "H-12030__021",
+            "W-12__026",
+            "H-12030__022"
+          ],
+          "pose_source": "FA-529__002",
+          "label": "Cap gasket 2"
+        },
+        "FA-511__001": {
+          "accepts": "fa-511__001",
+          "requires": [
+            "FA-519__001",
+            "FA-520__001",
+            "FA-529__001",
+            "FA-529__002"
+          ],
+          "pose_source": "FA-511__001",
+          "label": "Front cap"
+        },
+        "FA-512__001": {
+          "accepts": "fa-512__001",
+          "requires": [
+            "FA-519__001",
+            "FA-520__001",
+            "FA-529__001",
+            "FA-529__002"
+          ],
+          "pose_source": "FA-512__001",
+          "label": "Rear cap"
+        },
+        "W-12__027": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001"
+          ],
+          "pose_source": "W-12__027",
+          "label": "M12 washer"
+        },
+        "H-12050__001": {
+          "accepts": "h-12050",
+          "requires": [
+            "W-12__027"
+          ],
+          "pose_source": "H-12050__001",
+          "label": "M12 × 50 cap screw"
+        },
+        "W-12__028": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001"
+          ],
+          "pose_source": "W-12__028",
+          "label": "M12 washer"
+        },
+        "H-12050__002": {
+          "accepts": "h-12050",
+          "requires": [
+            "W-12__028"
+          ],
+          "pose_source": "H-12050__002",
+          "label": "M12 × 50 cap screw"
+        },
+        "W-12__029": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001"
+          ],
+          "pose_source": "W-12__029",
+          "label": "M12 washer"
+        },
+        "H-12050__003": {
+          "accepts": "h-12050",
+          "requires": [
+            "W-12__029"
+          ],
+          "pose_source": "H-12050__003",
+          "label": "M12 × 50 cap screw"
+        },
+        "W-12__030": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001"
+          ],
+          "pose_source": "W-12__030",
+          "label": "M12 washer"
+        },
+        "H-12050__004": {
+          "accepts": "h-12050",
+          "requires": [
+            "W-12__030"
+          ],
+          "pose_source": "H-12050__004",
+          "label": "M12 × 50 cap screw"
+        },
+        "W-12__031": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001"
+          ],
+          "pose_source": "W-12__031",
+          "label": "M12 washer"
+        },
+        "H-12050__005": {
+          "accepts": "h-12050",
+          "requires": [
+            "W-12__031"
+          ],
+          "pose_source": "H-12050__005",
+          "label": "M12 × 50 cap screw"
+        },
+        "W-12__032": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001"
+          ],
+          "pose_source": "W-12__032",
+          "label": "M12 washer"
+        },
+        "H-12050__006": {
+          "accepts": "h-12050",
+          "requires": [
+            "W-12__032"
+          ],
+          "pose_source": "H-12050__006",
+          "label": "M12 × 50 cap screw"
+        },
+        "W-12__033": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001"
+          ],
+          "pose_source": "W-12__033",
+          "label": "M12 washer"
+        },
+        "H-12050__007": {
+          "accepts": "h-12050",
+          "requires": [
+            "W-12__033"
+          ],
+          "pose_source": "H-12050__007",
+          "label": "M12 × 50 cap screw"
+        },
+        "W-12__034": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001"
+          ],
+          "pose_source": "W-12__034",
+          "label": "M12 washer"
+        },
+        "H-12050__008": {
+          "accepts": "h-12050",
+          "requires": [
+            "W-12__034"
+          ],
+          "pose_source": "H-12050__008",
+          "label": "M12 × 50 cap screw"
+        },
+        "FA-525__001": {
+          "accepts": "fa-525__001",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001",
+            "W-12__027",
+            "H-12050__001",
+            "W-12__028",
+            "H-12050__002",
+            "W-12__029",
+            "H-12050__003",
+            "W-12__030",
+            "H-12050__004",
+            "W-12__031",
+            "H-12050__005",
+            "W-12__032",
+            "H-12050__006",
+            "W-12__033",
+            "H-12050__007",
+            "W-12__034",
+            "H-12050__008"
+          ],
+          "pose_source": "FA-525__001",
+          "label": "Eye housing 1"
+        },
+        "FA-526__001": {
+          "accepts": "fa-526__001",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001",
+            "W-12__027",
+            "H-12050__001",
+            "W-12__028",
+            "H-12050__002",
+            "W-12__029",
+            "H-12050__003",
+            "W-12__030",
+            "H-12050__004",
+            "W-12__031",
+            "H-12050__005",
+            "W-12__032",
+            "H-12050__006",
+            "W-12__033",
+            "H-12050__007",
+            "W-12__034",
+            "H-12050__008",
+            "FA-525__001"
+          ],
+          "pose_source": "FA-526__001",
+          "label": "Spherical eye bearing 1"
+        },
+        "FA-527__001": {
+          "accepts": "fa-527__001",
+          "requires": [
+            "FA-511__001",
+            "FA-512__001",
+            "W-12__027",
+            "H-12050__001",
+            "W-12__028",
+            "H-12050__002",
+            "W-12__029",
+            "H-12050__003",
+            "W-12__030",
+            "H-12050__004",
+            "W-12__031",
+            "H-12050__005",
+            "W-12__032",
+            "H-12050__006",
+            "W-12__033",
+            "H-12050__007",
+            "W-12__034",
+            "H-12050__008",
+            "FA-526__001"
+          ],
+          "pose_source": "FA-527__001",
+          "label": "Eye retaining ring 1"
+        },
+        "W-12__021": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-525__001",
+            "FA-526__001",
+            "FA-527__001"
+          ],
+          "pose_source": "W-12__021",
+          "label": "M12 washer"
+        },
+        "H-12040__001": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__021"
+          ],
+          "pose_source": "H-12040__001",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__022": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-525__001",
+            "FA-526__001",
+            "FA-527__001"
+          ],
+          "pose_source": "W-12__022",
+          "label": "M12 washer"
+        },
+        "H-12040__002": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__022"
+          ],
+          "pose_source": "H-12040__002",
+          "label": "M12 × 40 screw"
+        },
+        "FA-525__002": {
+          "accepts": "fa-525__002",
+          "requires": [
+            "FA-525__001",
+            "FA-526__001",
+            "FA-527__001",
+            "W-12__021",
+            "H-12040__001",
+            "W-12__022",
+            "H-12040__002"
+          ],
+          "pose_source": "FA-525__002",
+          "label": "Eye housing 2"
+        },
+        "FA-526__002": {
+          "accepts": "fa-526__002",
+          "requires": [
+            "FA-525__001",
+            "FA-526__001",
+            "FA-527__001",
+            "W-12__021",
+            "H-12040__001",
+            "W-12__022",
+            "H-12040__002",
+            "FA-525__002"
+          ],
+          "pose_source": "FA-526__002",
+          "label": "Spherical eye bearing 2"
+        },
+        "FA-527__002": {
+          "accepts": "fa-527__002",
+          "requires": [
+            "FA-525__001",
+            "FA-526__001",
+            "FA-527__001",
+            "W-12__021",
+            "H-12040__001",
+            "W-12__022",
+            "H-12040__002",
+            "FA-526__002"
+          ],
+          "pose_source": "FA-527__002",
+          "label": "Eye retaining ring 2"
+        },
+        "W-12__023": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-525__002",
+            "FA-526__002",
+            "FA-527__002"
+          ],
+          "pose_source": "W-12__023",
+          "label": "M12 washer"
+        },
+        "H-12040__003": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__023"
+          ],
+          "pose_source": "H-12040__003",
+          "label": "M12 × 40 screw"
+        },
+        "W-12__024": {
+          "accepts": "w-12",
+          "requires": [
+            "FA-525__002",
+            "FA-526__002",
+            "FA-527__002"
+          ],
+          "pose_source": "W-12__024",
+          "label": "M12 washer"
+        },
+        "H-12040__004": {
+          "accepts": "h-12040",
+          "requires": [
+            "W-12__024"
+          ],
+          "pose_source": "H-12040__004",
+          "label": "M12 × 40 screw"
+        }
+      },
+      "milestones": {
+        "prepared": [
+          "base",
+          "FA-513__001",
+          "W-12__035",
+          "H-12040__005",
+          "W-12__036",
+          "H-12040__006",
+          "W-12__037",
+          "H-12040__007",
+          "W-12__038",
+          "H-12040__008",
+          "FA-514__001",
+          "W-12__039",
+          "H-12040__009",
+          "W-12__040",
+          "H-12040__010",
+          "W-12__041",
+          "H-12040__011",
+          "W-12__042",
+          "H-12040__012",
+          "FA-515__001",
+          "FA-522__001",
+          "FA-516__001",
+          "W-12__043",
+          "H-12030__023",
+          "W-12__044",
+          "H-12030__024",
+          "FA-523__001",
+          "FA-524__001",
+          "FA-524__002",
+          "W-12__047",
+          "H-12040__015",
+          "W-12__048",
+          "H-12040__016",
+          "W-12__049",
+          "H-12030__025",
+          "W-12__050",
+          "H-12030__026",
+          "FA-517__001",
+          "FA-518__001",
+          "W-12__045",
+          "H-12040__013",
+          "W-12__046",
+          "H-12040__014",
+          "FA-521__001",
+          "W-12__051",
+          "H-12030__027",
+          "W-12__052",
+          "H-12030__028",
+          "FA-528__001",
+          "FA-528__002",
+          "FA-530__001",
+          "W-12__025",
+          "H-12030__021",
+          "W-12__026",
+          "H-12030__022",
+          "FA-519__001",
+          "FA-520__001",
+          "FA-529__001",
+          "FA-529__002",
+          "FA-511__001",
+          "FA-512__001",
+          "W-12__027",
+          "H-12050__001",
+          "W-12__028",
+          "H-12050__002",
+          "W-12__029",
+          "H-12050__003",
+          "W-12__030",
+          "H-12050__004",
+          "W-12__031",
+          "H-12050__005",
+          "W-12__032",
+          "H-12050__006",
+          "W-12__033",
+          "H-12050__007",
+          "W-12__034",
+          "H-12050__008",
+          "FA-525__001",
+          "FA-526__001",
+          "FA-527__001",
+          "W-12__021",
+          "H-12040__001",
+          "W-12__022",
+          "H-12040__002",
+          "FA-525__002",
+          "FA-526__002",
+          "FA-527__002",
+          "W-12__023",
+          "H-12040__003",
+          "W-12__024",
+          "H-12040__004"
+        ]
+      },
+      "manual": [
+        {
+          "title": "Motor",
+          "body": "Pick up FA-510 (barrel) from the floor beside preparation C with E, then click the station to suspend it. Carry FA-513 (motor) from its shelf; fit four W-12 washers and four H-12040 screws. The barrel becomes translucent for internal work.",
+          "slots": [
+            "FA-513__001",
+            "W-12__035",
+            "H-12040__005",
+            "W-12__036",
+            "H-12040__006",
+            "W-12__037",
+            "H-12040__007",
+            "W-12__038",
+            "H-12040__008"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Reduction drive",
+          "body": "Fit FA-514 (gearbox), then four W-12 washers and four H-12040 screws.",
+          "slots": [
+            "FA-514__001",
+            "W-12__039",
+            "H-12040__009",
+            "W-12__040",
+            "H-12040__010",
+            "W-12__041",
+            "H-12040__011",
+            "W-12__042",
+            "H-12040__012"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Coupling & bearing",
+          "body": "Fit FA-515 (coupling) and FA-522 (thrust bearing). Leave FA-515 unclamped.",
+          "slots": [
+            "FA-515__001",
+            "FA-522__001"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Lead screw",
+          "body": "Carry FA-516 (lead screw) from its shelf into the already fitted FA-522 bearing and FA-515 coupling. Clamp FA-515 with two W-12 washers and two H-12030 screws.",
+          "slots": [
+            "FA-516__001",
+            "W-12__043",
+            "H-12030__023",
+            "W-12__044",
+            "H-12030__024"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Retain the shaft",
+          "body": "Fit FA-523 (retainer) and both FA-524 collar halves. Secure FA-523 with W-12 and H-12040; secure FA-524 with W-12 and H-12030.",
+          "slots": [
+            "FA-523__001",
+            "FA-524__001",
+            "FA-524__002",
+            "W-12__047",
+            "H-12040__015",
+            "W-12__048",
+            "H-12040__016",
+            "W-12__049",
+            "H-12030__025",
+            "W-12__050",
+            "H-12030__026"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Travelling nut",
+          "body": "Fit FA-517 (travelling nut) onto the already fitted FA-516 lead screw.",
+          "slots": [
+            "FA-517__001"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Output rod",
+          "body": "Carry FA-518 (output rod) from its shelf. Join it to the already fitted FA-517 travelling nut with two W-12 washers and two H-12040 screws.",
+          "slots": [
+            "FA-518__001",
+            "W-12__045",
+            "H-12040__013",
+            "W-12__046",
+            "H-12040__014"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Guide key",
+          "body": "Fit FA-521 (guide key) into the already fitted FA-518 output rod. Secure it with two W-12 washers and two H-12030 screws.",
+          "slots": [
+            "FA-521__001",
+            "W-12__051",
+            "H-12030__027",
+            "W-12__052",
+            "H-12030__028"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "End sensors",
+          "body": "Fit both FA-528 end sensors and FA-530 (connector). Each FA-528 takes one W-12 washer and one H-12030 screw.",
+          "slots": [
+            "FA-528__001",
+            "FA-528__002",
+            "FA-530__001",
+            "W-12__025",
+            "H-12030__021",
+            "W-12__026",
+            "H-12030__022"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Front guide & seals",
+          "body": "Fit FA-519 (guide bushing), then FA-520 (wiper), and both FA-529 gaskets.",
+          "slots": [
+            "FA-519__001",
+            "FA-520__001",
+            "FA-529__001",
+            "FA-529__002"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Close the housing",
+          "body": "Fit one FA-511 (front cap) and one FA-512 (rear cap). Secure each cap with four W-12 washers and four H-12050 screws.",
+          "slots": [
+            "FA-511__001",
+            "FA-512__001",
+            "W-12__027",
+            "H-12050__001",
+            "W-12__028",
+            "H-12050__002",
+            "W-12__029",
+            "H-12050__003",
+            "W-12__030",
+            "H-12050__004",
+            "W-12__031",
+            "H-12050__005",
+            "W-12__032",
+            "H-12050__006",
+            "W-12__033",
+            "H-12050__007",
+            "W-12__034",
+            "H-12050__008"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Base eye",
+          "body": "Fit FA-525 (base eye), FA-526 (base bearing), then FA-527 (base retaining ring). Secure FA-525 with two W-12 washers and H-12040 screws.",
+          "slots": [
+            "FA-525__001",
+            "FA-526__001",
+            "FA-527__001",
+            "W-12__021",
+            "H-12040__001",
+            "W-12__022",
+            "H-12040__002"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Rod eye",
+          "body": "Fit FA-525 (rod eye), FA-526 (rod bearing), then FA-527 (rod retaining ring). Secure FA-525 with two W-12 washers and H-12040 screws.",
+          "slots": [
+            "FA-525__002",
+            "FA-526__002",
+            "FA-527__002",
+            "W-12__023",
+            "H-12040__003",
+            "W-12__024",
+            "H-12040__004"
+          ],
+          "view": "components"
+        },
+        {
+          "title": "Ready to install",
+          "body": "FA-500-P is ready after all 91 pieces. Backspace opens the foot manual for installation.",
+          "slots": [
+            "base",
+            "FA-513__001",
+            "W-12__035",
+            "H-12040__005",
+            "W-12__036",
+            "H-12040__006",
+            "W-12__037",
+            "H-12040__007",
+            "W-12__038",
+            "H-12040__008",
+            "FA-514__001",
+            "W-12__039",
+            "H-12040__009",
+            "W-12__040",
+            "H-12040__010",
+            "W-12__041",
+            "H-12040__011",
+            "W-12__042",
+            "H-12040__012",
+            "FA-515__001",
+            "FA-522__001",
+            "FA-516__001",
+            "W-12__043",
+            "H-12030__023",
+            "W-12__044",
+            "H-12030__024",
+            "FA-523__001",
+            "FA-524__001",
+            "FA-524__002",
+            "W-12__047",
+            "H-12040__015",
+            "W-12__048",
+            "H-12040__016",
+            "W-12__049",
+            "H-12030__025",
+            "W-12__050",
+            "H-12030__026",
+            "FA-517__001",
+            "FA-518__001",
+            "W-12__045",
+            "H-12040__013",
+            "W-12__046",
+            "H-12040__014",
+            "FA-521__001",
+            "W-12__051",
+            "H-12030__027",
+            "W-12__052",
+            "H-12030__028",
+            "FA-528__001",
+            "FA-528__002",
+            "FA-530__001",
+            "W-12__025",
+            "H-12030__021",
+            "W-12__026",
+            "H-12030__022",
+            "FA-519__001",
+            "FA-520__001",
+            "FA-529__001",
+            "FA-529__002",
+            "FA-511__001",
+            "FA-512__001",
+            "W-12__027",
+            "H-12050__001",
+            "W-12__028",
+            "H-12050__002",
+            "W-12__029",
+            "H-12050__003",
+            "W-12__030",
+            "H-12050__004",
+            "W-12__031",
+            "H-12050__005",
+            "W-12__032",
+            "H-12050__006",
+            "W-12__033",
+            "H-12050__007",
+            "W-12__034",
+            "H-12050__008",
+            "FA-525__001",
+            "FA-526__001",
+            "FA-527__001",
+            "W-12__021",
+            "H-12040__001",
+            "W-12__022",
+            "H-12040__002",
+            "FA-525__002",
+            "FA-526__002",
+            "FA-527__002",
+            "W-12__023",
+            "H-12040__003",
+            "W-12__024",
+            "H-12040__004"
+          ],
+          "view": "prepared"
+        }
+      ]
+    },
+    "foot": {
+      "title": "Foot · pads and pitch actuator",
+      "slots": {
+        "heel_1": {
+          "assembly": "heel_pad",
+          "milestone": "prepared",
+          "requires": [],
+          "pose_source": "FA-302__001",
+          "label": "Heel position 1"
+        },
+        "heel_1/washer_0": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__035"
+        },
+        "heel_1/bolt_0": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_0"
+          ],
+          "pose_source": "H-24120__001"
+        },
+        "heel_1/washer_1": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__036"
+        },
+        "heel_1/bolt_1": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_1"
+          ],
+          "pose_source": "H-24120__002"
+        },
+        "heel_1/washer_2": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__037"
+        },
+        "heel_1/bolt_2": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_2"
+          ],
+          "pose_source": "H-24120__003"
+        },
+        "heel_1/washer_3": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__038"
+        },
+        "heel_1/bolt_3": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_3"
+          ],
+          "pose_source": "H-24120__004"
+        },
+        "heel_2": {
+          "assembly": "heel_pad",
+          "milestone": "prepared",
+          "requires": [],
+          "pose_source": "FA-302__002",
+          "label": "Heel position 2"
+        },
+        "heel_2/washer_0": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__039"
+        },
+        "heel_2/bolt_0": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_0"
+          ],
+          "pose_source": "H-24120__005"
+        },
+        "heel_2/washer_1": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__040"
+        },
+        "heel_2/bolt_1": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_1"
+          ],
+          "pose_source": "H-24120__006"
+        },
+        "heel_2/washer_2": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__041"
+        },
+        "heel_2/bolt_2": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_2"
+          ],
+          "pose_source": "H-24120__007"
+        },
+        "heel_2/washer_3": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__042"
+        },
+        "heel_2/bolt_3": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_3"
+          ],
+          "pose_source": "H-24120__008"
+        },
+        "pitch/FA-220__001": {
+          "accepts": "fa-220__001",
+          "requires": [],
+          "pose_source": "FA-220__001",
+          "label": "Clevis 1",
+          "presentation": "components"
+        },
+        "pitch/W-24__023": {
+          "accepts": "washer",
+          "requires": [
+            "pitch/FA-220__001"
+          ],
+          "pose_source": "W-24__023",
+          "label": "M24 washer",
+          "presentation": "components"
+        },
+        "pitch/H-24070__013": {
+          "accepts": "h-24070",
+          "requires": [
+            "pitch/W-24__023"
+          ],
+          "pose_source": "H-24070__013",
+          "label": "M24 × 70 clevis bolt",
+          "presentation": "components"
+        },
+        "pitch/W-24__024": {
+          "accepts": "washer",
+          "requires": [
+            "pitch/FA-220__001"
+          ],
+          "pose_source": "W-24__024",
+          "label": "M24 washer",
+          "presentation": "components"
+        },
+        "pitch/H-24070__014": {
+          "accepts": "h-24070",
+          "requires": [
+            "pitch/W-24__024"
+          ],
+          "pose_source": "H-24070__014",
+          "label": "M24 × 70 clevis bolt",
+          "presentation": "components"
+        },
+        "pitch/FA-220__002": {
+          "accepts": "fa-220__002",
+          "requires": [],
+          "pose_source": "FA-220__002",
+          "label": "Clevis 2",
+          "presentation": "components"
+        },
+        "pitch/W-24__025": {
+          "accepts": "washer",
+          "requires": [
+            "pitch/FA-220__002"
+          ],
+          "pose_source": "W-24__025",
+          "label": "M24 washer",
+          "presentation": "components"
+        },
+        "pitch/H-24070__015": {
+          "accepts": "h-24070",
+          "requires": [
+            "pitch/W-24__025"
+          ],
+          "pose_source": "H-24070__015",
+          "label": "M24 × 70 clevis bolt",
+          "presentation": "components"
+        },
+        "pitch/W-24__026": {
+          "accepts": "washer",
+          "requires": [
+            "pitch/FA-220__002"
+          ],
+          "pose_source": "W-24__026",
+          "label": "M24 washer",
+          "presentation": "components"
+        },
+        "pitch/H-24070__016": {
+          "accepts": "h-24070",
+          "requires": [
+            "pitch/W-24__026"
+          ],
+          "pose_source": "H-24070__016",
+          "label": "M24 × 70 clevis bolt",
+          "presentation": "components"
+        },
+        "pitch": {
+          "assembly": "pitch_actuator",
+          "milestone": "prepared",
+          "requires": [
+            "pitch/FA-220__001",
+            "pitch/W-24__023",
+            "pitch/H-24070__013",
+            "pitch/W-24__024",
+            "pitch/H-24070__014",
+            "pitch/FA-220__002",
+            "pitch/W-24__025",
+            "pitch/H-24070__015",
+            "pitch/W-24__026",
+            "pitch/H-24070__016"
+          ],
+          "pose_source": "FA-510__001",
+          "label": "Pitch actuator",
+          "connections": [
+            "FA-220__001",
+            "FA-220__002"
+          ]
+        },
+        "pitch/FA-221__001": {
+          "accepts": "fa-221__001",
+          "requires": [
+            "pitch"
+          ],
+          "pose_source": "FA-221__001",
+          "label": "Eye pin 1",
+          "presentation": "components"
+        },
+        "pitch/FA-222__001": {
+          "accepts": "fa-222__001",
+          "requires": [
+            "pitch/FA-221__001"
+          ],
+          "pose_source": "FA-222__001",
+          "label": "Pin keeper 1",
+          "presentation": "components"
+        },
+        "pitch/W-12__053": {
+          "accepts": "w-12",
+          "requires": [
+            "pitch/FA-222__001"
+          ],
+          "pose_source": "W-12__053",
+          "label": "M12 washer",
+          "presentation": "components"
+        },
+        "pitch/H-12030__029": {
+          "accepts": "h-12030",
+          "requires": [
+            "pitch/W-12__053"
+          ],
+          "pose_source": "H-12030__029",
+          "label": "M12 × 30 screw",
+          "presentation": "components"
+        },
+        "pitch/FA-221__002": {
+          "accepts": "fa-221__002",
+          "requires": [
+            "pitch"
+          ],
+          "pose_source": "FA-221__002",
+          "label": "Eye pin 2",
+          "presentation": "components"
+        },
+        "pitch/FA-222__002": {
+          "accepts": "fa-222__002",
+          "requires": [
+            "pitch/FA-221__002"
+          ],
+          "pose_source": "FA-222__002",
+          "label": "Pin keeper 2",
+          "presentation": "components"
+        },
+        "pitch/W-12__054": {
+          "accepts": "w-12",
+          "requires": [
+            "pitch/FA-222__002"
+          ],
+          "pose_source": "W-12__054",
+          "label": "M12 washer",
+          "presentation": "components"
+        },
+        "pitch/H-12030__030": {
+          "accepts": "h-12030",
+          "requires": [
+            "pitch/W-12__054"
+          ],
+          "pose_source": "H-12030__030",
+          "label": "M12 × 30 screw",
+          "presentation": "components"
+        }
+      },
+      "milestones": {
+        "complete": [
+          "heel_1",
+          "heel_1/washer_0",
+          "heel_1/bolt_0",
+          "heel_1/washer_1",
+          "heel_1/bolt_1",
+          "heel_1/washer_2",
+          "heel_1/bolt_2",
+          "heel_1/washer_3",
+          "heel_1/bolt_3",
+          "heel_2",
+          "heel_2/washer_0",
+          "heel_2/bolt_0",
+          "heel_2/washer_1",
+          "heel_2/bolt_1",
+          "heel_2/washer_2",
+          "heel_2/bolt_2",
+          "heel_2/washer_3",
+          "heel_2/bolt_3",
+          "pitch/FA-220__001",
+          "pitch/W-24__023",
+          "pitch/H-24070__013",
+          "pitch/W-24__024",
+          "pitch/H-24070__014",
+          "pitch/FA-220__002",
+          "pitch/W-24__025",
+          "pitch/H-24070__015",
+          "pitch/W-24__026",
+          "pitch/H-24070__016",
+          "pitch",
+          "pitch/FA-221__001",
+          "pitch/FA-222__001",
+          "pitch/W-12__053",
+          "pitch/H-12030__029",
+          "pitch/FA-221__002",
+          "pitch/FA-222__002",
+          "pitch/W-12__054",
+          "pitch/H-12030__030"
+        ],
+        "heel_1_secured": [
+          "heel_1",
+          "heel_1/washer_0",
+          "heel_1/bolt_0",
+          "heel_1/washer_1",
+          "heel_1/bolt_1",
+          "heel_1/washer_2",
+          "heel_1/bolt_2",
+          "heel_1/washer_3",
+          "heel_1/bolt_3"
+        ],
+        "heel_2_secured": [
+          "heel_2",
+          "heel_2/washer_0",
+          "heel_2/bolt_0",
+          "heel_2/washer_1",
+          "heel_2/bolt_1",
+          "heel_2/washer_2",
+          "heel_2/bolt_2",
+          "heel_2/washer_3",
+          "heel_2/bolt_3"
+        ],
+        "pitch_secured": [
+          "pitch/FA-220__001",
+          "pitch/W-24__023",
+          "pitch/H-24070__013",
+          "pitch/W-24__024",
+          "pitch/H-24070__014",
+          "pitch/FA-220__002",
+          "pitch/W-24__025",
+          "pitch/H-24070__015",
+          "pitch/W-24__026",
+          "pitch/H-24070__016",
+          "pitch",
+          "pitch/FA-221__001",
+          "pitch/FA-222__001",
+          "pitch/W-12__053",
+          "pitch/H-12030__029",
+          "pitch/FA-221__002",
+          "pitch/FA-222__002",
+          "pitch/W-12__054",
+          "pitch/H-12030__030"
+        ]
+      },
+      "work_locations": [
+        "fixture"
+      ],
+      "context_sources": [
+        "FA-300__001"
+      ],
+      "manual": [
+        {
+          "title": "Foot workshop",
+          "body": "Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Follow each branch to install and secure it on the foot.",
+          "view": "overview",
+          "slots": [
+            "heel_1",
+            "heel_1/washer_0",
+            "heel_1/bolt_0",
+            "heel_1/washer_1",
+            "heel_1/bolt_1",
+            "heel_1/washer_2",
+            "heel_1/bolt_2",
+            "heel_1/washer_3",
+            "heel_1/bolt_3",
+            "heel_2",
+            "heel_2/washer_0",
+            "heel_2/bolt_0",
+            "heel_2/washer_1",
+            "heel_2/bolt_1",
+            "heel_2/washer_2",
+            "heel_2/bolt_2",
+            "heel_2/washer_3",
+            "heel_2/bolt_3",
+            "pitch/FA-220__001",
+            "pitch/W-24__023",
+            "pitch/H-24070__013",
+            "pitch/W-24__024",
+            "pitch/H-24070__014",
+            "pitch/FA-220__002",
+            "pitch/W-24__025",
+            "pitch/H-24070__015",
+            "pitch/W-24__026",
+            "pitch/H-24070__016",
+            "pitch",
+            "pitch/FA-221__001",
+            "pitch/FA-222__001",
+            "pitch/W-12__053",
+            "pitch/H-12030__029",
+            "pitch/FA-221__002",
+            "pitch/FA-222__002",
+            "pitch/W-12__054",
+            "pitch/H-12030__030"
+          ]
+        },
+        {
+          "title": "Heel position 1",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). E stocks a pocket from its drawer; 1–0 selects a pocket. Any connection order works.",
+          "child_slot": "heel_1",
+          "slots": [
+            "heel_1",
+            "heel_1/washer_0",
+            "heel_1/bolt_0",
+            "heel_1/washer_1",
+            "heel_1/bolt_1",
+            "heel_1/washer_2",
+            "heel_1/bolt_2",
+            "heel_1/washer_3",
+            "heel_1/bolt_3"
+          ],
+          "view": "install"
+        },
+        {
+          "title": "Heel position 2",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). E stocks a pocket from its drawer; 1–0 selects a pocket. Any connection order works.",
+          "child_slot": "heel_2",
+          "slots": [
+            "heel_2",
+            "heel_2/washer_0",
+            "heel_2/bolt_0",
+            "heel_2/washer_1",
+            "heel_2/bolt_1",
+            "heel_2/washer_2",
+            "heel_2/bolt_2",
+            "heel_2/washer_3",
+            "heel_2/bolt_3"
+          ],
+          "view": "install"
+        },
+        {
+          "title": "Base clevis",
+          "body": "Carry FA-220 (clevis 1) from its shelf and fit it to FA-200. Secure it with two W-24 washers and two H-24070 bolts.",
+          "slots": [
+            "pitch/FA-220__001",
+            "pitch/W-24__023",
+            "pitch/H-24070__013",
+            "pitch/W-24__024",
+            "pitch/H-24070__014"
+          ],
+          "view": "components",
+          "child_slot": "pitch",
+          "context_sources": [
+            "FA-200__001"
+          ]
+        },
+        {
+          "title": "Ring clevis",
+          "body": "Carry FA-220 (clevis 2) from its shelf and fit it to FA-201. Secure it with two W-24 washers and two H-24070 bolts.",
+          "slots": [
+            "pitch/FA-220__002",
+            "pitch/W-24__025",
+            "pitch/H-24070__015",
+            "pitch/W-24__026",
+            "pitch/H-24070__016"
+          ],
+          "view": "components",
+          "child_slot": "pitch",
+          "context_sources": [
+            "FA-201__001"
+          ]
+        },
+        {
+          "title": "Seat & pin actuator",
+          "body": "Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. Enter opens the FA-500-P manual.",
+          "slots": [
+            "pitch",
+            "pitch/FA-221__001",
+            "pitch/FA-222__001",
+            "pitch/W-12__053",
+            "pitch/H-12030__029",
+            "pitch/FA-221__002",
+            "pitch/FA-222__002",
+            "pitch/W-12__054",
+            "pitch/H-12030__030"
+          ],
+          "view": "components",
+          "child_slot": "pitch",
+          "context_sources": [
+            "FA-220__001",
+            "FA-220__002"
+          ]
+        }
+      ]
+    }
+  }
+}
