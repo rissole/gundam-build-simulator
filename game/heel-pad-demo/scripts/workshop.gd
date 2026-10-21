@@ -37,6 +37,7 @@ var pad_mesh: MeshInstance3D
 var ghost: MeshInstance3D
 var ghost_material: StandardMaterial3D
 var ghost_assembly_signature: String = ""
+var interaction_outline: Node3D
 var foot: AnimatableBody3D
 var prep: Node3D
 var loose: Dictionary = {}
@@ -110,6 +111,8 @@ func _ready() -> void:
 	ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(ghost)
 	ghost.visible = false
+	interaction_outline = preload("res://scripts/interaction_outline.gd").new()
+	add_child(interaction_outline)
 	for i in range(4*builds.size()):
 		var marker = MeshInstance3D.new()
 		var sphere = SphereMesh.new()
@@ -443,6 +446,7 @@ func _make_audio() -> void:
 
 func set_paused(value: bool) -> void:
 	paused = value
+	if value and is_instance_valid(interaction_outline):interaction_outline.clear()
 	rotate_held = false
 	rotation_station = ""
 	last_rotate_tap = -1000
@@ -503,6 +507,10 @@ func handle_desktop_input(event: InputEvent) -> void:
 				else:hud.open_manual(default_parent_id())
 			KEY_F: reset_station()
 		hud.refresh()
+		# Pocket changes can switch between pickup and placement intent. Resolve
+		# that immediately so selecting a part and clicking in one frame works.
+		_update_target()
+		_update_ghost()
 	if paused: return
 	if event is InputEventMouseMotion:
 		if rotate_held:
@@ -557,9 +565,6 @@ func _process(_delta: float) -> void:
 	_update_target()
 	_update_ghost()
 	_update_markers()
-	var station = _station_in_view()
-	var node: Node3D = stations.get(station,foot)
-	hud.set_rotation_hint(not station.is_empty() and camera.global_position.distance_to(node.global_position)<5.0,rotate_held)
 
 func _update_crouch(wants_crouch: bool, delta: float) -> void:
 	if crouched and not wants_crouch:
@@ -753,9 +758,10 @@ func _update_target() -> void:
 	var candidates: Array[Dictionary] = []
 	var previous_build = active_build
 	var held = held_build()
+	var fitting_part = held.is_empty() and not components.selected_uid(selected_kind).is_empty()
 	for id in builds:
 		_activate(id)
-		if not components.is_component_build(id) and ["prep","foot"].has(state.pad_location):
+		if held.is_empty() and (fitting_part or state.pad_location == "foot") and not components.is_component_build(id) and ["prep","foot"].has(state.pad_location):
 			for i in range(4):candidates.append({"type":"slot","build":id,"index":i,"point":connection(i),"radius":0.15})
 		if state.pad_location in ["loose","prep"]:
 			candidates.append({"type":"pad","build":id,"point":pad.global_position,"radius":0.40})
@@ -775,53 +781,147 @@ func _update_target() -> void:
 	for kind in bins:candidates.append({"type":"bin","kind":kind,"point":bins[kind].global_position+Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in loose:
 		if is_instance_valid(loose[uid]):candidates.append({"type":"loose","uid":uid,"point":loose[uid].global_position,"radius":0.12})
-	candidates.append_array(components.candidates())
+	if held.is_empty():
+		for candidate in components.candidates():
+			# Fixed/mounted builds have no competing pickup action; retain their
+			# connection inspection even when no pocket is selected.
+			if fitting_part or not builds.has(model.top_level(candidate.owner)):candidates.append(candidate)
+	var scored: Array[Dictionary] = []
+	var focused_connections: Dictionary = {}
 	for candidate in candidates:
 		if camera.global_position.distance_to(candidate.point) > 6.0: continue
 		var score = _aim_score(candidate.point,candidate.radius)
+		if score == INF:continue
+		var connection_visible = true
 		# While holding hardware, a nearby socket wins over the pad's center.
-		if candidate.type == "slot": score -= 0.12
+		if candidate.type == "slot":
+			score -= 0.12
+			connection_visible = _visible(candidate.point,[bodies[candidate.build],foot])
 		if candidate.type == "component":
 			score -= 1.0 if candidate.get("compatible",false) else 0.12
-			if score != INF and not _visible(candidate.point,components.receiving_bodies(candidate.owner,candidate.sid),components.service_access(candidate.owner,candidate.sid)):score += 1.0
+			connection_visible = _visible(candidate.point,components.receiving_bodies(candidate.owner,candidate.sid),components.service_access(candidate.owner,candidate.sid))
+			if not connection_visible:score += 1.0
+		if connection_visible and candidate.type in ["slot","component"]:
+			var owner: String = candidate.get("owner",candidate.get("build",""))
+			focused_connections[model.top_level(owner)] = true
+		scored.append({"candidate":candidate,"score":score})
+	for entry in scored:
+		var candidate: Dictionary = entry.candidate
+		# Connection feedback and whole-assembly pickup describe the same object.
+		# With a part selected, a nearby connection owns that object's focus instead
+		# of trading places with its center as the geometric scores fluctuate.
+		if candidate.type == "pad" and focused_connections.has(candidate.build):continue
+		var score: float = entry.score
 		if score < best:
 			best = score
 			target = candidate
-	hud.target_panel.visible = not target.is_empty()
-	if target.is_empty(): return
 	if target.has("build"):_activate(target.build)
-	var distance = camera.global_position.distance_to(target.point)
-	var text = ""
+	_present_target()
+
+func _target_receivers() -> Array:
+	match target.get("type",""):
+		"bin":return [bins[target.kind]]
+		"pad":return [pad]
+		"loose":return [loose[target.uid]]
+		"component":return components.receiving_bodies(target.owner,target.sid)
+		"mount":return [pad,assembly_node(model.top_level(target.owner))]
+	return [pad,foot]
+
+func _target_object() -> Node3D:
+	match target.get("type",""):
+		"bin":
+			var bin: Node3D = bins[target.kind]
+			return bin.get_node("ShelfPart") if bin.has_node("ShelfPart") else bin
+		"loose":return loose[target.uid]
+		"pad", "slot":return bodies[target.build]
+		"component", "mount":return assembly_node(target.owner)
+	return null
+
+func _present_target() -> void:
+	if target.is_empty() or paused:
+		hud.present_target("")
+		if is_instance_valid(interaction_outline):interaction_outline.clear()
+		return
+	var receivers = _target_receivers()
+	# A prompt should not disclose a connection through unrelated scenery. Keep
+	# the target itself so attempting the action can still explain an obstruction.
+	if camera.is_position_behind(target.point) or not _visible(target.point,receivers,_target_allows_body_hit()):
+		hud.present_target("")
+		if is_instance_valid(interaction_outline):interaction_outline.clear()
+		return
+	var caption = ""
+	var detail = ""
+	var action_key = ""
+	var action_label = ""
+	var usable = false
 	match target.type:
-		"bin": text = components.title(target.kind)+" · %d available\n" % state.count_at(target.kind,"bin")+("E stock pocket · up to 20 · B clears selected pocket" if model.definitions.parts[target.kind].carry_class == "pocket" else "E carry from shelf · Q set down")
-		"pad": text = build_label(active_build)+" · %s\nE carry · two hands · V manual" % ("Prepared" if state.prepared() else "Unfinished")
-		"loose": text = components.title(state.items[target.uid].kind)+"\nE collect / carry"
-		"prep": text = "PREPARATION STATION\nClick to suspend · R + mouse to rotate"
+		"bin":
+			var count: int = model.count_at(target.kind,"bin")
+			var pocket: bool = model.definitions.parts[target.kind].carry_class == "pocket"
+			caption = components.title(target.kind)
+			detail = "%d available" % count
+			if count > 0 and (pocket or not model.hands_occupied()):
+				action_key = "E"
+				action_label = "Stock pocket" if pocket else "Carry"
+				usable = true
+			elif count > 0:detail = "Set down the carried component first"
+		"pad":
+			caption = build_label(active_build)
+			detail = "Prepared" if state.prepared() else "Unfinished"
+			if not model.hands_occupied():
+				action_key = "E"
+				action_label = "Carry"
+				usable = true
+			else:detail = "Set down the carried component first"
+		"loose":
+			caption = components.title(model.items[target.uid].kind)
+			if not model.hands_occupied():
+				action_key = "E"
+				action_label = "Carry"
+				usable = true
+			else:detail = "Set down the carried component first"
+		"prep":
+			caption = "Preparation station"
+			usable = true
 		"mount":
-			var reason: String = model.placement_error(target.get("owner",default_parent_id()),target.mount,active_build)
-			text = model.slot_definition(target.get("owner",default_parent_id()),target.mount).get("label",target.mount)+"\n"+("Click to seat this assembly" if reason.is_empty() else reason)
+			caption = model.slot_definition(target.owner,target.mount).get("label",target.mount)
+			detail = model.placement_error(target.owner,target.mount,active_build)
+			usable = detail.is_empty()
 		"component":
-			var d = model.slot_definition(target.owner,target.sid)
-			var reason: String = model.placement_error(target.owner,target.sid,components.selected_uid(selected_kind))
-			text = components.title(d.accepts)+"\n"+("Click to attach" if reason.is_empty() else reason)
+			var spec = model.slot_definition(target.owner,target.sid)
+			caption = components.title(spec.accepts)
+			detail = model.placement_error(target.owner,target.sid,components.selected_uid(selected_kind))
+			usable = detail.is_empty()
 		"slot":
-			var reason = state.reason(selected_kind,target.index)
-			if state.complete():text = "FA-302 · Heel pad complete\nZ to undo in the selected manual"
-			elif selected_kind.is_empty(): text = "FA-302 · Heel pad / mounting point %d\n%s" % [target.index+1,"E carry this assembly" if state.pad_location == "prep" else "Select a stocked pocket [1–0]"]
-			else:text = "Mounting point %d · %s\n%s" % [target.index+1,components.title(selected_kind),"Click to attach" if reason.is_empty() else reason]
-	if target.type == "slot":text = build_label(active_build)+" · "+text
-	if distance > REACH:text += "\nMove closer · %.1f m away / %.2f m reach" % [distance,REACH]
-	else:
-		var allowed: Array = [pad,foot]
-		if target.type == "bin":allowed = [bins[target.kind]]
-		elif target.type == "loose":allowed = [loose[target.uid]]
-		elif target.type == "component":allowed = components.receiving_bodies(target.owner,target.sid)
-		elif target.type == "mount":allowed = [pad,assembly_node(model.top_level(target.owner))]
-		if not _visible(target.point,allowed,_target_allows_body_hit()):text += "\nView obstructed · approach the exposed side"
-		elif target.type in ["prep","mount"] and state.pad_location == "held":
-			var carry_error = _carry_placement_error(placement_destination())
-			if not carry_error.is_empty():text += "\n"+carry_error
-	hud.target_label.text = text
+			caption = build_label(active_build)+" · mounting point %d" % (target.index+1)
+			if state.complete():detail = "Complete"
+			elif selected_kind.is_empty():
+				if state.pad_location == "prep" and not model.hands_occupied():
+					action_key = "E"
+					action_label = "Carry assembly"
+					usable = true
+				else:detail = "Select a stocked pocket"
+			else:
+				caption = components.title(selected_kind)
+				detail = state.reason(selected_kind,target.index)
+				usable = detail.is_empty()
+	var access_error = _access(receivers)
+	if not access_error.is_empty():
+		detail = "" if camera.global_position.distance_to(target.point) > REACH else access_error
+		usable = false
+	if not usable:
+		action_key = ""
+		action_label = ""
+	if is_instance_valid(interaction_outline):
+		if usable:interaction_outline.focus(_target_object())
+		else:interaction_outline.clear()
+	# The green geometry is the successful attachment affordance. Only explain
+	# failures here; collection still needs its small keyboard action prompt.
+	if usable and action_key.is_empty():
+		hud.present_target("")
+		return
+	if not detail.is_empty():caption += "\n"+detail
+	hud.present_target(caption,action_key,action_label,camera.unproject_position(target.point),usable)
 
 func _target_allows_body_hit() -> bool:
 	if target.get("type","") == "component":return components.service_access(target.owner,target.sid)
@@ -859,7 +959,18 @@ func _carry_placement_error(destination: Transform3D, carried: WorkshopPart = nu
 	return SolidHandling.sweep_error(carried,destination,excluded,WORLD_MASK)
 
 func interact(all_stock: bool = false) -> void:
-	if target.is_empty(): hud.toast("Look at a drawer, shelf or loose component, then press E."); return
+	if target.is_empty(): hud.toast("Aim at a drawer, shelf or loose component."); return
+	if target.type == "component":
+		# Pickup acts on the physical containing assembly even when its connection
+		# is focused for placement. Recheck pickup reach/visibility independently.
+		var owner: String = model.top_level(target.owner)
+		if not builds.has(owner):hud.toast("This fixture stays at its work station.");return
+		var previous_target = target
+		target = {"type":"pad","build":owner,"point":target.point}
+		_activate(owner)
+		interact(all_stock)
+		target = previous_target
+		return
 	var allowed: Array = [pad]
 	if target.type == "bin": allowed = [bins[target.kind]]
 	if target.type == "loose": allowed = [loose[target.uid]]
@@ -868,7 +979,7 @@ func interact(all_stock: bool = false) -> void:
 	match target.type:
 		"bin":components.collect(target.kind,all_stock)
 		"pad", "slot":
-			if state.pad_location == "foot":hud.toast("The pad is mounted. Use Z to undo build actions.");return
+			if state.pad_location == "foot":hud.toast("The pad is mounted. Undo its installation in the parent manual.");return
 			if state.pad_location == "held":return
 			var carry_error = state.move_pad("held")
 			if not carry_error.is_empty():hud.toast(carry_error);return
@@ -883,7 +994,6 @@ func interact(all_stock: bool = false) -> void:
 			pad.gravity_scale = 0
 			pad.collision_layer = 2
 			pad.collision_mask = WORLD_MASK
-			hud.toast(build_label(active_build)+" in both hands. Click a station to place it; Q sets it down.",true)
 		"loose":components.collect(state.items[target.uid].kind,false,target.uid)
 	hud.refresh()
 
@@ -899,7 +1009,7 @@ func attach() -> void:
 		var station_error = model.move_assembly(active_build,"station:"+station)
 		if not station_error.is_empty():hud.toast(station_error);return
 		_set_pad_station(station)
-		hud.toast("Assembly suspended. Open its manual with V to follow the next step.",true)
+		hud.toast("Assembly suspended.",true)
 	elif target.type == "mount" and state.pad_location == "held":
 		var result = model.install(target.get("owner",default_parent_id()),target.get("mount","heel_1"),active_build)
 		if not result.ok:hud.toast(result.error);return
@@ -916,7 +1026,7 @@ func attach() -> void:
 		if state.prepared() == was_prepared and state.complete() == was_complete:
 			hud.toast("Fitted %s · mounting point %d" % [components.title(kind),target.index+1],true)
 	else:
-		hud.toast("Select a compatible part and aim at a ready connection. N finds matching instructions.")
+		hud.toast("Select a compatible part and aim at a ready connection.")
 	hud.refresh()
 
 func _set_pad_station(station: String = "prep") -> void:
@@ -959,7 +1069,7 @@ func _sync_installed_visuals() -> void:
 func drop_selected() -> void:
 	if not model.held_item().is_empty():components.drop();return
 	var held = held_build()
-	if held.is_empty():hud.toast("Q sets down a carried component. B clears the selected pocket.");return
+	if held.is_empty():hud.toast("Your hands are empty.");return
 	_activate(held)
 	pad.held = false
 	pad.freeze = false
@@ -1031,7 +1141,7 @@ func _state_changed() -> void:
 	var previous_build = active_build
 	for id in builds:
 		_activate(id)
-		if state.prepared() and not prepared_flags.get(id,false):_milestone(build_label(id)+" prepared. E to carry; Backspace for the parent manual.")
+		if state.prepared() and not prepared_flags.get(id,false):_milestone(build_label(id)+" prepared.")
 		if state.complete() and not completed_flags.get(id,false):_milestone(build_label(id)+" installation COMPLETE")
 		prepared_flags[id] = state.prepared()
 		completed_flags[id] = state.complete()

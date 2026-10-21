@@ -2622,7 +2622,7 @@
         },
         {
           "title": "Ready to install",
-          "body": "FA-500-P is ready after all 91 pieces. Backspace opens the foot manual for installation.",
+          "body": "FA-500-P is ready after all 91 pieces. Open the parent foot manual for installation.",
           "slots": [
             "base",
             "FA-514__001",
@@ -3368,7 +3368,7 @@
         },
         {
           "title": "Heel position 1",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). E stocks a pocket from its drawer; 1–0 selects a pocket. Any connection order works.",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_1",
           "slots": [
             "heel_1",
@@ -3385,7 +3385,7 @@
         },
         {
           "title": "Heel position 2",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). E stocks a pocket from its drawer; 1–0 selects a pocket. Any connection order works.",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_2",
           "slots": [
             "heel_2",
@@ -3528,7 +3528,7 @@
         },
         {
           "title": "Seat & pin actuator",
-          "body": "Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. Enter opens the FA-500-P manual.",
+          "body": "Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. The FA-500-P child manual covers its preparation.",
           "slots": [
             "pitch",
             "pitch/FA-221__001",

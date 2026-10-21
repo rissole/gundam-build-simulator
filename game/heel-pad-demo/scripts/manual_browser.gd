@@ -23,16 +23,12 @@ func _init(owner_hud: CanvasLayer) -> void:
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	var shade = ColorRect.new()
-	shade.color = Color(0.025,0.045,0.060,0.94)
-	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(shade)
 	var margin = MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for edge in ["left","right","top","bottom"]:margin.add_theme_constant_override("margin_"+edge,32)
 	add_child(margin)
 	card = PanelContainer.new()
-	card.add_theme_stylebox_override("panel",hud.style(Color("14232c"),Color("506570"),22))
+	card.add_theme_stylebox_override("panel",hud.style(Color("101b23"),Color("a6bac344"),22))
 	margin.add_child(card)
 	var layout = VBoxContainer.new()
 	layout.add_theme_constant_override("separation",16)
@@ -45,7 +41,7 @@ func _ready() -> void:
 	heading.add_child(titles)
 	titles.add_child(hud.label("Assembly manuals",27))
 	titles.add_child(hud.label("Choose a build or step. Each build remembers your place.",14,hud.muted))
-	var close_button = hud.button("Return to workshop   Esc",true)
+	var close_button = hud.shortcut_button("Return to workshop","Esc",true)
 	close_button.pressed.connect(close_browser)
 	heading.add_child(close_button)
 	crumbs = HBoxContainer.new()
@@ -93,12 +89,16 @@ func _ready() -> void:
 	tree.add_theme_constant_override("v_separation",9)
 	tree.add_theme_constant_override("h_separation",7)
 	tree.add_theme_constant_override("item_margin",18)
-	tree.add_theme_stylebox_override("panel",hud.style(Color("101e26"),Color("31454e"),10))
-	tree.add_theme_stylebox_override("selected",hud.style(Color("294c48"),Color("4b8d7a"),3))
+	tree.add_theme_stylebox_override("panel",hud.style(Color("101e26"),Color("a6bac322"),10))
+	tree.add_theme_stylebox_override("selected",hud.style(Color("294c48"),Color("4b8d7a80"),3))
 	tree.add_theme_stylebox_override("selected_focus",hud.style(Color("294c48"),hud.tone,3))
 	tree.item_selected.connect(_selected)
 	navigation.add_child(tree)
-	navigation.add_child(hud.label("↑ / ↓ select · ← / → pages · C next suggested build",12,hud.muted))
+	var navigation_hints = VBoxContainer.new()
+	navigation_hints.add_theme_constant_override("separation",4)
+	navigation_hints.add_child(hud.hint_row(["↑","↓","~Select ·","←","→"],"Pages"))
+	navigation_hints.add_child(hud.hint_row(["C"],"Next suggested build"))
+	navigation.add_child(navigation_hints)
 	reader = VBoxContainer.new()
 	reader.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	reader.size_flags_stretch_ratio = 1.0
@@ -125,6 +125,7 @@ func open_browser() -> void:
 	hud.game.set_paused(true)
 	hud.pause_panel.hide()
 	hud.manual.reparent(reader)
+	hud.manual.add_theme_stylebox_override("panel",hud.style(Color("15242c")))
 	hud.manual.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	hud.body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	hud.body_scroll.custom_minimum_size.y = 100
@@ -146,6 +147,7 @@ func open_browser() -> void:
 func close_browser() -> void:
 	if not visible:return
 	hud.manual.reparent(hud.root)
+	hud.manual.add_theme_stylebox_override("panel",hud.style())
 	hud.manual.anchor_left = 1
 	hud.manual.anchor_right = 1
 	hud.manual.anchor_top = 0

@@ -37,7 +37,7 @@ def cases() -> dict[str, list[str]]:
 def fingerprints() -> dict[str, str]:
     paths = [PROJECT / "project.godot", ROOT / "play-heel-pad.command"]
     for folder in [PROJECT / "scripts", PROJECT / "tests", PROJECT / "assets", PROJECT / "tools"]:
-        paths.extend(p for p in folder.rglob("*") if p.suffix in {".gd", ".json", ".glb", ".py", ".png"})
+        paths.extend(p for p in folder.rglob("*") if p.suffix in {".gd", ".gdshader", ".json", ".glb", ".py", ".png"})
     return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
 
 

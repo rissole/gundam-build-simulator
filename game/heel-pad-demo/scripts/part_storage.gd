@@ -38,7 +38,7 @@ func setup() -> void:
 		if columns == 0:continue
 		var center = origin+(columns-1)*spacing*0.5
 		game.box(game,Vector3(center,0.92,-6.55),Vector3(columns*spacing,1.84,0.16),cabinet,true)
-		game.sign_text(game,"SMALL PARTS / E STOCKS A POCKET" if drawers else "COMPONENTS / E CARRY",Vector3(center,2.18,-6.20),25,Color("233940"),0.004)
+		game.sign_text(game,"SMALL PARTS / POCKET STOCK" if drawers else "COMPONENTS / SHELF STOCK",Vector3(center,2.18,-6.20),25,Color("233940"),0.004)
 		for i in range(group.size()):
 			var kind: String = group[i]
 			var bin = StaticBody3D.new()

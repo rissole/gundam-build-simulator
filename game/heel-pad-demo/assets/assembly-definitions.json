@@ -106,7 +106,7 @@
       "manual": [
         {
           "title": "Prepare",
-          "body": "Suspend FA-302 (heel pad) at any preparation station. Collect FA-305 from its drawer with E, then fit one at each opening in any order.",
+          "body": "Suspend FA-302 (heel pad) at any preparation station. Collect FA-305 from its drawer, then fit one at each opening in any order.",
           "slots": [
             "sleeve_0",
             "sleeve_1",
@@ -117,7 +117,7 @@
         },
         {
           "title": "Bring together",
-          "body": "Carry the prepared FA-302 with E and click an empty heel position. Backspace opens the foot manual. Hands work separately from your numbered pockets.",
+          "body": "Carry the prepared FA-302 and seat it at an empty heel position. Open the parent foot manual to secure it. Hands work separately from your numbered pockets.",
           "slots": [
             "base",
             "sleeve_0",
@@ -340,7 +340,7 @@
         },
         {
           "title": "Heel position 1",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). E stocks a pocket from its drawer; 1–0 selects a pocket. Any connection order works.",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_1",
           "slots": [
             "heel_1",
@@ -357,7 +357,7 @@
         },
         {
           "title": "Heel position 2",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). E stocks a pocket from its drawer; 1–0 selects a pocket. Any connection order works.",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_2",
           "slots": [
             "heel_2",

@@ -81,6 +81,9 @@ func show_parts(game: Node, entries: Array, views: Array = [], options: Dictiona
 			var label = Label.new()
 			label.text = view.title
 			label.add_theme_font_size_override("font_size",12)
+			label.add_theme_color_override("font_color",Color("e0e7e7"))
+			label.add_theme_color_override("font_shadow_color",Color("050b10b3"))
+			label.add_theme_constant_override("shadow_offset_y",1)
 			label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			column.add_child(label)
 			var panel = get_script().new()

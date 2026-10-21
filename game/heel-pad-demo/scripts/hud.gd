@@ -11,6 +11,11 @@ var page_count: Label
 var diagram: Control
 var target_label: Label
 var target_panel: PanelContainer
+var target_action: HBoxContainer
+var target_key: PanelContainer
+var target_action_label: Label
+var target_anchor: Vector2
+var target_layout_queued: bool = false
 var toast_label: Label
 var toast_panel: PanelContainer
 var pause_panel: Control
@@ -23,12 +28,12 @@ var crosshair: Label
 var action_bar: HBoxContainer
 var action_slots: Array[Dictionary] = []
 var carry_label: Label
-var rotation_hint: PanelContainer
-var rotation_label: Label
+var carry_panel: PanelContainer
+var set_down_hint: HBoxContainer
 var manual_id: String = "foot"
 var pages: Dictionary = {}
 var breadcrumb: Label
-var manual_hint: Label
+var manual_hint: VBoxContainer
 var browser: Control
 var browse_button: Button
 var page: int:
@@ -40,10 +45,10 @@ var confirm_restart: bool = false
 var tone = Color("80dfbd")
 var muted = Color("a8b9be")
 
-func style(bg: Color = Color("14232cf0"), border: Color = Color("3b5059"), padding: int = 16) -> StyleBoxFlat:
+func style(bg: Color = Color("101b2399"), border: Color = Color("a6bac322"), padding: int = 12) -> StyleBoxFlat:
 	var s = StyleBoxFlat.new()
 	s.bg_color = bg
-	s.set_corner_radius_all(6)
+	s.set_corner_radius_all(3)
 	s.set_border_width_all(1)
 	s.border_color = border
 	s.content_margin_left = padding
@@ -57,6 +62,8 @@ func label(text: String, font_size: int, color: Color = Color("eef2ed")) -> Labe
 	node.text = text
 	node.add_theme_font_size_override("font_size",font_size)
 	node.add_theme_color_override("font_color",color)
+	node.add_theme_color_override("font_shadow_color",Color("050b10b3"))
+	node.add_theme_constant_override("shadow_offset_y",1)
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return node
 
@@ -75,6 +82,50 @@ func panel_at(parent: Control, anchor: Vector2, rect: Rect2) -> PanelContainer:
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return panel
 
+func keycap(key: String, font_size: int = 12) -> PanelContainer:
+	var cap = PanelContainer.new()
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cap.custom_minimum_size = Vector2(20,21)
+	var surface = style(Color("e4eaeae0"),Color("60767d99"),3)
+	surface.border_width_bottom = 2
+	surface.content_margin_left = 5
+	surface.content_margin_right = 5
+	surface.content_margin_top = 1
+	surface.content_margin_bottom = 2
+	cap.add_theme_stylebox_override("panel",surface)
+	var glyph = label(key,font_size,Color("14232c"))
+	glyph.add_theme_color_override("font_shadow_color",Color.TRANSPARENT)
+	glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cap.add_child(glyph)
+	return cap
+
+func hint_row(keys: Array, caption: String, font_size: int = 12) -> HBoxContainer:
+	var row = HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation",4)
+	for key in keys:
+		# A prefixed token is connective prose, never part of the key icon.
+		row.add_child(label(key.substr(1),font_size,muted) if key.begins_with("~") else keycap(key,font_size))
+	if not caption.is_empty():
+		var description = label(caption,font_size,muted)
+		description.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(description)
+	return row
+
+func shortcut_button(caption: String, key: String, primary: bool = false) -> Button:
+	var node = button("",primary)
+	var row = hint_row([key],caption,13)
+	row.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	row.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	row.grow_vertical = Control.GROW_DIRECTION_BOTH
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	node.add_child(row)
+	var content_size = row.get_combined_minimum_size()
+	row.position = -content_size*0.5
+	row.size = content_size
+	node.custom_minimum_size.x = content_size.x+22
+	return node
+
 func _ready() -> void:
 	root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -83,53 +134,58 @@ func _ready() -> void:
 	manual_id = "pad_1" if game.single_pad else game.config.parent.id
 	_make_manual()
 	_make_action_bar()
-	target_panel = panel_at(root,Vector2(0.5,0.64),Rect2(-280,0,560,0))
-	target_label = label("",16)
+	target_panel = panel_at(root,Vector2.ZERO,Rect2(0,0,260,0))
+	target_panel.add_theme_stylebox_override("panel",style(Color("101b2399"),Color("a6bac322"),10))
+	var target_content = VBoxContainer.new()
+	target_content.add_theme_constant_override("separation",5)
+	target_panel.add_child(target_content)
+	target_label = label("",14)
 	target_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	target_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	target_panel.add_child(target_label)
-	crosshair = label("+",23,tone)
+	target_content.add_child(target_label)
+	target_action = HBoxContainer.new()
+	target_action.add_theme_constant_override("separation",7)
+	target_content.add_child(target_action)
+	target_key = keycap("E")
+	target_action.add_child(target_key)
+	target_action_label = label("",13,tone)
+	target_action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	target_action_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	target_action.add_child(target_action_label)
+	target_panel.hide()
+	crosshair = label("+",17,Color("dcebe7a6"))
 	root.add_child(crosshair)
 	crosshair.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	crosshair.position -= Vector2(7,15)
-	toast_panel = panel_at(root,Vector2(0.5,1),Rect2(-340,-196,680,0))
-	toast_label = label("",15,tone)
+	crosshair.position -= Vector2(5,11)
+	toast_panel = panel_at(root,Vector2(0.5,1),Rect2(-250,-180,500,0))
+	toast_panel.add_theme_stylebox_override("panel",style(Color("101b2399"),Color("a6bac322"),8))
+	toast_label = label("",14,tone)
 	toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	toast_panel.add_child(toast_label)
-	rotation_hint = panel_at(root,Vector2(0,0.5),Rect2(24,-50,290,0))
-	var hint_col = VBoxContainer.new()
-	hint_col.add_theme_constant_override("separation",8)
-	rotation_hint.add_child(hint_col)
-	hint_col.add_child(label("INSPECT THE ASSEMBLY",12,tone))
-	rotation_label = label("Hold R + move mouse to rotate\nDouble-tap R to reset",15)
-	hint_col.add_child(rotation_label)
-	rotation_hint.visible = false
+	toast_panel.hide()
 	_make_pause()
 	browser = ManualBrowser.new(self)
 	root.add_child(browser)
 
 func _make_manual() -> void:
 	manual = panel_at(root,Vector2(1,0),Rect2(-366,24,342,0))
-	manual.add_theme_stylebox_override("panel",style(Color("14232c")))
 	var column = VBoxContainer.new()
-	column.add_theme_constant_override("separation",10)
+	column.add_theme_constant_override("separation",8)
 	manual.add_child(column)
 	breadcrumb = label("",12,tone)
 	breadcrumb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(breadcrumb)
-	browse_button = button("Browse manuals   N")
+	browse_button = shortcut_button("Browse manuals","N")
 	browse_button.custom_minimum_size.y = 30
-	browse_button.add_theme_font_size_override("font_size",13)
 	browse_button.pressed.connect(func():browser.open_browser())
 	column.add_child(browse_button)
-	page_title = label("",23)
+	page_title = label("",21)
 	page_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(page_title)
 	diagram = Diagram.new()
 	diagram.custom_minimum_size = Vector2(290,205)
 	column.add_child(diagram)
-	page_body = label("",15,Color("d5dfdf"))
+	page_body = label("",15,Color("e0e7e7"))
 	page_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	page_body.custom_minimum_size.y = 130
 	body_scroll = ScrollContainer.new()
@@ -139,9 +195,13 @@ func _make_manual() -> void:
 	column.add_child(body_scroll)
 	page_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body_scroll.add_child(page_body)
-	page_count = label("",13,tone)
+	page_count = label("",12,tone)
 	column.add_child(page_count)
-	manual_hint = label("",12,muted)
+	manual_hint = VBoxContainer.new()
+	manual_hint.add_theme_constant_override("separation",4)
+	manual_hint.add_child(hint_row(["←","→","~Pages ·","PgUp","PgDn"],"Scroll",11))
+	manual_hint.add_child(hint_row(["Enter","~Child ·","Backspace"],"Parent",11))
+	manual_hint.add_child(hint_row(["C","~Builds ·","Tab"],"Close",11))
 	column.add_child(manual_hint)
 
 func _make_action_bar() -> void:
@@ -151,59 +211,104 @@ func _make_action_bar() -> void:
 	action_bar.anchor_right = 0.5
 	action_bar.anchor_top = 1
 	action_bar.anchor_bottom = 1
-	action_bar.offset_left = -398
-	action_bar.offset_right = 398
-	action_bar.offset_top = -108
-	action_bar.offset_bottom = -24
-	action_bar.add_theme_constant_override("separation",4)
+	action_bar.offset_left = -373.5
+	action_bar.offset_right = 373.5
+	action_bar.offset_top = -90
+	action_bar.offset_bottom = -18
+	action_bar.add_theme_constant_override("separation",3)
 	action_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for i in range(10):
 		var card = PanelContainer.new()
-		card.custom_minimum_size = Vector2(76,84)
+		card.custom_minimum_size = Vector2(72,72)
 		card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		action_bar.add_child(card)
 		var content = Control.new()
 		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card.add_child(content)
 		var texture = TextureRect.new()
-		texture.position = Vector2(15,17)
-		texture.size = Vector2(38,38)
+		texture.position = Vector2(0,0)
+		texture.size = Vector2(66,49)
 		texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		content.add_child(texture)
-		var key_label = label(str((i+1)%10),13,tone)
-		key_label.position = Vector2(3,0)
-		content.add_child(key_label)
+		var key_icon = keycap(str((i+1)%10),11)
+		key_icon.position = Vector2(-1,-1)
+		content.add_child(key_icon)
 		var count = label("",13)
-		count.position = Vector2(27,0)
-		count.size.x = 40
+		count.position = Vector2(33,-1)
+		count.size = Vector2(33,19)
 		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		content.add_child(count)
-		var id_label = label("Empty",11,muted)
-		id_label.position = Vector2(0,53)
-		id_label.size.x = 68
+		var id_label = label("Empty",12,muted)
+		id_label.position = Vector2(0,49)
 		id_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		content.add_child(id_label)
-		var variant_label = label("",10,tone)
-		variant_label.position = Vector2(0,66)
-		variant_label.size.x = 68
+		id_label.size = Vector2(66,0)
+		var variant_label = label("",11,tone)
+		variant_label.position = Vector2(0,50)
 		variant_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		content.add_child(variant_label)
+		variant_label.size = Vector2(66,0)
 		action_slots.append({"card":card,"model":texture,"count":count,"id":id_label,"variant":variant_label,"kind":""})
-	carry_label = label("",13)
-	root.add_child(carry_label)
-	carry_label.anchor_left = 0.5
-	carry_label.anchor_right = 0.5
-	carry_label.anchor_top = 1
-	carry_label.anchor_bottom = 1
-	carry_label.offset_left = -440
-	carry_label.offset_right = 440
-	carry_label.offset_top = -136
-	carry_label.offset_bottom = -112
-	carry_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	carry_label.add_theme_color_override("font_shadow_color",Color("09151e"))
-	carry_label.add_theme_constant_override("shadow_offset_y",2)
+	carry_panel = panel_at(root,Vector2(0.5,1),Rect2(-240,-125,480,0))
+	carry_panel.add_theme_stylebox_override("panel",style(Color("101b2380"),Color("a6bac318"),6))
+	var carry_row = HBoxContainer.new()
+	carry_row.add_theme_constant_override("separation",10)
+	carry_panel.add_child(carry_row)
+	carry_label = label("",12)
+	carry_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	carry_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	carry_label.clip_text = true
+	carry_row.add_child(carry_label)
+	set_down_hint = hint_row(["Q"],"Set down",11)
+	carry_row.add_child(set_down_hint)
+	carry_panel.hide()
+
+func present_target(text: String, action_key: String = "", action_label: String = "", screen_point: Vector2 = Vector2(-1,-1), valid: bool = false) -> void:
+	target_label.text = text
+	target_action_label.text = action_label
+	target_panel.visible = not game.paused and (not text.is_empty() or not action_label.is_empty())
+	if not target_panel.visible:return
+	target_label.visible = not text.is_empty()
+	target_action.visible = not action_label.is_empty()
+	target_key.visible = not action_key.is_empty()
+	target_key.get_child(0).text = action_key
+	target_action_label.add_theme_color_override("font_color",tone if valid else Color("e0e7e7"))
+	var width: float = 0.0
+	for line in text.split("\n"):
+		width = maxf(width,target_label.get_theme_font("font").get_string_size(line,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x)
+	if not action_label.is_empty():
+		width = maxf(width,target_action_label.get_theme_font("font").get_string_size(action_label,HORIZONTAL_ALIGNMENT_LEFT,-1,13).x+target_key.get_combined_minimum_size().x+7)
+	var content_width = clampf(width,110,240)
+	target_label.custom_minimum_size.x = content_width
+	target_label.size = Vector2(content_width,0)
+	target_action_label.size = Vector2(content_width-target_key.get_combined_minimum_size().x-7,0)
+	target_panel.custom_minimum_size.x = content_width+20
+	target_panel.size = Vector2(content_width+20,0)
+	target_anchor = screen_point
+	# Wrapped labels update container minima during layout. Fit after that update
+	# so a new, longer prompt never keeps the previous text's height or bounds.
+	if not target_layout_queued:
+		target_layout_queued = true
+		_fit_target.call_deferred()
+
+func _fit_target() -> void:
+	target_layout_queued = false
+	if not target_panel.visible:return
+	target_panel.reset_size()
+	var bounds = root.get_rect().size
+	var anchor = target_anchor if target_anchor.x >= 0 and target_anchor.y >= 0 else bounds*0.5
+	var point = anchor+Vector2(24,18)
+	var panel_size = target_panel.get_combined_minimum_size()
+	point.y = clampf(point.y,16.0,maxf(16.0,bounds.y-150.0-panel_size.y))
+	var right_edge = bounds.x-16.0
+	# Keep the object prompt out of the reader, even when the object is near it.
+	if manual.visible and manual.get_parent() == root and point.y < manual.get_global_rect().end.y and point.y+panel_size.y > manual.global_position.y:
+		right_edge = minf(right_edge,manual.global_position.x-12.0)
+	if point.x+panel_size.x > right_edge:point.x = anchor.x-panel_size.x-24.0
+	point.x = clampf(point.x,16.0,maxf(16.0,right_edge-panel_size.x))
+	target_panel.position = point
 
 func button(text: String, primary: bool = false) -> Button:
 	var node = Button.new()
@@ -211,36 +316,32 @@ func button(text: String, primary: bool = false) -> Button:
 	node.custom_minimum_size.y = 42
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	node.add_theme_font_size_override("font_size",15)
-	node.add_theme_color_override("font_color",Color("102a29") if primary else Color("e5edee"))
-	node.add_theme_color_override("font_hover_color",Color("102a29") if primary else Color("e5edee"))
-	node.add_theme_color_override("font_focus_color",Color("102a29") if primary else Color("e5edee"))
-	node.add_theme_color_override("font_pressed_color",Color("102a29") if primary else Color("e5edee"))
-	node.add_theme_stylebox_override("normal",style(tone if primary else Color("233640"),tone if primary else Color("52636a"),11))
-	node.add_theme_stylebox_override("hover",style(Color("abeed5") if primary else Color("334c55"),tone,11))
-	node.add_theme_stylebox_override("pressed",style(Color("65bc9f") if primary else Color("12232b"),tone,11))
+	node.add_theme_color_override("font_color",Color("e5edee"))
+	node.add_theme_color_override("font_hover_color",Color("e5edee"))
+	node.add_theme_color_override("font_focus_color",Color("e5edee"))
+	node.add_theme_color_override("font_pressed_color",Color("e5edee"))
+	node.add_theme_stylebox_override("normal",style(Color("36564db3") if primary else Color("17283280"),Color("80dfbd80") if primary else Color("a6bac338"),11))
+	node.add_theme_stylebox_override("hover",style(Color("365b50cc") if primary else Color("334c55b3"),Color("80dfbd99"),11))
+	node.add_theme_stylebox_override("pressed",style(Color("24463ccc") if primary else Color("12232b99"),tone,11))
 	node.add_theme_stylebox_override("focus",style(Color(0,0,0,0),Color("eef9e9"),11))
 	return node
 
 func _control_group(title: String, rows: Array) -> PanelContainer:
 	var panel = PanelContainer.new()
-	panel.add_theme_stylebox_override("panel",style(Color("1b2c35"),Color("31454e"),14))
+	panel.add_theme_stylebox_override("panel",style(Color("15242c"),Color("a6bac322"),14))
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var col = VBoxContainer.new()
 	col.add_theme_constant_override("separation",8)
 	panel.add_child(col)
-	col.add_child(label(title,16,tone))
+	col.add_child(label(title,15,tone))
 	for row in rows:
 		var line = HBoxContainer.new()
-		line.add_theme_constant_override("separation",12)
+		line.add_theme_constant_override("separation",10)
 		col.add_child(line)
-		var cap = PanelContainer.new()
-		cap.custom_minimum_size.x = 133
-		cap.add_theme_stylebox_override("panel",style(Color("102029"),Color("3d525c"),3))
-		line.add_child(cap)
-		var keys = label(row[0],13,Color("e6eeee"))
-		keys.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		cap.add_child(keys)
-		var desc = label(row[1],14)
+		var keys = hint_row(row[0],"",12)
+		keys.custom_minimum_size.x = 158
+		line.add_child(keys)
+		var desc = label(row[1],13)
 		desc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		line.add_child(desc)
 	return panel
@@ -249,16 +350,12 @@ func _make_pause() -> void:
 	pause_panel = Control.new()
 	root.add_child(pause_panel)
 	pause_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var shade = ColorRect.new()
-	shade.color = Color(0.025,0.045,0.060,0.91)
-	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	pause_panel.add_child(shade)
 	var center = CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	pause_panel.add_child(center)
 	pause_card = PanelContainer.new()
 	pause_card.custom_minimum_size.x = 1000
-	pause_card.add_theme_stylebox_override("panel",style(Color("14232c"),Color("506570"),26))
+	pause_card.add_theme_stylebox_override("panel",style(Color("101b23"),Color("a6bac344"),24))
 	center.add_child(pause_card)
 	var col = VBoxContainer.new()
 	col.add_theme_constant_override("separation",18)
@@ -282,17 +379,17 @@ func _make_pause() -> void:
 	grid.add_theme_constant_override("v_separation",14)
 	col.add_child(grid)
 	grid.add_child(_control_group("Move & inspect",[
-		["W A S D","Walk"],["Mouse","Look around"],["Hold Shift","Walk faster"],
-		["Hold Ctrl","Crouch"],["Mouse wheel","Zoom in / out"]]))
+		[["W","A","S","D"],"Walk"],[["~Mouse"],"Look around"],[["~Hold","Shift"],"Walk faster"],
+		[["~Hold","Ctrl"],"Crouch"],[["~Mouse wheel"],"Zoom in / out"]]))
 	grid.add_child(_control_group("Parts & pockets",[
-		["E","Stock pocket / carry component"],["1 2 3 4 5 6 7 8 9 0","Select pocket"],
-		["Q","Set down carried component"],["B","Clear selected pocket anywhere"]]))
+		[["E"],"Stock pocket / carry"],[["1","~–","0"],"Select pocket"],
+		[["Q"],"Set down component"],[["B"],"Clear selected pocket"]]))
 	grid.add_child(_control_group("Build & rotate",[
-		["Left click","Attach at the preview"],["Hold R + mouse","Rotate the aimed-at station"],
-		["R, then R","Reset station rotation"],["Z","Undo in selected manual"]]))
+		[["LMB"],"Attach at the preview"],[["~Hold","R","~+ mouse"],"Rotate aimed-at station"],
+		[["R","~then","R"],"Reset station rotation"],[["Z"],"Undo in selected manual"]]))
 	grid.add_child(_control_group("Manual & menu",[
-		["Tab / M · N","Manual · browse tree"],["← / →","Previous / next page"],
-		["Enter / Backspace","Open child / parent manual"],["C / V","Cycle builds / inspect manual"],["Esc","Pause / resume"]]))
+		[["Tab","~/","M","~·","N"],"Manual · browse tree"],[["←","→"],"Previous / next page"],
+		[["Enter","~/","Backspace"],"Child / parent manual"],[["C","~/","V"],"Cycle / inspect manual"],[["Esc"],"Pause / resume"]]))
 	var footer = HBoxContainer.new()
 	footer.add_theme_constant_override("separation",12)
 	col.add_child(footer)
@@ -312,25 +409,24 @@ func _restart_clicked() -> void:
 	else:
 		confirm_restart = true
 		restart_button.text = "Confirm restart"
-		session_label.text = "Restart this build from the beginning?\nResume or press Esc to keep your progress."
+		session_label.text = "Restart this build from the beginning?\nResume to keep your progress."
 
 func show_pause(value: bool) -> void:
 	pause_panel.visible = value
+	action_bar.visible = not value
+	carry_panel.visible = not value and not carry_label.text.is_empty()
 	confirm_restart = false
 	restart_button.text = "Restart build"
 	session_label.text = "Progress lasts for this session.\nRestarting or quitting clears this build."
 	pause_title.text = "Paused" if entered else "Your workshop"
 	resume_button.text = "Resume    →" if entered else "Start building    →"
 	if value:
-		rotation_hint.hide()
+		target_panel.hide()
+		toast_panel.hide()
 		resume_button.grab_focus()
 	else:
 		entered = true
 		resume_button.release_focus()
-
-func set_rotation_hint(visible_now: bool, rotating: bool) -> void:
-	rotation_hint.visible = visible_now and not game.paused
-	rotation_label.text = "Move mouse to rotate\nRelease R to look around" if rotating else "Hold R + move mouse to rotate\nDouble-tap R to reset"
 
 func refresh() -> void:
 	if game == null:return
@@ -342,17 +438,21 @@ func refresh() -> void:
 			slot.model.texture = game.storage.picture(kind)
 		slot.id.text = "Empty" if kind.is_empty() else game.model.definitions.parts[kind].family
 		slot.variant.text = "" if kind.is_empty() else game.model.definitions.parts[kind].get("variant_label","")
+		var has_variant: bool = not slot.variant.text.is_empty()
+		slot.variant.visible = has_variant
+		slot.id.position.y = 33 if has_variant else 49
+		slot.model.size = Vector2(66,33 if has_variant else 49)
 		var count: int = game.model.pocket_size(i)
 		slot.count.text = "×%d"%count if count>0 else ""
 		var selected: bool = game.model.selected_pocket == i
-		slot.card.add_theme_stylebox_override("panel",style(Color("24423eef") if selected else Color("12222bed"),tone if selected else Color("42565f"),4))
+		slot.card.add_theme_stylebox_override("panel",style(Color("24423ea6") if selected else Color("101b237a"),Color("80dfbdb3") if selected else Color("a6bac330"),3))
 	var held: String = game.model.held_item()
 	var build: String = game.held_build()
-	var carrying: String = "Hands free"
-	if not held.is_empty():carrying = "Carrying "+game.components.title(game.model.items[held].kind)+" · Q set down"
-	elif not build.is_empty():carrying = "Carrying "+game.build_label(build)+" · Q set down"
-	var selected: String = game.selected_kind
-	carry_label.text = (game.components.title(selected) if not selected.is_empty() else "Empty pocket")+" · B clear   |   "+carrying
+	var carrying: String = ""
+	if not held.is_empty():carrying = "Carrying "+game.components.title(game.model.items[held].kind)
+	elif not build.is_empty():carrying = "Carrying "+game.build_label(build)
+	carry_label.text = carrying
+	carry_panel.visible = not carrying.is_empty() and not game.paused
 	_refresh_manual()
 	game.components.update_service_view()
 
@@ -509,8 +609,6 @@ func _refresh_manual() -> void:
 	var path: Array[String] = []
 	for id in manual_path(manual_id):path.append(manual_name(id))
 	breadcrumb.text = "  ›  ".join(path)
-	manual_hint.text = "← / → pages · PgUp / PgDn scroll\nN browse / narrow · Enter child · Backspace parent
-C suggested builds · Tab close"
 	var entries: Array = []
 	var a: Dictionary = game.model.assemblies[manual_id]
 	var definition: Dictionary = game.components.definition(manual_id)

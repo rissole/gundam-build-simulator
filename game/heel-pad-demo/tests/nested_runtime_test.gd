@@ -13,6 +13,9 @@ class FixtureHUD:
 	func refresh() -> void:pass
 	func toast(message: String, _positive: bool = false) -> void:last_toast = message
 	func manual_title() -> String:return manual_id
+	func present_target(text: String, _key: String = "", _action: String = "", _point: Vector2 = Vector2(-1,-1), _valid: bool = false) -> void:
+		target_label.text = text
+		target_panel.visible = not text.is_empty()
 
 var checks: Array[Dictionary] = []
 var game: Node3D

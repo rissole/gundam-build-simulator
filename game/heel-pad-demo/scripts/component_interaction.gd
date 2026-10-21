@@ -130,7 +130,6 @@ func collect(kind: String, all_stock: bool = false, uid: String = "") -> void:
 		held_body.angular_velocity = Vector3.ZERO
 		held_body.add_collision_exception_with(game.player)
 		game.player.add_collision_exception_with(held_body)
-		game.hud.toast("Carrying "+title(kind)+". Click its preview; Q sets it down.",true)
 	game.hud.refresh()
 
 func drop(to_bin: bool = false) -> void:

@@ -82,7 +82,7 @@ page('Rod eye','Fit FA-525 (rod eye housing), one FA-526 spherical eye bearing, 
 for chain in [[uid('FA-525'),uid('FA-526'),uid('FA-527')],[uid('FA-525',2),uid('FA-526',2),uid('FA-527',2)],[uid('FA-519'),uid('FA-520')]]:
     for a,b in zip(chain,chain[1:]): slots[b]['requires'].append(a)
 assert len(slots)==91
-pages.append(dict(title='Ready to install',body='FA-500-P is ready after all 91 pieces. Backspace opens the foot manual for installation.',slots=list(slots),view='prepared'))
+pages.append(dict(title='Ready to install',body='FA-500-P is ready after all 91 pieces. Open the parent foot manual for installation.',slots=list(slots),view='prepared'))
 actuator = dict(part_id='FA-500-P',title='FA-500-P · Pitch actuator',root_slot='base',frame_source=uid('FA-510'),bounds=[0.24,0.80,0.80],interaction='components',service_access='open_station',work_locations=['station'],slots=slots,milestones={'prepared':list(slots),'enclosed':[uid('FA-510')]+pages[10]['slots']},enclosure_source=uid('FA-510'),manual=pages)
 foot = json.loads((ASSETS/'assembly-definitions.json').read_text())['assemblies']['foot']
 foot['title']='Foot · pads and pitch actuator'
@@ -124,7 +124,7 @@ group=['pitch']
 for n in [1,2]:
     screw_id, washer_id = pitch_pairs('base-keeper' if n==1 else 'rod-keeper')[0]
     pin=pslot(uid('FA-221',n),['pitch']); keeper=pslot(uid('FA-222',n),[pin]); w=pslot(washer_id,[keeper]); screw=pslot(screw_id,[w]); group +=[pin,keeper,w,screw]
-parent_pages.append(dict(title='Seat & pin actuator',body='Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. Enter opens the FA-500-P manual.',slots=group,view='components',child_slot='pitch',context_sources=[uid('FA-220'),uid('FA-220',2)]))
+parent_pages.append(dict(title='Seat & pin actuator',body='Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. The FA-500-P child manual covers its preparation.',slots=group,view='components',child_slot='pitch',context_sources=[uid('FA-220'),uid('FA-220',2)]))
 foot['manual']+=parent_pages
 foot['manual'][0]['title']='Foot workshop'
 foot['manual'][0]['body']='Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Follow each branch to install and secure it on the foot.'
