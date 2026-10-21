@@ -28,8 +28,6 @@ On other platforms, open [game/heel-pad-demo/project.godot](game/heel-pad-demo/p
 
 Prepare two independent heel pads at either station, then secure them at either heel position. Shared bins supply eight sleeves, eight washers, and eight bolts. The parent foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
 
-![Heel-pad preparation in the workshop, showing the part inventory and illustrated manual](game/heel-pad-demo/verification/02-pad-preparation.png)
-
 | Input | Action |
 | --- | --- |
 | WASD / mouse | Move / look |

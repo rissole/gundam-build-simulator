@@ -102,7 +102,11 @@ names; `--only NAME ...` reruns selected cases. It retains separate logs and inp
 hashes in a unique `verification/regressions-*` directory, rejects script errors
 even when Godot exits successfully, and does not imply rendered approval.
 
-The linked test scripts generate local JSON audits under `verification/`. Generated audits, screenshots, meshes and review galleries are excluded from new commits. Previously tracked evidence remains historical.
+The linked test scripts generate local JSON audits under `verification/`. Audits,
+screenshots, meshes and review galleries are ignored local outputs. Historical
+review results are summarized below, but their captures and exact input hashes
+are no longer kept in Git. Fresh visual approval requires a new local capture
+and inspection of the affected scope.
 
 - [Manual page audit](tests/pockets_workshop_test.gd): 31 runtime page views across the single-pad, two-pad and pitch scenarios, covering step-only lists, quantities, prepared assemblies, instruction references, unique installation coverage and available stock. Overview/readiness pages have no component shopping list.
 - [Pocket model audit](tests/pockets_model_test.gd): ten stacks of 20, top-up, full-bar replacement, clearing, empty-drawer atomicity, undo overflow and exact physical identities.
@@ -119,7 +123,9 @@ The linked test scripts generate local JSON audits under `verification/`. Genera
 - [Generic model audit](tests/assembly_model_test.gd): 45 checks including invalid references/cycles, duplicate ownership, incompatible variants, shared stock, nested undo, and a separate three-slot recipe with a differently named parent. The alternate recipe is a state-level fixture, not new playable content.
 - [Original interaction regression](tests/demo_test.gd): the single-pad interaction suite, including movement, firm carrying, reach/occlusion, crouch, station rotation, fullscreen, and restart cancellation.
 - [Two-build interaction audit](tests/multi_build_test.gd): 65 checks through the public controls and real targeting/physics, including shared stock, manual navigation, station exchange, swapped heel positions, completed installations, nested undo, and continuous R-drag between physics ticks. Rotation checks compare body, mesh and physics poses for both mounted pads.
-- Local captures `verification/07-multiple-builds.png` and `verification/08-two-pads-complete.png` show the independent builds and completed pads. They were captured and visually inspected earlier in this implementation pass; final verification runs headlessly. Tracked single-pad milestone views 01–06 are historical.
+- Earlier pad captures showed independent builds and completed pads. Those images
+  are no longer kept in Git; rerun the affected review when visual evidence is
+  needed.
 
 ```sh
 ./play-heel-pad.command --headless --script tests/state_test.gd
@@ -141,21 +147,33 @@ These commands run headlessly. The scenario tests exercise the desktop input ada
 
 For a focused rendered storage/pocket-label review, run `./play-heel-pad.command --disable-render-loop --fixed-fps 60 -- --pockets-test --pockets-review`. It prints a unique `LABEL_REVIEW_OUTPUT` directory containing the shared retaining-ring stack and both collar/gasket variants beside their storage labels and manual. The flag rejects the headless dummy renderer.
 
-The repaired actuator passed the 2026-10-21 [visual review](verification/pitch-visual-review/review.md): all 14 child pages and three parent installation pages, every component placement, both receiving frames, full assembly preview and continuous rotation. The [gallery](verification/pitch-visual-review/index.html) retains that accepted baseline; the report records per-page decisions and exact hashes. Receiving holes, seats, fastener access, sensor/cap clearance and eye/pin interfaces were repaired in the source models. Step-specific diagrams now expose those connections. Source geometry agreement alone remains insufficient for visual approval.
+The repaired actuator passed a 2026-10-21 visual review of all 14 child pages
+and three parent installation pages, including every placement, both receiving
+frames, full assembly preview and continuous rotation. Receiving holes, seats,
+fastener access, sensor/cap clearance and eye/pin interfaces were repaired in
+the source models; step diagrams expose those connections. This is a historical
+outcome: its inspected images and exact hashes are no longer in Git. Source
+geometry agreement alone is insufficient for fresh visual approval.
 
-The later [motor-first review](verification/motor-first-review/review.md) covers the changed sequence, rear motor/radial retainer fastening, rear-cap clearance, opaque visibility and final mounting. It records 117 model, 290 desktop and 113 geometry checks, plus the scoped rendered inspection. Closed-actuator visibility drops from 203,291 to 128,528 triangles (36.78%); this does not measure whole-scene FPS or laptop temperature. The [manual browser review](verification/manual-navigation/review.md) records navigation and layout checks.
+The later motor-first review covered the changed sequence, rear motor/radial
+retainer fastening, rear-cap clearance, opaque visibility and final mounting.
+It recorded 117 model, 290 desktop and 113 geometry checks, plus scoped rendered
+inspection. Closed-actuator visibility dropped from 203,291 to 128,528 triangles
+(36.78%); this does not measure whole-scene FPS or laptop temperature. A separate
+manual browser review covered navigation and layout. These review outputs are
+local and are no longer kept in Git.
 
-The [scalability review](verification/scalability-review/review.json) verifies stable
+The historical scalability review checked stable
 source identities, generic nested mounting, structural collision and carrying,
 manual-independent placement with suggested manuals, and repeatable asset repair.
-The final headless suite passes 17 cases / 1,790 checks; source tools pass 11 Python
+The final headless suite passed 17 cases / 1,790 checks; source tools passed 11 Python
 tests and a real Blender reordered-generation audit of all 745 identities.
-Inspected renderer evidence covers five child pages, all three parent installation
+Inspected renderer evidence covered five child pages, all three parent installation
 pages, both pads through rotation and undo, the suggestion browser, and a synthetic
-four-level assembly with a large hollow frame. Source geometry is unchanged by
-compaction: all 745 instances match, while the GLB falls from 68.36 to 60.09 MB.
-The report preserves exact inputs, per-page decisions and the limits of this scope;
-it makes no whole-robot performance claim.
+four-level assembly with a large hollow frame. Source geometry was unchanged by
+compaction: all 745 instances matched, while the GLB fell from 68.36 to 60.09 MB.
+Its detailed report and images are no longer kept in Git; these historical
+results do not establish current visual approval or whole-robot performance.
 
 Reproduce the actuator captures using the real renderer, then generate the review gallery (Pillow required):
 
@@ -164,9 +182,9 @@ Reproduce the actuator captures using the real renderer, then generate the revie
 python3 game/heel-pad-demo/tools/build_pitch_review_gallery.py --input /path/printed/as/REVIEW_OUTPUT
 ```
 
-This opens a window and captures before/preview/after placements, opaque/service/exposed inspection angles, HUD pages and continuous rotation. `--headless` is rejected for this mode. Each run prints a unique `REVIEW_OUTPUT` directory under `verification/`; supply that path to the gallery command. The accepted `verification/pitch-visual-review/` baseline is retained.
+This opens a window and captures before/preview/after placements, opaque/service/exposed inspection angles, HUD pages and continuous rotation. `--headless` is rejected for this mode. Each run prints a unique `REVIEW_OUTPUT` directory under `verification/`; supply that path to the gallery command. Keep its hashes, page decisions and inspected images together locally for comparison until review is complete.
 
-For a focused repair, append `--review-pages=pitch-04,foot-06` to the capture command, selecting the changed and dependent pages explicitly. Normal build/ownership checks still run, but only selected pages produce images. Include `pitch-14` or `foot-06` when preparation or mounted rotation needs review. Capture generation does not grant visual approval. The accepted gallery retains every inspected image plus the recorded findings from the failed passes; extra raw captures were pruned. The remaining default-workshop pages and both compatible pad placements still need the [full review process](../../design/game/foot-prototype-plan.md#manual-and-assembly-visual-review).
+For a focused repair, append `--review-pages=pitch-04,foot-06` to the capture command, selecting the changed and dependent pages explicitly. Normal build/ownership checks still run, but only selected pages produce images. Include `pitch-14` or `foot-06` when preparation or mounted rotation needs review. Capture generation does not grant visual approval. Inspect and record the affected pages; without the archived images, prior visual decisions cannot serve as a verified comparison baseline. The remaining default-workshop pages and both compatible pad placements still need the [full review process](../../design/game/foot-prototype-plan.md#manual-and-assembly-visual-review).
 
 ## Scope and current limits
 
@@ -174,7 +192,7 @@ This milestone delivers increments 1–3 of the multiple-build plan. Save/resume
 
 The reusable construction model owns prerequisites, inventory, carrying capacity, milestones and undo. `component_interaction.gd` projects arbitrary authored component slots into desktop collection, grip, placement, and service views. Pad connections retain their established four-opening adapter. The generic model supports the new content without requiring pad-shaped rules.
 
-Carried collision uses structural primitive compounds; authored fixed receiving frames can use exact mesh openings. Internal work uses an explicit assisted service policy, while scenery and carried-part approaches remain solid. It does not simulate threading, torque, or the real insertion of each sealed internal component. Actuator motion and external wiring are outside this build/install milestone. The revised cabinet layout and manual pacing still need human playtesting. Hidden mesh/triangle counts and diagram reuse are measured separately from visual review. Laptop temperature and on-screen frame-time improvement still need measurement during normal play; the detailed surrounding foot remains a substantial rendering cost. The current pad review covers parenting, rotation and undo; older captures remain historical evidence for their recorded scope.
+Carried collision uses structural primitive compounds; authored fixed receiving frames can use exact mesh openings. Internal work uses an explicit assisted service policy, while scenery and carried-part approaches remain solid. It does not simulate threading, torque, or the real insertion of each sealed internal component. Actuator motion and external wiring are outside this build/install milestone. The revised cabinet layout and manual pacing still need human playtesting. Hidden mesh/triangle counts and diagram reuse are measured separately from visual review. Laptop temperature and on-screen frame-time improvement still need measurement during normal play; the detailed surrounding foot remains a substantial rendering cost. The earlier pad review covered parenting, rotation and undo; its captures are no longer in Git.
 
 The room is a functional workshop blockout. Its layout, lighting, carrying distances, and targeting tolerance remain suitable subjects for the first human playtest. Completion feedback is intentionally a sound and glow.
 

@@ -81,29 +81,28 @@ capture only selected pages, including their placements and views. Choose depend
 pages explicitly: filtering does not infer downstream impact. The runner still
 performs the normal build/ownership checks; it skips unrelated image capture.
 Rotation is captured when the selection includes `pitch-14` or `foot-06`.
-Each run prints `REVIEW_OUTPUT` with its unique evidence directory; pass that path
-to the gallery helper. This keeps targeted runs separate from accepted evidence.
+Each run prints `REVIEW_OUTPUT` with its unique local evidence directory; pass
+that path to the gallery helper. Keep targeted runs separate when comparing them.
 
 The capture mode rejects a headless dummy renderer. It records
 before/preview/after placements, two inspection angles, opaque/service/exposed
 views, actual HUD pages and continuous rotation. The gallery helper needs Pillow.
-Evidence, hashes and page decisions live in `verification/pitch-visual-review/`.
-Read `review.md`: the repaired 2026-10-21 baseline passes all 14 child pages and
-three parent installation pages, including receiving frames and full assembly
-preview. The compact accepted archive retains every inspected image and the
-original failed findings and sensor-conflict negative control; extra raw captures
-were pruned after approval.
-Keep the accepted baseline when recapturing changes. A generated gallery is not
-an approval; compare its recorded hashes with the relevant current inputs. Report
-or skill changes alone do not invalidate unchanged rendered geometry; record that
-assessment without replacing the original hashes or repeating capture.
+Evidence, hashes and page decisions belong together in the run's ignored local
+`verification/` directory. The repaired 2026-10-21 pitch review historically
+passed all 14 child pages and three parent installation pages, including
+receiving frames and full assembly preview. Its inspected images and exact input
+hashes are no longer kept in Git. Recreate and inspect local evidence for the
+affected scope before granting fresh visual approval. A generated gallery alone
+is not approval. Within a local review, compare recorded hashes with current
+inputs and retain unchanged applicable evidence; report or skill changes alone
+do not invalidate unchanged rendered geometry.
 
 `tests/demo_test.gd` also has a rendered `capture()` helper. A generalized capture
 runner for all default-workshop/pad pages remains to be implemented. Inspect
 current support before invoking any command; no `--review-manuals` flag exists.
 
-Keep project evidence under `game/heel-pad-demo/verification/` or the new module's
-equivalent. Existing examples include `manual-pages-audit.json`,
-`orientation-audit.json`, `pitch-build-audit.json`, `multi-build-audit.json` and
-`delivery-audit.json`. Inspect their scope/date/hashes; historical passing results
-and pad screenshots do not approve new actuator/module content.
+Keep generated project evidence under the ignored local
+`game/heel-pad-demo/verification/` directory or the new module's equivalent.
+Examples produced by the current checks include `pitch-build-audit.json` and
+`multi-build-audit.json`. Inspect the run's scope, date and hashes; historical
+passing results do not approve new actuator or module content.

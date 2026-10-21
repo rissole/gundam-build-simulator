@@ -19,6 +19,6 @@ __pycache__/
 models/foot-fa01/output/*.glb
 models/foot-fa01/output/*.zip
 
-# Working review captures stay local; the accepted compact gallery is tracked.
-game/heel-pad-demo/verification/*
+# Generated audits, captures, and galleries stay local. Keep Godot's ignore marker.
+/game/heel-pad-demo/verification/*
 !game/heel-pad-demo/verification/.gdignore

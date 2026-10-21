@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 PROJECT = Path(__file__).resolve().parents[1]
 ROOT = PROJECT.parents[1]
-OUT = PROJECT / 'verification/pitch-visual-review'
+OUT = None
 try:
     FONT = ImageFont.truetype('/System/Library/Fonts/Helvetica.ttc', 18)
 except OSError:
@@ -97,7 +97,7 @@ def main():
         hashes={str((PROJECT/k.removeprefix('res://')).resolve().relative_to(ROOT)):v for k,v in data['fingerprints'].items()}
     (OUT/'fingerprints.json').write_text(json.dumps(hashes,indent=2)+'\n')
     (OUT/'sheets.json').write_text(json.dumps(sheets,indent=2)+'\n')
-    content=['<!doctype html><meta charset="utf-8"><title>Pitch actuator visual review</title><style>body{background:#111a22;color:#eee;font:16px system-ui;margin:24px}a{color:#8fdfbd}img{max-width:100%;height:auto}details{margin:20px 0}figure{margin:10px 0}nav a{margin-right:16px}</style><h1>Pitch actuator: rendered review evidence</h1><p>Live game placements, Godot Compatibility renderer. Exposed inspection hides only the barrel; service and opaque views retain it. Capture success is not visual approval. See review.md for findings.</p><nav>']
+    content=['<!doctype html><meta charset="utf-8"><title>Pitch actuator visual review</title><style>body{background:#111a22;color:#eee;font:16px system-ui;margin:24px}a{color:#8fdfbd}img{max-width:100%;height:auto}details{margin:20px 0}figure{margin:10px 0}nav a{margin-right:16px}</style><h1>Pitch actuator: rendered review evidence</h1><p>Live game placements, Godot Compatibility renderer. Exposed inspection hides only the barrel; service and opaque views retain it. Capture success is not visual approval; record inspected findings and input hashes before treating this run as a reviewed baseline.</p><nav>']
     content += [f'<a href="#{key}">{key}</a>' for key in sheets]
     content += ['</nav>']
     for key,names in sheets.items():

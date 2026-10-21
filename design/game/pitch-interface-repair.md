@@ -1,10 +1,10 @@
 # Pitch actuator interface repair
 
 The original interface repair passed rendered review on 2026-10-21: all 14 child pages
-and the three parent installation pages. The [accepted report](../../game/heel-pad-demo/verification/pitch-visual-review/review.md)
-records per-page findings, capture paths and exact input hashes. The original
-failed findings and the sensor-conflict negative control are preserved in the
-compact accepted review archive.
+and the three parent installation pages. Its per-page findings, captures, exact
+input hashes, original failed findings and sensor-conflict negative control are
+no longer kept in Git. A future visual approval requires fresh local capture
+and inspection of the affected scope.
 
 ## Scope and reuse
 
@@ -13,7 +13,7 @@ after their inventory identities are allocated. It does not change shared screw,
 washer, roll-actuator or forefoot-actuator generation. The gameplay export merges
 only the 109 pitch pieces plus the specific FA-103 cradle and FA-200 ring receiving
 frames. All other exported nodes, mesh buffers and materials remain unchanged.
-`verification/pitch-reuse-audit.json` records this preservation check.
+The selective merge tool can regenerate a local pitch reuse audit to check this preservation.
 
 The two frame changes are local pitch interfaces: relief around the base eye at
 the cradle outrigger, side mounting holes on that outrigger, and mounting holes
@@ -48,14 +48,14 @@ alignment as player mechanics.
 
 ## Verification
 
-The figures below record the retained original repair baseline. The later motor-first
+The results below summarize the historical original repair review. The later motor-first
 sequence changes motor/retainer fastening and rear-cap recesses; its focused follow-up
-[review](../../game/heel-pad-demo/verification/motor-first-review/review.md) records the new geometry and changed pages separately: 113 geometry checks, 290 desktop checks, and inspected captures for exposed-drive construction, enclosure, closure and mounting.
+recorded the new geometry and changed pages separately: 113 geometry checks, 290 desktop checks, and inspected captures for exposed-drive construction, enclosure, closure and mounting. Those captures are no longer kept in Git.
 
-The accepted report records 69 imported-triangle clearance checks, 286 headless
+The historical report recorded 69 imported-triangle clearance checks, 286 headless
 pitch desktop checks, 114 model checks, 65 two-pad interaction checks and 44
-pocket/manual workshop checks. The original asset fails 40 of the current 69
-clearance checks. An intermediate negative control also reproduces the crossed
+pocket/manual workshop checks. The original asset failed 40 of those 69
+clearance checks. An intermediate negative control also reproduced the crossed
 sensor/cap fasteners.
 
 The real Godot renderer captured 251 checkpoints and 1,598 images across the 17

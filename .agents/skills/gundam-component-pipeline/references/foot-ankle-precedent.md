@@ -16,7 +16,7 @@ filenames and revision IDs are examples, not templates for every body component.
 | Playable selection | `design/game/foot-prototype-plan.md`, `GAME_DESIGN.md` and `game/heel-pad-demo/README.md` define the collection/manual loop, child preparation, parent mounting and incremental expansion. Start from a complete small playable branch. |
 | Recipe/scenario authoring | `game/heel-pad-demo/assets/assembly-definitions.json` supplies shared pad/parent definitions; `tools/author_pitch_actuator.py` generates the pitch overlay and scenario from source identities. Definitions describe types/slots/manuals; scenario data describes actual stock/build instances and starting locations. |
 | Runtime projection | `scripts/assembly_model.gd` owns gameplay state; `component_interaction.gd`/`workshop.gd` project geometry and input. `hud.gd`, `manual_diagram.gd` and `part_storage.gd` expose the same types and instructions. `tools/render_part_images.py` builds catalogue images. |
-| Implemented review | `.agents/skills/gundam-assembly-review/references/project-map.md` locates current commands, test runners and capture support. `game/heel-pad-demo/verification/pitch-visual-review/review.md` records inspected pitch evidence and input hashes. |
+| Implemented review | `.agents/skills/gundam-assembly-review/references/project-map.md` locates current commands, test runners and capture support. Historical pitch review outcomes are summarized in `design/game/pitch-interface-repair.md`; inspected images and input hashes are no longer kept in Git. |
 
 ## What should not be mistaken for complete gameplay
 
@@ -44,10 +44,11 @@ exports remain historical until regenerated. Roll and forefoot actuators remain
 reference geometry awaiting their own gameplay/interface reviews. Reusing their
 structure does not inherit the pitch branch's visual approval.
 
-At inspection time the accepted pitch baseline covered the child build and parent
+At inspection time the pitch review covered the child build and parent
 installation; remaining default-workshop/pad rendered review and save/resume were
-still separate work. Historical audit totals and captures do not validate a new
-change. Check current accepted hashes and affected scope.
+still separate work. Historical audit totals do not validate a new change.
+The accepted images and hashes are no longer kept in Git; capture and inspect
+the affected scope again before claiming visual approval.
 
 ## Compatibility lesson from the prototype
 
