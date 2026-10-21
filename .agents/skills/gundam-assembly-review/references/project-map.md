@@ -51,6 +51,7 @@ Run from the repository root, choosing the suites affected by the change:
 ```sh
 ./play-heel-pad.command --headless --script tests/assembly_model_test.gd
 ./play-heel-pad.command --headless --script tests/pitch_model_test.gd
+./play-heel-pad.command --headless --script tests/pitch_interface_test.gd
 ./play-heel-pad.command --headless --fixed-fps 60 -- --pitch-test
 ./play-heel-pad.command --headless --fixed-fps 60 -- --multi-test
 ./play-heel-pad.command --headless --fixed-fps 60 -- --single-pad --demo-test
@@ -62,22 +63,40 @@ normal desktop adapter and actual targeting/physics. `tests/pitch_build_test.gd`
 compares installed mesh vertices with slot source geometry; `tests/multi_build_test.gd`
 reproduces continuous rotation between input and physics ticks. Extend those paths
 or add a focused module runner when introducing new behavior.
+`tests/pitch_interface_test.gd` also checks actual triangles for receiving bores,
+surrounding material and seat/head clearance. Its ray tests use millimetres to
+avoid metre-scale triangle epsilon false negatives. These tests do not replace
+visual inspection or establish complete collision-free assembly paths.
 
 `tests/pitch_visual_review.gd` extends the pitch build runner's page/placement
 checkpoints with real-renderer captures. From the repository root:
 
 ```sh
 ./play-heel-pad.command --disable-render-loop --fixed-fps 60 -- --pitch-test --pitch-review
-python3 game/heel-pad-demo/tools/build_pitch_review_gallery.py
+python3 game/heel-pad-demo/tools/build_pitch_review_gallery.py --input /path/printed/as/REVIEW_OUTPUT
 ```
 
-Use both flags. The capture mode rejects a headless dummy renderer. It records
+Use both flags. Add `--review-pages=pitch-04,foot-06` after `--pitch-review` to
+capture only selected pages, including their placements and views. Choose dependent
+pages explicitly: filtering does not infer downstream impact. The runner still
+performs the normal build/ownership checks; it skips unrelated image capture.
+Rotation is captured when the selection includes `pitch-14` or `foot-06`.
+Each run prints `REVIEW_OUTPUT` with its unique evidence directory; pass that path
+to the gallery helper. This keeps targeted runs separate from accepted evidence.
+
+The capture mode rejects a headless dummy renderer. It records
 before/preview/after placements, two inspection angles, opaque/service/exposed
 views, actual HUD pages and continuous rotation. The gallery helper needs Pillow.
 Evidence, hashes and page decisions live in `verification/pitch-visual-review/`.
-Read `review.md`: the 2026-10-21 child review is complete but failed visual approval;
-parent captures have missing receiver context. Preserve this baseline before
-recapturing repairs. A generated gallery is not an approval.
+Read `review.md`: the repaired 2026-10-21 baseline passes all 14 child pages and
+three parent installation pages, including receiving frames and full assembly
+preview. The compact accepted archive retains every inspected image and the
+original failed findings and sensor-conflict negative control; extra raw captures
+were pruned after approval.
+Keep the accepted baseline when recapturing changes. A generated gallery is not
+an approval; compare its recorded hashes with the relevant current inputs. Report
+or skill changes alone do not invalidate unchanged rendered geometry; record that
+assessment without replacing the original hashes or repeating capture.
 
 `tests/demo_test.gd` also has a rendered `capture()` helper. A generalized capture
 runner for all default-workshop/pad pages remains to be implemented. Inspect

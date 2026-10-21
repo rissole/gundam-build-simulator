@@ -19,5 +19,6 @@ __pycache__/
 models/foot-fa01/output/*.glb
 models/foot-fa01/output/*.zip
 
-# Generated gameplay audits and rendered review evidence stay local.
-game/heel-pad-demo/verification/
+# Working review captures stay local; the accepted compact gallery is tracked.
+game/heel-pad-demo/verification/*
+!game/heel-pad-demo/verification/.gdignore

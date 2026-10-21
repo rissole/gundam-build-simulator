@@ -1,6 +1,7 @@
 """Build labelled contact sheets/index from actual Godot review captures (Pillow).
 Run after --pitch-test --pitch-review. Does not assign visual approval.
 """
+import argparse
 import hashlib
 import html
 import json
@@ -22,6 +23,10 @@ def tile(canvas, path, xy, size, label):
     ImageDraw.Draw(canvas).text((xy[0]+5, xy[1]+5), label, font=FONT, fill='white')
 
 def main():
+    global OUT
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--input', type=Path, required=True, help='Capture directory printed as REVIEW_OUTPUT by the runner.')
+    OUT = parser.parse_args().input.resolve()
     data = json.loads((OUT/'captures.json').read_text())
     sheets = {}
     working = [(p, f'{r["owner"]} {r["page"]}: {r["phase"]}') for r in data['records']
@@ -84,6 +89,9 @@ def main():
     files += list((ROOT/'models/foot-fa01/src').glob('*.py'))
     files += [ROOT/'models/foot-fa01/output/parts-manifest.json',PROJECT/'project.godot',ROOT/'.agents/skills/gundam-assembly-review/SKILL.md']
     for p in sorted(files):hashes[str(p.relative_to(ROOT))]=hashlib.sha256(p.read_bytes()).hexdigest()
+    if data.get('fingerprints'):
+        # Provenance is captured before the run, never inferred from later files.
+        hashes={str((PROJECT/k.removeprefix('res://')).resolve().relative_to(ROOT)):v for k,v in data['fingerprints'].items()}
     (OUT/'fingerprints.json').write_text(json.dumps(hashes,indent=2)+'\n')
     (OUT/'sheets.json').write_text(json.dumps(sheets,indent=2)+'\n')
     content=['<!doctype html><meta charset="utf-8"><title>Pitch actuator visual review</title><style>body{background:#111a22;color:#eee;font:16px system-ui;margin:24px}a{color:#8fdfbd}img{max-width:100%;height:auto}details{margin:20px 0}figure{margin:10px 0}nav a{margin-right:16px}</style><h1>Pitch actuator: rendered review evidence</h1><p>Live game placements, Godot Compatibility renderer. Exposed inspection hides only the barrel; service and opaque views retain it. Capture success is not visual approval. See review.md for findings.</p><nav>']

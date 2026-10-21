@@ -213,19 +213,19 @@
       "passed": true
     },
     {
-      "check": "Dropping changes ownership without creating an item",
+      "check": "Small pieces return directly to their drawer",
       "passed": true
     },
     {
-      "check": "Recollecting preserves physical identity",
+      "check": "Restocking preserves physical identity",
       "passed": true
     },
     {
-      "check": "Storage return supported",
+      "check": "Clearing a pocket returns the whole stack",
       "passed": true
     },
     {
-      "check": "Pocket capacity is enforced",
+      "check": "Drawer replenishes its stack",
       "passed": true
     }
   ],

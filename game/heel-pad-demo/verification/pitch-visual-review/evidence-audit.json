@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "capture_checkpoints": 251,
+  "capture_images": 1598,
+  "reviewed_sheets": 112,
+  "reviewed_additional_images": 23,
+  "fingerprints_current": 89,
+  "child_additions": 90,
+  "parent_additions": 18,
+  "unique_consumed_identities": 108,
+  "stock_identities": 135,
+  "front_caps_installed": 1,
+  "prepared_page_has_no_supplies": true,
+  "provenance_repair_replay": {
+    "change": "Hash source tree via absolute filesystem paths, avoiding res:// directory traversal.",
+    "all_previous_images_byte_identical": true,
+    "images_compared": 1717
+  }
+}

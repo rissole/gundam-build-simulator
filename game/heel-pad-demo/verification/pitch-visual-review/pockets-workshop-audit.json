@@ -1,0 +1,182 @@
+{
+  "checks": [
+    {
+      "check": "Ten visible empty pockets on launch",
+      "passed": true
+    },
+    {
+      "check": "Small parts use drawers; hand-sized components use shelves",
+      "passed": true
+    },
+    {
+      "check": "Every drawer and shelf has matching part ID and a cached image",
+      "passed": true
+    },
+    {
+      "check": "Storage uses only two low rows",
+      "passed": true
+    },
+    {
+      "check": "Drawers contain no rendered source-part props",
+      "passed": true
+    },
+    {
+      "check": "Only the manual uses a live 3D viewport; hotbar images are static",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for w-12",
+      "passed": true
+    },
+    {
+      "check": "E fills, focuses and displays the first stack immediately",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for h-12040",
+      "passed": true
+    },
+    {
+      "check": "A second pocket works beyond the former shared limit",
+      "passed": true
+    },
+    {
+      "check": "Changing manuals and pages never changes the action bar's contents",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for bolt",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-222__001",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-222__002",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-515__001",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-520__001",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-522__001",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-523__001",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-524__001",
+      "passed": true
+    },
+    {
+      "check": "Ten distinct drawer types occupy ten pockets",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 1",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 2",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 3",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 4",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 5",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 6",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 7",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 8",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 9",
+      "passed": true
+    },
+    {
+      "check": "Number key selects pocket 0",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-524__002",
+      "passed": true
+    },
+    {
+      "check": "E replaces selected pocket 0 when full and returns old stack",
+      "passed": true
+    },
+    {
+      "check": "B clears a pocket away from storage without world objects",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-524__001",
+      "passed": true
+    },
+    {
+      "check": "E uses and focuses an empty slot before replacing selected stock",
+      "passed": true
+    },
+    {
+      "check": "Q cannot spawn pocket-sized physics objects",
+      "passed": true
+    },
+    {
+      "check": "Reach labelled storage for fa-513__001",
+      "passed": true
+    },
+    {
+      "check": "Shelf pickup carries motor separately from pockets",
+      "passed": true
+    },
+    {
+      "check": "B clears selected pocket while preserving the carried component",
+      "passed": true
+    },
+    {
+      "check": "Q sets down a hand-sized component",
+      "passed": true
+    },
+    {
+      "check": "Manual uses the same IDs as storage labels",
+      "passed": true
+    },
+    {
+      "check": "Long parts lists can be scrolled with the captured mouse",
+      "passed": true
+    },
+    {
+      "check": "Ten-slot bar and manual fit the viewport",
+      "passed": true
+    },
+    {
+      "check": "Drawer, pocket and carried-part interactions preserve source identities",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "rendered": false
+}

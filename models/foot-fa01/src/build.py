@@ -223,8 +223,8 @@ def manifest(audit):
     SCENE.frame_set(ASSEMBLED)
     for o in g.PARTS:
         item={k:o[k] for k in o.keys()}
-        for k in ("assembled_position_m","explosion_offset_m"):
-            item[k]=list(item[k])
+        for k in ("assembled_position_m","explosion_offset_m","insertion_axis"):
+            if k in item:item[k]=list(item[k])
         item.update({"object_name":o.name,"mesh_name":o.data.name,
                      "vertices":len(o.data.vertices),"polygons":len(o.data.polygons)})
         result["parts"].append(item)

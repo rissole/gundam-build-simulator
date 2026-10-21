@@ -30,6 +30,38 @@ symlink. Read the relevant design and construction files before authoring a buil
   Run broader gameplay or rendered checks when the edit changes sequence, targets,
   quantities or visual presentation.
 
+## Keep review proportional
+
+Choose the scope before running tools: changed parts/pages, affected receiving
+connections and downstream closures, relevant tests, and the evidence needed to
+finish. Use the accepted baseline for unchanged work. A whole-module review is
+appropriate for a new module, an explicit whole-manual request, or changes whose
+effects span the module. Shared code changes require an impact assessment, not an
+automatic review of the entire workshop.
+
+- Batch related repairs before export/import. Run cheap geometry/data checks
+  before rendering. Iterate with selected pages; reserve a complete capture for
+  integration evidence when the scope requires it.
+- Inspect contact sheets first. Open individual images only when the connection
+  is too small or ambiguous. Cover every affected placement, including distinct
+  receiving geometry and variants; do not repeatedly inspect identical images.
+- Fix findings together, then recapture affected pages and dependent interfaces.
+  Rerun passing tests only for new changes or unresolved concerns. After two
+  unsuccessful repair/capture cycles, reassess the cause and narrow the diagnostic
+  case before another run; continue authorized work without a permission loop.
+- Separate visual inputs from provenance. A report, skill, hash-list or test-only
+  change does not itself require fresh game images. Retain original capture
+  hashes and record the later change and why it cannot affect the depicted result;
+  never relabel old evidence as freshly captured. Changed rendering/camera logic
+  needs a focused capture check.
+- Keep logs, fingerprints, image inventories and page decisions in files. Read
+  summaries and failures into context, not full manifests or successful logs.
+  Maintain one compact review status with remaining findings and evidence paths
+  so a continuation can resume without replaying completed work.
+- Stop when the requested scope has inspected evidence and relevant checks pass.
+  Report unrelated findings separately rather than extending the task. If work
+  expands materially, explain the cause and revised scope in a short update.
+
 ## Author the assembly and its instructions together
 
 Use the source manifest and construction design to identify exact physical
@@ -78,7 +110,8 @@ mechanically sensible fit.
 
 Attached builds must inherit the parent's motion without competing carrying
 physics. The current implementation uses static freeze mode when suspended or
-mounted, kinematic mode while carried and dynamic physics when dropped. Exercise
+mounted, kinematic mode while carried and dynamic physics when dropped. When
+attachment, physics or mounted geometry changes, exercise
 continuous rotation **between input and physics ticks**, not only a single pose
 change followed by settling. Check child body, mesh and physics poses through
 rotation, reset, pickup, mounting, undo and reinstallation, including multiple
@@ -91,7 +124,8 @@ project map. For implemented build changes, capture and inspect the affected pag
 with the actual renderer: beginning of the step, valid preview and installed result;
 the HUD/manual and working view; close-ups of individual fasteners; and at least
 two unobstructed inspection angles. Check internal work in opaque and service
-views, then continuously rotate the assembled result around multiple axes.
+views. Include continuous multi-axis rotation when attachment or mounted geometry
+changes, and for the first complete module review.
 
 Inspect hole/shaft alignment, bearing-face contact, gaps, inversion, intersections,
 accessible insertion and fastening surfaces, closure order, variant recognition,
@@ -105,8 +139,9 @@ verification and capture support is missing, implement the smallest reusable
 capture path needed within that task's authorized scope. A design-only task should
 specify that work instead. If rendering cannot run under current constraints,
 finish independent work and record the exact missing evidence and runnable next
-step. Dummy-renderer runs, generated illustrations and old screenshots cannot
-serve as current rendered verification.
+step. Dummy-renderer runs and generated illustrations cannot establish visual
+approval. Earlier screenshots can support unchanged scope only when the input
+comparison and retained approval establish their applicability.
 
 ## Record evidence and complete the task
 

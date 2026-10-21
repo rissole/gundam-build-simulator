@@ -13,31 +13,47 @@
       "passed": true
     },
     {
-      "check": "Launch uses non-exclusive fullscreen",
+      "check": "Ten numbered pockets represent inventory",
       "passed": true
     },
     {
-      "check": "Pause card fits the display",
+      "check": "Unstocked pocket is visibly empty",
       "passed": true
     },
     {
-      "check": "Four numbered action-bar slots replace text inventory",
+      "check": "Unstocked pocket is visibly empty",
       "passed": true
     },
     {
-      "check": "Action slot renders source mesh and part ID: sleeve",
+      "check": "Unstocked pocket is visibly empty",
       "passed": true
     },
     {
-      "check": "Action slot renders source mesh and part ID: washer",
+      "check": "Unstocked pocket is visibly empty",
       "passed": true
     },
     {
-      "check": "Action slot renders source mesh and part ID: bolt",
+      "check": "Unstocked pocket is visibly empty",
       "passed": true
     },
     {
-      "check": "Action slot renders source mesh and part ID: pad",
+      "check": "Unstocked pocket is visibly empty",
+      "passed": true
+    },
+    {
+      "check": "Unstocked pocket is visibly empty",
+      "passed": true
+    },
+    {
+      "check": "Unstocked pocket is visibly empty",
+      "passed": true
+    },
+    {
+      "check": "Unstocked pocket is visibly empty",
+      "passed": true
+    },
+    {
+      "check": "Unstocked pocket is visibly empty",
       "passed": true
     },
     {
@@ -97,11 +113,11 @@
       "passed": true
     },
     {
-      "check": "Q creates a real loose washer without duplication",
+      "check": "B clears a pocket anywhere without spawning loose hardware",
       "passed": true
     },
     {
-      "check": "Loose washer can be recollected from tray",
+      "check": "E replenishes the empty pocket from a drawer",
       "passed": true
     },
     {
@@ -117,7 +133,7 @@
       "passed": true
     },
     {
-      "check": "Two-hand slot shows occupied hands during firm carry",
+      "check": "Carried assembly appears separately from the ten pockets",
       "passed": true
     },
     {
@@ -125,11 +141,23 @@
       "passed": true
     },
     {
-      "check": "Click suspends pad in preparation station",
+      "check": "Crouched placement has a reachable, visible preview",
+      "passed": true
+    },
+    {
+      "check": "Crouched click suspends pad in preparation station",
       "passed": true
     },
     {
       "check": "Premature bolt placement explains missing receiving assembly",
+      "passed": true
+    },
+    {
+      "check": "Unmodified right click does not place hardware",
+      "passed": true
+    },
+    {
+      "check": "Control-click release does not place hardware",
       "passed": true
     },
     {
@@ -138,6 +166,10 @@
     },
     {
       "check": "Valid sleeve socket 2 displays actual mesh ghost",
+      "passed": true
+    },
+    {
+      "check": "Crouched placement has a reachable, visible preview",
       "passed": true
     },
     {
@@ -225,10 +257,6 @@
       "passed": true
     },
     {
-      "check": "Selecting pocket hardware cannot accidentally mount the carried pad",
-      "passed": true
-    },
-    {
       "check": "Prepared assembly mounts to full-size foot",
       "passed": true
     },
@@ -241,7 +269,19 @@
       "passed": true
     },
     {
+      "check": "Crouched placement has a reachable, visible preview",
+      "passed": true
+    },
+    {
+      "check": "Click installs washer 3",
+      "passed": true
+    },
+    {
       "check": "Bolt ghost available after local washer 3",
+      "passed": true
+    },
+    {
+      "check": "Crouched placement has a reachable, visible preview",
       "passed": true
     },
     {
@@ -250,6 +290,10 @@
     },
     {
       "check": "Foot targeting selects mount 1",
+      "passed": true
+    },
+    {
+      "check": "Click installs washer 1",
       "passed": true
     },
     {
@@ -265,6 +309,10 @@
       "passed": true
     },
     {
+      "check": "Click installs washer 0",
+      "passed": true
+    },
+    {
       "check": "Bolt ghost available after local washer 0",
       "passed": true
     },
@@ -274,6 +322,10 @@
     },
     {
       "check": "Foot targeting selects mount 2",
+      "passed": true
+    },
+    {
+      "check": "Click installs washer 2",
       "passed": true
     },
     {
@@ -372,6 +424,6 @@
   "engine": "4.7.2-stable (official)",
   "inventory_errors": [],
   "passed": true,
-  "rendered": true,
+  "rendered": false,
   "renderer": "gl_compatibility"
 }

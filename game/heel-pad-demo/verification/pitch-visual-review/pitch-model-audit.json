@@ -1,0 +1,461 @@
+{
+  "checks": [
+    {
+      "check": "Expanded authored graph validates",
+      "passed": true
+    },
+    {
+      "check": "All 26 existing pad identities remain active",
+      "passed": true
+    },
+    {
+      "check": "Exactly 135 source identities, no extra logical-module objects",
+      "passed": true
+    },
+    {
+      "check": "Every actuator slot resolves to a physical scenario piece",
+      "passed": true
+    },
+    {
+      "check": "All 27 non-fastener actuator components retained",
+      "passed": true
+    },
+    {
+      "check": "All 32 internal screws retained",
+      "passed": true
+    },
+    {
+      "check": "All 32 internal washers retained",
+      "passed": true
+    },
+    {
+      "check": "Carried assembly prevents acquiring a long loose part",
+      "passed": true
+    },
+    {
+      "check": "Long screw can occupy both hands",
+      "passed": true
+    },
+    {
+      "check": "Carried loose part prevents acquiring an assembly",
+      "passed": true
+    },
+    {
+      "check": "Cannot hold two long components",
+      "passed": true
+    },
+    {
+      "check": "Large carried pieces do not consume pocket capacity",
+      "passed": true
+    },
+    {
+      "check": "Long components cannot enter pockets",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-513__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__035",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__005",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__036",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__006",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__037",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__007",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__038",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__008",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-514__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__039",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__009",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__040",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__010",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__041",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__011",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__042",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__012",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-515__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-522__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-516__001",
+      "passed": true
+    },
+    {
+      "check": "Undo returns a long component to the output instead of pockets",
+      "passed": true
+    },
+    {
+      "check": "Recovered long component retains its identity",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__043",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12030__023",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__044",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12030__024",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-523__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-524__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-524__002",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__047",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__015",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__048",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__016",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__049",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12030__025",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__050",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12030__026",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-517__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-518__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__045",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__013",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__046",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__014",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-521__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__051",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12030__027",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__052",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12030__028",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-528__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-528__002",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-530__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__025",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12030__021",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__026",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12030__022",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-519__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-520__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-529__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-529__002",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-511__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-512__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__027",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12050__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__028",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12050__002",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__029",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12050__003",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__030",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12050__004",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__031",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12050__005",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__032",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12050__006",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__033",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12050__007",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__034",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12050__008",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-525__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-526__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-527__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__021",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__001",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__022",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__002",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-525__002",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-526__002",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: FA-527__002",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__023",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__003",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: W-12__024",
+      "passed": true
+    },
+    {
+      "check": "Manual order is constructible: H-12040__004",
+      "passed": true
+    },
+    {
+      "check": "Prepared milestone covers the complete actuator",
+      "passed": true
+    },
+    {
+      "check": "Complete child preserves ownership, hand and pocket invariants",
+      "passed": true
+    },
+    {
+      "check": "Base and rod eye variants cannot be silently interchanged",
+      "passed": true
+    },
+    {
+      "check": "One parent ownership with two receiving clevis connections",
+      "passed": true
+    },
+    {
+      "check": "Pitch installation requires its child mount and all 18 mounting pieces",
+      "passed": true
+    },
+    {
+      "check": "Foot manual covers every child mount and physical fastening slot",
+      "passed": true
+    },
+    {
+      "check": "All three secured branches complete the combined workshop",
+      "passed": true
+    },
+    {
+      "check": "Combined completion installs exactly all 135 identities",
+      "passed": true
+    },
+    {
+      "check": "Shared fasteners and combined completion preserve all invariants",
+      "passed": true
+    }
+  ],
+  "passed": true
+}

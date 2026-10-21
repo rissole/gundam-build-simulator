@@ -35,6 +35,7 @@ var pad: WorkshopPart
 var pad_mesh: MeshInstance3D
 var ghost: MeshInstance3D
 var ghost_material: StandardMaterial3D
+var ghost_assembly_signature: String = ""
 var foot: AnimatableBody3D
 var prep: Node3D
 var loose: Dictionary = {}
@@ -935,6 +936,7 @@ func _milestone(message: String) -> void:
 
 func _update_ghost() -> void:
 	ghost.visible = false
+	for child in ghost.get_children():child.visible = false
 	ghost_material.no_depth_test = target.get("type","") == "component"
 	if target.get("type","") == "component":
 		if not components.access().is_empty():return
@@ -956,10 +958,34 @@ func _update_ghost() -> void:
 		ghost.mesh = source[state.pad_id].mesh
 		ghost.global_transform = mount_transform()
 		ghost.visible = true
+		_show_assembly_ghost()
 	elif target.type == "prep" and state.pad_location == "held":
 		ghost.mesh = source[state.pad_id].mesh
 		ghost.global_transform = stations[target.get("station","prep")].global_transform
 		ghost.visible = true
+		_show_assembly_ghost()
+
+func _show_assembly_ghost() -> void:
+	# Carrying an assembly previews its fitted pieces at the same relative poses.
+	# Keep the existing root mesh/transform interface used by targeting.
+	if not components.is_component_build(active_build):return
+	var body: Node3D = bodies[active_build]
+	var key = active_build+":"+str(body.get_child_count())
+	if key != ghost_assembly_signature:
+		for child in ghost.get_children():
+			ghost.remove_child(child)
+			child.queue_free()
+		for child in body.get_children():
+			if not child is MeshInstance3D or not child.has_meta("component_uid"):continue
+			var preview = MeshInstance3D.new()
+			preview.mesh = child.mesh
+			preview.transform = child.transform
+			preview.material_override = ghost_material
+			preview.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			preview.set_meta("component_uid",child.get_meta("component_uid"))
+			ghost.add_child(preview)
+		ghost_assembly_signature = key
+	for child in ghost.get_children():child.visible = true
 
 func _update_markers() -> void:
 	var previous_build = active_build

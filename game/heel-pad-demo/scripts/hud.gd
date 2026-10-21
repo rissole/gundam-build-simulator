@@ -106,6 +106,7 @@ func _ready() -> void:
 
 func _make_manual() -> void:
 	manual = panel_at(root,Vector2(1,0),Rect2(-366,24,342,0))
+	manual.add_theme_stylebox_override("panel",style(Color("14232c")))
 	var column = VBoxContainer.new()
 	column.add_theme_constant_override("separation",10)
 	manual.add_child(column)
@@ -423,7 +424,7 @@ func _refresh_manual() -> void:
 		if manual_id != "foot" and not a.parent.is_empty():page_body.text += "\n\nInstalled. Fastening and undo belong to the foot manual."
 	var context: Array = step.get("context_sources",definition.get("context_sources",[]))
 	for uid in context:entries.append({"source":uid,"highlight":false,"installed":true,"faint":true})
-	diagram.show_parts(game,entries)
+	diagram.show_parts(game,entries,step.get("diagram_views",[]))
 
 func toast(text: String, success: bool = false) -> void:
 	toast_label.text = text

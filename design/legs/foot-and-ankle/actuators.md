@@ -16,7 +16,7 @@ Coordinates use the [foot datums](dimensions.md#coordinates-and-movement). Posit
 | Base eye | Foot coordinate (−540,800,480) | Ring coordinate relative to C: (500,−450,−150) | Foot coordinate (0,650,520) |
 | Rod eye | Ring coordinate relative to C: (−540,300,0) | Adapter coordinate relative to C: (200,−450,320) | Forefoot coordinate relative to H: (0,60,220) |
 | Body outside diameter | 140 | 110 | 110 |
-| Barrel length | 500 | 380 | 365 |
+| Barrel length | 460 | 380 | 365 |
 | Base-eye center to front guide | 570 | 440 | 425 |
 | Extending rod outside diameter | 90 | 65 | 65 |
 | Nominal usable eye-to-eye limits | 640…860 | 480…640 | 470…640 |
@@ -26,6 +26,8 @@ Coordinates use the [foot datums](dimensions.md#coordinates-and-movement). Posit
 | Screw major diameter / reference lead | 40 / 10 per revolution | 30 / 8 per revolution | 30 / 8 per revolution |
 
 Roll's base and rod eye both receive the ring's pitch transformation. Consequently ankle pitch does not change the required roll-actuator length. Forefoot travel is independent of the ankle.
+
+The playable pitch prototype uses the repaired interfaces in [Pitch actuator interface repair](../../game/pitch-interface-repair.md): its barrel starts 90 mm from the base eye, leaving room for the eye neck and rear cap. The two eye centers and front guide datum are unchanged. Roll and forefoot geometry still use their original reference packaging.
 
 The values establish plausible visual packaging; motor power, gear ratio, screw stress and cycle life are not sized. Do not present these choices as sufficient to move a real 18 m machine.
 

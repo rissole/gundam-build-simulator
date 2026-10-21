@@ -231,5 +231,9 @@ def build_one(kind, base, rod_eye, od, barrel_length, guide, rod_radius, rod_len
 
 def build():
     build_one("P",(-540,800,480),(-540,300,1000),140,500,570,45,320,50,(-1600,-200,700))
+    # Pitch is the playable construction prototype. Its repaired interfaces are
+    # instance-specific; the roll/forefoot reference models retain their geometry.
+    from pitch_interfaces import rebuild_pitch
+    rebuild_pitch(ACTUATORS["P"])
     build_one("R",(500,-450,850),(200,-450,1320),110,380,440,32.5,230,40,(1600,-700,1000))
     build_one("F",(0,650,520),(0,1260,570),110,365,425,32.5,220,40,(0,1400,1000))

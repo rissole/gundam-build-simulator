@@ -178,6 +178,14 @@ func run(workshop: Node) -> void:
 	game._update_target()
 	game._update_ghost()
 	expect(game.target.get("mount","")=="pitch" and game.ghost.visible,"Completed actuator previews at its receiving connections")
+	var complete_preview = game.ghost.get_child_count()==90
+	for visual in game.ghost.get_children():
+		var uid: String = visual.get_meta("component_uid")
+		var sid: String = game.model.items[uid].slot
+		var source_id: String = game.model.slot_definition("pitch",sid).pose_source
+		var expected: Transform3D = game.ghost.global_transform*game.source["FA-510__001"].transform.affine_inverse()*game.source[source_id].transform
+		complete_preview = complete_preview and matches_source_geometry(visual,expected,source_id)
+	expect(complete_preview,"Mount preview includes all 90 fitted pieces at their source-relative poses")
 	await review_checkpoint("foot","mount-preview","pitch")
 	click()
 	expect(game.model.assemblies.foot.slots.pitch=="pitch","Mount the physical actuator once at both clevises")

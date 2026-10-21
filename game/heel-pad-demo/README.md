@@ -92,7 +92,7 @@ The linked test scripts generate local JSON audits under `verification/`. Genera
 - [Pocket workshop audit](tests/pockets_workshop_test.gd): all ten number keys, immediate hotbar counts, manual independence, drawer/shelf images and IDs, two storage rows, clearing away from storage, separate carrying, scrolling and layout. Hotbar/catalogue images use no live 3D viewports.
 
 - [Pitch model audit](tests/pitch_model_test.gd): inventory counts, manual construction order, cap dependencies, carrying exclusivity, long-part recovery, and combined 135-piece completion.
-- [Pitch desktop audit](tests/pitch_build_test.gd): 285 checks. Collects and fits all 90 pieces onto the barrel through desktop controls, compares actual installed vertices against the source at every construction page, carries and installs the completed actuator with all 18 mounting parts, checks station/foot rotation, and undoes the parent installation while retaining child progress.
+- [Pitch desktop audit](tests/pitch_build_test.gd): 286 checks. Collects and fits all 90 pieces onto the barrel through desktop controls, compares actual installed vertices against the source at every construction page, previews all fitted child meshes and installs the completed actuator with all 18 mounting parts, checks station/foot rotation, and undoes the parent installation while retaining child progress.
 
 - [Original state regression](tests/state_test.gd): 57 checks through the new model, including independent order, finite stock, pocket clearing/refilling, identity, completion, and full undo.
 - [Generic model audit](tests/assembly_model_test.gd): 45 checks including invalid references/cycles, duplicate ownership, incompatible variants, shared stock, nested undo, and a separate three-slot recipe with a differently named parent. The alternate recipe is a state-level fixture, not new playable content.
@@ -104,6 +104,7 @@ The linked test scripts generate local JSON audits under `verification/`. Genera
 ./play-heel-pad.command --headless --script tests/state_test.gd
 ./play-heel-pad.command --headless --script tests/assembly_model_test.gd
 ./play-heel-pad.command --headless --script tests/pitch_model_test.gd
+./play-heel-pad.command --headless --script tests/pitch_interface_test.gd
 ./play-heel-pad.command --headless --script tests/pockets_model_test.gd
 ./play-heel-pad.command --headless -- --single-pad --demo-test
 ./play-heel-pad.command --headless -- --multi-test
@@ -111,18 +112,20 @@ The linked test scripts generate local JSON audits under `verification/`. Genera
 ./play-heel-pad.command --headless -- --pockets-test
 ```
 
-All eight commands run headlessly. The last four exercise the desktop input adapter and actual physics/targeting without opening a window. Test input is isolated from live desktop events. The pitch test can also use `--fixed-fps 60` to advance simulated time faster. Headless runs skip audio playback. Rendered verification is a separate, explicitly requested check. Automated checks verify functionality; human play remains the test of pacing and comfort.
+All nine commands run headlessly. The last four exercise the desktop input adapter and actual physics/targeting without opening a window. Test input is isolated from live desktop events. The pitch test can also use `--fixed-fps 60` to advance simulated time faster. Headless runs skip audio playback. Rendered verification is a separate, explicitly requested check. Automated checks verify functionality; human play remains the test of pacing and comfort.
 
-The local 2026-10-21 actuator visual review (`verification/pitch-visual-review/review.md`) inspected all 14 actuator pages and every component placement. **Visual approval failed:** missing receiving holes, overlapping or buried hardware, obstructed eye openings and unclear diagrams require repairs before expanding assembly content. Component lists and behavior checks passed. Source geometry agreement alone does not establish mechanical correctness or readable instructions.
+The repaired actuator passed the 2026-10-21 [visual review](verification/pitch-visual-review/review.md): all 14 child pages and three parent installation pages, every component placement, both receiving frames, full assembly preview and continuous rotation. The [gallery](verification/pitch-visual-review/index.html) contains current rendered evidence; the report records per-page decisions and exact hashes. Receiving holes, seats, fastener access, sensor/cap clearance and eye/pin interfaces were repaired in the source models. Step-specific diagrams now expose those connections. Source geometry agreement alone remains insufficient for visual approval.
 
 Reproduce the actuator captures using the real renderer, then generate the review gallery (Pillow required):
 
 ```sh
 ./play-heel-pad.command --disable-render-loop --fixed-fps 60 -- --pitch-test --pitch-review
-python3 game/heel-pad-demo/tools/build_pitch_review_gallery.py
+python3 game/heel-pad-demo/tools/build_pitch_review_gallery.py --input /path/printed/as/REVIEW_OUTPUT
 ```
 
-This opens a window and captures before/preview/after placements, opaque/service/exposed inspection angles, HUD pages and continuous rotation. `--headless` is rejected for this mode. Local evidence and code/asset hashes are in `verification/pitch-visual-review/`; capture generation does not grant visual approval. Preserve this failed baseline before rerunning after repairs. Supplementary parent views need better receiver context, and the remaining default-workshop pages still need the [full review process](../../design/game/foot-prototype-plan.md#manual-and-assembly-visual-review).
+This opens a window and captures before/preview/after placements, opaque/service/exposed inspection angles, HUD pages and continuous rotation. `--headless` is rejected for this mode. Each run prints a unique `REVIEW_OUTPUT` directory under `verification/`; supply that path to the gallery command. The accepted `verification/pitch-visual-review/` baseline is retained.
+
+For a focused repair, append `--review-pages=pitch-04,foot-06` to the capture command, selecting the changed and dependent pages explicitly. Normal build/ownership checks still run, but only selected pages produce images. Include `pitch-14` or `foot-06` when preparation or mounted rotation needs review. Capture generation does not grant visual approval. The accepted gallery retains every inspected image plus the recorded findings from the failed passes; extra raw captures were pruned. The remaining default-workshop pages and both compatible pad placements still need the [full review process](../../design/game/foot-prototype-plan.md#manual-and-assembly-visual-review).
 
 ## Scope and current limits
 
@@ -153,7 +156,19 @@ A slot accepts one part-type key (which includes a specific variant) or a child 
 
 Stations provide occupancy, rotation, and work-volume checks. Collection and construction rules do not depend on keyboard bindings or camera transforms; desktop targeting supplies the reach/occlusion and placement poses. Future AR input can call the same model operations.
 
-The copied GLB is unchanged from the source export. Its imported transforms govern placement; the source manifest's Blender-axis custom position metadata must not be applied directly as Godot coordinates. The animation's assembly phases are not used as gameplay dependencies.
+The game GLB preserves the original export except for the 109 pitch pieces and their FA-103/FA-200 receiving frames. `models/foot-fa01/src/pitch_interfaces.py` repairs those specific instances without changing shared hardware templates or the roll/forefoot actuators. The merge audit checks that all other node records and mesh bytes are preserved. Imported transforms govern placement; the source manifest's Blender-axis custom position metadata must not be applied directly as Godot coordinates. Animation phases are not gameplay dependencies.
+
+For source geometry revisions, take a snapshot of the current game GLB once before iterating, then regenerate the selected pieces (substitute your Blender executable):
+
+```sh
+cp game/heel-pad-demo/assets/foot-fa01.glb models/foot-fa01/output/pitch-game-base.glb
+blender --background --factory-startup --python-exit-code 1 --python models/foot-fa01/src/export_pitch_revision.py
+python3 game/heel-pad-demo/tools/merge_pitch_meshes.py --base models/foot-fa01/output/pitch-game-base.glb
+python3 game/heel-pad-demo/tools/author_pitch_actuator.py
+python3 game/heel-pad-demo/tools/render_part_images.py
+```
+
+Keep the same snapshot for subsequent iterations so unused replacement buffers do not accumulate. The exporter retains all 745 inventory identities and updates the selected records in the JSON manifest; the full Blender scene, film, CSV and standalone exports remain historical until the full model build is rerun. The [pitch interface repair](../../design/game/pitch-interface-repair.md) records the revised packaging and connections. `pitch_interface_test.gd` checks actual imported triangles for receiving holes, surrounding material and key seat/access clearances; it complements the rendered review.
 
 Godot is used under its [MIT license](https://godotengine.org/license/). Engine references: [GLB import](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html), [Jolt Physics](https://docs.godotengine.org/en/stable/tutorials/physics/using_jolt_physics.html), [3D collision shapes](https://docs.godotengine.org/en/stable/tutorials/physics/collision_shapes_3d.html), and [rigid-body behavior](https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html).
 
