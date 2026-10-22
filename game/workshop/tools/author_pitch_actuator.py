@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
-ASSETS = ROOT / 'game/heel-pad-demo/assets'
+ASSETS = ROOT / 'game/workshop/assets'
 sys.path.insert(0, str(ROOT / 'models/foot-fa01/src'))
 from source_connections import pitch_pairs, pitch_instance_ids
 manifest = json.loads((ROOT / 'models/foot-fa01/output/parts-manifest.json').read_text())['parts']
@@ -127,7 +127,7 @@ for n in [1,2]:
 parent_pages.append(dict(title='Seat & pin actuator',body='Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. The FA-500-P child manual covers its preparation.',slots=group,view='components',child_slot='pitch',context_sources=[uid('FA-220'),uid('FA-220',2)]))
 foot['manual']+=parent_pages
 foot['manual'][0]['title']='Foot workshop'
-foot['manual'][0]['body']='Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Follow each branch to install and secure it on the foot.'
+foot['manual'][0]['body']='Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Use the foot bay controls to expose each side. Follow each branch to install and secure it before transferring the foot.'
 foot['manual'][0]['slots']=list(parent)
 foot['milestones']['pitch_secured']=brackets+group
 foot['milestones']['complete']=list(parent)

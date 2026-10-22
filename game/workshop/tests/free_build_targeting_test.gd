@@ -70,7 +70,7 @@ func run() -> void:
 	await driver.aim(game.components.slot_point("pitch",next),game.REACH+1.0)
 	history = game.model.assemblies.pitch.history.size()
 	driver.click()
-	expect(not game.ghost.visible and game.model.assemblies.pitch.history.size() == history and game.hud.toast_label.text.contains("closer"),"An independent connection still requires actual physical reach")
+	expect(game.ghost.visible and game.ghost_material.albedo_color == game.SNAP_DISTANT_COLOR and game.model.assemblies.pitch.history.size() == history and game.hud.toast_label.text.contains("closer"),"Yellow discovery of an independent connection still requires actual physical reach to install")
 	await driver.aim(game.components.slot_point("pitch",next),1.2)
 	var point: Vector3 = game.target.point
 	var obstacle = blocker(game.camera.global_position.lerp(point,0.7))

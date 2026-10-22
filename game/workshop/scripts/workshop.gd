@@ -8,14 +8,19 @@ const FOOT_POSITION = Vector3(2.3,2.0,-1.8)
 const PREP_BASIS = Basis(Vector3.RIGHT,-PI/2)
 const FOOT_BASIS = Basis(Vector3.BACK,PI) * Basis(Vector3.RIGHT,-PI/2)
 const REACH = 2.35
+const SNAP_DISCOVERY_RANGE = 6.0
+const SNAP_READY_COLOR = Color(0.35,1.0,0.73,0.40)
+const SNAP_DISTANT_COLOR = Color(1.0,0.78,0.12,0.55)
 const WORLD_MASK = 7
 const PAD_HOME = Vector3(-1.0,1.09,3.25)
+const JUMP_SPEED = 5.2
 
 var model = AssemblyModel.new()
 var runtime: AssemblyRuntime
 var components: Node
 var storage: Node
 var pitch_workshop: bool = false
+var foot_fixture: Node3D
 var builds: Dictionary = {}
 var bodies: Dictionary = {}
 var stations: Dictionary = {}
@@ -48,6 +53,8 @@ var player: CharacterBody3D
 var camera: Camera3D
 var player_collision: CollisionShape3D
 var crouched: bool = false
+var jump_requested: bool = false
+var jump_held: bool = false
 var rotate_held: bool = false
 var rotate_dragged: bool = false
 var rotate_press_time: int = 0
@@ -94,6 +101,10 @@ func _ready() -> void:
 	_load_foot()
 	_register_parent_fixtures()
 	_make_player()
+	if pitch_workshop and not OS.get_cmdline_user_args().has("--legacy-stations"):
+		foot_fixture = preload("res://scripts/supported_fixture.gd").new()
+		add_child(foot_fixture)
+		foot_fixture.setup(self,foot)
 	for build in config.builds:
 		_activate(build.id)
 		_make_pad()
@@ -102,7 +113,7 @@ func _ready() -> void:
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
 	storage.setup()
-	ghost_material = material(Color(0.35,1.0,0.73,0.40),0.0)
+	ghost_material = material(SNAP_READY_COLOR,0.0)
 	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
 	ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ghost_material.cull_mode = BaseMaterial3D.CULL_BACK
@@ -190,12 +201,29 @@ func sign_text(parent: Node3D, text: String, pos: Vector3, font_size: int = 36, 
 	var label = Label3D.new()
 	label.text = text
 	label.position = pos
-	label.font_size = font_size
-	label.pixel_size = pixel_size
+	# Render more glyph pixels without changing physical lettering size.
+	label.font_size = font_size*2
+	label.pixel_size = pixel_size/2.0
 	label.modulate = color
 	label.outline_size = 0
 	label.no_depth_test = false
+	label.double_sided = false
 	parent.add_child(label)
+	return label
+
+func sign_panel(parent: Node3D, text: String, pos: Vector3, size: Vector2, font_size: int = 64, pixel_size: float = 0.002, rotation_y: float = 0.0) -> Label3D:
+	# Physical signs keep lettering distinct from equipment behind them. Normal
+	# depth testing also prevents a sign being legible through walls or machinery.
+	var mount = Node3D.new()
+	mount.name = "SignPanel"
+	mount.position = pos
+	mount.rotation.y = rotation_y
+	parent.add_child(mount)
+	var backing = material(Color("20343e"))
+	backing.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	var plate = box(mount,Vector3.ZERO,Vector3(size.x,size.y,0.03),backing)
+	plate.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var label = sign_text(mount,text,Vector3(0,0,0.022),font_size,Color("eef5ef"),pixel_size)
 	return label
 
 func _make_world() -> void:
@@ -214,6 +242,9 @@ func _make_world() -> void:
 	sun.light_energy = 0.85
 	sun.light_color = Color("ffebce")
 	sun.shadow_enabled = true
+	# Resolve small joints within this room instead of allocating shadow detail
+	# across a distant outdoor scene.
+	sun.directional_shadow_max_distance = 32.0
 	add_child(sun)
 	var fill = OmniLight3D.new()
 	fill.position = Vector3(-2,4,3)
@@ -228,19 +259,23 @@ func _make_world() -> void:
 	var warm = material(Color("e8b46b"),0.1)
 	box(self,Vector3(0,-0.15,0),Vector3(22,0.3,20),floor_mat,true)
 	box(self,Vector3(0,4,-7),Vector3(22,8,0.3),wall_mat,true)
-	box(self,Vector3(-10.8,4,0),Vector3(0.3,8,14),wall_mat,true)
-	box(self,Vector3(10.8,4,0),Vector3(0.3,8,14),wall_mat,true)
+	# Side walls butt against the rear wall instead of sharing its top face.
+	box(self,Vector3(-10.8,4,0.075),Vector3(0.3,8,13.85),wall_mat,true)
+	box(self,Vector3(10.8,4,0.075),Vector3(0.3,8,13.85),wall_mat,true)
 	box(self,Vector3(0,4,9.8),Vector3(22,8,0.3),wall_mat,true)
 	for x in range(-10,11,2):
 		box(self,Vector3(x,0.002,0),Vector3(0.016,0.004,19),material(Color("687875")))
 	for z in range(-6,10,2):
-		box(self,Vector3(0,0.003,z),Vector3(21,0.004,0.016),material(Color("687875")))
+		# Split at grid intersections so the floor markings have no overlapping faces.
+		for x in range(-10,10,2):
+			box(self,Vector3(x+1,0.002,z),Vector3(1.984,0.004,0.016),material(Color("687875")))
 	for x in [-8.0,-4.0,0.0,4.0,8.0]:
-		box(self,Vector3(x,4,-6.78),Vector3(0.22,8,0.26),metal)
+		# Pilasters start at the wall face so their tops do not overlap the wall top.
+		box(self,Vector3(x,4,-6.75),Vector3(0.22,8,0.20),metal)
 		box(self,Vector3(x,6.7,0),Vector3(0.18,0.3,14),dark)
 		box(self,Vector3(x,6.5,-1),Vector3(0.10,0.06,5),material(Color("fff3d5"),0,true))
-	sign_text(self,"FA / 01",Vector3(0,5.3,-6.8),120,Color("3c555c"),0.013)
-	sign_text(self,"COMPONENT ASSEMBLY    /    LOWER LIMB DIVISION",Vector3(0,4.25,-6.8),28,Color("3c555c"),0.01)
+	sign_panel(self,"FA / 01",Vector3(0,5.3,-6.55),Vector2(4.5,1.35),160,0.006)
+	sign_panel(self,"COMPONENT ASSEMBLY  /  LOWER LIMB DIVISION",Vector3(0,4.35,-6.55),Vector2(5.4,0.36),64,0.0025)
 	# Pad rests on a separate preparation table; the player chooses when to carry it.
 	box(self,Vector3(-0.1,0.92,PAD_HOME.z),Vector3(3.4,0.12,1.25),dark,true)
 	for x in [PAD_HOME.x-0.6,PAD_HOME.x+0.6]:
@@ -249,10 +284,12 @@ func _make_world() -> void:
 	# A nearby stock tray gives organisation a physical purpose.
 	box(self,Vector3(-0.4,0.86,0.6),Vector3(1.1,0.10,0.7),dark,true)
 	for x in [-0.85,0.05]: box(self,Vector3(x,0.40,0.6),Vector3(0.07,0.8,0.55),metal,true)
-	for x in [-0.94,0.14]: box(self,Vector3(x,0.96,0.6),Vector3(0.03,0.12,0.70),warm,true)
-	for z in [0.26,0.94]: box(self,Vector3(-0.4,0.96,z),Vector3(1.1,0.12,0.03),warm,true)
+	# Rims stand on the tray base; the front/rear rails fit between side rails.
+	for x in [-0.94,0.14]: box(self,Vector3(x,0.965,0.6),Vector3(0.03,0.11,0.71),warm,true)
+	for z in [0.26,0.94]: box(self,Vector3(-0.4,0.965,z),Vector3(1.05,0.11,0.03),warm,true)
 	_station_frame(PREP_POSITION,Vector3(1.05,1.1,0.9),"02 / PREPARATION A",dark,warm)
-	_station_frame(FOOT_POSITION,Vector3(2.7,3.7,2.8),"03 / FOOT ASSEMBLY",dark,warm)
+	if not pitch_workshop or OS.get_cmdline_user_args().has("--legacy-stations"):
+		_station_frame(FOOT_POSITION,Vector3(2.7,3.7,2.8),"03 / FOOT ASSEMBLY",dark,warm)
 	prep = Node3D.new()
 	prep.position = PREP_POSITION
 	prep.basis = PREP_BASIS
@@ -289,8 +326,12 @@ func _station_frame(center: Vector3, dimensions: Vector3, title: String, dark: M
 			box(self,Vector3(center.x+x,maxf(0.03,center.y-half.y),center.z+z),Vector3(0.15,0.045,0.15),warm)
 	for y in [-half.y,half.y]:
 		box(self,center+Vector3(0,y,-half.z),Vector3(dimensions.x,0.035,0.035),dark)
-		for x in [-half.x,half.x]:box(self,center+Vector3(x,y,0),Vector3(0.035,0.035,dimensions.z),dark)
-	sign_text(self,title,center+Vector3(0,half.y+0.27,0.0),23,Color("233940"),0.008)
+		# Side rails butt against the rear posts rather than crossing the rear rail.
+		for x in [-half.x,half.x]:box(self,center+Vector3(x,y,0.01125),Vector3(0.035,0.035,dimensions.z-0.0225),dark)
+	# Bolt the board to the rear frame, above the usable preparation volume.
+	for x in [-half.x,half.x]:
+		box(self,center+Vector3(x,half.y+0.09875,-half.z),Vector3(0.035,0.1625,0.035),dark)
+	sign_panel(self,title,center+Vector3(0,half.y+0.17,-half.z+0.04),Vector2(maxf(1.5,dimensions.x),0.30),64,0.0018)
 
 func _load_foot() -> void:
 	foot = AnimatableBody3D.new()
@@ -395,6 +436,7 @@ func _make_player() -> void:
 	camera = Camera3D.new()
 	camera.position.y = 1.63
 	camera.near = 0.035
+	camera.far = 60.0
 	camera.fov = 75
 	player.add_child(camera)
 	camera.current = true
@@ -446,6 +488,7 @@ func _make_audio() -> void:
 
 func set_paused(value: bool) -> void:
 	paused = value
+	jump_requested = false
 	if value and is_instance_valid(interaction_outline):interaction_outline.clear()
 	rotate_held = false
 	rotation_station = ""
@@ -467,8 +510,21 @@ func movement_pressed(code: Key) -> bool:
 
 func handle_desktop_input(event: InputEvent) -> void:
 	if automated_test and event is InputEventKey:scripted_controls[event.physical_keycode] = event.pressed
+	# Track releases even when a menu consumes input. Only a fresh press can
+	# request a jump, so holding Space through landing or a menu cannot repeat it.
+	if event is InputEventKey and event.physical_keycode == KEY_SPACE:
+		var fresh_press = event.pressed and not event.echo and not jump_held
+		jump_held = event.pressed
+		if not started:return
+		if hud.handle_manual_browser_input(event):
+			jump_requested = false
+			return
+		if fresh_press and not paused:jump_requested = true
+		return
 	if not started: return
-	if hud.handle_manual_browser_input(event): return
+	if hud.handle_manual_browser_input(event):
+		jump_requested = false
+		return
 	if event is InputEventKey and event.physical_keycode == KEY_R and not event.echo:
 		if not paused: _rotation_key(event.pressed)
 		return
@@ -529,6 +585,7 @@ func handle_desktop_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not started: return
+	if is_instance_valid(foot_fixture):foot_fixture.physics(delta)
 	if not paused:
 		_update_crouch(movement_pressed(KEY_CTRL),delta)
 		var move = Vector2(float(movement_pressed(KEY_D))-float(movement_pressed(KEY_A)),float(movement_pressed(KEY_S))-float(movement_pressed(KEY_W))).normalized()
@@ -540,8 +597,12 @@ func _physics_process(delta: float) -> void:
 	else:
 		player.velocity.x = 0
 		player.velocity.z = 0
-	if not player.is_on_floor():player.velocity.y -= 14*delta
+	if jump_requested and not paused and not hud.browser.visible and player.is_on_floor():
+		player.velocity.y = JUMP_SPEED
+	elif not player.is_on_floor():player.velocity.y -= 14*delta
 	else:player.velocity.y = -0.1
+	# Airborne presses expire immediately; they cannot turn into a landing jump.
+	jump_requested = false
 	player.move_and_slide()
 	components.physics(delta)
 	var previous_build = active_build
@@ -679,6 +740,13 @@ func interactable_assembly(owner: String) -> bool:
 	var location: String = model.assemblies[top].location
 	return location == "fixture" or location.begins_with("station:")
 
+func equipment_access_error(owner: String) -> String:
+	if not is_instance_valid(foot_fixture) or not model.assemblies.has(owner):return ""
+	if model.top_level(owner) != default_parent_id():return ""
+	if foot_fixture.moving:return "Wait for the foot fixture to stop before working on its connections."
+	if foot_fixture.at_dispatch:return "Return the foot to the assembly bay before changing its connections."
+	return ""
+
 func mount_transform(slot: String = "", owner: String = "", child: String = "") -> Transform3D:
 	if owner.is_empty():owner = target.get("owner",model.assemblies[active_build].parent)
 	if owner.is_empty():owner = default_parent_id()
@@ -781,6 +849,7 @@ func _update_target() -> void:
 	for kind in bins:candidates.append({"type":"bin","kind":kind,"point":bins[kind].global_position+Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in loose:
 		if is_instance_valid(loose[uid]):candidates.append({"type":"loose","uid":uid,"point":loose[uid].global_position,"radius":0.12})
+	if is_instance_valid(foot_fixture):candidates.append_array(foot_fixture.controls())
 	if held.is_empty():
 		for candidate in components.candidates():
 			# Fixed/mounted builds have no competing pickup action; retain their
@@ -789,7 +858,7 @@ func _update_target() -> void:
 	var scored: Array[Dictionary] = []
 	var focused_connections: Dictionary = {}
 	for candidate in candidates:
-		if camera.global_position.distance_to(candidate.point) > 6.0: continue
+		if camera.global_position.distance_to(candidate.point) > SNAP_DISCOVERY_RANGE: continue
 		var score = _aim_score(candidate.point,candidate.radius)
 		if score == INF:continue
 		var connection_visible = true
@@ -820,6 +889,7 @@ func _update_target() -> void:
 
 func _target_receivers() -> Array:
 	match target.get("type",""):
+		"equipment":return []
 		"bin":return [bins[target.kind]]
 		"pad":return [pad]
 		"loose":return [loose[target.uid]]
@@ -829,6 +899,7 @@ func _target_receivers() -> Array:
 
 func _target_object() -> Node3D:
 	match target.get("type",""):
+		"equipment":return target.get("node",null)
 		"bin":
 			var bin: Node3D = bins[target.kind]
 			return bin.get_node("ShelfPart") if bin.has_node("ShelfPart") else bin
@@ -855,6 +926,13 @@ func _present_target() -> void:
 	var action_label = ""
 	var usable = false
 	match target.type:
+		"equipment":
+			caption = target.label
+			detail = foot_fixture.action_error(target.action)
+			usable = detail.is_empty()
+			if usable:
+				action_key = "E"
+				action_label = "Operate"
 		"bin":
 			var count: int = model.count_at(target.kind,"bin")
 			var pocket: bool = model.definitions.parts[target.kind].carry_class == "pocket"
@@ -907,7 +985,7 @@ func _present_target() -> void:
 				usable = detail.is_empty()
 	var access_error = _access(receivers)
 	if not access_error.is_empty():
-		detail = "" if camera.global_position.distance_to(target.point) > REACH else access_error
+		detail = "Move closer to attach" if _distant_snap_available() else ("" if camera.global_position.distance_to(target.point) > REACH else access_error)
 		usable = false
 	if not usable:
 		action_key = ""
@@ -930,9 +1008,13 @@ func _target_allows_body_hit() -> bool:
 
 func _access(allowed: Array = []) -> String:
 	if target.is_empty(): return "Aim near a part, bin, or mounting point."
+	if target.type in ["slot","mount","component"]:
+		var equipment_error = equipment_access_error(target.get("owner",target.get("build","")))
+		if not equipment_error.is_empty():return equipment_error
 	if target.type == "component":return components.access()
 	if camera.global_position.distance_to(target.point) > REACH: return "Out of reach. Move closer to the connection (maximum %.2f m)." % REACH
-	if not _visible(target.point,allowed,_target_allows_body_hit()): return "Connection is obstructed. Rotate the assembly or approach its exposed side."
+	if not _visible(target.point,allowed,_target_allows_body_hit()): return "Connection is obstructed. Approach its exposed side or use the work-position controls."
+	if target.type == "equipment":return foot_fixture.action_error(target.action)
 	if target.type == "prep":
 		var station: Node3D = stations[target.get("station","prep")]
 		var envelope: Vector3 = SolidHandling.bounds(pad).size
@@ -960,6 +1042,12 @@ func _carry_placement_error(destination: Transform3D, carried: WorkshopPart = nu
 
 func interact(all_stock: bool = false) -> void:
 	if target.is_empty(): hud.toast("Aim at a drawer, shelf or loose component."); return
+	if target.type == "equipment":
+		var access_error = _access([])
+		if not access_error.is_empty():hud.toast(access_error);return
+		var equipment_error: String = foot_fixture.request(target.action)
+		hud.toast(equipment_error if not equipment_error.is_empty() else foot_fixture.status_text(),equipment_error.is_empty())
+		return
 	if target.type == "component":
 		# Pickup acts on the physical containing assembly even when its connection
 		# is focused for placement. Recheck pickup reach/visibility independently.
@@ -1109,6 +1197,8 @@ func deposit() -> void:
 
 func undo_build() -> void:
 	var owner: String = hud.manual_id
+	var equipment_error = equipment_access_error(owner)
+	if not equipment_error.is_empty():hud.toast(equipment_error);return
 	var destination = ""
 	for station in stations:
 		var occupied = false
@@ -1166,9 +1256,12 @@ func _milestone(message: String) -> void:
 func _update_ghost() -> void:
 	ghost.visible = false
 	for child in ghost.get_children():child.visible = false
+	if paused:return
+	var distant = _distant_snap_available()
+	ghost_material.albedo_color = SNAP_DISTANT_COLOR if distant else SNAP_READY_COLOR
 	ghost_material.no_depth_test = target.get("type","") == "component"
 	if target.get("type","") == "component":
-		if not components.access().is_empty():return
+		if not distant and not components.access().is_empty():return
 		if not model.placement_error(target.owner,target.sid,components.selected_uid(selected_kind)).is_empty():return
 		ghost.mesh = source[model.slot_definition(target.owner,target.sid).pose_source].mesh
 		ghost.global_transform = components.slot_pose(target.owner,target.sid)
@@ -1178,7 +1271,7 @@ func _update_ghost() -> void:
 	var allowed: Array = [pad]
 	if target.has("owner"):allowed.append(assembly_node(model.top_level(target.owner)))
 	elif is_instance_valid(foot):allowed.append(foot)
-	if not _access(allowed).is_empty():return
+	if not distant and not _access(allowed).is_empty():return
 	if target.type == "slot" and HeelAssemblyState.KINDS.has(selected_kind):
 		if not state.reason(selected_kind,target.index).is_empty() or state.count_at(selected_kind,"pocket") == 0:return
 		var uid: String = slot_sources[selected_kind][target.index]
@@ -1196,6 +1289,26 @@ func _update_ghost() -> void:
 		ghost.global_transform = stations[target.get("station","prep")].global_transform
 		ghost.visible = true
 		_show_assembly_ghost()
+
+func _distant_snap_available() -> bool:
+	# Discovery is feedback only. Placement keeps its normal reach, carrying
+	# sweep and access checks; no physics or recipe rule is relaxed here.
+	if paused or target.is_empty():return false
+	var distance = camera.global_position.distance_to(target.point)
+	if distance <= REACH or distance > SNAP_DISCOVERY_RANGE:return false
+	if camera.is_position_behind(target.point):return false
+	if not _visible(target.point,_target_receivers(),_target_allows_body_hit()):return false
+	var owner: String = target.get("owner",target.get("build",""))
+	if not equipment_access_error(owner).is_empty():return false
+	match target.type:
+		"component":
+			var uid: String = components.selected_uid(selected_kind)
+			return not uid.is_empty() and model.placement_error(owner,target.sid,uid).is_empty()
+		"mount":
+			return state.pad_location == "held" and model.placement_error(owner,target.mount,active_build).is_empty()
+		"slot":
+			return HeelAssemblyState.KINDS.has(selected_kind) and state.count_at(selected_kind,"pocket") > 0 and state.reason(selected_kind,target.index).is_empty()
+	return false
 
 func _show_assembly_ghost() -> void:
 	ghost.mesh = null
@@ -1247,6 +1360,7 @@ func _station_in_view() -> String:
 func _rotate_station(relative: Vector2) -> void:
 	var station = rotation_station if rotate_held else _station_in_view()
 	if station.is_empty():return
+	if station == "foot" and is_instance_valid(foot_fixture):return
 	var node: Node3D = stations.get(station,foot)
 	if camera.global_position.distance_to(node.global_position)>5.0:return
 	node.basis = (Basis(camera.global_basis.y,-relative.x*0.006)*Basis(camera.global_basis.x,-relative.y*0.006)*node.basis).orthonormalized()
@@ -1257,6 +1371,10 @@ func _rotation_key(pressed: bool) -> void:
 		rotate_dragged = false
 		rotate_press_time = Time.get_ticks_msec()
 		rotation_station = _station_in_view()
+		if rotation_station == "foot" and is_instance_valid(foot_fixture):
+			rotate_held = false
+			rotation_station = ""
+			hud.toast("Use the foot bay controls to choose a supported work position.")
 	else:
 		var now = Time.get_ticks_msec()
 		if rotate_held and not rotate_dragged and now-rotate_press_time <= 250 and not rotation_station.is_empty():
@@ -1273,6 +1391,9 @@ func _rotation_key(pressed: bool) -> void:
 func reset_station(station: String = "") -> void:
 	if station.is_empty():station = _station_in_view()
 	if station.is_empty():return
+	if station == "foot" and is_instance_valid(foot_fixture):
+		hud.toast("Choose Upright at the foot bay controls.")
+		return
 	var node: Node3D = stations.get(station,foot)
 	if camera.global_position.distance_to(node.global_position)>5.0:return
 	if stations.has(station):stations[station].basis = PREP_BASIS

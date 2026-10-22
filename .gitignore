@@ -20,5 +20,5 @@ models/foot-fa01/output/*.glb
 models/foot-fa01/output/*.zip
 
 # Generated audits, captures, and galleries stay local. Keep Godot's ignore marker.
-/game/heel-pad-demo/verification/*
-!game/heel-pad-demo/verification/.gdignore
+/game/workshop/verification/*
+!game/workshop/verification/.gdignore

@@ -12,7 +12,7 @@ import struct
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-GAME = ROOT / 'game/heel-pad-demo'
+GAME = ROOT / 'game/workshop'
 TARGET = GAME / 'assets/foot-fa01.glb'
 REVISION = ROOT / 'models/foot-fa01/output/pitch-revision.glb'
 

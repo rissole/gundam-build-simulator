@@ -15,7 +15,7 @@ front/rear cap gasket, consistently in storage, pockets and manuals. Source
 instance numbers remain internal identity/provenance; they do not create a new
 part type. Matching family IDs alone do not prove compatibility across actuator
 sizes. The playable pitch mapping is authored in
-[`author_pitch_actuator.py`](../../../game/heel-pad-demo/tools/author_pitch_actuator.py).
+[`author_pitch_actuator.py`](../../../game/workshop/tools/author_pitch_actuator.py).
 
 Hardware is listed separately after the component tables. Do not add the FA-500 actuator assembly labels as extra parts: their contents are already counted here. Integral tabs, ledges, keys, bosses and locating tongues are features of their parent parts.
 

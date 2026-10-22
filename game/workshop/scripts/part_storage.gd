@@ -38,7 +38,12 @@ func setup() -> void:
 		if columns == 0:continue
 		var center = origin+(columns-1)*spacing*0.5
 		game.box(game,Vector3(center,0.92,-6.55),Vector3(columns*spacing,1.84,0.16),cabinet,true)
-		game.sign_text(game,"SMALL PARTS / POCKET STOCK" if drawers else "COMPONENTS / SHELF STOCK",Vector3(center,2.18,-6.20),25,Color("233940"),0.004)
+		# The header is carried by the cabinet instead of hovering in the aisle.
+		for offset in [-0.78,0.78]:
+			game.box(game,Vector3(center+offset,1.98,-6.50),Vector3(0.04,0.30,0.04),cabinet)
+			# Connector starts at the upright's front face instead of sharing its sides.
+			game.box(game,Vector3(center+offset,2.08,-6.47),Vector3(0.04,0.06,0.02),cabinet)
+		game.sign_panel(game,"SMALL PARTS / POCKET STOCK" if drawers else "COMPONENTS / SHELF STOCK",Vector3(center,2.10,-6.45),Vector2(2.25,0.26),50,0.002)
 		for i in range(group.size()):
 			var kind: String = group[i]
 			var bin = StaticBody3D.new()
@@ -59,24 +64,27 @@ func setup() -> void:
 			else:
 				var prop = game._mesh(game.type_sources[kind])
 				prop.name = "ShelfPart"
-				prop.position = Vector3(0,0.12,0)-prop.mesh.get_aabb().get_center()
+				var bounds = prop.mesh.get_aabb()
+				# Rest every display component on the shelf's top face.
+				prop.position = -bounds.get_center()
+				prop.position.y = -0.078-bounds.position.y
 				bin.add_child(prop)
 			if not drawers:game.box(bin,Vector3(0,-0.30,0.282),Vector3(spacing-0.05,0.40,0.018),front)
 			var icon = Sprite3D.new()
 			icon.name = "PartImage"
 			icon.texture = picture(kind)
 			icon.pixel_size = 0.00125
-			icon.position = Vector3(-spacing*0.29,0.085,0.292)
+			icon.position = Vector3(-spacing*0.29,0.085,0.303)
 			if not drawers:icon.position.y -= 0.4
 			icon.shaded = false
 			bin.add_child(icon)
 			var definition: Dictionary = game.model.definitions.parts[kind]
-			var id = game.sign_text(bin,definition.family,Vector3(0.15,0.20,0.295),28,Color("142b35"),0.0022)
+			var id = game.sign_text(bin,definition.family,Vector3(0.15,0.20,0.305),28,Color("142b35"),0.0022)
 			id.name = "PartID"
 			if not drawers:id.position.y -= 0.4
 			var name = definition.get("short_title",definition.title.split(" · ")[-1])
-			game.sign_text(bin,name,Vector3(0.15,0.10 if drawers else -0.30,0.295),15,Color("29434c"),0.0017)
-			game.bin_labels[kind] = game.sign_text(bin,"",Vector3(0.15,0.0 if drawers else -0.40,0.295),16,Color("29434c"),0.0018)
+			game.sign_text(bin,name,Vector3(0.15,0.10 if drawers else -0.30,0.305),15,Color("29434c"),0.0017)
+			game.bin_labels[kind] = game.sign_text(bin,"",Vector3(0.15,0.0 if drawers else -0.40,0.305),16,Color("29434c"),0.0018)
 	refresh()
 
 func refresh() -> void:

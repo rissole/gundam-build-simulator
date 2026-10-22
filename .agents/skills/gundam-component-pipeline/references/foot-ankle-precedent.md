@@ -13,8 +13,8 @@ filenames and revision IDs are examples, not templates for every body component.
 | Exploded/concept references | `design/legs/foot-and-ankle/images/README.md` indexes assembled, structural, and armor/sole/services sheets, exact prompts, superseded iterations and drawing mistakes. These were generated for review and are explicitly not user-approved. Written dimensions/counts govern. |
 | Separate 3D source | `models/foot-fa01/src/build.py`, `geometry.py`, `frame_parts.py`, `actuator_parts.py`, `finish_parts.py` generate physical instances, animation and exports. `output/parts-manifest.json` maps IDs and source metadata. `MODELING_NOTES.md` records dimensional refinements discovered during layout. |
 | Model validation/presentation | `verify_scene.py`, `verify_exports.py`, preview/inspection/film scripts and package audits distinguish scene inventory, export contents and visual presentation. Full construction/explosion film is an existing deliverable, not mandatory for every recipe edit. |
-| Playable selection | `design/game/foot-prototype-plan.md`, `GAME_DESIGN.md` and `game/heel-pad-demo/README.md` define the collection/manual loop, child preparation, parent mounting and incremental expansion. Start from a complete small playable branch. |
-| Recipe/scenario authoring | `game/heel-pad-demo/assets/assembly-definitions.json` supplies shared pad/parent definitions; `tools/author_pitch_actuator.py` generates the pitch overlay and scenario from source identities. Definitions describe types/slots/manuals; scenario data describes actual stock/build instances and starting locations. |
+| Playable selection | `design/game/foot-prototype-plan.md`, `GAME_DESIGN.md` and `game/workshop/README.md` define the collection/manual loop, child preparation, parent mounting and incremental expansion. Start from a complete small playable branch. |
+| Recipe/scenario authoring | `game/workshop/assets/assembly-definitions.json` supplies shared pad/parent definitions; `tools/author_pitch_actuator.py` generates the pitch overlay and scenario from source identities. Definitions describe types/slots/manuals; scenario data describes actual stock/build instances and starting locations. |
 | Runtime projection | `scripts/assembly_model.gd` owns gameplay state; `component_interaction.gd`/`workshop.gd` project geometry and input. `hud.gd`, `manual_diagram.gd` and `part_storage.gd` expose the same types and instructions. `tools/render_part_images.py` builds catalogue images. |
 | Implemented review | `.agents/skills/gundam-assembly-review/references/project-map.md` locates current commands, test runners and capture support. Historical pitch review outcomes are summarized in `design/game/pitch-interface-repair.md`; inspected images and input hashes are no longer kept in Git. |
 
@@ -34,7 +34,7 @@ The repaired pitch branch has its own interface revision:
 `design/game/pitch-interface-repair.md` and
 `models/foot-fa01/src/pitch_interfaces.py`. The selective exporter
 `export_pitch_revision.py` updates the relevant JSON manifest records, and
-`game/heel-pad-demo/tools/merge_pitch_meshes.py` merges the pitch pieces plus the
+`game/workshop/tools/merge_pitch_meshes.py` merges the pitch pieces plus the
 cradle/ring receiving frames into the game GLB while auditing unrelated geometry.
 Read the game README before using this path. It keeps one pre-iteration base
 snapshot; repeatedly merging against newly merged assets accumulates unused data.

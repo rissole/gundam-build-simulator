@@ -6,7 +6,7 @@ The [design documents](../../design/legs/foot-and-ankle.md) and [build order](..
 
 ## Deliverables
 
-The repository includes the editable Blender scene, final film and images, manifests, and audit records. The model GLBs and ZIP archives listed below are local generated deliverables excluded from Git; regenerate the model exports with the [build instructions](#reproduce-the-build). The playable game retains its own assembled GLB in [game/heel-pad-demo/assets](../../game/heel-pad-demo/assets/).
+The repository includes the editable Blender scene, final film and images, manifests, and audit records. The model GLBs and ZIP archives listed below are local generated deliverables excluded from Git; regenerate the model exports with the [build instructions](#reproduce-the-build). The playable game retains its own assembled GLB in [game/workshop/assets](../../game/workshop/assets/).
 
 | File | Use |
 | --- | --- |
@@ -49,7 +49,7 @@ and reused IDs fail before export.
 
 The gameplay asset merger compacts obsolete resources and verifies repeated merges
 are byte-identical. Its audit compares retained geometry, materials and transforms
-independently of GLB resource indices. See the [workshop source-update procedure](../../game/heel-pad-demo/README.md#data-model-and-project-structure)
+independently of GLB resource indices. See the [workshop source-update procedure](../../game/workshop/README.md#data-model-and-project-structure)
 for scoped exports, checks and current generated-artifact boundaries.
 
 ## Reproduce the build

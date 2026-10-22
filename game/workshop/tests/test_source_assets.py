@@ -1,6 +1,6 @@
 """Source identity, recipe order independence and compact scoped GLB regressions.
 
-Run: python3 -B -m unittest discover -s game/heel-pad-demo/tests -p test_source_assets.py
+Run: python3 -B -m unittest discover -s game/workshop/tests -p test_source_assets.py
 """
 import copy
 import importlib.util
@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / 'models/foot-fa01/src'))
 from source_identity import SourceRegistry
 from source_connections import pitch_pairs, pitch_instance_ids
 
-spec = importlib.util.spec_from_file_location('merge_pitch_meshes', ROOT / 'game/heel-pad-demo/tools/merge_pitch_meshes.py')
+spec = importlib.util.spec_from_file_location('merge_pitch_meshes', ROOT / 'game/workshop/tools/merge_pitch_meshes.py')
 merge_tool = importlib.util.module_from_spec(spec); spec.loader.exec_module(merge_tool)
 
 
@@ -75,9 +75,9 @@ class StableSourceTests(unittest.TestCase):
             return json.dumps(manifest) if path == manifest_path else read_text(path, *args, **kwargs)
         def write(path, text, *args, **kwargs): writes[path.name] = json.loads(text); return len(text)
         with patch.object(Path, 'read_text', read), patch.object(Path, 'write_text', write):
-            runpy.run_path(str(ROOT / 'game/heel-pad-demo/tools/author_pitch_actuator.py'))
+            runpy.run_path(str(ROOT / 'game/workshop/tools/author_pitch_actuator.py'))
         for name, authored in writes.items():
-            current = json.loads((ROOT / 'game/heel-pad-demo/assets' / name).read_text())
+            current = json.loads((ROOT / 'game/workshop/assets' / name).read_text())
             if name == 'pitch-workshop.json':
                 authored['parts'].sort(key=lambda p: p['instance_id']); current['parts'].sort(key=lambda p: p['instance_id'])
             self.assertEqual(authored, current)

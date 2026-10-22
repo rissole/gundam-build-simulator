@@ -35,7 +35,7 @@ def cases() -> dict[str, list[str]]:
 
 
 def fingerprints() -> dict[str, str]:
-    paths = [PROJECT / "project.godot", ROOT / "play-heel-pad.command"]
+    paths = [PROJECT / "project.godot", ROOT / "play.command"]
     for folder in [PROJECT / "scripts", PROJECT / "tests", PROJECT / "assets", PROJECT / "tools"]:
         paths.extend(p for p in folder.rglob("*") if p.suffix in {".gd", ".gdshader", ".json", ".glb", ".py", ".png"})
     return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
@@ -63,7 +63,7 @@ def main() -> int:
     print("REGRESSION_OUTPUT " + str(output), flush=True)
     for name in chosen:
         log = output / (name + ".log")
-        cmd = [str(ROOT / "play-heel-pad.command"), "--headless", "--fixed-fps", "60",
+        cmd = [str(ROOT / "play.command"), "--headless", "--fixed-fps", "60",
                "--log-file", str(output / (name + ".engine.log")), *available[name]]
         started = time.monotonic()
         timed_out = False

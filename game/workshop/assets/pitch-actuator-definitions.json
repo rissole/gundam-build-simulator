@@ -3324,7 +3324,7 @@
       "manual": [
         {
           "title": "Foot workshop",
-          "body": "Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Follow each branch to install and secure it on the foot.",
+          "body": "Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Use the foot bay controls to expose each side. Follow each branch to install and secure it before transferring the foot.",
           "view": "overview",
           "slots": [
             "heel_1",

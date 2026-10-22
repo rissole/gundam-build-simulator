@@ -380,13 +380,13 @@ func _make_pause() -> void:
 	col.add_child(grid)
 	grid.add_child(_control_group("Move & inspect",[
 		[["W","A","S","D"],"Walk"],[["~Mouse"],"Look around"],[["~Hold","Shift"],"Walk faster"],
-		[["~Hold","Ctrl"],"Crouch"],[["~Mouse wheel"],"Zoom in / out"]]))
+		[["Space"],"Jump"],[["~Hold","Ctrl"],"Crouch"],[["~Mouse wheel"],"Zoom in / out"]]))
 	grid.add_child(_control_group("Parts & pockets",[
-		[["E"],"Stock pocket / carry"],[["1","~–","0"],"Select pocket"],
+		[["E"],"Stock / carry / operate equipment"],[["1","~–","0"],"Select pocket"],
 		[["Q"],"Set down component"],[["B"],"Clear selected pocket"]]))
 	grid.add_child(_control_group("Build & rotate",[
-		[["LMB"],"Attach at the preview"],[["~Hold","R","~+ mouse"],"Rotate aimed-at station"],
-		[["R","~then","R"],"Reset station rotation"],[["Z"],"Undo in selected manual"]]))
+		[["LMB"],"Attach at the preview"],[["~Hold","R","~+ mouse"],"Rotate preparation station"],
+		[["R","~then","R"],"Reset preparation rotation"],[["Z"],"Undo in selected manual"]]))
 	grid.add_child(_control_group("Manual & menu",[
 		[["Tab","~/","M","~·","N"],"Manual · browse tree"],[["←","→"],"Previous / next page"],
 		[["Enter","~/","Backspace"],"Child / parent manual"],[["C","~/","V"],"Cycle / inspect manual"],[["Esc"],"Pause / resume"]]))

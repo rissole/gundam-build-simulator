@@ -2,6 +2,50 @@ extends "res://tests/demo_test.gd"
 ## Full source-backed actuator loop through desktop collection, targeting and placement.
 var installed_count: int = 0
 
+func housing_is_opaque() -> bool:
+	for visual in game.bodies.pitch.get_children():
+		if not visual is MeshInstance3D or visual.get_meta("slot_id","") != "FA-510__001":continue
+		if not visual.visible:return false
+		for surface in range(visual.mesh.get_surface_count()):
+			var material: Material = visual.get_active_material(surface)
+			if material is BaseMaterial3D and material.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:return false
+		return true
+	return false
+
+func fixture_pose(pose: String) -> bool:
+	if game.foot_fixture == null:return true
+	if game.foot_fixture.work_pose == pose and not game.foot_fixture.moving:return true
+	# Leave the supported workpiece's swept volume before operating its drive.
+	game.player.global_position = Vector3(-0.4,0.025,-1.8)
+	game.player.velocity = Vector3.ZERO
+	await frames(3)
+	var error: String = game.foot_fixture.request(pose)
+	if not error.is_empty():print("FIXTURE_POSE_DIAGNOSTIC ",pose," ",error)
+	expect(error.is_empty(),"Powered fixture accepts the "+pose+" work position")
+	if not error.is_empty():return false
+	for tick in range(600):
+		if not game.foot_fixture.moving:break
+		await frames(1)
+	expect(not game.foot_fixture.moving and game.foot_fixture.work_pose == pose,"Powered fixture reaches the "+pose+" work position")
+	return not game.foot_fixture.moving
+
+func aim(point: Vector3, distance: float = 1.35) -> void:
+	# The upright actuator is approached from its exposed outer side. This also
+	# supplies the parent-sequence regression with the supported workshop route.
+	if game.foot_fixture != null and game.held_build() == "pitch" and point.distance_to(game.mount_point("pitch","foot","pitch")) < 0.001:
+		await fixture_pose("upright")
+		point = game.mount_point("pitch","foot","pitch")
+		game.player.global_position = Vector3(point.x-distance,0.025,point.z)
+		game.player.velocity = Vector3.ZERO
+		var direction: Vector3 = point-game.camera.global_position
+		game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
+		game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
+		await frames(5)
+		game._update_target()
+		game._update_ghost()
+		return
+	await super.aim(point,distance)
+
 # Optional renderer-backed inspection; ordinary tests keep this a no-op.
 func review_checkpoint(_owner: String, _phase: String, _sid: String = "") -> void:
 	pass
@@ -60,6 +104,11 @@ func aim_parent_connection(owner: String, sid: String) -> void:
 func place_slot(owner: String, sid: String) -> bool:
 	var d: Dictionary = game.model.slot_definition(owner,sid)
 	var kind: String = d.accepts
+	if owner == "foot" and game.foot_fixture != null:
+		# Ring bolt heads face up in the normal position; the guided right-sole
+		# position presents them toward the ground-level outer working aisle.
+		var offset: Array = d.get("target_offset",[-1,0,0])
+		if not await fixture_pose("sole_right" if offset[1] > 0.0 else "upright"):return false
 	if game.model.find_item(kind,"pocket").is_empty():await collect_kind(kind)
 	else:select_kind(kind)
 	if not game.model.held_item().is_empty():
@@ -93,6 +142,8 @@ func place_slot(owner: String, sid: String) -> bool:
 		installed_count += 1
 		var occupant: String = game.model.assemblies[owner].slots[matched]
 		expect(game.model.items[occupant].kind == kind,"Placement preserves compatible type for "+matched)
+		if owner == "pitch" and matched == "FA-510__001":
+			expect(housing_is_opaque() and game.components.service_access("pitch"),"Fitted housing stays opaque while the open fixture permits motor and retainer fastening")
 		await review_checkpoint(owner,"installed",matched)
 	return ok
 
@@ -194,6 +245,8 @@ func run(workshop: Node) -> void:
 			var expected: Transform3D = game.bodies.pitch.global_transform*game.source["FA-510__001"].transform.affine_inverse()*game.source[source_id].transform
 			if not matches_source_geometry(visual,expected,source_id):geometry_correct = false
 		expect(geometry_correct,"Installed geometry matches source orientation after actuator page %d"%(page_index+1))
+		if page_index >= 6:
+			expect(housing_is_opaque(),"Housing retains its opaque material after actuator page %d"%(page_index+1))
 		if page_index == 0:
 			expect(game.model.assemblies.pitch.slots["FA-510__001"].is_empty(),"First manual page completes with no casing in the fixture")
 			await aim(game.stations.prep3.global_position)
@@ -277,12 +330,22 @@ func run(workshop: Node) -> void:
 			var source: String = game.model.slot_definition("foot",sid).pose_source
 			expect(matches_source_geometry(visual,game.components.slot_pose("foot",sid),source),"Swapped parent stock preserves receiving geometry: "+sid)
 	await aim(game.foot.global_position,2.5)
-	game._rotate_station(Vector2(75,55))
-	await frames(15)
+	if game.foot_fixture != null:
+		var before_rotation: Basis = game.foot.basis
+		game._rotate_station(Vector2(75,55))
+		expect(game.foot.basis.is_equal_approx(before_rotation),"Cursor rotation cannot freely turn the supported foot")
+		if not await fixture_pose("sole_left"):await conclude();return
+		expect(not game.foot.basis.is_equal_approx(before_rotation),"Powered equipment physically turns the mounted actuator with its foot")
+	else:
+		game._rotate_station(Vector2(75,55))
+		await frames(15)
 	var mounted_pose: Transform3D = game.foot.global_transform*Transform3D(Basis.IDENTITY,-game.FOOT_CENTER)*game.source["FA-510__001"].transform
 	expect(game.bodies.pitch.global_transform.is_equal_approx(mounted_pose),"Mounted actuator follows foot rotation after physics settles")
-	game.reset_station("foot")
-	await frames(15)
+	if game.foot_fixture != null:
+		if not await fixture_pose("upright"):await conclude();return
+	else:
+		game.reset_station("foot")
+		await frames(15)
 	await review_checkpoint("foot","mounted")
 	expect(not game.model.milestone("foot","complete"),"Pitch completion does not complete the untouched pad branches")
 	expect(game.model.items.values().filter(func(i):return i.location=="installed").size()==111,"109 pitch pieces plus the two pad roots installed exactly once")
@@ -299,6 +362,7 @@ func run(workshop: Node) -> void:
 		if not game.model.milestone("pitch","enclosed"):break
 		key(KEY_Z)
 	expect(not game.model.milestone("pitch","enclosed") and game.bodies.pitch.get_child(0).visible,"Undoing closure restores the hidden motor and internals")
+	expect(housing_is_opaque() and game.components.service_access("pitch"),"Undoing closure restores assisted end access with the housing still opaque")
 	expect(game.model.integrity_errors().is_empty(),"Final source ownership and dependencies remain valid")
 	await conclude()
 

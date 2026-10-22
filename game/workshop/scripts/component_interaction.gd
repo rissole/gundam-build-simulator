@@ -2,7 +2,6 @@ extends Node
 ## Desktop projection for arbitrary authored component slots and carrying profiles.
 var game: Node
 var held_body: WorkshopPart
-var service_material: StandardMaterial3D
 
 func _init(workshop: Node) -> void:
 	game = workshop
@@ -56,7 +55,7 @@ func candidates() -> Array[Dictionary]:
 			if not game.model.assembly_access_error(owner,sid).is_empty():continue
 			if not d.get("requires",[]).all(func(r):return not a.slots[r].is_empty()):continue
 			var point: Vector3 = slot_point(owner,sid)
-			if game.camera.global_position.distance_to(point) > 6.0:continue
+			if game.camera.global_position.distance_to(point) > game.SNAP_DISCOVERY_RANGE:continue
 			# Preserve feedback for a wrong variant; selection only affects ranking.
 			result.append({"type":"component","owner":owner,"sid":sid,"point":point,"radius":0.24,"compatible":d.accepts == selected})
 	return result
@@ -84,6 +83,8 @@ func receiving_bodies(owner: String, sid: String = "") -> Array:
 	return allowed
 
 func access() -> String:
+	var equipment_error: String = game.equipment_access_error(game.target.owner)
+	if not equipment_error.is_empty():return equipment_error
 	if game.camera.global_position.distance_to(game.target.point) > game.REACH:return "Move closer to this component."
 	var owner: String = game.target.owner
 	var policy_error: String = game.model.assembly_access_error(owner,game.target.sid)
@@ -183,16 +184,9 @@ func update_service_view() -> void:
 		var body: Node3D = game.assembly_node(id)
 		var d = definition(id)
 		var closed: bool = game.model.milestone(id,"enclosed")
-		var inspecting: bool = service_access(id)
+		# Assisted connection access does not change the fitted shell's appearance.
+		# Open ends and exterior lands remain usable while the housing is opaque.
 		for mesh in body.get_children():
 			if not mesh is MeshInstance3D or not mesh.has_meta("slot_id"):continue
 			var slot: Dictionary = d.slots[mesh.get_meta("slot_id")]
 			mesh.visible = not (closed and slot.get("enclosed",false))
-			if slot.pose_source != d.get("enclosure_source",""):continue
-			if inspecting:
-				if service_material == null:
-					service_material = game.material(Color(0.40,0.60,0.68,0.16))
-					service_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-					service_material.cull_mode = BaseMaterial3D.CULL_DISABLED
-				mesh.material_override = service_material
-			else:mesh.material_override = null

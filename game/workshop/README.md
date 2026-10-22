@@ -1,24 +1,26 @@
-# FA-01 pads and pitch-actuator workshop
+# Gundam Build Simulator — workshop prototype
 
 Godot 4.7.2 · GDScript · Jolt Physics · macOS desktop · Shared assembly model and nested manuals
 
 ![Heel-pad preparation with the illustrated manual, placement preview and compact inventory HUD](../../docs/images/heel-pad-demo.png)
 
-A first-person workshop using the existing full-size foot model. Prepare two independent heel pads and a complete **91-piece pitch actuator**, then install them on the foot. The actuator installation adds **18 mounting pieces**, for **135 playable source identities**. The other 610 source pieces remain preassembled context or staged armor. No source objects have been removed from the 745-piece inventory.
+*Earlier suspension-station view; the default foot now uses the supported bay described below.*
+
+A first-person robot construction game prototype using the existing full-size FA-01 foot model as its first playable construction area. Prepare two independent heel pads and a complete **91-piece pitch actuator**, then install them on the foot. The actuator installation adds **18 mounting pieces**, for **135 playable source identities**. The other 610 source pieces remain preassembled context or staged armor. No source objects have been removed from the 745-piece inventory.
 
 The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
 
 ## Launch
 
-Double-click [play-heel-pad.command](../../play-heel-pad.command) in Finder. The demo opens in **non-exclusive (borderless) fullscreen** by default. Click **Start building**. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
+Double-click [play.command](../../play.command) in Finder. The game opens in **non-exclusive (borderless) fullscreen** by default. Click **Start building**. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
 
-To inspect or edit the project, double-click [edit-heel-pad.command](../../edit-heel-pad.command), or open [project.godot](project.godot) in Godot 4.7.2.
+To inspect or edit the project, double-click [edit.command](../../edit.command), or open [project.godot](project.godot) in Godot 4.7.2.
 
 From a terminal at the repository root:
 
 ```sh
-./play-heel-pad.command
-./edit-heel-pad.command
+./play.command
+./edit.command
 ```
 
 The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tools/Godot-4.7.2/Godot.app/Contents/MacOS/Godot`. It also accepts `GODOT_BIN` and can find a `godot` command or `/Applications/Godot.app`. The official macOS download was checked against its published SHA-512 manifest before installation. The launcher imports assets automatically when the import cache is absent.
@@ -32,6 +34,8 @@ The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tool
 5. **N** opens the large manual browser: expand build folders, select a step, or use the clickable breadcrumbs to return to a parent. **Suggested only** filters builds and unfinished steps using the selected/carried component or the assembly you are looking at; turn it off to see every manual. **C** cycles matching build manuals while retaining each build's last page. N or Escape returns to play. **Enter** opens the linked child and **Backspace** returns to its parent. Arrows turn pages; **Page Up / Page Down** scroll longer instructions. Each page lists the same part IDs as the drawers and shelves, with names as clarification.
 6. Carry either FA-302 heel pad with E and click an empty preparation station. Stock FA-305, W-24 and H-24120 in separate pockets. Fit four FA-305 sleeves, seat the pad at either heel position, then fit W-24 before H-24120 at each connection.
 7. Pick up FA-513 from the floor beside preparation C and suspend it there to start the FA-500-P pitch build. Assemble the exposed drive using the fixture for support. Fit FA-510 after the rod, fasten the motor through the open rear and the retainer from outside, then add the guide, sensors, seals and caps. The foot manual then covers both FA-220 clevises, seating FA-500-P, and retaining both ends with FA-221, FA-222, W-12 and H-12030.
+8. Use **E on the foot bay controls** to select **Upright**, **Sole left** or **Sole right**. The mechanical cradle turns the supported foot gradually. Walk around it and use the ramp/platform to reach the exposed connections. R rotates the small preparation fixtures; the foot uses its equipment controls.
+9. After securing both pads and the pitch actuator, choose **Upright**, then **Transfer**. The rail carriage moves the foot to the handoff area. Use **Return** there before making or undoing connections. Clear people and loose components from the movement path; an obstruction stops the equipment until the path is clear. Opening the pause menu also pauses equipment movement.
 
 **Undo follows the selected manual.** Mounted children must be detached through the parent history before editing their internals. A detached child returns intact to a free preparation station. Small undone parts return to their matching or an empty pocket; if no suitable pocket has space, they return to their drawer. Undo never replaces another stack. Larger undone components appear on the output tray.
 
@@ -40,8 +44,8 @@ The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tool
 The earlier scenarios remain available:
 
 ```sh
-./play-heel-pad.command -- --single-pad
-./play-heel-pad.command -- --pads-only
+./play.command -- --single-pad
+./play.command -- --pads-only
 ```
 
 ## Controls
@@ -50,14 +54,15 @@ The earlier scenarios remain available:
 | --- | --- |
 | WASD / mouse | Move / look |
 | Shift while moving | Move faster |
+| Space | Jump from the floor or platform; release before jumping again |
 | Hold Ctrl | Crouch for a lower inspection view; release to stand when there is headroom |
-| E | Stock/refill a pocket from a drawer, or carry a shelf component/assembly |
+| E | Stock/refill a pocket, carry a component/assembly, or operate a bay control |
 | 1 2 3 4 5 6 7 8 9 0 | Select one of the ten pockets |
 | Left click | Attach the selected small part, or place the carried component/assembly |
 | Q | Set down the carried component or assembly |
 | B | Clear the selected pocket anywhere; its stack returns to storage |
-| Hold R + move mouse | Rotate the station you are looking at |
-| Double-tap R | Restore that station's working orientation (F remains an alternate binding) |
+| Hold R + move mouse | Rotate the preparation station you are looking at |
+| Double-tap R | Restore that preparation station's working orientation (F remains an alternate binding) |
 | Mouse wheel | Inspect zoom |
 | Tab or M | Open/close HUD manual |
 | N | Open/close the large manual tree browser; Escape also closes it |
@@ -75,8 +80,8 @@ Each of the ten pockets holds one small-part type, with up to 20 copies per stac
 
 - Real source geometry and metre scale: 745 source meshes, with exactly 135 identities removed from the preassembled context and used in the playable inventory.
 - Firm two-handed carrying. A collision-aware kinematic grip follows the camera without a spring or angular momentum. Translation is swept against scenery and turning checks intermediate orientations. Dropping restores normal rigid-body physics. Placement still checks the swept approach and destination against scenery and loose obstacles.
-- Stable suspended assemblies with free station rotation and double-tap R to reset. Holding R locks rotation to the station you began inspecting; the controls remain available in the pause menu without a persistent rotation banner.
-- Reachable, usable objects under the crosshair get a thin contour. Compact world prompts follow the object and use keyboard keycaps; obstacles hide both. With no part selected, unfinished builds keep one whole-assembly pickup prompt. With a selected part, nearby connections take priority; E still picks up their containing assembly. A valid green attachment preview stands on its own, while blocked or incompatible actions retain explanatory feedback.
+- Small preparation stations retain free rotation and double-tap R to reset. The default foot uses a mechanically supported cradle, controlled work positions, an access platform/ramp and a rail carriage to the handoff area. Rotation and transfer controls face inward from the platform's parallel outer railing. Equipment movement preserves mounted child poses and physical identities; parent construction and undo wait until it is stationary in the assembly bay.
+- Reachable, usable objects under the crosshair get a thin contour. Compact world prompts follow the object and use keyboard keycaps; obstacles hide both. With no part selected, unfinished builds keep one whole-assembly pickup prompt. With a selected part, nearby connections take priority; E still picks up their containing assembly. A compatible, ready connection within 6 m shows a yellow destination preview when beyond reach, with “Move closer to attach”; within reach it becomes green. Scenery, missing prerequisites and moving equipment suppress distant guidance. A valid green attachment preview stands on its own, while blocked or incompatible actions retain explanatory feedback.
 - Translucent in-game manual, notification and inventory panels; opaque pause/help and manual-browser windows with the workshop visible around them. The compact ten-pocket bar uses square cards with readable IDs, functional variants and counts. Hand and two-hand components are centered by their geometry, with size-aware forward clearance and solid collision.
 - Hold-to-crouch movement with a lower camera/collision capsule and an overhead clearance check before standing.
 - Ten persistent pockets with baked part images, IDs and per-stack counts. The separate hands summary appears only while carrying and replaces pickup popups; selected pocket information stays in the action bar. The grouped Escape menu offers keyboard focus and clear resume/restart actions.
@@ -88,7 +93,7 @@ Each of the ten pockets holds one small-part type, with up to 20 copies per stac
 - A shared, input-independent assembly model for slot prerequisites, compatible types/variants, milestones, unique ownership, and undo. Two pad instances use one authored definition; their parent owns the seating and fastening slots.
 - Independent mounting-point order, a ghost preview, reach/occlusion checks, and explicit failure feedback.
 - A filesystem-style manual browser with expandable build folders, step progress and clickable breadcrumbs. It pauses play, reuses the existing diagram viewports and preserves each selected page.
-- Authored diagrams retain their meshes when only installation progress changes. Once both caps are secured, the opaque actuator hides explicitly enclosed components; undo restores them. Exterior fittings remain visible, including the radial retainer screws. Ordinary gameplay is capped at 60 FPS.
+- Authored diagrams retain their meshes when only installation progress changes. The actuator housing stays opaque throughout construction; the remaining motor fastening uses the open rear, and retainer fastening uses exterior lands. Once both caps are secured, the actuator hides explicitly enclosed components; undo restores them without making the housing translucent. Exterior fittings remain visible, including the radial retainer screws. Ordinary gameplay is capped at 60 FPS.
 - A parent foot manual and three independent child manual sessions, with authored steps, remembered pages, model-based illustrations, automatic progress, and completion sound/glow.
 - Manual-scoped build undo: small hardware returns to pockets or its drawer; undoing a mounting action returns the prepared child to an empty station. Walking, carrying, and storage arrangement are not rewound.
 
@@ -97,7 +102,7 @@ Each of the ten pockets holds one small-part type, with up to 20 copies per stac
 Run the headless regression set from the repository root:
 
 ```sh
-python3 game/heel-pad-demo/tools/run_regressions.py
+python3 game/workshop/tools/run_regressions.py
 ```
 
 The runner discovers standalone test scripts and also executes the single-pad,
@@ -128,30 +133,74 @@ and inspection of the affected scope.
 - [Original interaction regression](tests/demo_test.gd): the single-pad interaction suite, including movement, firm carrying, reach/occlusion, crouch, station rotation, fullscreen, and restart cancellation.
 - [Interaction feedback](tests/interaction_feedback_test.gd): reachable outlines, world prompt anchoring, obstruction/pause handling, green-preview feedback and compact HUD layout.
 - [Centered carrying](tests/centered_carry_test.gd): off-origin geometry, continuous camera rotation, large components and real wall obstruction.
+- [Supported foot fixture](tests/supported_fixture_test.gd): actual equipment controls, work access, obstruction and pause behavior, mounted children during movement, secured transfer and return. Headless results verify behavior; the new layout and handling still need human playtesting.
+- [Workshop geometry audit](tests/workshop_geometry_test.gd): compares actual transformed triangles across all visible generated workshop meshes at 13 rotation angles and four transfer positions. Positive-area, same-facing overlaps within 0.25 mm fail with node paths, triangles, normals and overlap measurements. Edge contact and patches fully buried in another opaque box are allowed. A deliberately injected harness defect proves new geometry is collected and rejected automatically. This catches coplanar surface flicker; it does not prove the absence of arbitrary solid intersections, shader/shadow artifacts, duplicate faces inside one mesh or defects in imported robot parts.
+- [Geometry audit regression](tests/geometry_surface_audit_test.gd): known harness failure, near-coplanar faces, valid contacts, transformed meshes, indexed/unindexed triangles and conservative occlusion checks.
+- [Jumping](tests/jump_test.gd): grounded Space takeoff, platform landing, no double jump or held-key repeat, ceiling collisions, pause/browser input and carrying through takeoff and landing.
 - [Two-build interaction audit](tests/multi_build_test.gd): 65 checks through the public controls and real targeting/physics, including shared stock, manual navigation, station exchange, swapped heel positions, completed installations, nested undo, and continuous R-drag between physics ticks. Rotation checks compare body, mesh and physics poses for both mounted pads.
 - Earlier pad captures showed independent builds and completed pads. Those images
   are no longer kept in Git; rerun the affected review when visual evidence is
   needed.
 
 ```sh
-./play-heel-pad.command --headless --script tests/state_test.gd
-./play-heel-pad.command --headless --script tests/assembly_model_test.gd
-./play-heel-pad.command --headless --script tests/pitch_model_test.gd
-./play-heel-pad.command --headless --script tests/part_variants_test.gd
-./play-heel-pad.command --headless --script tests/pitch_interface_test.gd
-./play-heel-pad.command --headless --script tests/pockets_model_test.gd
-./play-heel-pad.command --headless --script tests/manual_navigation_test.gd
-./play-heel-pad.command --headless --script tests/manual_diagram_cache_test.gd
-./play-heel-pad.command --headless -- --single-pad --demo-test
-./play-heel-pad.command --headless -- --multi-test
-./play-heel-pad.command --headless -- --pitch-test
-./play-heel-pad.command --headless --fixed-fps 60 -- --pitch-test --swap-identical-parts
-./play-heel-pad.command --headless -- --pockets-test
+./play.command --headless --script tests/state_test.gd
+./play.command --headless --script tests/assembly_model_test.gd
+./play.command --headless --script tests/pitch_model_test.gd
+./play.command --headless --script tests/part_variants_test.gd
+./play.command --headless --script tests/pitch_interface_test.gd
+./play.command --headless --script tests/pockets_model_test.gd
+./play.command --headless --script tests/manual_navigation_test.gd
+./play.command --headless --script tests/manual_diagram_cache_test.gd
+./play.command --headless --script tests/supported_fixture_test.gd
+./play.command --headless -- --single-pad --demo-test
+./play.command --headless -- --multi-test
+./play.command --headless -- --pitch-test
+./play.command --headless --fixed-fps 60 -- --pitch-test --swap-identical-parts
+./play.command --headless -- --pockets-test
 ```
 
 These commands run headlessly. The scenario tests exercise the desktop input adapter and actual physics/targeting without opening a window. Test input is isolated from live desktop events. The pitch test can also use `--fixed-fps 60` to advance simulated time faster. `--swap-identical-parts` supplies the second copy first through normal collection and checks the installed receiving geometry. Headless runs skip audio playback. Rendered verification is a separate, explicitly requested check. Automated checks verify functionality; human play remains the test of pacing and comfort.
 
-For a focused rendered storage/pocket-label review, run `./play-heel-pad.command --disable-render-loop --fixed-fps 60 -- --pockets-test --pockets-review`. It prints a unique `LABEL_REVIEW_OUTPUT` directory containing the shared retaining-ring stack and both collar/gasket variants beside their storage labels and manual. The flag rejects the headless dummy renderer.
+For a repeatable empty-handed mouse-look measurement, keep the game in front
+until this 20-second run closes:
+
+```sh
+./play.command --script tools/benchmark_mouse_look.gd -- --seconds=2 --input-events=8
+```
+
+It compares standing still with circular camera movement at arrival and beside
+the foot, while timing input, targeting, ghosts and markers separately. Each
+sample records frame time, actual draws, focus and render workload in a unique
+`verification/mouse-look-*/audit.json`. The run rejects blocked camera input or
+skipped rendering, including macOS stopping draws after an alt-tab. Headless runs
+measure CPU work only. Synthetic events exercise Godot's viewport input pipeline;
+they do not measure physical mouse sampling or input-to-display latency. Do not
+use `--fixed-fps` for performance measurements. `--force-draw` is a separate
+render-throughput diagnostic and does not establish normal presentation pacing.
+
+For an explicitly requested workshop environment review, capture repeatable player
+views with the actual renderer:
+
+```sh
+./play.command --windowed --resolution 1440x900 --disable-render-loop \
+  --fixed-fps 60 --script tests/workshop_visual_review.gd -- --review-tag=survey
+```
+
+This writes 14 views of the ramp, platform, signs, storage, carrier joints and
+guided rotation into a unique `verification/workshop-*` directory. The manifest
+records camera poses, source hashes and image hashes. Inspect these images before
+recording visual approval; this environment survey does not replace an assembly
+manual review or a performance measurement.
+
+Append `--review-harness` after `--review-tag=survey` for nine focused lower
+carrier views, including five small camera offsets across a runner/wheel joint.
+To run just the headless geometry checks:
+
+```sh
+python3 game/workshop/tools/run_regressions.py --only geometry_surface_audit_test workshop_geometry_test
+```
+
+For a focused rendered storage/pocket-label review, run `./play.command --disable-render-loop --fixed-fps 60 -- --pockets-test --pockets-review`. It prints a unique `LABEL_REVIEW_OUTPUT` directory containing the shared retaining-ring stack and both collar/gasket variants beside their storage labels and manual. The flag rejects the headless dummy renderer.
 
 The repaired actuator passed a 2026-10-21 visual review of all 14 child pages
 and three parent installation pages, including every placement, both receiving
@@ -184,8 +233,8 @@ results do not establish current visual approval or whole-robot performance.
 Reproduce the actuator captures using the real renderer, then generate the review gallery (Pillow required):
 
 ```sh
-./play-heel-pad.command --disable-render-loop --fixed-fps 60 -- --pitch-test --pitch-review
-python3 game/heel-pad-demo/tools/build_pitch_review_gallery.py --input /path/printed/as/REVIEW_OUTPUT
+./play.command --disable-render-loop --fixed-fps 60 -- --pitch-test --pitch-review
+python3 game/workshop/tools/build_pitch_review_gallery.py --input /path/printed/as/REVIEW_OUTPUT
 ```
 
 This opens a window and captures before/preview/after placements, opaque/service/exposed inspection angles, HUD pages and continuous rotation. `--headless` is rejected for this mode. Each run prints a unique `REVIEW_OUTPUT` directory under `verification/`; supply that path to the gallery command. Keep its hashes, page decisions and inspected images together locally for comparison until review is complete.
@@ -194,7 +243,7 @@ For a focused repair, append `--review-pages=pitch-04,foot-06` to the capture co
 
 ## Scope and current limits
 
-This milestone delivers increments 1–3 of the multiple-build plan. Save/resume is the next increment; full-foot progression, lifts, AR input, and remaining robot assemblies are future work. Progress currently lasts for the session only.
+This milestone delivers increments 1–3 of the multiple-build plan and a supported-foot handling prototype. Save/resume, full-foot progression, final robot hoists/elevators, AR input and remaining robot assemblies are future work. The rail handoff area is a transport prototype; it does not yet assemble a leg or final robot. Progress currently lasts for the session only.
 
 The reusable construction model owns prerequisites, inventory, carrying capacity, milestones and undo. `component_interaction.gd` projects arbitrary authored component slots into desktop collection, grip, placement, and service views. Pad connections retain their established four-opening adapter. The generic model supports the new content without requiring pad-shaped rules.
 
@@ -205,7 +254,8 @@ The room is a functional workshop blockout. Its layout, lighting, carrying dista
 ## Data model and project structure
 
 - [workshop.gd](scripts/workshop.gd): room, imported geometry, player, targeting, carrying, station interaction, and completion presentation.
-- [part_storage.gd](scripts/part_storage.gd): low cabinets, shelves, cached catalogue images and stock labels. Images are generated from the source GLB by `python3 game/heel-pad-demo/tools/render_part_images.py` (Pillow required only for regeneration).
+- [supported_fixture.gd](scripts/supported_fixture.gd): foot support, guided working poses, platform, rail transfer and movement clearance.
+- [part_storage.gd](scripts/part_storage.gd): low cabinets, shelves, cached catalogue images and stock labels. Images are generated from the source GLB by `python3 game/workshop/tools/render_part_images.py` (Pillow required only for regeneration).
 - [component_interaction.gd](scripts/component_interaction.gd): authored component targeting, shelf-piece carrying, incremental installed visuals, and service views.
 - [assembly_model.gd](scripts/assembly_model.gd): reusable ownership, transfer, placement validation, milestones, and scoped history.
 - [assembly_runtime.gd](scripts/assembly_runtime.gd): scene nodes and coordinate frames keyed by assembly identity, parent-slot mounting, descendant visuals and nested previews.
@@ -217,7 +267,7 @@ The room is a functional workshop blockout. Its layout, lighting, carrying dista
 - [interaction_outline.gd](scripts/interaction_outline.gd): depth-tested focus contours without changing source materials or assembly ownership.
 - [assembly-definitions.json](assets/assembly-definitions.json): part types, child and parent slots, prerequisites, milestone sets, work locations, geometry references, and manual steps.
 - [heel-pads.json](assets/heel-pads.json): 26 source identities, physical build instances, starting positions, and parent destinations.
-- [pitch-workshop.json](assets/pitch-workshop.json) and [pitch-actuator-definitions.json](assets/pitch-actuator-definitions.json): 135-piece scenario and the actuator/parent recipe overlay. Regenerate with `python3 game/heel-pad-demo/tools/author_pitch_actuator.py`; the authoring script resolves the exact pitch block in the source manifest and explicitly authors prerequisites separately from animation phases.
+- [pitch-workshop.json](assets/pitch-workshop.json) and [pitch-actuator-definitions.json](assets/pitch-actuator-definitions.json): 135-piece scenario and the actuator/parent recipe overlay. Regenerate with `python3 game/workshop/tools/author_pitch_actuator.py`; the authoring script resolves the exact pitch block in the source manifest and explicitly authors prerequisites separately from animation phases.
 - [heel-pad.json](assets/heel-pad.json): original 13-piece regression scenario metadata.
 - [Original model package](../../models/foot-fa01/README.md), [game design](../../GAME_DESIGN.md), and [prototype plan](../../design/game/foot-prototype-plan.md).
 
@@ -263,9 +313,9 @@ authoritative source before merging (substitute your Blender executable):
 
 ```sh
 blender --background --factory-startup --python-exit-code 1 --python models/foot-fa01/src/export_pitch_revision.py
-python3 game/heel-pad-demo/tools/merge_pitch_meshes.py
-python3 game/heel-pad-demo/tools/author_pitch_actuator.py
-python3 game/heel-pad-demo/tools/render_part_images.py
+python3 game/workshop/tools/merge_pitch_meshes.py
+python3 game/workshop/tools/author_pitch_actuator.py
+python3 game/workshop/tools/render_part_images.py
 ```
 
 The merger removes unreferenced mesh, material, accessor and buffer records.
@@ -283,7 +333,7 @@ The exporter retains all 745 inventory identities and updates the selected recor
 Check identity stability and asset compaction independently of gameplay:
 
 ```sh
-python3 -B -m unittest discover -s game/heel-pad-demo/tests -p 'test_source_assets.py'
+python3 -B -m unittest discover -s game/workshop/tests -p 'test_source_assets.py'
 blender --background --factory-startup --python-exit-code 1 --python models/foot-fa01/src/verify_source_identity.py
 ```
 

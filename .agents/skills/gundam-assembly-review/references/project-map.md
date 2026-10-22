@@ -21,7 +21,7 @@ or page inventory.
 
 ## Authoring and runtime
 
-The current desktop project is `game/heel-pad-demo/`:
+The current desktop project is `game/workshop/`:
 
 | Path within project | Responsibility |
 | --- | --- |
@@ -49,13 +49,13 @@ slot occupant's UID identifies the consumed inventory piece.
 Run from the repository root, choosing the suites affected by the change:
 
 ```sh
-./play-heel-pad.command --headless --script tests/assembly_model_test.gd
-./play-heel-pad.command --headless --script tests/pitch_model_test.gd
-./play-heel-pad.command --headless --script tests/pitch_interface_test.gd
-./play-heel-pad.command --headless --fixed-fps 60 -- --pitch-test
-./play-heel-pad.command --headless --fixed-fps 60 -- --multi-test
-./play-heel-pad.command --headless --fixed-fps 60 -- --single-pad --demo-test
-./play-heel-pad.command --headless --fixed-fps 60 -- --pockets-test
+./play.command --headless --script tests/assembly_model_test.gd
+./play.command --headless --script tests/pitch_model_test.gd
+./play.command --headless --script tests/pitch_interface_test.gd
+./play.command --headless --fixed-fps 60 -- --pitch-test
+./play.command --headless --fixed-fps 60 -- --multi-test
+./play.command --headless --fixed-fps 60 -- --single-pad --demo-test
+./play.command --headless --fixed-fps 60 -- --pockets-test
 ```
 
 The README also lists the state and pocket-model suites. Input tests drive the
@@ -72,8 +72,8 @@ visual inspection or establish complete collision-free assembly paths.
 checkpoints with real-renderer captures. From the repository root:
 
 ```sh
-./play-heel-pad.command --disable-render-loop --fixed-fps 60 -- --pitch-test --pitch-review
-python3 game/heel-pad-demo/tools/build_pitch_review_gallery.py --input /path/printed/as/REVIEW_OUTPUT
+./play.command --disable-render-loop --fixed-fps 60 -- --pitch-test --pitch-review
+python3 game/workshop/tools/build_pitch_review_gallery.py --input /path/printed/as/REVIEW_OUTPUT
 ```
 
 Use both flags. Add `--review-pages=pitch-04,foot-06` after `--pitch-review` to
@@ -102,7 +102,7 @@ runner for all default-workshop/pad pages remains to be implemented. Inspect
 current support before invoking any command; no `--review-manuals` flag exists.
 
 Keep generated project evidence under the ignored local
-`game/heel-pad-demo/verification/` directory or the new module's equivalent.
+`game/workshop/verification/` directory or the new module's equivalent.
 Examples produced by the current checks include `pitch-build-audit.json` and
 `multi-build-audit.json`. Inspect the run's scope, date and hashes; historical
 passing results do not approve new actuator or module content.
