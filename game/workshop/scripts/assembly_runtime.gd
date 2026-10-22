@@ -62,12 +62,16 @@ func descendants(owner: String, include_self: bool = true) -> Array[String]:
 	return result
 
 func mount(parent: String, sid: String, child: String) -> void:
-	var body: RigidBody3D = node(child)
-	body.set("held",false)
-	body.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
-	body.freeze = true
-	body.linear_velocity = Vector3.ZERO
-	body.angular_velocity = Vector3.ZERO
+	var body: Node3D = node(child)
+	if body is RigidBody3D:
+		for property in body.get_property_list():
+			if property.name == "held":body.set("held",false);break
+		body.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+		body.freeze = true
+		body.linear_velocity = Vector3.ZERO
+		body.angular_velocity = Vector3.ZERO
+	elif body is AnimatableBody3D:
+		body.sync_to_physics = false
 	var destination = mount_pose(parent,sid,child)
 	body.reparent(node(parent))
 	body.global_transform = destination

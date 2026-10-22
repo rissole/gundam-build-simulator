@@ -13,6 +13,10 @@ func _init(workshop: Node) -> void:
 func picture(kind: String) -> Texture2D:
 	if kind.is_empty():return null
 	if not images.has(kind):
+		var authored: String = game.model.definitions.parts[kind].get("catalogue_image","")
+		if not authored.is_empty():
+			images[kind] = load(authored)
+			return images[kind]
 		var path = "res://assets/part-images/"+kind+".png"
 		var pixels = Image.load_from_file(path)
 		assert(pixels != null,"Missing part catalogue image: "+kind)
@@ -30,25 +34,41 @@ func setup() -> void:
 	var front = game.material(Color("e0e6dd"))
 	var trim = game.material(Color("83bba6"),0.2)
 	# Two rows at waist/chest height; the back wall provides a continuous aisle.
-	for group in [drawer_kinds,shelf_kinds]:
-		var drawers: bool = group == drawer_kinds
+	var groups: Array[Dictionary] = []
+	for zone in (["foot","leg","pelvis"] if game.get("leg_workshop") == true else ["foot"]):
+		for drawers in [true,false]:
+			var kinds: Array[String] = []
+			for kind in (drawer_kinds if drawers else shelf_kinds):
+				var part_zone = "leg" if kind.begins_with("lg-") else "pelvis" if kind.begins_with("pv-") else "foot"
+				if part_zone == zone:kinds.append(kind)
+			if not kinds.is_empty():groups.append({"kinds":kinds,"drawers":drawers,"zone":zone})
+	for entry in groups:
+		var group: Array[String] = entry.kinds
+		var drawers: bool = entry.drawers
 		var columns = ceili(group.size()/2.0)
 		var origin = -9.6 if drawers else 1.0
+		var depth = -6.55
+		if entry.zone == "leg":
+			origin = -10.0 if drawers else -5.5
+			depth = 10.2
+		elif entry.zone == "pelvis":
+			origin = 17.7 if drawers else 21.0
+			depth = 30.5
 		var spacing = 0.80 if drawers else 1.04
 		if columns == 0:continue
 		var center = origin+(columns-1)*spacing*0.5
-		game.box(game,Vector3(center,0.92,-6.55),Vector3(columns*spacing,1.84,0.16),cabinet,true)
+		game.box(game,Vector3(center,0.92,depth),Vector3(columns*spacing,1.84,0.16),cabinet,true)
 		# The header is carried by the cabinet instead of hovering in the aisle.
 		for offset in [-0.78,0.78]:
-			game.box(game,Vector3(center+offset,1.98,-6.50),Vector3(0.04,0.30,0.04),cabinet)
+			game.box(game,Vector3(center+offset,1.98,depth+0.05),Vector3(0.04,0.30,0.04),cabinet)
 			# Connector starts at the upright's front face instead of sharing its sides.
-			game.box(game,Vector3(center+offset,2.08,-6.47),Vector3(0.04,0.06,0.02),cabinet)
-		game.sign_panel(game,"SMALL PARTS / POCKET STOCK" if drawers else "COMPONENTS / SHELF STOCK",Vector3(center,2.10,-6.45),Vector2(2.25,0.26),50,0.002)
+			game.box(game,Vector3(center+offset,2.08,depth+0.08),Vector3(0.04,0.06,0.02),cabinet)
+		game.sign_panel(game,"SMALL PARTS / POCKET STOCK" if drawers else "COMPONENTS / SHELF STOCK",Vector3(center,2.10,depth+0.10),Vector2(2.25,0.26),50,0.002)
 		for i in range(group.size()):
 			var kind: String = group[i]
 			var bin = StaticBody3D.new()
 			bin.name = "Drawer_"+kind if drawers else "Shelf_"+kind
-			bin.position = Vector3(origin+(i%columns)*spacing,0.82+floorf(i/float(columns))*0.70,-6.15)
+			bin.position = Vector3(origin+(i%columns)*spacing,0.82+floorf(i/float(columns))*0.70,depth+0.40)
 			bin.set_meta("bin_kind",kind)
 			bin.set_meta("drawer",drawers)
 			game.add_child(bin)

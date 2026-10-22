@@ -1,0 +1,3274 @@
+{
+  "version": 1,
+  "parts": {
+    "lg-shin": {
+      "family": "LG-100",
+      "variant": "structural",
+      "title": "LG-100 · Structural shin",
+      "short_title": "Structural shin",
+      "carry_class": "equipment",
+      "collision_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            0.54,
+            0.03,
+            0.44
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            1.6375,
+            0
+          ],
+          "size": [
+            0.3,
+            3.245,
+            0.2
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.32,
+            0
+          ],
+          "size": [
+            0.3,
+            0.35,
+            0.2
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.9185588960302424,
+            0.0
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            0.0,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.9023026930280467,
+            0.08172545134495247
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            22.5,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.8560089435656972,
+            0.1510089435656972
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            45.0,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.7867254513449526,
+            0.19730269302804676
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            67.5,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.705,
+            0.2135588960302423
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            90.0,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.6232745486550475,
+            0.19730269302804676
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            112.5,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.553991056434303,
+            0.15100894356569722
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            135.0,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.5076973069719535,
+            0.0817254513449525
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            157.5,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.4914411039697577,
+            2.6153421845287863e-17
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            180.0,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.5076973069719535,
+            -0.08172545134495245
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            202.5,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.553991056434303,
+            -0.1510089435656972
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            225.0,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.6232745486550475,
+            -0.1973026930280467
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            247.49999999999997,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.705,
+            -0.2135588960302423
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            270.0,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.7867254513449526,
+            -0.19730269302804673
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            292.5,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.8560089435656972,
+            -0.15100894356569725
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            315.0,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            3.9023026930280467,
+            -0.0817254513449526
+          ],
+          "size": [
+            0.56,
+            0.13288220793951547,
+            0.10925058032903183
+          ],
+          "rotation_degrees": [
+            337.5,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "sphere",
+          "radius": 0.03,
+          "position": [
+            0.2646439877359821,
+            0.03428797547196405,
+            -0.10915249233498882
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.01,
+          "height": 0.14957943474185967,
+          "position": [
+            0.20482199386799105,
+            0.049643987735982,
+            -0.05957624616749441
+          ],
+          "rotation_degrees": [
+            51.88862933457483,
+            0,
+            67.41718413610926
+          ]
+        }
+      ],
+      "catalogue_image": "res://assets/part-images/lg-shin.svg"
+    },
+    "lg-knee-fork": {
+      "family": "LG-110",
+      "variant": "structural",
+      "title": "LG-110 · Detachable knee fork",
+      "short_title": "Detachable knee fork",
+      "carry_class": "equipment",
+      "catalogue_image": "res://assets/part-images/lg-knee-fork.svg"
+    },
+    "lg-thigh-spar": {
+      "family": "LG-120",
+      "variant": "structural",
+      "title": "LG-120 · Thigh spar with integral hip ball",
+      "short_title": "Thigh spar with integral hip ball",
+      "carry_class": "equipment",
+      "collision_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            0.68,
+            0.04,
+            0.6
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            1.27,
+            0
+          ],
+          "size": [
+            0.3,
+            2.5,
+            0.2
+          ]
+        },
+        {
+          "type": "capsule",
+          "position": [
+            0,
+            2.62,
+            0
+          ],
+          "radius": 0.15,
+          "height": 0.45
+        },
+        {
+          "type": "sphere",
+          "position": [
+            0,
+            3.26,
+            0
+          ],
+          "radius": 0.45
+        }
+      ],
+      "catalogue_image": "res://assets/part-images/lg-thigh-spar.svg"
+    },
+    "lg-knee-bearing": {
+      "family": "LG-130",
+      "variant": "structural",
+      "title": "LG-130 · Knee journal bearing",
+      "short_title": "Knee journal bearing",
+      "carry_class": "hand",
+      "catalogue_image": "res://assets/part-images/lg-knee-bearing.svg"
+    },
+    "lg-knee-thrust": {
+      "family": "LG-135",
+      "variant": "structural",
+      "title": "LG-135 · Knee thrust spacer",
+      "short_title": "Knee thrust spacer",
+      "carry_class": "hand",
+      "catalogue_image": "res://assets/part-images/lg-knee-thrust.svg"
+    },
+    "lg-knee-axle": {
+      "family": "LG-140",
+      "variant": "structural",
+      "title": "LG-140 · Shouldered knee axle",
+      "short_title": "Shouldered knee axle",
+      "carry_class": "two_hand",
+      "catalogue_image": "res://assets/part-images/lg-knee-axle.svg"
+    },
+    "lg-knee-cap": {
+      "family": "LG-150",
+      "variant": "structural",
+      "title": "LG-150 · Knee axle retaining cap",
+      "short_title": "Knee axle retaining cap",
+      "carry_class": "hand",
+      "catalogue_image": "res://assets/part-images/lg-knee-cap.svg"
+    },
+    "lg-m24-100": {
+      "family": "LG-H24100",
+      "variant": "M24x100",
+      "title": "LG-H24100 · M24 × 100 fork bolt",
+      "short_title": "M24 × 100 fork bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/lg-m24-100.svg"
+    },
+    "lg-m12-50": {
+      "family": "LG-H12050",
+      "variant": "M12x50",
+      "title": "LG-H12050 · M12 × 50 axle-cap screw",
+      "short_title": "M12 × 50 axle-cap screw",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/lg-m12-50.svg"
+    },
+    "lg-w24": {
+      "family": "LG-W24",
+      "variant": "M24",
+      "title": "LG-W24 · M24 washer",
+      "short_title": "M24 washer",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/lg-w24.svg"
+    },
+    "lg-w12": {
+      "family": "LG-W12",
+      "variant": "M12",
+      "title": "LG-W12 · M12 washer",
+      "short_title": "M12 washer",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/lg-w12.svg"
+    },
+    "pv-ring-half": {
+      "family": "PV-120",
+      "variant": "semicircular",
+      "title": "PV-120 · Hip retaining ring half",
+      "short_title": "Hip retaining ring half",
+      "carry_class": "equipment",
+      "catalogue_image": "res://assets/part-images/pv-ring-half.svg"
+    },
+    "pv-m24-140": {
+      "family": "PV-H24140",
+      "variant": "M24x140",
+      "title": "PV-H24140 · M24 × 140 ring bolt",
+      "short_title": "M24 × 140 ring bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/pv-m24-140.svg"
+    },
+    "lg-m36-90": {
+      "family": "H-36090",
+      "variant": "M36x90",
+      "title": "H-36090 · M36 × 90 shin bolt",
+      "short_title": "M36 × 90 shin bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/lg-m36-90.svg"
+    },
+    "lg-w36": {
+      "family": "W-36",
+      "variant": "M36",
+      "title": "W-36 · M36 washer",
+      "short_title": "M36 washer",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/lg-w36.svg"
+    },
+    "lg-main-input": {
+      "family": "FA-605",
+      "variant": "main-input",
+      "title": "FA-605 · Main input harness with both plugs",
+      "short_title": "Main input harness with both plugs",
+      "carry_class": "two_hand",
+      "collision_shapes": [
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.030229725633336813,
+          "position": [
+            -0.1488036065864563,
+            -0.41049256866455075,
+            -0.4075838357343673
+          ],
+          "rotation_degrees": [
+            84.82894758199778,
+            0,
+            30.363529945582805
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.03481614981185841,
+          "position": [
+            -0.15504360658645633,
+            -0.4095325686645508,
+            -0.39921583573436736
+          ],
+          "rotation_degrees": [
+            82.45507096124275,
+            0,
+            40.47987561966448
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.0353193537380761,
+          "position": [
+            -0.16232360658645634,
+            -0.40841256866455067,
+            -0.3885198357343673
+          ],
+          "rotation_degrees": [
+            85.32046451960184,
+            0,
+            27.93640148106313
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.035429910498584696,
+          "position": [
+            -0.16440360658645634,
+            -0.4080925686645507,
+            -0.3760238357343675
+          ],
+          "rotation_degrees": [
+            91.38201851138692,
+            0,
+            -8.909730750508672
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.044071093855991963,
+          "position": [
+            -0.15504360658645633,
+            -0.4095325686645508,
+            -0.3622558357343675
+          ],
+          "rotation_degrees": [
+            100.16912833449058,
+            0,
+            -48.93172690116187
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06298574503409693,
+          "position": [
+            -0.1275236065864563,
+            -0.4149725686645507,
+            -0.3492878357343673
+          ],
+          "rotation_degrees": [
+            125.50048723539463,
+            0,
+            -69.53912493278973
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.08035361226179576,
+          "position": [
+            -0.08032360658645632,
+            -0.4258525686645507,
+            -0.3387518357343673
+          ],
+          "rotation_degrees": [
+            145.00797980144176,
+            0,
+            -73.67166679133142
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.08740912914876633,
+          "position": [
+            -0.02092360658645631,
+            -0.4392125686645507,
+            -0.3277598357343674
+          ],
+          "rotation_degrees": [
+            136.5596482622667,
+            0,
+            -73.76244800796351
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.08498404420168651,
+          "position": [
+            0.039876393413543654,
+            -0.44977256866455073,
+            -0.3108878357343674
+          ],
+          "rotation_degrees": [
+            110.32313682966304,
+            0,
+            -68.9982971732735
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.07841106501387829,
+          "position": [
+            0.09127639341354365,
+            -0.45225256866455077,
+            -0.2827118357343674
+          ],
+          "rotation_degrees": [
+            85.32046451960217,
+            0,
+            -51.259551726333925
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.08508211790991166,
+          "position": [
+            0.12699639341354368,
+            -0.4430525686645508,
+            -0.23779983573436736
+          ],
+          "rotation_degrees": [
+            74.14328002674681,
+            0,
+            -25.784566307513064
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.09882087216375515,
+          "position": [
+            0.14975639341354374,
+            -0.4229725686645507,
+            -0.1752398357343674
+          ],
+          "rotation_degrees": [
+            70.73023444625626,
+            0,
+            -13.612414382238294
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.10680335842406244,
+          "position": [
+            0.1644763934135437,
+            -0.3952125686645507,
+            -0.10091983573436736
+          ],
+          "rotation_degrees": [
+            68.44166819762131,
+            0,
+            -7.698310211383582
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.10720304219920787,
+          "position": [
+            0.1737963934135438,
+            -0.36265256866455076,
+            -0.02299983573436737
+          ],
+          "rotation_degrees": [
+            66.21294488004837,
+            0,
+            -4.901497190730448
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.0994990683814973,
+          "position": [
+            0.1803563934135437,
+            -0.3281725686645507,
+            0.05036016426563264
+          ],
+          "rotation_degrees": [
+            63.30231994056988,
+            0,
+            -4.321662809988194
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.09410756409697943,
+          "position": [
+            0.1857963934135437,
+            -0.29313256866455073,
+            0.11620016426563264
+          ],
+          "rotation_degrees": [
+            60.55546629287356,
+            0,
+            -4.007989690860108
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.09444652648678192,
+          "position": [
+            0.1895563934135438,
+            -0.25649256866455084,
+            0.17836016426563264
+          ],
+          "rotation_degrees": [
+            58.41738191266995,
+            0,
+            -1.9617407008650307
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.09207502265429535,
+          "position": [
+            0.19027639341354385,
+            -0.21741256866455083,
+            0.23788016426563263
+          ],
+          "rotation_degrees": [
+            54.94902803338967,
+            0,
+            0.8503714467355837
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.08749469596845239,
+          "position": [
+            0.18699639341354368,
+            -0.17613256866455074,
+            0.29140016426563264
+          ],
+          "rotation_degrees": [
+            49.57392125990077,
+            0,
+            4.834717302450835
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.08169318889119584,
+          "position": [
+            0.17875639341354366,
+            -0.1328925686645508,
+            0.3355601642656326
+          ],
+          "rotation_degrees": [
+            41.18592516570972,
+            0,
+            10.579843017907761
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.0802999142366437,
+          "position": [
+            0.1646763934135438,
+            -0.08589256866455075,
+            0.36732016426563263
+          ],
+          "rotation_degrees": [
+            26.528252351365083,
+            0,
+            17.159106225353735
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.08363271858355742,
+          "position": [
+            0.14467639341354377,
+            -0.03313256866455072,
+            0.38644016426563266
+          ],
+          "rotation_degrees": [
+            13.492619718169125,
+            0,
+            21.71150881091002
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.08432225926585163,
+          "position": [
+            0.11967639341354369,
+            0.02258743133544927,
+            0.39608016426563264
+          ],
+          "rotation_degrees": [
+            6.060350081914979,
+            0,
+            25.877033524631123
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.0806406002697787,
+          "position": [
+            0.0908763934135437,
+            0.07550743133544913,
+            0.40032016426563266
+          ],
+          "rotation_degrees": [
+            2.9263106260922376,
+            0,
+            31.22580219091413
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.07253284080674678,
+          "position": [
+            0.059476393413543716,
+            0.1198674313354493,
+            0.40324016426563264
+          ],
+          "rotation_degrees": [
+            4.851985293085238,
+            0,
+            39.87890975373836
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06756096574920238,
+          "position": [
+            0.024156393413543698,
+            0.15110743133544924,
+            0.40824016426563264
+          ],
+          "rotation_degrees": [
+            15.742039950870923,
+            0,
+            57.06785129735667
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06928067681410667,
+          "position": [
+            -0.017403606586456233,
+            0.16946743133544917,
+            0.4153201642656326
+          ],
+          "rotation_degrees": [
+            30.012438028942857,
+            0,
+            71.66345135131553
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06846574652364895,
+          "position": [
+            -0.06272360658645626,
+            0.17938743133544932,
+            0.42108016426563266
+          ],
+          "rotation_degrees": [
+            30.379126011368864,
+            0,
+            80.00122552229685
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06346601500023852,
+          "position": [
+            -0.10604360658645623,
+            0.1859074313354494,
+            0.42144016426563263
+          ],
+          "rotation_degrees": [
+            -28.926425835253283,
+            0,
+            80.35596792771318
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.05722399182375554,
+          "position": [
+            -0.14160360658645627,
+            0.19406743133544913,
+            0.41232016426563267
+          ],
+          "rotation_degrees": [
+            -55.46533842860117,
+            0,
+            59.14922183827649
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.0619180761059448,
+          "position": [
+            -0.16604360658645628,
+            0.2059074313354492,
+            0.38856016426563267
+          ],
+          "rotation_degrees": [
+            -67.61986494804023,
+            0,
+            27.83690874364269
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.07267657446986728,
+          "position": [
+            -0.18080360658645628,
+            0.21926743133544924,
+            0.34840016426563264
+          ],
+          "rotation_degrees": [
+            -74.43623108986066,
+            0,
+            12.397625962731887
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.07749843961770458,
+          "position": [
+            -0.18852360658645628,
+            0.23318743133544917,
+            0.29788016426563263
+          ],
+          "rotation_degrees": [
+            -74.73761302608003,
+            0,
+            4.712990562815277
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.07460041064478481,
+          "position": [
+            -0.19064360658645624,
+            0.2491074313354491,
+            0.24636016426563265
+          ],
+          "rotation_degrees": [
+            -70.82099197418955,
+            0,
+            -0.34856690881738567
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06461808067006308,
+          "position": [
+            -0.18860360658645625,
+            0.26846743133544915,
+            0.20320016426563264
+          ],
+          "rotation_degrees": [
+            -59.66584207633661,
+            0,
+            -5.061527613318437
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.059968323639581385,
+          "position": [
+            -0.1816036065864563,
+            0.29390743133544905,
+            0.17404016426563262
+          ],
+          "rotation_degrees": [
+            -36.36841566396255,
+            0,
+            -15.6463267429983
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06455977443549255,
+          "position": [
+            -0.16764360658645627,
+            0.32686743133544915,
+            0.15672016426563262
+          ],
+          "rotation_degrees": [
+            -19.558251536997403,
+            0,
+            -24.54550005432351
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06558010555287815,
+          "position": [
+            -0.1485236065864563,
+            0.3639874313354492,
+            0.14668016426563263
+          ],
+          "rotation_degrees": [
+            -10.67827736032963,
+            0,
+            -28.149571034751297
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.06048789939708319,
+          "position": [
+            -0.12880360658645632,
+            0.3995074313354492,
+            0.14104016426563262
+          ],
+          "rotation_degrees": [
+            -7.125016348901821,
+            0,
+            -29.376329513352506
+          ]
+        },
+        {
+          "type": "capsule",
+          "radius": 0.011,
+          "height": 0.048594315182008324,
+          "position": [
+            -0.11304360658645632,
+            0.42766743133544916,
+            0.1369201642656326
+          ],
+          "rotation_degrees": [
+            -10.042023635529501,
+            0,
+            -28.378204038386116
+          ]
+        },
+        {
+          "type": "sphere",
+          "radius": 0.026,
+          "position": [
+            -0.1467236065864563,
+            -0.41081256866455074,
+            -0.4111198357343674
+          ]
+        },
+        {
+          "type": "sphere",
+          "radius": 0.026,
+          "position": [
+            -0.1067236065864563,
+            0.43918743133544913,
+            0.13488016426563262
+          ]
+        }
+      ],
+      "catalogue_image": "res://assets/part-images/lg-main-input.svg"
+    }
+  },
+  "assemblies": {
+    "left_leg": {
+      "title": "Left leg · structural prototype",
+      "carry_class": "equipment",
+      "bounds": [
+        1.4,
+        9.65,
+        3.0
+      ],
+      "work_locations": [
+        "support"
+      ],
+      "interaction": "components",
+      "service_access": "assisted",
+      "slots": {
+        "foot": {
+          "assembly": "foot",
+          "milestone": "complete",
+          "requires": [],
+          "pose_source": "FA-201__001",
+          "snap_position": [
+            0,
+            0.8,
+            -0.7
+          ],
+          "label": "Prepared foot",
+          "support_required": true,
+          "source_supports": [
+            "foot_carrier",
+            "foot_hoist"
+          ]
+        },
+        "shin": {
+          "accepts": "lg-shin",
+          "requires": [
+            "foot"
+          ],
+          "pose_source": "LG-100__001",
+          "label": "LG-100 · Structural shin",
+          "support_required": true,
+          "source_supports": [
+            "leg_shin_rack"
+          ]
+        },
+        "ankle/W-36__021": {
+          "accepts": "lg-w36",
+          "pose_source": "W-36__021",
+          "requires": [
+            "shin"
+          ],
+          "label": "W-36 · M36 washer",
+          "snap_position": [
+            -0.20000000298023224,
+            1.4130000162124634,
+            0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.004,
+            0
+          ]
+        },
+        "ankle/H-36090__001": {
+          "accepts": "lg-m36-90",
+          "pose_source": "H-36090__001",
+          "requires": [
+            "ankle/W-36__021"
+          ],
+          "label": "H-36090 · M36 × 90 shin bolt",
+          "snap_position": [
+            -0.20000000298023224,
+            1.3890000867843628,
+            0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.065,
+            0
+          ]
+        },
+        "ankle/W-36__022": {
+          "accepts": "lg-w36",
+          "pose_source": "W-36__022",
+          "requires": [
+            "shin"
+          ],
+          "label": "W-36 · M36 washer",
+          "snap_position": [
+            -0.20000000298023224,
+            1.4130000162124634,
+            -0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.004,
+            0
+          ]
+        },
+        "ankle/H-36090__002": {
+          "accepts": "lg-m36-90",
+          "pose_source": "H-36090__002",
+          "requires": [
+            "ankle/W-36__022"
+          ],
+          "label": "H-36090 · M36 × 90 shin bolt",
+          "snap_position": [
+            -0.20000000298023224,
+            1.3890000867843628,
+            -0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.065,
+            0
+          ]
+        },
+        "ankle/W-36__023": {
+          "accepts": "lg-w36",
+          "pose_source": "W-36__023",
+          "requires": [
+            "shin"
+          ],
+          "label": "W-36 · M36 washer",
+          "snap_position": [
+            0.20000000298023224,
+            1.4130000162124634,
+            0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.004,
+            0
+          ]
+        },
+        "ankle/H-36090__003": {
+          "accepts": "lg-m36-90",
+          "pose_source": "H-36090__003",
+          "requires": [
+            "ankle/W-36__023"
+          ],
+          "label": "H-36090 · M36 × 90 shin bolt",
+          "snap_position": [
+            0.20000000298023224,
+            1.3890000867843628,
+            0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.065,
+            0
+          ]
+        },
+        "ankle/W-36__024": {
+          "accepts": "lg-w36",
+          "pose_source": "W-36__024",
+          "requires": [
+            "shin"
+          ],
+          "label": "W-36 · M36 washer",
+          "snap_position": [
+            0.20000000298023224,
+            1.4130000162124634,
+            -0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.004,
+            0
+          ]
+        },
+        "ankle/H-36090__004": {
+          "accepts": "lg-m36-90",
+          "pose_source": "H-36090__004",
+          "requires": [
+            "ankle/W-36__024"
+          ],
+          "label": "H-36090 · M36 × 90 shin bolt",
+          "snap_position": [
+            0.20000000298023224,
+            1.3890000867843628,
+            -0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.065,
+            0
+          ]
+        },
+        "main_input": {
+          "accepts": "lg-main-input",
+          "pose_source": "FA-605__001",
+          "requires": [
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004"
+          ],
+          "label": "FA-605 · Main input harness with both plugs",
+          "snap_position": [
+            0.3567236065864563,
+            0.9608125686645508,
+            -0.23488016426563263
+          ],
+          "target_offset": [
+            -0.1067236065864563,
+            0.43918743133544913,
+            0.13488016426563262
+          ]
+        },
+        "bearing_1": {
+          "accepts": "lg-knee-bearing",
+          "pose_source": "LG-130__001",
+          "requires": [
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004"
+          ],
+          "label": "LG-130 · Knee journal bearing",
+          "target_offset": [
+            -0.061,
+            0,
+            0
+          ]
+        },
+        "bearing_2": {
+          "accepts": "lg-knee-bearing",
+          "pose_source": "LG-130__002",
+          "requires": [
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004"
+          ],
+          "label": "LG-130 · Knee journal bearing",
+          "target_offset": [
+            0.061,
+            0,
+            0
+          ]
+        },
+        "thrust_1": {
+          "accepts": "lg-knee-thrust",
+          "pose_source": "LG-135__001",
+          "requires": [
+            "bearing_1",
+            "bearing_2"
+          ],
+          "label": "LG-135 · Knee thrust spacer",
+          "target_offset": [
+            -0.039,
+            0,
+            0
+          ]
+        },
+        "thrust_2": {
+          "accepts": "lg-knee-thrust",
+          "pose_source": "LG-135__002",
+          "requires": [
+            "bearing_1",
+            "bearing_2"
+          ],
+          "label": "LG-135 · Knee thrust spacer",
+          "target_offset": [
+            0.039,
+            0,
+            0
+          ]
+        },
+        "fork": {
+          "accepts": "lg-knee-fork",
+          "pose_source": "LG-110__001",
+          "requires": [
+            "thrust_1",
+            "thrust_2"
+          ],
+          "label": "LG-110 · Detachable knee fork",
+          "support_required": true,
+          "source_supports": [
+            "leg_fork_rack"
+          ]
+        },
+        "axle": {
+          "accepts": "lg-knee-axle",
+          "pose_source": "LG-140__001",
+          "requires": [
+            "fork"
+          ],
+          "label": "LG-140 · Shouldered knee axle",
+          "target_offset": [
+            -0.542,
+            0,
+            0
+          ]
+        },
+        "cap": {
+          "accepts": "lg-knee-cap",
+          "pose_source": "LG-150__001",
+          "requires": [
+            "axle"
+          ],
+          "label": "LG-150 · Knee axle retaining cap",
+          "target_offset": [
+            0.017,
+            0,
+            0
+          ]
+        },
+        "cap/washer_1": {
+          "accepts": "lg-w12",
+          "pose_source": "LG-W12__001",
+          "requires": [
+            "cap"
+          ],
+          "label": "LG-W12 · M12 washer",
+          "target_offset": [
+            0.003,
+            0,
+            0
+          ]
+        },
+        "cap/screw_1": {
+          "accepts": "lg-m12-50",
+          "pose_source": "LG-H12050__001",
+          "requires": [
+            "cap/washer_1"
+          ],
+          "label": "LG-H12050 · M12 × 50 axle-cap screw",
+          "target_offset": [
+            0.014,
+            0,
+            0
+          ]
+        },
+        "cap/washer_2": {
+          "accepts": "lg-w12",
+          "pose_source": "LG-W12__002",
+          "requires": [
+            "cap"
+          ],
+          "label": "LG-W12 · M12 washer",
+          "target_offset": [
+            0.003,
+            0,
+            0
+          ]
+        },
+        "cap/screw_2": {
+          "accepts": "lg-m12-50",
+          "pose_source": "LG-H12050__002",
+          "requires": [
+            "cap/washer_2"
+          ],
+          "label": "LG-H12050 · M12 × 50 axle-cap screw",
+          "target_offset": [
+            0.014,
+            0,
+            0
+          ]
+        },
+        "spar": {
+          "accepts": "lg-thigh-spar",
+          "pose_source": "LG-120__001",
+          "requires": [
+            "cap",
+            "cap/washer_1",
+            "cap/screw_1",
+            "cap/washer_2",
+            "cap/screw_2"
+          ],
+          "label": "LG-120 · Thigh spar with integral hip ball",
+          "support_required": true,
+          "source_supports": [
+            "leg_spar_rack"
+          ]
+        },
+        "fork/washer_1": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__001",
+          "requires": [
+            "spar"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            0.003,
+            0
+          ]
+        },
+        "fork/bolt_1": {
+          "accepts": "lg-m24-100",
+          "pose_source": "LG-H24100__001",
+          "requires": [
+            "fork/washer_1"
+          ],
+          "label": "LG-H24100 · M24 × 100 fork bolt",
+          "target_offset": [
+            0,
+            0.026,
+            0
+          ]
+        },
+        "fork/washer_2": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__002",
+          "requires": [
+            "spar"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            0.003,
+            0
+          ]
+        },
+        "fork/bolt_2": {
+          "accepts": "lg-m24-100",
+          "pose_source": "LG-H24100__002",
+          "requires": [
+            "fork/washer_2"
+          ],
+          "label": "LG-H24100 · M24 × 100 fork bolt",
+          "target_offset": [
+            0,
+            0.026,
+            0
+          ]
+        },
+        "fork/washer_3": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__003",
+          "requires": [
+            "spar"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            0.003,
+            0
+          ]
+        },
+        "fork/bolt_3": {
+          "accepts": "lg-m24-100",
+          "pose_source": "LG-H24100__003",
+          "requires": [
+            "fork/washer_3"
+          ],
+          "label": "LG-H24100 · M24 × 100 fork bolt",
+          "target_offset": [
+            0,
+            0.026,
+            0
+          ]
+        },
+        "fork/washer_4": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__004",
+          "requires": [
+            "spar"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            0.003,
+            0
+          ]
+        },
+        "fork/bolt_4": {
+          "accepts": "lg-m24-100",
+          "pose_source": "LG-H24100__004",
+          "requires": [
+            "fork/washer_4"
+          ],
+          "label": "LG-H24100 · M24 × 100 fork bolt",
+          "target_offset": [
+            0,
+            0.026,
+            0
+          ]
+        }
+      },
+      "milestones": {
+        "structural_ready": [
+          "foot",
+          "shin",
+          "ankle/W-36__021",
+          "ankle/H-36090__001",
+          "ankle/W-36__022",
+          "ankle/H-36090__002",
+          "ankle/W-36__023",
+          "ankle/H-36090__003",
+          "ankle/W-36__024",
+          "ankle/H-36090__004",
+          "main_input",
+          "bearing_1",
+          "bearing_2",
+          "thrust_1",
+          "thrust_2",
+          "fork",
+          "axle",
+          "cap",
+          "cap/washer_1",
+          "cap/screw_1",
+          "cap/washer_2",
+          "cap/screw_2",
+          "spar",
+          "fork/washer_1",
+          "fork/bolt_1",
+          "fork/washer_2",
+          "fork/bolt_2",
+          "fork/washer_3",
+          "fork/bolt_3",
+          "fork/washer_4",
+          "fork/bolt_4"
+        ]
+      },
+      "manual": [
+        {
+          "title": "Dock the prepared foot",
+          "body": "Complete the foot manual, then use its carrier to dock the prepared foot in the leg fixture. The fixture supports the foot and locks ankle motion during structural work.",
+          "slots": [
+            "foot"
+          ],
+          "view": "components",
+          "context_sources": [],
+          "diagram_views": [
+            {
+              "title": "Dock the prepared foot",
+              "sources": [
+                "FA-201__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Lower the structural shin",
+          "body": "Use the shin rack controls to lower LG-100 onto the already fitted foot adapter. Align the female key with the adapter tongue; the equipment carries the load while it is unbolted.",
+          "slots": [
+            "shin"
+          ],
+          "view": "components",
+          "context_sources": [
+            "FA-201__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "Lower the structural shin",
+              "sources": [
+                "LG-100__001"
+              ],
+              "context": [
+                "FA-201__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Secure the ankle flange",
+          "body": "Fit four W-36 washers on the LG-100 flange, then four H-36090 M36 × 90 bolts downward into the already fitted FA-201 adapter. Heads are accessible above the flange outside the narrow shin beam.",
+          "slots": [
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004"
+          ],
+          "view": "components",
+          "context_sources": [
+            "LG-100__001",
+            "FA-201__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "Secure the ankle flange",
+              "sources": [
+                "W-36__021",
+                "H-36090__001",
+                "W-36__022",
+                "H-36090__002",
+                "W-36__023",
+                "H-36090__003",
+                "W-36__024",
+                "H-36090__004"
+              ],
+              "context": [
+                "LG-100__001",
+                "FA-201__001"
+              ],
+              "offsets": {
+                "W-36__021": [
+                  0,
+                  0.03,
+                  0
+                ],
+                "H-36090__001": [
+                  0,
+                  0.03,
+                  0
+                ],
+                "W-36__022": [
+                  0,
+                  0.03,
+                  0
+                ],
+                "H-36090__002": [
+                  0,
+                  0.03,
+                  0
+                ],
+                "W-36__023": [
+                  0,
+                  0.03,
+                  0
+                ],
+                "H-36090__003": [
+                  0,
+                  0.03,
+                  0
+                ],
+                "W-36__024": [
+                  0,
+                  0.03,
+                  0
+                ],
+                "H-36090__004": [
+                  0,
+                  0.03,
+                  0
+                ]
+              },
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Connect the shin disconnect",
+          "body": "Fit FA-605 as one main input harness, including both attached plugs. Seat its box end in the already fitted FA-604 main socket, follow the existing foot guide clips, then push its upper keyed plug into the angled socket integral to LG-100 beside the ankle flange. Undo this step to unplug the harness before separating foot and shin.",
+          "slots": [
+            "main_input"
+          ],
+          "view": "components",
+          "context_sources": [
+            "LG-V-DISCONNECT",
+            "FA-604__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "FA-605 · one complete routed harness",
+              "sources": [
+                "FA-605__001"
+              ],
+              "context": [
+                "FA-604__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            },
+            {
+              "title": "Upper keyed plug → shin socket",
+              "sources": [
+                "LG-V-DISCONNECT"
+              ],
+              "context": [
+                "LG-V-INPUT-PLUG"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                0.3,
+                -1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Seat bearings and thrust spacers",
+          "body": "Fit both LG-130 journal bearings from opposite sides into the already fitted shin's circular knee boss. Add one LG-135 thrust spacer against each boss end. The two bearings share one type; the two spacers share another.",
+          "slots": [
+            "bearing_1",
+            "bearing_2",
+            "thrust_1",
+            "thrust_2"
+          ],
+          "view": "components",
+          "context_sources": [
+            "LG-100__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "Seat bearings and thrust spacers",
+              "sources": [
+                "LG-130__001",
+                "LG-130__002",
+                "LG-135__001",
+                "LG-135__002"
+              ],
+              "context": [
+                "LG-100__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Fork and axle",
+          "body": "Use the fork rack to straddle the already fitted shin boss with LG-110. Insert LG-140 from the left side through the aligned fork and bearings until its shoulder rests against the fork. The fixture keeps the unpowered knee straight.",
+          "slots": [
+            "fork",
+            "axle"
+          ],
+          "view": "components",
+          "context_sources": [
+            "LG-100__001",
+            "LG-130__001",
+            "LG-130__002"
+          ],
+          "diagram_views": [
+            {
+              "title": "Fork and axle",
+              "sources": [
+                "LG-110__001",
+                "LG-140__001"
+              ],
+              "context": [
+                "LG-100__001",
+                "LG-130__001",
+                "LG-130__002"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Retain the knee axle",
+          "body": "Fit LG-150 on the exposed axle end. Fit two LG-W12 washers and two LG-H12050 screws from the right side into the axle end pad. Both screw heads remain outside the fork.",
+          "slots": [
+            "cap",
+            "cap/washer_1",
+            "cap/screw_1",
+            "cap/washer_2",
+            "cap/screw_2"
+          ],
+          "view": "components",
+          "context_sources": [
+            "LG-110__001",
+            "LG-140__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "Retain the knee axle",
+              "sources": [
+                "LG-150__001",
+                "LG-W12__001",
+                "LG-H12050__001",
+                "LG-W12__002",
+                "LG-H12050__002"
+              ],
+              "context": [
+                "LG-110__001",
+                "LG-140__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Join the thigh spar",
+          "body": "Use the spar rack to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four LG-W24 washers and four LG-H24100 bolts downward through the exposed flange corners.",
+          "slots": [
+            "spar",
+            "fork/washer_1",
+            "fork/bolt_1",
+            "fork/washer_2",
+            "fork/bolt_2",
+            "fork/washer_3",
+            "fork/bolt_3",
+            "fork/washer_4",
+            "fork/bolt_4"
+          ],
+          "view": "components",
+          "context_sources": [
+            "LG-110__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "LG-120 · lower onto fork",
+              "sources": [
+                "LG-120__001"
+              ],
+              "context": [
+                "LG-110__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            },
+            {
+              "title": "Four exposed flange bolts",
+              "sources": [
+                "LG-W24__001",
+                "LG-H24100__001",
+                "LG-W24__002",
+                "LG-H24100__002",
+                "LG-W24__003",
+                "LG-H24100__003",
+                "LG-W24__004",
+                "LG-H24100__004"
+              ],
+              "context": [
+                "LG-110__001",
+                "LG-120__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Structural leg ready",
+          "body": "The load-bearing prototype is structurally ready. Use the hoist to transfer it to the pelvis gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the pelvis manual for seating and retention.",
+          "slots": [
+            "foot",
+            "shin",
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004",
+            "main_input",
+            "bearing_1",
+            "bearing_2",
+            "thrust_1",
+            "thrust_2",
+            "fork",
+            "axle",
+            "cap",
+            "cap/washer_1",
+            "cap/screw_1",
+            "cap/washer_2",
+            "cap/screw_2",
+            "spar",
+            "fork/washer_1",
+            "fork/bolt_1",
+            "fork/washer_2",
+            "fork/bolt_2",
+            "fork/washer_3",
+            "fork/bolt_3",
+            "fork/washer_4",
+            "fork/bolt_4"
+          ],
+          "view": "prepared"
+        }
+      ]
+    },
+    "pelvis": {
+      "title": "Pelvis · left leg installation",
+      "bounds": [
+        3.6,
+        1.5,
+        1.5
+      ],
+      "work_locations": [
+        "fixture"
+      ],
+      "interaction": "components",
+      "context_sources": [
+        "PV-100__001",
+        "PV-110__001",
+        "PV-C-H24090__001",
+        "PV-C-H24090__002",
+        "PV-110__002",
+        "PV-C-H24090__003",
+        "PV-C-H24090__004"
+      ],
+      "slots": {
+        "left_leg": {
+          "assembly": "left_leg",
+          "milestone": "structural_ready",
+          "requires": [],
+          "pose_source": "PV-V-HIP-BALL",
+          "snap_position": [
+            -1.1,
+            -9.2,
+            0
+          ],
+          "label": "Structural left leg",
+          "support_required": true,
+          "source_supports": [
+            "leg_hoist"
+          ]
+        },
+        "ring_1": {
+          "accepts": "pv-ring-half",
+          "pose_source": "PV-120__001",
+          "requires": [
+            "left_leg"
+          ],
+          "label": "PV-120 · Hip retaining ring half",
+          "support_required": true,
+          "source_supports": [
+            "pelvis_ring_rack_1",
+            "pelvis_ring_rack_2"
+          ]
+        },
+        "ring_2": {
+          "accepts": "pv-ring-half",
+          "pose_source": "PV-120__002",
+          "requires": [
+            "left_leg"
+          ],
+          "label": "PV-120 · Hip retaining ring half",
+          "support_required": true,
+          "source_supports": [
+            "pelvis_ring_rack_1",
+            "pelvis_ring_rack_2"
+          ]
+        },
+        "ring/washer_1": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__005",
+          "requires": [
+            "ring_2"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            -0.003,
+            0
+          ]
+        },
+        "ring/bolt_1": {
+          "accepts": "pv-m24-140",
+          "pose_source": "PV-H24140__001",
+          "requires": [
+            "ring/washer_1"
+          ],
+          "label": "PV-H24140 · M24 × 140 ring bolt",
+          "target_offset": [
+            0,
+            -0.026,
+            0
+          ]
+        },
+        "ring/washer_2": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__006",
+          "requires": [
+            "ring_2"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            -0.003,
+            0
+          ]
+        },
+        "ring/bolt_2": {
+          "accepts": "pv-m24-140",
+          "pose_source": "PV-H24140__002",
+          "requires": [
+            "ring/washer_2"
+          ],
+          "label": "PV-H24140 · M24 × 140 ring bolt",
+          "target_offset": [
+            0,
+            -0.026,
+            0
+          ]
+        },
+        "ring/washer_3": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__007",
+          "requires": [
+            "ring_1"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            -0.003,
+            0
+          ]
+        },
+        "ring/bolt_3": {
+          "accepts": "pv-m24-140",
+          "pose_source": "PV-H24140__003",
+          "requires": [
+            "ring/washer_3"
+          ],
+          "label": "PV-H24140 · M24 × 140 ring bolt",
+          "target_offset": [
+            0,
+            -0.026,
+            0
+          ]
+        },
+        "ring/washer_4": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__008",
+          "requires": [
+            "ring_1"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            -0.003,
+            0
+          ]
+        },
+        "ring/bolt_4": {
+          "accepts": "pv-m24-140",
+          "pose_source": "PV-H24140__004",
+          "requires": [
+            "ring/washer_4"
+          ],
+          "label": "PV-H24140 · M24 × 140 ring bolt",
+          "target_offset": [
+            0,
+            -0.026,
+            0
+          ]
+        }
+      },
+      "milestones": {
+        "left_leg_secured": [
+          "left_leg",
+          "ring_1",
+          "ring_2",
+          "ring/washer_1",
+          "ring/bolt_1",
+          "ring/washer_2",
+          "ring/bolt_2",
+          "ring/washer_3",
+          "ring/bolt_3",
+          "ring/washer_4",
+          "ring/bolt_4"
+        ],
+        "structural_ready": [
+          "left_leg",
+          "ring_1",
+          "ring_2",
+          "ring/washer_1",
+          "ring/bolt_1",
+          "ring/washer_2",
+          "ring/bolt_2",
+          "ring/washer_3",
+          "ring/bolt_3",
+          "ring/washer_4",
+          "ring/bolt_4"
+        ]
+      },
+      "manual": [
+        {
+          "title": "Seat the supported leg",
+          "body": "The braced pelvis bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the hoist to lift the LG-120 hip ball into the left socket's open underside. Keep hoist support until all retaining bolts are fitted.",
+          "slots": [
+            "left_leg"
+          ],
+          "view": "components",
+          "context_sources": [
+            "PV-100__001",
+            "PV-110__001",
+            "PV-C-H24090__001",
+            "PV-C-H24090__002",
+            "PV-110__002",
+            "PV-C-H24090__003",
+            "PV-C-H24090__004"
+          ],
+          "diagram_views": [
+            {
+              "title": "Ball enters open left socket from below",
+              "sources": [
+                "PV-V-HIP-BALL"
+              ],
+              "context": [
+                "PV-110__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                -0.4,
+                -1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Fit the split retaining ring",
+          "body": "Use the ring racks to fit both PV-120 semicircular halves around the already seated LG-120 neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.",
+          "slots": [
+            "ring_1",
+            "ring_2"
+          ],
+          "view": "components",
+          "context_sources": [
+            "PV-110__001",
+            "LG-120__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "Fit the split retaining ring",
+              "sources": [
+                "PV-120__001",
+                "PV-120__002"
+              ],
+              "context": [
+                "PV-110__001",
+                "PV-V-HIP-BALL"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Bolt the ring to the socket",
+          "body": "Fit four LG-W24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing hoist load. To remove the leg, engage the hoist first, then reverse the retention steps.",
+          "slots": [
+            "ring/washer_1",
+            "ring/bolt_1",
+            "ring/washer_2",
+            "ring/bolt_2",
+            "ring/washer_3",
+            "ring/bolt_3",
+            "ring/washer_4",
+            "ring/bolt_4"
+          ],
+          "view": "components",
+          "context_sources": [
+            "PV-110__001",
+            "PV-120__001",
+            "PV-120__002"
+          ],
+          "diagram_views": [
+            {
+              "title": "Bolt the ring to the socket",
+              "sources": [
+                "LG-W24__005",
+                "PV-H24140__001",
+                "LG-W24__006",
+                "PV-H24140__002",
+                "LG-W24__007",
+                "PV-H24140__003",
+                "LG-W24__008",
+                "PV-H24140__004"
+              ],
+              "context": [
+                "PV-110__001",
+                "PV-120__001",
+                "PV-120__002"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Left leg structurally mounted",
+          "body": "The left ball is captured by both bolted ring halves. The gantry and mechanical transport braces support this unpowered prototype. This is structural readiness; hydraulic actuators, services and armor remain deferred.",
+          "slots": [
+            "left_leg",
+            "ring_1",
+            "ring_2",
+            "ring/washer_1",
+            "ring/bolt_1",
+            "ring/washer_2",
+            "ring/bolt_2",
+            "ring/washer_3",
+            "ring/bolt_3",
+            "ring/washer_4",
+            "ring/bolt_4"
+          ],
+          "view": "prepared"
+        }
+      ]
+    },
+    "foot": {
+      "title": "Foot · pads and pitch actuator",
+      "slots": {
+        "heel_1": {
+          "assembly": "heel_pad",
+          "milestone": "prepared",
+          "requires": [],
+          "pose_source": "FA-302__001",
+          "label": "Heel position 1"
+        },
+        "heel_1/washer_0": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__035"
+        },
+        "heel_1/bolt_0": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_0"
+          ],
+          "pose_source": "H-24120__001"
+        },
+        "heel_1/washer_1": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__036"
+        },
+        "heel_1/bolt_1": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_1"
+          ],
+          "pose_source": "H-24120__002"
+        },
+        "heel_1/washer_2": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__037"
+        },
+        "heel_1/bolt_2": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_2"
+          ],
+          "pose_source": "H-24120__003"
+        },
+        "heel_1/washer_3": {
+          "accepts": "washer",
+          "requires": [
+            "heel_1"
+          ],
+          "pose_source": "W-24__038"
+        },
+        "heel_1/bolt_3": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_1/washer_3"
+          ],
+          "pose_source": "H-24120__004"
+        },
+        "heel_2": {
+          "assembly": "heel_pad",
+          "milestone": "prepared",
+          "requires": [],
+          "pose_source": "FA-302__002",
+          "label": "Heel position 2"
+        },
+        "heel_2/washer_0": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__039"
+        },
+        "heel_2/bolt_0": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_0"
+          ],
+          "pose_source": "H-24120__005"
+        },
+        "heel_2/washer_1": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__040"
+        },
+        "heel_2/bolt_1": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_1"
+          ],
+          "pose_source": "H-24120__006"
+        },
+        "heel_2/washer_2": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__041"
+        },
+        "heel_2/bolt_2": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_2"
+          ],
+          "pose_source": "H-24120__007"
+        },
+        "heel_2/washer_3": {
+          "accepts": "washer",
+          "requires": [
+            "heel_2"
+          ],
+          "pose_source": "W-24__042"
+        },
+        "heel_2/bolt_3": {
+          "accepts": "bolt",
+          "requires": [
+            "heel_2/washer_3"
+          ],
+          "pose_source": "H-24120__008"
+        },
+        "pitch/FA-220__001": {
+          "accepts": "fa-220__001",
+          "requires": [],
+          "pose_source": "FA-220__001",
+          "label": "Cradle clevis",
+          "presentation": "components",
+          "target_offset": [
+            -0.083,
+            0,
+            0
+          ]
+        },
+        "pitch/W-24__023": {
+          "accepts": "washer",
+          "requires": [
+            "pitch/FA-220__001"
+          ],
+          "pose_source": "W-24__023",
+          "label": "M24 washer",
+          "presentation": "components",
+          "target_offset": [
+            -0.002,
+            0,
+            0
+          ]
+        },
+        "pitch/H-24070__013": {
+          "accepts": "h-24070",
+          "requires": [
+            "pitch/W-24__023"
+          ],
+          "pose_source": "H-24070__013",
+          "label": "M24 × 70 clevis bolt",
+          "presentation": "components",
+          "target_offset": [
+            -0.047,
+            0,
+            0
+          ]
+        },
+        "pitch/W-24__024": {
+          "accepts": "washer",
+          "requires": [
+            "pitch/FA-220__001"
+          ],
+          "pose_source": "W-24__024",
+          "label": "M24 washer",
+          "presentation": "components",
+          "target_offset": [
+            -0.002,
+            0,
+            0
+          ]
+        },
+        "pitch/H-24070__014": {
+          "accepts": "h-24070",
+          "requires": [
+            "pitch/W-24__024"
+          ],
+          "pose_source": "H-24070__014",
+          "label": "M24 × 70 clevis bolt",
+          "presentation": "components",
+          "target_offset": [
+            -0.047,
+            0,
+            0
+          ]
+        },
+        "pitch/FA-220__002": {
+          "accepts": "fa-220__002",
+          "requires": [],
+          "pose_source": "FA-220__002",
+          "label": "Ring clevis",
+          "presentation": "components",
+          "target_offset": [
+            -0.156,
+            0,
+            0
+          ]
+        },
+        "pitch/W-24__025": {
+          "accepts": "washer",
+          "requires": [
+            "pitch/FA-220__002"
+          ],
+          "pose_source": "W-24__025",
+          "label": "M24 washer",
+          "presentation": "components",
+          "target_offset": [
+            0,
+            0.002,
+            0
+          ]
+        },
+        "pitch/H-24070__015": {
+          "accepts": "h-24070",
+          "requires": [
+            "pitch/W-24__025"
+          ],
+          "pose_source": "H-24070__015",
+          "label": "M24 × 70 clevis bolt",
+          "presentation": "components",
+          "target_offset": [
+            0,
+            0.047,
+            0
+          ]
+        },
+        "pitch/W-24__026": {
+          "accepts": "washer",
+          "requires": [
+            "pitch/FA-220__002"
+          ],
+          "pose_source": "W-24__026",
+          "label": "M24 washer",
+          "presentation": "components",
+          "target_offset": [
+            0,
+            0.002,
+            0
+          ]
+        },
+        "pitch/H-24070__016": {
+          "accepts": "h-24070",
+          "requires": [
+            "pitch/W-24__026"
+          ],
+          "pose_source": "H-24070__016",
+          "label": "M24 × 70 clevis bolt",
+          "presentation": "components",
+          "target_offset": [
+            0,
+            0.047,
+            0
+          ]
+        },
+        "pitch": {
+          "assembly": "pitch_actuator",
+          "milestone": "prepared",
+          "requires": [
+            "pitch/FA-220__001",
+            "pitch/W-24__023",
+            "pitch/H-24070__013",
+            "pitch/W-24__024",
+            "pitch/H-24070__014",
+            "pitch/FA-220__002",
+            "pitch/W-24__025",
+            "pitch/H-24070__015",
+            "pitch/W-24__026",
+            "pitch/H-24070__016"
+          ],
+          "pose_source": "FA-510__001",
+          "label": "Pitch actuator",
+          "service_access": "assisted",
+          "connections": [
+            "FA-220__001",
+            "FA-220__002"
+          ]
+        },
+        "pitch/FA-221__001": {
+          "accepts": "fa-221-pitch",
+          "requires": [
+            "pitch"
+          ],
+          "pose_source": "FA-221__001",
+          "label": "Eye pin",
+          "presentation": "components",
+          "target_offset": [
+            -0.071,
+            0,
+            0
+          ]
+        },
+        "pitch/FA-222__001": {
+          "accepts": "fa-222-pitch",
+          "requires": [
+            "pitch/FA-221__001"
+          ],
+          "pose_source": "FA-222__001",
+          "label": "Pin keeper",
+          "presentation": "components",
+          "target_offset": [
+            -0.005,
+            0,
+            0
+          ]
+        },
+        "pitch/W-12__053": {
+          "accepts": "w-12",
+          "requires": [
+            "pitch/FA-222__001"
+          ],
+          "pose_source": "W-12__053",
+          "label": "M12 washer",
+          "presentation": "components",
+          "target_offset": [
+            -0.00125,
+            0,
+            0
+          ]
+        },
+        "pitch/H-12030__029": {
+          "accepts": "h-12030",
+          "requires": [
+            "pitch/W-12__053"
+          ],
+          "pose_source": "H-12030__029",
+          "label": "M12 × 30 screw",
+          "presentation": "components",
+          "target_offset": [
+            -0.021,
+            0,
+            0
+          ]
+        },
+        "pitch/FA-221__002": {
+          "accepts": "fa-221-pitch",
+          "requires": [
+            "pitch"
+          ],
+          "pose_source": "FA-221__002",
+          "label": "Eye pin",
+          "presentation": "components",
+          "target_offset": [
+            -0.071,
+            0,
+            0
+          ]
+        },
+        "pitch/FA-222__002": {
+          "accepts": "fa-222-pitch",
+          "requires": [
+            "pitch/FA-221__002"
+          ],
+          "pose_source": "FA-222__002",
+          "label": "Pin keeper",
+          "presentation": "components",
+          "target_offset": [
+            -0.005,
+            0,
+            0
+          ]
+        },
+        "pitch/W-12__054": {
+          "accepts": "w-12",
+          "requires": [
+            "pitch/FA-222__002"
+          ],
+          "pose_source": "W-12__054",
+          "label": "M12 washer",
+          "presentation": "components",
+          "target_offset": [
+            -0.00125,
+            0,
+            0
+          ]
+        },
+        "pitch/H-12030__030": {
+          "accepts": "h-12030",
+          "requires": [
+            "pitch/W-12__054"
+          ],
+          "pose_source": "H-12030__030",
+          "label": "M12 × 30 screw",
+          "presentation": "components",
+          "target_offset": [
+            -0.021,
+            0,
+            0
+          ]
+        }
+      },
+      "milestones": {
+        "complete": [
+          "heel_1",
+          "heel_1/washer_0",
+          "heel_1/bolt_0",
+          "heel_1/washer_1",
+          "heel_1/bolt_1",
+          "heel_1/washer_2",
+          "heel_1/bolt_2",
+          "heel_1/washer_3",
+          "heel_1/bolt_3",
+          "heel_2",
+          "heel_2/washer_0",
+          "heel_2/bolt_0",
+          "heel_2/washer_1",
+          "heel_2/bolt_1",
+          "heel_2/washer_2",
+          "heel_2/bolt_2",
+          "heel_2/washer_3",
+          "heel_2/bolt_3",
+          "pitch/FA-220__001",
+          "pitch/W-24__023",
+          "pitch/H-24070__013",
+          "pitch/W-24__024",
+          "pitch/H-24070__014",
+          "pitch/FA-220__002",
+          "pitch/W-24__025",
+          "pitch/H-24070__015",
+          "pitch/W-24__026",
+          "pitch/H-24070__016",
+          "pitch",
+          "pitch/FA-221__001",
+          "pitch/FA-222__001",
+          "pitch/W-12__053",
+          "pitch/H-12030__029",
+          "pitch/FA-221__002",
+          "pitch/FA-222__002",
+          "pitch/W-12__054",
+          "pitch/H-12030__030"
+        ],
+        "heel_1_secured": [
+          "heel_1",
+          "heel_1/washer_0",
+          "heel_1/bolt_0",
+          "heel_1/washer_1",
+          "heel_1/bolt_1",
+          "heel_1/washer_2",
+          "heel_1/bolt_2",
+          "heel_1/washer_3",
+          "heel_1/bolt_3"
+        ],
+        "heel_2_secured": [
+          "heel_2",
+          "heel_2/washer_0",
+          "heel_2/bolt_0",
+          "heel_2/washer_1",
+          "heel_2/bolt_1",
+          "heel_2/washer_2",
+          "heel_2/bolt_2",
+          "heel_2/washer_3",
+          "heel_2/bolt_3"
+        ],
+        "pitch_secured": [
+          "pitch/FA-220__001",
+          "pitch/W-24__023",
+          "pitch/H-24070__013",
+          "pitch/W-24__024",
+          "pitch/H-24070__014",
+          "pitch/FA-220__002",
+          "pitch/W-24__025",
+          "pitch/H-24070__015",
+          "pitch/W-24__026",
+          "pitch/H-24070__016",
+          "pitch",
+          "pitch/FA-221__001",
+          "pitch/FA-222__001",
+          "pitch/W-12__053",
+          "pitch/H-12030__029",
+          "pitch/FA-221__002",
+          "pitch/FA-222__002",
+          "pitch/W-12__054",
+          "pitch/H-12030__030"
+        ]
+      },
+      "work_locations": [
+        "support"
+      ],
+      "context_sources": [
+        "FA-300__001"
+      ],
+      "manual": [
+        {
+          "title": "Foot workshop",
+          "body": "Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Use the foot bay controls to expose each side. Follow each branch to install and secure it before transferring the foot.",
+          "view": "overview",
+          "slots": [
+            "heel_1",
+            "heel_1/washer_0",
+            "heel_1/bolt_0",
+            "heel_1/washer_1",
+            "heel_1/bolt_1",
+            "heel_1/washer_2",
+            "heel_1/bolt_2",
+            "heel_1/washer_3",
+            "heel_1/bolt_3",
+            "heel_2",
+            "heel_2/washer_0",
+            "heel_2/bolt_0",
+            "heel_2/washer_1",
+            "heel_2/bolt_1",
+            "heel_2/washer_2",
+            "heel_2/bolt_2",
+            "heel_2/washer_3",
+            "heel_2/bolt_3",
+            "pitch/FA-220__001",
+            "pitch/W-24__023",
+            "pitch/H-24070__013",
+            "pitch/W-24__024",
+            "pitch/H-24070__014",
+            "pitch/FA-220__002",
+            "pitch/W-24__025",
+            "pitch/H-24070__015",
+            "pitch/W-24__026",
+            "pitch/H-24070__016",
+            "pitch",
+            "pitch/FA-221__001",
+            "pitch/FA-222__001",
+            "pitch/W-12__053",
+            "pitch/H-12030__029",
+            "pitch/FA-221__002",
+            "pitch/FA-222__002",
+            "pitch/W-12__054",
+            "pitch/H-12030__030"
+          ]
+        },
+        {
+          "title": "Heel position 1",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
+          "child_slot": "heel_1",
+          "slots": [
+            "heel_1",
+            "heel_1/washer_0",
+            "heel_1/bolt_0",
+            "heel_1/washer_1",
+            "heel_1/bolt_1",
+            "heel_1/washer_2",
+            "heel_1/bolt_2",
+            "heel_1/washer_3",
+            "heel_1/bolt_3"
+          ],
+          "view": "install"
+        },
+        {
+          "title": "Heel position 2",
+          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
+          "child_slot": "heel_2",
+          "slots": [
+            "heel_2",
+            "heel_2/washer_0",
+            "heel_2/bolt_0",
+            "heel_2/washer_1",
+            "heel_2/bolt_1",
+            "heel_2/washer_2",
+            "heel_2/bolt_2",
+            "heel_2/washer_3",
+            "heel_2/bolt_3"
+          ],
+          "view": "install"
+        },
+        {
+          "title": "Cradle clevis",
+          "body": "Carry FA-220 (cradle clevis) from its shelf and fit it to FA-103. Secure it with two W-24 washers and two H-24070 bolts.",
+          "slots": [
+            "pitch/FA-220__001",
+            "pitch/W-24__023",
+            "pitch/H-24070__013",
+            "pitch/W-24__024",
+            "pitch/H-24070__014"
+          ],
+          "view": "components",
+          "child_slot": "pitch",
+          "context_sources": [
+            "FA-103__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "FA-220 • cradle",
+              "sources": [
+                "FA-220__001",
+                "W-24__023",
+                "H-24070__013",
+                "W-24__024",
+                "H-24070__014"
+              ],
+              "context": [
+                "FA-103__001"
+              ],
+              "direction": [
+                1,
+                1.4139417811536403,
+                -0.02772434865007134
+              ],
+              "up": [
+                0,
+                0.7208330649018558,
+                0.6931087162517845
+              ],
+              "offsets": {
+                "W-24__023": [
+                  -0.012,
+                  -0.0,
+                  0.0
+                ],
+                "H-24070__013": [
+                  -0.03,
+                  -0.0,
+                  0.0
+                ],
+                "W-24__024": [
+                  -0.012,
+                  -0.0,
+                  0.0
+                ],
+                "H-24070__014": [
+                  -0.03,
+                  -0.0,
+                  0.0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "title": "Ring clevis",
+          "body": "Carry FA-220 (ring clevis) from its shelf and fit it to FA-200. Secure it with two W-24 washers and two H-24070 bolts.",
+          "slots": [
+            "pitch/FA-220__002",
+            "pitch/W-24__025",
+            "pitch/H-24070__015",
+            "pitch/W-24__026",
+            "pitch/H-24070__016"
+          ],
+          "view": "components",
+          "child_slot": "pitch",
+          "context_sources": [
+            "FA-200__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "FA-220 • ring",
+              "sources": [
+                "FA-220__002",
+                "W-24__025",
+                "H-24070__015",
+                "W-24__026",
+                "H-24070__016"
+              ],
+              "context": [
+                "FA-200__001"
+              ],
+              "direction": [
+                1,
+                1.4139417811536403,
+                -0.02772434865007134
+              ],
+              "up": [
+                0,
+                0.7208330649018558,
+                0.6931087162517845
+              ],
+              "offsets": {
+                "W-24__025": [
+                  0.0,
+                  0.012,
+                  -0.0
+                ],
+                "H-24070__015": [
+                  0.0,
+                  0.03,
+                  -0.0
+                ],
+                "W-24__026": [
+                  0.0,
+                  0.012,
+                  -0.0
+                ],
+                "H-24070__016": [
+                  0.0,
+                  0.03,
+                  -0.0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "title": "Seat & pin actuator",
+          "body": "Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. The FA-500-P child manual covers its preparation.",
+          "slots": [
+            "pitch",
+            "pitch/FA-221__001",
+            "pitch/FA-222__001",
+            "pitch/W-12__053",
+            "pitch/H-12030__029",
+            "pitch/FA-221__002",
+            "pitch/FA-222__002",
+            "pitch/W-12__054",
+            "pitch/H-12030__030"
+          ],
+          "view": "components",
+          "child_slot": "pitch",
+          "context_sources": [
+            "FA-220__001",
+            "FA-220__002"
+          ],
+          "diagram_views": [
+            {
+              "title": "Base • pin and keeper",
+              "sources": [
+                "FA-220__001",
+                "FA-221__001",
+                "FA-222__001",
+                "W-12__053",
+                "H-12030__029"
+              ],
+              "context": [
+                "FA-525__001",
+                "FA-526__001",
+                "FA-527__001",
+                "FA-103__001"
+              ],
+              "direction": [
+                2,
+                1.0535252487027125,
+                -0.3742787067759636
+              ],
+              "up": [
+                0,
+                0.7208330649018558,
+                0.6931087162517845
+              ],
+              "offsets": {
+                "W-12__053": [
+                  -0.012,
+                  -0.0,
+                  0.0
+                ],
+                "H-12030__029": [
+                  -0.03,
+                  -0.0,
+                  0.0
+                ]
+              }
+            },
+            {
+              "title": "Rod • pin and keeper",
+              "sources": [
+                "FA-220__002",
+                "FA-221__002",
+                "FA-222__002",
+                "W-12__054",
+                "H-12030__030"
+              ],
+              "context": [
+                "FA-525__002",
+                "FA-526__002",
+                "FA-527__002",
+                "FA-200__001"
+              ],
+              "direction": [
+                2,
+                1.0535252487027125,
+                -0.3742787067759636
+              ],
+              "up": [
+                0,
+                0.7208330649018558,
+                0.6931087162517845
+              ],
+              "offsets": {
+                "W-12__054": [
+                  -0.012,
+                  -0.0,
+                  0.0
+                ],
+                "H-12030__030": [
+                  -0.03,
+                  -0.0,
+                  0.0
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "carry_class": "equipment"
+    }
+  }
+}

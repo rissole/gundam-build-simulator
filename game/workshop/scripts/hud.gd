@@ -23,6 +23,9 @@ var pause_card: PanelContainer
 var pause_title: Label
 var resume_button: Button
 var restart_button: Button
+var save_button: Button
+var reload_button: Button
+var quit_button: Button
 var session_label: Label
 var crosshair: Label
 var action_bar: HBoxContainer
@@ -42,6 +45,8 @@ var page: int:
 var toast_time: float = 0.0
 var entered: bool = false
 var confirm_restart: bool = false
+var confirm_reload: bool = false
+var discard_offered: bool = false
 var tone = Color("80dfbd")
 var muted = Color("a8b9be")
 
@@ -367,7 +372,8 @@ func _make_pause() -> void:
 	header.add_child(heading)
 	pause_title = label("Your workshop",30)
 	heading.add_child(pause_title)
-	heading.add_child(label("Prepare the heel pads and pitch actuator, then secure them to the foot.",15,muted))
+	var introduction = "Build the foot, assemble the supported leg, then secure it in the pelvis gantry." if game.get("leg_workshop") == true else "Prepare the heel pads and pitch actuator, then secure them to the foot."
+	heading.add_child(label(introduction,15,muted))
 	resume_button = button("Start building    →",true)
 	resume_button.custom_minimum_size.x = 200
 	resume_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -390,36 +396,96 @@ func _make_pause() -> void:
 	grid.add_child(_control_group("Manual & menu",[
 		[["Tab","~/","M","~·","N"],"Manual · browse tree"],[["←","→"],"Previous / next page"],
 		[["Enter","~/","Backspace"],"Child / parent manual"],[["C","~/","V"],"Cycle / inspect manual"],[["Esc"],"Pause / resume"]]))
+	session_label = label("",13,muted)
+	session_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_child(session_label)
 	var footer = HBoxContainer.new()
 	footer.add_theme_constant_override("separation",12)
 	col.add_child(footer)
-	session_label = label("Progress lasts for this session.\nRestarting or quitting clears this build.",13,muted)
-	session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	footer.add_child(session_label)
+	save_button = button("Save")
+	save_button.pressed.connect(_save_clicked)
+	footer.add_child(save_button)
+	reload_button = button("Reload save")
+	reload_button.pressed.connect(_reload_clicked)
+	footer.add_child(reload_button)
+	var spacer = Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(spacer)
 	restart_button = button("Restart build")
 	restart_button.pressed.connect(_restart_clicked)
 	footer.add_child(restart_button)
-	var quit_button = button("Quit")
-	quit_button.pressed.connect(func():get_tree().quit())
+	quit_button = button("Quit")
+	quit_button.pressed.connect(_quit_clicked)
 	footer.add_child(quit_button)
+	refresh_save_status()
+
+func _saves_enabled() -> bool:
+	return game != null and game.saves != null and game.saves.enabled
+
+func refresh_save_status() -> void:
+	if session_label == null:return
+	var enabled: bool = _saves_enabled()
+	save_button.visible = enabled
+	reload_button.visible = enabled
+	save_button.disabled = not enabled or (enabled and game.saves.blocked)
+	reload_button.disabled = not enabled or (enabled and (not game.saves.has_save or game.saves.blocked))
+	restart_button.text = ("Confirm new workshop" if enabled else "Confirm restart") if confirm_restart else ("New workshop" if enabled else "Restart build")
+	reload_button.text = "Confirm reload" if confirm_reload else "Reload save"
+	quit_button.text = "Quit without saving" if discard_offered else ("Save & quit" if enabled else "Quit")
+	resume_button.text = "Resume    →" if entered or (enabled and game.saves.restored) else "Start building    →"
+	if confirm_restart or confirm_reload:return
+	session_label.text = game.saves.status_text() if is_instance_valid(game.saves) else "Your workshop is starting."
+
+func _clear_save_confirmations() -> void:
+	confirm_restart = false
+	confirm_reload = false
+	discard_offered = false
+
+func _save_clicked() -> void:
+	_clear_save_confirmations()
+	if _saves_enabled():game.saves.save_now()
+	refresh_save_status()
+
+func _reload_clicked() -> void:
+	if not _saves_enabled() or not game.saves.has_save or game.saves.blocked:return
+	if confirm_reload:
+		_clear_save_confirmations()
+		game.saves.reload_save()
+		refresh_save_status()
+	else:
+		_clear_save_confirmations()
+		confirm_reload = true
+		refresh_save_status()
+		session_label.text = "Reload the saved workshop? Changes since the last save will be lost.\nResume to keep your current progress."
+
+func _quit_clicked() -> void:
+	if _saves_enabled():game.saves.quit_game(discard_offered)
+	else:get_tree().quit()
+
+func offer_discard() -> void:
+	_clear_save_confirmations()
+	discard_offered = true
+	refresh_save_status()
 
 func _restart_clicked() -> void:
 	if confirm_restart:
+		_clear_save_confirmations()
 		game.reset_demo()
+		refresh_save_status()
 	else:
+		_clear_save_confirmations()
 		confirm_restart = true
-		restart_button.text = "Confirm restart"
-		session_label.text = "Restart this build from the beginning?\nResume to keep your progress."
+		refresh_save_status()
+		session_label.text = "Start a new workshop? This replaces your current saved workshop.\nResume to keep your progress." if _saves_enabled() else "Restart this build from the beginning?\nResume to keep your progress."
 
 func show_pause(value: bool) -> void:
 	pause_panel.visible = value
 	action_bar.visible = not value
 	carry_panel.visible = not value and not carry_label.text.is_empty()
-	confirm_restart = false
-	restart_button.text = "Restart build"
-	session_label.text = "Progress lasts for this session.\nRestarting or quitting clears this build."
+	_clear_save_confirmations()
+	refresh_save_status()
 	pause_title.text = "Paused" if entered else "Your workshop"
-	resume_button.text = "Resume    →" if entered else "Start building    →"
 	if value:
 		target_panel.hide()
 		toast_panel.hide()
@@ -623,7 +689,9 @@ func _refresh_manual() -> void:
 			if spec.has("accepts"):label = game.components.title(spec.accepts)
 			else:
 				var child: Dictionary = game.model.definitions.assemblies[spec.assembly]
-				var family: String = child.get("part_id",game.model.definitions.parts[child.slots[child.root_slot].accepts].family)
+				var family: String = child.get("part_id","")
+				if family.is_empty() and child.has("root_slot"):
+					family = game.model.definitions.parts[child.slots[child.root_slot].accepts].family
 				label = child.title if child.title.begins_with(family) else family+" · "+child.title
 				label += " (prepared)"
 			quantities[label] = quantities.get(label,0)+1
@@ -667,6 +735,9 @@ func _refresh_manual() -> void:
 		if component_view and definition.has("root_slot"):display_slots.push_front(definition.root_slot)
 		for sid in display_slots:
 			var d: Dictionary = definition.slots[sid]
+			# Logical children have no manufactured root mesh. Authored views may
+			# supply a connection-scale display source; never assume a part here.
+			if d.has("assembly") and not d.has("pose_source"):continue
 			entries.append({"source":d.pose_source,"highlight":step.slots.has(sid),"installed":not a.slots[sid].is_empty(),"faint":sid == definition.get("root_slot","") and component_view})
 		if not a.parent.is_empty():page_body.text += "\n\nInstalled in "+manual_name(a.parent)+". Undo its mounting there before dismantling."
 	var context: Array = step.get("context_sources",definition.get("context_sources",[]))

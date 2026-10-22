@@ -10,6 +10,8 @@ const STACK_LIMIT = 20
 var pockets: Array[String] = []
 var selected_pocket: int = 0
 var expected_ids: Array = []
+# Scenario-authorized equipment; deliberately excluded from mutable save state.
+var support_definitions: Dictionary = {}
 
 func configure(data: Dictionary, scenario: Dictionary) -> Array[String]:
 	var errors = validate_definitions(data)
@@ -43,15 +45,54 @@ func configure(data: Dictionary, scenario: Dictionary) -> Array[String]:
 		if roots.has(base):errors.append("Duplicate root ownership: "+base)
 		roots.append(base)
 		if physical[base].kind != definition.slots[root].get("accepts",""):errors.append("Wrong root part: "+base)
+	var supports: Variant = scenario.get("supports",{})
+	if not supports is Dictionary:return ["Equipment supports must be a dictionary."]
+	for support_id in supports:
+		if not support_id is String or support_id.is_empty() or not supports[support_id] is Dictionary:
+			errors.append("Invalid equipment support definition.");continue
+		var support: Dictionary = supports[support_id]
+		for category in ["assemblies","parts","assembly_ids","item_ids"]:
+			if not support.get(category,[]) is Array:
+				errors.append("Support compatibility must be an array: "+support_id);continue
+			for value in support.get(category,[]):
+				if not value is String or not (data.assemblies if category == "assemblies" else data.parts if category == "parts" else ids if category == "assembly_ids" else physical).has(value):errors.append("Unknown support compatibility: "+support_id)
+	if not errors.is_empty():return errors
+	# Check initial locations before touching an existing live model.
+	var occupied: Array = []
+	for build in records:
+		var location: String = build.get("location","fixture" if scenario_parents(scenario).has(build) else "loose")
+		if location.begins_with("support:"):
+			var support_id = location.trim_prefix("support:")
+			if not supports.has(support_id) or not supports[support_id].get("assemblies",[]).has(build.definition) or (supports[support_id].has("assembly_ids") and not supports[support_id].assembly_ids.has(build.id)):errors.append("Incompatible initial build support: "+build.id)
+			if occupied.has(location):errors.append("Equipment support is occupied: "+location)
+			occupied.append(location)
+		elif data.assemblies.has(build.definition) and data.assemblies[build.definition].get("carry_class","") == "equipment" and location != "fixture":errors.append("Equipment build requires a support: "+build.id)
+	for part in scenario.parts:
+		if roots.has(part.instance_id):continue
+		var location: String = part.get("location","bin")
+		if location.begins_with("support:"):
+			var support_id = location.trim_prefix("support:")
+			if not supports.has(support_id) or not supports[support_id].get("parts",[]).has(part.kind) or (supports[support_id].has("item_ids") and not supports[support_id].item_ids.has(part.instance_id)):errors.append("Incompatible initial part support: "+part.instance_id)
+			if occupied.has(location):errors.append("Equipment support is occupied: "+location)
+			occupied.append(location)
+		elif data.parts.has(part.kind) and data.parts[part.kind].get("carry_class","") == "equipment":errors.append("Equipment part requires a support: "+part.instance_id)
+	for definition in data.assemblies.values():
+		for slot in definition.slots.values():
+			for support_id in slot.get("source_supports",[]):
+				if not supports.has(support_id):errors.append("Slot refers to an unknown support: "+str(support_id));continue
+				var category = "assemblies" if slot.has("assembly") else "parts"
+				var accepted: String = slot.get("assembly",slot.get("accepts",""))
+				if not supports[support_id].get(category,[]).has(accepted):errors.append("Slot source support is incompatible: "+str(support_id))
 	if not errors.is_empty():return errors
 	definitions = data.duplicate(true)
+	support_definitions = supports.duplicate(true)
 	pockets.assign(["","","","","","","","","",""])
 	selected_pocket = 0
 	items.clear()
 	assemblies.clear()
 	expected_ids.clear()
 	for part in scenario.parts:
-		items[part.instance_id] = {"source_id":part.get("source_id",part.instance_id),"kind":part.kind,"location":"bin","owner":"","slot":"","pocket":-1}
+		items[part.instance_id] = {"source_id":part.get("source_id",part.instance_id),"kind":part.kind,"location":part.get("location","bin"),"owner":"","slot":"","pocket":-1}
 	for build in records:
 		_add_assembly(build.id,build.definition)
 		var root: String = definitions.assemblies[build.definition].get("root_slot","")
@@ -88,8 +129,8 @@ func assembly_access_error(assembly: String, slot: String = "") -> String:
 	var root_location: String = assemblies[root].location
 	if root_location in ["held","loose","parent"]:return "Suspend this build at a preparation station first."
 	var locations: Array = d.get("work_locations",[])
-	var location: String = "station" if root_location.begins_with("station:") else root_location
-	if not locations.is_empty() and not locations.has(location):return "Suspend this build at a preparation station first."
+	var location: String = "station" if root_location.begins_with("station:") else "support" if root_location.begins_with("support:") else root_location
+	if not locations.is_empty() and not locations.has(location) and not locations.has(root_location):return "Suspend this build at a preparation station first."
 	return ""
 
 func _add_assembly(id: String, definition: String) -> void:
@@ -110,6 +151,10 @@ static func validate_definitions(data: Dictionary) -> Array[String]:
 			if not slots.has(root) or slots[root].has("assembly") or not slots[root].get("requires",[]).is_empty():errors.append("Root must be an independent physical part: "+id)
 		for sid in slots:
 			var s: Dictionary = slots[sid]
+			var equipment = data.assemblies.get(s.get("assembly",""),{}).get("carry_class","") == "equipment" if s.has("assembly") else data.parts.get(s.get("accepts",""),{}).get("carry_class","") == "equipment"
+			if equipment and sid != definition.get("root_slot","") and not s.get("support_required",false):errors.append("Equipment connection requires a support: "+sid)
+			if s.get("support_required",false) or s.has("source_supports"):
+				if s.get("support_required",false) != true or not s.get("source_supports") is Array or s.get("source_supports",[]).is_empty():errors.append("Supported slots require named source supports: "+sid)
 			if s.has("assembly"):
 				if not data.assemblies.has(s.assembly): errors.append("Unknown child definition: "+sid)
 				elif not data.assemblies[s.assembly].get("milestones",{}).has(s.get("milestone","")): errors.append("Unknown child milestone: "+sid)
@@ -266,6 +311,7 @@ func hands_occupied() -> bool:
 func carry_item(uid: String) -> String:
 	if not items.has(uid) or items[uid].location not in ["bin","loose"]:return "Choose an available component."
 	if definitions.parts[items[uid].kind].carry_class == "pocket":return "Collect this small piece into your pockets."
+	if definitions.parts[items[uid].kind].carry_class == "equipment":return "Use handling equipment for this component."
 	if hands_occupied():return "Both hands are occupied. Set down the carried component first."
 	items[uid].location = "held"
 	changed.emit()
@@ -282,6 +328,7 @@ func move_assembly(id: String, location: String) -> String:
 	if not assemblies.has(id):return "Unknown build."
 	if location not in ["held","loose"] and not location.begins_with("station:"):return "Invalid assembly destination."
 	if assemblies[id].location == "fixture":return "This fixture stays at its work station."
+	if assemblies[id].location.begins_with("support:") or definitions.assemblies[assemblies[id].definition].get("carry_class","") == "equipment":return "Use handling equipment to move this build."
 	if not assemblies[id].parent.is_empty():return "This assembly is mounted. Undo its parent installation first."
 	if location == "held":
 		if not held_item().is_empty():return "Both hands are occupied. Set down the carried component first."
@@ -294,9 +341,52 @@ func move_assembly(id: String, location: String) -> String:
 	changed.emit()
 	return ""
 
-func placement_error(assembly: String, slot: String, uid: String) -> String:
+func support_occupant(support_id: String) -> String:
+	for id in assemblies:
+		if assemblies[id].location == "support:"+support_id:return id
+	for uid in items:
+		if items[uid].location == "support:"+support_id:return uid
+	return ""
+
+func support_error(uid: String, support_id: String) -> String:
+	if not support_definitions.has(support_id):return "Unknown equipment support."
+	var support: Dictionary = support_definitions[support_id]
+	if assemblies.has(uid):
+		if not support.get("assemblies",[]).has(assemblies[uid].definition) or (support.has("assembly_ids") and not support.assembly_ids.has(uid)):return "This support cannot handle that assembly."
+	elif items.has(uid):
+		if not support.get("parts",[]).has(items[uid].kind) or (support.has("item_ids") and not support.item_ids.has(uid)):return "This support cannot handle that component."
+	else:return "Unknown supported component."
+	return ""
+
+func transfer_supported_assembly(id: String, from_support: String, to_support: String) -> String:
+	if not assemblies.has(id):return "Unknown build."
+	if not assemblies[id].parent.is_empty() or assemblies[id].location != "support:"+from_support:return "The build is not available on that support."
+	return _transfer_supported(id,from_support,to_support,true)
+
+func transfer_supported_item(uid: String, from_support: String, to_support: String) -> String:
+	if not items.has(uid) or items[uid].location != "support:"+from_support:return "The component is not available on that support."
+	return _transfer_supported(uid,from_support,to_support,false)
+
+func _transfer_supported(uid: String, from_support: String, to_support: String, assembly: bool) -> String:
+	for support_id in [from_support,to_support]:
+		var error = support_error(uid,support_id)
+		if not error.is_empty():return error
+	if from_support == to_support:return "Choose a different equipment support."
+	if not support_occupant(to_support).is_empty():return "The destination support is occupied."
+	if assembly:assemblies[uid].location = "support:"+to_support
+	else:items[uid].location = "support:"+to_support
+	changed.emit()
+	return ""
+
+func placement_error(assembly: String, slot: String, uid: String, support_id: String = "") -> String:
 	var s = slot_definition(assembly,slot)
 	if s.is_empty():return "Unknown attachment slot."
+	if support_id.is_empty():
+		if s.get("support_required",false):return "Use the specified handling equipment to seat this component."
+	else:
+		if not s.get("support_required",false) or not s.get("source_supports",[]).has(support_id):return "This connection does not accept that support."
+		var error = support_error(uid,support_id)
+		if not error.is_empty():return error
 	var a: Dictionary = assemblies[assembly]
 	var access_error = assembly_access_error(assembly,slot)
 	if not access_error.is_empty():return access_error
@@ -309,16 +399,30 @@ func placement_error(assembly: String, slot: String, uid: String) -> String:
 		if not assemblies.has(uid) or assemblies[uid].definition != s.assembly:return "Requires a compatible completed subassembly."
 		if uid == assembly or top_level(assembly) == uid:return "An assembly cannot be mounted inside itself."
 		if not assemblies[uid].parent.is_empty():return "That assembly already has a parent."
-		if assemblies[uid].location != "held":return "Pick up the prepared assembly before mounting it."
+		if assemblies[uid].location == "fixture":return "A fixed fixture cannot be mounted."
+		if support_id.is_empty():
+			if definitions.assemblies[assemblies[uid].definition].get("carry_class","") == "equipment":return "Use handling equipment for this build."
+			if assemblies[uid].location != "held":return "Pick up the prepared assembly before mounting it."
+		elif assemblies[uid].location != "support:"+support_id:return "The assembly is not on the selected support."
 		if not milestone(uid,s.milestone):return "Prepare this assembly first: "+s.milestone
 	else:
 		if not items.has(uid) or items[uid].kind != s.accepts:return "Compatible next component: "+definitions.parts[s.accepts].title
+		if not support_id.is_empty():
+			return "" if items[uid].location == "support:"+support_id else "The component is not on the selected support."
+		if definitions.parts[s.accepts].carry_class == "equipment":return "Use handling equipment for this component."
 		var required_location = "pocket" if definitions.parts[s.accepts].carry_class == "pocket" else "held"
 		if items[uid].location != required_location:return ("Collect " if required_location == "pocket" else "Carry ")+definitions.parts[s.accepts].title+" first."
 	return ""
 
 func install(assembly: String, slot: String, uid: String) -> Dictionary:
-	var error = placement_error(assembly,slot,uid)
+	return _install(assembly,slot,uid,"")
+
+func install_supported(assembly: String, slot: String, uid: String, support_id: String) -> Dictionary:
+	if support_id.is_empty():return {"ok":false,"error":"Choose a handling support."}
+	return _install(assembly,slot,uid,support_id)
+
+func _install(assembly: String, slot: String, uid: String, support_id: String) -> Dictionary:
+	var error = placement_error(assembly,slot,uid,support_id)
 	if not error.is_empty():return {"ok":false,"error":error}
 	var child = slot_definition(assembly,slot).has("assembly")
 	if child:
@@ -340,12 +444,26 @@ func _set_part(uid: String, assembly: String, slot: String) -> void:
 	items[uid].slot = slot
 
 func undo(assembly: String, child_destination: String = "loose") -> Dictionary:
+	return _undo(assembly,child_destination,"")
+
+func undo_supported(assembly: String, support_id: String) -> Dictionary:
+	if support_id.is_empty():return {"ok":false,"error":"Choose a handling support."}
+	return _undo(assembly,"support:"+support_id,support_id)
+
+func _undo(assembly: String, child_destination: String, support_id: String) -> Dictionary:
 	if not assemblies.has(assembly):return {"ok":false,"error":"Select a build manual first."}
 	var a: Dictionary = assemblies[assembly]
 	if not a.parent.is_empty():return {"ok":false,"error":"Open the parent manual and undo installation before changing this child."}
 	if a.history.is_empty():return {"ok":false,"error":"No build actions to undo in this manual."}
 	var step: Dictionary = a.history.back()
-	if step.action == "mount" and child_destination != "loose" and not child_destination.begins_with("station:"):
+	var slot = slot_definition(assembly,step.slot)
+	if slot.get("support_required",false):
+		if support_id.is_empty() or not slot.get("source_supports",[]).has(support_id):return {"ok":false,"error":"Reacquire an authorized support before removing this component."}
+		var error = support_error(step.uid,support_id)
+		if not error.is_empty():return {"ok":false,"error":error}
+		if not support_occupant(support_id).is_empty():return {"ok":false,"error":"The output support is occupied."}
+	elif not support_id.is_empty():return {"ok":false,"error":"This action does not use an equipment support."}
+	if step.action == "mount" and support_id.is_empty() and child_destination != "loose" and not child_destination.begins_with("station:"):
 		return {"ok":false,"error":"Choose a free output station or loose destination."}
 	if step.action == "mount" and child_destination.begins_with("station:"):
 		for other in assemblies.values():
@@ -358,7 +476,8 @@ func undo(assembly: String, child_destination: String = "loose") -> Dictionary:
 		assemblies[step.uid].location = child_destination
 	else:
 		var item: Dictionary = items[step.uid]
-		if definitions.parts[item.kind].carry_class == "pocket":
+		if not support_id.is_empty():item.location = child_destination
+		elif definitions.parts[item.kind].carry_class == "pocket":
 			var index = _available_pocket(item.kind)
 			item.location = "bin" if index < 0 else "pocket"
 			item.pocket = index
@@ -388,6 +507,23 @@ func integrity_errors() -> Array[String]:
 		if item.location == "pocket":
 			if item.pocket < 0 or item.pocket >= pockets.size() or pockets[item.pocket] != item.kind:errors.append("Pocket ownership mismatch.")
 		elif item.get("pocket",-1) != -1:errors.append("Non-pocket item retains a pocket.")
+	var occupied_supports: Array = []
+	for uid in items:
+		var item: Dictionary = items[uid]
+		if item.location.begins_with("support:"):
+			var error = support_error(uid,item.location.trim_prefix("support:"))
+			if not error.is_empty():errors.append(error)
+			if occupied_supports.has(item.location):errors.append("Equipment support is occupied.")
+			occupied_supports.append(item.location)
+		elif definitions.parts[item.kind].carry_class == "equipment" and item.location != "installed":errors.append("Equipment component must remain supported.")
+	for id in assemblies:
+		var a: Dictionary = assemblies[id]
+		if a.location.begins_with("support:"):
+			var error = support_error(id,a.location.trim_prefix("support:"))
+			if not error.is_empty():errors.append(error)
+			if occupied_supports.has(a.location):errors.append("Equipment support is occupied.")
+			occupied_supports.append(a.location)
+		elif definitions.assemblies[a.definition].get("carry_class","") == "equipment" and a.location not in ["fixture","parent"]:errors.append("Equipment build must remain supported.")
 	var seen: Array = []
 	var children: Array = []
 	var held = 0

@@ -19,12 +19,28 @@ PROJECT = Path(__file__).resolve().parents[1]
 ROOT = PROJECT.parents[1]
 
 
+def is_scene_tree(path: Path, visited: frozenset[Path] = frozenset()) -> bool:
+    """Include runnable suites that inherit another test's SceneTree harness."""
+    path = path.resolve()
+    if path in visited or not path.is_file():
+        return False
+    declaration = re.search(r'^extends\s+(SceneTree|"(res://[^"]+)")\s*(?:#.*)?$',
+                            path.read_text(), re.MULTILINE)
+    if not declaration:
+        return False
+    if declaration.group(1) == "SceneTree":
+        return True
+    return is_scene_tree(PROJECT / declaration.group(2).removeprefix("res://"), visited | {path})
+
+
 def cases() -> dict[str, list[str]]:
     result = {}
     for path in sorted((PROJECT / "tests").glob("*_test.gd")):
-        if re.search(r"^extends SceneTree\s*$", path.read_text(), re.MULTILINE):
+        if is_scene_tree(path):
             result[path.stem] = ["--script", "tests/" + path.name]
     result.update({
+        "default_workshop_launch": ["--quit-after", "5"],
+        "foot_workshop_launch": ["--quit-after", "5", "--", "--foot-workshop"],
         "single_pad_desktop": ["--", "--single-pad", "--demo-test"],
         "multi_build_desktop": ["--", "--multi-test"],
         "pitch_desktop": ["--", "--pitch-test"],
@@ -37,7 +53,7 @@ def cases() -> dict[str, list[str]]:
 def fingerprints() -> dict[str, str]:
     paths = [PROJECT / "project.godot", ROOT / "play.command"]
     for folder in [PROJECT / "scripts", PROJECT / "tests", PROJECT / "assets", PROJECT / "tools"]:
-        paths.extend(p for p in folder.rglob("*") if p.suffix in {".gd", ".gdshader", ".json", ".glb", ".py", ".png"})
+        paths.extend(p for p in folder.rglob("*") if p.suffix in {".gd", ".gdshader", ".json", ".glb", ".py", ".png", ".svg"})
     return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
 
 
@@ -82,7 +98,11 @@ def main() -> int:
                   and 'Condition "ret != noErr"' not in line]
         summaries = [line for line in text.splitlines()
                      if re.search(r"\b(?:PASS|FAIL)\s+\d+\s+checks", line)]
-        passed = code == 0 and not timed_out and not errors and bool(summaries) and not any("FAIL" in s for s in summaries)
+        # Normal application launches exercise selection without --script or an
+        # automated-test flag, which intentionally select legacy test scenarios.
+        # These smoke cases have no check-count summary; engine errors still fail.
+        launch_smoke = name in {"default_workshop_launch", "foot_workshop_launch"}
+        passed = code == 0 and not timed_out and not errors and (bool(summaries) or launch_smoke) and not any("FAIL" in s for s in summaries)
         result = {"name": name, "passed": passed, "exit_code": code, "timed_out": timed_out,
                   "seconds": round(time.monotonic() - started, 3), "command": cmd,
                   "summaries": summaries, "errors": errors, "log": str(log)}

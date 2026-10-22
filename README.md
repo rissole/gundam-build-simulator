@@ -2,7 +2,7 @@
 
 A first-person mecha workshop prototype: organise parts, follow illustrated manuals, and assemble a giant robot one component at a time.
 
-The full-game design targets an **18 m piloted mecha**. The current playable milestone is a **135-piece workshop with a supported foot bay, two pads, a complete pitch actuator, and linked manuals** in Godot, backed by an FA-01 foot model with **745 separate parts** and a reproducible Blender generation pipeline.
+The full-game design targets an **18 m piloted mecha**. The current prototype is a **175-piece supported left-leg workshop**: build the foot and structural leg, hoist it into a pelvis held by a gantry, then fasten the hip retainers. The expanded Godot hangar includes component stations, lifting equipment, personnel platforms, linked manuals and save/resume. Its FA-01 foot retains **745 separate source parts** and a reproducible Blender generation pipeline.
 
 ![FA-01 assembled foot, with separate armor, frame, ankle mechanisms, and sole pads](models/foot-fa01/output/foot-fa01-assembled.png)
 
@@ -14,7 +14,7 @@ The full-game design targets an **18 m piloted mecha**. The current playable mil
 
 ![Heel-pad assembly in the workshop, with the illustrated manual, placement preview and square inventory pockets](docs/images/heel-pad-demo.png)
 
-*Earlier workshop view; the default scene now uses a supported foot fixture.*
+*Earlier component-workshop view; the default scene now includes leg assembly and a final bay.*
 
 Use **Godot 4.7.2**. On macOS, double-click [play.command](play.command), or run it from the repository root:
 
@@ -32,7 +32,7 @@ On other platforms, open [game/workshop/project.godot](game/workshop/project.god
 
 Prepare two independent heel pads and a pitch actuator at the workshop stations, then secure them to the foot. Labelled drawers supply small hardware; shelves hold larger components. The parent foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
 
-The foot stays in a visible mechanical cradle. Walk around it or use the access platform, and press **E** at the bay controls to select a supported working position. Once both pads and the actuator are secured, transfer the upright foot along its rail carriage to the handoff area. Return it to the bay before undoing construction. Small preparation stations retain free rotation.
+The foot stays in a mechanical cradle. Use **E** at its controls to select a working position, then transfer the completed upright foot to dispatch. The leg-area hoist moves it into the assembly fixture. Fit the shin, knee and thigh, using the personnel lifts to reach each connection. Transfer the supported leg to the final bay, seat its integral hip ball, fit both retaining halves and their hardware, engage the stabilizer and release the hoist. Small preparation stations retain free rotation.
 
 | Input | Action |
 | --- | --- |
@@ -50,7 +50,7 @@ The foot stays in a visible mechanical cradle. Walk around it or use the access 
 | Z | Undo in the selected manual |
 | Escape | Release the mouse and open help |
 
-See the [workshop README](game/workshop/README.md) for the complete controls, behavior, verification, and limitations. Progress lasts for the current session. The rest of the foot is preassembled context; full-foot progression and the remaining robot are future work. The original heel-pad demo remains available as a small regression scenario.
+See the [workshop README](game/workshop/README.md) for the build sequence, controls and limitations. The default workshop saves locally every 30 seconds of active play, on pause and on quit, then resumes into the pause menu. The earlier foot-only workshop remains available with `./play.command -- --foot-workshop` and retains its separate save. This is a structural leg blockout: the pelvis starts assembled; detailed leg actuators, armor, torso and second leg remain future work.
 
 ## Explore the model and design
 
@@ -65,6 +65,8 @@ The foot measures approximately **3.0 m long × 1.3 m wide**. Its inventory cont
 | [FA-01 model](models/foot-fa01/README.md) | Model deliverables, Blender workflow, exports, and audit records |
 | [Modeling notes](models/foot-fa01/MODELING_NOTES.md) | Geometry decisions and visualization scope |
 | [Prototype expansion plan](design/game/foot-prototype-plan.md) | Proposed stages beyond the playable heel-pad milestone |
+| [Supported left-leg milestone](design/game/leg-milestone.md) | Expanded workshop, equipment, construction scope and verification |
+| [Leg and pelvis interfaces](design/game/leg-prototype-interface.md) | Physical parts, dimensions, ownership and manual dependencies |
 
 ![Foot mechanisms with the armor hidden](models/foot-fa01/output/foot-fa01-skeleton.png)
 

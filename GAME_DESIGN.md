@@ -4,7 +4,7 @@ Last updated: 2026-10-22
 
 This records the agreed game design from the workshop-loop discussion. Robot geometry, engineering detail, and part inventories remain in [ROBOT_DESIGN.md](ROBOT_DESIGN.md). Recommendations for reaching a playable foot build are recorded separately in the [foot prototype plan](design/game/foot-prototype-plan.md).
 
-**Status:** the core experience and interaction rules below are agreed. The user authorized the Godot heel-pad demo, and the [first playable project](game/workshop/README.md) implements that milestone. Its controls, reach values, collision approximations, and layout are initial implementation choices for playtesting; later stages in the linked plan remain proposed.
+**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) now includes the original foot branches and a structural left-leg milestone in an expanded hangar. Its controls, reach values, collision approximations and layout are prototype choices for playtesting. Historical increments below record their own scope; the latest supported-leg section describes the default scenario.
 
 ## Experience and purpose
 
@@ -161,7 +161,7 @@ The full foot retains all 516 fastener pieces. Each small-part pocket can hold 2
 
 ## Open details and record maintenance
 
-Godot is selected for the authorized heel-pad demo. Its [README](game/workshop/README.md) records implemented control bindings, carry classifications, reach, undo behavior, and current limits. These are initial prototype defaults rather than locked full-game tuning. Cross-session saving, full-game progression, replenishment rules, additional carry classes, and larger workshop layouts remain open.
+Godot is selected for the playable workshop. Its [README](game/workshop/README.md) records implemented control bindings, carry classifications, reach, undo behavior and current limits. These are prototype defaults rather than locked full-game tuning. The supported-foot and expanded leg workshops have separate local saves. Full-game progression and replenishment rules remain open.
 
 Update this file when gameplay decisions are accepted. Keep proposals visibly separate from agreed rules. Update the robot specifications only when the robot itself changes. Import or optimization work must preserve the source assets and inventory unless a later decision explicitly changes them.
 
@@ -195,7 +195,7 @@ Increments 1 and 2 introduced the two-pad regression scene, which contains both 
 
 The shared assembly model reads authored types, slots, prerequisites, milestones, and manual references. The parent and child manuals retain independent pages and show model-based illustrations. Looking at another build does not replace the selected manual. Undo acts on the selected manual; installed children must be detached through parent history before their internal preparation can be undone. Mount undo uses a free preparation station and explains when none is available.
 
-The original single-pad loop remains a regression scenario. The construction model is independent of desktop input. The actuator extension is described below; cross-session save/load and AR support remain later increments. See the [workshop README](game/workshop/README.md) for controls and verification.
+The original single-pad loop remains a regression scenario. The construction model is independent of desktop input. The actuator extension is described below; local save/load is implemented as described below, while AR support remains a later increment. See the [workshop README](game/workshop/README.md) for controls and verification.
 
 
 ## Pitch actuator milestone
@@ -206,7 +206,7 @@ FA-513 starts on the floor beside preparation C; the player picks up the motor a
 
 The compact action bar now represents ten persistent small-part pockets independently of the selected manual. Each stack holds up to 20 copies. Shelf components and whole assemblies use the assisted solid grip separately from those pockets. The first six pages need no barrel or transparency. The fitted barrel stays opaque: subsequent motor fastening uses the open rear, and retainer fastening uses exterior lands. Once the caps are secured, the assembly hides explicitly enclosed meshes, including in its placement preview; undo restores those internals without making the barrel translucent. Authored diagram geometry is cached across progress changes and normal play is capped at 60 FPS. Generous slot previews remain, with no precision threading or torque minigame.
 
-Headless verification covers the actuator's complete build/install/undo path through the desktop adapter, source transforms and physics. Rendered review inspects changed manual stages and interfaces separately. The original single- and two-pad regressions remain available. Human assessment of cabinet layout, manual readability and the longer collecting loop is still needed. Save/resume remains planned and current progress is session-only. The later scale playtest below motivates evaluating supported foot handling before further content expansion.
+Headless verification covers the actuator's complete build/install/undo path through the desktop adapter, source transforms and physics. Rendered review inspects changed manual stages and interfaces separately. The original single- and two-pad regressions remain available. Human assessment of cabinet layout, manual readability and the longer collecting loop is still needed. The later save/resume increment preserves progress in the default supported-foot workshop. The later scale playtest below motivates evaluating supported foot handling before further content expansion.
 
 
 ## Pockets and wall storage rebuild
@@ -307,7 +307,7 @@ Preserve the specified interfaces: integral leg/arm balls seat in torso sockets 
 
 ### Next prototype and review plan
 
-Evaluate a supported foot bay using the existing pad and pitch-actuator content before expanding the foot inventory. Retain the satisfying pockets, small preparation and pad-carry loop. Compare a fixed accessible pose with a deliberately repositioned fixture; test conveyance only after installation access feels good. Save/resume remains necessary before longer full-foot play sessions.
+Evaluate a supported foot bay using the existing pad and pitch-actuator content before expanding the foot inventory. Retain the satisfying pockets, small preparation and pad-carry loop. Compare a fixed accessible pose with a deliberately repositioned fixture; test conveyance only after installation access feels good. The local save/resume increment below supports longer play sessions before further full-foot expansion.
 
 - Map every current installation slot to a usable work pose and standing/platform position. Verify actual connection reach, view/approach obstruction, upward sole access and outboard pitch hardware. A nearby fixture control must not make a distant connection attachable.
 - Verify support through frame growth, fixture movement, mounted children, undo and transfer. Fixture/pallet/scaffold are workshop equipment, not additional copies of robot inventory. Progress and manual position follow the physical build, independently of station or support.
@@ -327,10 +327,66 @@ Once both pads and the pitch actuator are secured, the upright foot can transfer
 
 Placement and undo on the foot are available only while it is stationary in the work bay. The player must reach and see each real connection; equipment controls do not extend fastening reach. Construction on independent preparation stations remains available. The parent overview explains the bay controls and secured-transfer requirement without adding supplies to its component list.
 
-Headless verification covers equipment behavior and the existing build rules. The supported layout, working poses and sense of scale still need human playtesting. No new rendered review is claimed for this milestone.
+Headless verification covers equipment behavior and the existing build rules. The user accepted the current workshop playtest after the refinements below on 2026-10-22. This records a human playtest, not a new rendered manual review.
 
 ### Supported-foot playtest refinements
 
 Aiming at the bounds of an in-progress workpiece reveals a ready destination for the selected or carried compatible part in yellow within 6 m. The prompt asks the player to move closer or aim at the highlighted connection; the preview turns green when the connection is both in reach and directly aimed at. Discovery preserves prerequisites, equipment access and scenery occlusion, and never permits remote attachment. This applies to individual components, pad hardware and carried subassemblies.
 
 Rotation and transfer controls are mounted on the platform's parallel outer railing, facing inward, so the player can operate them while standing on the deck. The walking lane remains open. Space jumps from the ground or platform; holding it does not repeat the jump, and carrying remains subject to solid collision.
+
+
+## Accepted workshop playtest and local save/resume
+
+After the pickup-only cached outlines, performance fixes and broad yellow workpiece discovery were delivered, the user accepted the current workshop playtest on 2026-10-22: “ok im happy with the current playtest!” The next authorized increment is saving, rather than more construction content or another presentation revision.
+
+The default supported-foot workshop now has one versioned local slot with autosaves every 30 seconds of active play, on pause and on quit. Startup restores into the pause menu. Save writes immediately; Reload save confirms reverting unsaved changes; New workshop confirms replacing the current save. Failure leaves the running session open and makes quitting without saving an explicit choice.
+
+The snapshot retains physical identities, pockets and ownership, build history, loose/carried object physics, station occupants/rotation, supported-foot current and destination motion, player pose/view and manual session state. Whole-payload validation precedes live replacement; atomic writes, a checksum, content fingerprint and last-good backup protect recovery. Unsupported/newer content is preserved until an explicit new-workshop decision. Legacy scenarios, captures and headless tests do not touch the normal profile.
+
+The [save/resume plan and implementation contract](design/game/save-resume.md) records the scope and verification evidence. All 28 headless regression suites pass, including 430 save-specific checks of model/storage and the real workshop scene. This increment does not claim a new human playtest or rendered review. Migrations, cloud sync and multiple slots remain outside this increment.
+
+## Supported left leg and expanded workshop
+
+The next authorized milestone expands the workshop before integrating the new
+construction route. The default scenario has a 39.6 × 47 m hangar with a 22 m
+roof underside, the existing component stations and supported foot carrier, a
+structural-leg fixture with access on both sides, a clear transfer aisle, and a
+final bay containing a pelvis-supporting gantry. Overhead equipment moves large
+pieces; three personnel lifts bring the player and supplies to actual fastening
+positions. Future torso and second-leg work has reserved space.
+
+The pelvis bridge and its two separately bolted socket housings start assembled
+and clamped in the gantry. This is a selected prototype starting arrangement;
+player construction of the pelvis is deferred. The robot's standing hip height
+remains 9.2 m. The gantry holds the pelvis at 10.6 m to provide handling clearance.
+The complete leg approaches with its sole at 0.5 m, passing its ball crown below
+the socket skirt before rising into the socket.
+
+The existing 135-piece foot/pad/pitch branch remains playable. Forty additional
+active identities make the structural leg and hip retention, including nine
+existing foot-source hardware/harness identities promoted from context. The
+player joins the shin to the ankle flange and connects its main disconnect,
+assembles the knee bearings/spacers/fork/axle/cap, then bolts on the thigh spar
+with its integral hip ball. The hoist transfers the supported leg into the
+pelvis; the player installs the two retaining-ring halves through handling
+controls and fits their washers and bolts from the hip lift.
+
+Seating, retention and releasing support are separate states. Both halves and
+all retention hardware must be installed, and the gantry stabilizer engaged,
+before releasing the hoist. Removal requires reacquiring the hoist first. The
+same leg can return to its fixture and be dismantled, preserving physical part
+identities, mounted child progress and manual state. Equipment pauses with the
+game and stops for path obstructions.
+
+The expanded scenario saves to `user://leg-workshop-save.json`, including
+interrupted hoist/lift movement and partial retention. Launching with
+`--foot-workshop` retains the previous layout and `user://workshop-save.json`.
+Starting the expanded prototype does not overwrite that earlier profile.
+
+This establishes structural readiness only. Detailed leg actuators, additional
+services, armor, thrusters, waist/torso and the second leg remain deferred. The
+[milestone record](design/game/leg-milestone.md) tracks verification; the
+[interface specification](design/game/leg-prototype-interface.md) records the
+selected geometry, parts and manuals. Headless behavior/geometry evidence does
+not establish a human playtest or rendered approval for this expansion.

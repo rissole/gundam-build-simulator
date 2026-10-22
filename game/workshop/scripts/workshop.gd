@@ -20,6 +20,11 @@ var runtime: AssemblyRuntime
 var components: Node
 var storage: Node
 var pitch_workshop: bool = false
+var leg_workshop: bool = false
+var leg_content: Dictionary = {}
+var leg_layout: Node3D
+var leg_equipment: Node3D
+var access_lifts: Dictionary = {}
 var foot_fixture: Node3D
 var builds: Dictionary = {}
 var bodies: Dictionary = {}
@@ -74,10 +79,14 @@ var prepared_before: bool = false
 var chime: AudioStreamPlayer
 var started: bool = false
 var screenshot_mode: bool = false
+var saves: Node
 
 func _ready() -> void:
 	single_pad = OS.get_cmdline_user_args().has("--single-pad")
 	automated_test = OS.get_cmdline_user_args().has("--demo-test") or OS.get_cmdline_user_args().has("--multi-test") or OS.get_cmdline_user_args().has("--pitch-test") or OS.get_cmdline_user_args().has("--pockets-test")
+	var arguments: Array = Array(OS.get_cmdline_user_args())
+	var scripted = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("-s")
+	leg_workshop = leg_workshop or arguments.has("--leg-workshop") or (not scripted and not automated_test and not single_pad and not arguments.any(func(arg):return arg in ["--foot-workshop","--pads-only","--legacy-stations","--capture","--pitch-review"]))
 	config = HeelAssemblyState.scenario(single_pad)
 	pitch_workshop = not single_pad and not OS.get_cmdline_user_args().has("--pads-only") and not OS.get_cmdline_user_args().has("--multi-test")
 	var data = HeelAssemblyState.definition_data(single_pad)
@@ -86,6 +95,17 @@ func _ready() -> void:
 		var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(config.definitions))
 		data.parts.merge(overlay.parts,true)
 		data.assemblies.merge(overlay.assemblies,true)
+	if leg_workshop:
+		leg_content = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-content.json"))
+		var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-definitions.json"))
+		data.parts.merge(overlay.parts,true)
+		data.assemblies.merge(overlay.assemblies,true)
+		config.parts.append_array(leg_content.parts)
+		config.parents = leg_content.parents.duplicate(true)
+		config.supports = leg_content.supports.duplicate(true)
+		config.parent.location = "support:foot_carrier"
+		config.parents[0].home = [2.3,0.75,14.4]
+		config.parents[1].home = [13,10.6,26]
 	components = preload("res://scripts/component_interaction.gd").new(self)
 	add_child(components)
 	var errors = model.configure(data,config)
@@ -99,7 +119,11 @@ func _ready() -> void:
 		part_defs[definition.instance_id] = definition
 	_make_world()
 	_load_foot()
+	if leg_workshop:
+		preload("res://scripts/leg_source_geometry.gd").add_sources(source,leg_content)
+		for record in leg_content.parts:type_sources[record.kind] = record.get("source_id",record.instance_id)
 	_register_parent_fixtures()
+	if leg_workshop:_make_leg_context()
 	_make_player()
 	if pitch_workshop and not OS.get_cmdline_user_args().has("--legacy-stations"):
 		foot_fixture = preload("res://scripts/supported_fixture.gd").new()
@@ -110,6 +134,7 @@ func _ready() -> void:
 		_make_pad()
 	_activate(config.builds[0].id)
 	components.setup()
+	if leg_workshop:_make_leg_equipment()
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
 	storage.setup()
@@ -143,6 +168,9 @@ func _ready() -> void:
 	_state_changed()
 	set_paused(true)
 	started = true
+	saves = preload("res://scripts/workshop_save.gd").new()
+	add_child(saves)
+	saves.setup(self)
 	if OS.get_cmdline_user_args().has("--pockets-test"):
 		var runner = load("res://tests/pockets_workshop_test.gd").new()
 		add_child(runner)
@@ -257,6 +285,16 @@ func _make_world() -> void:
 	var dark = material(Color("233940"),0.3)
 	var metal = material(Color("49626a"),0.35)
 	var warm = material(Color("e8b46b"),0.1)
+	if leg_workshop:
+		leg_layout = preload("res://scripts/leg_workshop_layout.gd").new()
+		add_child(leg_layout)
+		leg_layout.setup(self)
+		sun.directional_shadow_max_distance = 58.0
+	else:
+		_make_component_room(floor_mat,wall_mat,dark,metal,warm)
+	_make_preparation_area(dark,metal,warm)
+
+func _make_component_room(floor_mat: Material, wall_mat: Material, dark: Material, metal: Material, _warm: Material) -> void:
 	box(self,Vector3(0,-0.15,0),Vector3(22,0.3,20),floor_mat,true)
 	box(self,Vector3(0,4,-7),Vector3(22,8,0.3),wall_mat,true)
 	# Side walls butt against the rear wall instead of sharing its top face.
@@ -276,6 +314,8 @@ func _make_world() -> void:
 		box(self,Vector3(x,6.5,-1),Vector3(0.10,0.06,5),material(Color("fff3d5"),0,true))
 	sign_panel(self,"FA / 01",Vector3(0,5.3,-6.55),Vector2(4.5,1.35),160,0.006)
 	sign_panel(self,"COMPONENT ASSEMBLY  /  LOWER LIMB DIVISION",Vector3(0,4.35,-6.55),Vector2(5.4,0.36),64,0.0025)
+
+func _make_preparation_area(dark: Material, metal: Material, warm: Material) -> void:
 	# Pad rests on a separate preparation table; the player chooses when to carry it.
 	box(self,Vector3(-0.1,0.92,PAD_HOME.z),Vector3(3.4,0.12,1.25),dark,true)
 	for x in [PAD_HOME.x-0.6,PAD_HOME.x+0.6]:
@@ -316,6 +356,48 @@ func _make_world() -> void:
 		other.set_meta("work_volume",Vector3(1.05,1.1,0.9))
 	# Spatial scale cues and a safe open route to the receiving station.
 	for x in [-0.8,5.0]: box(self,Vector3(x,0.008,-1.8),Vector3(0.045,0.01,4.3),warm)
+
+func _make_leg_context() -> void:
+	var pelvis = assembly_node("pelvis")
+	var context = Node3D.new()
+	context.name = "PelvisStructure"
+	pelvis.add_child(context)
+	var steel = material(Color("617880"),0.5)
+	for uid in leg_content.context_sources:
+		var mesh = _mesh(uid)
+		context.add_child(mesh)
+		mesh.transform = source[uid].transform
+		mesh.material_override = steel
+		var col = CollisionShape3D.new()
+		col.shape = mesh.mesh.create_trimesh_shape()
+		col.shape.backface_collision = true
+		col.transform = mesh.transform
+		col.set_meta("source_uid",uid)
+		pelvis.add_child(col)
+
+func _make_leg_equipment() -> void:
+	for entry in [
+		["leg",LegWorkshopLayout.LEG_LIFT_ORIGIN,Vector2(2.0,5.0),[0.15,1.2,3.8,5.2,8.7]],
+		["knee",LegWorkshopLayout.KNEE_LIFT_ORIGIN,Vector2(2.0,5.0),[0.15,1.2,3.8,5.2,8.7]],
+		["hip",LegWorkshopLayout.HIP_LIFT_ORIGIN,Vector2(2.6,2.2),[0.15,8.4]]
+	]:
+		var lift = preload("res://scripts/work_access_lift.gd").new()
+		add_child(lift)
+		var levels: Array[float] = []
+		levels.assign(entry[3])
+		lift.setup(self,entry[0],entry[1],entry[2],levels)
+		access_lifts[entry[0]] = lift
+	leg_equipment = load("res://scripts/leg_equipment.gd").new()
+	add_child(leg_equipment)
+	leg_equipment.setup(self,leg_layout,leg_content)
+
+func foot_equipment_available() -> bool:
+	return is_instance_valid(foot_fixture) and (not is_instance_valid(leg_equipment) or not leg_equipment.foot_departed)
+
+func equipment_controller(entry: Dictionary) -> Node:
+	if entry.has("controller"):return entry.controller
+	if entry.has("equipment_id"):return access_lifts.get(entry.equipment_id)
+	return foot_fixture
 
 func _station_frame(center: Vector3, dimensions: Vector3, title: String, dark: Material, warm: Material) -> void:
 	var half = dimensions/2
@@ -487,6 +569,7 @@ func _make_audio() -> void:
 	chime.volume_db = -8
 
 func set_paused(value: bool) -> void:
+	var was_paused = paused
 	paused = value
 	jump_requested = false
 	if value and is_instance_valid(interaction_outline):interaction_outline.clear()
@@ -499,6 +582,8 @@ func set_paused(value: bool) -> void:
 		hud.crosshair.visible = not value
 		if value: hud.target_panel.visible = false
 		hud.show_pause(value)
+	if value and not was_paused and started and is_instance_valid(saves) and not saves.applying:
+		saves.save_now()
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Verification drives the same adapter explicitly; live desktop events must
@@ -584,7 +669,9 @@ func handle_desktop_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not started: return
-	if is_instance_valid(foot_fixture):foot_fixture.physics(delta)
+	if foot_equipment_available():foot_fixture.physics(delta)
+	if is_instance_valid(leg_equipment):leg_equipment.physics(delta)
+	for lift in access_lifts.values():lift.physics(delta)
 	if not paused:
 		_update_crouch(movement_pressed(KEY_CTRL),delta)
 		var move = Vector2(float(movement_pressed(KEY_D))-float(movement_pressed(KEY_A)),float(movement_pressed(KEY_S))-float(movement_pressed(KEY_W))).normalized()
@@ -736,10 +823,13 @@ func interactable_assembly(owner: String) -> bool:
 	var top: String = model.top_level(owner)
 	if top.is_empty():return false
 	var location: String = model.assemblies[top].location
-	return location == "fixture" or location.begins_with("station:")
+	return location == "fixture" or location.begins_with("station:") or location.begins_with("support:")
 
 func equipment_access_error(owner: String) -> String:
-	if not is_instance_valid(foot_fixture) or not model.assemblies.has(owner):return ""
+	if is_instance_valid(leg_equipment):
+		var error: String = leg_equipment.equipment_access_error(owner)
+		if not error.is_empty():return error
+	if not foot_equipment_available() or not model.assemblies.has(owner):return ""
 	if model.top_level(owner) != default_parent_id():return ""
 	if foot_fixture.moving:return "Wait for the foot fixture to stop before working on its connections."
 	if foot_fixture.at_dispatch:return "Return the foot to the assembly bay before changing its connections."
@@ -847,7 +937,9 @@ func _update_target() -> void:
 	for kind in bins:candidates.append({"type":"bin","kind":kind,"point":bins[kind].global_position+Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in loose:
 		if is_instance_valid(loose[uid]):candidates.append({"type":"loose","uid":uid,"point":loose[uid].global_position,"radius":0.12})
-	if is_instance_valid(foot_fixture):candidates.append_array(foot_fixture.controls())
+	if foot_equipment_available():candidates.append_array(foot_fixture.controls())
+	if is_instance_valid(leg_equipment):candidates.append_array(leg_equipment.controls())
+	for lift in access_lifts.values():candidates.append_array(lift.controls())
 	if held.is_empty():
 		for candidate in components.candidates():
 			# Fixed/mounted builds have no competing pickup action; retain their
@@ -971,7 +1063,7 @@ func _present_target(access_error: String) -> void:
 	match target.type:
 		"equipment":
 			caption = target.label
-			detail = foot_fixture.action_error(target.action)
+			detail = equipment_controller(target).action_error(target.action)
 			usable = detail.is_empty()
 			if usable:
 				action_key = "E"
@@ -1062,7 +1154,7 @@ func _access(allowed: Array = [], check_approach: bool = true) -> String:
 	if target.type == "component":return components.access(check_approach)
 	if camera.global_position.distance_to(target.point) > REACH: return "Out of reach. Move closer to the connection (maximum %.2f m)." % REACH
 	if not _visible(target.point,allowed,_target_allows_body_hit()): return "Connection is obstructed. Approach its exposed side or use the work-position controls."
-	if target.type == "equipment":return foot_fixture.action_error(target.action)
+	if target.type == "equipment":return equipment_controller(target).action_error(target.action)
 	if target.type == "prep":
 		var station: Node3D = stations[target.get("station","prep")]
 		var envelope: Vector3 = SolidHandling.bounds(pad).size
@@ -1083,8 +1175,12 @@ func _carry_placement_error(destination: Transform3D, carried: WorkshopPart = nu
 	if receiving:
 		if receiving.has_meta("assembly_id"):receiving = assembly_node(model.top_level(receiving.get_meta("assembly_id")))
 		excluded.append(receiving.get_rid())
-		for body in bodies.values():
-			if receiving.is_ancestor_of(body):excluded.append(body.get_rid())
+		# Both rigid children and large animatable fixtures belong to the receiver.
+		# Unrelated workshop supports remain obstacles throughout the approach.
+		if receiving.has_meta("assembly_id"):
+			for member in runtime.descendants(receiving.get_meta("assembly_id"),false):
+				var child_body: CollisionObject3D = assembly_node(member)
+				excluded.append(child_body.get_rid())
 	# Only actual receiving owners are excluded; other fixtures stay solid.
 	return SolidHandling.sweep_error(carried,destination,excluded,WORLD_MASK)
 
@@ -1093,8 +1189,9 @@ func interact(all_stock: bool = false) -> void:
 	if target.type == "equipment":
 		var access_error = _access([])
 		if not access_error.is_empty():hud.toast(access_error);return
-		var equipment_error: String = foot_fixture.request(target.action)
-		hud.toast(equipment_error if not equipment_error.is_empty() else foot_fixture.status_text(),equipment_error.is_empty())
+		var controller = equipment_controller(target)
+		var equipment_error: String = controller.request(target.action)
+		hud.toast(equipment_error if not equipment_error.is_empty() else controller.status_text(),equipment_error.is_empty())
 		return
 	if target.type == "component" or (target.type == "slot" and target.get("discovery_only",false)):
 		# Pickup acts on the physical containing assembly even when its connection
@@ -1245,6 +1342,11 @@ func deposit() -> void:
 
 func undo_build() -> void:
 	var owner: String = hud.manual_id
+	if is_instance_valid(leg_equipment):
+		var assisted: Dictionary = leg_equipment.undo(owner)
+		if assisted.get("handled",false):
+			hud.toast(assisted.get("error","") if not assisted.get("error","").is_empty() else "Reversing the last supported installation.",assisted.get("error","").is_empty())
+			return
 	var equipment_error = equipment_access_error(owner)
 	if not equipment_error.is_empty():hud.toast(equipment_error);return
 	var destination = ""
@@ -1443,7 +1545,8 @@ func reset_station(station: String = "") -> void:
 	hud.toast("Station returned to its working orientation.",true)
 
 func reset_demo() -> void:
-	get_tree().reload_current_scene()
+	if is_instance_valid(saves):saves.new_workshop()
+	else:get_tree().reload_current_scene()
 
 func _capture_preview() -> void:
 	set_paused(false)

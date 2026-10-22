@@ -1,0 +1,2241 @@
+{
+  "version": 1,
+  "parts": [
+    {
+      "instance_id": "LG-100__001",
+      "source_id": "LG-100__001",
+      "part_id": "LG-100",
+      "kind": "lg-shin",
+      "location": "support:leg_shin_rack"
+    },
+    {
+      "instance_id": "FA-605__001",
+      "source_id": "FA-605__001",
+      "part_id": "FA-605",
+      "kind": "lg-main-input",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-110__001",
+      "source_id": "LG-110__001",
+      "part_id": "LG-110",
+      "kind": "lg-knee-fork",
+      "location": "support:leg_fork_rack"
+    },
+    {
+      "instance_id": "LG-120__001",
+      "source_id": "LG-120__001",
+      "part_id": "LG-120",
+      "kind": "lg-thigh-spar",
+      "location": "support:leg_spar_rack"
+    },
+    {
+      "instance_id": "LG-130__001",
+      "source_id": "LG-130__001",
+      "part_id": "LG-130",
+      "kind": "lg-knee-bearing",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-130__002",
+      "source_id": "LG-130__002",
+      "part_id": "LG-130",
+      "kind": "lg-knee-bearing",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-135__001",
+      "source_id": "LG-135__001",
+      "part_id": "LG-135",
+      "kind": "lg-knee-thrust",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-135__002",
+      "source_id": "LG-135__002",
+      "part_id": "LG-135",
+      "kind": "lg-knee-thrust",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-140__001",
+      "source_id": "LG-140__001",
+      "part_id": "LG-140",
+      "kind": "lg-knee-axle",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-150__001",
+      "source_id": "LG-150__001",
+      "part_id": "LG-150",
+      "kind": "lg-knee-cap",
+      "location": "bin"
+    },
+    {
+      "instance_id": "W-36__021",
+      "source_id": "W-36__021",
+      "part_id": "W-36",
+      "kind": "lg-w36",
+      "location": "bin"
+    },
+    {
+      "instance_id": "H-36090__001",
+      "source_id": "H-36090__001",
+      "part_id": "H-36090",
+      "kind": "lg-m36-90",
+      "location": "bin"
+    },
+    {
+      "instance_id": "W-36__022",
+      "source_id": "W-36__022",
+      "part_id": "W-36",
+      "kind": "lg-w36",
+      "location": "bin"
+    },
+    {
+      "instance_id": "H-36090__002",
+      "source_id": "H-36090__002",
+      "part_id": "H-36090",
+      "kind": "lg-m36-90",
+      "location": "bin"
+    },
+    {
+      "instance_id": "W-36__023",
+      "source_id": "W-36__023",
+      "part_id": "W-36",
+      "kind": "lg-w36",
+      "location": "bin"
+    },
+    {
+      "instance_id": "H-36090__003",
+      "source_id": "H-36090__003",
+      "part_id": "H-36090",
+      "kind": "lg-m36-90",
+      "location": "bin"
+    },
+    {
+      "instance_id": "W-36__024",
+      "source_id": "W-36__024",
+      "part_id": "W-36",
+      "kind": "lg-w36",
+      "location": "bin"
+    },
+    {
+      "instance_id": "H-36090__004",
+      "source_id": "H-36090__004",
+      "part_id": "H-36090",
+      "kind": "lg-m36-90",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W12__001",
+      "source_id": "LG-W12__001",
+      "part_id": "LG-W12",
+      "kind": "lg-w12",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H12050__001",
+      "source_id": "LG-H12050__001",
+      "part_id": "LG-H12050",
+      "kind": "lg-m12-50",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W12__002",
+      "source_id": "LG-W12__002",
+      "part_id": "LG-W12",
+      "kind": "lg-w12",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H12050__002",
+      "source_id": "LG-H12050__002",
+      "part_id": "LG-H12050",
+      "kind": "lg-m12-50",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__001",
+      "source_id": "LG-W24__001",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H24100__001",
+      "source_id": "LG-H24100__001",
+      "part_id": "LG-H24100",
+      "kind": "lg-m24-100",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__002",
+      "source_id": "LG-W24__002",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H24100__002",
+      "source_id": "LG-H24100__002",
+      "part_id": "LG-H24100",
+      "kind": "lg-m24-100",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__003",
+      "source_id": "LG-W24__003",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H24100__003",
+      "source_id": "LG-H24100__003",
+      "part_id": "LG-H24100",
+      "kind": "lg-m24-100",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__004",
+      "source_id": "LG-W24__004",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H24100__004",
+      "source_id": "LG-H24100__004",
+      "part_id": "LG-H24100",
+      "kind": "lg-m24-100",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-120__001",
+      "source_id": "PV-120__001",
+      "part_id": "PV-120",
+      "kind": "pv-ring-half",
+      "location": "support:pelvis_ring_rack_1"
+    },
+    {
+      "instance_id": "PV-120__002",
+      "source_id": "PV-120__002",
+      "part_id": "PV-120",
+      "kind": "pv-ring-half",
+      "location": "support:pelvis_ring_rack_2"
+    },
+    {
+      "instance_id": "LG-W24__005",
+      "source_id": "LG-W24__005",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-H24140__001",
+      "source_id": "PV-H24140__001",
+      "part_id": "PV-H24140",
+      "kind": "pv-m24-140",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__006",
+      "source_id": "LG-W24__006",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-H24140__002",
+      "source_id": "PV-H24140__002",
+      "part_id": "PV-H24140",
+      "kind": "pv-m24-140",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__007",
+      "source_id": "LG-W24__007",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-H24140__003",
+      "source_id": "PV-H24140__003",
+      "part_id": "PV-H24140",
+      "kind": "pv-m24-140",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__008",
+      "source_id": "LG-W24__008",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-H24140__004",
+      "source_id": "PV-H24140__004",
+      "part_id": "PV-H24140",
+      "kind": "pv-m24-140",
+      "location": "bin"
+    }
+  ],
+  "parents": [
+    {
+      "id": "left_leg",
+      "definition": "left_leg",
+      "label": "Structural left leg",
+      "location": "support:leg_fixture"
+    },
+    {
+      "id": "pelvis",
+      "definition": "pelvis",
+      "label": "Pelvis gantry",
+      "location": "fixture"
+    }
+  ],
+  "supports": {
+    "foot_carrier": {
+      "assemblies": [
+        "foot"
+      ]
+    },
+    "foot_hoist": {
+      "assemblies": [
+        "foot"
+      ]
+    },
+    "leg_fixture": {
+      "assemblies": [
+        "left_leg"
+      ]
+    },
+    "leg_hoist": {
+      "assemblies": [
+        "left_leg"
+      ]
+    },
+    "leg_shin_rack": {
+      "parts": [
+        "lg-shin"
+      ]
+    },
+    "leg_fork_rack": {
+      "parts": [
+        "lg-knee-fork"
+      ]
+    },
+    "leg_spar_rack": {
+      "parts": [
+        "lg-thigh-spar"
+      ]
+    },
+    "pelvis_ring_rack_1": {
+      "parts": [
+        "pv-ring-half"
+      ],
+      "item_ids": [
+        "PV-120__001"
+      ]
+    },
+    "pelvis_ring_rack_2": {
+      "parts": [
+        "pv-ring-half"
+      ],
+      "item_ids": [
+        "PV-120__002"
+      ]
+    }
+  },
+  "sources": {
+    "LG-100__001": {
+      "family": "LG-100",
+      "position": [
+        0,
+        1.395,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "plate",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            0.54,
+            0.03,
+            0.44
+          ],
+          "holes": [
+            [
+              -0.2,
+              -0.15,
+              0.019
+            ],
+            [
+              -0.2,
+              0.15,
+              0.019
+            ],
+            [
+              0.2,
+              -0.15,
+              0.019
+            ],
+            [
+              0.2,
+              0.15,
+              0.019
+            ]
+          ],
+          "axis": "y",
+          "rect_holes": [
+            [
+              0,
+              0,
+              0.182,
+              0.102
+            ]
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0,
+            1.6375,
+            0
+          ],
+          "size": [
+            0.3,
+            3.245,
+            0.2
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            3.705,
+            0
+          ],
+          "outer": 0.28,
+          "inner": 0.15,
+          "length": 0.56,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            0,
+            3.32,
+            0
+          ],
+          "size": [
+            0.3,
+            0.35,
+            0.2
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.2646439877359821,
+            0.03428797547196405,
+            -0.10915249233498882
+          ],
+          "outer": 0.024,
+          "inner": 0.017,
+          "length": 0.032,
+          "axis": [
+            0.43070552164653236,
+            0.8614110432930647,
+            -0.26919095102908275
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.20482199386799105,
+            0.049643987735982,
+            -0.05957624616749441
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12957943474185968,
+          "axis": [
+            -0.11964398773598209,
+            0.030712024528035897,
+            0.03915249233498882
+          ]
+        }
+      ]
+    },
+    "LG-V-DISCONNECT": {
+      "family": "LG-100",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0.2646439877359821,
+            1.429287975471964,
+            -0.10915249233498882
+          ],
+          "outer": 0.024,
+          "inner": 0.017,
+          "length": 0.032,
+          "axis": [
+            0.43070552164653236,
+            0.8614110432930647,
+            -0.26919095102908275
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.20482199386799105,
+            1.444643987735982,
+            -0.05957624616749441
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12957943474185968,
+          "axis": [
+            -0.11964398773598209,
+            0.030712024528035897,
+            0.03915249233498882
+          ]
+        }
+      ]
+    },
+    "LG-V-INPUT-PLUG": {
+      "family": "FA-605",
+      "position": [
+        0.25,
+        1.4,
+        -0.1
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.014,
+          "inner": 0,
+          "length": 0.03,
+          "axis": [
+            0.43070552164653236,
+            0.8614110432930647,
+            -0.26919095102908275
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.006891288346344518,
+            0.013782576692689036,
+            -0.004307055216465324
+          ],
+          "outer": 0.016,
+          "inner": 0.007,
+          "length": 0.006,
+          "axis": [
+            0.43070552164653236,
+            0.8614110432930647,
+            -0.26919095102908275
+          ]
+        }
+      ]
+    },
+    "LG-110__001": {
+      "family": "LG-110",
+      "position": [
+        0,
+        5.1,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            -0.43,
+            0,
+            0
+          ],
+          "outer": 0.34,
+          "inner": 0.105,
+          "length": 0.14,
+          "axis": "x"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.43,
+            0,
+            0
+          ],
+          "outer": 0.34,
+          "inner": 0.105,
+          "length": 0.14,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.43,
+            0.46,
+            0
+          ],
+          "size": [
+            0.14,
+            0.48,
+            0.26
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.43,
+            0.46,
+            0
+          ],
+          "size": [
+            0.14,
+            0.48,
+            0.26
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0.73,
+            0
+          ],
+          "size": [
+            1.0,
+            0.1,
+            0.36
+          ]
+        },
+        {
+          "shape": "plate",
+          "center": [
+            0,
+            0.8,
+            0
+          ],
+          "size": [
+            0.68,
+            0.04,
+            0.6
+          ],
+          "holes": [
+            [
+              -0.25,
+              -0.2,
+              0.0105
+            ],
+            [
+              -0.25,
+              0.2,
+              0.0105
+            ],
+            [
+              0.25,
+              -0.2,
+              0.0105
+            ],
+            [
+              0.25,
+              0.2,
+              0.0105
+            ]
+          ],
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-120__001": {
+      "family": "LG-120",
+      "position": [
+        0,
+        5.94,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "plate",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            0.68,
+            0.04,
+            0.6
+          ],
+          "holes": [
+            [
+              -0.25,
+              -0.2,
+              0.013
+            ],
+            [
+              -0.25,
+              0.2,
+              0.013
+            ],
+            [
+              0.25,
+              -0.2,
+              0.013
+            ],
+            [
+              0.25,
+              0.2,
+              0.013
+            ]
+          ],
+          "axis": "y"
+        },
+        {
+          "shape": "box",
+          "center": [
+            0,
+            1.27,
+            0
+          ],
+          "size": [
+            0.3,
+            2.5,
+            0.2
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            2.62,
+            0
+          ],
+          "outer": 0.15,
+          "inner": 0,
+          "length": 0.45,
+          "axis": "y"
+        },
+        {
+          "shape": "sphere",
+          "center": [
+            0,
+            3.26,
+            0
+          ],
+          "radius": 0.45
+        }
+      ]
+    },
+    "LG-130__001": {
+      "family": "LG-130",
+      "position": [
+        -0.21,
+        5.1,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.149,
+          "inner": 0.102,
+          "length": 0.12,
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-130__002": {
+      "family": "LG-130",
+      "position": [
+        0.21,
+        5.1,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.149,
+          "inner": 0.102,
+          "length": 0.12,
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-135__001": {
+      "family": "LG-135",
+      "position": [
+        -0.3175,
+        5.1,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.18,
+          "inner": 0.102,
+          "length": 0.075,
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-135__002": {
+      "family": "LG-135",
+      "position": [
+        0.3175,
+        5.1,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.18,
+          "inner": 0.102,
+          "length": 0.075,
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-140__001": {
+      "family": "LG-140",
+      "position": [
+        0,
+        5.1,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.1,
+          "inner": 0,
+          "length": 1.0,
+          "axis": "x"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.52,
+            0,
+            0
+          ],
+          "outer": 0.15,
+          "inner": 0,
+          "length": 0.04,
+          "axis": "x"
+        },
+        {
+          "shape": "plate",
+          "center": [
+            0.52,
+            0,
+            0
+          ],
+          "size": [
+            0.04,
+            0.18,
+            0.3
+          ],
+          "holes": [
+            [
+              0,
+              -0.1,
+              0.005
+            ],
+            [
+              0,
+              0.1,
+              0.005
+            ]
+          ],
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-150__001": {
+      "family": "LG-150",
+      "position": [
+        0.555,
+        5.1,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "plate",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            0.03,
+            0.2,
+            0.32
+          ],
+          "holes": [
+            [
+              0,
+              -0.1,
+              0.0065
+            ],
+            [
+              0,
+              0.1,
+              0.0065
+            ]
+          ],
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-W12__001": {
+      "family": "LG-W12",
+      "position": [
+        0.572,
+        5.1,
+        -0.1
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.011040000000000001,
+          "inner": 0.006600000000000001,
+          "length": 0.004,
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-H12050__001": {
+      "family": "LG-H12050",
+      "position": [
+        0.574,
+        5.1,
+        -0.1
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            -0.025,
+            0,
+            0
+          ],
+          "outer": 0.006,
+          "inner": 0,
+          "length": 0.05,
+          "axis": "x"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.006,
+            0,
+            0
+          ],
+          "outer": 0.009000000000000001,
+          "inner": 0,
+          "length": 0.012,
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-W12__002": {
+      "family": "LG-W12",
+      "position": [
+        0.572,
+        5.1,
+        0.1
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.011040000000000001,
+          "inner": 0.006600000000000001,
+          "length": 0.004,
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-H12050__002": {
+      "family": "LG-H12050",
+      "position": [
+        0.574,
+        5.1,
+        0.1
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            -0.025,
+            0,
+            0
+          ],
+          "outer": 0.006,
+          "inner": 0,
+          "length": 0.05,
+          "axis": "x"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.006,
+            0,
+            0
+          ],
+          "outer": 0.009000000000000001,
+          "inner": 0,
+          "length": 0.012,
+          "axis": "x"
+        }
+      ]
+    },
+    "LG-W24__001": {
+      "family": "LG-W24",
+      "position": [
+        -0.25,
+        5.962,
+        -0.2
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.022080000000000002,
+          "inner": 0.013200000000000002,
+          "length": 0.004,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-H24100__001": {
+      "family": "LG-H24100",
+      "position": [
+        -0.25,
+        5.964,
+        -0.2
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.05,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.1,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.012,
+            0
+          ],
+          "outer": 0.018000000000000002,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-W24__002": {
+      "family": "LG-W24",
+      "position": [
+        -0.25,
+        5.962,
+        0.2
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.022080000000000002,
+          "inner": 0.013200000000000002,
+          "length": 0.004,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-H24100__002": {
+      "family": "LG-H24100",
+      "position": [
+        -0.25,
+        5.964,
+        0.2
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.05,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.1,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.012,
+            0
+          ],
+          "outer": 0.018000000000000002,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-W24__003": {
+      "family": "LG-W24",
+      "position": [
+        0.25,
+        5.962,
+        -0.2
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.022080000000000002,
+          "inner": 0.013200000000000002,
+          "length": 0.004,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-H24100__003": {
+      "family": "LG-H24100",
+      "position": [
+        0.25,
+        5.964,
+        -0.2
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.05,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.1,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.012,
+            0
+          ],
+          "outer": 0.018000000000000002,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-W24__004": {
+      "family": "LG-W24",
+      "position": [
+        0.25,
+        5.962,
+        0.2
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.022080000000000002,
+          "inner": 0.013200000000000002,
+          "length": 0.004,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-H24100__004": {
+      "family": "LG-H24100",
+      "position": [
+        0.25,
+        5.964,
+        0.2
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.05,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.1,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.012,
+            0
+          ],
+          "outer": 0.018000000000000002,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-100__001": {
+      "family": "PV-100",
+      "position": [
+        0,
+        0.5,
+        0.65
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            2.7,
+            0.26,
+            0.3
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0.35,
+            0
+          ],
+          "size": [
+            0.48,
+            0.45,
+            0.5
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.5,
+            0.15,
+            0
+          ],
+          "size": [
+            0.18,
+            0.42,
+            0.24
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.5,
+            0.15,
+            0
+          ],
+          "size": [
+            0.18,
+            0.42,
+            0.24
+          ]
+        }
+      ]
+    },
+    "PV-V-HIP-BALL": {
+      "family": "LG-120",
+      "position": [
+        -1.1,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "sphere",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "radius": 0.45
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.64,
+            0
+          ],
+          "outer": 0.15,
+          "inner": 0,
+          "length": 0.45,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-110__001": {
+      "family": "PV-110",
+      "position": [
+        -1.1,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "hemisphere_shell",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "inner": 0.456,
+          "outer": 0.53
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.14,
+            0
+          ],
+          "outer": 0.53,
+          "inner": 0.46,
+          "length": 0.28,
+          "axis": "y"
+        },
+        {
+          "shape": "ring_plate",
+          "center": [
+            0,
+            -0.315,
+            0
+          ],
+          "outer": 0.68,
+          "inner": 0.49,
+          "length": 0.07,
+          "holes": [
+            [
+              0.4065863991822648,
+              0.40658639918226475,
+              0.0105
+            ],
+            [
+              -0.40658639918226475,
+              0.4065863991822648,
+              0.0105
+            ],
+            [
+              -0.4065863991822649,
+              -0.40658639918226475,
+              0.0105
+            ],
+            [
+              0.4065863991822647,
+              -0.4065863991822649,
+              0.0105
+            ]
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0.42,
+            0.5
+          ],
+          "size": [
+            0.46,
+            0.24,
+            0.4
+          ]
+        }
+      ]
+    },
+    "PV-C-H24090__001": {
+      "family": "PV-C-H24090",
+      "position": [
+        -1.25,
+        0.54,
+        0.6
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.045,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.09,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.012,
+            0
+          ],
+          "outer": 0.018,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-C-H24090__002": {
+      "family": "PV-C-H24090",
+      "position": [
+        -0.9500000000000001,
+        0.54,
+        0.6
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.045,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.09,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.012,
+            0
+          ],
+          "outer": 0.018,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-110__002": {
+      "family": "PV-110",
+      "position": [
+        1.1,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "hemisphere_shell",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "inner": 0.456,
+          "outer": 0.53
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.14,
+            0
+          ],
+          "outer": 0.53,
+          "inner": 0.46,
+          "length": 0.28,
+          "axis": "y"
+        },
+        {
+          "shape": "ring_plate",
+          "center": [
+            0,
+            -0.315,
+            0
+          ],
+          "outer": 0.68,
+          "inner": 0.49,
+          "length": 0.07,
+          "holes": [
+            [
+              0.4065863991822648,
+              0.40658639918226475,
+              0.0105
+            ],
+            [
+              -0.40658639918226475,
+              0.4065863991822648,
+              0.0105
+            ],
+            [
+              -0.4065863991822649,
+              -0.40658639918226475,
+              0.0105
+            ],
+            [
+              0.4065863991822647,
+              -0.4065863991822649,
+              0.0105
+            ]
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0.42,
+            0.5
+          ],
+          "size": [
+            0.46,
+            0.24,
+            0.4
+          ]
+        }
+      ]
+    },
+    "PV-C-H24090__003": {
+      "family": "PV-C-H24090",
+      "position": [
+        0.9500000000000001,
+        0.54,
+        0.6
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.045,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.09,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.012,
+            0
+          ],
+          "outer": 0.018,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-C-H24090__004": {
+      "family": "PV-C-H24090",
+      "position": [
+        1.25,
+        0.54,
+        0.6
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.045,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.09,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.012,
+            0
+          ],
+          "outer": 0.018,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-120__001": {
+      "family": "PV-120",
+      "position": [
+        -1.1,
+        -0.39,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "ring_plate",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "inner": 0.3,
+          "outer": 0.68,
+          "length": 0.08,
+          "start_degrees": 180,
+          "end_degrees": 360,
+          "holes": [
+            [
+              -0.4065863991822649,
+              -0.40658639918226475,
+              0.013
+            ],
+            [
+              0.4065863991822647,
+              -0.4065863991822649,
+              0.013
+            ]
+          ]
+        }
+      ]
+    },
+    "PV-120__002": {
+      "family": "PV-120",
+      "position": [
+        -1.1,
+        -0.39,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        180,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "ring_plate",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "inner": 0.3,
+          "outer": 0.68,
+          "length": 0.08,
+          "start_degrees": 180,
+          "end_degrees": 360,
+          "holes": [
+            [
+              -0.4065863991822649,
+              -0.40658639918226475,
+              0.013
+            ],
+            [
+              0.4065863991822647,
+              -0.4065863991822649,
+              0.013
+            ]
+          ]
+        }
+      ]
+    },
+    "LG-W24__005": {
+      "family": "LG-W24",
+      "position": [
+        -0.6934136008177353,
+        -0.432,
+        0.40658639918226475
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.022080000000000002,
+          "inner": 0.013200000000000002,
+          "length": 0.004,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-H24140__001": {
+      "family": "PV-H24140",
+      "position": [
+        -0.6934136008177353,
+        -0.434,
+        0.40658639918226475
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.07,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.14,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.012,
+            0
+          ],
+          "outer": 0.018000000000000002,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-W24__006": {
+      "family": "LG-W24",
+      "position": [
+        -1.5065863991822648,
+        -0.432,
+        0.4065863991822648
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.022080000000000002,
+          "inner": 0.013200000000000002,
+          "length": 0.004,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-H24140__002": {
+      "family": "PV-H24140",
+      "position": [
+        -1.5065863991822648,
+        -0.434,
+        0.4065863991822648
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.07,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.14,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.012,
+            0
+          ],
+          "outer": 0.018000000000000002,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-W24__007": {
+      "family": "LG-W24",
+      "position": [
+        -1.506586399182265,
+        -0.432,
+        -0.40658639918226475
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.022080000000000002,
+          "inner": 0.013200000000000002,
+          "length": 0.004,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-H24140__003": {
+      "family": "PV-H24140",
+      "position": [
+        -1.506586399182265,
+        -0.434,
+        -0.40658639918226475
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.07,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.14,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.012,
+            0
+          ],
+          "outer": 0.018000000000000002,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    },
+    "LG-W24__008": {
+      "family": "LG-W24",
+      "position": [
+        -0.6934136008177354,
+        -0.432,
+        -0.4065863991822649
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "outer": 0.022080000000000002,
+          "inner": 0.013200000000000002,
+          "length": 0.004,
+          "axis": "y"
+        }
+      ]
+    },
+    "PV-H24140__004": {
+      "family": "PV-H24140",
+      "position": [
+        -0.6934136008177354,
+        -0.434,
+        -0.4065863991822649
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0.07,
+            0
+          ],
+          "outer": 0.012,
+          "inner": 0,
+          "length": 0.14,
+          "axis": "y"
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            -0.012,
+            0
+          ],
+          "outer": 0.018000000000000002,
+          "inner": 0,
+          "length": 0.024,
+          "axis": "y"
+        }
+      ]
+    }
+  },
+  "context_sources": [
+    "PV-100__001",
+    "PV-110__001",
+    "PV-C-H24090__001",
+    "PV-C-H24090__002",
+    "PV-110__002",
+    "PV-C-H24090__003",
+    "PV-C-H24090__004"
+  ],
+  "source_units": "metres",
+  "source_axes": "Godot X robot right, Y up, -Z forward",
+  "joint_heights": {
+    "ankle": 1.0,
+    "knee": 5.1,
+    "hip": 9.2
+  },
+  "readiness": "structural_ready",
+  "diagram_only_sources": [
+    "LG-V-DISCONNECT",
+    "LG-V-INPUT-PLUG",
+    "PV-V-HIP-BALL"
+  ],
+  "equipment": {
+    "foot_mount": {
+      "parent": "left_leg",
+      "slot": "foot",
+      "support": "foot_carrier"
+    },
+    "leg_mount": {
+      "parent": "pelvis",
+      "slot": "left_leg",
+      "support": "leg_hoist"
+    },
+    "parts": {
+      "LG-100__001": {
+        "owner": "left_leg",
+        "slot": "shin",
+        "support": "leg_shin_rack",
+        "stock_position": [
+          -2,
+          1.5,
+          14
+        ]
+      },
+      "LG-110__001": {
+        "owner": "left_leg",
+        "slot": "fork",
+        "support": "leg_fork_rack",
+        "stock_position": [
+          -2,
+          1.5,
+          18
+        ]
+      },
+      "LG-120__001": {
+        "owner": "left_leg",
+        "slot": "spar",
+        "support": "leg_spar_rack",
+        "stock_position": [
+          -2,
+          1.5,
+          22
+        ]
+      },
+      "PV-120__001": {
+        "owner": "pelvis",
+        "slot": "ring_1",
+        "support": "pelvis_ring_rack_1",
+        "stock_position": [
+          10,
+          1.5,
+          23
+        ]
+      },
+      "PV-120__002": {
+        "owner": "pelvis",
+        "slot": "ring_2",
+        "support": "pelvis_ring_rack_2",
+        "stock_position": [
+          10,
+          1.5,
+          29
+        ]
+      }
+    }
+  }
+}

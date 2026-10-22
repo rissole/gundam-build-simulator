@@ -1,0 +1,449 @@
+extends Node
+## One local slot. Validate a detached snapshot before touching the live workshop.
+const ModelSave = preload("res://scripts/save_model.gd")
+const Store = preload("res://scripts/save_store.gd")
+const SAVE_PATH = "user://workshop-save.json"
+const LEG_SAVE_PATH = "user://leg-workshop-save.json"
+const LEG_WORLD_VERSION = 1
+const AUTOSAVE_SECONDS = 30.0
+const WORLD_VERSION = 1
+
+var game: Node
+var baseline: AssemblyModel
+var initial: Dictionary
+var path: String = SAVE_PATH
+var fingerprint: String
+var enabled = false
+var automatic = true
+var has_save = false
+var restored = false
+var blocked = false
+var applying = false
+var elapsed = 0.0
+var message = ""
+var rotate_backup = true
+
+func setup(workshop: Node, path_override: String = "", use_automatic: bool = true) -> void:
+	game = workshop
+	automatic = use_automatic
+	path = (LEG_SAVE_PATH if _leg_mode() else SAVE_PATH) if path_override.is_empty() else path_override
+	var script_launch = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("-s")
+	enabled = not path_override.is_empty() or (not script_launch and DisplayServer.get_name() != "headless" and not game.automated_test and (game.pitch_workshop or _leg_mode()) and (is_instance_valid(game.leg_equipment) if _leg_mode() else is_instance_valid(game.foot_fixture)) and not OS.get_cmdline_user_args().has("--capture") and not OS.get_cmdline_user_args().has("--pitch-review"))
+	baseline = AssemblyModel.new()
+	var configuration_errors = baseline.configure(game.model.definitions,game.config)
+	assert(configuration_errors.is_empty(),str(configuration_errors))
+	fingerprint = JSON.stringify({"world":WORLD_VERSION,"definitions":game.model.definitions,"scenario":game.config,"supported":is_instance_valid(game.foot_fixture),"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb")}).sha256_text()
+	if _leg_mode():
+		# Keep the established foot profile fingerprint byte-for-byte unchanged.
+		# Procedural geometry and controller paths are content, just like the GLB.
+		var materials = {"world":LEG_WORLD_VERSION,"legacy":fingerprint,"lifts":{}}
+		for id in game.access_lifts:
+			var lift = game.access_lifts[id]
+			materials.lifts[id] = {"origin":vector(lift.position),"deck_size":[lift.deck_size.x,lift.deck_size.y],"stops":lift.stops.duplicate()}
+		for resource in ["res://assets/leg-prototype-content.json","res://assets/leg-prototype-definitions.json","res://scripts/leg_source_geometry.gd","res://scripts/leg_workshop_layout.gd","res://scripts/leg_equipment.gd","res://scripts/work_access_lift.gd"]:
+			materials[resource] = FileAccess.get_sha256(resource) if FileAccess.file_exists(resource) else "missing"
+		fingerprint = JSON.stringify(materials).sha256_text()
+	initial = capture()
+	if enabled:
+		game.get_tree().auto_accept_quit = false
+		reload_save(true)
+	_refresh()
+
+func _leg_mode() -> bool:
+	return game.get("leg_workshop") == true
+
+func status_text() -> String:
+	if not enabled:return "This scenario is session-only.\nYour saved workshop is untouched."
+	if not message.is_empty():return message
+	return "Autosaves every 30 seconds, on pause and on quit.\nYour workshop resumes when you reopen the game."
+
+func _process(delta: float) -> void:
+	if not enabled or not automatic or blocked or applying or game.paused:return
+	elapsed += delta
+	if elapsed >= AUTOSAVE_SECONDS:save_now()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and enabled:quit_game()
+
+func _refresh() -> void:
+	if is_instance_valid(game) and is_instance_valid(game.hud):game.hud.refresh_save_status()
+
+func _failure(error: String, protect: bool = false) -> bool:
+	blocked = blocked or protect
+	elapsed = 0.0
+	message = "Could not save/resume: "+error+"\n"+("Existing save preserved. New workshop replaces this slot." if blocked else "Your current workshop is still open. Try Save again.")
+	_refresh()
+	if not game.paused:game.hud.toast("Saving needs attention. Open the pause menu for details.")
+	return false
+
+func _read_valid(file_path: String) -> Dictionary:
+	var result: Dictionary = Store.read(file_path,fingerprint)
+	if result.ok:
+		var errors = validate(result.payload)
+		if not errors.is_empty():
+			result.ok = false
+			result.error = errors[0]
+	return result
+
+func save_now() -> bool:
+	if not enabled:return true
+	if applying:return false
+	if blocked:return false
+	var snapshot = capture()
+	var errors = validate(snapshot)
+	if not errors.is_empty():return _failure(errors[0])
+	# Do not rotate a damaged or externally replaced primary over a good backup.
+	if rotate_backup and Store.exists(path):
+		var previous = _read_valid(path)
+		if not previous.ok:return _failure(previous.error,true)
+	var error: String = Store.write(path,fingerprint,snapshot,rotate_backup)
+	if not error.is_empty():return _failure(error)
+	rotate_backup = true
+	has_save = true
+	elapsed = 0.0
+	message = "Saved locally at "+Time.get_time_string_from_system()+".\nAutosave is on · pause and quit also save."
+	_refresh()
+	return true
+
+func reload_save(startup: bool = false) -> bool:
+	if not enabled:return false
+	var result = _read_valid(path)
+	var recovered = false
+	if not result.ok:
+		# A newer/different content save must never be silently downgraded to a backup.
+		if result.get("unsupported",false):return _failure(result.error,true)
+		var backup = _read_valid(path+".bak")
+		if not backup.ok:
+			if startup and result.get("missing",false) and backup.get("missing",false):return false
+			return _failure(result.error+" No compatible backup is available.",true)
+		result = backup
+		recovered = true
+	apply_snapshot(result.payload)
+	has_save = true
+	restored = true
+	blocked = false
+	rotate_backup = not recovered
+	elapsed = 0.0
+	message = ("Recovered the previous save from backup." if recovered else "Restored your saved workshop.")+"\nAutosave is on · pause and quit also save."
+	game.hud.entered = true
+	game.set_paused(true)
+	_refresh()
+	return true
+
+func new_workshop() -> bool:
+	if enabled:
+		var current = _read_valid(path)
+		var error: String = Store.write(path,fingerprint,initial,current.ok)
+		if not error.is_empty():return _failure(error)
+	apply_snapshot(initial)
+	blocked = false
+	restored = false
+	has_save = enabled
+	rotate_backup = true
+	elapsed = 0.0
+	message = "New workshop saved.\nAutosave is on · pause and quit also save."
+	game.hud.entered = false
+	game.set_paused(true)
+	_refresh()
+	return true
+
+func quit_game(discard: bool = false) -> void:
+	if discard or not enabled or save_now():
+		game.get_tree().quit()
+		return
+	# A failed write must not silently throw away the live session.
+	applying = true
+	_pause_menu()
+	applying = false
+	game.hud.offer_discard()
+
+func _pause_menu() -> void:
+	# The browser reparents the manual into its reader. Close it normally before
+	# showing the pause card, including a failed OS quit while browsing a manual.
+	if game.hud.browser.visible:
+		game.hud.browser.return_to_pause = true
+		game.hud.browser.close_browser()
+	game.set_paused(true)
+
+static func vector(value: Vector3) -> Array:
+	return [value.x,value.y,value.z]
+
+static func pose(value: Transform3D) -> Array:
+	return vector(value.basis.x)+vector(value.basis.y)+vector(value.basis.z)+vector(value.origin)
+
+static func to_vector(value: Array) -> Vector3:
+	return Vector3(value[0],value[1],value[2])
+
+static func to_pose(value: Array) -> Transform3D:
+	return Transform3D(Basis(Vector3(value[0],value[1],value[2]),Vector3(value[3],value[4],value[5]),Vector3(value[6],value[7],value[8])),Vector3(value[9],value[10],value[11]))
+
+static func body_state(body: RigidBody3D) -> Dictionary:
+	return {"pose":pose(body.global_transform),"linear":vector(body.linear_velocity),"angular":vector(body.angular_velocity)}
+
+func capture() -> Dictionary:
+	var world = {"stations":{},"fixtures":{},"bodies":{},"items":{},"support":{},"active_build":game.active_build}
+	for id in game.stations:world.stations[id] = pose(game.stations[id].global_transform)
+	for id in game.runtime.nodes:
+		if not game.bodies.has(id):world.fixtures[id] = pose(game.assembly_node(id).global_transform)
+		elif game.model.assemblies[id].parent.is_empty():world.bodies[id] = body_state(game.bodies[id])
+	for uid in game.model.items:
+		var location: String = game.model.items[uid].location
+		if location == "loose" and game.loose.has(uid) and is_instance_valid(game.loose[uid]):world.items[uid] = body_state(game.loose[uid])
+		elif location == "held" and is_instance_valid(game.components.held_body):world.items[uid] = body_state(game.components.held_body)
+	if is_instance_valid(game.foot_fixture):
+		var f = game.foot_fixture
+		world.support = {"moving":f.moving,"at_dispatch":f.at_dispatch,"work_pose":f.work_pose,"destination_pose":f._destination_pose,"destination_dispatch":f._destination_dispatch}
+	if _leg_mode():
+		world["leg_equipment"] = game.leg_equipment.capture()
+		world["access_lifts"] = {}
+		for id in game.access_lifts:world.access_lifts[id] = game.access_lifts[id].capture()
+	world["player"] = {"pose":pose(game.player.global_transform),"velocity":vector(game.player.velocity),"pitch":game.camera.rotation.x,"height":game.camera.position.y,"fov":game.camera.fov,"crouched":game.crouched}
+	world["reader"] = {"manual":game.hud.manual_id,"pages":game.hud.pages.duplicate(),"visible":game.hud.manual.visible,"suggested_only":game.hud.browser.suggested_only}
+	return {"model":ModelSave.capture(game.model),"world":world}
+
+static func number(value: Variant, limit: float = 256.0) -> bool:
+	return (value is int or value is float) and is_finite(value) and absf(value) <= limit
+
+static func valid_vector(value: Variant, count: int = 3) -> bool:
+	return value is Array and value.size() == count and value.all(func(n):return number(n))
+
+static func valid_pose(value: Variant) -> bool:
+	if not valid_vector(value,12):return false
+	var b = to_pose(value).basis
+	return absf(b.determinant()-1.0) < 0.002 and absf(b.x.length_squared()-1.0) < 0.002 and absf(b.y.length_squared()-1.0) < 0.002 and absf(b.z.length_squared()-1.0) < 0.002 and absf(b.x.dot(b.y)) < 0.002 and absf(b.x.dot(b.z)) < 0.002 and absf(b.y.dot(b.z)) < 0.002
+
+static func same_keys(value: Variant, expected: Array) -> bool:
+	return value is Dictionary and value.size() == expected.size() and expected.all(func(key):return value.has(key))
+
+static func valid_body(value: Variant) -> bool:
+	return value is Dictionary and valid_pose(value.get("pose")) and valid_vector(value.get("linear")) and valid_vector(value.get("angular"))
+
+func validate(data: Variant) -> Array[String]:
+	if not data is Dictionary:return ["Missing workshop snapshot."]
+	var errors: Array[String] = ModelSave.validate(data.get("model"),baseline)
+	if not errors.is_empty():return errors
+	var w = data.get("world")
+	if not w is Dictionary:return ["Missing workshop positions."]
+	if not same_keys(w.get("stations"),game.stations.keys()):return ["Preparation stations changed."]
+	for id in w.stations:
+		if not valid_pose(w.stations[id]):return ["Invalid station pose."]
+		if not to_pose(w.stations[id]).origin.is_equal_approx(to_pose(initial.world.stations[id]).origin):return ["Preparation station moved from its anchors."]
+	var roots: Array = []
+	var fixtures: Array = []
+	for id in data.model.assemblies:
+		var a: Dictionary = data.model.assemblies[id]
+		if not game.bodies.has(id):fixtures.append(id)
+		elif a.parent.is_empty():roots.append(id)
+		if a.location.begins_with("station:") and not game.stations.has(a.location.trim_prefix("station:")):return ["Unknown occupied station."]
+	if not same_keys(w.get("bodies"),roots) or not same_keys(w.get("fixtures"),fixtures):return ["Assembly positions do not match ownership."]
+	for id in w.bodies:
+		if not valid_body(w.bodies[id]):return ["Invalid assembly pose or motion."]
+		var location: String = data.model.assemblies[id].location
+		if location.begins_with("station:") and not to_pose(w.bodies[id].pose).is_equal_approx(to_pose(w.stations[location.trim_prefix("station:")])):return ["Suspended assembly is detached from its station."]
+	for id in w.fixtures:
+		if not valid_pose(w.fixtures[id]):return ["Invalid receiving fixture pose."]
+	var physical: Array = []
+	for uid in data.model.items:
+		if data.model.items[uid].location in ["loose","held"]:physical.append(uid)
+	if not same_keys(w.get("items"),physical):return ["Loose or carried pieces do not match inventory."]
+	for uid in w.items:
+		if not valid_body(w.items[uid]):return ["Invalid loose component pose or motion."]
+	if not w.get("active_build") is String or not game.builds.has(w.active_build):return ["Unknown active build."]
+	var p = w.get("player")
+	if not p is Dictionary or not valid_pose(p.get("pose")) or not valid_vector(p.get("velocity")) or not p.get("crouched") is bool:return ["Invalid player position."]
+	if not number(p.get("pitch"),PI/2) or not number(p.get("height")) or p.height < 0.9 or p.height > 1.64 or not number(p.get("fov")) or p.fov < 20 or p.fov > 100:return ["Invalid camera view."]
+	if not to_pose(p.pose).basis.y.is_equal_approx(Vector3.UP):return ["Player must stand upright."]
+	var r = w.get("reader")
+	if not r is Dictionary or not r.get("manual") is String or not baseline.assemblies.has(r.manual) or not r.get("pages") is Dictionary or not r.get("visible") is bool or not r.get("suggested_only") is bool:return ["Invalid manual selection."]
+	for id in r.pages:
+		if not baseline.assemblies.has(id) or not number(r.pages[id]) or r.pages[id] != int(r.pages[id]):return ["Unknown manual page."]
+		var page_count: int = baseline.definitions.assemblies[baseline.assemblies[id].definition].manual.size()
+		if r.pages[id] < 0 or r.pages[id] >= page_count:return ["Manual page is out of range."]
+	if _leg_mode():return _validate_leg(w,data.model)
+	return _validate_support(w,data.model)
+
+func _validate_leg(w: Dictionary, saved_model: Dictionary) -> Array[String]:
+	if not w.get("leg_equipment") is Dictionary:return ["Missing leg equipment state."]
+	if not same_keys(w.get("access_lifts"),game.access_lifts.keys()):return ["Access lift identities changed."]
+	for id in game.access_lifts:
+		if not w.access_lifts[id] is Dictionary:return ["Invalid access lift state."]
+		var errors: Array[String] = game.access_lifts[id].validate(w.access_lifts[id])
+		if not errors.is_empty():return errors
+	var candidate = AssemblyModel.new()
+	candidate.configure(baseline.definitions,game.config)
+	ModelSave.apply(saved_model,candidate)
+	var equipment_errors: Array[String] = game.leg_equipment.validate(w.leg_equipment,candidate)
+	if not equipment_errors.is_empty():return equipment_errors
+	if not w.leg_equipment.foot_departed:
+		var foot_errors = _validate_support(w,saved_model)
+		if not foot_errors.is_empty():return foot_errors
+	# All parent fixture poses are saved for auditability, but attached children
+	# have exactly one legal transform, derived from their receiving connection.
+	for id in w.fixtures:
+		var a: Dictionary = candidate.assemblies[id]
+		if not a.parent.is_empty():
+			var parent_pose = _saved_assembly_pose(a.parent,w,candidate)
+			var expected = _saved_mount_pose(a.parent,a.parent_slot,id,parent_pose)
+			if not to_pose(w.fixtures[id]).is_equal_approx(expected):return ["Mounted fixture pose disagrees with its receiving connection."]
+	for pair in [["foot","foot_pose"],["left_leg","leg_pose"]]:
+		if w.leg_equipment.has(pair[1]) and w.fixtures.has(pair[0]):
+			if not valid_pose(w.leg_equipment[pair[1]]) or not to_pose(w.fixtures[pair[0]]).is_equal_approx(to_pose(w.leg_equipment[pair[1]])):return ["Equipment and supported assembly poses disagree."]
+	if w.fixtures.has("pelvis") and not to_pose(w.fixtures.pelvis).is_equal_approx(to_pose(initial.world.fixtures.pelvis)):return ["Pelvis has left its anchored gantry."]
+	return []
+
+func _saved_assembly_pose(owner: String, world: Dictionary, candidate: AssemblyModel) -> Transform3D:
+	var a: Dictionary = candidate.assemblies[owner]
+	if not a.parent.is_empty():return _saved_mount_pose(a.parent,a.parent_slot,owner,_saved_assembly_pose(a.parent,world,candidate))
+	return to_pose(world.fixtures[owner] if world.fixtures.has(owner) else world.bodies[owner].pose)
+
+func _saved_mount_pose(parent: String, sid: String, child: String, parent_pose: Transform3D) -> Transform3D:
+	var slot: Dictionary = baseline.slot_definition(parent,sid)
+	var anchor: String = slot.get("child_anchor_slot","")
+	var local_anchor = game.runtime.local_slot_pose(child,anchor) if not anchor.is_empty() else Transform3D.IDENTITY
+	return parent_pose*game.runtime.local_slot_pose(parent,sid)*local_anchor.affine_inverse()
+
+func _validate_support(w: Dictionary, saved_model: Dictionary) -> Array[String]:
+	var s = w.get("support")
+	if not s is Dictionary:return ["Missing foot support state."]
+	if not is_instance_valid(game.foot_fixture):return [] if s.is_empty() else ["Unexpected foot support."]
+	if not s.get("moving") is bool or not s.get("at_dispatch") is bool or not s.get("destination_dispatch") is bool:return ["Invalid foot support motion."]
+	if not s.get("work_pose") is String or not SupportedFootFixture.POSE_ANGLES.has(s.work_pose) or not s.get("destination_pose") is String or not SupportedFootFixture.POSE_ANGLES.has(s.destination_pose):return ["Invalid foot working position."]
+	var transform = to_pose(w.fixtures[game.default_parent_id()])
+	var angle = atan2(transform.basis.x.y,transform.basis.x.x)
+	var origin = transform.origin
+	if not transform.basis.is_equal_approx(Basis(Vector3.BACK,angle)) or absf(angle)>PI/2+0.001 or absf(origin.x-2.3)>0.001 or absf(origin.y-1.55)>0.001 or origin.z < -1.801 or origin.z > 4.401:return ["Foot has left its supported path."]
+	if s.at_dispatch or s.destination_dispatch or origin.z > -1.799:
+		# A carrier must never bypass the completion interlock through a save.
+		var scratch = AssemblyModel.new()
+		scratch.configure(baseline.definitions,game.config)
+		ModelSave.apply(saved_model,scratch)
+		if not scratch.milestone(game.default_parent_id(),"complete") or absf(angle)>0.001 or s.work_pose != "upright" or s.destination_pose != "upright":return ["Dispatch requires a secured upright foot."]
+	if not s.moving:
+		var expected = Transform3D(Basis(Vector3.BACK,SupportedFootFixture.POSE_ANGLES[s.work_pose]),SupportedFootFixture.DISPATCH_ORIGIN if s.at_dispatch else SupportedFootFixture.WORK_ORIGIN)
+		if not transform.is_equal_approx(expected) or s.destination_pose != s.work_pose or s.destination_dispatch != s.at_dispatch:return ["Stopped foot does not match its indexed pose."]
+	elif s.at_dispatch == s.destination_dispatch:
+		var from_angle: float = SupportedFootFixture.POSE_ANGLES[s.work_pose]
+		var to_angle: float = SupportedFootFixture.POSE_ANGLES[s.destination_pose]
+		if s.at_dispatch or s.work_pose == s.destination_pose or not origin.is_equal_approx(SupportedFootFixture.WORK_ORIGIN) or angle < minf(from_angle,to_angle)-0.001 or angle > maxf(from_angle,to_angle)+0.001:return ["Turning foot is outside its indexed movement."]
+	return []
+
+func apply_snapshot(snapshot: Dictionary) -> bool:
+	# Keep this boundary transactional even for direct callers and UI reset paths.
+	if not validate(snapshot).is_empty():return false
+	applying = true
+	_pause_menu()
+	game.target.clear()
+	game.ghost.hide()
+	game.ghost_assembly_signature = ""
+	game.interaction_outline.clear()
+	for body in game.loose.values():
+		if is_instance_valid(body):body.free()
+	game.loose.clear()
+	if is_instance_valid(game.components.held_body):game.components.held_body.free()
+	game.components.held_body = null
+	# Detach before changing ownership, so no old parent carries a restored child.
+	for body in game.bodies.values():
+		body.freeze = true
+		body.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+		body.held = false
+		if body.get_parent() != game:body.reparent(game)
+	# Supported parent frames can themselves be nested descendants in leg mode.
+	# Detach all before applying a root pose to prevent an old ancestor moving it.
+	if _leg_mode():
+		for id in game.runtime.nodes:
+			var node: Node3D = game.assembly_node(id)
+			if node.get_parent() != game:node.reparent(game)
+	# Rebuild slot visuals even when a compatible physical copy changed slots.
+	# The source geometry belongs to the receiving slot, not the consumed identity.
+	for id in game.runtime.nodes:
+		var definition: Dictionary = game.runtime.definition(id)
+		var root_slot: String = definition.get("root_slot","")
+		var root_uid: String = baseline.assemblies[id].slots.get(root_slot,"")
+		for visual in game.assembly_node(id).get_children():
+			if not visual is MeshInstance3D:continue
+			if visual.has_meta("installed_uid") or (visual.has_meta("component_uid") and visual.get_meta("component_uid") != root_uid):
+				visual.free()
+	ModelSave.apply(snapshot.model,game.model)
+	var w: Dictionary = snapshot.world
+	for id in w.stations:game.stations[id].global_transform = to_pose(w.stations[id])
+	for id in w.fixtures:game.assembly_node(id).global_transform = to_pose(w.fixtures[id])
+	if is_instance_valid(game.foot_fixture) and (not _leg_mode() or not w.leg_equipment.foot_departed):
+		var f = game.foot_fixture
+		var s: Dictionary = w.support
+		f.moving = s.moving
+		f.at_dispatch = s.at_dispatch
+		f.work_pose = s.work_pose
+		f._destination_pose = s.destination_pose
+		f._destination_dispatch = s.destination_dispatch
+		f._destination = Transform3D(Basis(Vector3.BACK,SupportedFootFixture.POSE_ANGLES[s.destination_pose]),SupportedFootFixture.DISPATCH_ORIGIN if s.destination_dispatch else SupportedFootFixture.WORK_ORIGIN)
+		f.blocked_reason = ""
+		f._apply_pose(game.foot.global_transform)
+		f._refresh_labels()
+	for id in w.bodies:
+		var body: WorkshopPart = game.bodies[id]
+		var location: String = game.model.assemblies[id].location
+		game._activate(id)
+		if location.begins_with("station:"):game._set_pad_station(location.trim_prefix("station:"))
+		_restore_body(body,w.bodies[id],location)
+	if _leg_mode():
+		game.leg_equipment.apply(w.leg_equipment)
+		for id in game.access_lifts:game.access_lifts[id].apply(w.access_lifts[id])
+	# Parent-first traversal derives exact child mount transforms from authored slots.
+	for id in game.model.assemblies:
+		if game.model.assemblies[id].parent.is_empty():_mount_children(id)
+	for id in game.builds:
+		game._activate(id)
+		game._sync_installed_visuals()
+		game.prepared_flags[id] = game.state.prepared()
+		game.completed_flags[id] = game.state.complete()
+	for id in w.fixtures:game.components.sync(id)
+	for id in game.model.assemblies:
+		if game.model.assemblies[id].parent.is_empty():game.refresh_assembly_collision(id)
+	for uid in w.items:
+		game._spawn_loose(uid,true)
+		var body: WorkshopPart = game.loose[uid]
+		var location: String = game.model.items[uid].location
+		_restore_body(body,w.items[uid],location)
+		if location == "held":
+			game.loose.erase(uid)
+			game.components.held_body = body
+			body.add_collision_exception_with(game.player)
+			game.player.add_collision_exception_with(body)
+	game._activate(w.active_build)
+	game.player.global_transform = to_pose(w.player.pose)
+	game.player.velocity = to_vector(w.player.velocity)
+	game.crouched = w.player.crouched
+	game.player_collision.shape.height = 1.0 if game.crouched else 1.7
+	game.player_collision.position.y = 0.51 if game.crouched else 0.86
+	game.camera.rotation = Vector3(w.player.pitch,0,0)
+	game.camera.position.y = w.player.height
+	game.camera.fov = w.player.fov
+	game.jump_held = false
+	game.scripted_controls.clear()
+	game.hud.manual_id = w.reader.manual
+	game.hud.pages.clear()
+	for id in w.reader.pages:game.hud.pages[id] = int(w.reader.pages[id])
+	game.hud.manual.visible = w.reader.visible
+	game.hud.browser.set_suggested_only(w.reader.suggested_only)
+	game.hud.body_scroll.scroll_vertical = 0
+	game._state_changed()
+	game.hud.browser.sync_selection()
+	applying = false
+	return true
+
+func _mount_children(owner: String) -> void:
+	for sid in game.model.assemblies[owner].slots:
+		var child: String = game.model.assemblies[owner].slots[sid]
+		if child.is_empty() or not game.model.slot_definition(owner,sid).has("assembly"):continue
+		game.runtime.mount(owner,sid,child)
+		_mount_children(child)
+
+static func _restore_body(body: WorkshopPart, saved: Dictionary, location: String) -> void:
+	body.held = location == "held"
+	body.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC if body.held else RigidBody3D.FREEZE_MODE_STATIC
+	body.freeze = location != "loose"
+	body.gravity_scale = 0.0 if body.held else 1.0
+	body.global_transform = to_pose(saved.pose)
+	body.linear_velocity = to_vector(saved.linear)
+	body.angular_velocity = to_vector(saved.angular)
+	body.sleeping = false
