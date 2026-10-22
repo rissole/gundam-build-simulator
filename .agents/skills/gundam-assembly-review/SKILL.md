@@ -53,6 +53,28 @@ automatic review of the entire workshop.
   Report unrelated findings separately rather than extending the task. If work
   expands materially, explain the cause and revised scope in a short update.
 
+## Review the player loop across equipment
+
+For a new handling flow or substantial workshop-equipment change, review one
+representative journey early: find the part, recognize its handling mode, operate
+the equipment, observe supported movement, reach and secure the connection, then
+undo or return it.
+Exercise the actual aim/input route; direct controller calls cover a different
+layer. Check normal application launch when scenario selection or startup changes.
+
+Check that visible supports, staging and movement explain the intended handling,
+and that pickup-looking stock does not silently require an unrelated console.
+Evaluate control grouping, labels and manual guidance as player-facing design;
+the ability to target every button does not establish readable or understandable
+controls. Keep tightly coupled equipment clearances coordinated before expanding
+the full set of operations.
+
+Report automated behavior evidence separately from inspected presentation and
+player feedback. Record unresolved usability findings even when mechanical
+checks pass. Rendered review still runs only on explicit request; without that
+evidence, describe the presentation as unreviewed rather than inferring approval.
+Preserve positive playtest findings as constraints for subsequent iteration.
+
 ## Author the assembly and its instructions together
 
 Use the source manifest and construction design to identify exact physical

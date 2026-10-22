@@ -119,6 +119,18 @@ child/root instances, installation slots, prerequisites, milestones, snap source
 accessible targets, carrying/work locations and manual references as data.
 Keep desktop controls and station behavior independent of a particular recipe.
 
+For equipment-handled parts, define the player interaction alongside the support
+rules: what holds the part at rest, what moves it, where the player operates it,
+what visible change confirms the action, and how its pickup or equipment-only
+handling is communicated. Blockout equipment should show a coherent support and
+transport path from stock to installation. A support ID or crane elsewhere in
+the scene does not establish that the player can understand that path.
+
+Describe controls as player intents and current work, rather than exposing every
+controller method or physical instance as another permanent button. Choose a
+manual-linked, contextual or other suitable interaction for the requested game;
+do not prescribe a particular screen design without evaluating the player loop.
+
 Ownership is a single-parent physical relationship. Prerequisites represent real
 construction/access constraints and may have multiple predecessors. Encode
 retention before closure, and preserve independent build order where access allows.
@@ -138,7 +150,10 @@ into their vertices. Swapping equivalent copies must preserve both correct
 installed geometry and the consumed physical identity.
 
 Integrate one complete collection → preparation → installation → undo loop before
-expanding the next branch. Reuse definitions for truly shared construction, while
+expanding the next branch. Exercise its actual player controls early, including
+the transition between handwork and equipment where applicable. Resolve unclear
+handling or operation before multiplying the remaining part-specific actions.
+Reuse definitions for truly shared construction, while
 keeping build progress and manual position attached to each physical assembly.
 
 ## 5. Validate and leave a truthful handoff
