@@ -566,7 +566,6 @@ func handle_desktop_input(event: InputEvent) -> void:
 		# Pocket changes can switch between pickup and placement intent. Resolve
 		# that immediately so selecting a part and clicking in one frame works.
 		_update_target()
-		_update_ghost()
 	if paused: return
 	if event is InputEventMouseMotion:
 		if rotate_held:
@@ -624,7 +623,6 @@ func _physics_process(delta: float) -> void:
 func _process(_delta: float) -> void:
 	if not started or paused: return
 	_update_target()
-	_update_ghost()
 	_update_markers()
 
 func _update_crouch(wants_crouch: bool, delta: float) -> void:
@@ -857,10 +855,23 @@ func _update_target() -> void:
 			if fitting_part or not builds.has(model.top_level(candidate.owner)):candidates.append(candidate)
 	var scored: Array[Dictionary] = []
 	var focused_connections: Dictionary = {}
+	var discovery_hits: Dictionary = {}
+	var precise_snap = false
 	for candidate in candidates:
 		if camera.global_position.distance_to(candidate.point) > SNAP_DISCOVERY_RANGE: continue
 		var score = _aim_score(candidate.point,candidate.radius)
-		if score == INF:continue
+		if score == INF:
+			if not _snap_candidate_valid(candidate):continue
+			var owner: String = model.top_level(candidate.get("owner",candidate.get("build","")))
+			if not discovery_hits.has(owner):discovery_hits[owner] = _assembly_discovery_hit(owner)
+			if discovery_hits[owner] == null:continue
+			candidate["discovery_only"] = true
+			candidate["discovery_hit"] = discovery_hits[owner]
+			# Precise compatible aim wins; otherwise reveal the closest compatible
+			# connection on the workpiece intersected by the view ray.
+			var offset: Vector3 = candidate.point-camera.global_position
+			var perpendicular = (offset+camera.global_basis.z*offset.dot(-camera.global_basis.z)).length()
+			score = 0.75+minf(perpendicular,10.0)*0.01
 		var connection_visible = true
 		# While holding hardware, a nearby socket wins over the pad's center.
 		if candidate.type == "slot":
@@ -873,9 +884,11 @@ func _update_target() -> void:
 		if connection_visible and candidate.type in ["slot","component"]:
 			var owner: String = candidate.get("owner",candidate.get("build",""))
 			focused_connections[model.top_level(owner)] = true
+		if connection_visible and not candidate.get("discovery_only",false) and _snap_candidate_valid(candidate):precise_snap = true
 		scored.append({"candidate":candidate,"score":score})
 	for entry in scored:
 		var candidate: Dictionary = entry.candidate
+		if precise_snap and candidate.get("discovery_only",false):continue
 		# Connection feedback and whole-assembly pickup describe the same object.
 		# With a part selected, a nearby connection owns that object's focus instead
 		# of trading places with its center as the geometric scores fluctuate.
@@ -885,7 +898,36 @@ func _update_target() -> void:
 			best = score
 			target = candidate
 	if target.has("build"):_activate(target.build)
-	_present_target()
+	# Share one current access result between prompt and preview. Actual clicks
+	# always recheck access, and incompatible parts never run a placement sweep.
+	var access_error = _access(_target_receivers(),target.type == "prep" or _snap_candidate_valid(target)) if not target.is_empty() else ""
+	_present_target(access_error)
+	_update_ghost(access_error)
+
+func _assembly_discovery_hit(owner: String) -> Variant:
+	var body: CollisionObject3D = assembly_node(owner)
+	var inverse = body.global_transform.affine_inverse()
+	var hit: Variant = SolidHandling.bounds(body).intersects_ray(inverse*camera.global_position,inverse.basis*(-camera.global_basis.z))
+	if hit == null:return null
+	var point: Vector3 = body.global_transform*hit
+	if camera.global_position.distance_to(point) > SNAP_DISCOVERY_RANGE:return null
+	# The cheap box belongs to the workpiece, not its stand or scaffold. Test
+	# scenery along the view ray as well as the eventual connection's sightline.
+	return point if _visible(point,[body],true) else null
+
+func _snap_candidate_valid(candidate: Dictionary) -> bool:
+	var owner: String = candidate.get("owner",candidate.get("build",""))
+	if not equipment_access_error(owner).is_empty():return false
+	match candidate.get("type",""):
+		"component":
+			var uid: String = components.selected_uid(selected_kind)
+			return not uid.is_empty() and model.placement_error(owner,candidate.sid,uid).is_empty()
+		"mount":
+			return model.assemblies[candidate.build].location == "held" and model.placement_error(owner,candidate.mount,candidate.build).is_empty()
+		"slot":
+			var view = builds[candidate.build]
+			return HeelAssemblyState.KINDS.has(selected_kind) and view.count_at(selected_kind,"pocket") > 0 and view.reason(selected_kind,candidate.index).is_empty()
+	return false
 
 func _target_receivers() -> Array:
 	match target.get("type",""):
@@ -908,7 +950,7 @@ func _target_object() -> Node3D:
 		"component", "mount":return assembly_node(target.owner)
 	return null
 
-func _present_target() -> void:
+func _present_target(access_error: String) -> void:
 	if target.is_empty() or paused:
 		hud.present_target("")
 		if is_instance_valid(interaction_outline):interaction_outline.clear()
@@ -925,6 +967,7 @@ func _present_target() -> void:
 	var action_key = ""
 	var action_label = ""
 	var usable = false
+	var pickup_target = false
 	match target.type:
 		"equipment":
 			caption = target.label
@@ -934,6 +977,7 @@ func _present_target() -> void:
 				action_key = "E"
 				action_label = "Operate"
 		"bin":
+			pickup_target = true
 			var count: int = model.count_at(target.kind,"bin")
 			var pocket: bool = model.definitions.parts[target.kind].carry_class == "pocket"
 			caption = components.title(target.kind)
@@ -944,6 +988,7 @@ func _present_target() -> void:
 				usable = true
 			elif count > 0:detail = "Set down the carried component first"
 		"pad":
+			pickup_target = true
 			caption = build_label(active_build)
 			detail = "Prepared" if state.prepared() else "Unfinished"
 			if not model.hands_occupied():
@@ -952,6 +997,7 @@ func _present_target() -> void:
 				usable = true
 			else:detail = "Set down the carried component first"
 		"loose":
+			pickup_target = true
 			caption = components.title(model.items[target.uid].kind)
 			if not model.hands_occupied():
 				action_key = "E"
@@ -978,20 +1024,21 @@ func _present_target() -> void:
 					action_key = "E"
 					action_label = "Carry assembly"
 					usable = true
+					pickup_target = true
 				else:detail = "Select a stocked pocket"
 			else:
 				caption = components.title(selected_kind)
 				detail = state.reason(selected_kind,target.index)
 				usable = detail.is_empty()
-	var access_error = _access(receivers)
 	if not access_error.is_empty():
-		detail = "Move closer to attach" if _distant_snap_available() else ("" if camera.global_position.distance_to(target.point) > REACH else access_error)
+		detail = _snap_guidance_message() if _snap_guidance_available() else ("" if camera.global_position.distance_to(target.point) > REACH else access_error)
 		usable = false
 	if not usable:
 		action_key = ""
 		action_label = ""
 	if is_instance_valid(interaction_outline):
-		if usable:interaction_outline.focus(_target_object())
+		# Contours advertise collection, not every available keyboard action.
+		if usable and pickup_target:interaction_outline.focus(_target_object())
 		else:interaction_outline.clear()
 	# The green geometry is the successful attachment affordance. Only explain
 	# failures here; collection still needs its small keyboard action prompt.
@@ -1006,12 +1053,13 @@ func _target_allows_body_hit() -> bool:
 	if target.get("type","") == "mount":return components.service_access(target.get("owner",default_parent_id()),target.mount)
 	return target.get("type","") in ["pad","loose"]
 
-func _access(allowed: Array = []) -> String:
+func _access(allowed: Array = [], check_approach: bool = true) -> String:
 	if target.is_empty(): return "Aim near a part, bin, or mounting point."
+	if target.get("discovery_only",false):return _snap_guidance_message()
 	if target.type in ["slot","mount","component"]:
 		var equipment_error = equipment_access_error(target.get("owner",target.get("build","")))
 		if not equipment_error.is_empty():return equipment_error
-	if target.type == "component":return components.access()
+	if target.type == "component":return components.access(check_approach)
 	if camera.global_position.distance_to(target.point) > REACH: return "Out of reach. Move closer to the connection (maximum %.2f m)." % REACH
 	if not _visible(target.point,allowed,_target_allows_body_hit()): return "Connection is obstructed. Approach its exposed side or use the work-position controls."
 	if target.type == "equipment":return foot_fixture.action_error(target.action)
@@ -1022,7 +1070,7 @@ func _access(allowed: Array = []) -> String:
 		if envelope.x > volume.x or envelope.y > volume.y or envelope.z > volume.z:return "This assembly needs a larger work volume."
 		for id in builds:
 			if id != active_build and model.assemblies[id].location == "station:"+target.get("station","prep"):return "This station is occupied. Move its assembly first."
-	if target.type in ["prep","mount"] and state.pad_location == "held":
+	if target.type in ["prep","mount"] and state.pad_location == "held" and check_approach:
 		return _carry_placement_error(placement_destination(),pad,assembly_node(target.owner) if target.has("owner") else null)
 	return ""
 
@@ -1048,13 +1096,13 @@ func interact(all_stock: bool = false) -> void:
 		var equipment_error: String = foot_fixture.request(target.action)
 		hud.toast(equipment_error if not equipment_error.is_empty() else foot_fixture.status_text(),equipment_error.is_empty())
 		return
-	if target.type == "component":
+	if target.type == "component" or (target.type == "slot" and target.get("discovery_only",false)):
 		# Pickup acts on the physical containing assembly even when its connection
 		# is focused for placement. Recheck pickup reach/visibility independently.
-		var owner: String = model.top_level(target.owner)
+		var owner: String = model.top_level(target.owner) if target.type == "component" else target.build
 		if not builds.has(owner):hud.toast("This fixture stays at its work station.");return
 		var previous_target = target
-		target = {"type":"pad","build":owner,"point":target.point}
+		target = {"type":"pad","build":owner,"point":target.get("discovery_hit",target.point)}
 		_activate(owner)
 		interact(all_stock)
 		target = previous_target
@@ -1253,16 +1301,16 @@ func _milestone(message: String) -> void:
 	tween.tween_callback(func():
 		if is_instance_valid(glowing_mesh) and glowing_mesh.material_overlay == glow:glowing_mesh.material_overlay = null)
 
-func _update_ghost() -> void:
+func _update_ghost(access_result: Variant = null) -> void:
 	ghost.visible = false
 	for child in ghost.get_children():child.visible = false
 	if paused:return
-	var distant = _distant_snap_available()
+	var distant = _snap_guidance_available()
 	ghost_material.albedo_color = SNAP_DISTANT_COLOR if distant else SNAP_READY_COLOR
 	ghost_material.no_depth_test = target.get("type","") == "component"
 	if target.get("type","") == "component":
-		if not distant and not components.access().is_empty():return
 		if not model.placement_error(target.owner,target.sid,components.selected_uid(selected_kind)).is_empty():return
+		if not distant and not (components.access() if access_result == null else access_result).is_empty():return
 		ghost.mesh = source[model.slot_definition(target.owner,target.sid).pose_source].mesh
 		ghost.global_transform = components.slot_pose(target.owner,target.sid)
 		ghost.visible = true
@@ -1271,7 +1319,7 @@ func _update_ghost() -> void:
 	var allowed: Array = [pad]
 	if target.has("owner"):allowed.append(assembly_node(model.top_level(target.owner)))
 	elif is_instance_valid(foot):allowed.append(foot)
-	if not distant and not _access(allowed).is_empty():return
+	if not distant and not (_access(allowed) if access_result == null else access_result).is_empty():return
 	if target.type == "slot" and HeelAssemblyState.KINDS.has(selected_kind):
 		if not state.reason(selected_kind,target.index).is_empty() or state.count_at(selected_kind,"pocket") == 0:return
 		var uid: String = slot_sources[selected_kind][target.index]
@@ -1290,25 +1338,19 @@ func _update_ghost() -> void:
 		ghost.visible = true
 		_show_assembly_ghost()
 
-func _distant_snap_available() -> bool:
+func _snap_guidance_message() -> String:
+	return "Move closer to attach" if camera.global_position.distance_to(target.point) > REACH else "Aim at the highlighted connection to attach"
+
+func _snap_guidance_available() -> bool:
 	# Discovery is feedback only. Placement keeps its normal reach, carrying
 	# sweep and access checks; no physics or recipe rule is relaxed here.
 	if paused or target.is_empty():return false
 	var distance = camera.global_position.distance_to(target.point)
-	if distance <= REACH or distance > SNAP_DISCOVERY_RANGE:return false
+	if (distance <= REACH and not target.get("discovery_only",false)) or distance > SNAP_DISCOVERY_RANGE:return false
 	if camera.is_position_behind(target.point):return false
 	if not _visible(target.point,_target_receivers(),_target_allows_body_hit()):return false
-	var owner: String = target.get("owner",target.get("build",""))
-	if not equipment_access_error(owner).is_empty():return false
-	match target.type:
-		"component":
-			var uid: String = components.selected_uid(selected_kind)
-			return not uid.is_empty() and model.placement_error(owner,target.sid,uid).is_empty()
-		"mount":
-			return state.pad_location == "held" and model.placement_error(owner,target.mount,active_build).is_empty()
-		"slot":
-			return HeelAssemblyState.KINDS.has(selected_kind) and state.count_at(selected_kind,"pocket") > 0 and state.reason(selected_kind,target.index).is_empty()
-	return false
+	if target.has("discovery_hit") and not _visible(target.discovery_hit,[assembly_node(model.top_level(target.get("owner",target.get("build",""))))],true):return false
+	return _snap_candidate_valid(target)
 
 func _show_assembly_ghost() -> void:
 	ghost.mesh = null

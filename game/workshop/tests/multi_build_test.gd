@@ -134,6 +134,7 @@ func run(workshop: Node) -> void:
 	await frames(75)
 	game._update_target()
 	click()
+	if game.builds.pad_2.station_id != "prep":print("STATION_DIAGNOSTIC ",game.target," ",game.hud.toast_label.text," held=",game.held_build()," body=",game.bodies.pad_2.global_position)
 	expect(game.builds.pad_2.station_id=="prep" and game.builds.pad_2.installed("sleeve")==1,"Unfinished pad changes stations with its progress intact")
 	select_kind("sleeve")
 	for i in [3,0,2]:

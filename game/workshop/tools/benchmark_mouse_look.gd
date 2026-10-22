@@ -40,11 +40,10 @@ func feedback() -> Dictionary:
 	var start := Time.get_ticks_usec()
 	game._update_target()
 	var targeted := Time.get_ticks_usec()
-	game._update_ghost()
-	var ghosted := Time.get_ticks_usec()
 	game._update_markers()
-	return {"target_ms":(targeted-start)/1000.0,"ghost_ms":(ghosted-targeted)/1000.0,
-		"markers_ms":(Time.get_ticks_usec()-ghosted)/1000.0}
+	# Targeting refreshes both prompt and preview using one access result.
+	return {"target_ms":(targeted-start)/1000.0,
+		"markers_ms":(Time.get_ticks_usec()-targeted)/1000.0}
 
 func drive_look(elapsed: float, moving: bool, initial_yaw: float) -> float:
 	var angle := elapsed*TAU/period

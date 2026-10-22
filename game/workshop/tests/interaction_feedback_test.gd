@@ -11,6 +11,18 @@ func expect(ok: bool, message: String) -> void:
 	checks.append({"check":message,"passed":ok})
 	if not ok:push_error(message)
 
+func aim_fixture_control() -> void:
+	for control in game.foot_fixture.controls():
+		if control.action != "sole_left":continue
+		game.player.global_position = Vector3(control.point.x-1.0,0.575,control.point.z)
+		game.player.velocity = Vector3.ZERO
+		var direction: Vector3 = control.point-game.camera.global_position
+		game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
+		game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
+		await driver.frames(5)
+		game._update_target()
+		return
+
 func run() -> void:
 	game = load("res://scenes/workshop.tscn").instantiate()
 	root.add_child(game)
@@ -54,6 +66,8 @@ func run() -> void:
 	game.set_paused(true)
 	expect(game.interaction_outline.focused == null and not game.hud.target_panel.visible,"Pause clears the focused contour and prompt")
 	game.set_paused(false)
+	await aim_fixture_control()
+	expect(game.target.get("type","") == "equipment" and game.hud.target_action.visible and game.hud.target_action_label.text == "Operate" and game.interaction_outline.focused == null,"Reachable equipment keeps its E action without advertising pickup with a contour")
 	# A receiving fixture is still an obstacle when picking up another object.
 	# The prompt must use the same receiver exclusions as the actual pickup.
 	point = game.bodies.pad_1.global_position
@@ -76,17 +90,26 @@ func run() -> void:
 	await driver.frames(2)
 	var cartridge_kind: String = game.model.items["FA-514__001"].kind
 	await driver.aim(game.bins[cartridge_kind].global_position+Vector3(0,0.13,0.27),1.0)
+	expect(game.target.get("kind","") == cartridge_kind and game.interaction_outline.focused == game.bins[cartridge_kind].get_node("ShelfPart") and not game.interaction_outline.copies.is_empty(),"Shelf collection outlines the removable part instead of its cabinet")
 	game.hud.toast_time = 0
 	driver.key(KEY_E)
 	expect(game.model.held_item() == "FA-514__001" and game.hud.carry_panel.visible and game.hud.carry_label.text == "Carrying "+game.components.title(cartridge_kind),"Carrying a shelf component shows only its hands status, without the selected pocket")
 	expect(game.hud.toast_time == 0,"Starting to carry a shelf component does not create a popup")
+	await driver.aim(game.bins[cartridge_kind].global_position+Vector3(0,0.13,0.27),1.0)
+	expect(game.interaction_outline.focused == null and not game.hud.target_action.visible,"Occupied hands suppress the shelf pickup contour and action")
+	await aim_fixture_control()
+	expect(game.model.held_item() == "FA-514__001" and game.target.get("type","") == "equipment" and game.hud.target_action.visible and game.interaction_outline.focused == null,"Carrying a part leaves equipment operable without a pickup contour")
 	game.set_paused(true)
 	expect(not game.hud.carry_panel.visible,"Pause hides the hands strip")
 	game.set_paused(false)
 	expect(game.hud.carry_panel.visible,"Resuming restores the occupied hands strip")
+	await driver.aim(game.bins[cartridge_kind].global_position+Vector3(0,0.13,0.27),1.0)
+	# Let the held body follow after returning from the fixture controls.
+	await driver.frames(60)
 	driver.key(KEY_Q)
 	expect(not game.hud.carry_panel.visible and game.model.held_item().is_empty(),"Setting down a component immediately hides the hands strip")
 	await driver.aim(game.loose["FA-514__001"].global_position,0.9)
+	expect(game.target.get("type","") == "loose" and game.interaction_outline.focused == game.loose["FA-514__001"],"A reachable loose part advertises pickup with a contour")
 	driver.key(KEY_E)
 	expect(game.model.held_item() == "FA-514__001" and game.hud.toast_time == 0,"Picking up a loose component uses the hands strip without a popup")
 	game.components.drop(true)
@@ -120,7 +143,7 @@ func run() -> void:
 	var stable_pickup = true
 	for fraction in [0.0,0.25,0.5,0.75,1.0]:
 		await driver.aim(slot_point.lerp(game.bodies.pitch.global_position,fraction),1.2)
-		stable_pickup = stable_pickup and game.target.get("type","") == "pad" and game.target.get("build","") == "pitch" and game.hud.target_action_label.text == "Carry"
+		stable_pickup = stable_pickup and game.target.get("type","") == "pad" and game.target.get("build","") == "pitch" and game.hud.target_action_label.text == "Carry" and game.interaction_outline.focused == game.bodies.pitch
 	expect(stable_pickup,"Empty-handed aim across an unfinished assembly keeps one assembly pickup prompt")
 	game.model.stock_pocket("w-12")
 	var stable_connection = true
@@ -129,7 +152,7 @@ func run() -> void:
 		stable_connection = stable_connection and game.target.get("type","") == "component" and game.target.get("owner","") == "pitch" and game.ghost.visible
 	expect(stable_connection,"Selected hardware keeps nearby connections ahead of their assembly pickup target")
 	await driver.aim(game.components.slot_point("pitch","W-12__039"),1.2)
-	expect(game.target.get("type","") == "component" and game.ghost.visible and not game.hud.target_panel.visible,"A valid green attachment preview needs no click-to-attach tooltip")
+	expect(game.target.get("type","") == "component" and game.ghost.visible and not game.hud.target_panel.visible and game.interaction_outline.focused == null,"A valid green attachment preview needs no click-to-attach tooltip or pickup contour")
 	await driver.aim(slot_point,3.0)
 	var distant_slot: String = game.target.get("sid","")
 	expect(game.target.get("type","") == "component" and game.ghost.visible and game.ghost_material.albedo_color == game.SNAP_DISTANT_COLOR,"A compatible ready connection shows its yellow destination beyond attachment reach")

@@ -82,7 +82,8 @@ func receiving_bodies(owner: String, sid: String = "") -> Array:
 		if body.is_ancestor_of(child):allowed.append(child)
 	return allowed
 
-func access() -> String:
+func access(check_approach: bool = true) -> String:
+	if game.target.get("discovery_only",false):return game._snap_guidance_message()
 	var equipment_error: String = game.equipment_access_error(game.target.owner)
 	if not equipment_error.is_empty():return equipment_error
 	if game.camera.global_position.distance_to(game.target.point) > game.REACH:return "Move closer to this component."
@@ -91,7 +92,7 @@ func access() -> String:
 	if not policy_error.is_empty():return policy_error
 	var body: Node3D = game.assembly_node(owner)
 	if not game._visible(game.target.point,receiving_bodies(owner,game.target.sid),service_access(owner,game.target.sid)):return "View obstructed. Approach the station's open side."
-	if is_instance_valid(held_body):return game._carry_placement_error(slot_pose(game.target.owner,game.target.sid),held_body,body)
+	if check_approach and is_instance_valid(held_body):return game._carry_placement_error(slot_pose(game.target.owner,game.target.sid),held_body,body)
 	return ""
 
 func attach() -> void:

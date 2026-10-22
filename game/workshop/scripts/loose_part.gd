@@ -24,6 +24,9 @@ func update_grip(delta: float) -> void:
 	var collision = move_and_collide((carry_target-global_position).limit_length(12.0*delta))
 	if collision:
 		move_and_collide(collision.get_remainder().slide(collision.get_normal()))
+	# Translation above already sweeps the held solid. A settled view has no
+	# angular path to check; avoid stationary shape queries every physics tick.
+	if global_basis.is_equal_approx(carry_basis):return
 	# Long arms use finer angular increments according to their furthest solid.
 	var from = global_basis.get_rotation_quaternion()
 	var to = carry_basis.get_rotation_quaternion()

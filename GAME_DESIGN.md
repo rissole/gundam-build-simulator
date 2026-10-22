@@ -331,6 +331,6 @@ Headless verification covers equipment behavior and the existing build rules. Th
 
 ### Supported-foot playtest refinements
 
-Ready connections for a selected or carried compatible part show a yellow destination preview when aimed at within 6 m but beyond attachment reach. The prompt asks the player to move closer; the preview turns green within reach. Discovery preserves prerequisites, equipment access and scenery occlusion, and never permits remote attachment. This applies to individual components, pad hardware and carried subassemblies.
+Aiming at the bounds of an in-progress workpiece reveals a ready destination for the selected or carried compatible part in yellow within 6 m. The prompt asks the player to move closer or aim at the highlighted connection; the preview turns green when the connection is both in reach and directly aimed at. Discovery preserves prerequisites, equipment access and scenery occlusion, and never permits remote attachment. This applies to individual components, pad hardware and carried subassemblies.
 
 Rotation and transfer controls are mounted on the platform's parallel outer railing, facing inward, so the player can operate them while standing on the deck. The walking lane remains open. Space jumps from the ground or platform; holding it does not repeat the jump, and carrying remains subject to solid collision.
