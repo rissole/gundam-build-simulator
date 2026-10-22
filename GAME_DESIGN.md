@@ -1,10 +1,10 @@
 # Mecha workshop — game design
 
-Last updated: 2026-10-21
+Last updated: 2026-10-22
 
 This records the agreed game design from the workshop-loop discussion. Robot geometry, engineering detail, and part inventories remain in [ROBOT_DESIGN.md](ROBOT_DESIGN.md). Recommendations for reaching a playable foot build are recorded separately in the [foot prototype plan](design/game/foot-prototype-plan.md).
 
-**Status:** the core experience and interaction rules below are agreed. The user authorized the Godot heel-pad demo, and the [first playable project](game/heel-pad-demo/README.md) implements that milestone. Its controls, reach values, collision approximations, and layout are initial implementation choices for playtesting; later stages in the linked plan remain proposed.
+**Status:** the core experience and interaction rules below are agreed. The user authorized the Godot heel-pad demo, and the [first playable project](game/workshop/README.md) implements that milestone. Its controls, reach values, collision approximations, and layout are initial implementation choices for playtesting; later stages in the linked plan remain proposed.
 
 ## Experience and purpose
 
@@ -41,9 +41,9 @@ The full-game vision has three main areas:
 
 The foot is approximately 3 m long and 1.3 m wide. Conventional furniture-sized workbenches alone cannot accommodate all construction. A roughly 5 × 5 m staging area was discussed as a possibility, not a fixed specification.
 
-The current station concept is a cube-like work volume that suspends an unfinished assembly and permits free rotation. Access to the work should feel convenient and reliable. Operating the station is not intended to be a substantial challenge. Exact station dimensions, appearance, controls, and number of sizes remain open.
+Small preparation work uses freely rotatable suspension stations. The 2026-10-22 playtest found the whole-foot version floaty and immersion-breaking. The default workshop now uses a mechanically supported foot fixture, indexed working positions, an access platform and a rail carrier, described in [Supported foot milestone](#supported-foot-milestone). Broader equipment and construction stages remain proposals in [Construction scales and supported workflow](#construction-scales-and-supported-workflow).
 
-Objects remain at their designed scale. Large assemblies travel through an open hangar; narrow-doorway maneuvering is not an intended challenge. Hoists are excluded from the intended interaction. Transporting heavy assemblies should occupy a modest part of the experience.
+Objects remain at their designed scale. Large assemblies travel through an open hangar; narrow-doorway maneuvering is not an intended challenge. The earlier exclusion of hoists is reopened by the 2026-10-22 playtest: the user wants to explore conveyors, scaffolding, elevators, and hoists for larger construction. Transporting heavy assemblies should occupy a modest part of the experience; the amount of direct equipment control remains open.
 
 Teleportation is the accepted approach to travel beyond the available physical space when AR support is added. It does not require shrinking the machinery. Exact destinations, transition presentation, and handling of carried assemblies during teleportation remain to be designed; travel should preserve inventory and build state and provide clear arrival space. Reach to the actual connection still governs attachment after arrival.
 
@@ -161,7 +161,7 @@ The full foot retains all 516 fastener pieces. Each small-part pocket can hold 2
 
 ## Open details and record maintenance
 
-Godot is selected for the authorized heel-pad demo. Its [README](game/heel-pad-demo/README.md) records implemented control bindings, carry classifications, reach, undo behavior, and current limits. These are initial prototype defaults rather than locked full-game tuning. Cross-session saving, full-game progression, replenishment rules, additional carry classes, and larger workshop layouts remain open.
+Godot is selected for the authorized heel-pad demo. Its [README](game/workshop/README.md) records implemented control bindings, carry classifications, reach, undo behavior, and current limits. These are initial prototype defaults rather than locked full-game tuning. Cross-session saving, full-game progression, replenishment rules, additional carry classes, and larger workshop layouts remain open.
 
 Update this file when gameplay decisions are accepted. Keep proposals visibly separate from agreed rules. Update the robot specifications only when the robot itself changes. Import or optimization work must preserve the source assets and inventory unless a later decision explicitly changes them.
 
@@ -195,7 +195,7 @@ Increments 1 and 2 introduced the two-pad regression scene, which contains both 
 
 The shared assembly model reads authored types, slots, prerequisites, milestones, and manual references. The parent and child manuals retain independent pages and show model-based illustrations. Looking at another build does not replace the selected manual. Undo acts on the selected manual; installed children must be detached through parent history before their internal preparation can be undone. Mount undo uses a free preparation station and explains when none is available.
 
-The original single-pad loop remains a regression scenario. The construction model is independent of desktop input. The actuator extension is described below; cross-session save/load and AR support remain later increments. See the [workshop README](game/heel-pad-demo/README.md) for controls and verification.
+The original single-pad loop remains a regression scenario. The construction model is independent of desktop input. The actuator extension is described below; cross-session save/load and AR support remain later increments. See the [workshop README](game/workshop/README.md) for controls and verification.
 
 
 ## Pitch actuator milestone
@@ -204,9 +204,9 @@ Increment 3 adds the complete pitch actuator and its installation to the default
 
 FA-513 starts on the floor beside preparation C; the player picks up the motor and suspends it at the empty station. The exposed drive is built first, supported by the preparation fixture. FA-510 is added after the rod, on page 7. Rear-access motor screws and exterior radial retainer screws secure the drive before the caps close it. Fourteen authored child pages cover drive modules, shaft/rod retention, sensors, guide/seals, cap closure, both eyes, and the handoff. The parent manual covers base/ring clevises, their washers and bolts, seating the completed child, and both eye-pin keeper stacks. Prerequisites require internal work before closure and both secured clevises before mounting. Each physical build retains its manual page and progress.
 
-The compact action bar now represents ten persistent small-part pockets independently of the selected manual. Each stack holds up to 20 copies. Shelf components and whole assemblies use the assisted solid grip separately from those pockets. The first six pages need no barrel or transparency. Once fitted, the barrel uses a translucent service view until cap closure. The opaque closed assembly hides explicitly enclosed meshes, including in its placement preview; undo restores them. Authored diagram geometry is cached across progress changes and normal play is capped at 60 FPS. Generous slot previews remain, with no precision threading or torque minigame.
+The compact action bar now represents ten persistent small-part pockets independently of the selected manual. Each stack holds up to 20 copies. Shelf components and whole assemblies use the assisted solid grip separately from those pockets. The first six pages need no barrel or transparency. The fitted barrel stays opaque: subsequent motor fastening uses the open rear, and retainer fastening uses exterior lands. Once the caps are secured, the assembly hides explicitly enclosed meshes, including in its placement preview; undo restores those internals without making the barrel translucent. Authored diagram geometry is cached across progress changes and normal play is capped at 60 FPS. Generous slot previews remain, with no precision threading or torque minigame.
 
-Headless verification covers the actuator's complete build/install/undo path through the desktop adapter, source transforms and physics. Rendered review inspects changed manual stages and interfaces separately. The original single- and two-pad regressions remain available. Human assessment of cabinet layout, manual readability and the longer collecting loop is still needed. Save/resume is the next planned increment; current progress remains session-only.
+Headless verification covers the actuator's complete build/install/undo path through the desktop adapter, source transforms and physics. Rendered review inspects changed manual stages and interfaces separately. The original single- and two-pad regressions remain available. Human assessment of cabinet layout, manual readability and the longer collecting loop is still needed. Save/resume remains planned and current progress is session-only. The later scale playtest below motivates evaluating supported foot handling before further content expansion.
 
 
 ## Pockets and wall storage rebuild
@@ -220,3 +220,117 @@ Manual instructions and parts lists use the same IDs as storage. Names clarify t
 The manual audit removes future-step reminders and gives every construction page a distinct list of only its required new components, including prepared subassemblies at their mounting steps. Summary pages show assembly progress. Receiving parts already fitted in earlier steps are described as such. FA-511 and FA-512 are required only on the housing-closure page.
 
 The rotation/orientation repair keeps mounted and suspended builds fixed relative to their parent during continuous R-drag. Installed hardware uses the receiving slot's oriented source geometry, matching its preview while retaining the consumed physical identity. Next, perform the [manual and assembly visual review](design/game/foot-prototype-plan.md#manual-and-assembly-visual-review) before expanding content: per-step rendered comparisons, fastener close-ups, multiple angles, rotation recordings and a reviewed baseline. Headless geometry checks are necessary but do not replace that review.
+
+## Construction scales and supported workflow
+
+### Playtest feedback on 2026-10-22
+
+The user finds stocking small hardware into the action bar, preparing hand-sized components, and rotating small workpieces satisfying. Two-handed heel-pad carrying and attachment also feel good. Manipulating the whole foot to install the actuator feels floaty and breaks immersion. Carrying objects more than a couple of metres wide feels clunky, raising concerns about larger skeleton and torso builds.
+
+The user proposes larger preparation areas with scaffolding, conveyors to move completed pieces toward the robot, and renewed consideration of elevators and hoists for final assembly. This revises the earlier preference against hoists. The full workflow below remains a design proposal; its first supported-foot increment is implemented in [Supported foot milestone](#supported-foot-milestone).
+
+### Dimensions and handling implications
+
+The [foot dimensions](design/legs/foot-and-ankle/dimensions.md), [actuator specification](design/legs/foot-and-ankle/actuators.md), and [hardware inventory](design/legs/foot-and-ankle/parts.md) provide detailed working sizes. The [whole-robot proportions](design/proportions.md) distinguish confirmed proportions from selected working envelopes. Lengths between joint centers are not removable-part lengths. Dimensions describe geometry; masses are not specified.
+
+| Foot item | Documented size | Proposed handling |
+| --- | --- | --- |
+| Fasteners and washers | M12–M36 bolts, 30–140 mm under-head lengths; washer outside diameters 24–66 mm | Existing small-part pockets |
+| Compression sleeve FA-305 | 42 mm outside diameter × 76 mm long | Existing small-part pockets |
+| Frame nut plates FA-107 | 160, 180 or 280 × 80 × 54 mm | Small stock or shelf component according to comfort and variant; do not infer pocket eligibility from the name |
+| Ankle bushings and thrust washers | Bushings up to 150 mm outside diameter × 140 mm long; thrust washers up to 170 mm outside diameter | Hand-scale preparation candidates |
+| Pitch motor / gearbox FA-513 / FA-514 | Approximately 126 / 122 mm across the largest flange and 58 / 62 mm axial extent in the current source geometry | Hand-sized bench work; nominal source envelopes, not newly measured mesh bounds |
+| Heel pad FA-302 | 600 × 660 × 140 mm | Two-handed carrying, already positively playtested |
+| Forefoot / midfoot pads FA-304 / FA-303 | 600 × 860 × 140 / 600 × 1150 × 140 mm | Two-handed carrying candidates; verify the larger pads separately |
+| Pitch actuator | 140 mm barrel diameter, 460 mm barrel length; 640–860 mm eye-center distance | Bench assembly and supported handoff; potentially comfortable to carry because it is slender. Eye spacing excludes the outer eye tips |
+| Roll / forefoot actuator | 110 mm barrel diameter; 480–640 / 470–640 mm eye-center distance | Bench assembly and handoff candidates; detailed loose-part handling still needs classification |
+| Rear / forefoot rails | 1830 / 840 mm long, 180 × 240 mm box section before local features | Long-part rack and frame fixture; test the slender rear rail before assigning it to hand carrying |
+| Forefoot axle | 120 mm journal diameter; 1185 mm extraction length including head | Long-part staging; keep a 1300 mm outward extraction corridor |
+| Ankle ring FA-200 | Main outline 880 × 720 × 120 mm; bearing bosses and mounting ears extend beyond it | Dedicated supported ankle-core fixture rather than treating the complete core as a small hand prop |
+| Rear / forefoot sole carrier | 1220 × 1860 × 60 / 1220 × 880 × 60 mm | Supported staging and assisted placement, especially for the broad rear plate |
+| Complete foot and ankle | 3000 long × 1300 wide; main shell top 700 mm, guard tops 1600 mm above sole datum | Floor assembly bay; supported repositioning and transport |
+
+The motor/gearbox estimates come from the primitive extents in the current [pitch interface generator](models/foot-fa01/src/pitch_interfaces.py); flanges and journals are included. Other foot rows use the linked dimensional specifications. The actuator's body can be bench-sized even when the frame receiving it needs a floor bay.
+
+| Larger assembly | Documented scale, metres | Basis and handling implication |
+| --- | --- | --- |
+| Shin / calf | 4.1 knee-to-ankle joint span; up to 1.4 wide × 1.9 deep armor | Confirmed span, working cross-section; long supported fixture |
+| Thigh | 4.1 hip-to-knee joint span; up to 1.5 × 1.5 armor cross-section | Confirmed span, working cross-section; long supported fixture |
+| Upper arm / forearm | 3.0 shoulder-to-elbow / 2.6 elbow-to-wrist span; up to 0.9 × 1.0 / 1.1 × 1.1 armor cross-section | Confirmed spans, working cross-sections; limb fixtures and supported transfers |
+| Robot hand | 1.8 wrist-to-middle-fingertip; palm 0.9 wide × 0.45 thick excluding thumb | Confirmed length, working palm envelope; the whole robot hand needs a fixture even if its individual parts can be prepared on benches |
+| Pelvis / waist | 3.0 wide × 1.8 deep / 2.2 wide × 1.6 deep | Pelvis width confirmed, other extents working; frame fixture and access platforms |
+| Chest | 4.0 wide × 2.4 deep | Confirmed envelope dimensions; walk-around torso bay. Individual spine, cockpit and frame-member dimensions remain open |
+| Backpack | 2.4 wide × 2.8 high; up to 1.0 rear projection | Width/height working, maximum projection confirmed; assembly stand and supported installation |
+| Head | 2.0 high × 2.0 wide × 1.8 deep, excluding crest | Confirmed envelope; elevated construction access. Working crest width is 2.6 |
+| Final robot interfaces | Hip centers 9.2 high; shoulder centers 14.4; head mounting plane 15.4 | Confirmed heights; scaffold/lift access and supported alignment |
+
+The foot is the only component with a detailed inventory and size packet. Knee cylinders, thrusters, cockpit/core modules, finger segments, and other non-foot individual parts still need sizing. Do not assign their loose parts to pocket, hand, or equipment categories solely from their names.
+
+### Proposed construction stages
+
+These stages describe work at increasing scales. Small preparation branches remain available throughout larger builds; the player does not permanently graduate away from bolts and bench work.
+
+| Stage | Player activity | Work support and movement | Completion boundary |
+| --- | --- | --- | --- |
+| 1. Stock and prepare small parts | Collect hardware into pockets; assemble eye bearings, drive modules, sensors or control-box contents where dimensions permit | Existing storage and small rotatable preparation fixtures | Prepared small components retain their constituent identities |
+| 2. Prepare carryable subassemblies | Fit pad sleeves; assemble slender actuators on a bench; prepare other modules once sized | Bench clamps/fixtures; ordinary one- or two-handed carrying where comfortable | Prepared child, ready for its receiving parent |
+| 3. Build supported components | Assemble the foot frame, joints, drives, sole, services and armor; later construct robot hands and other bulky modules | Open frame fixture, adjustable work height and access platforms; visibly supported, controlled repositioning | Secured component, with future interface hardware and access preserved |
+| 4. Integrate body sections | Join foot/shin/knee/thigh into a leg; hand/forearm/elbow/upper arm into an arm; build pelvis/waist/torso frame | Long fixtures, transfer pallets and assisted hoist alignment | Body section ready for final attachment; closing armor waits for covered work |
+| 5. Assemble the robot in its bay | Seat hip and shoulder balls, fit retaining rings, connect services, complete head construction and remaining closures | Robot support gantry, lifting equipment, platforms/elevators, front/side/rear access | Seated, secured and connected sections; equipment releases only after retention is complete |
+
+Hand-carry suitability depends on shape, length, camera clearance and comfortable control, not just width or fictional mass. A slender actuator can stay manageable when a similarly long broad carrier plate does not. A long arm beam can require support despite being less than a metre wide. Assign handling per compatible type and assembly state, with gradual growth from handwork into fixture-supported work.
+
+### Proposed foot construction sequence
+
+The [reference assembly sequence](design/legs/foot-and-ankle/assembly-and-review.md) remains the mechanical baseline. Use its actual access dependencies, rather than turning these workshop stages into a rigid global order.
+
+1. **Prepare supplies in parallel.** Sleeve the six pads and build the three actuators on small fixtures. Build the moving ankle core on its own supported fixture. A pad's parent mounting washers and bolts remain foot-installation work.
+2. **Build the rear frame on located supports.** Retain its six nut plates before installing crossmember bolts. Seat and bolt the cradle; install the pitch stops while access is open. The fixture supports the work without covering the nut-plate pockets or later sole connections.
+3. **Install the ankle core.** Add pitch bushings and thrust washers, seat the prepared core, then insert side pins and retainers. Keep the ring/adapter ownership and pitch/roll axes intact.
+4. **Build and join the forefoot.** Assemble its four nut plates and frame on a separate fixture, then support it at the hinge for axle insertion. Keep the 1300 mm outward corridor clear of scaffold posts and storage; add forefoot stops.
+5. **Mount the three prepared drives.** Fit and secure the clevises, seat each actuator, then install pins and keepers. The current pitch repair provides outboard access to its pin heads and keeper screws. Expose the appropriate side using player access or a supported fixture pose, rather than freely floating the whole foot.
+6. **Fit carriers, then prepared pads.** Expose the underside using the fixture. Secure each carrier to the frame before covering its fasteners with the pads. Seat the pads and fit their parent-owned washers and bolts. A complete carrier-plus-pads cassette would conceal the carrier fasteners and is not the default installation sequence.
+7. **Install services before closure.** Mount the control box/controller, route all four external harnesses, fit clips and close the box. Preserve movement loops, connector access and mounting-tool corridors.
+8. **Complete the appropriate handoff.** A standalone foot leaves the keyed shin flange accessible and reserves its four bolts/four washers for leg assembly. When building the leg, seat and secure the shin and connect the disconnect before any closure that blocks access. Fit the five removable armor shells after their covered work is complete, keeping each shell on its designed owner.
+
+### Equipment and access proposal
+
+Start with a mechanically supported foot fixture: visible frame saddles/clamps, height adjustment, and deliberate supported tilt or indexed working poses. Walking around the workpiece and using a platform should expose ordinary connections. Repositioning controls should communicate a machine moving a supported load; exact speed, poses and controls need playtesting. The fixture must avoid pad/carrier bolts, side-pin corridors and wiring access, including when an incomplete build is moved.
+
+A flat bench or conveyor under the sole would block upward-facing carrier and pad bolts. An open-center carrier or a fixture with supported turnover is needed. A roughly 6 × 6 m clear foot bay is an initial blockout candidate, not a validated layout: allow the 3 × 1.3 m foot, access on both sides, the 1.3 m axle corridor, fixture motion, stairs/platforms and local supplies. Measure the resulting clearances before selecting its final size.
+
+For transport, prefer a conveyor carrying a located pallet or fixture, rather than a finished foot balancing on its pads or loose parts moving past the player. A rail trolley could serve the same role if it integrates better with the bay. Transport should be visible and purposeful, while avoiding repetitive delivery trips or precision driving. The default proposal is to choose a destination or work pose, let the equipment perform a constrained move, then make the connections by hand; direct assisted controls remain an alternative to evaluate.
+
+Hoists and lifts have different roles: hoists support and position large pieces; platforms/elevators bring the player and supplies within reach of the real connection. Neither should grant remote fastening. Keep a load supported until its retainers are fitted. The final robot needs a support gantry while incomplete, so the workflow does not depend on balancing unfinished legs or suspending an unsecured section from one preliminary connection.
+
+Preserve the specified interfaces: integral leg/arm balls seat in torso sockets and are captured by split retaining rings. The head's confirmed sequence starts on the torso's neck spoke, then baseplate, sides, top, sensors, faceplate, mask and crest; do not silently replace it with a prebuilt-head hoist. Torso work also requires rear access for power-core insertion/extraction and backpack hinges, and cockpit installation before front armor. Final bay equipment must serve the rear as well as the front.
+
+### Next prototype and review plan
+
+Evaluate a supported foot bay using the existing pad and pitch-actuator content before expanding the foot inventory. Retain the satisfying pockets, small preparation and pad-carry loop. Compare a fixed accessible pose with a deliberately repositioned fixture; test conveyance only after installation access feels good. Save/resume remains necessary before longer full-foot play sessions.
+
+- Map every current installation slot to a usable work pose and standing/platform position. Verify actual connection reach, view/approach obstruction, upward sole access and outboard pitch hardware. A nearby fixture control must not make a distant connection attachable.
+- Verify support through frame growth, fixture movement, mounted children, undo and transfer. Fixture/pallet/scaffold are workshop equipment, not additional copies of robot inventory. Progress and manual position follow the physical build, independently of station or support.
+- Distinguish **prepared**, **positioned by equipment**, **seated**, and **secured**. Positioning alone must not fill retention slots, award completion or permit premature release. Undo returns an unsecured module to suitable support without losing its physical identities or requiring it to be hand-carried.
+- For future implemented changes, run the affected placement, ownership, mounted-transform, collision and undo checks. During fixture movement, children must remain attached between input and physics ticks. Loading/unloading must not duplicate bodies or allow equipment to bypass scenery.
+- Human playtesting should assess whether the supported foot feels substantial, whether its connections are accessible without wrestling with the workpiece, and whether transport adds a satisfying scale transition without dominating construction. Rendered manual review remains separate and runs when explicitly requested.
+
+Before authoring later stages, detail the next component's actual parts and interfaces. Resolve fixture contact points, supported handoff rules, useful equipment controls, working heights and bay clearances through this prototype. Neither a physical load calculation nor a full crane simulation is required by the proposed gameplay.
+
+## Supported foot milestone
+
+The playable project is now `game/workshop`, titled **Gundam Build Simulator**, with `play.command` and `edit.command` launchers. The foot is its first construction area. Single-pad and two-pad scenarios retain the earlier suspension setup for regression checks.
+
+The default 135-piece workshop keeps its existing child builds and adds a visible foot carrier with end bearings and frame clamps. The foot starts upright, with its sole datum 0.75 m above the floor. Local bay controls select Upright, Sole left or Sole right; powered rotation is constrained to the foot's long axis. A ramp reaches the 0.55 m side platform. Small preparation stations keep R-drag and reset; the foot uses its own physical controls.
+
+Once both pads and the pitch actuator are secured, the upright foot can transfer 6.2 m along floor rails to a handoff area and return. This is a supported transport prototype; final robot hoists and elevators remain future work. Equipment moves at a controlled rate, stops for path obstructions, and pauses with the game. The foot retains its existing assembly identity and mounted children throughout.
+
+Placement and undo on the foot are available only while it is stationary in the work bay. The player must reach and see each real connection; equipment controls do not extend fastening reach. Construction on independent preparation stations remains available. The parent overview explains the bay controls and secured-transfer requirement without adding supplies to its component list.
+
+Headless verification covers equipment behavior and the existing build rules. The supported layout, working poses and sense of scale still need human playtesting. No new rendered review is claimed for this milestone.
+
+### Supported-foot playtest refinements
+
+Ready connections for a selected or carried compatible part show a yellow destination preview when aimed at within 6 m but beyond attachment reach. The prompt asks the player to move closer; the preview turns green within reach. Discovery preserves prerequisites, equipment access and scenery occlusion, and never permits remote attachment. This applies to individual components, pad hardware and carried subassemblies.
+
+Rotation and transfer controls are mounted on the platform's parallel outer railing, facing inward, so the player can operate them while standing on the deck. The walking lane remains open. Space jumps from the ground or platform; holding it does not repeat the jump, and carrying remains subject to solid collision.
