@@ -42,6 +42,44 @@ changes, resolve conflicts and perform appropriate final validation. Report what
 was completed and any remaining limitations. Delegation does not expand the
 task's authorization or bypass project skills, permissions or required reviews.
 
+## Subagent model and effort selection
+
+This is explicit authorization to choose and override each subagent's model and
+reasoning effort independently of the orchestrator.
+
+Before spawning, assess the task's ambiguity, reasoning difficulty, scope and
+verification requirements. Choose the lightest available combination likely to
+complete it reliably.
+
+Use these starting points:
+
+- `gpt-6-luna` / `low`: extraction, inventories, mechanical edits and
+  straightforward checks with clear acceptance criteria.
+- `gpt-6-luna` / `high`: bounded code exploration and tracing with clear
+  questions and evidence requirements.
+- `gpt-6.1-sol` / `medium`: default for implementation, debugging and
+  substantive review.
+- `gpt-6.1-sol` / `high`: complex logic, cross-file changes, subtle edge
+  cases and ambiguous investigations.
+- `gpt-6-astra` / `high`: unusually difficult architecture, diagnosis or
+  synthesis where stronger reasoning materially improves the result.
+- `xhigh` or `max`: exceptional tasks with a concrete reason that the
+  additional reasoning is likely to help.
+
+Do not inherit an expensive orchestrator configuration automatically. Choose
+model and effort explicitly for each delegated task.
+
+Use only combinations supported by the current client. When overrides require a
+fresh context, use `fork_turns="none"` if that is the available mechanism and
+provide a self-contained task brief including relevant constraints, file
+ownership and validation criteria.
+
+Escalate when evidence shows the initial choice is insufficient. Pass existing
+findings to the replacement agent to avoid repeating work.
+
+Briefly report each subagent's task, selected model/effort and reason. The primary
+agent remains responsible for reviewing and validating results.
+
 # Working with feedback
 
 Treat feedback as a design problem to evaluate, not a checklist to follow blindly.
