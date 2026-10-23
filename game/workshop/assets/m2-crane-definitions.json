@@ -1,0 +1,899 @@
+{
+  "version": 1,
+  "parts": {
+    "lg-thigh-spar": {
+      "family": "LG-120",
+      "variant": "structural",
+      "title": "LG-120 · Upper-leg beam",
+      "short_title": "Upper-leg beam",
+      "carry_class": "equipment",
+      "collision_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            0.68,
+            0.04,
+            0.6
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            1.27,
+            0
+          ],
+          "size": [
+            0.3,
+            2.5,
+            0.2
+          ]
+        },
+        {
+          "type": "capsule",
+          "position": [
+            0,
+            2.62,
+            0
+          ],
+          "radius": 0.15,
+          "height": 0.45
+        },
+        {
+          "type": "sphere",
+          "position": [
+            0,
+            3.26,
+            0
+          ],
+          "radius": 0.45
+        }
+      ],
+      "catalogue_image": "res://assets/part-images/lg-thigh-spar.svg"
+    },
+    "pv-ring-half": {
+      "family": "PV-120",
+      "variant": "semicircular",
+      "title": "PV-120 · Hip retaining ring half",
+      "short_title": "Hip retaining ring half",
+      "carry_class": "two_hand",
+      "catalogue_image": "res://assets/part-images/pv-ring-half.svg",
+      "handling": {
+        "distance": 0.85,
+        "rotation_degrees": [
+          90,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "assemblies": {
+    "left_leg": {
+      "title": "Left leg · structural prototype",
+      "carry_class": "equipment",
+      "bounds": [
+        1.4,
+        9.65,
+        3.0
+      ],
+      "work_locations": [
+        "support"
+      ],
+      "interaction": "components",
+      "service_access": "assisted",
+      "slots": {
+        "foot": {
+          "assembly": "foot",
+          "milestone": "complete",
+          "requires": [],
+          "pose_source": "FA-201__001",
+          "snap_position": [
+            0,
+            0.8,
+            -0.7
+          ],
+          "label": "Prepared foot",
+          "support_required": true,
+          "source_supports": [
+            "foot_carrier",
+            "foot_hoist"
+          ]
+        },
+        "shin": {
+          "accepts": "lg-shin",
+          "requires": [
+            "foot"
+          ],
+          "pose_source": "LG-100__001",
+          "label": "LG-100 · Structural shin",
+          "support_required": true,
+          "source_supports": [
+            "leg_shin_rack"
+          ]
+        },
+        "ankle/W-36__021": {
+          "accepts": "lg-w36",
+          "pose_source": "W-36__021",
+          "requires": [
+            "shin"
+          ],
+          "label": "W-36 · M36 washer",
+          "snap_position": [
+            -0.20000000298023224,
+            1.4130000162124634,
+            0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.004,
+            0
+          ]
+        },
+        "ankle/H-36090__001": {
+          "accepts": "lg-m36-90",
+          "pose_source": "H-36090__001",
+          "requires": [
+            "ankle/W-36__021"
+          ],
+          "label": "H-36090 · M36 × 90 shin bolt",
+          "snap_position": [
+            -0.20000000298023224,
+            1.3890000867843628,
+            0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.065,
+            0
+          ]
+        },
+        "ankle/W-36__022": {
+          "accepts": "lg-w36",
+          "pose_source": "W-36__022",
+          "requires": [
+            "shin"
+          ],
+          "label": "W-36 · M36 washer",
+          "snap_position": [
+            -0.20000000298023224,
+            1.4130000162124634,
+            -0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.004,
+            0
+          ]
+        },
+        "ankle/H-36090__002": {
+          "accepts": "lg-m36-90",
+          "pose_source": "H-36090__002",
+          "requires": [
+            "ankle/W-36__022"
+          ],
+          "label": "H-36090 · M36 × 90 shin bolt",
+          "snap_position": [
+            -0.20000000298023224,
+            1.3890000867843628,
+            -0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.065,
+            0
+          ]
+        },
+        "ankle/W-36__023": {
+          "accepts": "lg-w36",
+          "pose_source": "W-36__023",
+          "requires": [
+            "shin"
+          ],
+          "label": "W-36 · M36 washer",
+          "snap_position": [
+            0.20000000298023224,
+            1.4130000162124634,
+            0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.004,
+            0
+          ]
+        },
+        "ankle/H-36090__003": {
+          "accepts": "lg-m36-90",
+          "pose_source": "H-36090__003",
+          "requires": [
+            "ankle/W-36__023"
+          ],
+          "label": "H-36090 · M36 × 90 shin bolt",
+          "snap_position": [
+            0.20000000298023224,
+            1.3890000867843628,
+            0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.065,
+            0
+          ]
+        },
+        "ankle/W-36__024": {
+          "accepts": "lg-w36",
+          "pose_source": "W-36__024",
+          "requires": [
+            "shin"
+          ],
+          "label": "W-36 · M36 washer",
+          "snap_position": [
+            0.20000000298023224,
+            1.4130000162124634,
+            -0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.004,
+            0
+          ]
+        },
+        "ankle/H-36090__004": {
+          "accepts": "lg-m36-90",
+          "pose_source": "H-36090__004",
+          "requires": [
+            "ankle/W-36__024"
+          ],
+          "label": "H-36090 · M36 × 90 shin bolt",
+          "snap_position": [
+            0.20000000298023224,
+            1.3890000867843628,
+            -0.15000000596046448
+          ],
+          "target_offset": [
+            0,
+            0.065,
+            0
+          ]
+        },
+        "main_input": {
+          "accepts": "lg-main-input",
+          "pose_source": "FA-605__001",
+          "requires": [
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004"
+          ],
+          "label": "FA-605 · Main input harness with both plugs",
+          "snap_position": [
+            0.3567236065864563,
+            0.9608125686645508,
+            -0.23488016426563263
+          ],
+          "target_offset": [
+            -0.1067236065864563,
+            0.43918743133544913,
+            0.13488016426563262
+          ]
+        },
+        "bearing_1": {
+          "accepts": "lg-knee-bearing",
+          "pose_source": "LG-130__001",
+          "requires": [
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004"
+          ],
+          "label": "LG-130 · Knee journal bearing",
+          "target_offset": [
+            -0.061,
+            0,
+            0
+          ]
+        },
+        "bearing_2": {
+          "accepts": "lg-knee-bearing",
+          "pose_source": "LG-130__002",
+          "requires": [
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004"
+          ],
+          "label": "LG-130 · Knee journal bearing",
+          "target_offset": [
+            0.061,
+            0,
+            0
+          ]
+        },
+        "thrust_1": {
+          "accepts": "lg-knee-thrust",
+          "pose_source": "LG-135__001",
+          "requires": [
+            "bearing_1",
+            "bearing_2"
+          ],
+          "label": "LG-135 · Knee thrust spacer",
+          "target_offset": [
+            -0.039,
+            0,
+            0
+          ]
+        },
+        "thrust_2": {
+          "accepts": "lg-knee-thrust",
+          "pose_source": "LG-135__002",
+          "requires": [
+            "bearing_1",
+            "bearing_2"
+          ],
+          "label": "LG-135 · Knee thrust spacer",
+          "target_offset": [
+            0.039,
+            0,
+            0
+          ]
+        },
+        "fork": {
+          "accepts": "lg-knee-fork",
+          "pose_source": "LG-110__001",
+          "requires": [
+            "thrust_1",
+            "thrust_2"
+          ],
+          "label": "LG-110 · Detachable knee fork",
+          "support_required": true,
+          "source_supports": [
+            "leg_fork_rack"
+          ]
+        },
+        "axle": {
+          "accepts": "lg-knee-axle",
+          "pose_source": "LG-140__001",
+          "requires": [
+            "fork"
+          ],
+          "label": "LG-140 · Shouldered knee axle",
+          "target_offset": [
+            -0.542,
+            0,
+            0
+          ]
+        },
+        "cap": {
+          "accepts": "lg-knee-cap",
+          "pose_source": "LG-150__001",
+          "requires": [
+            "axle"
+          ],
+          "label": "LG-150 · Knee axle retaining cap",
+          "target_offset": [
+            0.017,
+            0,
+            0
+          ]
+        },
+        "cap/washer_1": {
+          "accepts": "lg-w12",
+          "pose_source": "LG-W12__001",
+          "requires": [
+            "cap"
+          ],
+          "label": "LG-W12 · M12 washer",
+          "target_offset": [
+            0.003,
+            0,
+            0
+          ]
+        },
+        "cap/screw_1": {
+          "accepts": "lg-m12-50",
+          "pose_source": "LG-H12050__001",
+          "requires": [
+            "cap/washer_1"
+          ],
+          "label": "LG-H12050 · M12 × 50 axle-cap screw",
+          "target_offset": [
+            0.014,
+            0,
+            0
+          ]
+        },
+        "cap/washer_2": {
+          "accepts": "lg-w12",
+          "pose_source": "LG-W12__002",
+          "requires": [
+            "cap"
+          ],
+          "label": "LG-W12 · M12 washer",
+          "target_offset": [
+            0.003,
+            0,
+            0
+          ]
+        },
+        "cap/screw_2": {
+          "accepts": "lg-m12-50",
+          "pose_source": "LG-H12050__002",
+          "requires": [
+            "cap/washer_2"
+          ],
+          "label": "LG-H12050 · M12 × 50 axle-cap screw",
+          "target_offset": [
+            0.014,
+            0,
+            0
+          ]
+        },
+        "spar": {
+          "accepts": "lg-thigh-spar",
+          "pose_source": "LG-120__001",
+          "requires": [
+            "cap",
+            "cap/washer_1",
+            "cap/screw_1",
+            "cap/washer_2",
+            "cap/screw_2"
+          ],
+          "label": "LG-120 · Upper-leg beam",
+          "support_required": true,
+          "source_supports": [
+            "m2_service_crane"
+          ]
+        },
+        "fork/washer_1": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__001",
+          "requires": [
+            "spar"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            0.003,
+            0
+          ]
+        },
+        "fork/bolt_1": {
+          "accepts": "lg-m24-100",
+          "pose_source": "LG-H24100__001",
+          "requires": [
+            "fork/washer_1"
+          ],
+          "label": "LG-H24100 · M24 × 100 fork bolt",
+          "target_offset": [
+            0,
+            0.026,
+            0
+          ]
+        },
+        "fork/washer_2": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__002",
+          "requires": [
+            "spar"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            0.003,
+            0
+          ]
+        },
+        "fork/bolt_2": {
+          "accepts": "lg-m24-100",
+          "pose_source": "LG-H24100__002",
+          "requires": [
+            "fork/washer_2"
+          ],
+          "label": "LG-H24100 · M24 × 100 fork bolt",
+          "target_offset": [
+            0,
+            0.026,
+            0
+          ]
+        },
+        "fork/washer_3": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__003",
+          "requires": [
+            "spar"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            0.003,
+            0
+          ]
+        },
+        "fork/bolt_3": {
+          "accepts": "lg-m24-100",
+          "pose_source": "LG-H24100__003",
+          "requires": [
+            "fork/washer_3"
+          ],
+          "label": "LG-H24100 · M24 × 100 fork bolt",
+          "target_offset": [
+            0,
+            0.026,
+            0
+          ]
+        },
+        "fork/washer_4": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__004",
+          "requires": [
+            "spar"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            0.003,
+            0
+          ]
+        },
+        "fork/bolt_4": {
+          "accepts": "lg-m24-100",
+          "pose_source": "LG-H24100__004",
+          "requires": [
+            "fork/washer_4"
+          ],
+          "label": "LG-H24100 · M24 × 100 fork bolt",
+          "target_offset": [
+            0,
+            0.026,
+            0
+          ]
+        }
+      },
+      "milestones": {
+        "structural_ready": [
+          "foot",
+          "shin",
+          "ankle/W-36__021",
+          "ankle/H-36090__001",
+          "ankle/W-36__022",
+          "ankle/H-36090__002",
+          "ankle/W-36__023",
+          "ankle/H-36090__003",
+          "ankle/W-36__024",
+          "ankle/H-36090__004",
+          "main_input",
+          "bearing_1",
+          "bearing_2",
+          "thrust_1",
+          "thrust_2",
+          "fork",
+          "axle",
+          "cap",
+          "cap/washer_1",
+          "cap/screw_1",
+          "cap/washer_2",
+          "cap/screw_2",
+          "spar",
+          "fork/washer_1",
+          "fork/bolt_1",
+          "fork/washer_2",
+          "fork/bolt_2",
+          "fork/washer_3",
+          "fork/bolt_3",
+          "fork/washer_4",
+          "fork/bolt_4"
+        ]
+      },
+      "manual": [
+        {
+          "title": "Supplied horizontal receiving assembly",
+          "view": "overview",
+          "slots": [],
+          "body": "The complete existing foot and the horizontal shin, bearings, spacers, knee fork, axle and cap are supplied on the home rail. The real LG-120 Upper-leg beam remains on its rack; four LG-W24 washers and four LG-H24100 bolts remain loose stock. No beam or flange hardware is preinstalled."
+        },
+        {
+          "title": "Deliver the Upper-leg beam",
+          "body": "At the central crane console, choose Go to Upper-leg beam rack, then Down. The console captures the view: click a command or use arrow keys and E; Q closes it. Travel destinations appear only while Up. Walk to its source rack, E-pick a magnetic end and aim/click a free marked point; repeat for the other end. Either end fits either point; Q stows a held end. Return to the console and choose Up, then Go to Leg cradle, then Down. The crane takes the same LG-120 from the rack, reaches the receiving cradle and seats the flange through the final 0.20 m axial approach toward −Z. These horizontal flanges cannot mate by a vertical drop. Keep both cables attached during fastening.",
+          "slots": [
+            "spar"
+          ],
+          "view": "components",
+          "context_sources": [
+            "LG-110__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "Deliver the Upper-leg beam",
+              "sources": [
+                "LG-120__001"
+              ],
+              "context": [
+                "LG-110__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Fasten the Upper-leg beam flange",
+          "body": "Collect four LG-W24 washers and four LG-H24100 bolts normally. On the already seated Upper-leg beam, fit each washer and then its bolt through the four exposed flange corners into the existing fork. On the horizontal assembly, work from the exposed +Z head faces and insert toward −Z. Keep crane assistance until all four pairs are fitted, then detach and stow both magnetic ends and park the empty crane. For recovery before any flange hardware is fitted, Up at the leg cradle removes the supported beam and reverses the axial approach. Choose Go to Upper-leg beam rack, then Down to return it. Undo all fitted flange hardware with Z before lifting a loaded beam.",
+          "slots": [
+            "fork/washer_1",
+            "fork/bolt_1",
+            "fork/washer_2",
+            "fork/bolt_2",
+            "fork/washer_3",
+            "fork/bolt_3",
+            "fork/washer_4",
+            "fork/bolt_4"
+          ],
+          "view": "components",
+          "context_sources": [
+            "LG-110__001",
+            "LG-120__001"
+          ],
+          "diagram_views": [
+            {
+              "title": "Fasten the Upper-leg beam flange",
+              "sources": [
+                "LG-W24__001",
+                "LG-H24100__001",
+                "LG-W24__002",
+                "LG-H24100__002",
+                "LG-W24__003",
+                "LG-H24100__003",
+                "LG-W24__004",
+                "LG-H24100__004"
+              ],
+              "context": [
+                "LG-110__001",
+                "LG-120__001"
+              ],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Crane-delivery example complete",
+          "view": "prepared",
+          "slots": [],
+          "body": "The Upper-leg beam is fastened to the supplied horizontal leg and the magnetic ends can be stowed before parking the empty crane. Full released-beam disassembly and the whole leg-to-robot journey remain outside this example."
+        }
+      ]
+    },
+    "pelvis": {
+      "title": "Pelvis · left leg installation",
+      "bounds": [
+        3.6,
+        1.5,
+        1.5
+      ],
+      "work_locations": [
+        "fixture"
+      ],
+      "interaction": "components",
+      "context_sources": [
+        "PV-100__001",
+        "PV-110__001",
+        "PV-C-H24090__001",
+        "PV-C-H24090__002",
+        "PV-110__002",
+        "PV-C-H24090__003",
+        "PV-C-H24090__004"
+      ],
+      "slots": {
+        "left_leg": {
+          "assembly": "left_leg",
+          "milestone": "structural_ready",
+          "requires": [],
+          "pose_source": "PV-V-HIP-BALL",
+          "snap_position": [
+            -1.1,
+            -9.2,
+            0
+          ],
+          "label": "Structural left leg",
+          "support_required": true,
+          "source_supports": [
+            "m2_leg_rail"
+          ]
+        },
+        "ring_1": {
+          "accepts": "pv-ring-half",
+          "pose_source": "PV-120__001",
+          "requires": [
+            "left_leg"
+          ],
+          "label": "PV-120 · Hip retaining ring half"
+        },
+        "ring_2": {
+          "accepts": "pv-ring-half",
+          "pose_source": "PV-120__002",
+          "requires": [
+            "left_leg"
+          ],
+          "label": "PV-120 · Hip retaining ring half"
+        },
+        "ring/washer_1": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__005",
+          "requires": [
+            "ring_2"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            -0.003,
+            0
+          ]
+        },
+        "ring/bolt_1": {
+          "accepts": "pv-m24-140",
+          "pose_source": "PV-H24140__001",
+          "requires": [
+            "ring/washer_1"
+          ],
+          "label": "PV-H24140 · M24 × 140 ring bolt",
+          "target_offset": [
+            0,
+            -0.026,
+            0
+          ]
+        },
+        "ring/washer_2": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__006",
+          "requires": [
+            "ring_2"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            -0.003,
+            0
+          ]
+        },
+        "ring/bolt_2": {
+          "accepts": "pv-m24-140",
+          "pose_source": "PV-H24140__002",
+          "requires": [
+            "ring/washer_2"
+          ],
+          "label": "PV-H24140 · M24 × 140 ring bolt",
+          "target_offset": [
+            0,
+            -0.026,
+            0
+          ]
+        },
+        "ring/washer_3": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__007",
+          "requires": [
+            "ring_1"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            -0.003,
+            0
+          ]
+        },
+        "ring/bolt_3": {
+          "accepts": "pv-m24-140",
+          "pose_source": "PV-H24140__003",
+          "requires": [
+            "ring/washer_3"
+          ],
+          "label": "PV-H24140 · M24 × 140 ring bolt",
+          "target_offset": [
+            0,
+            -0.026,
+            0
+          ]
+        },
+        "ring/washer_4": {
+          "accepts": "lg-w24",
+          "pose_source": "LG-W24__008",
+          "requires": [
+            "ring_1"
+          ],
+          "label": "LG-W24 · M24 washer",
+          "target_offset": [
+            0,
+            -0.003,
+            0
+          ]
+        },
+        "ring/bolt_4": {
+          "accepts": "pv-m24-140",
+          "pose_source": "PV-H24140__004",
+          "requires": [
+            "ring/washer_4"
+          ],
+          "label": "PV-H24140 · M24 × 140 ring bolt",
+          "target_offset": [
+            0,
+            -0.026,
+            0
+          ]
+        }
+      },
+      "milestones": {
+        "left_leg_secured": [
+          "left_leg",
+          "ring_1",
+          "ring_2",
+          "ring/washer_1",
+          "ring/bolt_1",
+          "ring/washer_2",
+          "ring/bolt_2",
+          "ring/washer_3",
+          "ring/bolt_3",
+          "ring/washer_4",
+          "ring/bolt_4"
+        ],
+        "structural_ready": [
+          "left_leg",
+          "ring_1",
+          "ring_2",
+          "ring/washer_1",
+          "ring/bolt_1",
+          "ring/washer_2",
+          "ring/bolt_2",
+          "ring/washer_3",
+          "ring/bolt_3",
+          "ring/washer_4",
+          "ring/bolt_4"
+        ]
+      },
+      "manual": [
+        {
+          "title": "Hip work is outside this example",
+          "view": "overview",
+          "slots": [],
+          "body": "This example ends with the Upper-leg beam fastened and the empty crane parked. The horizontal foot, shin, knee, fork and cap are supplied. Hip mounting and retention belong to the separate Hip retainer example."
+        }
+      ]
+    }
+  }
+}

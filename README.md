@@ -64,7 +64,7 @@ The foot measures approximately **3.0 m long × 1.3 m wide**. Its inventory cont
 | [Reference sheets](design/legs/foot-and-ankle/images/README.md) | Engineering-style images and their generation prompts |
 | [FA-01 model](models/foot-fa01/README.md) | Model deliverables, Blender workflow, exports, and audit records |
 | [Modeling notes](models/foot-fa01/MODELING_NOTES.md) | Geometry decisions and visualization scope |
-| [Prototype expansion plan](design/game/foot-prototype-plan.md) | Proposed stages beyond the playable heel-pad milestone |
+| [Current workshop plan](design/game/leg-workshop-next-steps.md) | Playtest feedback, agreed handling direction, and implementation steps |
 | [Supported left-leg milestone](design/game/leg-milestone.md) | Expanded workshop, equipment, construction scope and verification |
 | [Leg and pelvis interfaces](design/game/leg-prototype-interface.md) | Physical parts, dimensions, ownership and manual dependencies |
 

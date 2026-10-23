@@ -21,6 +21,12 @@ var components: Node
 var storage: Node
 var pitch_workshop: bool = false
 var leg_workshop: bool = false
+var m1_blockout: bool = false
+var m1: Node3D
+var m2_trial = ""
+var m2_half_uid = "PV-120__001"
+var m2: Node3D
+var m2_crane: Node3D
 var leg_content: Dictionary = {}
 var leg_layout: Node3D
 var leg_equipment: Node3D
@@ -85,10 +91,19 @@ func _ready() -> void:
 	single_pad = OS.get_cmdline_user_args().has("--single-pad")
 	automated_test = OS.get_cmdline_user_args().has("--demo-test") or OS.get_cmdline_user_args().has("--multi-test") or OS.get_cmdline_user_args().has("--pitch-test") or OS.get_cmdline_user_args().has("--pockets-test")
 	var arguments: Array = Array(OS.get_cmdline_user_args())
+	for arg in arguments:
+		if str(arg).begins_with("--m2-trial="):m2_trial = str(arg).trim_prefix("--m2-trial=")
+	if m2_trial.is_empty() and get_tree().has_meta("m2_trial"):m2_trial = get_tree().get_meta("m2_trial")
+	if arguments.has("--m2-workshop") and m2_trial.is_empty():
+		add_child(preload("res://scripts/m2_selector.gd").new())
+		return
+	if not m2_trial.is_empty():assert(m2_trial in ["retention","crane"])
+	m1_blockout = m1_blockout or arguments.has("--m1-blockout")
+	if m1_blockout or not m2_trial.is_empty():single_pad = false
 	var scripted = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("-s")
-	leg_workshop = leg_workshop or arguments.has("--leg-workshop") or (not scripted and not automated_test and not single_pad and not arguments.any(func(arg):return arg in ["--foot-workshop","--pads-only","--legacy-stations","--capture","--pitch-review"]))
+	leg_workshop = not m2_trial.is_empty() or m1_blockout or leg_workshop or arguments.has("--leg-workshop") or (not scripted and not automated_test and not single_pad and not arguments.any(func(arg):return arg in ["--foot-workshop","--pads-only","--legacy-stations","--capture","--pitch-review"]))
 	config = HeelAssemblyState.scenario(single_pad)
-	pitch_workshop = not single_pad and not OS.get_cmdline_user_args().has("--pads-only") and not OS.get_cmdline_user_args().has("--multi-test")
+	pitch_workshop = not m2_trial.is_empty() or m1_blockout or (not single_pad and not OS.get_cmdline_user_args().has("--pads-only") and not OS.get_cmdline_user_args().has("--multi-test"))
 	var data = HeelAssemblyState.definition_data(single_pad)
 	if pitch_workshop:
 		config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
@@ -100,12 +115,26 @@ func _ready() -> void:
 		var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-definitions.json"))
 		data.parts.merge(overlay.parts,true)
 		data.assemblies.merge(overlay.assemblies,true)
+		if not m2_trial.is_empty():
+			var trial_definitions: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+m2_trial+"-definitions.json"))
+			var trial_content: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+m2_trial+"-content.json"))
+			data.parts.merge(trial_definitions.parts,true);data.assemblies.merge(trial_definitions.assemblies,true)
+			for support_id in trial_content.m2.remove_supports:leg_content.supports.erase(support_id)
+			leg_content.supports.merge(trial_content.supports,true)
+			for field in ["parts","parents","equipment","m2"]:leg_content[field] = trial_content[field]
+			if m2_trial == "retention" and m2_half_uid != "PV-120__001":
+				assert(m2_half_uid == "PV-120__002")
+				for record in leg_content.parts:
+					if record.instance_id == "PV-120__001":record.instance_id = m2_half_uid;record.source_id = m2_half_uid
+				leg_content.m2.retention_uid = m2_half_uid
 		config.parts.append_array(leg_content.parts)
 		config.parents = leg_content.parents.duplicate(true)
 		config.supports = leg_content.supports.duplicate(true)
 		config.parent.location = "support:foot_carrier"
 		config.parents[0].home = [2.3,0.75,14.4]
 		config.parents[1].home = [13,10.6,26]
+		if m1_blockout:
+			config.supports["m1_leg_rail"] = {"assemblies":["left_leg"],"assembly_ids":["left_leg"]}
 	components = preload("res://scripts/component_interaction.gd").new(self)
 	add_child(components)
 	var errors = model.configure(data,config)
@@ -125,7 +154,7 @@ func _ready() -> void:
 	_register_parent_fixtures()
 	if leg_workshop:_make_leg_context()
 	_make_player()
-	if pitch_workshop and not OS.get_cmdline_user_args().has("--legacy-stations"):
+	if pitch_workshop and not m1_blockout and m2_trial.is_empty() and not OS.get_cmdline_user_args().has("--legacy-stations"):
 		foot_fixture = preload("res://scripts/supported_fixture.gd").new()
 		add_child(foot_fixture)
 		foot_fixture.setup(self,foot)
@@ -134,10 +163,17 @@ func _ready() -> void:
 		_make_pad()
 	_activate(config.builds[0].id)
 	components.setup()
-	if leg_workshop:_make_leg_equipment()
+	if m1_blockout:
+		m1 = preload("res://scripts/m1_blockout.gd").new()
+		add_child(m1)
+		m1.setup(self,leg_layout)
+	elif not m2_trial.is_empty():
+		m2 = preload("res://scripts/m2_workshop.gd").new();add_child(m2);m2.setup(self)
+	elif leg_workshop:_make_leg_equipment()
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
-	storage.setup()
+	if not m1_blockout:storage.setup()
+	if not m2_trial.is_empty():_position_m2_stock()
 	ghost_material = material(SNAP_READY_COLOR,0.0)
 	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
 	ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -163,12 +199,16 @@ func _ready() -> void:
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
+	if m1_blockout:hud.manual.hide()
+	if not m2_trial.is_empty():hud.open_manual("pelvis" if m2_trial == "retention" else "left_leg")
 	model.changed.connect(_state_changed)
 	_make_audio()
 	_state_changed()
 	set_paused(true)
 	started = true
-	saves = preload("res://scripts/workshop_save.gd").new()
+	# The isolated blockout never constructs the normal save codec: even explicit
+	# reload/save calls and path overrides cannot reach either saved profile.
+	saves = preload("res://scripts/m2_session.gd").new() if not m2_trial.is_empty() else (preload("res://scripts/m1_session.gd").new() if m1_blockout else preload("res://scripts/workshop_save.gd").new())
 	add_child(saves)
 	saves.setup(self)
 	if OS.get_cmdline_user_args().has("--pockets-test"):
@@ -286,7 +326,7 @@ func _make_world() -> void:
 	var metal = material(Color("49626a"),0.35)
 	var warm = material(Color("e8b46b"),0.1)
 	if leg_workshop:
-		leg_layout = preload("res://scripts/leg_workshop_layout.gd").new()
+		leg_layout = preload("res://scripts/m2_layout.gd").new() if not m2_trial.is_empty() else (preload("res://scripts/m1_layout.gd").new() if m1_blockout else preload("res://scripts/leg_workshop_layout.gd").new())
 		add_child(leg_layout)
 		leg_layout.setup(self)
 		sun.directional_shadow_max_distance = 58.0
@@ -594,7 +634,13 @@ func movement_pressed(code: Key) -> bool:
 	return bool(scripted_controls.get(code,false)) if automated_test else Input.is_physical_key_pressed(code)
 
 func handle_desktop_input(event: InputEvent) -> void:
+	if started and is_instance_valid(m2_crane) and m2_crane.console.is_open:
+		m2_crane.console.handle_input(event)
+		return
 	if automated_test and event is InputEventKey:scripted_controls[event.physical_keycode] = event.pressed
+	if started and m1_blockout and event is InputEventKey and event.physical_keycode in [KEY_N,KEY_M,KEY_TAB,KEY_C,KEY_V,KEY_ENTER,KEY_BACKSPACE,KEY_LEFT,KEY_RIGHT,KEY_PAGEUP,KEY_PAGEDOWN]:
+		if event.pressed and not paused:hud.toast("M1 supplies the completed test leg. Use Advance / Stop / Return at the local controls.")
+		return
 	# Track releases even when a menu consumes input. Only a fresh press can
 	# request a jump, so holding Space through landing or a menu cannot repeat it.
 	if event is InputEventKey and event.physical_keycode == KEY_SPACE:
@@ -669,10 +715,12 @@ func handle_desktop_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not started: return
+	if is_instance_valid(m1):m1.physics(delta)
+	if is_instance_valid(m2):m2.physics(delta)
 	if foot_equipment_available():foot_fixture.physics(delta)
 	if is_instance_valid(leg_equipment):leg_equipment.physics(delta)
 	for lift in access_lifts.values():lift.physics(delta)
-	if not paused:
+	if not paused and not (is_instance_valid(m2_crane) and m2_crane.console.is_open):
 		_update_crouch(movement_pressed(KEY_CTRL),delta)
 		var move = Vector2(float(movement_pressed(KEY_D))-float(movement_pressed(KEY_A)),float(movement_pressed(KEY_S))-float(movement_pressed(KEY_W))).normalized()
 		var direction = player.basis*Vector3(move.x,0,move.y)
@@ -708,7 +756,7 @@ func _physics_process(delta: float) -> void:
 			bodies[id].linear_velocity = Vector3.ZERO
 
 func _process(_delta: float) -> void:
-	if not started or paused: return
+	if not started or paused or (is_instance_valid(m2_crane) and m2_crane.console.is_open): return
 	_update_target()
 	_update_markers()
 
@@ -826,6 +874,9 @@ func interactable_assembly(owner: String) -> bool:
 	return location == "fixture" or location.begins_with("station:") or location.begins_with("support:")
 
 func equipment_access_error(owner: String) -> String:
+	if is_instance_valid(m2):
+		var error: String = m2.equipment_access_error(owner)
+		if not error.is_empty():return error
 	if is_instance_valid(leg_equipment):
 		var error: String = leg_equipment.equipment_access_error(owner)
 		if not error.is_empty():return error
@@ -861,7 +912,7 @@ func placement_destination() -> Transform3D:
 
 func apply_carry_intent(body: WorkshopPart, delta: float) -> void:
 	var profile: Dictionary = model.definitions.assemblies[model.assemblies[body.get_meta("assembly_id")].definition].get("handling",{}).duplicate() if body.has_meta("assembly_id") else model.definitions.parts[body.kind].get("handling",{}).duplicate()
-	var grip_basis = PREP_BASIS if body.has_meta("assembly_id") else Basis.IDENTITY
+	var grip_basis = PREP_BASIS if body.has_meta("assembly_id") else Basis.from_euler(AssemblyRuntime.vec(profile.get("rotation_degrees",[0,0,0]))*PI/180.0)
 	profile["basis"] = grip_basis
 	if body.has_meta("assembly_id"):
 		profile["distance"] = profile.get("distance",1.25)
@@ -934,16 +985,25 @@ func _update_target() -> void:
 				candidates.append({"type":"mount","owner":owner,"build":held,"mount":sid,"point":mount_point(sid,owner,held),"radius":0.30})
 
 	_activate(previous_build if held.is_empty() else held)
-	for kind in bins:candidates.append({"type":"bin","kind":kind,"point":bins[kind].global_position+Vector3(0,0.13,0.27),"radius":0.35})
+	for kind in bins:candidates.append({"type":"bin","kind":kind,"point":bins[kind].global_transform*Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in loose:
 		if is_instance_valid(loose[uid]):candidates.append({"type":"loose","uid":uid,"point":loose[uid].global_position,"radius":0.12})
 	if foot_equipment_available():candidates.append_array(foot_fixture.controls())
 	if is_instance_valid(leg_equipment):candidates.append_array(leg_equipment.controls())
+	if is_instance_valid(m1):
+		candidates.clear()
+		candidates.append_array(m1.controls())
+	if is_instance_valid(m2):
+		candidates = candidates.filter(func(entry):return entry.type == "loose" or (entry.type == "bin" and model.count_at(entry.kind,"bin") > 0))
+		candidates.append_array(m2.controls())
 	for lift in access_lifts.values():candidates.append_array(lift.controls())
-	if held.is_empty():
+	if held.is_empty() and not m1_blockout:
 		for candidate in components.candidates():
 			# Fixed/mounted builds have no competing pickup action; retain their
 			# connection inspection even when no pocket is selected.
+			if not m2_trial.is_empty():
+				var allowed_slots: Dictionary = leg_content.m2.playable_slots
+				if not candidate.owner in allowed_slots or not candidate.sid in allowed_slots[candidate.owner]:continue
 			if fitting_part or not builds.has(model.top_level(candidate.owner)):candidates.append(candidate)
 	var scored: Array[Dictionary] = []
 	var focused_connections: Dictionary = {}
@@ -1023,7 +1083,7 @@ func _snap_candidate_valid(candidate: Dictionary) -> bool:
 
 func _target_receivers() -> Array:
 	match target.get("type",""):
-		"equipment":return []
+		"equipment":return target.get("allowed",[])
 		"bin":return [bins[target.kind]]
 		"pad":return [pad]
 		"loose":return [loose[target.uid]]
@@ -1066,8 +1126,8 @@ func _present_target(access_error: String) -> void:
 			detail = equipment_controller(target).action_error(target.action)
 			usable = detail.is_empty()
 			if usable:
-				action_key = "E"
-				action_label = "Operate"
+				action_key = "Click" if target.get("input","") == "place" else "E"
+				action_label = "Place" if target.get("input","") == "place" else ("Operate" if m2_trial.is_empty() else "Use")
 		"bin":
 			pickup_target = true
 			var count: int = model.count_at(target.kind,"bin")
@@ -1141,6 +1201,7 @@ func _present_target(access_error: String) -> void:
 	hud.present_target(caption,action_key,action_label,camera.unproject_position(target.point),usable)
 
 func _target_allows_body_hit() -> bool:
+	if target.get("type","") == "equipment":return target.get("allow_body_hit",false)
 	if target.get("type","") == "component":return components.service_access(target.owner,target.sid)
 	if target.get("type","") == "mount":return components.service_access(target.get("owner",default_parent_id()),target.mount)
 	return target.get("type","") in ["pad","loose"]
@@ -1185,9 +1246,11 @@ func _carry_placement_error(destination: Transform3D, carried: WorkshopPart = nu
 	return SolidHandling.sweep_error(carried,destination,excluded,WORLD_MASK)
 
 func interact(all_stock: bool = false) -> void:
+	if m1_blockout and target.get("type","") != "equipment":hud.toast("M1 uses a preassembled sample. Aim at the rail or lift controls.");return
 	if target.is_empty(): hud.toast("Aim at a drawer, shelf or loose component."); return
 	if target.type == "equipment":
-		var access_error = _access([])
+		if target.get("input","") == "place":hud.toast("Aim and click to seat this supported component.");return
+		var access_error = _access(_target_receivers())
 		if not access_error.is_empty():hud.toast(access_error);return
 		var controller = equipment_controller(target)
 		var equipment_error: String = controller.request(target.action)
@@ -1209,6 +1272,7 @@ func interact(all_stock: bool = false) -> void:
 	if target.type == "loose": allowed = [loose[target.uid]]
 	var error = _access(allowed)
 	if not error.is_empty(): hud.toast(error);return
+	if is_instance_valid(m2) and not m2.hand_error().is_empty():hud.toast(m2.hand_error());return
 	match target.type:
 		"bin":components.collect(target.kind,all_stock)
 		"pad", "slot":
@@ -1231,6 +1295,15 @@ func interact(all_stock: bool = false) -> void:
 	hud.refresh()
 
 func attach() -> void:
+	if is_instance_valid(m2) and target.get("type","") == "equipment":
+		if target.get("input","") == "pickup":hud.toast("Use E to pick up this equipment payload.");return
+		var error = _access(_target_receivers())
+		if error.is_empty():error = equipment_controller(target).request(target.action)
+		hud.toast(error if not error.is_empty() else equipment_controller(target).status_text(),error.is_empty())
+		return
+	if m1_blockout:
+		interact()
+		return
 	if target.get("type","") == "component":components.attach();return
 	var allowed: Array = [pad]
 	if target.has("owner"):allowed.append(assembly_node(model.top_level(target.owner)))
@@ -1300,6 +1373,7 @@ func _sync_installed_visuals() -> void:
 	refresh_assembly_collision(active_build)
 
 func drop_selected() -> void:
+	if is_instance_valid(m2) and m2.drop():return
 	if not model.held_item().is_empty():components.drop();return
 	var held = held_build()
 	if held.is_empty():hud.toast("Your hands are empty.");return
@@ -1341,7 +1415,13 @@ func deposit() -> void:
 	hud.toast("Returned %d pieces to their drawer."%count if count else "Selected pocket is empty.",count>0)
 
 func undo_build() -> void:
+	if m1_blockout: hud.toast("M1 is a preassembled sample. Use Return to reverse the supported motion.");return
 	var owner: String = hud.manual_id
+	if is_instance_valid(m2):
+		var result: Dictionary = m2.undo(owner)
+		if result.get("handled",false):
+			hud.toast(result.get("error","") if not result.get("error","").is_empty() else "Undid the last installation with equipment support.",result.get("error","").is_empty())
+			return
 	if is_instance_valid(leg_equipment):
 		var assisted: Dictionary = leg_equipment.undo(owner)
 		if assisted.get("handled",false):
@@ -1502,6 +1582,7 @@ func _station_in_view() -> String:
 	return "" if best == INF else selected
 
 func _rotate_station(relative: Vector2) -> void:
+	if m1_blockout or not m2_trial.is_empty():return
 	var station = rotation_station if rotate_held else _station_in_view()
 	if station.is_empty():return
 	if station == "foot" and is_instance_valid(foot_fixture):return
@@ -1510,6 +1591,10 @@ func _rotate_station(relative: Vector2) -> void:
 	node.basis = (Basis(camera.global_basis.y,-relative.x*0.006)*Basis(camera.global_basis.x,-relative.y*0.006)*node.basis).orthonormalized()
 
 func _rotation_key(pressed: bool) -> void:
+	if m1_blockout or not m2_trial.is_empty():
+		rotate_held = false
+		if pressed:hud.toast("The sample stays on its rail fixture. Use its local motion controls.")
+		return
 	if pressed:
 		rotate_held = true
 		rotate_dragged = false
@@ -1533,6 +1618,7 @@ func _rotation_key(pressed: bool) -> void:
 		rotation_station = ""
 
 func reset_station(station: String = "") -> void:
+	if m1_blockout or not m2_trial.is_empty():return
 	if station.is_empty():station = _station_in_view()
 	if station.is_empty():return
 	if station == "foot" and is_instance_valid(foot_fixture):
@@ -1556,3 +1642,17 @@ func _capture_preview() -> void:
 	get_viewport().get_texture().get_image().save_png("res://verification/workshop.png")
 	print("PREVIEW_SAVED")
 	get_tree().quit()
+
+func _position_m2_stock() -> void:
+	# Ground stock feeds pockets and the lift's finite component shelf.
+	var index = 0
+	for kind in bins:
+		if model.count_at(kind,"bin") == 0:
+			bins[kind].hide()
+			continue
+		var node: Node3D = bins[kind]
+		if node.get_parent() != self:node.reparent(self)
+		node.global_position = Vector3(6.4+index*1.15,.7,20.7) if m2_trial == "retention" else Vector3(8.3+index*.9,.7,14.2)
+		node.rotation = Vector3.ZERO
+		box(leg_layout,Vector3(node.global_position.x,.245,node.global_position.z),Vector3(.8,.49,.55),material(Color("506971")),true)
+		index += 1

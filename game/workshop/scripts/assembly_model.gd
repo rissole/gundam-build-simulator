@@ -358,6 +358,24 @@ func support_error(uid: String, support_id: String) -> String:
 	else:return "Unknown supported component."
 	return ""
 
+func store_carried_item(uid: String, support_id: String) -> String:
+	if not items.has(uid) or items[uid].location != "held":return "Carry a component before storing it."
+	if definitions.parts[items[uid].kind].carry_class not in ["hand","two_hand"]:return "This shelf holds hand-carried components."
+	var error = support_error(uid,support_id)
+	if not error.is_empty():return error
+	if not support_occupant(support_id).is_empty():return "This shelf position is occupied."
+	items[uid].location = "support:"+support_id
+	changed.emit()
+	return ""
+
+func carry_supported_item(uid: String, support_id: String) -> String:
+	if not items.has(uid) or items[uid].location != "support:"+support_id:return "That component is not on this shelf."
+	if definitions.parts[items[uid].kind].carry_class not in ["hand","two_hand"]:return "Use handling equipment for this component."
+	if hands_occupied():return "Set down the component in your hands first."
+	items[uid].location = "held"
+	changed.emit()
+	return ""
+
 func transfer_supported_assembly(id: String, from_support: String, to_support: String) -> String:
 	if not assemblies.has(id):return "Unknown build."
 	if not assemblies[id].parent.is_empty() or assemblies[id].location != "support:"+from_support:return "The build is not available on that support."

@@ -390,3 +390,76 @@ services, armor, thrusters, waist/torso and the second leg remain deferred. The
 [interface specification](design/game/leg-prototype-interface.md) records the
 selected geometry, parts and manuals. Headless behavior/geometry evidence does
 not establish a human playtest or rendered approval for this expansion.
+
+## Final assembly workflow — design decisions, 2026-10-23
+
+These decisions guide the next workshop design iteration; they are not yet
+implemented. They supersede the whole-leg crane-transfer proposal for the future
+workflow, while the supported-leg section above records the current prototype.
+
+Most detailed component assembly happens at workstations. Final-bay personnel
+lift work focuses on joining prepared sections: mechanical retention, service
+connections and connection-area closures. The torso grows in its supporting
+gantry from prepared sections and modules. The existing head-on-neck construction
+sequence remains the recorded design; its detailed equipment workflow is still
+to be planned.
+
+The final personnel lift's successful qualities are its scale, riding upward
+alongside the robot, and satisfying operation. Its primitive appearance is not
+the accepted visual target. Preserve the sense of physical access and provide
+meaningful connection work at height.
+
+### Leg construction rail and docking
+
+- Build the leg horizontally on a supported, movable rail fixture. The precise
+  foot-workstation handoff and access to all construction faces remain open.
+- Move the completed assembly toward the robot, power the fixture from
+  horizontal to upright, then raise the leg into the pelvis socket. Exact motion
+  order, pivot position and clearances need a coordinated spatial design.
+- Docking positions the ball; it does not automatically secure the hip.
+  Preserve the original two-piece bolted retaining ring.
+- Keep the leg supported until both retaining halves and their hardware are
+  secured and the necessary stabilization is engaged. The player uses the
+  personnel lift for retention and cable/service connections.
+- Supported removal must reverse the handoff: reacquire support before releasing
+  retention. Preserve the same physical assembly and its construction progress.
+
+Other major sections use crane delivery and connection work from the personnel
+lift. The change from dedicated leg rails to crane-served assembly is intended
+to add novelty and progression.
+
+### Crane attachments and equipment controls
+
+- A central physical crane console handles crane calls and transfers. A later
+  crane PDA upgrade allows remote operation, reducing trips to the console.
+  Upgrade timing and acquisition are not yet designed.
+- Call the crane to a workstation and lower its lifting beam. The player handles
+  individual magnetic cable ends and snaps them onto marked component points,
+  then commands the supported transfer. Cable length adjusts automatically;
+  loose-chain manipulation is not required.
+- Leg construction stations use local tactile buttons, preserving a more
+  low-tech machinery feel. Do not replace them with the central crane interface
+  or reproduce every internal operation as another permanent button.
+- Preserve satisfying onboard personnel-lift operation. Exact button grouping,
+  motion semantics and console presentation remain implementation-design work.
+- A lift-mounted positioning arm for PV-120 is a proposal under evaluation. The
+  user's concern is another control system. The proposed response is to reuse
+  ordinary pickup, assisted placement and return inputs while the arm visibly
+  supports the half; this interaction has not yet been accepted or prototyped.
+
+Crane insertion directions, attachment-point access, receiving supports and
+support handoffs still need component-specific planning. Incompatible placements
+must be rejected with an explanation while the load remains supported; precise
+feedback presentation remains open.
+
+Before implementation, resolve the remaining handling choices and map each
+major connection's approach, visible support, fastening/service access and
+release/removal sequence. Validate one representative player journey through
+ordinary controls, including blocked motion, incomplete retention, undo and
+save/resume, before expanding the workflow. Rendered review remains by explicit
+request; mechanical checks alone do not establish readable controls or believable
+support.
+
+The [leg workshop next steps](design/game/leg-workshop-next-steps.md) are the
+single active continuation plan, including playtest feedback, the proposed
+delivery sequence and remaining design decisions.

@@ -10,7 +10,8 @@ A first-person robot construction prototype with **175 playable physical identit
 
 Current playtest state (2026-10-23): the structural workflow passes automated
 checks, while controls, equipment affordances and visible part transport need
-iteration. Read the [recorded feedback and next steps](../../design/game/leg-workshop-next-steps.md)
+iteration. The M1 rail/lift layout is accepted; M2 adds the equipment trials below
+for the next human playtest. Read the [recorded feedback and next steps](../../design/game/leg-workshop-next-steps.md)
 before continuing workshop development.
 
 The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
@@ -29,6 +30,121 @@ From a terminal at the repository root:
 ```
 
 The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tools/Godot-4.7.2/Godot.app/Contents/MacOS/Godot`. It also accepts `GODOT_BIN` and can find a `godot` command or `/Applications/Godot.app`. The official macOS download was checked against its published SHA-512 manifest before installation. The launcher imports assets automatically when the import cache is absent.
+
+## M1 layout and scale trial
+
+From the repository root, launch the isolated checkpoint with:
+
+```sh
+./play.command -- --m1-blockout
+```
+
+Choose **Start trial**. This session supplies the complete existing structural
+left leg, including the finished foot, both heel pads, pitch actuator and all leg
+hardware. The structural leg is staged; hip fastening is not playable in M1.
+The trial has **no save/resume** and never opens the normal workshop save codec.
+Restart resets this sample; ordinary `./play.command` still opens the saved workshop.
+
+1. Walk around the horizontal leg and marked foot-loading position. Inspect the
+   connected rail bogie, lifting mast, rotating ladder and four shaft-contact jaws.
+   The marked knee aisle reserves 1.2 m for axle extraction.
+2. Aim at the nearby **Advance / Stop / Return** panel. **E or left click** operates
+   it. Advance starts one named motion; Stop holds partway; Return reverses one
+   stage, including a stopped partial motion. Escape pauses the entire trial.
+3. Follow the open west aisle to the second local panel by the final bay. Advance
+   through rail travel, upright tilt and upward hip seating. The holder keeps
+   supporting the leg at the dock. Further **Advance** is blocked with “Secure the
+   hip retainers before releasing the holder.” There is no capture frame or
+   fastening/release shortcut; this M1 trial ends at docking.
+4. Walk around the front of the personnel lift, up its shallow ramp, and use its
+   onboard **Up** and **Ground** buttons. Inspect the hip connection at working
+   height. Return to the local panel and repeat **Return** to lower, tilt and bring
+   the same unfastened leg back to the horizontal station on its holder.
+
+The reserved **Upper-leg beam** rack is empty because that knee-to-hip beam is
+already installed in the sample. The loaded journey follows the same rail both
+ways, clear of the rack; the sample empty-holder loop and its spare track are
+removed. A future empty-holder departure after actual complete hip retention is
+outside M1.
+
+The source rack, central crane console, right-leg route, arm approaches and rear
+access area are reservations only. There is no rigging, retaining assist arm, new
+robot branch or changed construction manual in M1. Primitive equipment appearance
+and control readability await the human checkpoint; headless checks are not visual
+approval. The 19.4 m future crest sits below the reserved 20.6 m overhead underside.
+
+Focused reproducible checks:
+
+```sh
+python3 game/workshop/tools/run_regressions.py --only m1_blockout_test m1_controls_test m1_acceptance_test m1_blockout_launch
+```
+
+Assess whether the supported rail journey is understandable, whether the stations
+and access convey the intended scale, and whether boarding and operating the lift
+feel useful. The corrected M1 layout is human-accepted. Its feedback and the M2
+handoff remain in the existing
+[continuation plan](../../design/game/leg-workshop-next-steps.md).
+
+## M2 equipment trials
+
+Launch the checkpoint selector from the repository root:
+
+```sh
+./play.command -- --m2-workshop
+```
+
+Choose **Hip retainer** or **Crane delivery**. Each example has its own resume
+and reset controls and save slot: `user://m2-retention-save.json` and
+`user://m2-crane-save.json`. Switching examples keeps the other example's progress.
+The normal workshop, foot workshop and session-only M1 trial remain separate.
+
+**Hip retainer:** Advance the supplied complete leg through travel, tilt and
+hip docking. Collect the two washer/bolt pairs into pockets from ground stock
+near the lift. **E** picks up the ring half with both hands; board the lift and
+**click** its component shelf to store it. The shelf holds **two one-hand or one
+two-hand component**. Ride Up, E-pick the half from the shelf, then aim/click the
+hip connection and fit its hardware. In the pelvis manual, **Z** removes the
+hardware and then returns the half to your hands. Store it on the shelf and ride
+Ground to bring it down. **Q** drops a carried component; E picks it up again.
+Rail Return is blocked until all retention is removed. No arm or drawers ride
+the lift; small hardware stays in pockets.
+
+**Crane delivery:** At the central console press E, then choose **Go to Upper-leg
+beam rack** and **Down**. The fullscreen console stops mouse look and walking;
+click a command or use **↑/↓ + E**, and **Q** to close. Travel destinations appear
+only while Up. Walk to the rack, E-pick each magnetic end, then aim/click a marked
+point. The held end stays in the centre of the view; Q stows it. Back at the
+console choose **Up**, **Go to Leg cradle**, then **Down**. Close the console and
+fit all four flange washer/bolt pairs. E-detach and Q-stow both ends, then choose
+Up and Go to Parking bay. To recover the beam before fastening: Up, Go to its
+rack, Down. Undo any fitted flange hardware before lifting a loaded beam.
+
+Use **Reset** for these revised M2 trials; older M2 saves have an incompatible
+fingerprint and remain protected until you explicitly reset that trial.
+
+Escape pauses equipment and opens save controls. Reopening a trial restores into
+the pause menu. Save, reload and reset apply to the selected example. Incompatible
+saves are preserved with an explanation rather than silently reset.
+Pause → **Choose M2 trial** saves first and returns to the selector. Its **Reset**
+buttons replace only the named trial's progress.
+
+M2 tests one retaining half and one crane load. A single half does not secure the
+whole hip; complete-ring assembly, holder departure and the combined construction
+journey remain M3. The revised hand-carry/shelf interaction awaits playtest feedback.
+Reacquiring and dismantling the beam after releasing the crane is also held for
+M3; reset the crane example to replay from stock.
+
+Focused reproducible checks (headless; no rendered review):
+
+```sh
+python3 game/workshop/tools/run_regressions.py --only m2_content_test m2_retention_controls_test m2_retention_save_test service_crane_test m2_crane_controls_test m2_crane_save_test m2_console_input_test m2_lift_shelf_test m2_acceptance_test m2_workshop_launch m2_retention_launch m2_crane_launch
+```
+
+Assess whether cable pickup and console trips are clear, whether the ring
+pickup/shelf/fit/undo flow feels natural, and whether errors explain why the
+holder or load cannot move. Preserve the rail and elevator experience accepted
+in M1. Record feedback in the existing
+[continuation plan](../../design/game/leg-workshop-next-steps.md).
 
 ## Collecting and building
 
