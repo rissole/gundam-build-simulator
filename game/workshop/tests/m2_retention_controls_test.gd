@@ -1,4 +1,4 @@
-extends "res://tests/m1_controls_test.gd"
+extends "res://tests/m2_test_helpers.gd"
 var shelf: Node3D
 var snapshots: Dictionary = {}
 var replay_uid = "PV-120__001"

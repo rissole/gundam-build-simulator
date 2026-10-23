@@ -1,13 +1,9 @@
 extends Node3D
-## Isolated M1 spatial trial. Legacy layout/fingerprints are intentionally separate.
+## Leg bay hangar: home rail, pelvis gantry and the trial's source equipment.
 const RAIL_X = 11.9
 const HOME_Z = 14.5
 const BAY_Z = 26.0
-const HORIZONTAL_Y = 1.35
 const LIFT_ORIGIN = Vector3(9.6,0,24.3)
-const PELVIS_ORIGIN = Vector3(13,10.6,26)
-const CREST_Y = 19.4
-const OVERHEAD_UNDERSIDE = 20.6
 var game: Node3D
 var steel: Material
 var dark: Material
@@ -25,7 +21,11 @@ var contacts: Array[Dictionary] = []
 var static_pieces: Array[Dictionary] = []
 var moving_pieces: Array[Dictionary] = []
 var hardware: Array[RID] = []
-var status: Label3D
+var source_pose = Transform3D(Basis(Vector3.RIGHT,PI/2),Vector3(7.6,1.35,15.4))
+var rack_hardware: Array[RID] = []
+var cradle_hardware: Array[RID] = []
+var crane_bridge: Node3D
+var crane_trolley: MeshInstance3D
 
 func setup(workshop: Node3D) -> void:
 	game = workshop
@@ -42,12 +42,12 @@ func box(parent: Node3D, id: String, at: Vector3, size: Vector3, mat: Material, 
 	solid = solid or moving
 	var visual: MeshInstance3D = game.box(parent,at,size,mat,solid)
 	visual.name = id
-	visual.set_meta("m1_piece",id)
+	visual.set_meta("layout_piece",id)
 	var record = {"id":id,"visual":visual,"size":size,"at":at}
 	if solid:
 		var body: StaticBody3D = parent.get_child(parent.get_child_count()-1)
 		body.name = id+"Collision"
-		body.set_meta("m1_piece",id)
+		body.set_meta("layout_piece",id)
 		record.body = body
 		if moving:hardware.append(body.get_rid())
 	if moving:moving_pieces.append(record)
@@ -73,9 +73,9 @@ func _shell() -> void:
 			add_child(light)
 	for x in range(-12,25,4):box(self,"Grid",Vector3(x,.003,15),Vector3(.018,.006,47),steel,false)
 	for z in range(-8,39,4):box(self,"Grid",Vector3(6,.004,z),Vector3(39,.006,.018),steel,false)
-	sign_at("M1 / WORKSHOP SCALE TRIAL\nPreassembled test leg · session only",Vector3(10,3.5,7),6)
+	sign_at("M2 / HANDS-ON EQUIPMENT\n"+("Hip retainer" if game.m2_trial == "retention" else "Crane delivery"),Vector3(10,3.5,7),6)
 	sign_at("HORIZONTAL LEG STATION",Vector3(12,3.7,19.9),4)
-	sign_at("FINAL BAY / SAMPLE DOCK",Vector3(13,14,31),7)
+	sign_at("FINAL BAY / SUPPORTED HIP CONNECTION",Vector3(13,14,31),7)
 
 func _tracks() -> void:
 	rail = Node3D.new();rail.name = "RailFloor";add_child(rail)
@@ -87,12 +87,11 @@ func _tracks() -> void:
 	sign_at("KNEE AXLE / 1.2 m CLEAR AISLE",Vector3(9.5,1.9,14.5),2.4,-PI/2)
 	for z in [13.95,15.05]:box(self,"AxleAisle",Vector3(10.76,.018,z),Vector3(1.2,.012,.035),yellow,false)
 	sign_at("RIGHT LEG ROUTE\nReserved · no second test load",Vector3(15.9,1.3,20),3,-PI/2)
-	# Foot handoff is a reserved receiving footprint, already populated in M1.
 	for x in [10.8,13.0]:box(self,"FootLoadingMark",Vector3(x,.018,9.4),Vector3(.04,.012,2),yellow,false)
 	sign_at("FOOT LOADING POSITION\nFoot already fitted for this trial",Vector3(9,1.6,9.4),3,-PI/2)
 
 func _gantry() -> void:
-	var gantry = Node3D.new();gantry.name = "M1Gantry";add_child(gantry)
+	var gantry = Node3D.new();gantry.name = "PelvisGantry";add_child(gantry)
 	for x in [8.0,18.0]:
 		box(gantry,"GantryFoot",Vector3(x,.15,30.8),Vector3(1.2,.3,1.5),dark)
 		box(gantry,"GantryColumn",Vector3(x,10.3,30.8),Vector3(.4,20.6,.5),steel)
@@ -101,6 +100,7 @@ func _gantry() -> void:
 	for x in [12.25,13.75]:
 		box(gantry,"PelvisSupportArm",Vector3(x,10.65,28.65),Vector3(.24,.32,4.3),steel)
 		box(gantry,"PelvisBearing",Vector3(x,10.81,26.65),Vector3(.28,.04,.40),yellow)
+
 func _fixture() -> void:
 	carrier = Node3D.new();carrier.name = "RailBogie";add_child(carrier)
 	box(carrier,"Bogie",Vector3(0,.30,0),Vector3(1.5,.50,1.65),dark,true,true)
@@ -125,24 +125,39 @@ func _fixture() -> void:
 	box(ladder,"PivotBearing",Vector3(0,0,.48),Vector3(.95,.25,.30),dark,true,true)
 
 func _reservations() -> void:
-	# The older 19.4m hoist is absent: this reserved crane clears the future crest.
-	for x in [-5.5,24.8]:
-		for z in [5.0,37.5]:box(self,"CraneColumn",Vector3(x,10.35,z),Vector3(.25,20.7,.25),steel)
-		box(self,"CraneRunway",Vector3(x,20.85,21.25),Vector3(.3,.3,32.5),yellow)
-	box(self,"ParkedCraneBridge",Vector3(9.65,20.8,35),Vector3(30.6,.4,.30),yellow)
-	sign_at("FUTURE CREST 19.4 m\nOverhead underside 20.6 m",Vector3(19.8,19.4,31),4)
-	# Reserved low source stands west of the active rail. The beam is already
-	# fitted in the sample; no empty-holder or collection route passes this rack.
-	for z in [16.0,18.6]:
-		box(self,"ReservedSparRack",Vector3(7.6,.48,z),Vector3(.85,.96,.45),steel)
-	sign_at("UPPER-LEG BEAM / RESERVED\nKnee-to-hip beam already fitted in sample",Vector3(7.6,2.7,19.4),4.2)
-	box(self,"ReservedCraneConsole",Vector3(4.9,.6,21),Vector3(.6,1.2,.45),dark)
-	sign_at("CENTRAL CRANE CONSOLE\nReserved for next checkpoint",Vector3(4.9,1.65,21.2),2.5)
-	for x in [5.2,20.8]:
-		box(self,"ArmApproachEnvelope",Vector3(x,.015,26),Vector3(3.2,.02,6.0),game.material(Color("507c78")),false)
-	sign_at("ARM APPROACH / ENVELOPE ONLY",Vector3(21,1.7,29),3)
+	if game.m2_trial == "crane":
+		_crane_structure()
+		for x in [7.6,11.9]:
+			for z in [16.0,17.6]:
+				var top = 1.25
+				box(self,"BeamRack" if x < 10 else "BeamCradle",Vector3(x,top/2,z),Vector3(.60,top,.22),steel)
+				var body: StaticBody3D = get_child(get_child_count()-1)
+				if x < 10:rack_hardware.append(body.get_rid())
+				else:cradle_hardware.append(body.get_rid())
+		sign_at("UPPER-LEG BEAM\nGo to rack · Down · attach both magnetic ends",Vector3(7.6,2.7,19.4),4.2)
+	else:sign_at("UPPER-LEG BEAM\nAlready fitted in supplied leg",Vector3(7.6,2.7,19.4),4.2)
+	for x in [5.2,20.8]:box(self,"ArmApproachEnvelope",Vector3(x,.015,26),Vector3(3.2,.02,6),game.material(Color("507c78")),false)
 	box(self,"RearAccessEnvelope",Vector3(13,.015,34.7),Vector3(8,.02,4),game.material(Color("507c78")),false)
-	sign_at("REAR CORE / BACKPACK ACCESS\nReserved envelope · no new body content",Vector3(13,2,37),5)
+
+func crane_contract() -> Dictionary:
+	var receiver: Transform3D = game.runtime.slot_pose("left_leg","spar")
+	return {"source_pose":source_pose,"receiver_pose":receiver,"route":[source_pose,Transform3D(source_pose.basis,source_pose.origin+Vector3(0,2.17,0)),Transform3D(receiver.basis,receiver.origin+Vector3(0,2.17,.20)),Transform3D(receiver.basis,receiver.origin+Vector3(0,0,.20)),receiver],"excluded":rack_hardware+cradle_hardware+hardware,"console_position":Vector3(4.9,0,21),"support":"m2_service_crane","source_support":"leg_spar_rack","uid":"LG-120__001","route_profile":2}
+
+func _crane_structure() -> void:
+	for x in [5.2,14.7]:
+		for z in [12.8,19.8]:
+			box(self,"CraneFloorFoot",Vector3(x,.12,z),Vector3(.80,.24,.80),dark)
+			box(self,"CraneColumn",Vector3(x,10.4,z),Vector3(.28,20.8,.28),steel)
+		box(self,"CraneRunway",Vector3(x,20.9,16.75),Vector3(.35,.4,9.5),steel)
+	crane_bridge = Node3D.new();crane_bridge.name = "ServiceCraneBridge";add_child(crane_bridge)
+	box(crane_bridge,"CraneBridge",Vector3(9.95,20.8,0),Vector3(9.85,.4,.32),steel,false)
+	crane_trolley = box(crane_bridge,"CraneTrolley",Vector3(7.6,20.63,0),Vector3(.55,.06,.50),yellow,false)
+	set_crane_anchor(Vector3(7.6,20.6,17.1))
+
+func set_crane_anchor(point: Vector3) -> void:
+	if not is_instance_valid(crane_bridge):return
+	crane_bridge.position.z = point.z
+	crane_trolley.position.x = point.x
 
 func set_pose(load_pose: Transform3D, bogie_z: float, mast_x: float) -> void:
 	var bogie_offset = .15

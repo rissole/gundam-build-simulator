@@ -1,8 +1,6 @@
 extends "res://scripts/workshop_save.gd"
-## Separate trial codec; the legacy upright-hoist validator is never reused.
+## Separate trial codec over the foot codec's shared world snapshot.
 const M2_VERSION = 2
-func _leg_mode() -> bool:
-	return false
 
 func setup(workshop: Node, path_override: String = "", use_automatic: bool = true) -> void:
 	game = workshop;automatic = use_automatic
@@ -10,7 +8,7 @@ func setup(workshop: Node, path_override: String = "", use_automatic: bool = tru
 	enabled = not path_override.is_empty() or (DisplayServer.get_name() != "headless" and not game.automated_test and not OS.get_cmdline_args().has("--script"))
 	baseline = AssemblyModel.new();assert(baseline.configure(game.model.definitions,game.config).is_empty())
 	var materials = {"m2":M2_VERSION,"trial":game.m2_trial,"definitions":game.model.definitions,"scenario":game.config,"sources":game.leg_content.sources,"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb")}
-	var resources = ["m2_layout.gd","m2_rail.gd","m2_workshop.gd","m2_staging.gd","m2_access_lift.gd","m2_session.gd","m1_layout.gd","m1_blockout.gd","work_access_lift.gd","leg_source_geometry.gd"]
+	var resources = ["leg_bay_layout.gd","leg_rail.gd","m2_workshop.gd","scenario_staging.gd","m2_access_lift.gd","m2_session.gd","work_access_lift.gd","leg_source_geometry.gd"]
 	resources.append_array(["m2_lift_shelf.gd"] if game.m2_trial == "retention" else ["service_crane.gd","service_crane_console.gd"])
 	for resource in resources:
 		materials[resource] = FileAccess.get_sha256("res://scripts/"+resource) if FileAccess.file_exists("res://scripts/"+resource) else "missing"
@@ -59,6 +57,19 @@ func validate(data: Variant) -> Array[String]:
 			var parent_pose = _saved_assembly_pose(a.parent,w,candidate)
 			if not to_pose(w.fixtures[id]).is_equal_approx(_saved_mount_pose(a.parent,a.parent_slot,id,parent_pose)):return ["Mounted fixture pose disagrees with its parent."]
 	return []
+
+# Attached children have exactly one legal transform, derived from their
+# receiving connection; saved world poses are only audited against it.
+func _saved_assembly_pose(owner: String, world: Dictionary, candidate: AssemblyModel) -> Transform3D:
+	var a: Dictionary = candidate.assemblies[owner]
+	if not a.parent.is_empty():return _saved_mount_pose(a.parent,a.parent_slot,owner,_saved_assembly_pose(a.parent,world,candidate))
+	return to_pose(world.fixtures[owner] if world.fixtures.has(owner) else world.bodies[owner].pose)
+
+func _saved_mount_pose(parent: String, sid: String, child: String, parent_pose: Transform3D) -> Transform3D:
+	var slot: Dictionary = baseline.slot_definition(parent,sid)
+	var anchor: String = slot.get("child_anchor_slot","")
+	var local_anchor = game.runtime.local_slot_pose(child,anchor) if not anchor.is_empty() else Transform3D.IDENTITY
+	return parent_pose*game.runtime.local_slot_pose(parent,sid)*local_anchor.affine_inverse()
 
 func apply_snapshot(snapshot: Dictionary) -> bool:
 	if not validate(snapshot).is_empty():return false

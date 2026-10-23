@@ -21,15 +21,12 @@ var components: Node
 var storage: Node
 var pitch_workshop: bool = false
 var leg_workshop: bool = false
-var m1_blockout: bool = false
-var m1: Node3D
 var m2_trial = ""
 var m2_half_uid = "PV-120__001"
 var m2: Node3D
 var m2_crane: Node3D
 var leg_content: Dictionary = {}
 var leg_layout: Node3D
-var leg_equipment: Node3D
 var access_lifts: Dictionary = {}
 var foot_fixture: Node3D
 var builds: Dictionary = {}
@@ -98,12 +95,11 @@ func _ready() -> void:
 		add_child(preload("res://scripts/m2_selector.gd").new())
 		return
 	if not m2_trial.is_empty():assert(m2_trial in ["retention","crane"])
-	m1_blockout = m1_blockout or arguments.has("--m1-blockout")
-	if m1_blockout or not m2_trial.is_empty():single_pad = false
-	var scripted = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("-s")
-	leg_workshop = not m2_trial.is_empty() or m1_blockout or leg_workshop or arguments.has("--leg-workshop") or (not scripted and not automated_test and not single_pad and not arguments.any(func(arg):return arg in ["--foot-workshop","--pads-only","--legacy-stations","--capture","--pitch-review"]))
+	if not m2_trial.is_empty():single_pad = false
+	# The foot workshop is the default; --foot-workshop remains an accepted alias.
+	leg_workshop = not m2_trial.is_empty()
 	config = HeelAssemblyState.scenario(single_pad)
-	pitch_workshop = not m2_trial.is_empty() or m1_blockout or (not single_pad and not OS.get_cmdline_user_args().has("--pads-only") and not OS.get_cmdline_user_args().has("--multi-test"))
+	pitch_workshop = not m2_trial.is_empty() or (not single_pad and not OS.get_cmdline_user_args().has("--pads-only") and not OS.get_cmdline_user_args().has("--multi-test"))
 	var data = HeelAssemblyState.definition_data(single_pad)
 	if pitch_workshop:
 		config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
@@ -133,8 +129,6 @@ func _ready() -> void:
 		config.parent.location = "support:foot_carrier"
 		config.parents[0].home = [2.3,0.75,14.4]
 		config.parents[1].home = [13,10.6,26]
-		if m1_blockout:
-			config.supports["m1_leg_rail"] = {"assemblies":["left_leg"],"assembly_ids":["left_leg"]}
 	components = preload("res://scripts/component_interaction.gd").new(self)
 	add_child(components)
 	var errors = model.configure(data,config)
@@ -154,7 +148,7 @@ func _ready() -> void:
 	_register_parent_fixtures()
 	if leg_workshop:_make_leg_context()
 	_make_player()
-	if pitch_workshop and not m1_blockout and m2_trial.is_empty() and not OS.get_cmdline_user_args().has("--legacy-stations"):
+	if pitch_workshop and m2_trial.is_empty() and not OS.get_cmdline_user_args().has("--legacy-stations"):
 		foot_fixture = preload("res://scripts/supported_fixture.gd").new()
 		add_child(foot_fixture)
 		foot_fixture.setup(self,foot)
@@ -163,16 +157,11 @@ func _ready() -> void:
 		_make_pad()
 	_activate(config.builds[0].id)
 	components.setup()
-	if m1_blockout:
-		m1 = preload("res://scripts/m1_blockout.gd").new()
-		add_child(m1)
-		m1.setup(self,leg_layout)
-	elif not m2_trial.is_empty():
+	if not m2_trial.is_empty():
 		m2 = preload("res://scripts/m2_workshop.gd").new();add_child(m2);m2.setup(self)
-	elif leg_workshop:_make_leg_equipment()
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
-	if not m1_blockout:storage.setup()
+	storage.setup()
 	if not m2_trial.is_empty():_position_m2_stock()
 	ghost_material = material(SNAP_READY_COLOR,0.0)
 	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
@@ -199,16 +188,13 @@ func _ready() -> void:
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
-	if m1_blockout:hud.manual.hide()
 	if not m2_trial.is_empty():hud.open_manual("pelvis" if m2_trial == "retention" else "left_leg")
 	model.changed.connect(_state_changed)
 	_make_audio()
 	_state_changed()
 	set_paused(true)
 	started = true
-	# The isolated blockout never constructs the normal save codec: even explicit
-	# reload/save calls and path overrides cannot reach either saved profile.
-	saves = preload("res://scripts/m2_session.gd").new() if not m2_trial.is_empty() else (preload("res://scripts/m1_session.gd").new() if m1_blockout else preload("res://scripts/workshop_save.gd").new())
+	saves = preload("res://scripts/m2_session.gd").new() if not m2_trial.is_empty() else preload("res://scripts/workshop_save.gd").new()
 	add_child(saves)
 	saves.setup(self)
 	if OS.get_cmdline_user_args().has("--pockets-test"):
@@ -326,7 +312,7 @@ func _make_world() -> void:
 	var metal = material(Color("49626a"),0.35)
 	var warm = material(Color("e8b46b"),0.1)
 	if leg_workshop:
-		leg_layout = preload("res://scripts/m2_layout.gd").new() if not m2_trial.is_empty() else (preload("res://scripts/m1_layout.gd").new() if m1_blockout else preload("res://scripts/leg_workshop_layout.gd").new())
+		leg_layout = preload("res://scripts/leg_bay_layout.gd").new()
 		add_child(leg_layout)
 		leg_layout.setup(self)
 		sun.directional_shadow_max_distance = 58.0
@@ -415,24 +401,8 @@ func _make_leg_context() -> void:
 		col.set_meta("source_uid",uid)
 		pelvis.add_child(col)
 
-func _make_leg_equipment() -> void:
-	for entry in [
-		["leg",LegWorkshopLayout.LEG_LIFT_ORIGIN,Vector2(2.0,5.0),[0.15,1.2,3.8,5.2,8.7]],
-		["knee",LegWorkshopLayout.KNEE_LIFT_ORIGIN,Vector2(2.0,5.0),[0.15,1.2,3.8,5.2,8.7]],
-		["hip",LegWorkshopLayout.HIP_LIFT_ORIGIN,Vector2(2.6,2.2),[0.15,8.4]]
-	]:
-		var lift = preload("res://scripts/work_access_lift.gd").new()
-		add_child(lift)
-		var levels: Array[float] = []
-		levels.assign(entry[3])
-		lift.setup(self,entry[0],entry[1],entry[2],levels)
-		access_lifts[entry[0]] = lift
-	leg_equipment = load("res://scripts/leg_equipment.gd").new()
-	add_child(leg_equipment)
-	leg_equipment.setup(self,leg_layout,leg_content)
-
 func foot_equipment_available() -> bool:
-	return is_instance_valid(foot_fixture) and (not is_instance_valid(leg_equipment) or not leg_equipment.foot_departed)
+	return is_instance_valid(foot_fixture)
 
 func equipment_controller(entry: Dictionary) -> Node:
 	if entry.has("controller"):return entry.controller
@@ -638,9 +608,6 @@ func handle_desktop_input(event: InputEvent) -> void:
 		m2_crane.console.handle_input(event)
 		return
 	if automated_test and event is InputEventKey:scripted_controls[event.physical_keycode] = event.pressed
-	if started and m1_blockout and event is InputEventKey and event.physical_keycode in [KEY_N,KEY_M,KEY_TAB,KEY_C,KEY_V,KEY_ENTER,KEY_BACKSPACE,KEY_LEFT,KEY_RIGHT,KEY_PAGEUP,KEY_PAGEDOWN]:
-		if event.pressed and not paused:hud.toast("M1 supplies the completed test leg. Use Advance / Stop / Return at the local controls.")
-		return
 	# Track releases even when a menu consumes input. Only a fresh press can
 	# request a jump, so holding Space through landing or a menu cannot repeat it.
 	if event is InputEventKey and event.physical_keycode == KEY_SPACE:
@@ -715,10 +682,8 @@ func handle_desktop_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not started: return
-	if is_instance_valid(m1):m1.physics(delta)
 	if is_instance_valid(m2):m2.physics(delta)
 	if foot_equipment_available():foot_fixture.physics(delta)
-	if is_instance_valid(leg_equipment):leg_equipment.physics(delta)
 	for lift in access_lifts.values():lift.physics(delta)
 	if not paused and not (is_instance_valid(m2_crane) and m2_crane.console.is_open):
 		_update_crouch(movement_pressed(KEY_CTRL),delta)
@@ -877,9 +842,6 @@ func equipment_access_error(owner: String) -> String:
 	if is_instance_valid(m2):
 		var error: String = m2.equipment_access_error(owner)
 		if not error.is_empty():return error
-	if is_instance_valid(leg_equipment):
-		var error: String = leg_equipment.equipment_access_error(owner)
-		if not error.is_empty():return error
 	if not foot_equipment_available() or not model.assemblies.has(owner):return ""
 	if model.top_level(owner) != default_parent_id():return ""
 	if foot_fixture.moving:return "Wait for the foot fixture to stop before working on its connections."
@@ -989,15 +951,11 @@ func _update_target() -> void:
 	for uid in loose:
 		if is_instance_valid(loose[uid]):candidates.append({"type":"loose","uid":uid,"point":loose[uid].global_position,"radius":0.12})
 	if foot_equipment_available():candidates.append_array(foot_fixture.controls())
-	if is_instance_valid(leg_equipment):candidates.append_array(leg_equipment.controls())
-	if is_instance_valid(m1):
-		candidates.clear()
-		candidates.append_array(m1.controls())
 	if is_instance_valid(m2):
 		candidates = candidates.filter(func(entry):return entry.type == "loose" or (entry.type == "bin" and model.count_at(entry.kind,"bin") > 0))
 		candidates.append_array(m2.controls())
 	for lift in access_lifts.values():candidates.append_array(lift.controls())
-	if held.is_empty() and not m1_blockout:
+	if held.is_empty():
 		for candidate in components.candidates():
 			# Fixed/mounted builds have no competing pickup action; retain their
 			# connection inspection even when no pocket is selected.
@@ -1246,7 +1204,6 @@ func _carry_placement_error(destination: Transform3D, carried: WorkshopPart = nu
 	return SolidHandling.sweep_error(carried,destination,excluded,WORLD_MASK)
 
 func interact(all_stock: bool = false) -> void:
-	if m1_blockout and target.get("type","") != "equipment":hud.toast("M1 uses a preassembled sample. Aim at the rail or lift controls.");return
 	if target.is_empty(): hud.toast("Aim at a drawer, shelf or loose component."); return
 	if target.type == "equipment":
 		if target.get("input","") == "place":hud.toast("Aim and click to seat this supported component.");return
@@ -1300,9 +1257,6 @@ func attach() -> void:
 		var error = _access(_target_receivers())
 		if error.is_empty():error = equipment_controller(target).request(target.action)
 		hud.toast(error if not error.is_empty() else equipment_controller(target).status_text(),error.is_empty())
-		return
-	if m1_blockout:
-		interact()
 		return
 	if target.get("type","") == "component":components.attach();return
 	var allowed: Array = [pad]
@@ -1415,17 +1369,11 @@ func deposit() -> void:
 	hud.toast("Returned %d pieces to their drawer."%count if count else "Selected pocket is empty.",count>0)
 
 func undo_build() -> void:
-	if m1_blockout: hud.toast("M1 is a preassembled sample. Use Return to reverse the supported motion.");return
 	var owner: String = hud.manual_id
 	if is_instance_valid(m2):
 		var result: Dictionary = m2.undo(owner)
 		if result.get("handled",false):
 			hud.toast(result.get("error","") if not result.get("error","").is_empty() else "Undid the last installation with equipment support.",result.get("error","").is_empty())
-			return
-	if is_instance_valid(leg_equipment):
-		var assisted: Dictionary = leg_equipment.undo(owner)
-		if assisted.get("handled",false):
-			hud.toast(assisted.get("error","") if not assisted.get("error","").is_empty() else "Reversing the last supported installation.",assisted.get("error","").is_empty())
 			return
 	var equipment_error = equipment_access_error(owner)
 	if not equipment_error.is_empty():hud.toast(equipment_error);return
@@ -1582,7 +1530,7 @@ func _station_in_view() -> String:
 	return "" if best == INF else selected
 
 func _rotate_station(relative: Vector2) -> void:
-	if m1_blockout or not m2_trial.is_empty():return
+	if not m2_trial.is_empty():return
 	var station = rotation_station if rotate_held else _station_in_view()
 	if station.is_empty():return
 	if station == "foot" and is_instance_valid(foot_fixture):return
@@ -1591,7 +1539,7 @@ func _rotate_station(relative: Vector2) -> void:
 	node.basis = (Basis(camera.global_basis.y,-relative.x*0.006)*Basis(camera.global_basis.x,-relative.y*0.006)*node.basis).orthonormalized()
 
 func _rotation_key(pressed: bool) -> void:
-	if m1_blockout or not m2_trial.is_empty():
+	if not m2_trial.is_empty():
 		rotate_held = false
 		if pressed:hud.toast("The sample stays on its rail fixture. Use its local motion controls.")
 		return
@@ -1618,7 +1566,7 @@ func _rotation_key(pressed: bool) -> void:
 		rotation_station = ""
 
 func reset_station(station: String = "") -> void:
-	if m1_blockout or not m2_trial.is_empty():return
+	if not m2_trial.is_empty():return
 	if station.is_empty():station = _station_in_view()
 	if station.is_empty():return
 	if station == "foot" and is_instance_valid(foot_fixture):

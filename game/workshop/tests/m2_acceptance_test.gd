@@ -169,6 +169,133 @@ func sample_descendants() -> void:
 		parent.global_transform = initial_parent;rail._pose()
 	rail.path = 0;rail.goal = 0;rail._pose()
 
+func obb(visual: MeshInstance3D) -> Dictionary:
+	var bound = visual.mesh.get_aabb()
+	var pose = visual.global_transform
+	var axes = [pose.basis.x.normalized(),pose.basis.y.normalized(),pose.basis.z.normalized()]
+	var half = bound.size*.5*Vector3(pose.basis.x.length(),pose.basis.y.length(),pose.basis.z.length())
+	return {"center":pose*bound.get_center(),"axes":axes,"half":half,"aabb":pose*bound}
+
+func intersects(a: Dictionary, b: Dictionary, tolerance: float = .002) -> bool:
+	if not a.aabb.grow(tolerance).intersects(b.aabb):return false
+	var axes: Array = a.axes.duplicate()
+	axes.append_array(b.axes)
+	for aa in a.axes:
+		for bb in b.axes:axes.append(aa.cross(bb))
+	for axis in axes:
+		if axis.length_squared()<.00000001:continue
+		axis = axis.normalized()
+		var ar = 0.0
+		var br = 0.0
+		for index in range(3):
+			ar += a.half[index]*absf(axis.dot(a.axes[index]))
+			br += b.half[index]*absf(axis.dot(b.axes[index]))
+		if absf(axis.dot(a.center-b.center))>ar+br+tolerance:return false
+	return true
+
+func connected(records: Array, source_id: String, target_id: String) -> bool:
+	var bounds: Array[Dictionary] = []
+	var reached: Array[int] = []
+	var targets: Array[int] = []
+	for index in range(records.size()):
+		bounds.append(obb(records[index].visual))
+		if records[index].id == source_id:reached.append(index)
+		if records[index].id == target_id:targets.append(index)
+	var cursor = 0
+	while cursor<reached.size():
+		var current = reached[cursor]
+		cursor += 1
+		for index in range(records.size()):
+			if not reached.has(index) and intersects(bounds[current],bounds[index]):reached.append(index)
+	return not targets.is_empty() and targets.all(func(index):return reached.has(index))
+
+func jaw_touches_load(rail: Node3D, contact: Dictionary) -> bool:
+	var uid: String = game.model.assemblies.left_leg.slots["shin" if contact.local_y<4 else "spar"]
+	var target_mesh: MeshInstance3D
+	for child in rail.load_body.get_children():
+		if child is MeshInstance3D and child.get_meta("component_uid","") == uid:target_mesh = child;break
+	if target_mesh == null:return false
+	var side_axis: Vector3 = rail.load_body.global_basis.x*contact.side
+	var center: Vector3 = contact.visual.global_position
+	var start = target_mesh.to_local(center+side_axis*.20)
+	var end = target_mesh.to_local(center-side_axis*.40)
+	var nearest = INF
+	var hit_world = Vector3.ZERO
+	var vertices = target_mesh.mesh.get_faces()
+	for index in range(0,vertices.size(),3):
+		var hit = Geometry3D.segment_intersects_triangle(start,end,vertices[index],vertices[index+1],vertices[index+2])
+		if hit != null and start.distance_to(hit)<nearest:nearest = start.distance_to(hit);hit_world = target_mesh.to_global(hit)
+	return nearest<INF and hit_world.distance_to(center-side_axis*.06)<.002
+
+func rail_geometry() -> void:
+	var rail = game.m2.rail
+	var layout = game.leg_layout
+	var spar: Dictionary = game.leg_content.sources["LG-120__001"]
+	var socket: Dictionary = game.leg_content.sources["PV-110__001"]
+	var ball_center = AssemblyRuntime.vec(spar.position)+AssemblyRuntime.vec(spar.primitives[3].center)
+	var radius: float = spar.primitives[3].radius
+	var skirt_y: float = game.runtime.node("pelvis").global_position.y+socket.primitives[2].center[1]-socket.primitives[2].length/2
+	var crown_clearance = INF
+	for index in range(201):crown_clearance = minf(crown_clearance,skirt_y-(rail.rail_pose(1.0+float(index)/200).load*ball_center).y-radius)
+	expect(crown_clearance > .060,"Integral ball clears socket skirt throughout the populated tilt")
+	var socket_center: Vector3 = game.runtime.node("pelvis").global_transform*AssemblyRuntime.vec(socket.position)
+	expect((rail.rail_pose(3).load*ball_center).distance_to(socket_center)<.0001 and radius < socket.primitives[0].inner and radius < socket.primitives[1].inner and radius < socket.primitives[2].inner,"Upward docking is coaxial and clears the authored rim, skirt and bowl")
+	var axle_shape = BoxShape3D.new();axle_shape.size = Vector3(1.2,.4,.5)
+	var axle_query = PhysicsShapeQueryParameters3D.new();axle_query.shape = axle_shape
+	axle_query.transform = Transform3D(Basis.IDENTITY,Vector3(10.76,1.35,14.5));axle_query.collision_mask = 1;axle_query.margin = .001
+	expect(game.get_world_3d().direct_space_state.intersect_shape(axle_query,1).is_empty(),"Full 1.2 m knee extraction volume clears machinery at the working axle height")
+	var preview = true
+	var fixture_floor = INF
+	var failures: Array[String] = []
+	var pieces: Array = layout.moving_pieces+layout.static_pieces.filter(func(piece):return piece.id == "Rail")
+	for index in range(61):
+		rail.path = float(index)/20;rail.goal = rail.path;rail._pose()
+		var sample = rail.rail_pose(rail.path)
+		for piece in layout.motion_geometry(sample.load,sample.z,sample.x):
+			var visual: MeshInstance3D = piece.visual
+			preview = preview and piece.pose.origin.distance_to(visual.global_position)<.0002 and piece.pose.basis.is_equal_approx(visual.global_basis.orthonormalized()) and piece.shape.size.distance_to(visual.mesh.size*visual.scale)<.0002
+			fixture_floor = minf(fixture_floor,(visual.global_transform*visual.mesh.get_aabb()).position.y)
+		if not connected(pieces,"Rail","LocatedJaw") and failures.size()<4:failures.append("rail_support path="+str(rail.path))
+		for contact in layout.contacts:
+			if not jaw_touches_load(rail,contact) and failures.size()<4:failures.append("load_contact path="+str(rail.path)+" Y="+str(contact.local_y)+" side="+str(contact.side))
+	rail.path = 0;rail.goal = 0;rail._pose()
+	expect(preview,"Rail safety preview matches every moving visible support pose and size")
+	expect(fixture_floor >= -.002,"Visible rail machinery clears the floor along the route")
+	expect(failures.is_empty(),"Rail-to-jaw support chain and every jaw/load contact hold along the route "+str(failures))
+
+func rail_motion() -> void:
+	var rail = game.m2.rail
+	var blocker = StaticBody3D.new();blocker.name = "ThinRouteObstruction";game.add_child(blocker)
+	var collision = CollisionShape3D.new();var box = BoxShape3D.new()
+	box.size = Vector3(.20,.8,.012);collision.shape = box;blocker.add_child(collision)
+	blocker.position = Vector3(11.9,1.35,19.3)
+	await frames(2)
+	rail.request("advance")
+	for tick in range(100):
+		if not rail.moving:break
+		rail.physics(.08);await physics_frame
+	expect(not rail.moving and not rail.blocked_reason.is_empty() and rail.path < .1,"Thin real obstacle stops the rail before the populated load reaches it")
+	expect(game.model.support_occupant("m2_leg_rail") == "left_leg","Blocked motion keeps rail support and identity")
+	var error: String = rail.request("return")
+	for tick in range(100):
+		if not rail.moving:break
+		rail.physics(.08);await physics_frame
+	expect(error.is_empty() and rail.blocked_reason.is_empty() and is_zero_approx(rail.path),"Return recovers the blocked load while the obstacle remains")
+	blocker.free();await frames(2)
+	rail.request("advance");rail.physics(.25)
+	var moving_path: float = rail.path
+	var moving_goal: float = rail.goal
+	expect(not rail.request("return").is_empty() and rail.moving and is_equal_approx(rail.path,moving_path) and is_equal_approx(rail.goal,moving_goal) and rail.status_text().begins_with("MOVING"),"Rejected direction change preserves active motion and its status")
+	game.set_paused(true)
+	var held: float = rail.path
+	rail.physics(10)
+	expect(is_equal_approx(held,rail.path) and game.model.support_occupant("m2_leg_rail") == "left_leg","Pause freezes supported rail motion")
+	game.set_paused(false);rail.request("stop");rail.request("return")
+	for tick in range(100):
+		if not rail.moving:break
+		rail.physics(.08);await physics_frame
+	expect(is_zero_approx(rail.path) and not rail.moving and rail.load_body.global_transform.is_equal_approx(rail.rail_pose(0).load),"Stopped partial trip returns the same supported leg home")
+
 func geometry_contacts() -> void:
 	var crane = game.m2_crane
 	var mesh: MeshInstance3D = crane.load_body.get_child(0)
@@ -217,14 +344,17 @@ func run() -> void:
 		fuzz(snapshot,["world","m2"])
 		fuzz(snapshot,["world","access_lifts"])
 		semantic_attacks(snapshot)
-		if trial == "retention":await sample_descendants()
+		if trial == "retention":
+			rail_geometry()
+			await rail_motion()
+			await sample_descendants()
 		else:geometry_contacts()
 		game.free();await process_frame
 	await file_persistence()
 	expect(defects.is_empty(),str(attacks)+" missing/mistyped nested field attacks reject without mutation")
 	var passed = checks.all(func(c):return c.passed)
 	var hashes = {}
-	for file in ["m2_session.gd","m2_workshop.gd","m2_rail.gd","m2_layout.gd","m2_lift_shelf.gd","service_crane.gd","assembly_runtime.gd","workshop.gd"]:hashes[file] = FileAccess.get_sha256("res://scripts/"+file)
+	for file in ["m2_session.gd","m2_workshop.gd","leg_rail.gd","leg_bay_layout.gd","m2_lift_shelf.gd","service_crane.gd","assembly_runtime.gd","workshop.gd"]:hashes[file] = FileAccess.get_sha256("res://scripts/"+file)
 	var output = {"passed":passed,"checks":checks,"attacks":attacks,"rejected":rejected,"defects":defects,"rendered":false,"script_hashes":hashes}
 	DirAccess.make_dir_recursive_absolute("res://verification")
 	FileAccess.open("res://verification/m2-independent-acceptance.json",FileAccess.WRITE).store_string(JSON.stringify(output,"  "))

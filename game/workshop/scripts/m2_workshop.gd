@@ -5,11 +5,11 @@ var shelf: Node3D
 var crane: Node3D
 func setup(workshop: Node3D) -> void:
 	game = workshop
-	preload("res://scripts/m2_staging.gd").prepare(game)
-	rail = preload("res://scripts/m2_rail.gd").new();add_child(rail);rail.setup(game,game.leg_layout)
+	preload("res://scripts/scenario_staging.gd").prepare(game)
+	rail = preload("res://scripts/leg_rail.gd").new();add_child(rail);rail.setup(game,game.leg_layout)
 	var lift = preload("res://scripts/m2_access_lift.gd").new();game.add_child(lift)
 	var levels: Array[float] = [.15,8.4]
-	lift.setup(game,"hip",preload("res://scripts/m1_layout.gd").LIFT_ORIGIN,Vector2(2.6,2.6),levels)
+	lift.setup(game,"hip",preload("res://scripts/leg_bay_layout.gd").LIFT_ORIGIN,Vector2(2.6,2.6),levels)
 	lift.rotation.y = PI;game.access_lifts["hip"] = lift
 	if game.m2_trial == "retention":
 		shelf = preload("res://scripts/m2_lift_shelf.gd").new();add_child(shelf);shelf.setup(game,lift)

@@ -10,6 +10,11 @@ func run() -> void:
 		expect(codec.apply_snapshot(saved) and game.paused,"Fresh scene restores "+label+" paused")
 		expect(JSON.stringify(codec.capture().model) == JSON.stringify(saved.model),"Fresh restore preserves identities/history at "+label)
 		expect(codec.validate(codec.capture()).is_empty(),"Restored world validates at "+label)
+		var nested = true
+		for owner in game.model.assemblies:
+			var a: Dictionary = game.model.assemblies[owner]
+			if not a.parent.is_empty():nested = nested and game.assembly_node(owner).get_parent() == game.assembly_node(a.parent) and game.assembly_node(owner).global_transform.is_equal_approx(game.runtime.mount_pose(a.parent,a.parent_slot,owner))
+		expect(nested,"Fresh restore rebuilds exact nested scene ownership at "+label)
 		for tick in range(3):
 			await frames(1)
 			for member in game.runtime.descendants("left_leg"):
@@ -30,6 +35,13 @@ func run() -> void:
 			var before = JSON.stringify(codec.capture())
 			expect(not codec.validate(mutations[index]).is_empty() and not codec.apply_snapshot(mutations[index]),"Reject malformed snapshot "+label+" / "+str(index))
 			expect(JSON.stringify(codec.capture()) == before,"Malformed snapshot causes zero live mutation "+label+" / "+str(index))
+		if label == "lift_moving":
+			var lift = game.access_lifts.hip
+			var height: float = lift.height
+			await frames(5)
+			expect(lift.moving and is_equal_approx(lift.height,height),"Paused restore holds moving lift progress")
+			game.set_paused(false);await frames(20)
+			expect(lift.height > height and absf(game.player.global_position.y-lift.global_position.y-lift.height)<.06,"Restored rider follows the resumed moving lift")
 		game.free();await process_frame
 	game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = "retention";root.add_child(game);game.automated_test = true
 	var path = "/tmp/m2-retention-store-"+str(Time.get_ticks_usec())+".json"

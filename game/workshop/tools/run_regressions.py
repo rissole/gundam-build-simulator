@@ -41,7 +41,6 @@ def cases() -> dict[str, list[str]]:
     result.update({
         "default_workshop_launch": ["--quit-after", "5"],
         "foot_workshop_launch": ["--quit-after", "5", "--", "--foot-workshop"],
-        "m1_blockout_launch": ["--quit-after", "5", "--", "--m1-blockout"],
         "m2_workshop_launch": ["--quit-after", "5", "--", "--m2-workshop"],
         "m2_retention_launch": ["--quit-after", "5", "--", "--m2-workshop", "--m2-trial=retention"],
         "m2_crane_launch": ["--quit-after", "5", "--", "--m2-workshop", "--m2-trial=crane"],
@@ -105,7 +104,7 @@ def main() -> int:
         # Normal application launches exercise selection without --script or an
         # automated-test flag, which intentionally select legacy test scenarios.
         # These smoke cases have no check-count summary; engine errors still fail.
-        launch_smoke = name in {"default_workshop_launch", "foot_workshop_launch", "m1_blockout_launch",
+        launch_smoke = name in {"default_workshop_launch", "foot_workshop_launch",
                                "m2_workshop_launch", "m2_retention_launch", "m2_crane_launch"}
         passed = code == 0 and not timed_out and not errors and (bool(summaries) or launch_smoke) and not any("FAIL" in s for s in summaries)
         result = {"name": name, "passed": passed, "exit_code": code, "timed_out": timed_out,

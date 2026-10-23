@@ -3,8 +3,6 @@ extends Node
 const ModelSave = preload("res://scripts/save_model.gd")
 const Store = preload("res://scripts/save_store.gd")
 const SAVE_PATH = "user://workshop-save.json"
-const LEG_SAVE_PATH = "user://leg-workshop-save.json"
-const LEG_WORLD_VERSION = 1
 const AUTOSAVE_SECONDS = 30.0
 const WORLD_VERSION = 1
 
@@ -26,31 +24,18 @@ var rotate_backup = true
 func setup(workshop: Node, path_override: String = "", use_automatic: bool = true) -> void:
 	game = workshop
 	automatic = use_automatic
-	path = (LEG_SAVE_PATH if _leg_mode() else SAVE_PATH) if path_override.is_empty() else path_override
+	path = SAVE_PATH if path_override.is_empty() else path_override
 	var script_launch = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("-s")
-	enabled = not path_override.is_empty() or (not script_launch and DisplayServer.get_name() != "headless" and not game.automated_test and (game.pitch_workshop or _leg_mode()) and (is_instance_valid(game.leg_equipment) if _leg_mode() else is_instance_valid(game.foot_fixture)) and not OS.get_cmdline_user_args().has("--capture") and not OS.get_cmdline_user_args().has("--pitch-review"))
+	enabled = not path_override.is_empty() or (not script_launch and DisplayServer.get_name() != "headless" and not game.automated_test and game.pitch_workshop and is_instance_valid(game.foot_fixture) and not OS.get_cmdline_user_args().has("--capture") and not OS.get_cmdline_user_args().has("--pitch-review"))
 	baseline = AssemblyModel.new()
 	var configuration_errors = baseline.configure(game.model.definitions,game.config)
 	assert(configuration_errors.is_empty(),str(configuration_errors))
 	fingerprint = JSON.stringify({"world":WORLD_VERSION,"definitions":game.model.definitions,"scenario":game.config,"supported":is_instance_valid(game.foot_fixture),"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb")}).sha256_text()
-	if _leg_mode():
-		# Keep the established foot profile fingerprint byte-for-byte unchanged.
-		# Procedural geometry and controller paths are content, just like the GLB.
-		var materials = {"world":LEG_WORLD_VERSION,"legacy":fingerprint,"lifts":{}}
-		for id in game.access_lifts:
-			var lift = game.access_lifts[id]
-			materials.lifts[id] = {"origin":vector(lift.position),"deck_size":[lift.deck_size.x,lift.deck_size.y],"stops":lift.stops.duplicate()}
-		for resource in ["res://assets/leg-prototype-content.json","res://assets/leg-prototype-definitions.json","res://scripts/leg_source_geometry.gd","res://scripts/leg_workshop_layout.gd","res://scripts/leg_equipment.gd","res://scripts/work_access_lift.gd"]:
-			materials[resource] = FileAccess.get_sha256(resource) if FileAccess.file_exists(resource) else "missing"
-		fingerprint = JSON.stringify(materials).sha256_text()
 	initial = capture()
 	if enabled:
 		game.get_tree().auto_accept_quit = false
 		reload_save(true)
 	_refresh()
-
-func _leg_mode() -> bool:
-	return game.get("leg_workshop") == true
 
 func status_text() -> String:
 	if not enabled:return "This scenario is session-only.\nYour saved workshop is untouched."
@@ -193,10 +178,6 @@ func capture() -> Dictionary:
 	if is_instance_valid(game.foot_fixture):
 		var f = game.foot_fixture
 		world.support = {"moving":f.moving,"at_dispatch":f.at_dispatch,"work_pose":f.work_pose,"destination_pose":f._destination_pose,"destination_dispatch":f._destination_dispatch}
-	if _leg_mode():
-		world["leg_equipment"] = game.leg_equipment.capture()
-		world["access_lifts"] = {}
-		for id in game.access_lifts:world.access_lifts[id] = game.access_lifts[id].capture()
 	world["player"] = {"pose":pose(game.player.global_transform),"velocity":vector(game.player.velocity),"pitch":game.camera.rotation.x,"height":game.camera.position.y,"fov":game.camera.fov,"crouched":game.crouched}
 	world["reader"] = {"manual":game.hud.manual_id,"pages":game.hud.pages.duplicate(),"visible":game.hud.manual.visible,"suggested_only":game.hud.browser.suggested_only}
 	return {"model":ModelSave.capture(game.model),"world":world}
@@ -259,48 +240,7 @@ func validate(data: Variant) -> Array[String]:
 		if not baseline.assemblies.has(id) or not number(r.pages[id]) or r.pages[id] != int(r.pages[id]):return ["Unknown manual page."]
 		var page_count: int = baseline.definitions.assemblies[baseline.assemblies[id].definition].manual.size()
 		if r.pages[id] < 0 or r.pages[id] >= page_count:return ["Manual page is out of range."]
-	if _leg_mode():return _validate_leg(w,data.model)
 	return _validate_support(w,data.model)
-
-func _validate_leg(w: Dictionary, saved_model: Dictionary) -> Array[String]:
-	if not w.get("leg_equipment") is Dictionary:return ["Missing leg equipment state."]
-	if not same_keys(w.get("access_lifts"),game.access_lifts.keys()):return ["Access lift identities changed."]
-	for id in game.access_lifts:
-		if not w.access_lifts[id] is Dictionary:return ["Invalid access lift state."]
-		var errors: Array[String] = game.access_lifts[id].validate(w.access_lifts[id])
-		if not errors.is_empty():return errors
-	var candidate = AssemblyModel.new()
-	candidate.configure(baseline.definitions,game.config)
-	ModelSave.apply(saved_model,candidate)
-	var equipment_errors: Array[String] = game.leg_equipment.validate(w.leg_equipment,candidate)
-	if not equipment_errors.is_empty():return equipment_errors
-	if not w.leg_equipment.foot_departed:
-		var foot_errors = _validate_support(w,saved_model)
-		if not foot_errors.is_empty():return foot_errors
-	# All parent fixture poses are saved for auditability, but attached children
-	# have exactly one legal transform, derived from their receiving connection.
-	for id in w.fixtures:
-		var a: Dictionary = candidate.assemblies[id]
-		if not a.parent.is_empty():
-			var parent_pose = _saved_assembly_pose(a.parent,w,candidate)
-			var expected = _saved_mount_pose(a.parent,a.parent_slot,id,parent_pose)
-			if not to_pose(w.fixtures[id]).is_equal_approx(expected):return ["Mounted fixture pose disagrees with its receiving connection."]
-	for pair in [["foot","foot_pose"],["left_leg","leg_pose"]]:
-		if w.leg_equipment.has(pair[1]) and w.fixtures.has(pair[0]):
-			if not valid_pose(w.leg_equipment[pair[1]]) or not to_pose(w.fixtures[pair[0]]).is_equal_approx(to_pose(w.leg_equipment[pair[1]])):return ["Equipment and supported assembly poses disagree."]
-	if w.fixtures.has("pelvis") and not to_pose(w.fixtures.pelvis).is_equal_approx(to_pose(initial.world.fixtures.pelvis)):return ["Pelvis has left its anchored gantry."]
-	return []
-
-func _saved_assembly_pose(owner: String, world: Dictionary, candidate: AssemblyModel) -> Transform3D:
-	var a: Dictionary = candidate.assemblies[owner]
-	if not a.parent.is_empty():return _saved_mount_pose(a.parent,a.parent_slot,owner,_saved_assembly_pose(a.parent,world,candidate))
-	return to_pose(world.fixtures[owner] if world.fixtures.has(owner) else world.bodies[owner].pose)
-
-func _saved_mount_pose(parent: String, sid: String, child: String, parent_pose: Transform3D) -> Transform3D:
-	var slot: Dictionary = baseline.slot_definition(parent,sid)
-	var anchor: String = slot.get("child_anchor_slot","")
-	var local_anchor = game.runtime.local_slot_pose(child,anchor) if not anchor.is_empty() else Transform3D.IDENTITY
-	return parent_pose*game.runtime.local_slot_pose(parent,sid)*local_anchor.affine_inverse()
 
 func _validate_support(w: Dictionary, saved_model: Dictionary) -> Array[String]:
 	var s = w.get("support")
@@ -347,12 +287,6 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 		body.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
 		body.held = false
 		if body.get_parent() != game:body.reparent(game)
-	# Supported parent frames can themselves be nested descendants in leg mode.
-	# Detach all before applying a root pose to prevent an old ancestor moving it.
-	if _leg_mode():
-		for id in game.runtime.nodes:
-			var node: Node3D = game.assembly_node(id)
-			if node.get_parent() != game:node.reparent(game)
 	# Rebuild slot visuals even when a compatible physical copy changed slots.
 	# The source geometry belongs to the receiving slot, not the consumed identity.
 	for id in game.runtime.nodes:
@@ -367,7 +301,7 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 	var w: Dictionary = snapshot.world
 	for id in w.stations:game.stations[id].global_transform = to_pose(w.stations[id])
 	for id in w.fixtures:game.assembly_node(id).global_transform = to_pose(w.fixtures[id])
-	if is_instance_valid(game.foot_fixture) and (not _leg_mode() or not w.leg_equipment.foot_departed):
+	if is_instance_valid(game.foot_fixture):
 		var f = game.foot_fixture
 		var s: Dictionary = w.support
 		f.moving = s.moving
@@ -385,9 +319,6 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 		game._activate(id)
 		if location.begins_with("station:"):game._set_pad_station(location.trim_prefix("station:"))
 		_restore_body(body,w.bodies[id],location)
-	if _leg_mode():
-		game.leg_equipment.apply(w.leg_equipment)
-		for id in game.access_lifts:game.access_lifts[id].apply(w.access_lifts[id])
 	# Parent-first traversal derives exact child mount transforms from authored slots.
 	for id in game.model.assemblies:
 		if game.model.assemblies[id].parent.is_empty():_mount_children(id)

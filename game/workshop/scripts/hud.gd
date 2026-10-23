@@ -372,8 +372,7 @@ func _make_pause() -> void:
 	header.add_child(heading)
 	pause_title = label("Your workshop",30)
 	heading.add_child(pause_title)
-	var introduction = "Build the foot, assemble the supported leg, then secure it in the pelvis gantry." if game.get("leg_workshop") == true else "Prepare the heel pads and pitch actuator, then secure them to the foot."
-	if game.get("m1_blockout") == true:introduction = "M1 layout trial: move the preassembled leg through travel, tilt and upward docking. The holder stays attached; Advance stops at the dock. Ride the hip lift, then use Return to bring the leg home. Hip fastening comes after M1."
+	var introduction = "Prepare the heel pads and pitch actuator, then secure them to the foot."
 	if not game.get("m2_trial").is_empty():introduction = "M2 Hip retainer: a completed leg starts on its home rail. Dock upward, pocket the hardware, then carry ONE retaining half onto the lift shelf. Ride up and fit it. Use E / click / Q / Z; the holder stays supporting the leg." if game.m2_trial == "retention" else "M2 Crane delivery: completed foot and pre-beam leg supplied. Use Go to / Down / Up at the crane console, attach both magnetic ends, deliver the Upper-leg beam, fit four washer/bolt pairs and stow both ends."
 	heading.add_child(label(introduction,15,muted))
 	resume_button = button("Start building    →",true)
@@ -443,7 +442,6 @@ func refresh_save_status() -> void:
 	reload_button.text = "Confirm reload" if confirm_reload else "Reload save"
 	quit_button.text = "Quit without saving" if discard_offered else ("Save & quit" if enabled else "Quit")
 	resume_button.text = "Resume    →" if entered or (enabled and game.saves.restored) else "Start building    →"
-	if game.get("m1_blockout") == true and not entered:resume_button.text = "Start trial    →"
 	if confirm_restart or confirm_reload:return
 	session_label.text = game.saves.status_text() if is_instance_valid(game.saves) else "Your workshop is starting."
 
@@ -491,7 +489,7 @@ func _restart_clicked() -> void:
 
 func show_pause(value: bool) -> void:
 	pause_panel.visible = value
-	action_bar.visible = not value and game.get("m1_blockout") != true
+	action_bar.visible = not value
 	carry_panel.visible = not value and not carry_label.text.is_empty()
 	_clear_save_confirmations()
 	refresh_save_status()

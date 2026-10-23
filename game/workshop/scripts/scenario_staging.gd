@@ -1,13 +1,14 @@
 extends RefCounted
-## Disclosed M1-only setup. Use the existing recipes and each physical identity;
-## the runnable trial is geometry/equipment assessment, not construction evidence.
-static func fill(game: Node, owner: String) -> void:
+## Disclosed scenario setup. Fills authored recipes with their real physical
+## identities through the model APIs; it is never construction evidence.
+static func fill(game: Node, owner: String, permitted: Array = []) -> void:
 	var definition: Dictionary = game.runtime.definition(owner)
 	for pass_index in range(definition.slots.size()):
 		var changed = false
 		for sid in definition.slots:
+			if not permitted.is_empty() and not sid in permitted:continue
 			if not game.model.assemblies[owner].slots[sid].is_empty():continue
-			var spec: Dictionary = definition.slots[sid]
+			var spec: Dictionary = game.model.slot_definition(owner,sid)
 			if spec.has("assembly") or not spec.get("requires",[]).all(func(id):return not game.model.assemblies[owner].slots[id].is_empty()):continue
 			var uid = ""
 			for candidate in game.model.items:
@@ -16,13 +17,17 @@ static func fill(game: Node, owner: String) -> void:
 			if uid.is_empty():continue
 			var item: Dictionary = game.model.items[uid]
 			var result: Dictionary
-			if item.location.begins_with("support:"):
-				result = game.model.install_supported(owner,sid,uid,item.location.trim_prefix("support:"))
+			if spec.get("support_required",false) or item.location.begins_with("support:"):
+				var from: String = item.location.trim_prefix("support:")
+				var support: String = spec.get("source_supports",[from])[0]
+				if from != support:assert(game.model.transfer_supported_item(uid,from,support).is_empty())
+				result = game.model.install_supported(owner,sid,uid,support)
 			else:
-				if game.model.definitions.parts[item.kind].carry_class == "pocket":game.model.transfer(item.kind,"bin","pocket",uid)
-				else:game.model.carry_item(uid)
+				if game.model.definitions.parts[item.kind].carry_class == "pocket":
+					if item.location != "pocket":game.model.transfer(item.kind,"bin","pocket",uid)
+				else:assert(game.model.carry_item(uid).is_empty())
 				result = game.model.install(owner,sid,uid)
-			assert(result.ok,"M1 staging: "+str(result))
+			assert(result.ok,"Scenario staging: "+str(result))
 			changed = true
 		if not changed:break
 	if game.builds.has(owner):
@@ -30,11 +35,11 @@ static func fill(game: Node, owner: String) -> void:
 		game._sync_installed_visuals()
 	else:game.components.sync(owner)
 
+## Completed foot on the leg, with the trial's permitted leg slots fitted.
 static func prepare(game: Node) -> void:
 	for pair in [["pad_1","prep"],["pad_2","prep2"],["pitch","prep3"]]:
 		assert(game.model.move_assembly(pair[0],"station:"+pair[1]).is_empty())
-		game._activate(pair[0]);game._set_pad_station(pair[1])
-		fill(game,pair[0])
+		game._activate(pair[0]);game._set_pad_station(pair[1]);fill(game,pair[0])
 	for child in ["pad_1","pad_2","pitch"]:
 		if child == "pitch":fill(game,"foot")
 		assert(game.model.move_assembly(child,"held").is_empty())
@@ -42,11 +47,8 @@ static func prepare(game: Node) -> void:
 		assert(game.model.install("foot",sid,child).ok)
 		game.runtime.mount("foot",sid,child)
 	fill(game,"foot")
-	assert(game.model.milestone("foot","complete"))
 	assert(game.model.install_supported("left_leg","foot","foot","foot_carrier").ok)
 	game.runtime.mount("left_leg","foot","foot")
-	fill(game,"left_leg")
-	assert(game.model.milestone("left_leg","structural_ready"))
-	assert(game.model.transfer_supported_assembly("left_leg","leg_fixture","m1_leg_rail").is_empty())
+	fill(game,"left_leg",game.leg_content.m2.staged_slots.left_leg)
 	game.refresh_assembly_collision("left_leg")
 	game._activate("pad_1")

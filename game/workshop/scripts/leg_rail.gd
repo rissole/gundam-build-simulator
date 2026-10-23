@@ -1,11 +1,9 @@
 extends Node3D
-## One authority for the disclosed M1 load. No manual, rigging or persistence flow.
-const Layout = preload("res://scripts/m1_layout.gd")
+## One authority for the supported leg: travel, tilt and upward dock into the pelvis.
+signal changed
+const Layout = preload("res://scripts/leg_bay_layout.gd")
 const TITLES = ["Travel to final bay","Tilt upright","Dock upward"]
-const RETENTION_REQUIRED = "Secure the hip retainers before releasing the holder."
 const RETENTION_BLOCKS_RETURN = "Remove all hip retainers before returning the supported leg."
-const RELEASE_OUTSIDE_M1 = "Hip retention is complete. Holder release is outside this M1 trial."
-const OWNERSHIP_OUTSIDE_M1 = "Pelvis-mounted leg handling is outside this M1 trial."
 const DURATIONS = [12.0,10.0,3.0]
 var game: Node3D
 var layout: Node3D
@@ -17,13 +15,11 @@ var blocked_reason = ""
 var buttons: Array[Dictionary] = []
 var labels: Array[Label3D] = []
 var solids: Array[Dictionary] = []
-var mesh_bounds: Array[Dictionary] = []
 var excluded: Array[RID] = []
 var checked_steps = 0
 
 func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 	game = workshop;layout = scene_layout
-	preload("res://scripts/m1_staging.gd").prepare(game)
 	load_body = game.runtime.node("left_leg")
 	_collect(load_body,load_body.global_transform.affine_inverse())
 	for body in game.runtime.nodes.values():
@@ -32,19 +28,8 @@ func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 	_pose()
 	game.model.changed.connect(_model_changed)
 	for at in [Vector3(9.2,0,11.4),Vector3(5.1,0,24.2)]:_panel(at)
-	var lift = preload("res://scripts/work_access_lift.gd").new()
-	game.add_child(lift)
-	var levels: Array[float] = [.15,8.4]
-	lift.setup(game,"hip",Layout.LIFT_ORIGIN,Vector2(2.6,2.6),levels)
-	lift.name = "M1HipLift"
-	lift.rotation.y = PI
-	game.access_lifts.hip = lift
-	game.player.position = Vector3(8.3,.03,10.5)
-	game.player.rotation.y = -PI/2
 
 func _collect(node: Node, inverse: Transform3D) -> void:
-	if node is MeshInstance3D and node.mesh != null:
-		mesh_bounds.append({"node":node,"pose":inverse*node.global_transform,"bounds":node.mesh.get_aabb()})
 	if node is CollisionShape3D and not node.disabled:
 		var shape: Shape3D = node.shape
 		var pose = inverse*node.global_transform
@@ -56,7 +41,7 @@ func _collect(node: Node, inverse: Transform3D) -> void:
 	for child in node.get_children():_collect(child,inverse)
 
 func _panel(at: Vector3) -> void:
-	var panel = Node3D.new();panel.name = "M1LocalControls";add_child(panel);panel.position = at
+	var panel = Node3D.new();panel.name = "RailLocalControls";add_child(panel);panel.position = at
 	var steel = game.material(Color("263a43"),.4)
 	game.box(panel,Vector3(.10,.6,0),Vector3(.14,1.2,1.65),steel,true)
 	for index in range(3):
@@ -94,25 +79,20 @@ func retention_state() -> String:
 	return "partial"
 
 func status_text() -> String:
+	if game.m2_trial == "crane":return "CRANE DELIVERY / Rail stays home\nUse the central crane console. Fit all four flange pairs before stowing the magnetic ends."
 	if not blocked_reason.is_empty():return "STOPPED / "+blocked_reason
 	if moving:return "MOVING / "+(TITLES[clampi(floori(minf(path,goal)),0,2)] if goal > path else "Return · supported reverse")
-	if path >= 2.9999:
-		var guidance = "M1 ends at docking · Return lowers the supported leg."
-		if retention_state() != "none":guidance = RETENTION_BLOCKS_RETURN
-		return "DOCKED / Holder supporting leg\n"+action_error("advance")+"\n"+guidance
-	return "M1 SAMPLE / "+next_action()+"\nE or click · one motion at a time"
+	if path >= 2.9999:return "DOCKED / Rail still supports leg\nFit one half from the lift. One half does not secure the hip.\nRemove all retention before Return."
+	return "M2 / "+next_action()+"\nE or click · Advance / Stop / Return"
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the trial before moving equipment."
-	if not action in ["advance","stop","return"]:return "Unknown sample control."
+	if not action in ["advance","stop","return"]:return "Unknown rail command."
 	if action == "stop":return "" if moving else "The fixture is stopped."
+	if game.m2_trial == "crane":return "The crane example keeps the rail home. Finish the beam connection and stow both cables."
 	if moving:return "Stop the motion before selecting a different direction."
 	if action == "return" and retention_state() != "none":return RETENTION_BLOCKS_RETURN
-	if action == "advance" and path >= 2.9999:
-		return RELEASE_OUTSIDE_M1 if retention_state() == "complete" else RETENTION_REQUIRED
-	# Normal M1 never mounts into pelvis: preserve a real externally mounted child
-	# rather than changing its world pose under a second equipment authority.
-	if game.model.assemblies.left_leg.location != "support:m1_leg_rail":return OWNERSHIP_OUTSIDE_M1
+	if action == "advance" and path >= 2.9999:return "One half does not secure the hip. Holder departure is outside M2."
 	if action == "return" and path <= .001:return "The loaded fixture is already home."
 	return ""
 
@@ -120,8 +100,16 @@ func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():
 		if not moving:blocked_reason = error
-		_refresh()
-		return error
+		_refresh();return error
+	if action == "return" and game.model.assemblies.left_leg.parent == "pelvis":
+		var previous = load_body.global_transform
+		var result: Dictionary = game.model.undo_supported("pelvis","m2_leg_rail")
+		if not result.ok:return result.error
+		load_body.reparent(game)
+		load_body.global_transform = previous
+		game.refresh_assembly_collision("pelvis")
+		game.refresh_assembly_collision("left_leg")
+		_pose()
 	if action == "stop":
 		moving = false;goal = path;blocked_reason = "";_refresh();return ""
 	goal = minf(3, floorf(path+.0001)+1) if action == "advance" else maxf(0,ceilf(path-.0001)-1)
@@ -143,17 +131,30 @@ static func rail_pose(t: float) -> Dictionary:
 
 func _pose() -> void:
 	var pose = rail_pose(path)
-	if game.model.assemblies.left_leg.location == "support:m1_leg_rail":load_body.global_transform = pose.load
+	if game.model.assemblies.left_leg.location == "support:m2_leg_rail":load_body.global_transform = pose.load
 	layout.set_pose(pose.load,pose.z,pose.x)
 	for member in game.runtime.descendants("left_leg"):
 		var body: CollisionObject3D = game.runtime.node(member)
+		if body is AnimatableBody3D:PhysicsServer3D.body_set_mode(body.get_rid(),PhysicsServer3D.BODY_MODE_STATIC)
 		body.force_update_transform()
 		# Scene parenting otherwise defers the PhysicsServer write until the next
-		# tick. M1 can move from an input callback, so publish this frozen hierarchy
-		# immediately as one supported pose, including foot context and rigid children.
+		# tick. The rail can move from an input callback, so publish this frozen
+		# hierarchy immediately as one supported pose, including foot context.
 		PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
 
 func physics(delta: float) -> void:
+	var was_moving = moving
+	_advance(delta)
+	if was_moving and not moving and blocked_reason.is_empty():path = goal;_pose()
+	if was_moving and not moving and path >= 2.9999 and game.model.assemblies.left_leg.parent.is_empty():
+		var result: Dictionary = game.model.install_supported("pelvis","left_leg","left_leg","m2_leg_rail")
+		assert(result.ok,str(result))
+		game.runtime.mount("pelvis","left_leg","left_leg")
+		game.refresh_assembly_collision("pelvis")
+		_pose()
+	if was_moving:changed.emit()
+
+func _advance(delta: float) -> void:
 	if not moving or game.paused:return
 	var index = clampi(floori(minf(path,goal)),0,2)
 	var next = move_toward(path,goal,delta/float(DURATIONS[index]))
@@ -201,3 +202,26 @@ func _refresh() -> void:
 func _model_changed() -> void:
 	blocked_reason = ""
 	_refresh()
+
+func capture() -> Dictionary:
+	return {"version":1,"path":path,"goal":goal,"moving":moving,"blocked_reason":blocked_reason,"support":"m2_leg_rail","parent":game.model.assemblies.left_leg.parent,"assisting":game.model.assemblies.left_leg.parent == "pelvis"}
+
+func validate(data: Dictionary, candidate: AssemblyModel) -> Array[String]:
+	if not (data.get("version") is int or data.get("version") is float) or not data.get("support") is String or not data.get("parent") is String:return ["Invalid M2 rail metadata."]
+	if data.version != 1 or data.support != "m2_leg_rail":return ["Unsupported M2 rail state."]
+	if not data.get("moving") is bool or not data.get("blocked_reason") is String or not data.get("assisting") is bool:return ["Invalid rail flags."]
+	for key in ["path","goal"]:
+		if not (data.get(key) is int or data.get(key) is float) or not is_finite(data[key]) or data[key] < 0 or data[key] > 3:return ["Invalid rail progress."]
+	if not data.moving and absf(data.path-data.goal) > .0001:return ["Stopped rail has a pending target."]
+	if data.moving and (is_equal_approx(data.path,data.goal) or data.goal != floorf(data.goal) or absf(data.path-data.goal)>1.001):return ["Invalid indexed rail motion."]
+	var leg: Dictionary = candidate.assemblies.left_leg
+	if data.parent != leg.parent or data.assisting != (leg.parent == "pelvis"):return ["Rail assistance disagrees with leg owner."]
+	if leg.parent == "pelvis":
+		if absf(data.path-3)>0.0001 or data.moving:return ["Mounted leg must remain docked on its rail."]
+	elif leg.location != "support:m2_leg_rail":return ["Leg has no authorized rail support."]
+	if game.m2_trial == "crane" and (data.path != 0 or data.goal != 0 or data.moving):return ["Crane trial rail must stay home."]
+	return []
+
+func apply(data: Dictionary) -> void:
+	path = data.path;goal = data.goal;moving = data.moving;blocked_reason = data.blocked_reason
+	_pose();_refresh()
