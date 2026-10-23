@@ -62,7 +62,6 @@
       "title": "PV-120 · Hip retaining ring half",
       "short_title": "Hip retaining ring half",
       "carry_class": "two_hand",
-      "catalogue_image": "res://assets/part-images/pv-ring-half.svg",
       "handling": {
         "distance": 0.85,
         "rotation_degrees": [
@@ -70,7 +69,8 @@
           0,
           0
         ]
-      }
+      },
+      "catalogue_image": "res://assets/part-images/pv-ring-half.svg"
     }
   },
   "assemblies": {
@@ -101,8 +101,7 @@
           "label": "Prepared foot",
           "support_required": true,
           "source_supports": [
-            "foot_carrier",
-            "foot_hoist"
+            "foot_carrier"
           ]
         },
         "shin": {

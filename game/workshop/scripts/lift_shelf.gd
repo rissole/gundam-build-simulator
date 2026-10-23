@@ -9,7 +9,8 @@ var cargo: Dictionary = {}
 
 func setup(workshop: Node3D, platform: Node3D) -> void:
 	game = workshop;lift = platform;equipment_id = "lift_shelf"
-	reparent(lift.deck);position = Vector3(.91,.68,0);rotation.y = -PI/2
+	var shelf: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().shelf
+	reparent(lift.deck);position = Vector3(shelf.position[0],shelf.position[1],shelf.position[2]);rotation.y = deg_to_rad(shelf.yaw_degrees)
 	var steel = game.material(Color("506971"),.4)
 	surface = game.box(self,Vector3.ZERO,Vector3(1.9,.08,.70),steel,true)
 	for x in [-.83,.83]:game.box(self,Vector3(x,-.34,0),Vector3(.07,.68,.42),steel,true)
@@ -37,7 +38,8 @@ func capacity_error(uid: String) -> String:
 
 func _pose(uid: String, index: int) -> Transform3D:
 	var bound: AABB = game.source[game.source_uid(uid)].mesh.get_aabb()
-	return global_transform*Transform3D(Basis.IDENTITY,Vector3(0 if size_of(uid)==2 else (-.46 if index==0 else .46),.04,0)-Vector3(bound.get_center().x,bound.position.y,bound.get_center().z))
+	var places: Array = preload("res://scripts/leg_bay_layout.gd").layout().shelf.places
+	return global_transform*Transform3D(Basis.IDENTITY,Vector3(0 if size_of(uid)==2 else places[index],.04,0)-Vector3(bound.get_center().x,bound.position.y,bound.get_center().z))
 
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []

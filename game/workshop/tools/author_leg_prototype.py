@@ -1,7 +1,10 @@
-"""Author the structural left-leg extension without regenerating the FA-01 GLB.
+"""Author the structural left-leg extension and its leg-bay scenarios without
+regenerating the FA-01 GLB.
 
-Run with Python 3 from any directory. Written counts and interfaces here are the
-prototype authority; this deliberately does not claim a powered or armored leg.
+Run with Python 3 from any directory; --check audits and byte-compares every
+generated asset without writing. Written counts, interfaces and bay layout here
+are the prototype authority; this deliberately does not claim a powered or
+armored leg.
 """
 import json
 import math
@@ -15,6 +18,60 @@ ASSETS = ROOT / "game/workshop/assets"
 MANIFEST = {p["instance_id"]: p for p in json.loads(
     (ROOT / "models/foot-fa01/output/parts-manifest.json").read_text())["parts"]}
 parts, stock, sources = {}, [], {}
+KNEE, HIP = 5.1, 9.2
+# Leg-bay layout authority. The rail carries the leg lying along +Z at home,
+# pivots it upright about the knee in the bay, then docks it upward.
+RAIL = dict(support="m2_leg_rail", x=11.9, reserved_x=14.1, home_z=14.5, bay_z=26.0, base_y=.5,
+            lying_lift=.85, pivot=KNEE, dock_rise=.9, durations=[12.0, 10.0, 3.0],
+            panels=[[9.2, 0, 11.4], [5.1, 0, 24.2]])
+LIFT = dict(name="hip", origin=[9.6, 0, 24.3], size=[2.6, 2.6], levels=[.15, 8.4], yaw_degrees=180)
+SHELF = dict(supports=["m2_lift_shelf_0", "m2_lift_shelf_1"], position=[.91, .68, 0], yaw_degrees=-90,
+             places=[-.46, .46])
+STOCK = {"retention": dict(origin=[6.4, .7, 20.7], step=1.15), "crane": dict(origin=[8.3, .7, 14.2], step=.9)}
+CRANE_SUPPORT = "m2_service_crane"
+
+
+def rounded(values):
+    return [round(v, 6) + 0.0 for v in values]
+
+
+def rail_home(local):
+    """World position of a leg-frame point while the leg lies on the home rail."""
+    return rounded([RAIL["x"] + local[0], RAIL["base_y"] + RAIL["lying_lift"] - local[2],
+                    RAIL["home_z"] - RAIL["pivot"] + local[1]])
+
+
+# The left pelvis socket sits 1.1 m to robot-left of the pelvis frame and
+# receives the hip ball directly above the docked rail.
+PARENT_HOMES = {"left_leg": [2.3, .75, 14.4],
+                "pelvis": rounded([RAIL["x"] + 1.1, RAIL["base_y"] + RAIL["dock_rise"] + HIP, RAIL["bay_z"]])}
+
+
+def layout_document():
+    """The one layout both the runtime and the trial overlays read."""
+    source = [7.6, 1.35, 15.4]
+    # Authored receiver: the beam's seated pose on the home rail, 0.84 m forward of
+    # the knee along the lying leg rather than the rail-home transform of the knee.
+    receiver = [11.9, 1.35, 15.34]
+    up = 4.4
+    return {
+        "version": 1,
+        "rail": RAIL,
+        "lift": LIFT,
+        "shelf": SHELF,
+        "parent_homes": PARENT_HOMES,
+        "crane": dict(support=CRANE_SUPPORT, source_support="leg_spar_rack", load_uid="LG-120__001",
+                      owner="left_leg", slot="spar", secured=dict(prefix="fork/", count=8), up_y=up,
+                      console_position=[4.9, 0, 21], park_position=[6.3, 0, 19],
+                      endpoint_ids=["magnet_a", "magnet_b"],
+                      magnetic_points=dict(beam_near=[0, .65, -.10], beam_far=[0, 2.74, -.15]),
+                      source_pose=dict(position=source, rotation_degrees=[90, 0, 0]),
+                      receiver_pose=dict(position=receiver, rotation_degrees=[90, 0, 0]),
+                      approach=dict(axis=[0, 0, -1], distance=.20),
+                      route_positions=[source, rounded([source[0], up - .88, source[2]]),
+                                       rounded([receiver[0], up - .88, receiver[2] + .20]),
+                                       rounded([receiver[0], receiver[1], receiver[2] + .20]), receiver]),
+    }
 
 
 def kind(key, family, title, carry="hand", variant="structural"):
@@ -53,7 +110,7 @@ def item(uid, key, location="bin"):
 
 kind("lg-shin", "LG-100", "Structural shin", "equipment")
 kind("lg-knee-fork", "LG-110", "Detachable knee fork", "equipment")
-kind("lg-thigh-spar", "LG-120", "Thigh spar with integral hip ball", "equipment")
+kind("lg-thigh-spar", "LG-120", "Upper-leg beam", "equipment")
 kind("lg-knee-bearing", "LG-130", "Knee journal bearing")
 kind("lg-knee-thrust", "LG-135", "Knee thrust spacer")
 kind("lg-knee-axle", "LG-140", "Shouldered knee axle", "two_hand")
@@ -62,7 +119,8 @@ kind("lg-m24-100", "LG-H24100", "M24 × 100 fork bolt", "pocket", "M24x100")
 kind("lg-m12-50", "LG-H12050", "M12 × 50 axle-cap screw", "pocket", "M12x50")
 kind("lg-w24", "LG-W24", "M24 washer", "pocket", "M24")
 kind("lg-w12", "LG-W12", "M12 washer", "pocket", "M12")
-kind("pv-ring-half", "PV-120", "Hip retaining ring half", "equipment", "semicircular")
+kind("pv-ring-half", "PV-120", "Hip retaining ring half", "two_hand", "semicircular")
+parts["pv-ring-half"]["handling"] = dict(distance=.85, rotation_degrees=[90, 0, 0])
 kind("pv-m24-140", "PV-H24140", "M24 × 140 ring bolt", "pocket", "M24x140")
 kind("lg-m36-90", "H-36090", "M36 × 90 shin bolt", "pocket", "M36x90")
 kind("lg-w36", "W-36", "M36 washer", "pocket", "M36")
@@ -190,7 +248,7 @@ def hardware(family, key, n, position, diameter, length, washer=False, upward=Fa
 
 leg_slots = {
     "foot": dict(assembly="foot", milestone="complete", requires=[], pose_source="FA-201__001", snap_position=[0, .8, -.7],
-                 label="Prepared foot", support_required=True, source_supports=["foot_carrier", "foot_hoist"]),
+                 label="Prepared foot", support_required=True, source_supports=["foot_carrier"]),
     "shin": dict(accepts="lg-shin", requires=["foot"], pose_source="LG-100__001",
                  label="LG-100 · Structural shin", support_required=True, source_supports=["leg_shin_rack"]),
 }
@@ -206,7 +264,7 @@ def page(pages, title, body, ids, context=()):
     pages.append(dict(title=title, body=body, slots=list(ids), view="components", context_sources=list(context)))
 
 
-page(leg_pages, "Dock the prepared foot", "Complete the foot manual, then use its carrier to dock the prepared foot in the leg fixture. The fixture supports the foot and locks ankle motion during structural work.", ["foot"])
+page(leg_pages, "Dock the prepared foot", "Complete the foot manual, then use its carrier to dock the prepared foot on the supported leg. The rail holder supports the foot and locks ankle motion during structural work.", ["foot"])
 page(leg_pages, "Lower the structural shin", "Use the shin rack controls to lower LG-100 onto the already fitted foot adapter. Align the female key with the adapter tongue; the equipment carries the load while it is unbolted.", ["shin"], ["FA-201__001"])
 flange_slots = []
 for n in range(1, 5):
@@ -269,7 +327,7 @@ page(leg_pages, "Seat bearings and thrust spacers", "Fit both LG-130 journal bea
 slot(leg_slots, "fork", "lg-knee-fork", "LG-110__001", thrust,
      support_required=True, source_supports=["leg_fork_rack"])
 slot(leg_slots, "axle", "lg-knee-axle", "LG-140__001", ["fork"], target_offset=[-.542, 0, 0])
-page(leg_pages, "Fork and axle", "Use the fork rack to straddle the already fitted shin boss with LG-110. Insert LG-140 from the left side through the aligned fork and bearings until its shoulder rests against the fork. The fixture keeps the unpowered knee straight.", ["fork", "axle"], ["LG-100__001", "LG-130__001", "LG-130__002"])
+page(leg_pages, "Fork and axle", "Use the fork rack to straddle the already fitted shin boss with LG-110. Insert LG-140 from the left side through the aligned fork and bearings until its shoulder rests against the fork. The rail holder keeps the unpowered knee straight.", ["fork", "axle"], ["LG-100__001", "LG-130__001", "LG-130__002"])
 slot(leg_slots, "cap", "lg-knee-cap", "LG-150__001", ["axle"], target_offset=[.017, 0, 0])
 cap_slots = ["cap"]
 for n, z in enumerate((-.10, .10), 1):
@@ -279,15 +337,15 @@ for n, z in enumerate((-.10, .10), 1):
     cap_slots += [ws, slot(leg_slots, f"cap/screw_{n}", "lg-m12-50", b, [ws], target_offset=[.014, 0, 0])]
 page(leg_pages, "Retain the knee axle", "Fit LG-150 on the exposed axle end. Fit two LG-W12 washers and two LG-H12050 screws from the right side into the axle end pad. Both screw heads remain outside the fork.", cap_slots, ["LG-110__001", "LG-140__001"])
 slot(leg_slots, "spar", "lg-thigh-spar", "LG-120__001", cap_slots,
-     support_required=True, source_supports=["leg_spar_rack"])
+     support_required=True, source_supports=[CRANE_SUPPORT])
 spar_slots = ["spar"]
 for n, (x, z) in enumerate(((x, z) for x in (-.25, .25) for z in (-.20, .20)), 1):
     w = hardware("LG-W24", "lg-w24", n, [x, 5.962, z], .024, 0, True)
     b = hardware("LG-H24100", "lg-m24-100", n, [x, 5.964, z], .024, .1)
     ws = slot(leg_slots, f"fork/washer_{n}", "lg-w24", w, ["spar"], target_offset=[0, .003, 0])
     spar_slots += [ws, slot(leg_slots, f"fork/bolt_{n}", "lg-m24-100", b, [ws], target_offset=[0, .026, 0])]
-page(leg_pages, "Join the thigh spar", "Use the spar rack to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four LG-W24 washers and four LG-H24100 bolts downward through the exposed flange corners.", spar_slots, ["LG-110__001"])
-leg_pages.append(dict(title="Structural leg ready", body="The load-bearing prototype is structurally ready. Use the hoist to transfer it to the pelvis gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the pelvis manual for seating and retention.", slots=list(leg_slots), view="prepared"))
+page(leg_pages, "Join the thigh spar", "Use the service crane to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four LG-W24 washers and four LG-H24100 bolts downward through the exposed flange corners.", spar_slots, ["LG-110__001"])
+leg_pages.append(dict(title="Structural leg ready", body="The load-bearing prototype is structurally ready. Use the leg rail to carry it to the pelvis gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the pelvis manual for seating and retention.", slots=list(leg_slots), view="prepared"))
 leg = dict(title="Left leg · structural prototype", carry_class="equipment", bounds=[1.4, 9.65, 3.0],
            work_locations=["support"], interaction="components", service_access="assisted",
            slots=leg_slots, milestones={"structural_ready": list(leg_slots)}, manual=leg_pages)
@@ -502,7 +560,8 @@ def m2_documents():
     Only trial installation pages are replaced. `playable_slots` is the manual
     coverage boundary, not a smaller definition of a structurally secured hip.
     """
-    rail, crane = "m2_leg_rail", "m2_service_crane"
+    layout = layout_document()
+    rail, crane = layout["rail"]["support"], layout["crane"]["support"]
     hand_kinds = {kind for kind, spec in parts.items() if spec.get("carry_class") in ("hand", "two_hand")} | {"pv-ring-half"}
     for asset in ("assembly-definitions.json", "pitch-actuator-definitions.json"):
         for kind, spec in json.loads((ASSETS / asset).read_text())["parts"].items():
@@ -519,17 +578,11 @@ def m2_documents():
     beam = deepcopy(parts["lg-thigh-spar"])
     beam.update(title="LG-120 · Upper-leg beam", short_title="Upper-leg beam",
                 catalogue_image="res://assets/part-images/lg-thigh-spar.svg")
-    crane_metadata = dict(
-        support=crane, source_support="leg_spar_rack", load_uid="LG-120__001",
-        destination=dict(owner="left_leg", slot="spar"), route_version=2,
-        source_pose=dict(position=[7.6, 1.35, 15.4], rotation_degrees=[90, 0, 0]),
-        receiver_pose=dict(position=[11.9, 1.35, 15.34], rotation_degrees=[90, 0, 0]),
-        magnetic_points={"beam_near": [0, .65, -.10], "beam_far": [0, 2.74, -.15]},
-        endpoint_ids=["magnet_a", "magnet_b"],
-        approach=dict(axis=[0, 0, -1], distance=.20),
-        fastener_slots=beam_slots[1:],
-        route_positions=[[7.6, 1.35, 15.4], [7.6, 3.52, 15.4],
-                         [11.9, 3.52, 15.54], [11.9, 1.35, 15.54], [11.9, 1.35, 15.34]])
+    crane_metadata = {key: deepcopy(layout["crane"][key]) for key in
+                      ("support", "source_support", "load_uid", "source_pose", "receiver_pose",
+                       "magnetic_points", "endpoint_ids", "approach", "route_positions")}
+    crane_metadata.update(destination=dict(owner=layout["crane"]["owner"], slot=layout["crane"]["slot"]),
+                          route_version=2, fastener_slots=beam_slots[1:])
     documents = {}
     for example in ("retention", "crane"):
         trial_leg, trial_pelvis = deepcopy(leg), deepcopy(pelvis)
@@ -584,7 +637,7 @@ def m2_documents():
         parents[0]["location"] = "support:" + rail
         equipment = dict(leg_mount=dict(parent="pelvis", slot="left_leg", support=rail),
                          parts={"LG-120__001": dict(owner="left_leg", slot="spar", support="leg_spar_rack", delivery_support=crane,
-                                                  stock_position=[7.6, 1.35, 15.4])})
+                                                  stock_position=list(layout["crane"]["source_pose"]["position"]))})
         trial = dict(version=1, parts=trial_stock, parents=parents, supports=deepcopy(added_supports), equipment=equipment,
             m2=dict(scenario_id="m2-" + example, scenario_version=2, equipment_version=2, route_version=2,
                     remove_supports=["pelvis_ring_rack_1", "pelvis_ring_rack_2"],
@@ -649,6 +702,11 @@ if __name__ == "__main__":
     parser.add_argument("--check-m2", action="store_true", help="Audit generated M2 overlays without writing assets")
     args = parser.parse_args()
     audit()
+    encoded_layout = json.dumps(layout_document(), indent=2, ensure_ascii=False) + "\n"
+    if args.check_m2:
+        assert (ASSETS / "leg-bay-layout.json").read_text() == encoded_layout, "Regenerate leg-bay-layout.json with --m2"
+    elif args.m2:
+        (ASSETS / "leg-bay-layout.json").write_text(encoded_layout)
     if args.m2 or args.check_m2:
         generated = m2_documents()
         audit_m2(generated)

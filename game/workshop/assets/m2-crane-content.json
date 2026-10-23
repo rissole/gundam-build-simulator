@@ -376,11 +376,6 @@
       "support": "m2_service_crane",
       "source_support": "leg_spar_rack",
       "load_uid": "LG-120__001",
-      "destination": {
-        "owner": "left_leg",
-        "slot": "spar"
-      },
-      "route_version": 2,
       "source_pose": {
         "position": [
           7.6,
@@ -429,16 +424,6 @@
         ],
         "distance": 0.2
       },
-      "fastener_slots": [
-        "fork/washer_1",
-        "fork/bolt_1",
-        "fork/washer_2",
-        "fork/bolt_2",
-        "fork/washer_3",
-        "fork/bolt_3",
-        "fork/washer_4",
-        "fork/bolt_4"
-      ],
       "route_positions": [
         [
           7.6,
@@ -465,6 +450,21 @@
           1.35,
           15.34
         ]
+      ],
+      "destination": {
+        "owner": "left_leg",
+        "slot": "spar"
+      },
+      "route_version": 2,
+      "fastener_slots": [
+        "fork/washer_1",
+        "fork/bolt_1",
+        "fork/washer_2",
+        "fork/bolt_2",
+        "fork/washer_3",
+        "fork/bolt_3",
+        "fork/washer_4",
+        "fork/bolt_4"
       ]
     },
     "supplied_construction": "The complete existing foot and the horizontal shin, bearings, spacers, knee fork, axle and cap are supplied on the home rail. The real LG-120 Upper-leg beam remains on its rack; four LG-W24 washers and four LG-H24100 bolts remain loose stock. No beam or flange hardware is preinstalled."

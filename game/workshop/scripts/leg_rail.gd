@@ -4,7 +4,7 @@ signal changed
 const Layout = preload("res://scripts/leg_bay_layout.gd")
 const TITLES = ["Travel to final bay","Tilt upright","Dock upward"]
 const RETENTION_BLOCKS_RETURN = "Remove all hip retainers before returning the supported leg."
-const DURATIONS = [12.0,10.0,3.0]
+static var DURATIONS: Array = [12.0,10.0,3.0]
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
 var layout: Node3D
@@ -28,7 +28,9 @@ func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 	excluded.append_array(layout.hardware)
 	_pose()
 	game.model.changed.connect(_model_changed)
-	for at in [Vector3(9.2,0,11.4),Vector3(5.1,0,24.2)]:_panel(at)
+	var rail_data: Dictionary = Layout.layout().rail
+	DURATIONS = rail_data.durations
+	for point in rail_data.panels:_panel(Vector3(point[0],point[1],point[2]))
 
 func _panel(at: Vector3) -> void:
 	var panel = Node3D.new();panel.name = "RailLocalControls";add_child(panel);panel.position = at

@@ -8,6 +8,8 @@ const VERSION = 2
 const END_IDS = ["magnet_a","magnet_b"]
 const POINT_IDS = ["beam_near","beam_far"]
 const POINTS = [Vector3(0,.65,-.10),Vector3(0,2.74,-.15)]
+var fastener_prefix = "fork/"
+var secured_count = 8
 const STATIONS = ["source","receiver","park"]
 const TITLES = {"source":"Upper-leg beam rack","receiver":"Leg cradle","park":"Parking bay"}
 const UP_Y = 4.4
@@ -48,6 +50,8 @@ func setup(workshop: Node3D, scene_layout: Node3D, contract: Dictionary = {}) ->
 	hand_payload_hint = "Attach or Q-stow the held magnetic end first."
 	hands_full_hint = "Stow the component or assembly in your hand before handling a magnetic end."
 	support = contract.get("support",support);source_support = contract.get("source_support",source_support);uid = contract.get("uid",uid)
+	var spec: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().crane
+	fastener_prefix = spec.secured.prefix;secured_count = int(spec.secured.count)
 	source_pose = contract.get("source_pose",Transform3D(Basis(Vector3.RIGHT,PI/2),Vector3(7.6,1.35,15.4)))
 	receiver_pose = contract.get("receiver_pose",game.runtime.slot_pose("left_leg","spar"))
 	route.assign(contract.get("route",[source_pose,_offset(source_pose,Vector3(0,.75,0)),_offset(receiver_pose,Vector3(0,.75,.20)),_offset(receiver_pose,Vector3(0,0,.20)),receiver_pose]))
@@ -241,11 +245,11 @@ func hardware_count(model: AssemblyModel = null) -> int:
 	var m: AssemblyModel = game.model if model == null else model
 	var count = 0
 	for sid in m.assemblies.left_leg.slots:
-		if sid.begins_with("fork/") and not m.assemblies.left_leg.slots[sid].is_empty():count += 1
+		if sid.begins_with(fastener_prefix) and not m.assemblies.left_leg.slots[sid].is_empty():count += 1
 	return count
 
 func secured(model: AssemblyModel = null) -> bool:
-	return _installed(model) and hardware_count(model)==8
+	return _installed(model) and hardware_count(model)==secured_count
 
 func busy_reason(subject: String) -> String:
 	if subject != "rail":return ""
@@ -270,7 +274,7 @@ func undo(owner: String) -> Dictionary:
 	if owner != "left_leg":return {"handled":false,"error":""}
 	var history: Array = game.model.assemblies.left_leg.history
 	if history.is_empty():return {"handled":true,"error":"The supplied construction stays assembled."}
-	if str(history.back().slot).begins_with("fork/"):
+	if str(history.back().slot).begins_with(fastener_prefix):
 		if attached_count()!=2 or not motion.is_empty():return {"handled":true,"error":"Keep both magnets engaged with the crane down before undoing flange hardware."}
 		return {"handled":false,"error":""}
 	if history.back().slot == "spar":return {"handled":true,"error":"Use Up at the crane console to lift the unfastened beam from its seat."}

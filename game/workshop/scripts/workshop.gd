@@ -187,7 +187,7 @@ func _ready() -> void:
 	_state_changed()
 	set_paused(true)
 	started = true
-	saves = preload("res://scripts/m2_session.gd").new() if profile.session.codec == "trial" else preload("res://scripts/workshop_save.gd").new()
+	saves = preload("res://scripts/workshop_save.gd").new()
 	add_child(saves)
 	saves.setup(self)
 
@@ -213,8 +213,9 @@ func _load_leg_content(data: Dictionary) -> void:
 	config.parents = leg_content.parents.duplicate(true)
 	config.supports = leg_content.supports.duplicate(true)
 	config.parent.location = "support:foot_carrier"
-	config.parents[0].home = [2.3,0.75,14.4]
-	config.parents[1].home = [13,10.6,26]
+	var homes: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().parent_homes
+	for parent in config.parents:
+		if homes.has(parent.id):parent.home = homes[parent.id]
 
 func has_equipment(id: String) -> bool:
 	return id in profile.get("equipment",[])
@@ -231,9 +232,11 @@ func _build_equipment(ids: Array) -> void:
 				item = preload("res://scripts/leg_rail.gd").new();add_child(item);item.setup(self,leg_layout)
 			"hip_lift":
 				item = preload("res://scripts/work_access_lift.gd").new();add_child(item)
-				var levels: Array[float] = [.15,8.4]
-				item.setup(self,"hip",preload("res://scripts/leg_bay_layout.gd").LIFT_ORIGIN,Vector2(2.6,2.6),levels)
-				item.rotation.y = PI
+				var lift_data: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().lift
+				var levels: Array[float] = []
+				for level in lift_data.levels:levels.append(float(level))
+				item.setup(self,lift_data.name,Vector3(lift_data.origin[0],lift_data.origin[1],lift_data.origin[2]),Vector2(lift_data.size[0],lift_data.size[1]),levels)
+				item.rotation.y = deg_to_rad(lift_data.yaw_degrees)
 			"lift_shelf":
 				item = preload("res://scripts/lift_shelf.gd").new();add_child(item);item.setup(self,made.hip_lift)
 			"service_crane":

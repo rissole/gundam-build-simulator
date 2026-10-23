@@ -6,6 +6,7 @@ const Codec = preload("res://scripts/pose_codec.gd")
 const SAVE_PATH = "user://workshop-save.json"
 const AUTOSAVE_SECONDS = 30.0
 const WORLD_VERSION = 1
+const TRIAL_VERSION = 3
 
 var game: Node
 var baseline: AssemblyModel
@@ -26,19 +27,31 @@ func setup(workshop: Node, path_override: String = "", use_automatic: bool = tru
 	game = workshop
 	automatic = use_automatic
 	path = game.profile.session.path if path_override.is_empty() else path_override
+	var trial = _trial()
 	var script_launch = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("-s")
-	enabled = not path_override.is_empty() or (not script_launch and DisplayServer.get_name() != "headless" and not game.automated_test and not path.is_empty() and is_instance_valid(game.foot_fixture))
+	enabled = not path_override.is_empty() or (not script_launch and DisplayServer.get_name() != "headless" and not game.automated_test and not path.is_empty() and (trial or is_instance_valid(game.foot_fixture)))
 	baseline = AssemblyModel.new()
 	var configuration_errors = baseline.configure(game.model.definitions,game.config)
 	assert(configuration_errors.is_empty(),str(configuration_errors))
-	fingerprint = JSON.stringify({"world":WORLD_VERSION,"definitions":game.model.definitions,"scenario":game.config,"supported":is_instance_valid(game.foot_fixture),"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb")}).sha256_text()
+	var materials: Dictionary = {"world":WORLD_VERSION,"definitions":game.model.definitions,"scenario":game.config,"supported":is_instance_valid(game.foot_fixture),"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb")}
+	if trial:
+		materials = {"m2":TRIAL_VERSION,"trial":game.profile.trial,"definitions":game.model.definitions,"scenario":game.config,"sources":game.leg_content.sources,"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb"),"layout":FileAccess.get_sha256("res://assets/leg-bay-layout.json")}
+	fingerprint = JSON.stringify(materials).sha256_text()
 	initial = capture()
 	if enabled:
 		game.get_tree().auto_accept_quit = false
-		reload_save(true)
+		if trial and game.get_tree().get_meta("m2_reset",false):
+			game.get_tree().remove_meta("m2_reset");new_workshop()
+		else:reload_save(true)
 	_refresh()
 
+func _trial() -> bool:
+	return game.profile.session.codec == "trial"
+
 func status_text() -> String:
+	if _trial():
+		var title = "Hip retainer" if game.profile.trial == "retention" else "Crane delivery"
+		return title+" · separate M2 save slot.\n"+(message if not message.is_empty() else ("Autosaves on pause, quit and every 30 seconds. Restart resets only this trial." if enabled else "Headless/test session; normal saves are untouched."))
 	if not enabled:return "This scenario is session-only.\nYour saved workshop is untouched."
 	if not message.is_empty():return message
 	return "Autosaves every 30 seconds, on pause and on quit.\nYour workshop resumes when you reopen the game."
@@ -161,6 +174,19 @@ static func valid_vector(value: Variant, count: int = 3) -> bool:return Codec.va
 static func valid_pose(value: Variant) -> bool:return Codec.valid_pose(value)
 static func same_keys(value: Variant, expected: Array) -> bool:return Codec.same_keys(value,expected)
 
+# Attached children have exactly one legal transform, derived from their
+# receiving connection; saved world poses are only audited against it.
+func _saved_assembly_pose(owner: String, world: Dictionary, candidate: AssemblyModel) -> Transform3D:
+	var a: Dictionary = candidate.assemblies[owner]
+	if not a.parent.is_empty():return _saved_mount_pose(a.parent,a.parent_slot,owner,_saved_assembly_pose(a.parent,world,candidate))
+	return to_pose(world.fixtures[owner] if world.fixtures.has(owner) else world.bodies[owner].pose)
+
+func _saved_mount_pose(parent: String, sid: String, child: String, parent_pose: Transform3D) -> Transform3D:
+	var slot: Dictionary = baseline.slot_definition(parent,sid)
+	var anchor: String = slot.get("child_anchor_slot","")
+	var local_anchor = game.runtime.local_slot_pose(child,anchor) if not anchor.is_empty() else Transform3D.IDENTITY
+	return parent_pose*game.runtime.local_slot_pose(parent,sid)*local_anchor.affine_inverse()
+
 static func body_state(body: RigidBody3D) -> Dictionary:
 	return {"pose":pose(body.global_transform),"linear":vector(body.linear_velocity),"angular":vector(body.angular_velocity)}
 
@@ -175,6 +201,9 @@ func capture() -> Dictionary:
 		if location == "loose" and game.loose.has(uid) and is_instance_valid(game.loose[uid]):world.items[uid] = body_state(game.loose[uid])
 		elif location == "held" and is_instance_valid(game.components.held_body):world.items[uid] = body_state(game.components.held_body)
 	if is_instance_valid(game.foot_fixture):world.support = game.foot_fixture.capture()
+	if _trial():
+		world["equipment"] = game.equipment.capture()
+		world["trial"] = game.trial.capture()
 	world["player"] = {"pose":pose(game.player.global_transform),"velocity":vector(game.player.velocity),"pitch":game.camera.rotation.x,"height":game.camera.position.y,"fov":game.camera.fov,"crouched":game.crouched}
 	world["reader"] = {"manual":game.hud.manual_id,"pages":game.hud.pages.duplicate(),"visible":game.hud.manual.visible,"suggested_only":game.hud.browser.suggested_only}
 	return {"model":ModelSave.capture(game.model),"world":world}
@@ -187,6 +216,18 @@ func validate(data: Variant) -> Array[String]:
 	var errors: Array[String] = ModelSave.validate(data.get("model"),baseline)
 	if not errors.is_empty():return errors
 	var w = data.get("world")
+	if _trial() and w is Dictionary:
+		var candidate = AssemblyModel.new();candidate.configure(baseline.definitions,game.config);ModelSave.apply(data.model,candidate)
+		errors = game.equipment.validate(w.get("equipment"),candidate,w)
+		if not errors.is_empty():return errors
+		errors = game.trial.validate(w.get("trial"),candidate,initial,w)
+		if not errors.is_empty():return errors
+		for id in w.fixtures:
+			var a: Dictionary = candidate.assemblies[id]
+			if not a.parent.is_empty():
+				var parent_pose = _saved_assembly_pose(a.parent,w,candidate)
+				if not to_pose(w.fixtures[id]).is_equal_approx(_saved_mount_pose(a.parent,a.parent_slot,id,parent_pose)):return ["Mounted fixture pose disagrees with its parent."]
+		return []
 	if not w is Dictionary:return ["Missing workshop positions."]
 	if not same_keys(w.get("stations"),game.stations.keys()):return ["Preparation stations changed."]
 	for id in w.stations:
@@ -249,6 +290,10 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 	if is_instance_valid(game.components.held_body):game.components.held_body.free()
 	game.components.held_body = null
 	# Detach before changing ownership, so no old parent carries a restored child.
+	if _trial():
+		for id in game.runtime.nodes:
+			var node: Node3D = game.runtime.node(id)
+			if node.get_parent() != game:node.reparent(game)
 	for body in game.bodies.values():
 		body.freeze = true
 		body.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
@@ -269,6 +314,7 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 	for id in w.stations:game.stations[id].global_transform = to_pose(w.stations[id])
 	for id in w.fixtures:game.assembly_node(id).global_transform = to_pose(w.fixtures[id])
 	if is_instance_valid(game.foot_fixture):game.foot_fixture.apply(w.support)
+	if _trial():game.equipment.apply(w.equipment)
 	for id in w.bodies:
 		var body: WorkshopPart = game.bodies[id]
 		var location: String = game.model.assemblies[id].location
@@ -283,6 +329,12 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 		game._sync_installed_visuals()
 		game.prepared_flags[id] = game.state.prepared()
 		game.completed_flags[id] = game.state.complete()
+	if _trial():
+		for id in game.runtime.nodes:
+			var body: CollisionObject3D = game.runtime.node(id)
+			if body is AnimatableBody3D:PhysicsServer3D.body_set_mode(body.get_rid(),PhysicsServer3D.BODY_MODE_STATIC)
+			body.force_update_transform()
+			PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
 	for id in w.fixtures:game.components.sync(id)
 	for id in game.model.assemblies:
 		if game.model.assemblies[id].parent.is_empty():game.refresh_assembly_collision(id)

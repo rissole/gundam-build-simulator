@@ -354,7 +354,7 @@ func run() -> void:
 	expect(defects.is_empty(),str(attacks)+" missing/mistyped nested field attacks reject without mutation")
 	var passed = checks.all(func(c):return c.passed)
 	var hashes = {}
-	for file in ["m2_session.gd","leg_bay_trial.gd","leg_rail.gd","leg_bay_layout.gd","lift_shelf.gd","service_crane.gd","assembly_runtime.gd","workshop.gd"]:hashes[file] = FileAccess.get_sha256("res://scripts/"+file)
+	for file in ["workshop_save.gd","leg_bay_trial.gd","leg_rail.gd","leg_bay_layout.gd","lift_shelf.gd","service_crane.gd","assembly_runtime.gd","workshop.gd"]:hashes[file] = FileAccess.get_sha256("res://scripts/"+file)
 	var output = {"passed":passed,"checks":checks,"attacks":attacks,"rejected":rejected,"defects":defects,"rendered":false,"script_hashes":hashes}
 	DirAccess.make_dir_recursive_absolute("res://verification")
 	FileAccess.open("res://verification/m2-independent-acceptance.json",FileAccess.WRITE).store_string(JSON.stringify(output,"  "))

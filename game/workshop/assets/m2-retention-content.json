@@ -418,11 +418,6 @@
       "support": "m2_service_crane",
       "source_support": "leg_spar_rack",
       "load_uid": "LG-120__001",
-      "destination": {
-        "owner": "left_leg",
-        "slot": "spar"
-      },
-      "route_version": 2,
       "source_pose": {
         "position": [
           7.6,
@@ -471,16 +466,6 @@
         ],
         "distance": 0.2
       },
-      "fastener_slots": [
-        "fork/washer_1",
-        "fork/bolt_1",
-        "fork/washer_2",
-        "fork/bolt_2",
-        "fork/washer_3",
-        "fork/bolt_3",
-        "fork/washer_4",
-        "fork/bolt_4"
-      ],
       "route_positions": [
         [
           7.6,
@@ -507,6 +492,21 @@
           1.35,
           15.34
         ]
+      ],
+      "destination": {
+        "owner": "left_leg",
+        "slot": "spar"
+      },
+      "route_version": 2,
+      "fastener_slots": [
+        "fork/washer_1",
+        "fork/bolt_1",
+        "fork/washer_2",
+        "fork/bolt_2",
+        "fork/washer_3",
+        "fork/bolt_3",
+        "fork/washer_4",
+        "fork/bolt_4"
       ]
     },
     "supplied_construction": "The complete leg starts on its home rail; the pelvis socket and retaining connections are empty. Walk the rail controls through travel, tilt and upward docking. The rail seats the hip ball and remains engaged as assistance. Board the personnel lift and use Up. One retaining half and its two washer/bolt pairs are supplied; this example cannot secure the complete hip."

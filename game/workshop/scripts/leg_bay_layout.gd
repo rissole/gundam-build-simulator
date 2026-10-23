@@ -1,9 +1,16 @@
 extends Node3D
 ## Leg bay hangar: home rail, pelvis gantry and the trial's source equipment.
+## Positions come from assets/leg-bay-layout.json, shared with the generator.
+const LAYOUT_PATH = "res://assets/leg-bay-layout.json"
+static var data: Dictionary = {}
 const RAIL_X = 11.9
 const HOME_Z = 14.5
 const BAY_Z = 26.0
 const LIFT_ORIGIN = Vector3(9.6,0,24.3)
+
+static func layout() -> Dictionary:
+	if data.is_empty():data = JSON.parse_string(FileAccess.get_file_as_string(LAYOUT_PATH))
+	return data
 var game: Node3D
 var steel: Material
 var dark: Material

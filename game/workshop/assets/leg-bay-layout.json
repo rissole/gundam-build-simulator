@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "rail": {
+    "support": "m2_leg_rail",
+    "x": 11.9,
+    "reserved_x": 14.1,
+    "home_z": 14.5,
+    "bay_z": 26.0,
+    "base_y": 0.5,
+    "lying_lift": 0.85,
+    "pivot": 5.1,
+    "dock_rise": 0.9,
+    "durations": [
+      12.0,
+      10.0,
+      3.0
+    ],
+    "panels": [
+      [
+        9.2,
+        0,
+        11.4
+      ],
+      [
+        5.1,
+        0,
+        24.2
+      ]
+    ]
+  },
+  "lift": {
+    "name": "hip",
+    "origin": [
+      9.6,
+      0,
+      24.3
+    ],
+    "size": [
+      2.6,
+      2.6
+    ],
+    "levels": [
+      0.15,
+      8.4
+    ],
+    "yaw_degrees": 180
+  },
+  "shelf": {
+    "supports": [
+      "m2_lift_shelf_0",
+      "m2_lift_shelf_1"
+    ],
+    "position": [
+      0.91,
+      0.68,
+      0
+    ],
+    "yaw_degrees": -90,
+    "places": [
+      -0.46,
+      0.46
+    ]
+  },
+  "parent_homes": {
+    "left_leg": [
+      2.3,
+      0.75,
+      14.4
+    ],
+    "pelvis": [
+      13.0,
+      10.6,
+      26.0
+    ]
+  },
+  "crane": {
+    "support": "m2_service_crane",
+    "source_support": "leg_spar_rack",
+    "load_uid": "LG-120__001",
+    "owner": "left_leg",
+    "slot": "spar",
+    "secured": {
+      "prefix": "fork/",
+      "count": 8
+    },
+    "up_y": 4.4,
+    "console_position": [
+      4.9,
+      0,
+      21
+    ],
+    "park_position": [
+      6.3,
+      0,
+      19
+    ],
+    "endpoint_ids": [
+      "magnet_a",
+      "magnet_b"
+    ],
+    "magnetic_points": {
+      "beam_near": [
+        0,
+        0.65,
+        -0.1
+      ],
+      "beam_far": [
+        0,
+        2.74,
+        -0.15
+      ]
+    },
+    "source_pose": {
+      "position": [
+        7.6,
+        1.35,
+        15.4
+      ],
+      "rotation_degrees": [
+        90,
+        0,
+        0
+      ]
+    },
+    "receiver_pose": {
+      "position": [
+        11.9,
+        1.35,
+        15.34
+      ],
+      "rotation_degrees": [
+        90,
+        0,
+        0
+      ]
+    },
+    "approach": {
+      "axis": [
+        0,
+        0,
+        -1
+      ],
+      "distance": 0.2
+    },
+    "route_positions": [
+      [
+        7.6,
+        1.35,
+        15.4
+      ],
+      [
+        7.6,
+        3.52,
+        15.4
+      ],
+      [
+        11.9,
+        3.52,
+        15.54
+      ],
+      [
+        11.9,
+        1.35,
+        15.54
+      ],
+      [
+        11.9,
+        1.35,
+        15.34
+      ]
+    ]
+  }
+}
