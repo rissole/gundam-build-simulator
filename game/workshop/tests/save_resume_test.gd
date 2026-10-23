@@ -3,22 +3,61 @@ extends "res://tests/kit/workshop_suite.gd"
 const Codec = preload("res://scripts/workshop_save.gd")
 var save_path: String
 
+func check_pause_profile_layout(workshop: Node, profile_id: String) -> void:
+	var hud = workshop.hud
+	var original_flags = [hud.confirm_restart, hud.confirm_reload, hud.discard_offered, hud.entered]
+	for confirmation in [false, true]:
+		# Exercise the real caption logic without invoking destructive button actions.
+		hud.confirm_restart = confirmation
+		hud.confirm_reload = confirmation
+		hud.discard_offered = confirmation
+		hud.entered = confirmation
+		hud.refresh_save_status()
+		# Wrapped labels and nested containers need multiple deferred layout passes.
+		for tick in range(4):await process_frame
+		var state = profile_id + (" confirmations" if confirmation else " default")
+		var viewport: Rect2 = root.get_visible_rect()
+		var card: Rect2 = hud.pause_card.get_global_rect()
+		expect(viewport.size.is_equal_approx(Vector2(1440, 900)) and card.has_area() and viewport.encloses(card), state + ": native pause card fits inside the 1440 × 900 viewport")
+		var controls: Array = [hud.pause_intro, hud.resume_button]
+		var footer_count = 0
+		var choose_trial_count = 0
+		for child in hud.save_button.get_parent().get_children():
+			if child is Button:
+				controls.append(child)
+				footer_count += 1
+				if child.text == "Choose M2 trial":choose_trial_count += 1
+		var trial: bool = workshop.profile.session.codec == "trial"
+		expect(footer_count == (5 if trial else 4) and choose_trial_count == (1 if trial else 0), state + ": all profile-specific footer buttons are included")
+		if confirmation:
+			expect(hud.restart_button.text == "Confirm new workshop" and hud.reload_button.text == "Confirm reload" and hud.quit_button.text == "Quit without saving", state + ": exercise the longest confirmation captions")
+		var visible = true
+		var separate = true
+		for index in range(controls.size()):
+			var rect: Rect2 = controls[index].get_global_rect()
+			visible = visible and controls[index].is_visible_in_tree() and rect.has_area() and card.encloses(rect) and viewport.encloses(rect)
+			for other in range(index + 1, controls.size()):
+				separate = separate and not rect.intersects(controls[other].get_global_rect())
+		expect(visible and separate, state + ": intro, Resume and every footer button are visible within the card without overlap")
+		if not viewport.encloses(card) or not visible or not separate:print("PAUSE_LAYOUT_DIAGNOSTIC profile=", state, " viewport=", viewport, " card=", card)
+	hud.confirm_restart = original_flags[0]
+	hud.confirm_reload = original_flags[1]
+	hud.discard_offered = original_flags[2]
+	hud.entered = original_flags[3]
+	hud.refresh_save_status()
+	for tick in range(4):await process_frame
+
 func pause_layout() -> void:
-	await process_frame
-	await process_frame
-	var viewport: Rect2 = root.get_visible_rect()
-	var card: Rect2 = game.hud.pause_card.get_global_rect()
-	expect(viewport.size.is_equal_approx(Vector2(1440, 900)) and viewport.encloses(card), "Native pause card fits inside the 1440 × 900 viewport")
-	var controls: Array = [game.hud.save_button, game.hud.reload_button, game.hud.restart_button, game.hud.quit_button]
-	var visible = true
-	var separate = true
-	for index in range(controls.size()):
-		var rect: Rect2 = controls[index].get_global_rect()
-		visible = visible and controls[index].is_visible_in_tree() and card.encloses(rect) and rect.has_area()
-		for other in range(index + 1, controls.size()):
-			separate = separate and not rect.intersects(controls[other].get_global_rect())
-	expect(visible and separate, "Save, Reload, New workshop and Quit buttons are visible inside the pause card without overlap")
-	if not viewport.encloses(card) or not visible or not separate:print("PAUSE_LAYOUT_DIAGNOSTIC viewport=", viewport, " card=", card)
+	await check_pause_profile_layout(game, "foot")
+	for profile_id in ["leg_bay_retention", "leg_bay_crane"]:
+		var clone = instantiate_profile(self, profile_id)
+		await frames(6)
+		var temporary_path = save_path + "-layout-" + profile_id
+		clone.saves.setup(clone, temporary_path, false)
+		await check_pause_profile_layout(clone, profile_id)
+		clone.free()
+		for suffix in ["", ".bak"]:DirAccess.remove_absolute(temporary_path + suffix)
+		await process_frame
 
 func pose_matches(body: Node3D, saved: Dictionary) -> bool:
 	return body.global_transform.is_equal_approx(Codec.to_pose(saved.pose))

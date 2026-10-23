@@ -21,6 +21,7 @@ var toast_panel: PanelContainer
 var pause_panel: Control
 var pause_card: PanelContainer
 var pause_title: Label
+var pause_intro: Label
 var resume_button: Button
 var restart_button: Button
 var save_button: Button
@@ -372,7 +373,9 @@ func _make_pause() -> void:
 	header.add_child(heading)
 	pause_title = label("Your workshop",30)
 	heading.add_child(pause_title)
-	heading.add_child(label(game.profile.intro,15,muted))
+	pause_intro = label(game.profile.intro,15,muted)
+	pause_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	heading.add_child(pause_intro)
 	resume_button = button("Start building    →",true)
 	resume_button.custom_minimum_size.x = 200
 	resume_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
