@@ -348,6 +348,10 @@ The [save/resume plan and implementation contract](design/game/save-resume.md) r
 
 ## Supported left leg and expanded workshop
 
+*Retired on 2026-10-23. See
+[Base game and prototype lane](#base-game-and-prototype-lane-2026-10-23). This
+section records the hoist-based prototype as it was built.*
+
 The next authorized milestone expands the workshop before integrating the new
 construction route. The default scenario has a 39.6 × 47 m hangar with a 22 m
 roof underside, the existing component stations and supported foot carrier, a
@@ -390,6 +394,24 @@ services, armor, thrusters, waist/torso and the second leg remain deferred. The
 [interface specification](design/game/leg-prototype-interface.md) records the
 selected geometry, parts and manuals. Headless behavior/geometry evidence does
 not establish a human playtest or rendered approval for this expansion.
+
+## Base game and prototype lane, 2026-10-23
+
+The user decided that default `./play.command` launches only the supported-foot
+workshop: the pads, the pitch actuator and its save. The actuator work is the
+base game, and the detailed foot build continues there after the end-to-end
+workflow has been outlined. The upright-hoist expanded workshop and the M1
+layout trial are retired. Their saves (`user://leg-workshop-save.json`, M1
+slots) are no longer read.
+
+The M1–M4 milestones are a prototype lane, not a second game. Each trial runs
+as a scenario profile on shared feature modules: layout data, equipment
+(fixture, rail, lifts, crane, shelf), a single hand arbiter, motion sweeps and
+a profile-parameterised session codec. The learnings and modules from M1–M4
+will later be folded back into the base game and the trial profiles retired.
+Reintegration should mean adding equipment and content to the foot profile, not
+porting milestone-specific classes. The consolidation was intended to be
+behaviour-neutral, and foot saves keep their recorded fingerprint.
 
 ## Final assembly workflow — design decisions, 2026-10-23
 
