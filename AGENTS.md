@@ -66,34 +66,27 @@ This is explicit authorization to choose and override each subagent's model and
 reasoning effort independently of the orchestrator.
 
 Before spawning, assess the task's ambiguity, reasoning difficulty, scope and
-verification requirements across the full assignment. Optimize for total delivery
-cost, including coordination, integration and rework, rather than the cheapest
-individual agent. Give complex assignments enough reasoning capacity from the
-start; reassess model, effort and ownership when scope expands.
+verification requirements across the full assignment. Default to enough reasoning
+capacity for the whole assignment; reassess model, effort and ownership when
+scope expands.
 
-Use these starting points:
+Use these selections:
 
-- `gpt-6-luna` / `low`: extraction, inventories, mechanical edits and
-  straightforward checks with clear acceptance criteria.
-- `gpt-6-luna` / `high`: bounded code exploration and tracing with clear
-  questions and evidence requirements.
-- `gpt-6.1-sol` / `medium`: bounded implementation, debugging and review with
-  clear interfaces and limited cross-system dependencies.
-- `gpt-6.1-sol` / `high`: starting point for complex implementation, cross-system
-  geometry, state and interaction work, subtle edge cases and ambiguous
-  investigations.
-- `gpt-6-astra` / `high`: unusually difficult architecture, diagnosis or
-  synthesis where stronger reasoning materially improves the result.
-- `gpt-6.1-sol` or `gpt-6-astra` / `xhigh`: highly coupled or ambiguous work
-  where a concrete reasoning challenge justifies the additional effort.
+- `gpt-6-astra` / `high`: the default for delegated work.
+- `gpt-6-astra` / `xhigh`: ambiguous or complex work. These agents may ask the
+  human focused questions when an answer would materially clarify the task.
+- `gpt-6.1-sol` / `high`: well-defined workhorse tasks.
+- `gpt-6-luna` / `xhigh`: simple investigations, summaries, and explicit,
+  unambiguous edits.
 
-Do not inherit an expensive orchestrator configuration automatically. Choose
-model and effort explicitly for each delegated task.
+Do not inherit the orchestrator's configuration automatically. Choose model and
+effort explicitly for each delegated task.
 
-When selecting a coordinator for a future run, start with `gpt-6.1-sol` / `high`
-for briefs, integration decisions and acceptance checks. Reserve more expensive
-configurations for identified reasoning needs. This is configuration guidance,
-not a claim that an active agent can change its own model.
+When selecting a coordinator for a future run, start with `gpt-6-astra` / `high`
+for briefs, integration decisions and acceptance checks. Use `gpt-6-astra` /
+`xhigh` when that coordination is ambiguous or complex; that agent may ask the
+human focused questions to gain clarity. This is configuration guidance, not a
+claim that an active agent can change its own model.
 
 Use only combinations supported by the current client. When overrides require a
 fresh context, use `fork_turns="none"` if that is the available mechanism and
@@ -107,8 +100,9 @@ At significant integration checkpoints, review remaining design risks, elapsed
 time and token usage when available before expanding or reopening assignments.
 Track why assignments reopen and how much implementation falls back to the
 coordinator. Repeated handoffs or repairs call for revisiting ownership, contracts
-or agent capacity. Batch follow-ups into coherent outcomes; use lighter agents
-for genuinely bounded work without fragmenting coupled problems to reduce cost.
+or agent capacity. Batch follow-ups into coherent outcomes. Route well-defined
+follow-ups to `gpt-6.1-sol` / `high` and simple ones to `gpt-6-luna` / `xhigh`;
+keep coupled problems on `gpt-6-astra`.
 Use concise findings and evidence paths rather than rereading successful logs.
 These checkpoints do not introduce approval gates or an unrequested resource cap.
 
