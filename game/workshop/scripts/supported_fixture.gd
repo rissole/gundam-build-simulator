@@ -1,5 +1,5 @@
 class_name SupportedFootFixture
-extends Node3D
+extends "res://scripts/equipment.gd"
 ## The receiving foot stays in the assembly model. This equipment only supports
 ## and repositions its existing body; a carriage is never another inventory item.
 
@@ -9,8 +9,9 @@ const ANGULAR_SPEED = PI / 8.0
 const TRANSFER_SPEED = 0.65
 const POSE_ANGLES = {"upright": 0.0, "sole_left": -PI / 2.0, "sole_right": PI / 2.0}
 const OBSTACLE_MASK = 15
+const Sweep = preload("res://scripts/motion_sweep.gd")
+const Codec = preload("res://scripts/pose_codec.gd")
 
-var game: Node3D
 var foot: AnimatableBody3D
 var carriage: AnimatableBody3D
 var rotator: AnimatableBody3D
@@ -31,6 +32,8 @@ var _dispatch_label: Label3D
 
 func setup(workshop: Node3D, receiving_foot: AnimatableBody3D) -> void:
 	game = workshop
+	equipment_id = "foot_fixture"
+	click_operates = false
 	foot = receiving_foot
 	_steel = game.material(Color("526970"), 0.55)
 	_dark = game.material(Color("23353b"), 0.4)
@@ -102,6 +105,50 @@ func status_text() -> String:
 		return "DISPATCH BAY — foot secured on its carrier"
 	return "FOOT FIXTURE — " + _pose_title(work_pose)
 
+func access_error(owner: String) -> String:
+	if not game.model.assemblies.has(owner) or game.model.top_level(owner) != game.default_parent_id():
+		return ""
+	if moving:
+		return "Wait for the foot fixture to stop before working on its connections."
+	if at_dispatch:
+		return "Return the foot to the assembly bay before changing its connections."
+	return ""
+
+## Saved as the foot workshop's `world.support`; keys are part of the pinned format.
+func capture() -> Dictionary:
+	return {"moving": moving, "at_dispatch": at_dispatch, "work_pose": work_pose, "destination_pose": _destination_pose, "destination_dispatch": _destination_dispatch}
+
+func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary = {}) -> Array[String]:
+	var s: Dictionary = data
+	if not s.get("moving") is bool or not s.get("at_dispatch") is bool or not s.get("destination_dispatch") is bool:return ["Invalid foot support motion."]
+	if not s.get("work_pose") is String or not POSE_ANGLES.has(s.work_pose) or not s.get("destination_pose") is String or not POSE_ANGLES.has(s.destination_pose):return ["Invalid foot working position."]
+	var transform = Codec.to_pose(world.fixtures[game.default_parent_id()])
+	var angle = atan2(transform.basis.x.y,transform.basis.x.x)
+	var origin = transform.origin
+	if not transform.basis.is_equal_approx(Basis(Vector3.BACK,angle)) or absf(angle)>PI/2+0.001 or absf(origin.x-2.3)>0.001 or absf(origin.y-1.55)>0.001 or origin.z < -1.801 or origin.z > 4.401:return ["Foot has left its supported path."]
+	if s.at_dispatch or s.destination_dispatch or origin.z > -1.799:
+		# A carrier must never bypass the completion interlock through a save.
+		if not candidate.milestone(game.default_parent_id(),"complete") or absf(angle)>0.001 or s.work_pose != "upright" or s.destination_pose != "upright":return ["Dispatch requires a secured upright foot."]
+	if not s.moving:
+		var expected = Transform3D(Basis(Vector3.BACK,POSE_ANGLES[s.work_pose]),DISPATCH_ORIGIN if s.at_dispatch else WORK_ORIGIN)
+		if not transform.is_equal_approx(expected) or s.destination_pose != s.work_pose or s.destination_dispatch != s.at_dispatch:return ["Stopped foot does not match its indexed pose."]
+	elif s.at_dispatch == s.destination_dispatch:
+		var from_angle: float = POSE_ANGLES[s.work_pose]
+		var to_angle: float = POSE_ANGLES[s.destination_pose]
+		if s.at_dispatch or s.work_pose == s.destination_pose or not origin.is_equal_approx(WORK_ORIGIN) or angle < minf(from_angle,to_angle)-0.001 or angle > maxf(from_angle,to_angle)+0.001:return ["Turning foot is outside its indexed movement."]
+	return []
+
+func apply(data: Dictionary) -> void:
+	moving = data.moving
+	at_dispatch = data.at_dispatch
+	work_pose = data.work_pose
+	_destination_pose = data.destination_pose
+	_destination_dispatch = data.destination_dispatch
+	_destination = Transform3D(Basis(Vector3.BACK, POSE_ANGLES[data.destination_pose]), DISPATCH_ORIGIN if data.destination_dispatch else WORK_ORIGIN)
+	blocked_reason = ""
+	_apply_pose(foot.global_transform)
+	_refresh_labels()
+
 func physics(delta: float) -> void:
 	if not moving or game.paused:
 		return
@@ -152,44 +199,19 @@ func _sweep_error(from: Transform3D, to: Transform3D) -> String:
 	var envelope = BoxShape3D.new()
 	envelope.size = bounds.size.max(Vector3(0.01, 0.01, 0.01))
 	var excluded: Array[RID] = []
-	_collect_excluded(foot, excluded)
-	_collect_excluded(carriage, excluded)
+	Sweep.collect_rids(foot, excluded)
+	Sweep.collect_rids(carriage, excluded)
 	for rail in _rail_bodies:
 		excluded.append(rail.get_rid())
 	var radius = maxf(2.0, bounds.get_center().length() + bounds.size.length() * 0.5)
-	var steps = SolidHandling.sweep_steps(from, to, radius, 0.035)
-	var space = foot.get_world_3d().direct_space_state
-	var query = PhysicsShapeQueryParameters3D.new()
-	query.collision_mask = OBSTACLE_MASK
-	query.exclude = excluded
+	var steps = Sweep.steps(from, to, radius, 0.035)
 	# Covers travel between the sampled poses, including the outer clamp fingers.
-	query.margin = 0.003 + (from.origin.distance_to(to.origin) + from.basis.get_rotation_quaternion().angle_to(to.basis.get_rotation_quaternion()) * radius) / steps * 0.5
-	var carriage_shapes = SolidHandling.shapes(carriage)
-	var rotating_shapes = SolidHandling.shapes(rotator)
-	for index in range(steps + 1):
-		var pose = _guided_pose(from, to, float(index) / steps)
-		query.shape = envelope
-		query.transform = pose * Transform3D(Basis.IDENTITY, bounds.get_center())
-		if not space.intersect_shape(query, 1).is_empty():
-			return "Clear the foot's movement area and stand beside the controls."
-		var carrier_pose = Transform3D(Basis.IDENTITY, Vector3(pose.origin.x, 0, pose.origin.z))
-		for shape in carriage_shapes:
-			query.shape = shape.shape
-			query.transform = carrier_pose * shape.transform
-			if not space.intersect_shape(query, 1).is_empty():
-				return "Clear the carrier's rail route, including loose parts."
-		for shape in rotating_shapes:
-			query.shape = shape.shape
-			query.transform = pose * shape.transform
-			if not space.intersect_shape(query, 1).is_empty():
-				return "Clear the turning clamps and stand beside the controls."
-	return ""
-
-func _collect_excluded(node: Node, excluded: Array[RID]) -> void:
-	if node is CollisionObject3D:
-		excluded.append(node.get_rid())
-	for child in node.get_children():
-		_collect_excluded(child, excluded)
+	var margin = 0.003 + (from.origin.distance_to(to.origin) + from.basis.get_rotation_quaternion().angle_to(to.basis.get_rotation_quaternion()) * radius) / steps * 0.5
+	var groups = [
+		{"shapes": [{"shape": envelope, "transform": Transform3D(Basis.IDENTITY, bounds.get_center())}], "margin": margin, "error": "Clear the foot's movement area and stand beside the controls."},
+		{"shapes": Sweep.body_shapes(carriage), "frame": func(pose: Transform3D) -> Transform3D: return Transform3D(Basis.IDENTITY, Vector3(pose.origin.x, 0, pose.origin.z)), "margin": margin, "error": "Clear the carrier's rail route, including loose parts."},
+		{"shapes": Sweep.body_shapes(rotator), "margin": margin, "error": "Clear the turning clamps and stand beside the controls."}]
+	return Sweep.sweep(foot.get_world_3d().direct_space_state, groups, steps, func(weight: float) -> Transform3D: return _guided_pose(from, to, weight), OBSTACLE_MASK, excluded, "foot_fixture").get("error", "")
 
 func _make_rails() -> void:
 	for x in [1.4, 3.2]:
@@ -312,7 +334,7 @@ func _make_console(origin: Vector3, dispatch: bool) -> void:
 		var node = game.box(panel, Vector3(-0.08, 1.2, z), Vector3(0.06, 0.11, 0.16), _yellow if action == "transfer" or dispatch else game.material(Color("79d8b8"), 0.1))
 		var title = _pose_title(action) if POSE_ANGLES.has(action) else ("Return" if dispatch else "Transfer")
 		game.sign_panel(panel, title, Vector3(-0.115, 1.04, z), Vector2(0.285, 0.10), 32, 0.0015, -PI / 2.0)
-		_buttons.append({"type": "equipment", "point": node.global_position, "radius": 0.12, "action": action, "label": title, "node": node})
+		_buttons.append(control_entry(node, action, title, 0.12, {"point": node.global_position}))
 	# Small brackets bridge the status plate to the console above the buttons.
 	for z in ([-0.20, 0.20] if dispatch else [-0.45, 0.45]):
 		game.box(panel, Vector3(-0.05, 1.40, z), Vector3(0.12, 0.12, 0.04), _steel)

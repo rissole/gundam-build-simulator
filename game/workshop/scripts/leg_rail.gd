@@ -1,11 +1,12 @@
-extends Node3D
+extends "res://scripts/equipment.gd"
 ## One authority for the supported leg: travel, tilt and upward dock into the pelvis.
 signal changed
 const Layout = preload("res://scripts/leg_bay_layout.gd")
 const TITLES = ["Travel to final bay","Tilt upright","Dock upward"]
 const RETENTION_BLOCKS_RETURN = "Remove all hip retainers before returning the supported leg."
 const DURATIONS = [12.0,10.0,3.0]
-var game: Node3D
+const Sweep = preload("res://scripts/motion_sweep.gd")
+const Codec = preload("res://scripts/pose_codec.gd")
 var layout: Node3D
 var load_body: AnimatableBody3D
 var path = 0.0
@@ -19,26 +20,15 @@ var excluded: Array[RID] = []
 var checked_steps = 0
 
 func setup(workshop: Node3D, scene_layout: Node3D) -> void:
-	game = workshop;layout = scene_layout
+	game = workshop;layout = scene_layout;equipment_id = "leg_rail"
 	load_body = game.runtime.node("left_leg")
-	_collect(load_body,load_body.global_transform.affine_inverse())
+	Sweep.collect_shapes(load_body,load_body.global_transform.affine_inverse(),solids)
 	for body in game.runtime.nodes.values():
 		if body is CollisionObject3D:excluded.append(body.get_rid())
 	excluded.append_array(layout.hardware)
 	_pose()
 	game.model.changed.connect(_model_changed)
 	for at in [Vector3(9.2,0,11.4),Vector3(5.1,0,24.2)]:_panel(at)
-
-func _collect(node: Node, inverse: Transform3D) -> void:
-	if node is CollisionShape3D and not node.disabled:
-		var shape: Shape3D = node.shape
-		var pose = inverse*node.global_transform
-		if shape is ConcavePolygonShape3D:
-			var bounds = shape.get_debug_mesh().get_aabb()
-			shape = BoxShape3D.new();shape.size = bounds.size.max(Vector3.ONE*.004)
-			pose *= Transform3D(Basis.IDENTITY,bounds.get_center())
-		solids.append({"shape":shape,"pose":pose})
-	for child in node.get_children():_collect(child,inverse)
 
 func _panel(at: Vector3) -> void:
 	var panel = Node3D.new();panel.name = "RailLocalControls";add_child(panel);panel.position = at
@@ -49,7 +39,7 @@ func _panel(at: Vector3) -> void:
 		var point = Vector3(-.02,1.20,-.52+index*.52)
 		var mat = game.material(Color("d57562") if index == 1 else Color("e8b46b"),.2)
 		var button = game.box(panel,point,Vector3(.12,.16,.20),mat)
-		buttons.append({"type":"equipment","controller":self,"node":button,"action":action,"label":["Advance","Stop","Return"][index],"radius":.14})
+		buttons.append(control_entry(button,action,["Advance","Stop","Return"][index],.14))
 		game.sign_panel(panel,["ADVANCE","STOP","RETURN"][index],point+Vector3(-.06,-.20,0),Vector2(.45,.13),32,.0018,-PI/2)
 	var label = game.sign_panel(panel,"",Vector3(-.04,2.0,0),Vector2(2.4,.8),32,.002,-PI/2)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -90,6 +80,8 @@ func action_error(action: String) -> String:
 	if not action in ["advance","stop","return"]:return "Unknown rail command."
 	if action == "stop":return "" if moving else "The fixture is stopped."
 	if game.profile.trial == "crane":return "The crane example keeps the rail home. Finish the beam connection and stow both cables."
+	var held_by: String = game.equipment.busy_reason("rail",equipment_id)
+	if not held_by.is_empty():return held_by
 	if moving:return "Stop the motion before selecting a different direction."
 	if action == "return" and retention_state() != "none":return RETENTION_BLOCKS_RETURN
 	if action == "advance" and path >= 2.9999:return "One half does not secure the hip. Holder departure is outside M2."
@@ -171,30 +163,26 @@ func motion_error(from: float, to: float) -> String:
 	# physics ticks. Tests additionally sample every actual mesh, including context.
 	var a: Transform3D = rail_pose(from).load
 	var b: Transform3D = rail_pose(to).load
-	var steps = SolidHandling.sweep_steps(a,b,11,.018)
-	var space = get_world_3d().direct_space_state
+	var steps = Sweep.steps(a,b,11,.018)
 	var angular = a.basis.get_rotation_quaternion().angle_to(b.basis.get_rotation_quaternion())
 	var margin = .002+(11*angular+a.origin.distance_to(b.origin)+absf(to-from)*2)/steps*.5
-	for index in range(steps+1):
-		var t = lerpf(from,to,float(index)/steps)
-		var sample = rail_pose(t)
-		var pose: Transform3D = sample.load
-		for solid in solids:
-			var query = PhysicsShapeQueryParameters3D.new()
-			query.shape = solid.shape;query.transform = pose*solid.pose
-			query.margin = margin
-			query.collision_mask = 15;query.exclude = excluded
-			var hits = space.intersect_shape(query,1)
-			if not hits.is_empty():return "Clear the load route ("+str(hits[0].collider.name)+")."
-		# The holder and load remain one supported journey through docking.
-		for piece in layout.motion_geometry(pose,sample.z,sample.x):
-			var query = PhysicsShapeQueryParameters3D.new()
-			query.shape = piece.shape;query.transform = piece.pose
-			query.margin = .001 if piece.id == "RailWheel" else margin;query.collision_mask = 15;query.exclude = excluded
-			var hits = space.intersect_shape(query,1)
-			if not hits.is_empty():return "Clear the fixture route ("+str(hits[0].collider.name)+")."
-		checked_steps += 1
-	return ""
+	# The holder and load remain one supported journey through docking.
+	var holder = func(_pose: Transform3D, weight: float) -> Array:
+		var sample = rail_pose(lerpf(from,to,weight))
+		var result: Array = []
+		for piece in layout.motion_geometry(sample.load,sample.z,sample.x):
+			result.append({"shape":piece.shape,"world":piece.pose,"margin":.001 if piece.id == "RailWheel" else margin})
+		return result
+	var groups = [{"shapes":solids,"margin":margin,"error":"Clear the load route ({collider})."},{"shapes_at":holder,"error":"Clear the fixture route ({collider})."}]
+	var hit: Dictionary = Sweep.sweep(get_world_3d().direct_space_state,groups,steps,func(weight: float) -> Transform3D:return rail_pose(lerpf(from,to,weight)).load,15,excluded,equipment_id)
+	checked_steps += hit.get("index",steps+1)
+	return hit.get("error","")
+
+func busy_reason(subject: String) -> String:
+	return "Wait for the supported rail motion to stop." if moving and subject in ["left_leg","pelvis"] else ""
+
+func access_error(owner: String) -> String:
+	return busy_reason(owner)
 
 func _refresh() -> void:
 	for label in labels:label.text = status_text()
@@ -206,7 +194,7 @@ func _model_changed() -> void:
 func capture() -> Dictionary:
 	return {"version":1,"path":path,"goal":goal,"moving":moving,"blocked_reason":blocked_reason,"support":"m2_leg_rail","parent":game.model.assemblies.left_leg.parent,"assisting":game.model.assemblies.left_leg.parent == "pelvis"}
 
-func validate(data: Dictionary, candidate: AssemblyModel) -> Array[String]:
+func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary = {}) -> Array[String]:
 	if not (data.get("version") is int or data.get("version") is float) or not data.get("support") is String or not data.get("parent") is String:return ["Invalid M2 rail metadata."]
 	if data.version != 1 or data.support != "m2_leg_rail":return ["Unsupported M2 rail state."]
 	if not data.get("moving") is bool or not data.get("blocked_reason") is String or not data.get("assisting") is bool:return ["Invalid rail flags."]
@@ -220,6 +208,7 @@ func validate(data: Dictionary, candidate: AssemblyModel) -> Array[String]:
 		if absf(data.path-3)>0.0001 or data.moving:return ["Mounted leg must remain docked on its rail."]
 	elif leg.location != "support:m2_leg_rail":return ["Leg has no authorized rail support."]
 	if game.profile.trial == "crane" and (data.path != 0 or data.goal != 0 or data.moving):return ["Crane trial rail must stay home."]
+	if world.has("fixtures") and not Codec.to_pose(world.fixtures.left_leg).is_equal_approx(rail_pose(data.path).load):return ["Rail and leg transforms disagree."]
 	return []
 
 func apply(data: Dictionary) -> void:

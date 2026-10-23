@@ -23,7 +23,7 @@ func take_snapshot(label: String) -> void:
 func loop() -> bool:
 	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_retention";game.m2_half_uid = replay_uid;root.add_child(game);game.automated_test = true;game.set_paused(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	trial = game.m2.rail;shelf = game.m2.shelf
+	trial = game.equipment.get_equipment("leg_rail");shelf = game.equipment.get_equipment("lift_shelf")
 	await frames(8)
 	take_snapshot("home")
 	await walk(Vector3(8.3,0,11.4),"rail source controls")
@@ -52,7 +52,7 @@ func loop() -> bool:
 	take_snapshot("half_carried")
 	await walk(Vector3(9.6,0,21.7),"lift approach front")
 	await walk(Vector3(9.6,0,24.3),"lift deck via ramp")
-	var lift = game.access_lifts.hip
+	var lift = game.equipment.get_equipment("hip_lift")
 	await press(shelf.controls()[0],true)
 	expect(shelf.occupants().has(replay_uid) and not game.model.hands_occupied(),"Click stores the same two-hand half on lift shelf")
 	take_snapshot("shelf_ground")

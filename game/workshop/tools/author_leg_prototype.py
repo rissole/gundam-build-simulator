@@ -543,6 +543,8 @@ def m2_documents():
         trial_pelvis["manual"] = [dict(title="Hip work is outside this example", view="overview", slots=[],
             body="This example ends with the Upper-leg beam fastened and the empty crane parked. The horizontal foot, shin, knee, fork and cap are supplied. Hip mounting and retention belong to the separate Hip retainer example.")]
         if example == "retention":
+            for sid in ("ring_1", "ring_2"):
+                trial_pelvis["slots"][sid]["undo_to"] = "hands"
             trial_pelvis["manual"] = [dict(title="Travel, tilt and seat the supported leg", view="overview", slots=[],
                 body="The complete leg starts on its home rail; the pelvis socket and retaining connections are empty. Walk the rail controls through travel, tilt and upward docking. The rail seats the hip ball and remains engaged as assistance. Board the personnel lift and use Up. One retaining half and its two washer/bolt pairs are supplied; this example cannot secure the complete hip.",
                 context_sources=["PV-110__001"])]
@@ -637,6 +639,7 @@ def audit_m2(documents):
             assert not any(record["kind"].startswith("pv-") for record in trial["parts"])
             assert next(record for record in trial["parts"] if record["instance_id"] == "LG-120__001")["location"] == "support:leg_spar_rack"
         assert recipe["pelvis"]["slots"]["ring_1"]["accepts"] == recipe["pelvis"]["slots"]["ring_2"]["accepts"] == "pv-ring-half"
+        assert all(recipe["pelvis"]["slots"][sid].get("undo_to") == ("hands" if example == "retention" else None) for sid in ("ring_1", "ring_2"))
         assert recipe["pelvis"]["slots"]["ring/washer_3"]["accepts"] == recipe["left_leg"]["slots"]["fork/washer_1"]["accepts"] == "lg-w24"
 
 

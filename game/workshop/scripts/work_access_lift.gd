@@ -1,11 +1,12 @@
 class_name WorkAccessLift
-extends Node3D
+extends "res://scripts/equipment.gd"
 ## Powered personnel platform. Heights describe the top of the walking deck.
 const SPEED = 0.75
 const THICKNESS = 0.12
 const MASK = 15
-var game: Node3D
-var equipment_id = ""
+const Sweep = preload("res://scripts/motion_sweep.gd")
+## Short name used on controls and labels; the registry id is "<name>_lift".
+var lift_name = ""
 var deck: AnimatableBody3D
 var gate: CollisionShape3D
 var deck_size = Vector2(2, 5)
@@ -21,7 +22,8 @@ var _hardware: Array[RID] = []
 
 func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels: Array[float]) -> void:
 	game = workshop
-	equipment_id = id
+	equipment_id = id+"_lift"
+	lift_name = id
 	position = origin
 	deck_size = size
 	stops.assign(levels)
@@ -124,7 +126,7 @@ func _solid(parent: CollisionObject3D, at: Vector3, size: Vector3, mat: Material
 
 func _button(parent: Node3D, at: Vector3, action: String, mat: Material) -> void:
 	var node = game.box(parent,at,Vector3(0.12,0.13,0.16),mat)
-	_buttons.append({"type":"equipment","equipment_id":equipment_id,"action":action,"title":equipment_id.capitalize()+" lift / "+action,"label":equipment_id.capitalize()+" lift / "+action,"node":node,"radius":0.16})
+	_buttons.append(control_entry(node,action,lift_name.capitalize()+" lift / "+action,0.16,{"equipment_id":equipment_id,"title":lift_name.capitalize()+" lift / "+action}))
 
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -167,7 +169,7 @@ func request(action: String) -> String:
 
 func status_text() -> String:
 	if not blocked_reason.is_empty():return "LIFT BLOCKED — clear the travel area"
-	return "%s LIFT — %.2f m%s" % [equipment_id.to_upper(),height," / moving" if moving else ""]
+	return "%s LIFT — %.2f m%s" % [lift_name.to_upper(),height," / moving" if moving else ""]
 
 func physics(delta: float) -> void:
 	if not moving or game.paused:return
@@ -178,41 +180,43 @@ func physics(delta: float) -> void:
 	if is_equal_approx(height,destination):moving = false
 	_pose()
 
-func _rider() -> CharacterBody3D:
+func rider() -> CharacterBody3D:
 	var player = game.get("player") as CharacterBody3D
 	if not is_instance_valid(player):return null
 	var local = to_local(player.global_position)
 	if absf(local.x) < deck_size.x/2-0.28 and absf(local.z) < deck_size.y/2-0.28 and absf(local.y-height) < 0.12 and player.velocity.y <= 0.1:return player
 	return null
 
+## Fixed and deck-mounted bodies that travel with, or guide, this lift.
+func hardware() -> Array[RID]:
+	var excluded: Array[RID] = _hardware.duplicate()
+	# Work controls may be mounted after setup by another equipment controller.
+	Sweep.collect_rids(deck,excluded)
+	return excluded
+
+func busy_reason(subject: String) -> String:
+	return "Wait for the lift to stop." if subject == equipment_id and moving else ""
+
 func _sweep_error(from: float, to: float) -> String:
 	# Reserve the entire carriage route; thin obstacles cannot fall between samples.
-	var rider = _rider()
+	var current_rider = rider()
 	var clearance = 1.12
-	if rider != null:
-		for child in rider.get_children():
+	if current_rider != null:
+		for child in current_rider.get_children():
 			if child is CollisionShape3D and not child.disabled:
 				clearance = maxf(clearance,child.position.y+child.shape.get_debug_mesh().get_aabb().end.y+0.06)
 	var low = minf(from,to)-THICKNESS+0.008
 	var high = maxf(from,to)+clearance
 	var box = BoxShape3D.new()
 	box.size = Vector3(deck_size.x-0.006,high-low,deck_size.y-0.006)
-	var query = PhysicsShapeQueryParameters3D.new()
-	query.shape = box
-	query.transform = global_transform * Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0))
-	query.collision_mask = MASK
-	query.margin = 0.002
-	var excluded: Array[RID] = _hardware.duplicate()
-	# Work controls may be mounted after setup by another equipment controller.
-	_collect_bodies(deck,excluded)
+	var excluded: Array[RID] = hardware()
 	var carried: CollisionObject3D = null
-	if rider != null:
-		excluded.append(rider.get_rid())
+	if current_rider != null:
+		excluded.append(current_rider.get_rid())
 		carried = _carried_body()
-		if carried != null:_collect_bodies(carried,excluded)
-	query.exclude = excluded
-	var hits = get_world_3d().direct_space_state.intersect_shape(query,1)
-	if not hits.is_empty():
+		if carried != null:Sweep.collect_rids(carried,excluded)
+	var space = get_world_3d().direct_space_state
+	if not Sweep.overlap(space,box,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0)),MASK,excluded,0.002).is_empty():
 		return "Clear the lift travel area, including overhead and loose parts."
 	if carried != null:
 		# An actual rider's hand load travels with the platform. Reserve its own
@@ -222,14 +226,10 @@ func _sweep_error(from: float, to: float) -> String:
 		var swept = load_bounds.merge(destination_bounds)
 		var load_shape = BoxShape3D.new()
 		load_shape.size = swept.size.max(Vector3.ONE*0.004)
-		query.shape = load_shape
-		query.transform = Transform3D(Basis.IDENTITY,swept.get_center())
-		if not get_world_3d().direct_space_state.intersect_shape(query,1).is_empty():return "Clear the carried component's lift route, including overhead."
-	return ""
-
-func _collect_bodies(node: Node, excluded: Array[RID]) -> void:
-	if node is CollisionObject3D and not excluded.has(node.get_rid()):excluded.append(node.get_rid())
-	for child in node.get_children():_collect_bodies(child,excluded)
+		if not Sweep.overlap(space,load_shape,Transform3D(Basis.IDENTITY,swept.get_center()),MASK,excluded,0.002).is_empty():return "Clear the carried component's lift route, including overhead."
+	# Equipment riding the deck reserves its own cargo route.
+	var registry = game.get("equipment")
+	return registry.travel_error(equipment_id,from,to) if registry != null else ""
 
 func _carried_body() -> CollisionObject3D:
 	var components = game.get("components")
@@ -248,18 +248,20 @@ func _pose() -> void:
 	gate.disabled = not closed
 	_gate_mesh.visible = closed
 	_label.text = status_text()
+	var registry = game.get("equipment")
+	if registry != null:registry.carrier_moved(equipment_id)
 
 func capture() -> Dictionary:
 	return {"height":height,"destination":destination,"moving":moving}
 
-func validate(snapshot: Dictionary) -> Array[String]:
+func validate(snapshot: Variant, _candidate: AssemblyModel = null, _world: Dictionary = {}) -> Array[String]:
 	var errors: Array[String] = []
 	for key in ["height","destination"]:
 		if not snapshot.has(key) or not (snapshot[key] is float or snapshot[key] is int):
-			errors.append("Lift %s requires numeric %s." % [equipment_id,key])
+			errors.append("Lift %s requires numeric %s." % [lift_name,key])
 		elif not is_finite(float(snapshot[key])) or float(snapshot[key]) < stops[0]-0.001 or float(snapshot[key]) > stops[-1]+0.001:
-			errors.append("Lift %s has out-of-range %s." % [equipment_id,key])
-	if not snapshot.get("moving") is bool:errors.append("Lift %s requires a motion flag." % equipment_id)
+			errors.append("Lift %s has out-of-range %s." % [lift_name,key])
+	if not snapshot.get("moving") is bool:errors.append("Lift %s requires a motion flag." % lift_name)
 	if errors.is_empty():
 		var target_is_stop = false
 		for stop in stops:target_is_stop = target_is_stop or is_equal_approx(float(snapshot.destination),stop)

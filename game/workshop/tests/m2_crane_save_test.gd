@@ -60,17 +60,17 @@ func run() -> void:
 	game.components.sync("left_leg");remember("Partly fastened beam still crane-assisted")
 	var partial = snapshots.back().snapshot
 	var forged: Dictionary = partial.duplicate(true)
-	forged.world.m2.crane.route_profile = "invented_route"
+	forged.world.equipment.service_crane.route_profile = "invented_route"
 	reject(forged,"Invented motion profile")
-	forged = partial.duplicate(true);forged.world.m2.crane.progress = 1.25
+	forged = partial.duplicate(true);forged.world.equipment.service_crane.progress = 1.25
 	reject(forged,"Forged off-route load pose")
-	forged = partial.duplicate(true);forged.world.m2.crane.station = "source"
+	forged = partial.duplicate(true);forged.world.equipment.service_crane.station = "source"
 	reject(forged,"Forged beam/cable pose")
-	forged = partial.duplicate(true);forged.world.m2.crane.endpoints.magnet_b.point = "beam_near"
+	forged = partial.duplicate(true);forged.world.equipment.service_crane.endpoints.magnet_b.point = "beam_near"
 	reject(forged,"Duplicate magnetic-point occupation")
-	forged = partial.duplicate(true);forged.world.m2.crane.endpoints.magnet_a = {"state":"stowed","point":""};forged.world.m2.crane.raised = true
+	forged = partial.duplicate(true);forged.world.equipment.service_crane.endpoints.magnet_a = {"state":"stowed","point":""};forged.world.equipment.service_crane.raised = true
 	reject(forged,"Unsecured flange missing one required magnetic contact")
-	forged = partial.duplicate(true);forged.world.m2.crane.source_reservation = ""
+	forged = partial.duplicate(true);forged.world.equipment.service_crane.source_reservation = ""
 	reject(forged,"Contradictory source reservation")
 	var original_game = game
 	for record in snapshots:
@@ -81,7 +81,7 @@ func run() -> void:
 		if not applied:print("M2_FRESH_RESTORE ",record.label," ",errors)
 		expect(applied and fresh.paused,"Fresh scene restores paused: "+record.label)
 		if applied:
-			expect(JSON.parse_string(JSON.stringify(fresh.m2_crane.capture()))==record.snapshot.world.m2.crane,"Fresh scene preserves canonical load, beam, endpoints and reservations: "+record.label)
+			expect(JSON.parse_string(JSON.stringify(fresh.equipment.get_equipment("service_crane").capture()))==record.snapshot.world.equipment.service_crane,"Fresh scene preserves canonical load, beam, endpoints and reservations: "+record.label)
 			expect(JSON.parse_string(JSON.stringify(fresh.model.items[crane.uid]))==record.snapshot.model.items[crane.uid],"Fresh scene preserves exact beam UID ownership: "+record.label)
 		fresh.free();await process_frame
 	game = original_game

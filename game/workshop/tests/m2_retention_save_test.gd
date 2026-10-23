@@ -24,19 +24,19 @@ func run() -> void:
 				expect(body.global_transform.is_equal_approx(physics_pose),"Restored descendant physics matches "+member+" at "+label+" tick "+str(tick))
 		var original: Dictionary = codec.capture()
 		var mutations: Array[Dictionary] = []
-		var bad = original.duplicate(true);bad.world.m2.rail.erase("parent");mutations.append(bad)
-		bad = original.duplicate(true);bad.world.m2.rail.path = 4;mutations.append(bad)
-		bad = original.duplicate(true);bad.world.m2.shelf.occupants = ["PV-120__001","PV-120__001"];mutations.append(bad)
-		bad = original.duplicate(true);bad.world.m2.shelf.occupants = ["invented",""];mutations.append(bad)
-		bad = original.duplicate(true);bad.world.m2.shelf.version = 0;mutations.append(bad)
-		bad = original.duplicate(true);bad.world.access_lifts.hip.destination = 3;mutations.append(bad)
+		var bad = original.duplicate(true);bad.world.equipment.leg_rail.erase("parent");mutations.append(bad)
+		bad = original.duplicate(true);bad.world.equipment.leg_rail.path = 4;mutations.append(bad)
+		bad = original.duplicate(true);bad.world.equipment.lift_shelf.occupants = ["PV-120__001","PV-120__001"];mutations.append(bad)
+		bad = original.duplicate(true);bad.world.equipment.lift_shelf.occupants = ["invented",""];mutations.append(bad)
+		bad = original.duplicate(true);bad.world.equipment.lift_shelf.version = 0;mutations.append(bad)
+		bad = original.duplicate(true);bad.world.equipment.hip_lift.destination = 3;mutations.append(bad)
 		bad = original.duplicate(true);bad.world.fixtures.left_leg[10] += .4;mutations.append(bad)
 		for index in range(mutations.size()):
 			var before = JSON.stringify(codec.capture())
 			expect(not codec.validate(mutations[index]).is_empty() and not codec.apply_snapshot(mutations[index]),"Reject malformed snapshot "+label+" / "+str(index))
 			expect(JSON.stringify(codec.capture()) == before,"Malformed snapshot causes zero live mutation "+label+" / "+str(index))
 		if label == "lift_moving":
-			var lift = game.access_lifts.hip
+			var lift = game.equipment.get_equipment("hip_lift")
 			var height: float = lift.height
 			await frames(5)
 			expect(lift.moving and is_equal_approx(lift.height,height),"Paused restore holds moving lift progress")

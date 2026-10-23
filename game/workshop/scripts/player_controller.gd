@@ -1,5 +1,6 @@
 extends RefCounted
 ## First-person body: creation, walking, crouch, jump and mouse look.
+const Sweep = preload("res://scripts/motion_sweep.gd")
 var game: Node
 
 func _init(workshop: Node) -> void:
@@ -68,17 +69,12 @@ func update_crouch(wants_crouch: bool, delta: float) -> void:
 		# Leave a small floor clearance in this occupancy query. The movement
 		# capsule remains full height; floor contact must not prevent standing.
 		shape.height = 1.68
-		var query = PhysicsShapeQueryParameters3D.new()
-		query.shape = shape
-		query.transform = Transform3D(game.player.global_basis,game.player.global_position+Vector3.UP*0.87)
-		query.collision_mask = game.WORLD_MASK
 		var excluded: Array[RID] = [game.player.get_rid()]
 		for body in game.bodies.values():
 			if body.held:excluded.append(body.get_rid())
 		if is_instance_valid(game.components.held_body):excluded.append(game.components.held_body.get_rid())
-		query.exclude = excluded
-		query.margin = 0.001
-		wants_crouch = not game.get_world_3d().direct_space_state.intersect_shape(query,1).is_empty()
+		var at = Transform3D(game.player.global_basis,game.player.global_position+Vector3.UP*0.87)
+		wants_crouch = not Sweep.overlap(game.get_world_3d().direct_space_state,shape,at,game.WORLD_MASK,excluded,0.001).is_empty()
 	game.crouched = wants_crouch
 	game.player_collision.shape.height = 1.0 if game.crouched else 1.7
 	game.player_collision.position.y = 0.51 if game.crouched else 0.86

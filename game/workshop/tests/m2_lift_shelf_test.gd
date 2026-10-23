@@ -5,7 +5,7 @@ var shelf: Node3D
 var lift: Node3D
 func carry(uid: String) -> void:
 	expect(game.model.carry_item(uid).is_empty(),"Pick up actual component "+uid)
-	shelf._hold(uid,shelf.global_transform*Transform3D(Basis.IDENTITY,Vector3(0,.5,.15)))
+	game.components.hold_at(uid,shelf.global_transform*Transform3D(Basis.IDENTITY,Vector3(0,.5,.15)))
 	await frames(1)
 	# This fixture isolates placement sweeps from view-dependent carrying.
 	game.components.held_body.global_transform = shelf._pose(uid,maxi(0,shelf.occupants().find("")))
@@ -20,7 +20,7 @@ func run() -> void:
 	lift = preload("res://scripts/work_access_lift.gd").new();game.add_child(lift)
 	var levels: Array[float]=[.15,3]
 	lift.setup(game,"shelf_fixture",Vector3(8,0,4),Vector2(2.6,2.6),levels)
-	shelf = preload("res://scripts/m2_lift_shelf.gd").new();game.add_child(shelf);shelf.setup(game,lift)
+	shelf = preload("res://scripts/lift_shelf.gd").new();game.add_child(shelf);shelf.setup(game,lift)
 	var smalls: Array[String]=[]
 	var large = ""
 	for uid in game.model.items:
@@ -60,9 +60,9 @@ func run() -> void:
 	var shape=CollisionShape3D.new();var box=BoxShape3D.new();box.size=Vector3(.3,.2,.3);shape.shape=box;obstruction.add_child(shape)
 	obstruction.global_position=stored.global_transform*bound.get_center()+Vector3(0,1,0)
 	await frames(2)
-	expect(not shelf.lift_sweep(lift.height,3).is_empty(),"Stored component's physical sweep detects overhead obstruction")
+	expect(not shelf.travel_error(lift.equipment_id,lift.height,3).is_empty(),"Stored component's physical sweep detects overhead obstruction")
 	obstruction.free();await frames(2)
-	expect(shelf.lift_sweep(lift.height,3).is_empty(),"Cleared stored-cargo route permits lift travel")
+	expect(shelf.travel_error(lift.equipment_id,lift.height,3).is_empty(),"Cleared stored-cargo route permits lift travel")
 	lift.height=3;lift.destination=3;lift._pose();shelf.sync()
 	var physics_pose: Transform3D=PhysicsServer3D.body_get_state(stored.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
 	expect(stored.global_transform.is_equal_approx(physics_pose),"Shelf cargo physics follows deck immediately")

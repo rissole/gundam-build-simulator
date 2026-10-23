@@ -5,6 +5,11 @@ const Part = preload("res://scripts/loose_part.gd")
 const HUD = preload("res://scripts/hud.gd")
 const Profiles = preload("res://scripts/scenario_profile.gd")
 const Automation = preload("res://scripts/workshop_automation.gd")
+const Registry = preload("res://scripts/equipment_registry.gd")
+const Hands = preload("res://scripts/hand_slot.gd")
+const Trial = preload("res://scripts/leg_bay_trial.gd")
+## Interaction and physics order; earlier equipment answers aggregate queries first.
+const EQUIPMENT_ORDER = ["leg_rail","lift_shelf","service_crane","foot_fixture","hip_lift"]
 const FOOT_CENTER = Vector3(0,0.8,-0.7)
 const PREP_POSITION = Vector3(-2.3,1.35,-1.2)
 const FOOT_POSITION = Vector3(2.3,2.0,-1.8)
@@ -32,11 +37,12 @@ var runtime: AssemblyRuntime
 var components: Node
 var storage: Node
 var m2_half_uid = "PV-120__001"
-var m2: Node3D
-var m2_crane: Node3D
+var equipment: RefCounted
+var hands: RefCounted
+var trial: RefCounted
 var leg_content: Dictionary = {}
 var leg_layout: Node3D
-var access_lifts: Dictionary = {}
+## The supported foot fixture, when the profile has one; also in `equipment`.
 var foot_fixture: Node3D
 var builds: Dictionary = {}
 var bodies: Dictionary = {}
@@ -100,11 +106,13 @@ func _init() -> void:
 	player_controller = preload("res://scripts/player_controller.gd").new(self)
 	world = preload("res://scripts/workshop_world.gd").new(self)
 	automation = Automation.new(self)
+	equipment = Registry.new()
+	hands = Hands.new(self)
 
 func _ready() -> void:
 	profile = Profiles.resolve(Array(OS.get_cmdline_user_args()),get_tree(),profile_override)
 	if profile.has("selector"):
-		add_child(preload("res://scripts/m2_selector.gd").new())
+		add_child(preload("res://scripts/trial_selector.gd").new())
 		return
 	var single = profile.pads == "single"
 	config = HeelAssemblyState.scenario(single)
@@ -134,22 +142,20 @@ func _ready() -> void:
 	world.register_parent_fixtures()
 	if not profile.leg_content.is_empty():world.make_leg_context()
 	player_controller.make()
-	if has_equipment("foot_fixture"):
-		foot_fixture = preload("res://scripts/supported_fixture.gd").new()
-		add_child(foot_fixture)
-		foot_fixture.setup(self,foot)
+	_build_equipment(["foot_fixture"].filter(has_equipment))
 	for build in config.builds:
 		_activate(build.id)
 		_make_pad()
 	_activate(config.builds[0].id)
 	components.setup()
-	if has_equipment("leg_rail"):
-		m2 = preload("res://scripts/m2_workshop.gd").new();add_child(m2);m2.setup(self)
-		player_controller.spawn(profile.spawn)
+	if not profile.trial.is_empty():trial = Trial.new(self)
+	if profile.staging == "leg_bay":preload("res://scripts/scenario_staging.gd").prepare(self)
+	_build_equipment(profile.equipment.filter(func(id):return id != "foot_fixture"))
+	player_controller.spawn(profile.spawn)
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
 	storage.setup()
-	if is_instance_valid(m2):m2.position_stock()
+	if trial != null:trial.position_stock()
 	ghost_material = primitives.new_material(SNAP_READY_COLOR,0.0)
 	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
 	ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -190,15 +196,15 @@ func _load_leg_content(data: Dictionary) -> void:
 	var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-definitions.json"))
 	data.parts.merge(overlay.parts,true)
 	data.assemblies.merge(overlay.assemblies,true)
-	var trial: String = profile.trial
-	if not trial.is_empty():
-		var trial_definitions: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+trial+"-definitions.json"))
-		var trial_content: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+trial+"-content.json"))
+	var trial_id: String = profile.trial
+	if not trial_id.is_empty():
+		var trial_definitions: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+trial_id+"-definitions.json"))
+		var trial_content: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+trial_id+"-content.json"))
 		data.parts.merge(trial_definitions.parts,true);data.assemblies.merge(trial_definitions.assemblies,true)
 		for support_id in trial_content.m2.remove_supports:leg_content.supports.erase(support_id)
 		leg_content.supports.merge(trial_content.supports,true)
 		for field in ["parts","parents","equipment","m2"]:leg_content[field] = trial_content[field]
-		if trial == "retention" and m2_half_uid != "PV-120__001":
+		if trial_id == "retention" and m2_half_uid != "PV-120__001":
 			assert(m2_half_uid == "PV-120__002")
 			for record in leg_content.parts:
 				if record.instance_id == "PV-120__001":record.instance_id = m2_half_uid;record.source_id = m2_half_uid
@@ -213,13 +219,28 @@ func _load_leg_content(data: Dictionary) -> void:
 func has_equipment(id: String) -> bool:
 	return id in profile.get("equipment",[])
 
-func foot_equipment_available() -> bool:
-	return is_instance_valid(foot_fixture)
-
-func equipment_controller(entry: Dictionary) -> Node:
-	if entry.has("controller"):return entry.controller
-	if entry.has("equipment_id"):return access_lifts.get(entry.equipment_id)
-	return foot_fixture
+## One factory: creates `ids` in dependency order, then registers them in EQUIPMENT_ORDER.
+func _build_equipment(ids: Array) -> void:
+	var made: Dictionary = {}
+	for id in ids:
+		var item: Node3D
+		match id:
+			"foot_fixture":
+				item = preload("res://scripts/supported_fixture.gd").new();add_child(item);item.setup(self,foot);foot_fixture = item
+			"leg_rail":
+				item = preload("res://scripts/leg_rail.gd").new();add_child(item);item.setup(self,leg_layout)
+			"hip_lift":
+				item = preload("res://scripts/work_access_lift.gd").new();add_child(item)
+				var levels: Array[float] = [.15,8.4]
+				item.setup(self,"hip",preload("res://scripts/leg_bay_layout.gd").LIFT_ORIGIN,Vector2(2.6,2.6),levels)
+				item.rotation.y = PI
+			"lift_shelf":
+				item = preload("res://scripts/lift_shelf.gd").new();add_child(item);item.setup(self,made.hip_lift)
+			"service_crane":
+				item = preload("res://scripts/service_crane.gd").new();add_child(item);item.setup(self,leg_layout,leg_layout.crane_contract())
+		if item != null:made[id] = item
+	for id in EQUIPMENT_ORDER:
+		if made.has(id):equipment.register(made[id])
 
 func _mesh(uid: String) -> MeshInstance3D:
 	var mesh = MeshInstance3D.new()
@@ -290,9 +311,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not started: return
-	if is_instance_valid(m2):m2.physics(delta)
-	if foot_equipment_available():foot_fixture.physics(delta)
-	for lift in access_lifts.values():lift.physics(delta)
+	equipment.physics(delta)
 	player_controller.physics(delta)
 	components.physics(delta)
 	var previous_build = active_build
@@ -377,14 +396,7 @@ func interactable_assembly(owner: String) -> bool:
 	return location == "fixture" or location.begins_with("station:") or location.begins_with("support:")
 
 func equipment_access_error(owner: String) -> String:
-	if is_instance_valid(m2):
-		var error: String = m2.equipment_access_error(owner)
-		if not error.is_empty():return error
-	if not foot_equipment_available() or not model.assemblies.has(owner):return ""
-	if model.top_level(owner) != default_parent_id():return ""
-	if foot_fixture.moving:return "Wait for the foot fixture to stop before working on its connections."
-	if foot_fixture.at_dispatch:return "Return the foot to the assembly bay before changing its connections."
-	return ""
+	return equipment.access_error(owner)
 
 func mount_transform(slot: String = "", owner: String = "", child: String = "") -> Transform3D:
 	if owner.is_empty():owner = target.get("owner",model.assemblies[active_build].parent)
@@ -465,7 +477,7 @@ func interact(all_stock: bool = false) -> void:
 		if target.get("input","") == "place":hud.toast("Aim and click to seat this supported component.");return
 		var access_error = _access(_target_receivers())
 		if not access_error.is_empty():hud.toast(access_error);return
-		var controller = equipment_controller(target)
+		var controller: Node = target.controller
 		var equipment_error: String = controller.request(target.action)
 		hud.toast(equipment_error if not equipment_error.is_empty() else controller.status_text(),equipment_error.is_empty())
 		return
@@ -485,7 +497,7 @@ func interact(all_stock: bool = false) -> void:
 	if target.type == "loose": allowed = [loose[target.uid]]
 	var error = _access(allowed)
 	if not error.is_empty(): hud.toast(error);return
-	if is_instance_valid(m2) and not m2.hand_error().is_empty():hud.toast(m2.hand_error());return
+	if hands.payload_holder() != null:hud.toast(hands.error());return
 	match target.type:
 		"bin":components.collect(target.kind,all_stock)
 		"pad", "slot":
@@ -508,11 +520,11 @@ func interact(all_stock: bool = false) -> void:
 	hud.refresh()
 
 func attach() -> void:
-	if is_instance_valid(m2) and target.get("type","") == "equipment":
+	if target.get("type","") == "equipment" and target.controller.click_operates:
 		if target.get("input","") == "pickup":hud.toast("Use E to pick up this equipment payload.");return
 		var error = _access(_target_receivers())
-		if error.is_empty():error = equipment_controller(target).request(target.action)
-		hud.toast(error if not error.is_empty() else equipment_controller(target).status_text(),error.is_empty())
+		if error.is_empty():error = target.controller.request(target.action)
+		hud.toast(error if not error.is_empty() else target.controller.status_text(),error.is_empty())
 		return
 	if target.get("type","") == "component":components.attach();return
 	var allowed: Array = [pad]
@@ -583,7 +595,10 @@ func _sync_installed_visuals() -> void:
 	refresh_assembly_collision(active_build)
 
 func drop_selected() -> void:
-	if is_instance_valid(m2) and m2.drop():return
+	var dropped: Dictionary = equipment.drop()
+	if dropped.handled:
+		hud.toast(dropped.error if not dropped.error.is_empty() else dropped.status,dropped.error.is_empty())
+		return
 	if not model.held_item().is_empty():components.drop();return
 	var held = held_build()
 	if held.is_empty():hud.toast("Your hands are empty.");return
@@ -626,13 +641,15 @@ func deposit() -> void:
 
 func undo_build() -> void:
 	var owner: String = hud.manual_id
-	if is_instance_valid(m2):
-		var result: Dictionary = m2.undo(owner)
-		if result.get("handled",false):
-			hud.toast(result.get("error","") if not result.get("error","").is_empty() else "Undid the last installation with equipment support.",result.get("error","").is_empty())
-			return
+	var assisted: Dictionary = equipment.undo(owner)
+	if assisted.handled:
+		hud.toast(assisted.error if not assisted.error.is_empty() else "Undid the last installation with equipment support.",assisted.error.is_empty())
+		return
+	var trial_error: String = trial.undo_error(owner) if trial != null else ""
+	if not trial_error.is_empty():hud.toast(trial_error);return
 	var equipment_error = equipment_access_error(owner)
 	if not equipment_error.is_empty():hud.toast(equipment_error);return
+	if _undo_to_hands(owner):return
 	var destination = ""
 	for station in stations:
 		var occupied = false
@@ -658,6 +675,25 @@ func undo_build() -> void:
 	_activate(previous_build)
 	for parent in AssemblyModel.scenario_parents(config):components.sync(parent.id)
 	hud.toast("Undid the last action in "+hud.manual_title()+".",true)
+
+## Slots authored with "undo_to":"hands" return the same identity to free hands,
+## after the ordinary reach and sightline checks for that connection.
+func _undo_to_hands(owner: String) -> bool:
+	if not model.assemblies.has(owner) or model.assemblies[owner].history.is_empty():return false
+	var sid: String = model.assemblies[owner].history.back().slot
+	if model.slot_definition(owner,sid).get("undo_to","") != "hands":return false
+	var error: String = hands.error()
+	if error.is_empty():error = components.removal_access(owner,sid)
+	if not error.is_empty():hud.toast(error);return true
+	var uid: String = model.assemblies[owner].slots[sid]
+	var pose: Transform3D = components.slot_pose(owner,sid)
+	var result: Dictionary = model.undo_to_hands(owner)
+	if not result.ok:hud.toast(result.error);return true
+	components.sync(owner)
+	components.hold_at(uid,pose)
+	hud.refresh()
+	hud.toast("Returned "+components.title(model.items[uid].kind)+" to your hands.",true)
+	return true
 
 func _state_changed() -> void:
 	if hud:hud.refresh()

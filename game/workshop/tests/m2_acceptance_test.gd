@@ -44,25 +44,25 @@ func reject_semantic(snapshot: Dictionary, label: String) -> void:
 	expect(not errors.is_empty() and not game.saves.apply_snapshot(snapshot) and before == JSON.stringify(game.saves.capture()),label+" rejects transactionally")
 
 func semantic_attacks(snapshot: Dictionary) -> void:
-	var forged = cloned(snapshot);forged.world.m2.rail.parent = "pelvis"
+	var forged = cloned(snapshot);forged.world.equipment.leg_rail.parent = "pelvis"
 	reject_semantic(forged,"Forged rail parent")
-	forged = cloned(snapshot);forged.world.m2.rail.support = "leg_hoist"
+	forged = cloned(snapshot);forged.world.equipment.leg_rail.support = "leg_hoist"
 	reject_semantic(forged,"Legacy support alias")
-	forged = cloned(snapshot);forged.world.m2.rail.goal = 3;forged.world.m2.rail.moving = true
+	forged = cloned(snapshot);forged.world.equipment.leg_rail.goal = 3;forged.world.equipment.leg_rail.moving = true
 	reject_semantic(forged,"Invented multi-stage rail motion")
 	forged = cloned(snapshot);forged.world.fixtures.foot[9] += .20
 	reject_semantic(forged,"Mounted foot world-pose contradiction")
 	forged = cloned(snapshot);forged.world.fixtures.pelvis[10] += .20
 	reject_semantic(forged,"Moved gantry parent")
 	if game.profile.trial == "retention":
-		forged = cloned(snapshot);forged.world.m2.shelf.occupants = ["PV-120__001","PV-120__001"]
+		forged = cloned(snapshot);forged.world.equipment.lift_shelf.occupants = ["PV-120__001","PV-120__001"]
 		reject_semantic(forged,"Duplicate shelf occupant")
-		forged = cloned(snapshot);forged.world.m2.shelf.occupants = ["PV-120__invented",""]
+		forged = cloned(snapshot);forged.world.equipment.lift_shelf.occupants = ["PV-120__invented",""]
 		reject_semantic(forged,"Invented shelf identity")
 	else:
-		forged = cloned(snapshot);forged.world.m2.crane.route_profile = "invented_path"
+		forged = cloned(snapshot);forged.world.equipment.service_crane.route_profile = "invented_path"
 		reject_semantic(forged,"Invented crane motion profile")
-		forged = cloned(snapshot);forged.world.m2.crane.endpoints.magnet_a = {"state":"attached","point":"invented_point"}
+		forged = cloned(snapshot);forged.world.equipment.service_crane.endpoints.magnet_a = {"state":"attached","point":"invented_point"}
 		reject_semantic(forged,"Invented magnetic attachment point")
 
 func immediate_physics(label: String) -> void:
@@ -82,8 +82,8 @@ func file_persistence() -> void:
 		await frames(3);game.set_paused(false)
 		var path = prefix+"-"+trial_name+".json"
 		game.saves.setup(game,path,false)
-		if trial_name == "retention":game.m2.rail.request("advance");game.m2.rail.physics(.3)
-		else:game.m2_crane.request("go:source");game.m2_crane.physics(.3)
+		if trial_name == "retention":game.equipment.get_equipment("leg_rail").request("advance");game.equipment.get_equipment("leg_rail").physics(.3)
+		else:game.equipment.get_equipment("service_crane").request("go:source");game.equipment.get_equipment("service_crane").physics(.3)
 		var snapshot = cloned(game.saves.capture())
 		var saved: bool = game.saves.save_now()
 		if not saved:
@@ -100,9 +100,9 @@ func file_persistence() -> void:
 		# JSON converts integral metadata to floats; compare the same persisted
 		# representation on both sides rather than native int/float Variant tags.
 		var resumed: Dictionary = cloned(game.saves.capture())
-		var equipment_match: bool = resumed.world.m2==snapshot.world.m2
+		var equipment_match: bool = resumed.world.equipment==snapshot.world.equipment
 		var model_match: bool = resumed.model==snapshot.model
-		if not equipment_match:print("INDEPENDENT_DISK_EQUIPMENT_MISMATCH ",trial_name," before=",snapshot.world.m2," after=",game.m2.capture())
+		if not equipment_match:print("INDEPENDENT_DISK_EQUIPMENT_MISMATCH ",trial_name," before=",snapshot.world.equipment," after=",game.equipment.capture())
 		if not model_match:print("INDEPENDENT_DISK_MODEL_MISMATCH ",trial_name)
 		expect(equipment_match and model_match,trial_name+" disk resume preserves exact equipment progress and physical ownership")
 		game.free();await process_frame
@@ -111,17 +111,17 @@ func file_persistence() -> void:
 	set_meta("m2_reset",true)
 	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_retention";game.automated_test = true;root.add_child(game)
 	game.saves.setup(game,records.retention.path,false)
-	expect(game.m2.rail.path == 0 and not game.m2.rail.moving and game.saves.has_save and not game.saves.restored,"Selector reset metadata writes a fresh retention trial to only its own slot")
+	expect(game.equipment.get_equipment("leg_rail").path == 0 and not game.equipment.get_equipment("leg_rail").moving and game.saves.has_save and not game.saves.restored,"Selector reset metadata writes a fresh retention trial to only its own slot")
 	expect(FileAccess.get_sha256(records.crane.path)==crane_hash,"Resetting retention leaves crane file bytes unchanged")
 	game.free();await process_frame
 	var crane_saved: Dictionary = Store.read(records.crane.path,records.crane.fingerprint)
-	expect(crane_saved.ok and crane_saved.payload.world.m2.crane.motion == "go:source" and crane_saved.payload.world.m2.crane.progress>0,"Crane progress remains resumable after retention reset")
+	expect(crane_saved.ok and crane_saved.payload.world.equipment.service_crane.motion == "go:source" and crane_saved.payload.world.equipment.service_crane.progress>0,"Crane progress remains resumable after retention reset")
 	for record in records.values():
 		for suffix in ["",".bak"]:
 			if FileAccess.file_exists(record.path+suffix):DirAccess.remove_absolute(record.path+suffix)
 
 func sample_descendants() -> void:
-	var rail = game.m2.rail
+	var rail = game.equipment.get_equipment("leg_rail")
 	var body: Node3D = game.runtime.node("left_leg")
 	var meshes: Array[MeshInstance3D] = [];collect_meshes(body,meshes)
 	var locals: Array[Transform3D] = []
@@ -228,7 +228,7 @@ func jaw_touches_load(rail: Node3D, contact: Dictionary) -> bool:
 	return nearest<INF and hit_world.distance_to(center-side_axis*.06)<.002
 
 func rail_geometry() -> void:
-	var rail = game.m2.rail
+	var rail = game.equipment.get_equipment("leg_rail")
 	var layout = game.leg_layout
 	var spar: Dictionary = game.leg_content.sources["LG-120__001"]
 	var socket: Dictionary = game.leg_content.sources["PV-110__001"]
@@ -264,7 +264,7 @@ func rail_geometry() -> void:
 	expect(failures.is_empty(),"Rail-to-jaw support chain and every jaw/load contact hold along the route "+str(failures))
 
 func rail_motion() -> void:
-	var rail = game.m2.rail
+	var rail = game.equipment.get_equipment("leg_rail")
 	var blocker = StaticBody3D.new();blocker.name = "ThinRouteObstruction";game.add_child(blocker)
 	var collision = CollisionShape3D.new();var box = BoxShape3D.new()
 	box.size = Vector3(.20,.8,.012);collision.shape = box;blocker.add_child(collision)
@@ -297,7 +297,7 @@ func rail_motion() -> void:
 	expect(is_zero_approx(rail.path) and not rail.moving and rail.load_body.global_transform.is_equal_approx(rail.rail_pose(0).load),"Stopped partial trip returns the same supported leg home")
 
 func geometry_contacts() -> void:
-	var crane = game.m2_crane
+	var crane = game.equipment.get_equipment("service_crane")
 	var mesh: MeshInstance3D = crane.load_body.get_child(0)
 	var vertices: PackedVector3Array = mesh.mesh.get_faces()
 	# Stem faces span the saddle rather than necessarily carrying a vertex over it.
@@ -341,8 +341,8 @@ func run() -> void:
 		expect(not game.saves.enabled,"Headless "+trial+" does not enable automatic save writes")
 		var snapshot = cloned(game.saves.capture())
 		expect(game.saves.validate(snapshot).is_empty(),"Initial "+trial+" snapshot validates")
-		fuzz(snapshot,["world","m2"])
-		fuzz(snapshot,["world","access_lifts"])
+		fuzz(snapshot,["world","equipment"])
+		fuzz(snapshot,["world","trial"])
 		semantic_attacks(snapshot)
 		if trial == "retention":
 			rail_geometry()
@@ -354,7 +354,7 @@ func run() -> void:
 	expect(defects.is_empty(),str(attacks)+" missing/mistyped nested field attacks reject without mutation")
 	var passed = checks.all(func(c):return c.passed)
 	var hashes = {}
-	for file in ["m2_session.gd","m2_workshop.gd","leg_rail.gd","leg_bay_layout.gd","m2_lift_shelf.gd","service_crane.gd","assembly_runtime.gd","workshop.gd"]:hashes[file] = FileAccess.get_sha256("res://scripts/"+file)
+	for file in ["m2_session.gd","leg_bay_trial.gd","leg_rail.gd","leg_bay_layout.gd","lift_shelf.gd","service_crane.gd","assembly_runtime.gd","workshop.gd"]:hashes[file] = FileAccess.get_sha256("res://scripts/"+file)
 	var output = {"passed":passed,"checks":checks,"attacks":attacks,"rejected":rejected,"defects":defects,"rendered":false,"script_hashes":hashes}
 	DirAccess.make_dir_recursive_absolute("res://verification")
 	FileAccess.open("res://verification/m2-independent-acceptance.json",FileAccess.WRITE).store_string(JSON.stringify(output,"  "))

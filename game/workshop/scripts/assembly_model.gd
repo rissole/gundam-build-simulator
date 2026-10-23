@@ -464,6 +464,20 @@ func _set_part(uid: String, assembly: String, slot: String) -> void:
 func undo(assembly: String, child_destination: String = "loose") -> Dictionary:
 	return _undo(assembly,child_destination,"")
 
+## Reverses the last step of a slot authored with "undo_to":"hands", returning
+## that same identity straight into the player's free hands.
+func undo_to_hands(assembly: String) -> Dictionary:
+	if not assemblies.has(assembly) or assemblies[assembly].history.is_empty():return {"ok":false,"error":"No build actions to undo in this manual."}
+	var step: Dictionary = assemblies[assembly].history.back()
+	if step.action != "install" or slot_definition(assembly,step.slot).get("undo_to","") != "hands":return {"ok":false,"error":"This connection does not return its component to your hands."}
+	if definitions.parts[items[step.uid].kind].carry_class not in ["hand","two_hand"]:return {"ok":false,"error":"Only hand-carried components return to your hands."}
+	if hands_occupied():return {"ok":false,"error":"Set down the component in your hands first."}
+	var result: Dictionary = _undo(assembly,"loose","")
+	if not result.ok:return result
+	items[step.uid].location = "held"
+	changed.emit()
+	return result
+
 func undo_supported(assembly: String, support_id: String) -> Dictionary:
 	if support_id.is_empty():return {"ok":false,"error":"Choose a handling support."}
 	return _undo(assembly,"support:"+support_id,support_id)

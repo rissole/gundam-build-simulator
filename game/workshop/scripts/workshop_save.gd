@@ -2,6 +2,7 @@ extends Node
 ## One local slot. Validate a detached snapshot before touching the live workshop.
 const ModelSave = preload("res://scripts/save_model.gd")
 const Store = preload("res://scripts/save_store.gd")
+const Codec = preload("res://scripts/pose_codec.gd")
 const SAVE_PATH = "user://workshop-save.json"
 const AUTOSAVE_SECONDS = 30.0
 const WORLD_VERSION = 1
@@ -150,17 +151,15 @@ func _pause_menu() -> void:
 		game.hud.browser.close_browser()
 	game.set_paused(true)
 
-static func vector(value: Vector3) -> Array:
-	return [value.x,value.y,value.z]
-
-static func pose(value: Transform3D) -> Array:
-	return vector(value.basis.x)+vector(value.basis.y)+vector(value.basis.z)+vector(value.origin)
-
-static func to_vector(value: Array) -> Vector3:
-	return Vector3(value[0],value[1],value[2])
-
-static func to_pose(value: Array) -> Transform3D:
-	return Transform3D(Basis(Vector3(value[0],value[1],value[2]),Vector3(value[3],value[4],value[5]),Vector3(value[6],value[7],value[8])),Vector3(value[9],value[10],value[11]))
+# Thin delegates: snapshot callers and tests address poses through this codec.
+static func vector(value: Vector3) -> Array:return Codec.vector(value)
+static func pose(value: Transform3D) -> Array:return Codec.pose(value)
+static func to_vector(value: Array) -> Vector3:return Codec.to_vector(value)
+static func to_pose(value: Array) -> Transform3D:return Codec.to_pose(value)
+static func number(value: Variant, limit: float = 256.0) -> bool:return Codec.number(value,limit)
+static func valid_vector(value: Variant, count: int = 3) -> bool:return Codec.valid_vector(value,count)
+static func valid_pose(value: Variant) -> bool:return Codec.valid_pose(value)
+static func same_keys(value: Variant, expected: Array) -> bool:return Codec.same_keys(value,expected)
 
 static func body_state(body: RigidBody3D) -> Dictionary:
 	return {"pose":pose(body.global_transform),"linear":vector(body.linear_velocity),"angular":vector(body.angular_velocity)}
@@ -175,26 +174,10 @@ func capture() -> Dictionary:
 		var location: String = game.model.items[uid].location
 		if location == "loose" and game.loose.has(uid) and is_instance_valid(game.loose[uid]):world.items[uid] = body_state(game.loose[uid])
 		elif location == "held" and is_instance_valid(game.components.held_body):world.items[uid] = body_state(game.components.held_body)
-	if is_instance_valid(game.foot_fixture):
-		var f = game.foot_fixture
-		world.support = {"moving":f.moving,"at_dispatch":f.at_dispatch,"work_pose":f.work_pose,"destination_pose":f._destination_pose,"destination_dispatch":f._destination_dispatch}
+	if is_instance_valid(game.foot_fixture):world.support = game.foot_fixture.capture()
 	world["player"] = {"pose":pose(game.player.global_transform),"velocity":vector(game.player.velocity),"pitch":game.camera.rotation.x,"height":game.camera.position.y,"fov":game.camera.fov,"crouched":game.crouched}
 	world["reader"] = {"manual":game.hud.manual_id,"pages":game.hud.pages.duplicate(),"visible":game.hud.manual.visible,"suggested_only":game.hud.browser.suggested_only}
 	return {"model":ModelSave.capture(game.model),"world":world}
-
-static func number(value: Variant, limit: float = 256.0) -> bool:
-	return (value is int or value is float) and is_finite(value) and absf(value) <= limit
-
-static func valid_vector(value: Variant, count: int = 3) -> bool:
-	return value is Array and value.size() == count and value.all(func(n):return number(n))
-
-static func valid_pose(value: Variant) -> bool:
-	if not valid_vector(value,12):return false
-	var b = to_pose(value).basis
-	return absf(b.determinant()-1.0) < 0.002 and absf(b.x.length_squared()-1.0) < 0.002 and absf(b.y.length_squared()-1.0) < 0.002 and absf(b.z.length_squared()-1.0) < 0.002 and absf(b.x.dot(b.y)) < 0.002 and absf(b.x.dot(b.z)) < 0.002 and absf(b.y.dot(b.z)) < 0.002
-
-static func same_keys(value: Variant, expected: Array) -> bool:
-	return value is Dictionary and value.size() == expected.size() and expected.all(func(key):return value.has(key))
 
 static func valid_body(value: Variant) -> bool:
 	return value is Dictionary and valid_pose(value.get("pose")) and valid_vector(value.get("linear")) and valid_vector(value.get("angular"))
@@ -246,26 +229,10 @@ func _validate_support(w: Dictionary, saved_model: Dictionary) -> Array[String]:
 	var s = w.get("support")
 	if not s is Dictionary:return ["Missing foot support state."]
 	if not is_instance_valid(game.foot_fixture):return [] if s.is_empty() else ["Unexpected foot support."]
-	if not s.get("moving") is bool or not s.get("at_dispatch") is bool or not s.get("destination_dispatch") is bool:return ["Invalid foot support motion."]
-	if not s.get("work_pose") is String or not SupportedFootFixture.POSE_ANGLES.has(s.work_pose) or not s.get("destination_pose") is String or not SupportedFootFixture.POSE_ANGLES.has(s.destination_pose):return ["Invalid foot working position."]
-	var transform = to_pose(w.fixtures[game.default_parent_id()])
-	var angle = atan2(transform.basis.x.y,transform.basis.x.x)
-	var origin = transform.origin
-	if not transform.basis.is_equal_approx(Basis(Vector3.BACK,angle)) or absf(angle)>PI/2+0.001 or absf(origin.x-2.3)>0.001 or absf(origin.y-1.55)>0.001 or origin.z < -1.801 or origin.z > 4.401:return ["Foot has left its supported path."]
-	if s.at_dispatch or s.destination_dispatch or origin.z > -1.799:
-		# A carrier must never bypass the completion interlock through a save.
-		var scratch = AssemblyModel.new()
-		scratch.configure(baseline.definitions,game.config)
-		ModelSave.apply(saved_model,scratch)
-		if not scratch.milestone(game.default_parent_id(),"complete") or absf(angle)>0.001 or s.work_pose != "upright" or s.destination_pose != "upright":return ["Dispatch requires a secured upright foot."]
-	if not s.moving:
-		var expected = Transform3D(Basis(Vector3.BACK,SupportedFootFixture.POSE_ANGLES[s.work_pose]),SupportedFootFixture.DISPATCH_ORIGIN if s.at_dispatch else SupportedFootFixture.WORK_ORIGIN)
-		if not transform.is_equal_approx(expected) or s.destination_pose != s.work_pose or s.destination_dispatch != s.at_dispatch:return ["Stopped foot does not match its indexed pose."]
-	elif s.at_dispatch == s.destination_dispatch:
-		var from_angle: float = SupportedFootFixture.POSE_ANGLES[s.work_pose]
-		var to_angle: float = SupportedFootFixture.POSE_ANGLES[s.destination_pose]
-		if s.at_dispatch or s.work_pose == s.destination_pose or not origin.is_equal_approx(SupportedFootFixture.WORK_ORIGIN) or angle < minf(from_angle,to_angle)-0.001 or angle > maxf(from_angle,to_angle)+0.001:return ["Turning foot is outside its indexed movement."]
-	return []
+	var candidate = AssemblyModel.new()
+	candidate.configure(baseline.definitions,game.config)
+	ModelSave.apply(saved_model,candidate)
+	return game.foot_fixture.validate(s,candidate,w)
 
 func apply_snapshot(snapshot: Dictionary) -> bool:
 	# Keep this boundary transactional even for direct callers and UI reset paths.
@@ -301,18 +268,7 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 	var w: Dictionary = snapshot.world
 	for id in w.stations:game.stations[id].global_transform = to_pose(w.stations[id])
 	for id in w.fixtures:game.assembly_node(id).global_transform = to_pose(w.fixtures[id])
-	if is_instance_valid(game.foot_fixture):
-		var f = game.foot_fixture
-		var s: Dictionary = w.support
-		f.moving = s.moving
-		f.at_dispatch = s.at_dispatch
-		f.work_pose = s.work_pose
-		f._destination_pose = s.destination_pose
-		f._destination_dispatch = s.destination_dispatch
-		f._destination = Transform3D(Basis(Vector3.BACK,SupportedFootFixture.POSE_ANGLES[s.destination_pose]),SupportedFootFixture.DISPATCH_ORIGIN if s.destination_dispatch else SupportedFootFixture.WORK_ORIGIN)
-		f.blocked_reason = ""
-		f._apply_pose(game.foot.global_transform)
-		f._refresh_labels()
+	if is_instance_valid(game.foot_fixture):game.foot_fixture.apply(w.support)
 	for id in w.bodies:
 		var body: WorkshopPart = game.bodies[id]
 		var location: String = game.model.assemblies[id].location

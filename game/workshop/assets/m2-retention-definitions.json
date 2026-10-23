@@ -653,7 +653,8 @@
           "requires": [
             "left_leg"
           ],
-          "label": "PV-120 · Hip retaining ring half"
+          "label": "PV-120 · Hip retaining ring half",
+          "undo_to": "hands"
         },
         "ring_2": {
           "accepts": "pv-ring-half",
@@ -661,7 +662,8 @@
           "requires": [
             "left_leg"
           ],
-          "label": "PV-120 · Hip retaining ring half"
+          "label": "PV-120 · Hip retaining ring half",
+          "undo_to": "hands"
         },
         "ring/washer_1": {
           "accepts": "lg-w24",

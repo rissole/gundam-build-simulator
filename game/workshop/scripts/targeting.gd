@@ -34,11 +34,8 @@ func update_target() -> void:
 	for kind in game.bins:candidates.append({"type":"bin","kind":kind,"point":game.bins[kind].global_transform*Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in game.loose:
 		if is_instance_valid(game.loose[uid]):candidates.append({"type":"loose","uid":uid,"point":game.loose[uid].global_position,"radius":0.12})
-	if game.foot_equipment_available():candidates.append_array(game.foot_fixture.controls())
-	if is_instance_valid(game.m2):
-		candidates = candidates.filter(func(entry):return entry.type == "loose" or (entry.type == "bin" and game.model.count_at(entry.kind,"bin") > 0))
-		candidates.append_array(game.m2.controls())
-	for lift in game.access_lifts.values():candidates.append_array(lift.controls())
+	if game.trial != null:candidates = game.trial.filter_candidates(candidates)
+	candidates.append_array(game.equipment.controls())
 	if held.is_empty():
 		var allowed_slots: Variant = game.leg_content.get("m2",{}).get("playable_slots")
 		for candidate in game.components.candidates():
@@ -194,7 +191,7 @@ func present_target(access_error: String) -> void:
 	match game.target.type:
 		"equipment":
 			caption = game.target.label
-			detail = game.equipment_controller(game.target).action_error(game.target.action)
+			detail = game.target.controller.action_error(game.target.action)
 			usable = detail.is_empty()
 			if usable:
 				action_key = "Click" if game.target.get("input","") == "place" else "E"
@@ -286,7 +283,7 @@ func access(allowed: Array = [], check_approach: bool = true) -> String:
 	if game.target.type == "component":return game.components.access(check_approach)
 	if game.camera.global_position.distance_to(game.target.point) > game.REACH: return "Out of reach. Move closer to the connection (maximum %.2f m)." % game.REACH
 	if not can_see(game.target.point,allowed,target_allows_body_hit()): return "Connection is obstructed. Approach its exposed side or use the work-position controls."
-	if game.target.type == "equipment":return game.equipment_controller(game.target).action_error(game.target.action)
+	if game.target.type == "equipment":return game.target.controller.action_error(game.target.action)
 	if game.target.type == "prep":
 		var station: Node3D = game.stations[game.target.get("station","prep")]
 		var envelope: Vector3 = SolidHandling.bounds(game.pad).size

@@ -7,7 +7,7 @@ func boot() -> void:
 	game.profile_override = "leg_bay_crane";game.automated_test = true
 	root.add_child(game);game.automated_test = true;await frames(8)
 	game.set_paused(false);Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	crane = game.m2_crane
+	crane = game.equipment.get_equipment("service_crane")
 
 func key(code: Key, down: bool = true) -> void:
 	var event = InputEventKey.new();event.physical_keycode = code;event.pressed = down
@@ -44,7 +44,7 @@ func walk(point: Vector3, label: String) -> bool:
 	return arrived
 
 func entry(action: String) -> Dictionary:
-	for candidate in crane.controls()+crane.candidates():
+	for candidate in crane.controls():
 		if candidate.action == action:return candidate
 	return {}
 

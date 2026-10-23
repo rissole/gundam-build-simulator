@@ -107,7 +107,7 @@ func rotate_station(relative: Vector2) -> void:
 	if not game.profile.get("station_rotation",true):return
 	var station = game.rotation_station if game.rotate_held else station_in_view()
 	if station.is_empty():return
-	if station == "foot" and is_instance_valid(game.foot_fixture):return
+	if station == "foot" and game.equipment.get_equipment("foot_fixture") != null:return
 	var node: Node3D = game.stations.get(station,game.foot)
 	if game.camera.global_position.distance_to(node.global_position)>5.0:return
 	node.basis = (Basis(game.camera.global_basis.y,-relative.x*0.006)*Basis(game.camera.global_basis.x,-relative.y*0.006)*node.basis).orthonormalized()
@@ -122,7 +122,7 @@ func rotation_key(pressed: bool) -> void:
 		game.rotate_dragged = false
 		game.rotate_press_time = Time.get_ticks_msec()
 		game.rotation_station = station_in_view()
-		if game.rotation_station == "foot" and is_instance_valid(game.foot_fixture):
+		if game.rotation_station == "foot" and game.equipment.get_equipment("foot_fixture") != null:
 			game.rotate_held = false
 			game.rotation_station = ""
 			game.hud.toast("Use the foot bay controls to choose a supported work position.")
@@ -143,7 +143,7 @@ func reset_station(station: String = "") -> void:
 	if not game.profile.get("station_rotation",true):return
 	if station.is_empty():station = station_in_view()
 	if station.is_empty():return
-	if station == "foot" and is_instance_valid(game.foot_fixture):
+	if station == "foot" and game.equipment.get_equipment("foot_fixture") != null:
 		game.hud.toast("Choose Upright at the foot bay controls.")
 		return
 	var node: Node3D = game.stations.get(station,game.foot)

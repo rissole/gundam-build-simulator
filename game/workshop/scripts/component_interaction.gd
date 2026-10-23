@@ -134,6 +134,23 @@ func collect(kind: String, all_stock: bool = false, uid: String = "") -> void:
 		game.player.add_collision_exception_with(held_body)
 	game.hud.refresh()
 
+## Puts an already model-held identity into the hands, starting from `at`.
+func hold_at(uid: String, at: Transform3D) -> void:
+	game._spawn_loose(uid)
+	var body: WorkshopPart = game.loose[uid];game.loose.erase(uid)
+	body.global_transform = at;body.held = true;body.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC;body.freeze = true
+	body.linear_velocity = Vector3.ZERO;body.angular_velocity = Vector3.ZERO
+	body.add_collision_exception_with(game.player);game.player.add_collision_exception_with(body)
+	held_body = body
+
+## Removing a fitted component into the hands needs the same reach and a clear
+## sightline; the fitted component itself may stand in front of the connection.
+func removal_access(owner: String, sid: String) -> String:
+	var point: Vector3 = slot_point(owner,sid)
+	if game.camera.global_position.distance_to(point) > game.REACH:return "Move closer to this component."
+	if not game._visible(point,receiving_bodies(owner,sid),true):return "View obstructed. Approach the station's open side."
+	return ""
+
 func drop(to_bin: bool = false) -> void:
 	var uid: String = game.model.release_item("bin" if to_bin else "loose")
 	if uid.is_empty():return
