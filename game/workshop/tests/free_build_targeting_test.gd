@@ -1,15 +1,10 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## The reader supplies guidance; physical ready slots supply placement permission.
 var game: Node
 var driver: Node
-var checks: Array[Dictionary] = []
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, message: String) -> void:
-	checks.append({"check":message,"passed":ok})
-	if not ok:push_error(message)
 
 func blocker(position: Vector3, size: float = 0.16) -> StaticBody3D:
 	var body = StaticBody3D.new()
@@ -25,15 +20,15 @@ func blocker(position: Vector3, size: float = 0.16) -> StaticBody3D:
 func run() -> void:
 	game = load("res://scenes/workshop.tscn").instantiate()
 	root.add_child(game)
-	driver = load("res://tests/demo_test.gd").new()
+	driver = load("res://tests/kit/node_runner.gd").new()
 	root.add_child(driver)
 	driver.game = game
 	await driver.frames(10)
 	game.automated_test = true
 	game.set_paused(false)
 	game.model.move_assembly("pitch","station:prep3")
-	game._activate("pitch")
-	game._set_pad_station("prep3")
+	game.automation.select_build("pitch")
+	expect(game.automation.suspend_at_station("pitch","prep3").is_empty(),"Stage selected build at station")
 	# Prepare the receiving cartridge through the same input-independent rules;
 	# the following fasteners exercise the desktop targeting and click boundary.
 	expect(game.model.carry_item("FA-514__001").is_empty() and game.model.install("pitch","FA-514__001","FA-514__001").ok,"Prepare a physical receiving cartridge at its station")
@@ -75,20 +70,20 @@ func run() -> void:
 	var point: Vector3 = game.target.point
 	var obstacle = blocker(game.camera.global_position.lerp(point,0.7))
 	await driver.frames(3)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	driver.click()
 	expect(not game.ghost.visible and game.model.assemblies.pitch.history.size() == history and game.hud.toast_label.text.contains("obstructed"),"Scenery blocks preview and placement even with an open service fixture")
 	# The service ray must continue beyond a receiver hit rather than accepting
 	# that first surface while overlooking unrelated scenery farther along it.
 	var receiver = blocker(game.camera.global_position.lerp(point,0.3))
 	await driver.frames(3)
-	expect(not game._visible(point,[receiver,game.bodies.pitch],true),"Service ray tests scenery behind the receiving surface along the full segment")
+	expect(not game.targeting.can_see(point,[receiver,game.bodies.pitch],true),"Service ray tests scenery behind the receiving surface along the full segment")
 	receiver.queue_free()
 	obstacle.queue_free()
 	await driver.frames(3)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	driver.click()
 	expect(game.model.assemblies.pitch.history.size() == history+1,"Removing the real obstacle restores the same valid independent placement")
 	var original: Dictionary = game.model.slot_definition("pitch",next).duplicate(true)
@@ -107,8 +102,8 @@ func run() -> void:
 	# Reproduce the real closed-eye target ambiguity: two adjacent compatible
 	# washers fit opposite cheeks, and only the near cheek is visible from here.
 	game.model.move_assembly("pitch","station:prep3")
-	game._activate("pitch")
-	game._set_pad_station("prep3")
+	game.automation.select_build("pitch")
+	expect(game.automation.suspend_at_station("pitch","prep3").is_empty(),"Stage selected build at station")
 	var staged: bool = true
 	var reached: bool = false
 	for step in game.components.definition("pitch").manual:
@@ -189,12 +184,12 @@ func run() -> void:
 		var collision: Node = game.foot.shape_owner_get_owner(shape_owner)
 		if collision.get_meta("source_uid","") != "FA-103__001":continue
 		game.camera.global_position = start
-		if not game._visible(end,[game.foot],false):solid_found = true;break
+		if not game.targeting.can_see(end,[game.foot],false):solid_found = true;break
 	game.camera.global_transform = original_camera
 	expect(solid_found,"Solid material in the same precise receiving frame continues to obstruct connection rays")
 	expect(game.model.integrity_errors().is_empty(),"Independent targeting preserves physical identities, ownership and prerequisites")
 	var passed: bool = checks.all(func(c):return c.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/free-build-targeting")
-	FileAccess.open("res://verification/free-build-targeting/headless-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks},"  "))
+	write_evidence("res://verification/free-build-targeting/headless-audit.json",{"passed":passed,"checks":checks})
 	print("FREE_BUILD_TARGETING ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

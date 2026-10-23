@@ -1,4 +1,4 @@
-extends "res://tests/m2_crane_test_base.gd"
+extends "res://tests/kit/crane_suite.gd"
 ## Focused machinery/state layer, complementary to the ordinary desktop journey.
 func run() -> void:
 	await boot()

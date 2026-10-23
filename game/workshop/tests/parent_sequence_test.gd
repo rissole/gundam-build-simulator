@@ -1,21 +1,16 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Isolate all parent connections after preparing the child through its real rules.
 var game: Node
 var driver: Node
-var checks: Array[Dictionary] = []
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, message: String) -> void:
-	checks.append({"check":message,"passed":ok})
-	if not ok:push_error(message)
 
 func finish() -> void:
 	checks.append_array(driver.checks)
 	var passed: bool = checks.all(func(c):return c.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/parent-sequence")
-	FileAccess.open("res://verification/parent-sequence/headless-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"engine":Engine.get_version_info()},"  "))
+	write_evidence("res://verification/parent-sequence/headless-audit.json",{"passed":passed,"checks":checks,"engine":Engine.get_version_info()})
 	print("PARENT_SEQUENCE ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)
 
@@ -29,8 +24,8 @@ func run() -> void:
 	game.automated_test = true
 	game.set_paused(false)
 	game.model.move_assembly("pitch","station:prep3")
-	game._activate("pitch")
-	game._set_pad_station("prep3")
+	game.automation.select_build("pitch")
+	expect(game.automation.suspend_at_station("pitch","prep3").is_empty(),"Stage selected build at station")
 	var staged: bool = true
 	for step in game.components.definition("pitch").manual:
 		if step.get("view","") == "prepared":continue
@@ -55,7 +50,7 @@ func run() -> void:
 	await driver.frames(40)
 	await driver.aim(Vector3(-6.4,1.5,1.8))
 	await driver.frames(100)
-	await driver.aim(game.mount_point("pitch"),2.0)
+	await driver.aim(game.mount_point("pitch","foot","pitch"),2.0)
 	await driver.frames(100)
 	driver.click()
 	expect(game.model.assemblies.foot.slots.pitch == "pitch","Seat the prepared child through the actual parent connection")

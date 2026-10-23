@@ -1,16 +1,12 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Authored-data/model seam only. Actual shelf/crane input and assistance are
 ## separately exercised by the equipment integration suites.
+const Content = preload("res://scripts/workshop_content.gd")
 const Save = preload("res://scripts/save_model.gd")
-var checks: Array = []
 var manifests: Dictionary = {}
 
 func document(path: String) -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string("res://assets/" + path))
-
-func expect(value: bool, label: String) -> void:
-	checks.append({"check": label, "passed": value})
-	if not value: push_error(label)
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -19,8 +15,7 @@ func trial(example: String, alternate_half: bool = false) -> Dictionary:
 	var data = HeelAssemblyState.definition_data()
 	for path in ["pitch-actuator-definitions.json", "leg-prototype-definitions.json", "m2-" + example + "-definitions.json"]:
 		var overlay = document(path)
-		data.parts.merge(overlay.parts, true)
-		data.assemblies.merge(overlay.assemblies, true)
+		Content.apply_definitions(data,overlay)
 	var base = document("leg-prototype-content.json")
 	var content = document("m2-" + example + "-content.json")
 	var scenario = document("pitch-workshop.json")
@@ -170,6 +165,6 @@ func run() -> void:
 	for path in ["leg-prototype-definitions.json", "leg-prototype-content.json", "m2-retention-definitions.json", "m2-retention-content.json", "m2-crane-definitions.json", "m2-crane-content.json"]:
 		hashes[path] = FileAccess.get_sha256("res://assets/" + path)
 	DirAccess.make_dir_recursive_absolute("res://verification")
-	FileAccess.open("res://verification/m2-content-audit.json", FileAccess.WRITE).store_string(JSON.stringify({"passed": passed, "checks": checks, "manuals": manifests, "asset_hashes": hashes}, "  "))
+	write_evidence("res://verification/m2-content-audit.json",{"passed": passed, "checks": checks, "manuals": manifests, "asset_hashes": hashes})
 	print("M2_CONTENT_AUDIT ", "PASS" if passed else "FAIL", " ", checks.size(), " checks")
 	quit(0 if passed else 1)

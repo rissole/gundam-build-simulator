@@ -1,7 +1,6 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## A placement updates progress without rebuilding an unchanged authored figure.
 const Diagram = preload("res://scripts/manual_diagram.gd")
-var checks: Array[Dictionary] = []
 
 class DiagramSource extends Node:
 	var source: Dictionary = {}
@@ -11,10 +10,6 @@ class DiagramSource extends Node:
 		result.albedo_color = color
 		result.metallic = metal
 		return result
-
-func expect(ok: bool, label: String) -> void:
-	checks.append({"check":label,"passed":ok})
-	if not ok:push_error(label)
 
 func _initialize() -> void:
 	run.call_deferred()

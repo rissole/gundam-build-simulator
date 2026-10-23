@@ -8,6 +8,9 @@ or page inventory.
 
 - `GAME_DESIGN.md`: collecting/manual-focused gameplay, desktop first, future AR,
   comfortable carrying, current pockets and storage behavior.
+- `design/game/leg-workshop-next-steps.md`: active feedback, consolidation state and
+  human checkpoints; read before continuing workshop work. Its linked
+  `design/game/history/` archive preserves superseded plans and historical evidence.
 - `ROBOT_DESIGN.md` and `design/legs/foot-and-ankle/`: mechanical design and assembly
   references. Start with `assembly-and-review.md`, `actuators.md` and `hardware.csv`
   when working on the foot/actuators.
@@ -32,9 +35,20 @@ The current desktop project is `game/workshop/`:
 | `tools/author_pitch_actuator.py` | Authoritative pitch recipe generator; edit before regenerating JSON |
 | `assets/foot-fa01.glb` | Imported mesh geometry and poses; preserve this export unless source-model work is in scope |
 | `scripts/assembly_model.gd` | Input-independent slots, ownership, prerequisites, inventory and undo |
-| `scripts/assembly_state.gd` | Pad projection and regression scenario setup |
+| `scripts/workshop_content.gd` | Scenario loading and slot-level recipe patch materialization |
 | `scripts/component_interaction.gd` | Generic targeting, geometry projection and component carrying |
-| `scripts/workshop.gd` | Scene setup, parent transforms, stations, carrying and input |
+| `scripts/workshop.gd` | Bootstrap and public interaction facade |
+| `scripts/scenario_profile.gd` | Foot/single-pad/two-pad/M2 profiles, save paths and launch aliases |
+| `scripts/player_controller.gd`, `scripts/desktop_input.gd` | Player motion and desktop/modal input |
+| `scripts/targeting.gd`, `scripts/workshop_world.gd`, `scripts/primitives.gd` | Target/ghost projection, world construction and cached materials |
+| `scripts/equipment.gd`, `scripts/equipment_registry.gd`, `scripts/hand_slot.gd` | Equipment contract, interlocks and shared hand ownership |
+| `scripts/motion_sweep.gd`, `scripts/pose_codec.gd` | Shared swept-motion checks and pose serialization |
+| `scripts/workshop_save.gd`, `scripts/save_model.gd`, `scripts/save_store.gd` | Unified profile session, model validation and atomic local storage |
+| `assets/leg-bay-layout.json` | Authoritative rail/lift/shelf/parent/crane geometry read by Python and runtime |
+| `assets/leg-prototype-*.json`, `assets/m2-*-*.json`, `tools/author_leg_prototype.py` | Structural bay base content, trial patches and generator/audits |
+| `scripts/leg_bay_layout.gd`, `scripts/leg_rail.gd`, `scripts/service_crane.gd`, `scripts/lift_shelf.gd`, `scripts/work_access_lift.gd` | Shared M2 layout and equipment; retired hoist/M1 paths are historical only |
+| `scripts/scenario_staging.gd`, `scripts/workshop_automation.gd` | Declared setup and public automation seam |
+| `tests/kit/` | Shared test harness, desktop player driver and JSON evidence output |
 | `scripts/hud.gd`, `scripts/manual_diagram.gd` | Runtime component lists and model-based illustrations |
 | `scripts/part_storage.gd`, `tools/render_part_images.py` | Storage labels, catalogue images and their generation |
 
@@ -49,14 +63,19 @@ slot occupant's UID identifies the consumed inventory piece.
 Run from the repository root, choosing the suites affected by the change:
 
 ```sh
-./play.command --headless --script tests/assembly_model_test.gd
-./play.command --headless --script tests/pitch_model_test.gd
-./play.command --headless --script tests/pitch_interface_test.gd
-./play.command --headless --fixed-fps 60 -- --pitch-test
-./play.command --headless --fixed-fps 60 -- --multi-test
-./play.command --headless --fixed-fps 60 -- --single-pad --demo-test
-./play.command --headless --fixed-fps 60 -- --pockets-test
+python3 game/workshop/tools/author_leg_prototype.py --check
+python3 game/workshop/tools/run_regressions.py --list
+python3 game/workshop/tools/run_regressions.py --only foot_save_pin_test assembly_model_test pitch_interface_test multi_build_desktop_test
+python3 game/workshop/tools/run_regressions.py
 ```
+
+The single runner includes the Python source-asset audit, ordinary desktop tests
+and launch smokes for every profile and supported aliases. It retains logs and
+input hashes in an ignored local run directory and rejects changed inputs or
+engine errors. Default `./play.command` is the foot base game; M2 opens through
+`--m2-workshop` or `--profile=leg_bay_retention` / `--profile=leg_bay_crane`.
+Single/two-pad profiles remain regression fixtures. Human replay of the current
+foot default and both M2 trials is tracked separately from automated passes.
 
 The README also lists the state and pocket-model suites. Input tests drive the
 normal desktop adapter and actual targeting/physics. `tests/pitch_build_test.gd`
@@ -72,11 +91,11 @@ visual inspection or establish complete collision-free assembly paths.
 checkpoints with real-renderer captures. From the repository root:
 
 ```sh
-./play.command --disable-render-loop --fixed-fps 60 -- --pitch-test --pitch-review
+./play.command --disable-render-loop --fixed-fps 60 --script tools/pitch_review.gd
 python3 game/workshop/tools/build_pitch_review_gallery.py --input /path/printed/as/REVIEW_OUTPUT
 ```
 
-Use both flags. Add `--review-pages=pitch-04,foot-06` after `--pitch-review` to
+Add `-- --review-pages=pitch-04,foot-06` after the review script path to
 capture only selected pages, including their placements and views. Choose dependent
 pages explicitly: filtering does not infer downstream impact. The runner still
 performs the normal build/ownership checks; it skips unrelated image capture.

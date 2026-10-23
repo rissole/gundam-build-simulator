@@ -112,15 +112,16 @@ func request(action: String) -> String:
 
 static func rail_pose(t: float) -> Dictionary:
 	var p = clampf(t,0,3)
-	var z = Layout.HOME_Z
-	var x = Layout.RAIL_X
+	var spec: Dictionary = Layout.layout().rail
+	var z = spec.home_z
+	var x = spec.x
 	var theta = PI/2
 	var dock = 0.0
-	if p <= 1:z = lerpf(Layout.HOME_Z,Layout.BAY_Z,p)
-	elif p <= 2:z = Layout.BAY_Z;theta = (2-p)*PI/2
-	elif p <= 3:z = Layout.BAY_Z;theta = 0;dock = (p-2)*.9
+	if p <= 1:z = lerpf(spec.home_z,spec.bay_z,p)
+	elif p <= 2:z = spec.bay_z;theta = (2-p)*PI/2
+	elif p <= 3:z = spec.bay_z;theta = 0;dock = (p-2)*spec.dock_rise
 	var basis = Basis(Vector3.RIGHT,theta)
-	var origin = Vector3(x,.5+.85*sin(theta)+dock,z-5.1*sin(theta))
+	var origin = Vector3(x,spec.base_y+spec.lying_lift*sin(theta)+dock,z-spec.pivot*sin(theta))
 	return {"load":Transform3D(basis,origin),"z":z,"x":x}
 
 func _pose() -> void:

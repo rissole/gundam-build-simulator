@@ -1,13 +1,7 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 
 const Store = preload("res://scripts/save_store.gd")
-var checks: Array[Dictionary] = []
 var directory := "/tmp/workshop-save-store-%s-%s" % [OS.get_process_id(), Time.get_ticks_usec()]
-
-func expect(condition: bool, label: String) -> void:
-	checks.append({"check": label, "passed": condition})
-	if not condition:
-		push_error(label)
 
 func put(path: String, content: String) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)

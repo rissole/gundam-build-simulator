@@ -1,31 +1,20 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Whole-workpiece discovery and placement cost through real rays and input.
-class MeasuredWorkshop:
-	extends "res://scripts/workshop.gd"
+class MeasuredTargeting:
+	extends "res://scripts/targeting.gd"
 	var placement_sweeps = 0
-	func _carry_placement_error(destination: Transform3D, carried: WorkshopPart = null, receiving: PhysicsBody3D = null) -> String:
+	func carry_placement_error(destination: Transform3D, carried: WorkshopPart = null, receiving: PhysicsBody3D = null) -> String:
 		placement_sweeps += 1
-		return super._carry_placement_error(destination,carried,receiving)
+		return super.carry_placement_error(destination,carried,receiving)
 
 var game: Node
 var driver: Node
-var checks: Array[Dictionary] = []
 
 func _initialize() -> void:
 	run.call_deferred()
 
-func expect(ok: bool, message: String) -> void:
-	checks.append({"check":message,"passed":ok})
-	if not ok:push_error(message)
-
 func look(point: Vector3, feet: Vector3) -> void:
-	game.player.global_position = feet
-	game.player.velocity = Vector3.ZERO
-	var direction: Vector3 = point-game.camera.global_position
-	game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
-	game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
-	await driver.frames(3)
-	game._update_target()
+	await PlayerDriver.new(game).stage_aim("snap discovery sightline",point,feet,3)
 
 func wall(point: Vector3) -> StaticBody3D:
 	var body = StaticBody3D.new()
@@ -39,9 +28,10 @@ func wall(point: Vector3) -> StaticBody3D:
 	return body
 
 func run() -> void:
-	game = MeasuredWorkshop.new()
+	game = load("res://scenes/workshop.tscn").instantiate()
 	root.add_child(game)
-	driver = load("res://tests/demo_test.gd").new()
+	game.targeting = MeasuredTargeting.new(game)
+	driver = load("res://tests/kit/node_runner.gd").new()
 	root.add_child(driver)
 	driver.game = game
 	await driver.frames(10)
@@ -59,28 +49,28 @@ func run() -> void:
 	var broad_point: Vector3 = game.foot.global_transform*(envelope.get_center()+Vector3(0,0,0.8))
 	var feet = Vector3(-0.6,0.025,broad_point.z)
 	await look(broad_point,feet)
-	expect(game._aim_score(point,0.24) == INF,"Workpiece aim is outside the old narrow ring-clevis target")
+	expect(game.targeting.aim_score(point,0.24) == INF,"Workpiece aim is outside the old narrow ring-clevis target")
 	expect(game.target.get("sid","") == sid and game.target.get("discovery_only",false) and game.ghost.visible and game.ghost_material.albedo_color == game.SNAP_DISTANT_COLOR,"Aiming at the foot's box reveals the carried ring-clevis destination")
-	game.placement_sweeps = 0
-	game._update_target()
-	expect(game.placement_sweeps == 0 and game.interaction_outline.copies.is_empty(),"Whole-workpiece guidance performs no placement sweep or whole-foot outline duplication")
+	game.targeting.placement_sweeps = 0
+	game.automation.refresh_target()
+	expect(game.targeting.placement_sweeps == 0 and game.interaction_outline.copies.is_empty(),"Whole-workpiece guidance performs no placement sweep or whole-foot outline duplication")
 	driver.click()
 	expect(game.model.held_item() == uid and game.model.assemblies.foot.slots[sid].is_empty(),"Broad discovery cannot attach the ring clevis")
 	# The viewed body and the destination are separate sightlines; blocking
 	# either with unrelated scenery must suppress discovery.
-	var aim_hit: Variant = game._assembly_discovery_hit("foot")
+	var aim_hit: Variant = game.targeting.assembly_discovery_hit("foot")
 	expect(aim_hit != null,"The view ray intersects the actual workpiece bounds")
 	if aim_hit != null:
 		var obstruction = wall(game.camera.global_position.lerp(aim_hit,0.6))
 		await driver.frames(3)
-		game._update_target()
+		game.automation.refresh_target()
 		expect(not game.ghost.visible,"Scenery in front of the aimed workpiece hides broad guidance")
 		obstruction.queue_free()
 		await driver.frames(3)
 	await look(broad_point,feet)
 	var blocker = wall(game.camera.global_position.lerp(point,0.7))
 	await driver.frames(3)
-	game._update_target()
+	game.automation.refresh_target()
 	expect(not game.ghost.visible,"Scenery on the connection sightline hides broad guidance")
 	blocker.queue_free()
 	await driver.frames(3)
@@ -90,7 +80,7 @@ func run() -> void:
 	expect(not game.ghost.visible,"Whole-workpiece discovery retains its six-metre range")
 	await look(broad_point,feet)
 	game.foot_fixture.moving = true
-	game._update_target()
+	game.automation.refresh_target()
 	expect(not game.ghost.visible,"Moving equipment cannot advertise a broad attachment destination")
 	game.foot_fixture.moving = false
 	# Close to the foot but away from the socket: guidance remains yellow and
@@ -104,18 +94,18 @@ func run() -> void:
 	# obstructions, then exercise real targeting and its single collision sweep.
 	await look(point,Vector3(point.x-1.0,0.025,point.z))
 	game.components.held_body.global_transform = game.components.slot_pose("foot",sid)
-	game.placement_sweeps = 0
-	game._update_target()
+	game.targeting.placement_sweeps = 0
+	game.automation.refresh_target()
 	expect(game.target.get("sid","") == sid and not game.target.get("discovery_only",false) and game.ghost.visible and game.ghost_material.albedo_color == game.SNAP_READY_COLOR,"Precise reachable aim takes priority and restores the green preview")
-	expect(game.placement_sweeps == 1,"One targeting update shares one approach sweep between prompt and preview")
+	expect(game.targeting.placement_sweeps == 1,"One targeting update shares one approach sweep between prompt and preview")
 	expect(game.interaction_outline.copies.is_empty(),"Precise placement feedback never duplicates the receiving foot meshes")
 	# A fresh obstruction after feedback must be detected by the click itself.
 	blocker = wall(game.components.held_body.global_position)
 	await driver.frames(2)
 	game.components.held_body.global_transform = game.components.slot_pose("foot",sid)
-	game.placement_sweeps = 0
+	game.targeting.placement_sweeps = 0
 	driver.click()
-	expect(game.placement_sweeps == 1 and game.model.assemblies.foot.slots[sid].is_empty(),"Actual placement reruns collision checks instead of trusting cached feedback")
+	expect(game.targeting.placement_sweeps == 1 and game.model.assemblies.foot.slots[sid].is_empty(),"Actual placement reruns collision checks instead of trusting cached feedback")
 	blocker.queue_free()
 	await driver.frames(3)
 	game.components.drop(true)
@@ -135,6 +125,6 @@ func run() -> void:
 	game.foot.global_transform = original
 	var passed = checks.all(func(check):return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/snap-discovery")
-	FileAccess.open("res://verification/snap-discovery/audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":false},"  "))
+	write_evidence("res://verification/snap-discovery/audit.json",{"passed":passed,"checks":checks,"rendered":false})
 	print("SNAP_DISCOVERY ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

@@ -80,8 +80,7 @@
     "owner": "left_leg",
     "slot": "spar",
     "secured": {
-      "prefix": "fork/",
-      "count": 8
+      "milestone": "spar_secured"
     },
     "up_y": 4.4,
     "console_position": [

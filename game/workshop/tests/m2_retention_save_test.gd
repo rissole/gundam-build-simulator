@@ -58,6 +58,6 @@ func run() -> void:
 	expect(game.saves.restored and game.paused and game.model.assemblies.pelvis.slots["ring/washer_3"] != "","Fresh M2 session resumes partial hardware from real store while paused")
 	game.free();await process_frame
 	var passed = checks.all(func(check):return check.passed)
-	FileAccess.open("/tmp/m2-retention-save.audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"states":snapshots.keys()},"  "))
+	write_evidence("/tmp/m2-retention-save.audit.json",{"passed":passed,"checks":checks,"states":snapshots.keys()})
 	print("M2_RETENTION_SAVE ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

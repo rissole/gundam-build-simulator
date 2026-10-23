@@ -1,9 +1,4 @@
-extends SceneTree
-var checks: Array[Dictionary] = []
-
-func expect(condition: bool, name: String) -> void:
-	checks.append({"check":name,"passed":condition})
-	if not condition:push_error(name)
+extends "res://tests/kit/harness.gd"
 
 func _initialize() -> void:
 	var config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/heel-pad.json"))
@@ -45,6 +40,6 @@ func _initialize() -> void:
 	expect(s.model.stock_pocket("bolt").ok and s.count_at("bolt","pocket")==4,"Drawer replenishes its stack")
 	var passed = checks.all(func(c):return c.passed)
 	var output = {"passed":passed,"checks":checks,"engine":Engine.get_version_info().string}
-	FileAccess.open("res://verification/state-audit.json",FileAccess.WRITE).store_string(JSON.stringify(output,"  "))
+	write_evidence("res://verification/state-audit.json",output)
 	print("STATE_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

@@ -9,17 +9,13 @@ func update_target() -> void:
 	game.target = {}
 	var best: float = INF
 	var candidates: Array[Dictionary] = []
-	var previous_build = game.active_build
 	var held = game.held_build()
 	var fitting_part = held.is_empty() and not game.components.selected_uid(game.selected_kind).is_empty()
 	for id in game.builds:
-		game._activate(id)
-		if held.is_empty() and (fitting_part or game.state.pad_location == "foot") and not game.components.is_component_build(id) and ["prep","foot"].has(game.state.pad_location):
-			for i in range(4):candidates.append({"type":"slot","build":id,"index":i,"point":game.connection(i),"radius":0.15})
-		if game.state.pad_location in ["loose","prep"]:
-			candidates.append({"type":"pad","build":id,"point":game.pad.global_position,"radius":0.40})
+		var location: String = game.model.assemblies[id].location
+		if location == "loose" or location.begins_with("station:"):
+			candidates.append({"type":"assembly","build":id,"point":game.bodies[id].global_position,"radius":0.40})
 	if not held.is_empty():
-		game._activate(held)
 		for station in game.stations:
 			candidates.append({"type":"prep","build":held,"station":station,"point":game.stations[station].global_position,"radius":0.48})
 		for owner in game.model.assemblies:
@@ -30,7 +26,6 @@ func update_target() -> void:
 				if not game.model.assembly_access_error(owner,sid).is_empty():continue
 				candidates.append({"type":"mount","owner":owner,"build":held,"mount":sid,"point":game.mount_point(sid,owner,held),"radius":0.30})
 
-	game._activate(previous_build if held.is_empty() else held)
 	for kind in game.bins:candidates.append({"type":"bin","kind":kind,"point":game.bins[kind].global_transform*Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in game.loose:
 		if is_instance_valid(game.loose[uid]):candidates.append({"type":"loose","uid":uid,"point":game.loose[uid].global_position,"radius":0.12})
@@ -63,15 +58,11 @@ func update_target() -> void:
 			var perpendicular = (offset+game.camera.global_basis.z*offset.dot(-game.camera.global_basis.z)).length()
 			score = 0.75+minf(perpendicular,10.0)*0.01
 		var connection_visible = true
-		# While holding hardware, a nearby socket wins over the pad's center.
-		if candidate.type == "slot":
-			score -= 0.12
-			connection_visible = can_see(candidate.point,[game.bodies[candidate.build],game.foot])
 		if candidate.type == "component":
 			score -= 1.0 if candidate.get("compatible",false) else 0.12
 			connection_visible = can_see(candidate.point,game.components.receiving_bodies(candidate.owner,candidate.sid),game.components.service_access(candidate.owner,candidate.sid))
 			if not connection_visible:score += 1.0
-		if connection_visible and candidate.type in ["slot","component"]:
+		if connection_visible and candidate.type == "component":
 			var owner: String = candidate.get("owner",candidate.get("build",""))
 			focused_connections[game.model.top_level(owner)] = true
 		if connection_visible and not candidate.get("discovery_only",false) and snap_candidate_valid(candidate):precise_snap = true
@@ -82,12 +73,11 @@ func update_target() -> void:
 		# Connection feedback and whole-assembly pickup describe the same object.
 		# With a part selected, a nearby connection owns that object's focus instead
 		# of trading places with its center as the geometric scores fluctuate.
-		if candidate.type == "pad" and focused_connections.has(candidate.build):continue
+		if candidate.type == "assembly" and focused_connections.has(candidate.build):continue
 		var score: float = entry.score
 		if score < best:
 			best = score
 			game.target = candidate
-	if game.target.has("build"):game._activate(game.target.build)
 	# Share one current access result between prompt and preview. Actual clicks
 	# always recheck access, and incompatible parts never run a placement sweep.
 	var access_error = access(target_receivers(),game.target.type == "prep" or snap_candidate_valid(game.target)) if not game.target.is_empty() else ""
@@ -141,23 +131,20 @@ func snap_candidate_valid(candidate: Dictionary) -> bool:
 	match candidate.get("type",""):
 		"component":
 			var uid: String = game.components.selected_uid(game.selected_kind)
-			return not uid.is_empty() and game.model.placement_error(owner,candidate.sid,uid).is_empty()
+			return not uid.is_empty() and game.components.placement_error(owner,candidate.sid,uid).is_empty()
 		"mount":
 			return game.model.assemblies[candidate.build].location == "held" and game.model.placement_error(owner,candidate.mount,candidate.build).is_empty()
-		"slot":
-			var view = game.builds[candidate.build]
-			return HeelAssemblyState.KINDS.has(game.selected_kind) and view.count_at(game.selected_kind,"pocket") > 0 and view.reason(game.selected_kind,candidate.index).is_empty()
 	return false
 
 func target_receivers() -> Array:
 	match game.target.get("type",""):
 		"equipment":return game.target.get("allowed",[])
 		"bin":return [game.bins[game.target.kind]]
-		"pad":return [game.pad]
+		"assembly":return [game.bodies[game.target.build]]
 		"loose":return [game.loose[game.target.uid]]
 		"component":return game.components.receiving_bodies(game.target.owner,game.target.sid)
-		"mount":return [game.pad,game.assembly_node(game.model.top_level(game.target.owner))]
-	return [game.pad,game.foot]
+		"mount":return [game.bodies[game.target.build],game.assembly_node(game.model.top_level(game.target.owner))]
+	return [game.bodies[game.target.build],game.foot] if game.target.has("build") else [game.foot]
 
 func target_object() -> Node3D:
 	match game.target.get("type",""):
@@ -166,7 +153,7 @@ func target_object() -> Node3D:
 			var bin: Node3D = game.bins[game.target.kind]
 			return bin.get_node("ShelfPart") if bin.has_node("ShelfPart") else bin
 		"loose":return game.loose[game.target.uid]
-		"pad", "slot":return game.bodies[game.target.build]
+		"assembly":return game.bodies[game.target.build]
 		"component", "mount":return game.assembly_node(game.target.owner)
 	return null
 
@@ -207,10 +194,10 @@ func present_target(access_error: String) -> void:
 				action_label = "Stock pocket" if pocket else "Carry"
 				usable = true
 			elif count > 0:detail = "Set down the carried component first"
-		"pad":
+		"assembly":
 			pickup_target = true
-			caption = game.build_label(game.active_build)
-			detail = "Prepared" if game.state.prepared() else "Unfinished"
+			caption = game.build_label(game.target.build)
+			detail = "Prepared" if game.build_prepared(game.target.build) else "Unfinished"
 			if not game.model.hands_occupied():
 				action_key = "E"
 				action_label = "Carry"
@@ -229,27 +216,15 @@ func present_target(access_error: String) -> void:
 			usable = true
 		"mount":
 			caption = game.model.slot_definition(game.target.owner,game.target.mount).get("label",game.target.mount)
-			detail = game.model.placement_error(game.target.owner,game.target.mount,game.active_build)
+			detail = game.model.placement_error(game.target.owner,game.target.mount,game.target.build)
 			usable = detail.is_empty()
 		"component":
 			var spec = game.model.slot_definition(game.target.owner,game.target.sid)
 			caption = game.components.title(spec.accepts)
-			detail = game.model.placement_error(game.target.owner,game.target.sid,game.components.selected_uid(game.selected_kind))
+			var selected: String = game.components.selected_uid(game.selected_kind)
+			if game.components.slot_presentation(game.target.owner,game.target.sid).get("selected_caption",false) and game.model.items.has(selected):caption = game.components.title(game.model.items[selected].kind)
+			detail = game.components.placement_error(game.target.owner,game.target.sid,game.components.selected_uid(game.selected_kind))
 			usable = detail.is_empty()
-		"slot":
-			caption = game.build_label(game.active_build)+" · mounting point %d" % (game.target.index+1)
-			if game.state.complete():detail = "Complete"
-			elif game.selected_kind.is_empty():
-				if game.state.pad_location == "prep" and not game.model.hands_occupied():
-					action_key = "E"
-					action_label = "Carry assembly"
-					usable = true
-					pickup_target = true
-				else:detail = "Select a stocked pocket"
-			else:
-				caption = game.components.title(game.selected_kind)
-				detail = game.state.reason(game.selected_kind,game.target.index)
-				usable = detail.is_empty()
 	if not access_error.is_empty():
 		detail = snap_guidance_message() if snap_guidance_available() else ("" if game.camera.global_position.distance_to(game.target.point) > game.REACH else access_error)
 		usable = false
@@ -272,12 +247,12 @@ func target_allows_body_hit() -> bool:
 	if game.target.get("type","") == "equipment":return game.target.get("allow_body_hit",false)
 	if game.target.get("type","") == "component":return game.components.service_access(game.target.owner,game.target.sid)
 	if game.target.get("type","") == "mount":return game.components.service_access(game.target.get("owner",game.default_parent_id()),game.target.mount)
-	return game.target.get("type","") in ["pad","loose"]
+	return game.target.get("type","") in ["assembly","loose"]
 
 func access(allowed: Array = [], check_approach: bool = true) -> String:
 	if game.target.is_empty(): return "Aim near a part, bin, or mounting point."
 	if game.target.get("discovery_only",false):return snap_guidance_message()
-	if game.target.type in ["slot","mount","component"]:
+	if game.target.type in ["mount","component"]:
 		var equipment_error = game.equipment_access_error(game.target.get("owner",game.target.get("build","")))
 		if not equipment_error.is_empty():return equipment_error
 	if game.target.type == "component":return game.components.access(check_approach)
@@ -286,17 +261,20 @@ func access(allowed: Array = [], check_approach: bool = true) -> String:
 	if game.target.type == "equipment":return game.target.controller.action_error(game.target.action)
 	if game.target.type == "prep":
 		var station: Node3D = game.stations[game.target.get("station","prep")]
-		var envelope: Vector3 = SolidHandling.bounds(game.pad).size
+		var envelope: Vector3 = SolidHandling.bounds(game.bodies[game.target.build]).size
 		var volume: Vector3 = station.get_meta("work_volume")
 		if envelope.x > volume.x or envelope.y > volume.y or envelope.z > volume.z:return "This assembly needs a larger work volume."
 		for id in game.builds:
-			if id != game.active_build and game.model.assemblies[id].location == "station:"+game.target.get("station","prep"):return "This station is occupied. Move its assembly first."
-	if game.target.type in ["prep","mount"] and game.state.pad_location == "held" and check_approach:
-		return game._carry_placement_error(game.placement_destination(),game.pad,game.assembly_node(game.target.owner) if game.target.has("owner") else null)
+			if id != game.target.build and game.model.assemblies[id].location == "station:"+game.target.get("station","prep"):return "This station is occupied. Move its assembly first."
+	if game.target.type in ["prep","mount"] and game.model.assemblies[game.target.build].location == "held" and check_approach:
+		return game._carry_placement_error(game.placement_destination(),game.bodies[game.target.build],game.assembly_node(game.target.owner) if game.target.has("owner") else null)
 	return ""
 
 func carry_placement_error(destination: Transform3D, carried: WorkshopPart = null, receiving: PhysicsBody3D = null) -> String:
-	if carried == null:carried = game.pad
+	if carried == null:
+		var held: String = game.held_build()
+		if held.is_empty():return "Your hands are empty."
+		carried = game.bodies[held]
 	if carried.global_position.distance_to(game.camera.global_position) > game.REACH+0.75+maxf(0.0,SolidHandling.bounds(carried).size.length()-1.0)*0.7:
 		return "The carried assembly is caught or too far away. Bring it alongside you first."
 	var excluded: Array[RID] = [carried.get_rid()]
@@ -319,36 +297,23 @@ func update_ghost(access_result: Variant = null) -> void:
 	if game.paused:return
 	var distant = snap_guidance_available()
 	game.ghost_material.albedo_color = game.SNAP_DISTANT_COLOR if distant else game.SNAP_READY_COLOR
-	game.ghost_material.no_depth_test = game.target.get("type","") == "component"
+	game.ghost_material.no_depth_test = game.target.get("type","") == "component" and game.components.slot_presentation(game.target.owner,game.target.sid).get("ghost_no_depth_test",true)
 	if game.target.get("type","") == "component":
-		if not game.model.placement_error(game.target.owner,game.target.sid,game.components.selected_uid(game.selected_kind)).is_empty():return
+		if not game.components.placement_error(game.target.owner,game.target.sid,game.components.selected_uid(game.selected_kind)).is_empty():return
 		if not distant and not (game.components.access() if access_result == null else access_result).is_empty():return
 		game.ghost.mesh = game.source[game.model.slot_definition(game.target.owner,game.target.sid).pose_source].mesh
 		game.ghost.global_transform = game.components.slot_pose(game.target.owner,game.target.sid)
 		game.ghost.visible = true
 		return
 	if game.target.is_empty():return
-	var allowed: Array = [game.pad]
-	if game.target.has("owner"):allowed.append(game.assembly_node(game.model.top_level(game.target.owner)))
-	elif is_instance_valid(game.foot):allowed.append(game.foot)
-	if not distant and not (access(allowed) if access_result == null else access_result).is_empty():return
-	if game.target.type == "slot" and HeelAssemblyState.KINDS.has(game.selected_kind):
-		if not game.state.reason(game.selected_kind,game.target.index).is_empty() or game.state.count_at(game.selected_kind,"pocket") == 0:return
-		var uid: String = game.slot_sources[game.selected_kind][game.target.index]
-		game.ghost.mesh = game.source[uid].mesh
-		var pose: Transform3D = game.source["FA-302__001"].transform.affine_inverse()*game.source[uid].transform
-		game.ghost.global_transform = game.pad.global_transform*pose
-		game.ghost.visible = true
-	elif game.target.type == "mount" and game.state.pad_location == "held" and game.model.placement_error(game.target.get("owner",game.default_parent_id()),game.target.mount,game.active_build).is_empty():
-		game.ghost.mesh = game.source[game.source_uid(game.state.pad_id)].mesh
-		game.ghost.global_transform = game.mount_transform()
-		game.ghost.visible = true
-		show_assembly_ghost()
-	elif game.target.type == "prep" and game.state.pad_location == "held":
-		game.ghost.mesh = game.source[game.source_uid(game.state.pad_id)].mesh
-		game.ghost.global_transform = game.stations[game.target.get("station","prep")].global_transform
-		game.ghost.visible = true
-		show_assembly_ghost()
+	if not game.target.type in ["mount","prep"]:return
+	var owner: String = game.target.build
+	if game.model.assemblies[owner].location != "held":return
+	if not distant and not (access(target_receivers()) if access_result == null else access_result).is_empty():return
+	if game.target.type == "mount" and not game.model.placement_error(game.target.owner,game.target.mount,owner).is_empty():return
+	game.ghost.global_transform = game.placement_destination()
+	game.ghost.visible = true
+	show_assembly_ghost(owner)
 
 func snap_guidance_message() -> String:
 	return "Move closer to attach" if game.camera.global_position.distance_to(game.target.point) > game.REACH else "Aim at the highlighted connection to attach"
@@ -364,11 +329,13 @@ func snap_guidance_available() -> bool:
 	if game.target.has("discovery_hit") and not can_see(game.target.discovery_hit,[game.assembly_node(game.model.top_level(game.target.get("owner",game.target.get("build",""))))],true):return false
 	return snap_candidate_valid(game.target)
 
-func show_assembly_ghost() -> void:
+func show_assembly_ghost(owner: String = "") -> void:
+	if owner.is_empty():owner = game.target.get("build",game.held_build())
+	if owner.is_empty():return
 	game.ghost.mesh = null
-	var pieces = game.runtime.visual_pieces(game.active_build)
-	var key = game.active_build
-	for member in game.runtime.descendants(game.active_build):key += ":"+member+":"+str(game.assembly_node(member).get_meta("visual_revision",0))
+	var pieces = game.runtime.visual_pieces(owner)
+	var key = owner
+	for member in game.runtime.descendants(owner):key += ":"+member+":"+str(game.assembly_node(member).get_meta("visual_revision",0))
 	if key != game.ghost_assembly_signature:
 		for child in game.ghost.get_children():
 			game.ghost.remove_child(child)
@@ -380,7 +347,7 @@ func show_assembly_ghost() -> void:
 			preview.transform = piece.transform
 			preview.material_override = game.ghost_material
 			preview.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			preview.set_meta("component_uid",visual.get_meta("component_uid",visual.get_meta("installed_uid","")))
+			preview.set_meta("component_uid",visual.get_meta("component_uid",""))
 			preview.set_meta("source_uid",visual.get_meta("source_uid",""))
 			preview.set_meta("body_visual",visual)
 			game.ghost.add_child(preview)
@@ -390,16 +357,4 @@ func show_assembly_ghost() -> void:
 		child.visible = is_instance_valid(visual) and visual.visible
 
 func update_markers() -> void:
-	var previous_build = game.active_build
-	var marker_index = 0
-	for id in game.builds:
-		if game.components.is_component_build(id):continue
-		game._activate(id)
-		for i in range(4):
-			var point = game.connection(i)
-			var marker = game.socket_markers[marker_index]
-			marker_index += 1
-			marker.visible = ["prep","foot"].has(game.state.pad_location) and game.camera.global_position.distance_to(point)<3.5 and can_see(point,[game.pad,game.foot]) and game.state.slots.bolt[i] == ""
-			marker.global_position = point
-	game._activate(previous_build)
-
+	game.components.update_markers()

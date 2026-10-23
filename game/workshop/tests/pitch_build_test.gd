@@ -1,4 +1,4 @@
-extends "res://tests/demo_test.gd"
+extends "res://tests/kit/node_runner.gd"
 ## Full source-backed actuator loop through desktop collection, targeting and placement.
 var installed_count: int = 0
 var swap_identical: bool = false
@@ -36,14 +36,7 @@ func aim(point: Vector3, distance: float = 1.35) -> void:
 	if game.foot_fixture != null and game.held_build() == "pitch" and point.distance_to(game.mount_point("pitch","foot","pitch")) < 0.001:
 		await fixture_pose("upright")
 		point = game.mount_point("pitch","foot","pitch")
-		game.player.global_position = Vector3(point.x-distance,0.025,point.z)
-		game.player.velocity = Vector3.ZERO
-		var direction: Vector3 = point-game.camera.global_position
-		game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
-		game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
-		await frames(5)
-		game._update_target()
-		game._update_ghost()
+		await player_driver().stage_aim("upright actuator mount",point,Vector3(point.x-distance,.025,point.z))
 		return
 	await super.aim(point,distance)
 
@@ -76,14 +69,7 @@ func aim_exterior_eye(owner: String, sid: String) -> void:
 	var frame_x: float = game.source[game.components.frame_source(owner)].transform.origin.x
 	var outward: Vector3 = game.assembly_frame(owner).basis*Vector3(1 if slot_x >= frame_x else -1,0,0)
 	var position: Vector3 = point+outward.normalized()*1.6
-	game.player.global_position = Vector3(position.x,0.025,position.z)
-	game.player.velocity = Vector3.ZERO
-	var direction: Vector3 = point-game.camera.global_position
-	game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
-	game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
-	await frames(5)
-	game._update_target()
-	game._update_ghost()
+	await player_driver().stage_aim("actuator exposed connection",point,Vector3(position.x,.025,position.z))
 
 func aim_parent_connection(owner: String, sid: String) -> void:
 	# Follow the actual exposed connection face. Cradle fasteners approach from
@@ -93,14 +79,7 @@ func aim_parent_connection(owner: String, sid: String) -> void:
 	var exposed_axis: Vector3 = Vector3(offset[0],offset[1],offset[2]).normalized()
 	var approach: Vector3 = game.components.slot_pose(owner,sid).basis*exposed_axis
 	var position: Vector3 = point+approach.normalized()*1.2
-	game.player.global_position = Vector3(position.x,0.025,position.z)
-	game.player.velocity = Vector3.ZERO
-	var direction: Vector3 = point-game.camera.global_position
-	game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
-	game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
-	await frames(5)
-	game._update_target()
-	game._update_ghost()
+	await player_driver().stage_aim("actuator exposed connection",point,Vector3(position.x,.025,position.z))
 
 func place_slot(owner: String, sid: String) -> bool:
 	var d: Dictionary = game.model.slot_definition(owner,sid)
@@ -124,8 +103,8 @@ func place_slot(owner: String, sid: String) -> bool:
 	elif owner == "foot":await aim_parent_connection(owner,sid)
 	else:await aim(game.components.slot_point(owner,sid),1.6)
 	await frames(100 if not game.model.held_item().is_empty() else 12)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	var target_ok: bool = game.target.get("type","") == "component" and game.target.get("owner","") == owner
 	var matched: String = game.target.get("sid","")
 	var before: int = game.model.assemblies[owner].history.size()
@@ -209,15 +188,15 @@ func run(workshop: Node) -> void:
 	await frames(40)
 	await aim(game.stations.prep3.global_position)
 	await frames(40)
-	game._update_target()
+	game.automation.refresh_target()
 	click()
 	# Inspect pad geometry while carrying another recipe's selection.
 	game.model.move_assembly("pad_1","station:prep")
-	game._activate("pad_1")
-	game._set_pad_station("prep")
+	game.automation.select_build("pad_1")
+	expect(game.automation.suspend_at_station("pad_1","prep").is_empty(),"Stage selected build at station")
 	game.model.stock_pocket("h-12030")
-	await aim(game.connection(0))
-	expect(game.target.get("type","")=="slot" and game.hud.target_label.text.contains("M12"),"Pad target explains a different recipe's selected part without a missing-title error")
+	await aim(game.components.slot_point("pad_1","sleeve_0"))
+	expect(game.target.get("type","")=="component" and game.hud.target_label.text.contains("M12"),"Pad target explains a different recipe's selected part without a missing-title error")
 	game.model.move_assembly("pad_1","loose")
 	game.bodies.pad_1.reparent(game)
 	game.bodies.pad_1.global_position = game.home_position("pad_1")
@@ -251,14 +230,14 @@ func run(workshop: Node) -> void:
 		if page_index == 0:
 			expect(game.model.assemblies.pitch.slots["FA-510__001"].is_empty(),"First manual page completes with no casing in the fixture")
 			await aim(game.stations.prep3.global_position)
-			game._rotate_station(Vector2(65,40))
+			game.desktop_input.rotate_station(Vector2(65,40))
 			await frames(15)
 			expect(game.bodies.pitch.global_transform.is_equal_approx(game.stations.prep3.global_transform),"Actuator follows preparation-station rotation after physics settles")
 			game.reset_station("prep3")
 			await frames(15)
 		if page_index==3:
 			game.hud.open_manual("pad_2")
-			expect(game.builds.pad_2.installed("sleeve")==0,"Actuator progress leaves both pad branches untouched")
+			expect(build_state("pad_2").installed("sleeve")==0,"Actuator progress leaves both pad branches untouched")
 			game.hud.open_manual("pitch")
 	expect(game.model.milestone("pitch","prepared") and installed_count==90,"Complete 91-piece actuator includes its starting motor and later housing")
 	var total_triangles = 0
@@ -272,7 +251,7 @@ func run(workshop: Node) -> void:
 			total_triangles += triangles
 			if visual.visible:visible_triangles += triangles
 	expect(hidden_count==38 and visible_triangles<total_triangles,"Opaque housing hides 38 enclosed meshes while retaining exterior fasteners and logical parts")
-	FileAccess.open("res://verification/pitch-visibility-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"hidden_meshes":hidden_count,"total_triangles":total_triangles,"visible_triangles":visible_triangles},"  "))
+	write_evidence("res://verification/pitch-visibility-audit.json",{"hidden_meshes":hidden_count,"total_triangles":total_triangles,"visible_triangles":visible_triangles})
 	game.hud.open_manual("pitch",13)
 	await review_checkpoint("pitch","ready")
 	await aim(game.bodies.pitch.global_position)
@@ -282,9 +261,9 @@ func run(workshop: Node) -> void:
 	expect(not game.model.placement_error("foot","pitch","pitch").is_empty(),"Actuator mounting requires both secured clevises")
 	await aim(game.stations.prep3.global_position)
 	await frames(40)
-	game._update_target()
+	game.automation.refresh_target()
 	click()
-	expect(game.builds.pitch.pad_location=="prep","Actuator can return to a preparation station")
+	expect(build_state("pitch").pad_location=="prep","Actuator can return to a preparation station")
 	for page_index in [3,4]:
 		if not await complete_page("foot",page_index):await conclude();return
 	game.hud.open_manual("foot",5)
@@ -292,10 +271,10 @@ func run(workshop: Node) -> void:
 	key(KEY_E)
 	await aim(Vector3(-6.4,1.5,1.8))
 	await frames(100)
-	await aim(game.mount_point("pitch"),2.0)
+	await aim(game.mount_point("pitch","foot","pitch"),2.0)
 	await frames(100)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	expect(game.target.get("mount","")=="pitch" and game.ghost.visible,"Completed actuator previews at its receiving connections")
 	var complete_preview = game.ghost.get_child_count()==91
 	for visual in game.ghost.get_children():
@@ -333,12 +312,12 @@ func run(workshop: Node) -> void:
 	await aim(game.foot.global_position,2.5)
 	if game.foot_fixture != null:
 		var before_rotation: Basis = game.foot.basis
-		game._rotate_station(Vector2(75,55))
+		game.desktop_input.rotate_station(Vector2(75,55))
 		expect(game.foot.basis.is_equal_approx(before_rotation),"Cursor rotation cannot freely turn the supported foot")
 		if not await fixture_pose("sole_left"):await conclude();return
 		expect(not game.foot.basis.is_equal_approx(before_rotation),"Powered equipment physically turns the mounted actuator with its foot")
 	else:
-		game._rotate_station(Vector2(75,55))
+		game.desktop_input.rotate_station(Vector2(75,55))
 		await frames(15)
 	var mounted_pose: Transform3D = game.foot.global_transform*Transform3D(Basis.IDENTITY,-game.FOOT_CENTER)*game.source["FA-510__001"].transform
 	expect(game.bodies.pitch.global_transform.is_equal_approx(mounted_pose),"Mounted actuator follows foot rotation after physics settles")
@@ -354,11 +333,11 @@ func run(workshop: Node) -> void:
 	expect(game.hud.page_body.text.contains("Pitch actuator: secured"),"Parent overview reports actuator preparation and installation")
 	# Parent undo removes eight retention pieces, then returns the intact child.
 	for i in range(9):key(KEY_Z)
-	expect(game.builds.pitch.pad_location=="prep" and game.model.milestone("pitch","prepared"),"Nested undo preserves all 91 child parts at a free station")
+	expect(build_state("pitch").pad_location=="prep" and game.model.milestone("pitch","prepared"),"Nested undo preserves all 91 child parts at a free station")
 	expect(game.model.assemblies.foot.slots["pitch/FA-220__001"]!="","Undoing the child mount retains its clevises")
 	game.hud.open_manual("pitch")
 	key(KEY_Z)
-	expect(not game.builds.pitch.prepared(),"Detached child can resume editing in its own manual")
+	expect(not build_state("pitch").prepared(),"Detached child can resume editing in its own manual")
 	for i in range(30):
 		if not game.model.milestone("pitch","enclosed"):break
 		key(KEY_Z)
@@ -369,6 +348,6 @@ func run(workshop: Node) -> void:
 
 func conclude() -> void:
 	var passed = checks.all(func(c):return c.passed)
-	FileAccess.open("res://verification/pitch-build-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":rendered},"  "))
+	write_evidence("res://verification/pitch-build-audit.json",{"passed":passed,"checks":checks,"rendered":rendered})
 	print("PITCH_BUILD_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	await finish(passed)

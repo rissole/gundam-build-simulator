@@ -1,21 +1,12 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Existing player foot saves must keep loading through every refactor.
 ## The fixture was captured from the pre-consolidation baseline (commit 889986b).
 const Store = preload("res://scripts/save_store.gd")
 const FIXTURE = "res://tests/fixtures/foot-save-baseline.json"
 const PINNED_FINGERPRINT = "8c6c1c21c92c0bdf24d45f655606de580816d1f6ccb3806ebbe35e09d37b9293"
-var checks = 0
-var failures = 0
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, label: String) -> void:
-	checks += 1
-	if not ok:
-		failures += 1
-		push_error(label)
-	print("CHECK ","PASS " if ok else "FAIL ",label)
 
 func run() -> void:
 	var game = load("res://scenes/workshop.tscn").instantiate()
@@ -39,5 +30,6 @@ func run() -> void:
 		expect(game.hud.manual_id == "pitch","Restored manual selection")
 	game.free()
 	DirAccess.remove_absolute(temporary)
-	print(("FOOT_SAVE_PIN PASS " if failures == 0 else "FOOT_SAVE_PIN FAIL ")+"%d checks" % checks)
-	quit(1 if failures else 0)
+	var passed: bool = checks.all(func(check):return check.passed)
+	print(("FOOT_SAVE_PIN PASS " if passed else "FOOT_SAVE_PIN FAIL ")+"%d checks" % checks.size())
+	quit(0 if passed else 1)

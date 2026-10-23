@@ -1,4 +1,4 @@
-extends "res://tests/m2_crane_test_base.gd"
+extends "res://tests/kit/crane_suite.gd"
 func actual_key(code: Key) -> void:
 	for down in [true,false]:
 		var event = InputEventKey.new();event.physical_keycode=code;event.keycode=code;event.pressed=down

@@ -107,7 +107,7 @@ func rebuild_stage(owner: String, service: bool, preview: bool, exposed: bool = 
 		child.queue_free()
 	for child in game.bodies.pitch.get_children():
 		if child is MeshInstance3D:
-			if owner == "foot" and game.builds.pitch.pad_location != "foot":continue
+			if owner == "foot" and build_state("pitch").pad_location != "foot":continue
 			var casing: bool = child.get_meta("source_uid","")=="FA-510__001"
 			if exposed and casing:continue
 			if not service and not exposed and not child.visible:continue
@@ -134,8 +134,8 @@ func aim_parent_work(point: Vector3, distance: float = 1.2) -> void:
 	game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
 	game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
 	await frames(5)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 
 func save_inspection(path: String, center: Vector3, size: float, direction: Vector3, up: Vector3) -> void:
 	lens.position = center+direction.normalized()*maxf(size*3,0.5)
@@ -229,7 +229,7 @@ func review_checkpoint(owner: String, phase: String, sid: String = "") -> void:
 	records.append(record)
 	if phase in ["ready","mounted"]:
 		await capture_rotation(owner,record,stem)
-	FileAccess.open(output_dir+"captures.json",FileAccess.WRITE).store_string(JSON.stringify({"engine":Engine.get_version_info(),"display":DisplayServer.get_name(),"renderer":RenderingServer.get_current_rendering_method(),"fingerprints":fingerprints,"selected_pages":selected_pages,"pages":page_records,"records":records,"visual_approval":false},"  "))
+	write_evidence(output_dir+"captures.json",{"engine":Engine.get_version_info(),"display":DisplayServer.get_name(),"renderer":RenderingServer.get_current_rendering_method(),"fingerprints":fingerprints,"selected_pages":selected_pages,"pages":page_records,"records":records,"visual_approval":false})
 	print("REVIEW_CAPTURE ",stem)
 
 func capture_rotation(owner: String, record: Dictionary, stem: String) -> void:
@@ -266,6 +266,6 @@ func conclude() -> void:
 	for page in selected_pages:expect(page_records.has(page), "Requested page captured: " + page)
 	expect(input_hashes() == fingerprints,"Capture inputs remained unchanged throughout the rendered run")
 	var passed = checks.all(func(c):return c.passed)
-	FileAccess.open(output_dir+"behavior.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":true},"  "))
+	write_evidence(output_dir+"behavior.json",{"passed":passed,"checks":checks,"rendered":true})
 	print("PITCH_VISUAL_CAPTURE ","PASS" if passed else "FAIL"," ",checks.size()," checks; ",records.size()," checkpoints. Images require human/model visual inspection.")
 	await finish(passed)

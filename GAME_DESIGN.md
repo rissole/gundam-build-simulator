@@ -413,6 +413,15 @@ Reintegration should mean adding equipment and content to the foot profile, not
 porting milestone-specific classes. The consolidation was intended to be
 behaviour-neutral, and foot saves keep their recorded fingerprint.
 
+The current prototype lane exposes the bounded M2 retaining-half and crane
+examples, with supplied construction and independent saves. The complete
+leg-to-robot journey remains M3 and requires explicit go-ahead after M2 replay.
+Shared assembly projection now handles heel hardware alongside other components;
+the retained single/two-pad profiles verify that earlier loop. Architecture
+checks do not establish player acceptance. On 2026-10-23 the user accepted the
+revised M2 playtest: “m2 plays great. please commit.” This authorizes the
+consolidation commit; M3 still requires explicit go-ahead.
+
 ## Final assembly workflow — design decisions, 2026-10-23
 
 These decisions guide the next workshop design iteration; they are not yet

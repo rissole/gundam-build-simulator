@@ -216,14 +216,14 @@
       "source_id": "PV-120__001",
       "part_id": "PV-120",
       "kind": "pv-ring-half",
-      "location": "support:pelvis_ring_rack_1"
+      "location": "bin"
     },
     {
       "instance_id": "PV-120__002",
       "source_id": "PV-120__002",
       "part_id": "PV-120",
       "kind": "pv-ring-half",
-      "location": "support:pelvis_ring_rack_2"
+      "location": "bin"
     },
     {
       "instance_id": "LG-W24__005",
@@ -287,13 +287,23 @@
       "id": "left_leg",
       "definition": "left_leg",
       "label": "Structural left leg",
-      "location": "support:leg_fixture"
+      "location": "support:m2_leg_rail",
+      "home": [
+        2.3,
+        0.75,
+        14.4
+      ]
     },
     {
       "id": "pelvis",
       "definition": "pelvis",
       "label": "Pelvis gantry",
-      "location": "fixture"
+      "location": "fixture",
+      "home": [
+        13.0,
+        10.6,
+        26.0
+      ]
     }
   ],
   "supports": {
@@ -302,19 +312,20 @@
         "foot"
       ]
     },
-    "foot_hoist": {
+    "m2_leg_rail": {
       "assemblies": [
-        "foot"
-      ]
-    },
-    "leg_fixture": {
-      "assemblies": [
+        "left_leg"
+      ],
+      "assembly_ids": [
         "left_leg"
       ]
     },
-    "leg_hoist": {
-      "assemblies": [
-        "left_leg"
+    "m2_service_crane": {
+      "parts": [
+        "lg-thigh-spar"
+      ],
+      "item_ids": [
+        "LG-120__001"
       ]
     },
     "leg_shin_rack": {
@@ -330,22 +341,6 @@
     "leg_spar_rack": {
       "parts": [
         "lg-thigh-spar"
-      ]
-    },
-    "pelvis_ring_rack_1": {
-      "parts": [
-        "pv-ring-half"
-      ],
-      "item_ids": [
-        "PV-120__001"
-      ]
-    },
-    "pelvis_ring_rack_2": {
-      "parts": [
-        "pv-ring-half"
-      ],
-      "item_ids": [
-        "PV-120__002"
       ]
     }
   },
@@ -2183,7 +2178,7 @@
     "leg_mount": {
       "parent": "pelvis",
       "slot": "left_leg",
-      "support": "leg_hoist"
+      "support": "m2_leg_rail"
     },
     "parts": {
       "LG-100__001": {
@@ -2214,26 +2209,6 @@
           -2,
           1.5,
           22
-        ]
-      },
-      "PV-120__001": {
-        "owner": "pelvis",
-        "slot": "ring_1",
-        "support": "pelvis_ring_rack_1",
-        "stock_position": [
-          10,
-          1.5,
-          23
-        ]
-      },
-      "PV-120__002": {
-        "owner": "pelvis",
-        "slot": "ring_2",
-        "support": "pelvis_ring_rack_2",
-        "stock_position": [
-          10,
-          1.5,
-          29
         ]
       }
     }

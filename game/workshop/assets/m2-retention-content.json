@@ -252,13 +252,23 @@
       "id": "left_leg",
       "definition": "left_leg",
       "label": "Structural left leg",
-      "location": "support:m2_leg_rail"
+      "location": "support:m2_leg_rail",
+      "home": [
+        2.3,
+        0.75,
+        14.4
+      ]
     },
     {
       "id": "pelvis",
       "definition": "pelvis",
       "label": "Pelvis gantry",
-      "location": "fixture"
+      "location": "fixture",
+      "home": [
+        13.0,
+        10.6,
+        26.0
+      ]
     }
   ],
   "supports": {
@@ -358,10 +368,7 @@
     "scenario_version": 2,
     "equipment_version": 2,
     "route_version": 2,
-    "remove_supports": [
-      "pelvis_ring_rack_1",
-      "pelvis_ring_rack_2"
-    ],
+    "remove_supports": [],
     "save_path": "user://m2-retention-save.json",
     "staged_slots": {
       "left_leg": [

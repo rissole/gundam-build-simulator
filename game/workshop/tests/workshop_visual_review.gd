@@ -1,4 +1,4 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Opt-in survey of the live workshop, at standing eye height. Run with:
 ## ./play.command --windowed --resolution 1440x900 --disable-render-loop \
 ##   --fixed-fps 60 --script tests/workshop_visual_review.gd -- --review-tag=before
@@ -25,8 +25,8 @@ func capture(id: String, eye: Vector3, point: Vector3, hud: bool = true) -> void
 	game.camera.rotation = Vector3.ZERO
 	game.camera.look_at(point)
 	game.player.velocity = Vector3.ZERO
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	game.hud.refresh()
 	game.hud.visible = hud
 	for frame in range(3):
@@ -101,7 +101,7 @@ func run() -> void:
 
 func finish(inputs: Dictionary) -> void:
 	var report = {"engine":Engine.get_version_info(),"display":DisplayServer.get_name(),"renderer":RenderingServer.get_current_rendering_method(),"input_hashes":inputs,"inputs_unchanged":inputs == hashes(),"captures":records,"visual_approval":false}
-	FileAccess.open(output_dir.path_join("captures.json"),FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
+	write_evidence(output_dir.path_join("captures.json"),report)
 	print("WORKSHOP_REVIEW ",ProjectSettings.globalize_path(output_dir)," ",records.size()," captures; inputs unchanged=",report.inputs_unchanged)
 	game.chime.stop()
 	game.chime.stream = null

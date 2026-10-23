@@ -1,10 +1,5 @@
-extends SceneTree
-var checks: Array[Dictionary] = []
+extends "res://tests/kit/harness.gd"
 var model = AssemblyModel.new()
-func expect(ok: bool, label: String) -> void:
-	checks.append({"check":label,"passed":ok})
-	if not ok:push_error(label)
-
 func _initialize() -> void:
 	var data = HeelAssemblyState.definition_data()
 	var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-actuator-definitions.json"))
@@ -97,6 +92,6 @@ func _initialize() -> void:
 	expect(model.items.values().all(func(i):return i.location=="installed"),"Combined completion installs exactly all 135 identities")
 	expect(model.integrity_errors().is_empty(),"Shared fasteners and combined completion preserve all invariants")
 	var passed: bool = checks.all(func(c):return c.passed)
-	FileAccess.open("res://verification/pitch-model-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks},"  "))
+	write_evidence("res://verification/pitch-model-audit.json",{"passed":passed,"checks":checks})
 	print("PITCH_MODEL_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

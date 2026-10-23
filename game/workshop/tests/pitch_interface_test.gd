@@ -1,8 +1,7 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Inspect actual imported triangles at receiving bores. Slot/source agreement
 ## cannot detect missing holes, so these checks deliberately avoid slot poses.
 var source: Dictionary = {}
-var checks: Array = []
 var axial = Vector3(0,520,500).normalized()
 var side = Vector3(0,500,-520).normalized()
 var origin = Vector3(-0.54,0.48,-0.8)
@@ -131,7 +130,7 @@ func _initialize() -> void:
 	for x in [-410,-330]:
 		clear_bore("FA-220__002",from_model(Vector3(x,300,1095)),from_model(Vector3(x,300,1023)),11.5,"Ring clevis bolt clears full bracket depth %d"%x,15)
 	var passed = checks.all(func(c):return c.passed)
-	FileAccess.open("res://verification/pitch-interface-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"asset_sha256":FileAccess.get_sha256("res://assets/foot-fa01.glb")},"  "))
+	write_evidence("res://verification/pitch-interface-audit.json",{"passed":passed,"checks":checks,"asset_sha256":FileAccess.get_sha256("res://assets/foot-fa01.glb")})
 	print("PITCH_INTERFACE_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	scene.free()
 	quit(0 if passed else 1)

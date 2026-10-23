@@ -6,6 +6,7 @@ const LEG_CONTENT = "res://assets/leg-prototype-content.json"
 const FOOT_INTRO = "Prepare the heel pads and pitch actuator, then secure them to the foot."
 const RETENTION_INTRO = "M2 Hip retainer: a completed leg starts on its home rail. Dock upward, pocket the hardware, then carry ONE retaining half onto the lift shelf. Ride up and fit it. Use E / click / Q / Z; the holder stays supporting the leg."
 const CRANE_INTRO = "M2 Crane delivery: completed foot and pre-beam leg supplied. Use Go to / Down / Up at the crane console, attach both magnetic ends, deliver the Upper-leg beam, fit four washer/bolt pairs and stow both ends."
+const FOOT_COLLIDER_FAMILIES = ["FA-100","FA-101","FA-102","FA-103","FA-104","FA-105","FA-106","FA-200","FA-201","FA-300","FA-301","FA-302","FA-303","FA-304","FA-400","FA-401","FA-402","FA-403","FA-404"]
 const IDS = ["foot","pads_single","pads_multi","leg_bay_retention","leg_bay_crane"]
 
 static func resolve(user_args: Array, tree: SceneTree, override: String = "") -> Dictionary:
@@ -28,7 +29,7 @@ static func profile(id: String, legacy_stations: bool = false) -> Dictionary:
 	if not id in IDS:
 		push_error("Unknown scenario profile: "+id)
 		id = "foot"
-	var p = {"id":id,"pads":"pair","pitch":true,"leg_content":"","trial":"","layout":"component_room","equipment":["foot_fixture"],"staging":"","session":{"codec":"workshop","path":SAVE_PATH},"spawn":[],"intro":FOOT_INTRO,"station_rotation":true,"prep_stations":["prep","prep2","prep3"]}
+	var p = {"parent_locations":{},"foot_collider_families":FOOT_COLLIDER_FAMILIES,"id":id,"pads":"pair","pitch":true,"leg_content":"","trial":"","layout":"component_room","equipment":["foot_fixture"],"staging":"","session":{"codec":"workshop","path":SAVE_PATH},"spawn":[],"intro":FOOT_INTRO,"station_rotation":true,"prep_stations":["prep","prep2","prep3"]}
 	match id:
 		"foot":
 			if legacy_stations:p.equipment = ["legacy_foot_station"]
@@ -38,6 +39,7 @@ static func profile(id: String, legacy_stations: bool = false) -> Dictionary:
 			p.pitch = false;p.equipment = ["legacy_foot_station"];p.prep_stations = ["prep","prep2"]
 		"leg_bay_retention","leg_bay_crane":
 			var trial: String = id.trim_prefix("leg_bay_")
+			p.parent_locations = {"foot":"support:foot_carrier"}
 			p.leg_content = LEG_CONTENT;p.trial = trial;p.layout = "leg_bay";p.staging = "leg_bay"
 			p.equipment = ["leg_rail","hip_lift","lift_shelf" if trial == "retention" else "service_crane"]
 			p.session = {"codec":"trial","path":"user://m2-"+trial+"-save.json"}

@@ -1,15 +1,11 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 const Geometry = preload("res://scripts/leg_source_geometry.gd")
+const Content = preload("res://scripts/workshop_content.gd")
 const Save = preload("res://scripts/save_model.gd")
-var checks: Array = []
 var sources: Dictionary = {}
 var model = AssemblyModel.new()
 var data: Dictionary
 var scenario: Dictionary
-
-func expect(value: bool, label: String) -> void:
-	checks.append({"check": label, "passed": value})
-	if not value: push_error(label)
 
 func document(path: String) -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string("res://assets/" + path))
@@ -21,8 +17,7 @@ func run() -> void:
 	data = HeelAssemblyState.definition_data()
 	for path in ["pitch-actuator-definitions.json", "leg-prototype-definitions.json"]:
 		var overlay = document(path)
-		data.parts.merge(overlay.parts, true)
-		data.assemblies.merge(overlay.assemblies, true)
+		Content.apply_definitions(data,overlay)
 	var content = document("leg-prototype-content.json")
 	scenario = document("pitch-workshop.json")
 	scenario.parent.location = "support:foot_carrier"
@@ -59,8 +54,8 @@ func run() -> void:
 	expect(model.milestone("left_leg", "structural_ready"), "Manual order produces structural readiness")
 	expect(not model.milestone("left_leg", "operational"), "Prototype does not claim powered operational readiness")
 	expect(model.assemblies.foot.parent == "left_leg" and model.assemblies.pitch.parent == "foot", "Deep child ownership is retained")
-	expect(model.transfer_supported_assembly("left_leg", "leg_fixture", "leg_hoist").is_empty(), "Complete leg transfers from fixture to hoist")
-	expect(model.install_supported("pelvis", "left_leg", "left_leg", "leg_hoist").ok, "Hoist seats ball in pelvis before ring retention")
+	expect(model.assemblies.left_leg.location == "support:m2_leg_rail", "Complete leg remains on its construction rail")
+	expect(model.install_supported("pelvis", "left_leg", "left_leg", "m2_leg_rail").ok, "Rail seats ball in pelvis before ring retention")
 	expect(not model.milestone("pelvis", "left_leg_secured"), "Seated ball is distinct from retained leg")
 	complete("pelvis")
 	expect(model.milestone("pelvis", "left_leg_secured"), "Both ring halves and all bolts retain the leg")
@@ -72,23 +67,22 @@ func run() -> void:
 	Save.apply(snapshot, restored)
 	expect(Save.capture(restored) == snapshot, "Persistence restores exact nested IDs, progress and supports")
 	# Reverse real parent history; hardware can return to pockets, large halves
-	# require the now-free rack. Finally the hoist receives the same complete leg.
+	# return through ordinary component ownership. Finally the rail receives the same complete leg.
 	while model.assemblies.pelvis.history.size() > 1:
 		var sid: String = model.assemblies.pelvis.history.back().slot
-		var definition = model.slot_definition("pelvis", sid)
-		var result = model.undo_supported("pelvis", model.items[model.assemblies.pelvis.slots[sid]].source_id.replace("PV-120__00", "pelvis_ring_rack_")) if definition.get("support_required", false) else model.undo("pelvis")
+		var result = model.undo("pelvis")
 		expect(result.ok, "Parent retention reverses: " + sid)
-	expect(not model.undo("pelvis").ok, "Bare ball removal still requires hoist")
-	expect(model.undo_supported("pelvis", "leg_hoist").ok, "Hoist recovers the same complete leg")
+	expect(not model.undo("pelvis").ok, "Bare ball removal still requires rail support")
+	expect(model.undo_supported("pelvis", "m2_leg_rail").ok, "Rail recovers the same complete leg")
 	expect(model.milestone("left_leg", "structural_ready") and model.assemblies.foot.parent == "left_leg", "Removal preserves nested structural work")
-	expect(model.install_supported("pelvis", "left_leg", "left_leg", "leg_hoist").ok, "Same leg identity reseats")
+	expect(model.install_supported("pelvis", "left_leg", "left_leg", "m2_leg_rail").ok, "Same leg identity reseats")
 	complete("pelvis")
 	expect(model.integrity_errors().is_empty(), "Undo and reinstallation preserve all physical identities")
 	Geometry.add_sources(sources, content)
 	geometry_checks()
 	var passed = checks.all(func(check): return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification")
-	FileAccess.open("res://verification/leg-content-audit.json", FileAccess.WRITE).store_string(JSON.stringify({"passed": passed, "checks": checks}, "  "))
+	write_evidence("res://verification/leg-content-audit.json",{"passed": passed, "checks": checks})
 	print("LEG_CONTENT_AUDIT ", "PASS" if passed else "FAIL", " ", checks.size(), " checks")
 	quit(0 if passed else 1)
 
@@ -117,6 +111,10 @@ func complete(owner: String) -> void:
 				var carry: String = data.parts[definition.accepts].carry_class
 				if carry == "equipment":
 					support = String(model.items[uid].location).trim_prefix("support:")
+					var receiving: String = definition.get("source_supports",[support])[0]
+					if support != receiving:
+						expect(model.transfer_supported_item(uid,support,receiving).is_empty(),"Transfer supported component to "+receiving)
+						support = receiving
 				elif carry == "pocket":
 					if model.items[uid].location != "pocket": model.transfer(definition.accepts, "bin", "pocket", uid)
 				else:

@@ -1,370 +1,171 @@
-# Leg workshop: playtest state and next steps
+# Workshop: active plan and playtest state
 
-Updated 2026-10-23. This is the current continuation note for the expanded
-workshop. The [milestone record](leg-milestone.md) and
-[interface specification](leg-prototype-interface.md) describe the implemented
-structural subset and its historical verification. Superseded M1/M2 handoffs,
-the earlier delivery-team assignments and the delivery retrospective are archived
-in [history/leg-workshop-m1-m2-handoffs.md](history/leg-workshop-m1-m2-handoffs.md).
+Updated 2026-10-23. Read this before continuing workshop development. The default
+base game is the supported-foot workshop: two heel pads and the pitch actuator.
+The upright-hoist workshop and isolated M1 trial are retired. The M-series is a
+prototype lane using profiles on reusable equipment, layout, assembly and save
+modules; it is intended to fold back into the base game later.
 
-## Architecture consolidation — 2026-10-23
+## Current work: architecture consolidation before M3
 
-Before M3, the workshop was consolidated without intended gameplay changes.
-Default `./play.command` now opens the foot workshop (pads plus pitch actuator),
-the only base game. The upright-hoist leg workshop and the M1 trial are retired.
-M2 trials run as scenario profiles on shared feature modules (leg bay layout,
-leg rail, equipment registry, hand slot, motion sweep, session codec) rather
-than `m1_*`/`m2_*` classes. The intent is that the M-series prototypes are later
-folded back into the base game by changing profiles, not by rewriting them.
-Foot saves keep their recorded fingerprint. Old M2 trial saves may need Reset.
-Headless regressions cover this, but the human replay of the foot default and
-both M2 trials is still outstanding.
+The continuation request is to verify the Cursor consolidation plan and finish
+its remaining architecture, test and documentation work without changing gameplay.
+The first verification found phase 4 partially implemented despite its completed
+status: the layout still had runtime/Python literals, overlays copied whole
+recipes, crane security used a prefix/count, and trial saves skipped common
+world validation. These gaps have been repaired and the integrated regression gate passed.
+The user accepted the M2 replay on 2026-10-23. The default-foot preservation
+replay is still unconfirmed; it does not block the requested commit.
+The local Cursor plan is
+`/Users/blakeyboy/.cursor/plans/workshop_architecture_consolidation_aa30c8a8.plan.md`.
 
-## Current state
-
-The structural leg, supported transfers, hip retention, removal and save/resume
-are implemented. The 2026-10-22 headless run passed 38 cases / 4,539 checks. Those
-results establish bounded mechanical behavior, not acceptance of the player
-experience. The new parts remain procedural Godot blockouts; detailed Blender
-assets, powered leg mechanisms, armor and further robot branches are deferred.
-
-The corrected M1 layout/scale trial is now human-accepted: on 2026-10-23 the user
-said “Yep looks good - plan next milestone.” Rails and elevators remain positive
-constraints. The user subsequently authorized “OK implement and verify M2.” M2
-initial implementation was playtested. The current M2 feedback revision below
-replaces the console interaction and retaining carrier with modal crane controls
-and ordinary two-hand carrying plus a lift shelf. This revision awaits another
-human playtest; M3 remains unstarted and requires explicit go-ahead.
-
-The user supplied the feedback below after an initial, incomplete playthrough.
-It was explicitly deferred for a subsequent prototype iteration. The follow-up
-authorized recording this state and improving skills/instructions; it did not
-start the gameplay redesign.
-
-The subsequent 2026-10-23 design interview established the direction below.
-This file is the single active continuation plan, combining the original
-feedback, agreed direction, remaining questions and proposed implementation
-sequence. The execution team (now archived) and checks below were developed
-through three read-only subagent planning reviews. M1 implementation began on 2026-10-23;
-later checkpoints remain held for explicit human go-ahead. Confirmed gameplay choices are
-also recorded in [GAME_DESIGN.md](../../GAME_DESIGN.md#final-assembly-workflow--design-decisions-2026-10-23).
-
-## Player feedback to carry forward
-
-| Item | Observation | Next-iteration concern |
-| --- | --- | --- |
-| Leg-area controls | A messy, overlapping cluster of 14 buttons beside the knee lift. Procedures are intricate and specific to individual parts; labels overlap and are difficult to read. The interaction is not functional or engaging. | Use local tactile station buttons for leg machinery; resolve grouping, readable labels and feedback without exposing every internal operation. |
-| Final-bay controls | The seven buttons near final assembly have similar problems. | Separate crane tasks at the central console from local rail/lift operation; remove the overlapping task-button clusters. |
-| Final assembly lift | Very close to what the user imagined; a positive result. | Preserve the scale, satisfying onboard operation and physical ascent alongside the robot. Its primitive appearance is not the accepted visual target. |
-| Large-part support and transport | Leg pieces appear to float. The user cannot see or understand geometry, rails or cranes that would move them into the leg assembly area and then to the final gantry. This breaks immersion and omits an important part of the larger workshop picture. | Use the agreed leg construction rail and crane rigging to show continuous support. Verify staging, visibility, connection to loads and the complete route; controller state alone does not resolve the observation. |
-| PV-120 retaining halves | They look like parts the player can pick up, but remain static on a table. | Resolve collection and placement on the lift. The latest M2 feedback rejects the positioning arm. Use ordinary two-hand pickup and a lift shelf; keep small hardware in pockets. |
-
-## Agreed direction
-
-- Most component assembly happens at workstations. Final-bay lift work focuses
-  on mechanical retention, service connections and connection-area closures.
-- The torso grows in its supporting gantry from prepared sections and modules.
-- Build each leg horizontally on a supported rail fixture, travel toward the
-  robot, tilt upright, then raise the ball into its socket. Keep it supported
-  until the original two-piece retaining ring is fully bolted. The player uses
-  the personnel lift for retention and services. The latest M1 feedback
-  ([archived](history/leg-workshop-m1-m2-handoffs.md)) replaces the extra capture/support-frame handoff with holder-release interlocks.
-- Other major sections use crane delivery. At the source, the player attaches
-  individual magnetic cable ends to marked points on the component; cable
-  length adjusts automatically.
-- Crane movement uses **Up**, **Down** and **Go to <location>** at a central
-  physical console. Travel options appear only while Up. The fullscreen modal
-  freezes player look/movement, supports mouse or ↑/↓ plus E, and closes with Q.
-  A later PDA upgrade
-  reduces return trips; upgrade timing and acquisition remain open.
-- Leg stations use local tactile buttons. Preserve satisfying onboard lift
-  operation. Button grouping and motion semantics remain to be designed.
-- Keep the existing head-on-neck assembly sequence. Dedicated leg rails followed
-  by crane-served upper-body work provide novelty and progression.
-
-## Human playtest checkpoints
-
-These are explicit stop points requested by the user. At each checkpoint, finish
-the relevant implementation, integration and focused checks so the user receives
-a runnable result. Then stop progression and wait for their feedback and explicit
-go-ahead before starting the next wave. A passing test suite, completed agent
-assignment or elapsed waiting time does not authorize proceeding. The user may
-explicitly combine or waive checkpoints later.
-
-The primary coordinates the stop across agents: do not leave agents implementing
-the next wave in the background. Work already in flight must reach a coherent
-handoff before the checkpoint is presented. Feedback-driven repairs stay within
-the same checkpoint and are presented again when ready; do not quietly advance
-while acceptance remains unresolved.
-
-| Milestone | Runnable result and what the human does | What to judge | Work held until accepted | Status |
-| --- | --- | --- | --- | --- |
-| M1: workshop layout and scale | Walk a rough but functional equipment blockout. Inspect the horizontal leg station, foot-loading position, rails and final bay; operate sample travel/tilt/docking with a disclosed preassembled test load; board and ride the personnel lift. | Is the rail-to-robot journey understandable? Does the machinery visibly support the load? Do the workspace, movement and lift convey the intended scale, with useful access rather than floating parts? | Fixing the layout as the implementation contract, detailed controls and expansion of equipment operations. | Accepted after corrections — 2026-10-23; rails/elevators praised |
-| M2: hands-on equipment interactions | Use the central console, walk to the lowered beam, attach both magnetic ends and deliver the Upper-leg beam. Separately carry one retaining half via the lift shelf, seat and bolt it, then undo and bring it down. | Is attaching the crane satisfying? Are console tasks clear, and are the walks acceptable before the future PDA? Does the retaining-half interaction use familiar controls without becoming another operating system? Are tactile rail controls readable and understandable? | Multiplying crane operations and declaring the combined player journey ready for acceptance. | Feedback revision implemented — 2026-10-23; awaiting replay |
-| M3: complete leg-to-robot journey | Follow the updated manual through the new horizontal construction/handling work, actual crane delivery, rail travel, tilt, upward seating and lift-based retention. Secure both halves, release support, then reacquire support and try removal/return. Pause, save, quit and resume an unfinished portion. Previously completed foot work may be supplied to avoid repeating unrelated construction; disclose that staging. | Does assembly remain the main activity? Does the rail sequence feel substantial and varied? Is connection work on the lift satisfying and reachable? Can the player understand support release, recovery and instructions without developer explanation? | Extending the approach to the remaining existing equipment-handled parts or treating the example as accepted. | Not started |
-| M4: expanded workshop acceptance | Play the expanded current scenario from normal startup, switch between workstations, use the relevant crane and rail operations, interrupt with save/quit/resume and finish hip retention. Revisit any issues from M1–M3. | Have button clutter, floating-load presentation and static retaining halves actually been resolved? Are the successful lift scale/operation and small-part assembly experience preserved? Is any remaining friction or bug acceptable for this iteration? | Marking this iteration accepted/completed and moving into later feature branches. | Not started |
-
-M1 is a geometry/scale blockout, not a polished art milestone. Staged loads belong
-to an isolated test setup that preserves the normal saved workshop. M2's crane and
-retainer examples can be developed concurrently after M1; each must be runnable
-through normal controls before presenting the combined checkpoint. M3 depends
-on both interactions and their matching manuals. Do not implement extra robot
-branches or PDA progression to populate a checkpoint.
-
-For every handoff, include the exact launch command and scenario/save instructions,
-a short list of actions to try, known limitations, the focused check results and
-two or three concrete feedback prompts. Keep a reproducible test setup available
-so feedback does not require rebuilding hours of already verified components.
-The primary records the user's response and status in this table or directly
-below it, with date and outstanding issues. Keep all checkpoint records here.
-
-### M1 acceptance and M2 planning — 2026-10-23
-
-After replaying the corrections, the user said “Yep looks good - plan next
-milestone.” M1 is accepted for its layout/scale boundary. Preserve the rails,
-elevator experience, continuously supported docking, clear rejection messages and
-loaded Return. This does not establish acceptance of the unimplemented crane,
-retaining carrier, complete ring or holder-departure journey. Earlier pending
-M1 statuses in the [archived handoffs](history/leg-workshop-m1-m2-handoffs.md)
-are historical records, superseded by this acceptance.
-
-### M2 playtest feedback revision — 2026-10-23 (current)
-
-The user requested these changes with **no subagents**. This revision was handled
-solo; the earlier delivery-team assignments do not apply to this feedback pass.
-The original uncommitted planning/M1/M2 work was preserved. The following choices
-supersede the carrier and console procedures in the
-[archived M2 brief](history/leg-workshop-m1-m2-handoffs.md).
-
-| Feedback | Current response |
+| Work | State |
 | --- | --- |
-| Crane delivery broadly works; console UX needs a complete rework. Commands should be Down, Up and Go to each valid location, with travel offered only while Up. Mouse look made menu selection unintuitive. | Fullscreen modal console captures pointer interaction and suppresses movement/look. Mouse buttons or ↑/↓ and E select commands; Q closes; Escape pauses. Up/Down and horizontal travel are separate motions. Invalid travel is rejected by the controller as well as hidden by the menu. Stop/resume remain available during a motion. |
-| Magnetic attachment is broadly right, but cable ends were off-centre and awkward to manipulate. | Held magnetic ends stay exactly on the camera axis. A holding prompt explains aim/click attachment and Q stow; free/occupied marked targets retain the existing reach and ownership checks. The feel still needs player assessment. |
-| Remove the elevator arm; the retaining half is a two-hand piece. | The arm and its support state are removed from M2. E picks up the ordinary solid component, click installs it, and Z returns the unfastened half to hands at the connection. Both equivalent physical half UIDs are tested against the slot's canonical geometry. |
-| Elevator components were useful, but pockets make drawers unnecessary. Replace them with a shelf for two one-hand or one two-hand component. | Ground stock supplies the ring and pocket hardware. A finite shelf on the side opposite the hip work corner travels with the lift; click stores the held component, E retrieves it. Stored identities, capacity, solid travel and save/resume are verified. No drawers remain on the lift. |
+| Default foot profile; retire hoist/M1; shared profile/equipment modules | Implemented; preservation review passed |
+| Phase 4: authoritative layout data, recipe patches, unified validated saves | Complete; integrated gate passed |
+| Phase 5: shared test kit and one regression runner including source assets | Complete; integrated gate passed |
+| Phase 6: generic foot component projection; remove runtime pad cursors; cached materials | Complete; integrated gate passed |
+| Phase 7: active/history split and current launch/module docs | Implemented |
+| Independent preservation review | Fresh final review found no actionable preservation defects |
+| Human replay of default foot and both M2 trials | M2 accepted, 2026-10-23; default-foot replay unconfirmed |
 
-**Launch:** `./play.command -- --m2-workshop`. In the selector, use **Reset Hip
-retainer** / **Reset Crane delivery** for these changed trials. Previous M2 saves
-have an incompatible fingerprint and are preserved until an explicit reset;
-normal/foot saves and M1 remain separate. Pause → **Choose M2 trial** saves the
-selected example and returns to the selector.
+Every phase must preserve the recorded foot fingerprint and load the captured
+pre-consolidation save into a fresh scene. Old M2 trial saves may require an
+explicit Reset. Existing incompatible saves must remain protected. Headless
+checks establish bounded behavior; presentation and player acceptance are
+separate evidence. No rendered review has been requested for consolidation.
 
-**Hip retainer route:** Advance the supplied leg through travel, tilt and docking.
-Collect both washers and bolts into pockets from ground stock near the lift,
-then E-pick the ring half with both hands. Board, aim at the shelf and click to
-store it. Use Up, E-pick the half from the shelf, aim/click the hip connection,
-then fit its two washer/bolt pairs normally. Z in the pelvis manual removes the
-hardware and then puts the half back in your hands. Store it on the shelf and
-ride Ground to recover it. Q can drop it as a solid component and E retrieves it.
-Rail Return stays blocked while any retention is fitted. Once all retention is
-removed, Return withdraws the supported leg and brings it home.
+## Consolidation verification — 2026-10-23
 
-**Crane route:** E opens the central console. Choose **Go to Upper-leg beam rack**,
-then **Down**. Q closes the console. Walk to the rack, E-pick each magnetic end,
-aim at a marked point and click; Q stows a held end. Return to the console: **Up**,
-**Go to Leg cradle**, then **Down**. Close the console and fit the four ordinary
-washer/bolt pairs. E-detach and Q-stow both ends, then **Up** and **Go to Parking
-bay**. Before any hardware is fitted, Up at the cradle unseats the supported
-beam; Go to its rack and Down returns it. Undo fitted flange hardware before
-lifting a loaded beam. Both magnets remain attached until the flange is secured.
+The final [regression report](../../game/workshop/verification/regressions-20261023T114809.356593Z/results.json) passed
+**52 cases / 4,309 Godot checks**, plus **11 Python tests** and **96** malformed
+equipment-field attacks, with unchanged input hashes. It includes all five
+canonical profiles, launch aliases, both M2 ordinary-control journeys and saves,
+single/two-pad and pitch construction, source geometry, mounted rotation, undo,
+common-world snapshot rejection and shifted-layout authority checks. The
+[baseline report](../../game/workshop/verification/regressions-20261023T112919.316152Z/results.json)
+passed 46 cases / 4,289 checks before repairs. Generator `--check` reproduced all
+base/trial JSON and catalogue assets; `git diff --check` passed.
 
-The shelf was first placed across the back of the deck; a walked check caught
-it obstructing the hip working corner. It now sits along the opposite side,
-leaving the accepted boarding and hip approach open. The ordinary-control loops
-cover both half UIDs, fitting/removal, the shelf ride, dropped-component recovery,
-the complete crane fastening loop and loaded reverse travel. Additional checks
-cover keyboard/mouse modal isolation, screen-centred magnets, both shelf capacity
-configurations, obstruction sweeps, native disk resume and malformed saves.
+The captured pre-consolidation foot save loads in a fresh scene with fingerprint
+`8c6c1c21c92c0bdf24d45f655606de580816d1f6ccb3806ebbe35e09d37b9293`.
+Foot/pitch scenario and definition files and the source GLB remain byte-identical.
+The unified session codec keeps the existing `workshop_save.gd` filename.
+`HeelAssemblyState` remains only as a standalone compatibility view for historical
+tests; production uses explicit owners and generic component projection.
 
-Final headless verification passed **54 cases / 6,019 checks**, plus **100**
-malformed save-field attacks, with code/asset/test inputs unchanged throughout.
-Report: `game/workshop/verification/regressions-20261023T092828.720004Z/results.json`.
-Focused results: content 106; retention controls 162 across both half UIDs;
-retention saves 579; crane controls 102, saves 113 and service/recovery 63;
-console input 17; shelf capacity/physics 22; adversarial acceptance 47 plus the
-100 attacks. Normal/foot/M1 launches and all legacy suites passed. Generator
-`--check-m2` and `git diff --check` also passed. Current focused evidence and
-preservation details are in `game/workshop/verification/m2-feedback-20261023/`.
-The original root planning changes and M1 files remain byte-identical to the
-pre-feedback snapshot; this plan and affected M2 files were intentionally updated.
-No subagents were used. No rendered review was requested or performed; automated
-behavior does not establish human acceptance. The ring remains a procedural blockout, only one half is supplied,
-and full hip security, holder departure, additional loads and released-beam
-disassembly remain outside this M2 checkpoint.
+A fresh independent preservation review found no actionable defects. The primary
+reviewed the final feedback/driver repairs and the complete frozen-input run.
+The newly integrated Python authoring check tolerates float-only roundoff within
+1e-12 (observed maximum 4.44e-16); identity/structure and GLB byte checks remain
+exact. No protected foot assets were regenerated. No rendered review was requested
+or performed. Automated verification and the M2 human acceptance below are
+separate evidence; M3 still requires explicit go-ahead.
 
-Assess whether the console commands and keyboard selection are clear, whether
-magnetic ends now feel natural to aim, and whether carrying the ring via the
-shelf works comfortably at both lift stops. Stop here for that feedback; do not
-advance to M3.
+## Player feedback and constraints to retain
 
-## Proposed implementation plan
-
-### 1. Establish the complete equipment layout
-
-Plan each major final-assembly connection before fixing the room layout. For
-each, identify source support, approach direction, transport attachment, receiving
-support, player fastening/service access, safe release and removal sequence.
-
-| Section | Working workflow | Remaining design |
-| --- | --- | --- |
-| Pelvis | Supported by the main gantry as the robot grows | Player-built pelvis workflow and gantry mounting access; current prototype starts preassembled |
-| Waist/chest | Torso grows in the gantry using prepared sections/modules | Module boundaries, insertion paths and support points; keep cockpit access before armor |
-| Each leg | Horizontal rail construction, travel, tilt upright, upward docking, bolted split-ring retention | Foot handoff, construction-face access, pivot and travel geometry, second-leg routing |
-| Each arm | Crane delivers prepared arm; player connects from personnel lift | Socket insertion direction, rigging clear of joint, retaining-ring and service access |
-| Head | Existing baseplate-on-neck then in-place head construction | Delivery of supported pieces and high-level working access |
-| Backpack/core | Rear-access installation; core enters rearward-facing guides | Receiving supports, hinge installation and open-backpack clearances |
-| Connection covers | Close after underlying retention and services | Which panels remain at workstations versus final bay |
-
-The table does not settle unresolved robot interfaces or authorize new playable
-body branches. Define only the equipment envelopes needed for this iteration;
-keep future insertion/access requirements explicit.
-
-Give rails, fixtures, cranes, platforms and routes one coordinated spatial owner.
-Resolve actual visible contact points and swept clearances, not only support IDs.
-Plan reachable controls at both ends of travel and access after docking. Select
-one-station reuse or separate left/right leg tracks before finalizing the route.
-Prove the empty fixture can withdraw and return after the first leg is attached;
-reserve the second-leg path without adding playable right-leg content.
-
-Preserve canonical source poses and rotate the supported assembly through its
-parent transform. Current `AssemblyRuntime` already composes local slot and child
-anchor transforms; rotating mesh/source data as well would double-transform it.
-Start by evaluating a horizontal rotation about the knee's X axis to preserve
-axle/cap-side access, including the specified 1.2 m axle extraction aisle.
-Do not freeze this axis or pivot until checking the actual loaded foot: its toe,
-heel, knee and supports must clear the floor and gantry across the whole tilt.
-
-Check future headroom now. At the current 1.4 m raised robot datum, the eventual
-crest reaches 19.4 m, equal to the existing main hoist height. Resolve overhead
-clearance alongside arm approaches and rear core/backpack access, rather than
-assuming today's crane/gantry can serve the completed robot unchanged.
-
-### 2. Prove one leg journey
-
-Use existing structural content to build a supported horizontal fixture. Expose
-the ankle, both knee sides and thigh connections through reachable work poses;
-retain the foot's need for underside access at its own construction stage.
-Define its handoff onto the leg fixture explicitly.
-
-Use a small, readable local physical button group for machine motions. Candidate
-intents are travel, tilt and docking lift, with clear stop/return behavior. Exact
-labels, press-versus-hold behavior and grouping need the representative prototype;
-these are not settled controls. Avoid controls for each stock identity.
-
-Prove horizontal construction -> rail travel -> tilt upright -> raise ball into
-socket -> retain with both halves and all hardware -> connect available services
--> release support. Preserve required stabilization of unpowered joints. Do not
-invent service-installation completion for mechanisms outside current content.
-The selected M1 correction makes full retention the holder-departure gate and
-removes the extra external capture/stabilizer control; do not reintroduce that
-control while implementing this later journey.
-
-Exercise the reverse journey using the same physical assembly. Reacquire support
-before undoing retention. Pause, blocked routes and interrupted saves must leave
-the load visibly supported and recoverable.
-
-Persistence is part of this slice, not a later assignment. Current leg saves
-fingerprint content and layout/controller/lift scripts, and validators assume the
-upright hoist workflow. Explicitly version the new equipment state. Default to
-preserving incompatible leg saves with a clear incompatibility message; do not
-silently reset, overwrite or reinterpret old hoist motion as rail motion. Keep
-the established foot profile intact. Migration is a separate scope unless a
-bounded, verified mapping is established. Test restoration into a fresh scene.
-
-### 3. Resolve retaining-half handling on the lift
-
-The static, pickup-looking PV-120 halves must become understandable equipment
-or carried interactions. Prototype one half end to end before choosing the final
-handling mechanism.
-
-Candidate: stow halves beside the personnel platform and use a small assist arm
-that follows normal E pickup, aimed assisted placement, click seating and Q return.
-The arm has no independent joint-control interface. Check reachable pickup/stow,
-bounded motion, obstructions and support until the half is fastened; then it can
-release and handle the other half. This is a proposal, not a confirmed feature.
-If it introduces awkward controls or excessive complexity, simplify the handling
-while retaining an understandable physical support and collection path.
-
-C must make the manual match a single supported-half workflow: seat one half,
-fit its two washer/bolt pairs, release the assist arm/carrier, then repeat for
-the other half. Current data permits this but the manual groups both halves
-before the fastening page. Rework the affected page/slot grouping without adding
-false prerequisites or losing unique hardware coverage. Both halves remain
-interchangeable; final hip support release still requires the complete ring.
-
-### 4. Prove the crane journey
-
-Use LG-120, the existing thigh spar, for the first crane loop: a low horizontal
-rack -> magnetic rigging -> receiving cradle on the horizontal leg fixture ->
-manual flange fastening -> cable detachment. Do not restore whole-leg crane
-transport. Check both marked magnetic attachment points are actually reachable
-and clear of the fork flange, bolt tools and hip ball.
-
-The player calls the crane at its central console, walks to the lowered beam,
-attaches individual magnetic cable ends at marked points, returns to the console
-and selects the transfer. Automatic cable-length adjustment and assisted
-attachment keep this comfortable. Define endpoint access before choosing rigging
-positions; elevated points need reachable platform access.
-
-Show the crane taking weight before a source fixture releases. At the destination,
-show the receiving fixture or secured assembly taking weight before cables detach.
-For the initial spar slice, keep crane assistance until the flange hardware is
-secured. Source pickup, seating, fastening and equipment release remain distinct
-states; source support authorization must include the real crane. Decorative
-cables around the old rack-to-slot installation shortcut do not meet this plan.
-Keep rigging clear of installation surfaces. Use controlled supported movement;
-full loose-chain and swinging-load simulation is outside the proposed slice.
-
-The console selects understandable source/destination tasks and explains invalid
-placements without dropping or consuming the load. Preserve support when travel
-is blocked. Keep crane commands independent of the console so a later PDA upgrade
-can expose the same actions. PDA visuals, unlock rules and economy are later work.
-
-### 5. Expand and verify
-
-Evaluate one complete rail journey, one retaining-half interaction and one crane
-transfer through ordinary aim/input before extending the proven interactions.
-Record comprehension, readable controls, believable support and lift satisfaction
-separately from mechanical checks. Follow existing explicit-request-only policy
-for rendered review; do not claim visual or player acceptance from headless tests.
-
-Focused checks cover motion sweeps, support transitions, blocked/incompatible
-destinations, retention before release, inventory identity, mounted-child poses,
-reverse travel/undo and save/resume during movement and partial installation.
-Run affected regressions after integration, preserving the original small-part
-collection and assembly loop. Detailed new robot assets and extra body branches
-remain outside this handling iteration.
-
-### Acceptance and evidence
-
-| Feedback / risk | Required evidence |
+| Feedback / positive finding | Current direction and unresolved question |
 | --- | --- |
-| Cluttered controls | Walk actual operating routes and use normal aim/input for relevant tactile buttons, console tasks, stop/return and invalid-action feedback. No overlapping permanent part-specific button cluster. Readability requires player or explicitly requested visual assessment. |
-| Floating components | Trace visible contacts and rack/equipment/receiver ownership through pickup, travel, seating and release. Sample fully populated geometry across the motion, including between input and physics ticks. Partial rigging cannot release source support. |
-| Lift satisfaction | Board, ride and return using onboard controls; reach both retention halves and actual fasteners without remote attachment. Preserve scale, walking access and useful work at height. |
-| Static retaining halves / arm complexity | Collect, support, seat, bolt and return the same half through normal inputs; repeat with the other interchangeable identity. The arm remains a prototype with no independent joint controls. |
-| Unsafe docking/release | Reject departure with incomplete retention, Return with any fitted retention, wrong destinations and blocked routes while preserving holder support. Reacquire support before deliberate undo/removal; no extra external capture/stabilizer command. |
-| Persistence | Fresh-scene restore during rail travel, tilt, docking, partial rigging and partial retention; reject contradictory snapshots without mutating live state. Preserve incompatible saves and the foot-only profile. |
-| Identity/geometry regressions | Installed source orientation, swapped equivalent parts, mounted foot/actuator descendants and collision poses remain correct throughout motion, undo and reinstall. |
+| Overlapping, intricate leg-area controls and labels were hard to use | Local tactile rail/lift controls; evaluate grouping, labels and explanations in ordinary play. Targetability alone does not establish readability. |
+| Final-bay task buttons had the same clutter | Crane tasks use a central physical console; retain local rail/lift operation. |
+| Final-bay lift scale and onboard ascent were close to the intended experience | Preserve boarding, travel, reach and scale. Primitive art is not the accepted visual target. Rails/elevators were praised at corrected M1 acceptance. |
+| Large components appeared to float; transport/support was unclear | Horizontal leg rail, visible holder contact and individually attached crane magnets must explain support through collection, travel, seating, fastening and release. |
+| PV-120 halves looked collectible but were static | Ordinary two-hand carrying and a finite lift shelf replace the rejected positioning arm. Small hardware stays in pockets. |
+| Initial M2 crane delivery and magnetic attachment broadly worked | Fullscreen Up/Down/Go to console now captures mouse/look; keyboard arrows + E and Q close. Held magnets are centered. M2 replay accepted, 2026-10-23; no new detailed issues reported. |
 
-New journey checks must walk console/source/destination routes and operate every
-new handling action normally. Staging unrelated already-verified foot construction
-is acceptable if disclosed; do not bypass the new rail, rigging or retention
-interaction.
+The console's fullscreen backdrop is deliberately unchanged during consolidation;
+the user accepted the M2 replay with no further console change requested. The shelf holds two one-hand
+components or one two-hand component, on the side opposite the hip working
+corner. Keep the accepted boarding and hip approach clear. Source and receiver
+support must remain distinct from fastening; decorative cables cannot replace
+real supported transfer. Retention blocks Return, and the holder remains engaged
+until a complete ring is secured. Do not reintroduce the extra external
+capture/stabilizer command rejected in the M1 correction.
 
-Run generator/definition audits first. Then select affected `leg_content`,
-`m2_*`, `access_lift`, supported fixture/model, mounted-runtime and save suites with
-`python3 game/workshop/tools/run_regressions.py --only ...` using actual case
-names from `--list`. Add narrowly scoped new rail/rigging/acceptance cases where
-existing tests miss the reported failure. After integration, run the complete
-existing headless runner, including default/foot launches and shared pad, pitch,
-pockets and multi-build regressions; repeat only for relevant new changes or
-failures. Also run `git diff --check`.
+## Human checkpoints and authorization
 
-Report behavior verified, presentation inspected and player acceptance separately.
-Prepare a short playtest route covering construction, rail docking, lift retention,
-crane rigging and return; do not claim the user's readability/immersion concerns
-resolved solely because headless suites pass. M1–M4 above are the requested human
-checks; reaching M4 does not establish acceptance until the user responds.
-Rendered review is still by explicit request. The M1 evidence above covers only
-the isolated blockout; the future M2–M4 journey checks remain unrun.
+The user accepted corrected M1 on 2026-10-23: “Yep looks good - plan next
+milestone.” M2 was authorized, implemented, playtested and revised. Its most
+recent feedback pass explicitly requested no subagents; that restriction applied
+to that completed pass. Current repository instructions authorize bounded
+parallel work. Architecture consolidation does not authorize M3 gameplay.
+
+| Checkpoint | Player journey / acceptance question | Status / work held |
+| --- | --- | --- |
+| M1 layout and scale | Understand rail-to-robot support; walk routes and board/ride the lift | Corrected layout accepted, 2026-10-23; trial now retired, accepted geometry retained in M2 |
+| M2 equipment interactions | Rig/deliver/fasten the Upper-leg beam; carry one retaining half via shelf, fit/undo/return it; judge console, walks, magnets and tactile controls | Human-accepted, 2026-10-23: “m2 plays great.” M3 remains held for explicit go-ahead. |
+| M3 complete leg-to-robot journey | Follow construction/manual through crane delivery, rail travel/tilt/upward docking, both halves, release/reacquire and interrupted save/resume | Not started; requires explicit go-ahead after M2 feedback |
+| M4 expanded workshop acceptance | Complete the combined scenario, revisit clutter/support/retention/lift issues, save/resume across workstations | Not started; requires earlier checkpoints and explicit acceptance |
+
+At each checkpoint finish the coherent implementation and relevant checks, stop
+all later-wave work, then present the runnable result and wait for feedback and
+explicit go-ahead. A test pass or elapsed time never supplies that acceptance.
+Keep mechanical checks, inspected presentation and human responses distinct.
+
+### M2 replay acceptance — 2026-10-23
+
+After the consolidation handoff, the user said “m2 plays great. please commit.”
+This accepts the current M2 equipment checkpoint and authorizes committing the
+verified consolidation. No new M2 issues were reported. Preserve the accepted
+crane console/magnet and two-hand carrying/lift-shelf flows. The user did not
+confirm replaying the default foot profile or authorize M3 implementation.
+
+## Short preservation replay
+
+Launch commands and controls are maintained in the
+[workshop README](../../game/workshop/README.md). Use these routes after the
+architecture gates pass:
+
+1. `./play.command`: resume the existing foot save or start fresh; collect stock,
+   carry/suspend a heel pad, fit sleeves, seat and fasten it, switch manuals,
+   undo/reinstall, operate the supported foot and save/reopen.
+2. `./play.command -- --m2-workshop`: choose **Reset Hip retainer** if its old save
+   is incompatible. Advance the supplied leg through travel, tilt and docking.
+   Pocket both washer/bolt pairs, carry the half onto the lift, click the shelf,
+   ride Up, retrieve/seat/fasten it, then Z-undo it to hands, shelf it and return
+   Ground. Return must remain blocked while retention is fitted.
+3. From the selector choose **Reset Crane delivery** if needed. At the console:
+   Go to Upper-leg beam rack, Down, Q. Walk to the rack, E-pick each magnetic end
+   and aim/click a marked point. Return: Up, Go to Leg cradle, Down. Fit four
+   ordinary washer/bolt pairs, detach/stow both ends and park the empty crane.
+   Before fastening, test loaded return to the source. Pause/save/reopen partway.
+
+Foot progress uses its existing slot; the two M2 slots are independent. Choosing
+an example saves the current example first. Reset replaces only the named trial.
+M2 supplies unrelated completed construction: one complete leg for retention,
+and a complete foot plus pre-beam leg for the crane. It contains one retaining
+half and one crane load; complete-ring security, holder departure and released
+beam disassembly are outside M2.
+
+Assess whether console selection and messages are clear, magnets feel natural
+to aim, and carrying/shelving/fastening feels comfortable at both lift stops.
+Record the user's response here with date and remaining issues.
+
+## Deferred design and evidence
+
+The [full pre-consolidation continuation snapshot](history/workshop-pre-consolidation-state-20261023.md)
+retains every earlier feedback item, proposed implementation sequence, acceptance
+matrix, M2 routes and historical check report. Earlier team handoffs and the
+delivery retrospective remain in
+[the M1/M2 archive](history/leg-workshop-m1-m2-handoffs.md). The
+[structural milestone](leg-milestone.md) and
+[interface specification](leg-prototype-interface.md) describe the historical
+implemented subset; their headless passes do not approve the current UX.
+
+Future work must resolve the foot-to-horizontal-rail handoff, construction-face
+access, pivot/travel geometry, empty-holder return and one-station reuse versus
+separate left/right tracks. Reserve a second-leg path without adding playable
+right-leg content. Pelvis construction/gantry mounting, torso module boundaries,
+arm rigging and lift access, head/neck sequence, backpack/core rear clearance and
+connection covers remain design questions. Most components build at workstations;
+final-bay lift work concentrates on retention, services and connection closures.
+Keep the existing head-on-neck sequence. A later PDA may reduce console walks;
+its acquisition/progression rules remain open. Full loose-chain/swing physics,
+detailed Blender leg assets, powered mechanisms, armor, additional robot branches
+and AR are outside this consolidation.
+
+When M3 is authorized, first prove one ordinary-control journey before expanding
+content. Audit affected manual slots/inventory, actual geometry and mounted
+motion; exercise blocked/reverse paths and fresh-scene interrupted restores.
+Preserve canonical geometry separately from interchangeable consumed identities.
+Rendered review still requires an explicit request.

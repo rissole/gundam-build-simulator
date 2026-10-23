@@ -1,47 +1,11 @@
-extends "res://tests/save_resume_test.gd"
+extends "res://tests/kit/workshop_suite.gd"
 ## Shared real-scene helpers. Tests disclose supplied construction, never rigging.
 var crane: Node3D
-
-func boot() -> void:
-	game = load("res://scenes/workshop.tscn").instantiate()
-	game.profile_override = "leg_bay_crane";game.automated_test = true
-	root.add_child(game);game.automated_test = true;await frames(8)
-	game.set_paused(false);Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	crane = game.equipment.get_equipment("service_crane")
-
-func key(code: Key, down: bool = true) -> void:
-	var event = InputEventKey.new();event.physical_keycode = code;event.pressed = down
-	game.handle_desktop_input(event)
-
-func tap(code: Key) -> void:
-	key(code);key(code,false)
 
 func pocket(kind: String) -> void:
 	var index: int = game.model.pocket_for(kind)
 	if index < 0:expect(false,"Pocket contains "+kind);return
 	tap([KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_6,KEY_7,KEY_8,KEY_9,KEY_0][index])
-
-func click() -> void:
-	var event = InputEventMouseButton.new();event.button_index = MOUSE_BUTTON_LEFT;event.pressed = true
-	game.handle_desktop_input(event)
-
-func look(point: Vector3) -> void:
-	var direction = point-game.camera.global_position
-	game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
-	game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
-	game._update_target()
-
-func walk(point: Vector3, label: String) -> bool:
-	var arrived = false
-	for tick in range(1100):
-		var offset = point-game.player.global_position;offset.y = 0
-		if offset.length()<.10:arrived = true;break
-		game.player.rotation.y = atan2(-offset.x,-offset.z);game.camera.rotation.x = 0
-		key(KEY_W);await frames(1)
-	key(KEY_W,false);await frames(8)
-	if not arrived:print("M2_CRANE_WALK ",label," feet=",game.player.global_position," target=",point)
-	expect(arrived and game.player.is_on_floor(),"Walked route reaches "+label)
-	return arrived
 
 func entry(action: String) -> Dictionary:
 	for candidate in crane.controls():
@@ -51,7 +15,7 @@ func entry(action: String) -> Dictionary:
 func aim_action(action: String, use_click: bool = false) -> bool:
 	var candidate = entry(action)
 	if candidate.is_empty():expect(false,"Crane offers "+action);return false
-	look(candidate.point);await frames(2);game._update_target()
+	look(candidate.point);await frames(2);game.automation.refresh_target()
 	var aimed: bool = game.target.get("controller") == crane and game.target.get("action","") == action
 	if not aimed:print("M2_CRANE_AIM ",action," feet=",game.player.global_position," actual=",game.target)
 	expect(aimed,"Ordinary aim selects "+action)
@@ -139,8 +103,29 @@ func deliver() -> void:
 
 func finish(label: String, filename: String) -> void:
 	var passed = checks.all(func(check):return check.passed)
-	FileAccess.open(filename,FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":false,"supplied_construction":"Completed foot and all authored pre-spar leg slots. The save test uses one real model-installed washer solely as a partial-fastening snapshot fixture; the controls test fits all eight fasteners normally."},"  "))
+	write_evidence(filename,{"passed":passed,"checks":checks,"rendered":false,"supplied_construction":"Completed foot and all authored pre-spar leg slots. The save test uses one real model-installed washer solely as a partial-fastening snapshot fixture; the controls test fits all eight fasteners normally."})
 	if is_instance_valid(game):game.free()
 	await process_frame
 	print(label," ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)
+
+func boot() -> void:
+	game = await boot_profile("leg_bay_crane")
+	crane = game.equipment.get_equipment("service_crane")
+
+func key(code: Key, pressed: bool = true) -> void:
+	PlayerDriver.new(game).key(code,pressed)
+
+func look(point: Vector3) -> void:
+	PlayerDriver.new(game).look(point)
+
+func walk(point: Vector3, label: String) -> bool:
+	var arrived: bool = await PlayerDriver.new(game).walk(point,1100,.10,8)
+	expect(arrived,"Walked route reaches "+label)
+	return arrived
+
+func tap(code: Key) -> void:
+	PlayerDriver.new(game).tap(code)
+
+func click() -> void:
+	PlayerDriver.new(game).click()

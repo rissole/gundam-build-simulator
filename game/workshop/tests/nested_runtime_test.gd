@@ -1,4 +1,4 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Four assembly levels, shared source geometry, real compound carrying physics.
 class FixtureWorkshop:
 	extends "res://scripts/workshop.gd"
@@ -17,18 +17,10 @@ class FixtureHUD:
 		target_label.text = text
 		target_panel.visible = not text.is_empty()
 
-var checks: Array[Dictionary] = []
 var game: Node3D
 var scene: Node3D
 var capture: bool = false
 var image_paths: Array[String] = []
-
-func expect(value: bool, label: String) -> void:
-	checks.append({"check":label,"passed":value})
-	if not value:push_error(label)
-
-func frames(count: int = 1) -> void:
-	for i in count:await physics_frame
 
 func mesh_box(size: Vector3) -> BoxMesh:
 	var mesh = BoxMesh.new()
@@ -115,7 +107,9 @@ func create_body(owner: String, index: int) -> void:
 	game.add_child(body)
 	body.position = Vector3(index*5,3,0)
 	game.runtime.register_node(owner,body)
-	var visual = game._mesh(uid)
+	var visual = MeshInstance3D.new()
+	visual.mesh = game.source[game.source_uid(uid)].mesh
+	visual.set_meta("source_uid",game.source_uid(uid))
 	visual.transform = game.runtime.local_slot_pose(owner,d.root_slot)
 	visual.set_meta("component_uid",uid)
 	visual.set_meta("slot_id",d.root_slot)
@@ -237,7 +231,7 @@ func run() -> void:
 	game.ghost_material = StandardMaterial3D.new()
 	game.ghost = MeshInstance3D.new()
 	game.add_child(game.ghost)
-	game._show_assembly_ghost()
+	game.automation.show_assembly_ghost("carrier_a")
 	expect(game.ghost.get_child_count() == 5,"Carry preview includes every physical mesh through all nested levels")
 	game.camera = Camera3D.new()
 	game.add_child(game.camera)
@@ -269,14 +263,14 @@ func run() -> void:
 	game.stations["out_adapter"] = output
 	game.hud.manual_id = "bay_b"
 	game.active_build = "carrier_a"
-	game._activate("carrier_a")
+	game.automation.select_build("carrier_a")
 	game.undo_build()
 	expect(SolidHandling.shapes(game.assembly_node("bay_b")).size() == 1,"Workshop mount undo removes detached descendant solids from the old owner")
 	expect(game.model.assemblies.carrier_a.location == "station:out_adapter","Workshop undo resolves a non-foot parent history and returns its nested child")
 	var carried: WorkshopPart = game.assembly_node("carrier_a")
 	game.camera.global_position = carried.global_position+Vector3(0,0,1.5)
 	game.camera.look_at(carried.global_position)
-	game.target = {"type":"pad","build":"carrier_a","point":carried.global_position}
+	game.target = {"type":"assembly","build":"carrier_a","point":carried.global_position}
 	game.interact()
 	expect(game.model.assemblies.carrier_a.location == "held" and carried.held,"Workshop pickup retains the entire three-level prepared child tree")
 	bay.global_transform = Transform3D(Basis.IDENTITY,Vector3(0,12,0))
@@ -287,7 +281,7 @@ func run() -> void:
 	game.camera.look_at(point)
 	carried.global_transform = game.runtime.mount_pose("bay_a","carrier","carrier_a")
 	await frames(2)
-	game._update_target()
+	game.automation.refresh_target()
 	expect(game.target.get("type","") == "mount" and game.target.get("owner","") == "bay_a","Workshop targeting finds a compatible non-foot receiving owner independently of selected manual")
 	game.attach()
 	expect(game.model.assemblies.carrier_a.parent == "bay_a" and game.model.assemblies.core_a.parent == "frame_a","Workshop attach installs the deep child tree into the actual targeted parent")
@@ -323,7 +317,7 @@ func run() -> void:
 	pole.queue_free()
 	await frames(2)
 	var passed = checks.all(func(check):return check.passed)
-	FileAccess.open("res://verification/nested-runtime/audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":capture,"images":image_paths,"engine":Engine.get_version_info().string},"  "))
+	write_evidence("res://verification/nested-runtime/audit.json",{"passed":passed,"checks":checks,"rendered":capture,"images":image_paths,"engine":Engine.get_version_info().string})
 	print("NESTED_RUNTIME_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	game.hud.target_panel.free()
 	game.hud.target_label.free()

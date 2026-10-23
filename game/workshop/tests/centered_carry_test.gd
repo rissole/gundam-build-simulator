@@ -1,14 +1,9 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Real off-origin source geometry, camera-relative grips and solid obstruction.
-var checks: Array[Dictionary] = []
 var scene: Node3D
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, message: String) -> void:
-	checks.append({"check":message,"passed":ok})
-	if not ok:push_error(message)
 
 func part(size: Vector3, source_pose: Transform3D) -> WorkshopPart:
 	var box = BoxMesh.new()
@@ -103,7 +98,7 @@ func run() -> void:
 	expect(not SolidHandling.sweep_error(hand,Transform3D(hand.carry_basis,hand.carry_target),excluded,1).is_empty(),"Placement sweep still rejects the obstructed centered destination")
 	var passed = checks.all(func(check):return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/centered-carry")
-	FileAccess.open("res://verification/centered-carry/audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"engine":Engine.get_version_info().string},"  "))
+	write_evidence("res://verification/centered-carry/audit.json",{"passed":passed,"checks":checks,"engine":Engine.get_version_info().string})
 	print("CENTERED_CARRY ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	scene.queue_free()
 	await process_frame

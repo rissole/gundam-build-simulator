@@ -5,14 +5,18 @@ signal changed
 const Console = preload("res://scripts/service_crane_console.gd")
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const VERSION = 2
-const END_IDS = ["magnet_a","magnet_b"]
-const POINT_IDS = ["beam_near","beam_far"]
-const POINTS = [Vector3(0,.65,-.10),Vector3(0,2.74,-.15)]
-var fastener_prefix = "fork/"
-var secured_count = 8
+var END_IDS: Array = []
+var POINT_IDS: Array = []
+var points: Array[Vector3] = []
+var load_owner: String
+var slot: String
+var secured_milestone: String
+var fastener_slots: Array = []
+var park_position: Vector3
+var approach_offset: Vector3
 const STATIONS = ["source","receiver","park"]
 const TITLES = {"source":"Upper-leg beam rack","receiver":"Leg cradle","park":"Parking bay"}
-const UP_Y = 4.4
+var up_y: float
 var layout: Node3D
 var config: Dictionary
 var support = "m2_service_crane"
@@ -31,7 +35,7 @@ var blocked_reason = ""
 # Load path is derived from station, motion and progress; never a saved waypoint.
 var path: float:
 	get:return _path(station,raised,motion,progress)
-var endpoints: Dictionary = {"magnet_a":{"state":"stowed","point":""},"magnet_b":{"state":"stowed","point":""}}
+var endpoints: Dictionary = {}
 var load_body: AnimatableBody3D
 var beam: Node3D
 var end_nodes: Dictionary = {}
@@ -51,19 +55,23 @@ func setup(workshop: Node3D, scene_layout: Node3D, contract: Dictionary = {}) ->
 	hands_full_hint = "Stow the component or assembly in your hand before handling a magnetic end."
 	support = contract.get("support",support);source_support = contract.get("source_support",source_support);uid = contract.get("uid",uid)
 	var spec: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().crane
-	fastener_prefix = spec.secured.prefix;secured_count = int(spec.secured.count)
-	source_pose = contract.get("source_pose",Transform3D(Basis(Vector3.RIGHT,PI/2),Vector3(7.6,1.35,15.4)))
-	receiver_pose = contract.get("receiver_pose",game.runtime.slot_pose("left_leg","spar"))
-	route.assign(contract.get("route",[source_pose,_offset(source_pose,Vector3(0,.75,0)),_offset(receiver_pose,Vector3(0,.75,.20)),_offset(receiver_pose,Vector3(0,0,.20)),receiver_pose]))
-	route[1].origin.y = UP_Y-.88;route[2].origin.y = UP_Y-.88
+	load_owner = spec.owner;slot = spec.slot
+	secured_milestone = spec.secured.milestone
+	fastener_slots = game.runtime.definition(load_owner).milestones[secured_milestone].filter(func(sid):return sid != slot)
+	END_IDS = spec.endpoint_ids.duplicate();POINT_IDS = spec.magnetic_points.keys()
+	for id in END_IDS:endpoints[id] = {"state":"stowed","point":""}
+	for id in POINT_IDS:points.append(AssemblyRuntime.vec(spec.magnetic_points[id]))
+	up_y = spec.up_y;park_position = AssemblyRuntime.vec(spec.park_position)
+	approach_offset = -AssemblyRuntime.vec(spec.approach.axis)*spec.approach.distance
+	source_pose = contract.source_pose
+	receiver_pose = contract.receiver_pose
+	route.assign(contract.route)
 	excluded.assign(contract.get("excluded",[]))
-	_make_load();_make_rig();_make_console(contract.get("console_position",Vector3(4.9,0,21)))
+	_make_load();_make_rig();_make_console(contract.console_position)
 	console = Console.new();add_child(console);console.setup(self)
 	game.model.changed.connect(_refresh)
 	_refresh()
 
-static func _offset(pose: Transform3D, displacement: Vector3) -> Transform3D:
-	pose.origin += displacement;return pose
 
 func _make_load() -> void:
 	load_body = AnimatableBody3D.new();load_body.name = "CraneUpperLegBeam";load_body.sync_to_physics = false;load_body.collision_layer = 2;load_body.collision_mask = 0;add_child(load_body)
@@ -120,10 +128,10 @@ func controls() -> Array[Dictionary]:
 	for id in END_IDS:
 		var state: String = endpoints[id].state
 		if state == "held":continue
-		entries.append(control_entry(end_nodes[id],("detach:" if state == "attached" else "pick:")+id,("Detach" if state == "attached" else "Pick up")+" magnetic end · E",.16,{"point":end_nodes[id].global_position,"input":"pickup","allowed":[load_body,game.runtime.node("left_leg")],"allow_body_hit":true}))
+		entries.append(control_entry(end_nodes[id],("detach:" if state == "attached" else "pick:")+id,("Detach" if state == "attached" else "Pick up")+" magnetic end · E",.16,{"point":end_nodes[id].global_position,"input":"pickup","allowed":[load_body,game.runtime.node(load_owner)],"allow_body_hit":true}))
 	if not hand_payload().is_empty():
 		for id in POINT_IDS:
-			entries.append(control_entry(markers[id],"attach:"+id,"Attach magnetic end · click",.20,{"point":point_position(id),"input":"place","allowed":[load_body,game.runtime.node("left_leg")],"allow_body_hit":true}))
+			entries.append(control_entry(markers[id],"attach:"+id,"Attach magnetic end · click",.20,{"point":point_position(id),"input":"place","allowed":[load_body,game.runtime.node(load_owner)],"allow_body_hit":true}))
 	return entries
 
 func console_access_error() -> String:
@@ -172,7 +180,7 @@ func action_error(action: String) -> String:
 		if action.begins_with("detach:"):
 			if endpoints[id].state != "attached":return "That magnetic end is not attached."
 			if _installed() and not secured():return "Fit all four flange washer/bolt pairs before detaching a magnetic end."
-		return _interaction_error(end_nodes[id].global_position,[load_body,game.runtime.node("left_leg")])
+		return _interaction_error(end_nodes[id].global_position,[load_body,game.runtime.node(load_owner)])
 	if action.begins_with("attach:"):
 		var point = action.get_slice(":",1)
 		if not POINT_IDS.has(point):return "Choose a marked magnetic attachment point."
@@ -182,7 +190,7 @@ func action_error(action: String) -> String:
 		if (station == "source") != (game.model.items[uid].location == "support:"+source_support):return "The beam is at the other work location."
 		for end in endpoints.values():
 			if end.point == point:return "That point is occupied. Aim at the other marked point."
-		return _interaction_error(point_position(point),[load_body,game.runtime.node("left_leg")])
+		return _interaction_error(point_position(point),[load_body,game.runtime.node(load_owner)])
 	if not motion.is_empty():return "Finish or resume the current motion first."
 	if not hand_payload().is_empty():return "Attach or Q-stow the held magnetic end first."
 	if action == "up":
@@ -199,7 +207,7 @@ func action_error(action: String) -> String:
 		if _crane_owned():
 			if station == "source" and not game.model.support_occupant(source_support).is_empty():return "The source rack is occupied."
 			if station == "receiver":
-				var error: String = game.model.placement_error("left_leg","spar",uid,support)
+				var error: String = game.model.placement_error(load_owner,slot,uid,support)
 				if not error.is_empty():return error
 		return ""
 	if action.begins_with("go:"):
@@ -210,7 +218,7 @@ func action_error(action: String) -> String:
 		if _crane_owned():
 			if destination == "park":return "Set the beam on its rack or receiving connection before parking."
 			if destination == "source" and not game.model.support_occupant(source_support).is_empty():return "The source rack is occupied."
-			if destination == "receiver" and not game.model.assemblies.left_leg.slots.spar.is_empty():return "The receiving connection is occupied."
+			if destination == "receiver" and not game.model.assemblies[load_owner].slots[slot].is_empty():return "The receiving connection is occupied."
 		return ""
 	return "Unknown crane command."
 
@@ -239,17 +247,18 @@ func cancel_hand() -> String:
 
 func _installed(model: AssemblyModel = null) -> bool:
 	var m: AssemblyModel = game.model if model == null else model
-	return m.items[uid].location == "installed" and m.items[uid].owner == "left_leg" and m.items[uid].slot == "spar" and m.assemblies.left_leg.slots.spar == uid
+	return m.items[uid].location == "installed" and m.items[uid].owner == load_owner and m.items[uid].slot == slot and m.assemblies[load_owner].slots[slot] == uid
 
 func hardware_count(model: AssemblyModel = null) -> int:
 	var m: AssemblyModel = game.model if model == null else model
 	var count = 0
-	for sid in m.assemblies.left_leg.slots:
-		if sid.begins_with(fastener_prefix) and not m.assemblies.left_leg.slots[sid].is_empty():count += 1
+	for sid in fastener_slots:
+		if not m.assemblies[load_owner].slots[sid].is_empty():count += 1
 	return count
 
 func secured(model: AssemblyModel = null) -> bool:
-	return _installed(model) and hardware_count(model)==secured_count
+	var m: AssemblyModel = game.model if model == null else model
+	return _installed(m) and m.milestone(load_owner,secured_milestone)
 
 func busy_reason(subject: String) -> String:
 	if subject != "rail":return ""
@@ -257,8 +266,8 @@ func busy_reason(subject: String) -> String:
 	if _installed() and not secured():return "Secure all four beam flange washer/bolt pairs before moving the leg rail."
 	return ""
 
-func access_error(owner: String) -> String:
-	if owner == "left_leg" and not motion.is_empty():return "Wait for the crane to stop at the connection before fastening."
+func access_error(subject: String) -> String:
+	if subject == load_owner and not motion.is_empty():return "Wait for the crane to stop at the connection before fastening."
 	return ""
 
 func drop() -> Dictionary:
@@ -270,20 +279,20 @@ func _beam_undo_error() -> String:
 	if hardware_count()>0:return "Undo every flange washer and bolt before lifting the beam."
 	return ""
 
-func undo(owner: String) -> Dictionary:
-	if owner != "left_leg":return {"handled":false,"error":""}
-	var history: Array = game.model.assemblies.left_leg.history
+func undo(subject: String) -> Dictionary:
+	if subject != load_owner:return {"handled":false,"error":""}
+	var history: Array = game.model.assemblies[load_owner].history
 	if history.is_empty():return {"handled":true,"error":"The supplied construction stays assembled."}
-	if str(history.back().slot).begins_with(fastener_prefix):
+	if fastener_slots.has(history.back().slot):
 		if attached_count()!=2 or not motion.is_empty():return {"handled":true,"error":"Keep both magnets engaged with the crane down before undoing flange hardware."}
 		return {"handled":false,"error":""}
-	if history.back().slot == "spar":return {"handled":true,"error":"Use Up at the crane console to lift the unfastened beam from its seat."}
+	if history.back().slot == slot:return {"handled":true,"error":"Use Up at the crane console to lift the unfastened beam from its seat."}
 	return {"handled":true,"error":"The supplied construction stays assembled."}
 
 func _undo_beam() -> String:
-	var result: Dictionary = game.model.undo_supported("left_leg",support)
+	var result: Dictionary = game.model.undo_supported(load_owner,support)
 	if not result.ok:return result.error
-	game.components.sync("left_leg");game.refresh_assembly_collision("left_leg")
+	game.components.sync(load_owner);game.refresh_assembly_collision(load_owner)
 	return ""
 
 func _crane_owned(model: AssemblyModel = null) -> bool:
@@ -305,12 +314,12 @@ func load_pose(at: float = -1.0) -> Transform3D:
 	return route[segment].interpolate_with(route[segment+1],value-segment)
 
 func point_position(id: String) -> Vector3:
-	return load_pose()*POINTS[POINT_IDS.find(id)]
+	return load_pose()*points[POINT_IDS.find(id)]
 
 func _station_beam(at: String, up: bool) -> Transform3D:
-	var origin = source_pose.origin if at == "source" else receiver_pose.origin+Vector3(0,0,.2 if up else 0)
-	if at == "park":origin = Vector3(6.3,0,19)
-	origin.y = UP_Y if up else (source_pose.origin.y+.80 if at == "source" else receiver_pose.origin.y+.88)
+	var origin = source_pose.origin if at == "source" else receiver_pose.origin+(approach_offset if up else Vector3.ZERO)
+	if at == "park":origin = park_position
+	origin.y = up_y if up else (source_pose.origin.y+.80 if at == "source" else receiver_pose.origin.y+.88)
 	return Transform3D(Basis.IDENTITY,origin)
 
 func _beam_at(at: String, up: bool, action: String, p: float) -> Transform3D:
@@ -346,9 +355,9 @@ func physics(delta: float) -> void:
 					var error: String = game.model.transfer_supported_item(uid,support,source_support)
 					if not error.is_empty():blocked_reason = error;moving = false;return
 				else:
-					var result: Dictionary = game.model.install_supported("left_leg","spar",uid,support)
+					var result: Dictionary = game.model.install_supported(load_owner,slot,uid,support)
 					if not result.ok:blocked_reason = result.error;moving = false;return
-					game.components.sync("left_leg");game.refresh_assembly_collision("left_leg")
+					game.components.sync(load_owner);game.refresh_assembly_collision(load_owner)
 			if motion.begins_with("go:"):station = motion.get_slice(":",1)
 			else:raised = motion == "up"
 			motion = "";progress = 0;moving = false
@@ -368,7 +377,7 @@ func _sweep(from: Transform3D, to: Transform3D) -> String:
 	var ignored: Array[RID] = excluded.duplicate();ignored.append(load_body.get_rid())
 	# Receiver contact shapes and its prepared geometry are authored mating surfaces.
 	# Other scenery and people remain swept obstacles throughout the route.
-	Sweep.collect_rids(game.runtime.node("left_leg"),ignored)
+	Sweep.collect_rids(game.runtime.node(load_owner),ignored)
 	var group = {"shapes":Sweep.body_shapes(load_body),"margin":.001,"error":"Clear the crane load's route, including people and loose parts."}
 	return Sweep.sweep(get_world_3d().direct_space_state,[group],Sweep.steps(from,to,4,.04),func(weight: float) -> Transform3D:return from.interpolate_with(to,weight),15,ignored,equipment_id).get("error","")
 
@@ -390,7 +399,7 @@ func _refresh() -> void:
 		# Cable trolleys align over the selected marked point, so either stable
 		# endpoint can use either point without crossing the other load cable.
 		var anchor_index = POINT_IDS.find(end.point) if end.state == "attached" else index
-		var anchor = beam.global_position+Vector3(0,0,POINTS[anchor_index].y)
+		var anchor = beam.global_position+Vector3(0,0,points[anchor_index].y)
 		var point = anchor-Vector3(0,.55,0)
 		if end.state == "held":point = game.camera.global_transform*Vector3(0,0,-.65)
 		elif end.state == "attached":point = point_position(end.point)
@@ -409,7 +418,7 @@ func status_text() -> String:
 	var label: String = TITLES[station]+" · "+("Up" if raised else "Down")
 	if not motion.is_empty():label += " · "+("Moving" if moving else "Stopped")
 	if attached_count()>0:label += "\nMagnetic ends attached: %d/2"%attached_count()
-	if _installed():label += "\nFlange fasteners: %d/8"%hardware_count()
+	if _installed():label += "\nFlange fasteners: %d/%d"%[hardware_count(),fastener_slots.size()]
 	if not blocked_reason.is_empty():label += "\n"+blocked_reason
 	return label
 
@@ -446,7 +455,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary
 	var rack = item.location == "support:"+source_support
 	var carried = _crane_owned(model)
 	var installed = _installed(model)
-	if not rack and not carried and not installed:return ["Unsupported crane load owner."]
+	if not rack and not carried and not installed:return ["Unsupported crane load load_owner."]
 	if hardware_count(model)>0 and not installed:return ["Hardware has no installed beam."]
 	if installed and count<2 and not secured(model):return ["Unsecured flange lost its magnets."]
 	if count>0 and data.station=="park" or data.motion=="go:park" and count>0:return ["Loaded crane cannot park."]

@@ -23,6 +23,22 @@ merge_tool = importlib.util.module_from_spec(spec); spec.loader.exec_module(merg
 
 
 class StableSourceTests(unittest.TestCase):
+    def assert_authored_equal(self, authored, current, path="asset"):
+        """Keep authored structure exact; libm can differ at float roundoff."""
+        if isinstance(authored, dict) and isinstance(current, dict):
+            self.assertEqual(authored.keys(), current.keys(), path)
+            for key in authored:
+                self.assert_authored_equal(authored[key], current[key], path + "/" + key)
+        elif isinstance(authored, list) and isinstance(current, list):
+            self.assertEqual(len(authored), len(current), path)
+            for index, (value, expected) in enumerate(zip(authored, current)):
+                self.assert_authored_equal(value, expected, path + "/" + str(index))
+        elif isinstance(authored, float) and isinstance(current, float):
+            self.assertAlmostEqual(authored, current, delta=1e-12,
+                                   msg=f"{path}: authored {authored!r}, current {current!r}")
+        else:
+            self.assertEqual(authored, current, path)
+
     def test_all_existing_ids_and_pairing_are_registered(self):
         registry = SourceRegistry()
         parts = json.loads((ROOT / 'models/foot-fa01/output/parts-manifest.json').read_text())['parts']
@@ -80,7 +96,7 @@ class StableSourceTests(unittest.TestCase):
             current = json.loads((ROOT / 'game/workshop/assets' / name).read_text())
             if name == 'pitch-workshop.json':
                 authored['parts'].sort(key=lambda p: p['instance_id']); current['parts'].sort(key=lambda p: p['instance_id'])
-            self.assertEqual(authored, current)
+            self.assert_authored_equal(authored, current, name)
 
 
 def fixture():

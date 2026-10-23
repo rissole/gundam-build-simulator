@@ -2,9 +2,9 @@
 regenerating the FA-01 GLB.
 
 Run with Python 3 from any directory; --check audits and byte-compares every
-generated asset without writing. Written counts, interfaces and bay layout here
-are the prototype authority; this deliberately does not claim a powered or
-armored leg.
+generated asset without writing. This script authors parts and interfaces;
+assets/leg-bay-layout.json owns shared placement data. This prototype does not
+claim a powered or armored leg.
 """
 import json
 import math
@@ -18,60 +18,14 @@ ASSETS = ROOT / "game/workshop/assets"
 MANIFEST = {p["instance_id"]: p for p in json.loads(
     (ROOT / "models/foot-fa01/output/parts-manifest.json").read_text())["parts"]}
 parts, stock, sources = {}, [], {}
-KNEE, HIP = 5.1, 9.2
-# Leg-bay layout authority. The rail carries the leg lying along +Z at home,
-# pivots it upright about the knee in the bay, then docks it upward.
-RAIL = dict(support="m2_leg_rail", x=11.9, reserved_x=14.1, home_z=14.5, bay_z=26.0, base_y=.5,
-            lying_lift=.85, pivot=KNEE, dock_rise=.9, durations=[12.0, 10.0, 3.0],
-            panels=[[9.2, 0, 11.4], [5.1, 0, 24.2]])
-LIFT = dict(name="hip", origin=[9.6, 0, 24.3], size=[2.6, 2.6], levels=[.15, 8.4], yaw_degrees=180)
-SHELF = dict(supports=["m2_lift_shelf_0", "m2_lift_shelf_1"], position=[.91, .68, 0], yaw_degrees=-90,
-             places=[-.46, .46])
-STOCK = {"retention": dict(origin=[6.4, .7, 20.7], step=1.15), "crane": dict(origin=[8.3, .7, 14.2], step=.9)}
-CRANE_SUPPORT = "m2_service_crane"
-
-
-def rounded(values):
-    return [round(v, 6) + 0.0 for v in values]
-
-
-def rail_home(local):
-    """World position of a leg-frame point while the leg lies on the home rail."""
-    return rounded([RAIL["x"] + local[0], RAIL["base_y"] + RAIL["lying_lift"] - local[2],
-                    RAIL["home_z"] - RAIL["pivot"] + local[1]])
-
-
-# The left pelvis socket sits 1.1 m to robot-left of the pelvis frame and
-# receives the hip ball directly above the docked rail.
-PARENT_HOMES = {"left_leg": [2.3, .75, 14.4],
-                "pelvis": rounded([RAIL["x"] + 1.1, RAIL["base_y"] + RAIL["dock_rise"] + HIP, RAIL["bay_z"]])}
+# Shared layout authority: authoring and runtime read the same declared data.
+LAYOUT = json.loads((ASSETS / "leg-bay-layout.json").read_text())
+RAIL = LAYOUT["rail"]
+CRANE_SUPPORT = LAYOUT["crane"]["support"]
 
 
 def layout_document():
-    """The one layout both the runtime and the trial overlays read."""
-    source = [7.6, 1.35, 15.4]
-    # Authored receiver: the beam's seated pose on the home rail, 0.84 m forward of
-    # the knee along the lying leg rather than the rail-home transform of the knee.
-    receiver = [11.9, 1.35, 15.34]
-    up = 4.4
-    return {
-        "version": 1,
-        "rail": RAIL,
-        "lift": LIFT,
-        "shelf": SHELF,
-        "parent_homes": PARENT_HOMES,
-        "crane": dict(support=CRANE_SUPPORT, source_support="leg_spar_rack", load_uid="LG-120__001",
-                      owner="left_leg", slot="spar", secured=dict(prefix="fork/", count=8), up_y=up,
-                      console_position=[4.9, 0, 21], park_position=[6.3, 0, 19],
-                      endpoint_ids=["magnet_a", "magnet_b"],
-                      magnetic_points=dict(beam_near=[0, .65, -.10], beam_far=[0, 2.74, -.15]),
-                      source_pose=dict(position=source, rotation_degrees=[90, 0, 0]),
-                      receiver_pose=dict(position=receiver, rotation_degrees=[90, 0, 0]),
-                      approach=dict(axis=[0, 0, -1], distance=.20),
-                      route_positions=[source, rounded([source[0], up - .88, source[2]]),
-                                       rounded([receiver[0], up - .88, receiver[2] + .20]),
-                                       rounded([receiver[0], receiver[1], receiver[2] + .20]), receiver]),
-    }
+    return deepcopy(LAYOUT)
 
 
 def kind(key, family, title, carry="hand", variant="structural"):
@@ -348,7 +302,8 @@ page(leg_pages, "Join the thigh spar", "Use the service crane to lower LG-120 on
 leg_pages.append(dict(title="Structural leg ready", body="The load-bearing prototype is structurally ready. Use the leg rail to carry it to the pelvis gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the pelvis manual for seating and retention.", slots=list(leg_slots), view="prepared"))
 leg = dict(title="Left leg · structural prototype", carry_class="equipment", bounds=[1.4, 9.65, 3.0],
            work_locations=["support"], interaction="components", service_access="assisted",
-           slots=leg_slots, milestones={"structural_ready": list(leg_slots)}, manual=leg_pages)
+           slots=leg_slots, milestones={"structural_ready": list(leg_slots),
+                                      LAYOUT["crane"]["secured"]["milestone"]: spar_slots}, manual=leg_pages)
 
 # Pelvis sources live in a frame whose Y0 plane passes through both hip centers.
 source("PV-100__001", "PV-100", [0, .50, .65], [
@@ -385,16 +340,15 @@ for n, rotation in ((1, 0), (2, 180)):
         primitive("ring_plate", center=[0, 0, 0], inner=.30, outer=.68, length=.08,
                   start_degrees=180, end_degrees=360,
                   holes=[h for h in ring_holes if h[1] < 0])], [0, rotation, 0])
-    item(uid, "pv-ring-half", f"support:pelvis_ring_rack_{n}")
+    item(uid, "pv-ring-half")
 pelvis_slots = {"left_leg": dict(assembly="left_leg", milestone="structural_ready", requires=[],
                   pose_source="PV-V-HIP-BALL", snap_position=[-1.1, -9.2, 0], label="Structural left leg",
-                  support_required=True, source_supports=["leg_hoist"])}
+                  support_required=True, source_supports=[RAIL["support"]])}
 pelvis_pages = []
-page(pelvis_pages, "Seat the supported leg", "The braced pelvis bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the hoist to lift the LG-120 hip ball into the left socket's open underside. Keep hoist support until all retaining bolts are fitted.", ["left_leg"], context_sources)
+page(pelvis_pages, "Seat the supported leg", "The braced pelvis bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the leg rail to dock the LG-120 hip ball upward into the left socket's open underside. Keep rail support until all retaining bolts are fitted.", ["left_leg"], context_sources)
 for n in (1, 2):
-    slot(pelvis_slots, f"ring_{n}", "pv-ring-half", f"PV-120__{n:03}", ["left_leg"],
-         support_required=True, source_supports=["pelvis_ring_rack_1", "pelvis_ring_rack_2"])
-page(pelvis_pages, "Fit the split retaining ring", "Use the ring racks to fit both PV-120 semicircular halves around the already seated LG-120 neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.", ["ring_1", "ring_2"], ["PV-110__001", "LG-120__001"])
+    slot(pelvis_slots, f"ring_{n}", "pv-ring-half", f"PV-120__{n:03}", ["left_leg"])
+page(pelvis_pages, "Fit the split retaining ring", "Carry and fit both PV-120 semicircular halves around the already seated LG-120 neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.", ["ring_1", "ring_2"], ["PV-110__001", "LG-120__001"])
 ring_fasteners = []
 for n, (x, z, _) in enumerate(ring_holes, 1):
     w = hardware("LG-W24", "lg-w24", n+4, [-1.1+x, -.432, z], .024, 0, True)
@@ -402,7 +356,7 @@ for n, (x, z, _) in enumerate(ring_holes, 1):
     ring_sid = "ring_1" if z < 0 else "ring_2"
     ws = slot(pelvis_slots, f"ring/washer_{n}", "lg-w24", w, [ring_sid], target_offset=[0, -.003, 0])
     ring_fasteners += [ws, slot(pelvis_slots, f"ring/bolt_{n}", "pv-m24-140", b, [ws], target_offset=[0, -.026, 0])]
-page(pelvis_pages, "Bolt the ring to the socket", "Fit four LG-W24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing hoist load. To remove the leg, engage the hoist first, then reverse the retention steps.", ring_fasteners, ["PV-110__001", "PV-120__001", "PV-120__002"])
+page(pelvis_pages, "Bolt the ring to the socket", "Fit four LG-W24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing rail support. To remove the leg, reacquire rail support first, then reverse the retention steps.", ring_fasteners, ["PV-110__001", "PV-120__001", "PV-120__002"])
 pelvis_pages.append(dict(title="Left leg structurally mounted", body="The left ball is captured by both bolted ring halves. The gantry and mechanical transport braces support this unpowered prototype. This is structural readiness; hydraulic actuators, services and armor remain deferred.", slots=list(pelvis_slots), view="prepared"))
 pelvis = dict(title="Pelvis · left leg installation", bounds=[3.6, 1.5, 1.5], work_locations=["fixture"],
               interaction="components", context_sources=context_sources, slots=pelvis_slots,
@@ -443,17 +397,15 @@ for definition in (leg, pelvis):
 
 supports = {
     "foot_carrier": {"assemblies": ["foot"]},
-    "foot_hoist": {"assemblies": ["foot"]},
-    "leg_fixture": {"assemblies": ["left_leg"]},
-    "leg_hoist": {"assemblies": ["left_leg"]},
+    RAIL["support"]: {"assemblies": ["left_leg"], "assembly_ids": ["left_leg"]},
+    CRANE_SUPPORT: {"parts": ["lg-thigh-spar"], "item_ids": [LAYOUT["crane"]["load_uid"]]},
     "leg_shin_rack": {"parts": ["lg-shin"]},
     "leg_fork_rack": {"parts": ["lg-knee-fork"]},
     "leg_spar_rack": {"parts": ["lg-thigh-spar"]},
-    **{f"pelvis_ring_rack_{n}": {"parts": ["pv-ring-half"], "item_ids": [f"PV-120__{n:03}"]} for n in (1, 2)},
 }
 content = dict(version=1, parts=stock, parents=[
-    dict(id="left_leg", definition="left_leg", label="Structural left leg", location="support:leg_fixture"),
-    dict(id="pelvis", definition="pelvis", label="Pelvis gantry", location="fixture"),
+    dict(id="left_leg", definition="left_leg", label="Structural left leg", location="support:"+RAIL["support"], home=LAYOUT["parent_homes"]["left_leg"]),
+    dict(id="pelvis", definition="pelvis", label="Pelvis gantry", location="fixture", home=LAYOUT["parent_homes"]["pelvis"]),
 ], supports=supports, sources=sources, context_sources=context_sources,
                source_units="metres", source_axes="Godot X robot right, Y up, -Z forward",
                joint_heights=dict(ankle=1.0, knee=5.1, hip=9.2),
@@ -461,18 +413,16 @@ content = dict(version=1, parts=stock, parents=[
                diagram_only_sources=["LG-V-DISCONNECT", "LG-V-INPUT-PLUG", "PV-V-HIP-BALL"])
 content["equipment"] = dict(
     foot_mount=dict(parent="left_leg", slot="foot", support="foot_carrier"),
-    leg_mount=dict(parent="pelvis", slot="left_leg", support="leg_hoist"),
+    leg_mount=dict(parent="pelvis", slot="left_leg", support=RAIL["support"]),
     parts={uid: dict(owner=owner, slot=sid, support=support, stock_position=position)
            for uid, owner, sid, support, position in [
                ("LG-100__001", "left_leg", "shin", "leg_shin_rack", [-2, 1.5, 14]),
                ("LG-110__001", "left_leg", "fork", "leg_fork_rack", [-2, 1.5, 18]),
                ("LG-120__001", "left_leg", "spar", "leg_spar_rack", [-2, 1.5, 22]),
-               ("PV-120__001", "pelvis", "ring_1", "pelvis_ring_rack_1", [10, 1.5, 23]),
-               ("PV-120__002", "pelvis", "ring_2", "pelvis_ring_rack_2", [10, 1.5, 29]),
            ]})
 
 
-def catalogue_images():
+def catalogue_images(check=False):
     """Small schematic thumbnails derived from actual descriptor primitive sizes.
 
     These support catalogue recognition, not rendered construction approval.
@@ -529,7 +479,10 @@ def catalogue_images():
                + ''.join(elements) + '</g>'
                f'<text x="50" y="95" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#ffffff">{label}</text></svg>\n')
         path = ASSETS / "part-images" / f"{key}.svg"
-        path.write_text(svg)
+        if check:
+            assert path.read_text() == svg, f"Regenerate {path.name}"
+        else:
+            path.write_text(svg)
         definition["catalogue_image"] = f"res://assets/part-images/{key}.svg"
 
 
@@ -551,10 +504,62 @@ def audit():
     base = json.loads((ASSETS / "pitch-workshop.json").read_text())
     assert not set(ids) & {p["instance_id"] for p in base["parts"]}
     assert all(p["source_id"] in sources or p["source_id"] in MANIFEST for p in stock)
+    for definition in (leg, pelvis):
+        for spec in definition["slots"].values():
+            assert all(sid in supports for sid in spec.get("source_supports", []))
+    for record in stock:
+        if record["location"].startswith("support:"):
+            assert record["location"].removeprefix("support:") in supports
+    crane = LAYOUT["crane"]
+    assert crane["load_uid"] in ids and crane["owner"] == "left_leg" and crane["slot"] in leg_slots
+    assert crane["route_positions"][0] == crane["source_pose"]["position"]
+    assert crane["route_positions"][-1] == crane["receiver_pose"]["position"]
+    assert len(crane["endpoint_ids"]) == len(crane["magnetic_points"]) == 2
+    assert len(set(crane["endpoint_ids"])) == 2
+    assert len(crane["route_positions"]) == 5
+    assert all(len(point) == 3 and all(isinstance(v, (float, int)) and math.isfinite(v) for v in point)
+               for point in crane["route_positions"] + list(crane["magnetic_points"].values()))
+
+
+def record_patch(base, changed):
+    """Replace declared fields and explicitly remove absent fields."""
+    patch = {}
+    updates = {key: deepcopy(value) for key, value in changed.items()
+               if key not in base or base[key] != value}
+    removed = [key for key in base if key not in changed]
+    if updates: patch["set"] = updates
+    if removed: patch["remove"] = removed
+    return patch
+
+
+def assembly_patch(base, changed):
+    patch = record_patch({k: v for k, v in base.items() if k != "slots"},
+                         {k: v for k, v in changed.items() if k != "slots"})
+    assert base["slots"].keys() == changed["slots"].keys(), "Slot inventory changes need explicit recipe authoring"
+    slots = {sid: record_patch(base["slots"][sid], values)
+             for sid, values in changed["slots"].items() if base["slots"][sid] != values}
+    if slots: patch["slots"] = slots
+    return patch
+
+
+def materialize_overlay(base, overlay):
+    """Audit the same shallow field / slot patch contract as runtime."""
+    data = deepcopy(base)
+    for field in ("parts", "assemblies"):
+        data.setdefault(field, {}).update(deepcopy(overlay.get(field, {})))
+    for owner, patch in overlay.get("assembly_patches", {}).items():
+        definition = data["assemblies"][owner]
+        for key in patch.get("remove", []): definition.pop(key, None)
+        definition.update(deepcopy(patch.get("set", {})))
+        for sid, fields in patch.get("slots", {}).items():
+            slot = definition["slots"][sid]
+            for key in fields.get("remove", []): slot.pop(key, None)
+            slot.update(deepcopy(fields.get("set", {})))
+    return data
 
 
 def m2_documents():
-    """Isolated M2 overlays; the normal workshop's generated bytes stay intact.
+    """Small trial overlays on the shared leg-bay recipes.
 
     Keep full recipes and readiness criteria for safe staging and validation.
     Only trial installation pages are replaced. `playable_slots` is the manual
@@ -640,7 +645,7 @@ def m2_documents():
                                                   stock_position=list(layout["crane"]["source_pose"]["position"]))})
         trial = dict(version=1, parts=trial_stock, parents=parents, supports=deepcopy(added_supports), equipment=equipment,
             m2=dict(scenario_id="m2-" + example, scenario_version=2, equipment_version=2, route_version=2,
-                    remove_supports=["pelvis_ring_rack_1", "pelvis_ring_rack_2"],
+                    remove_supports=[],
                     save_path="user://m2-" + example + "-save.json",
                     staged_slots={"left_leg": list(leg_slots) if example == "retention" else pre_spar, "pelvis": []},
                     playable_slots={"left_leg": [] if example == "retention" else beam_slots,
@@ -649,8 +654,9 @@ def m2_documents():
                     representative_half="ring_1", retention_uid="PV-120__001" if example == "retention" else "",
                     crane=deepcopy(crane_metadata),
                     supplied_construction=trial_pelvis["manual"][0]["body"] if example == "retention" else trial_leg["manual"][0]["body"]))
-        documents[f"m2-{example}-definitions.json"] = dict(version=1, parts={"lg-thigh-spar": deepcopy(beam), "pv-ring-half": dict(deepcopy(parts["pv-ring-half"]), carry_class="two_hand", catalogue_image="res://assets/part-images/pv-ring-half.svg", handling=dict(distance=.85, rotation_degrees=[90, 0, 0]))},
-            assemblies={"left_leg": trial_leg, "pelvis": trial_pelvis})
+        documents[f"m2-{example}-definitions.json"] = dict(version=2, parts={"lg-thigh-spar": deepcopy(beam), "pv-ring-half": dict(deepcopy(parts["pv-ring-half"]), carry_class="two_hand", catalogue_image="res://assets/part-images/pv-ring-half.svg", handling=dict(distance=.85, rotation_degrees=[90, 0, 0]))},
+            assembly_patches={"left_leg": assembly_patch(leg, trial_leg),
+                              "pelvis": assembly_patch(pelvis, trial_pelvis)})
         documents[f"m2-{example}-content.json"] = trial
     return documents
 
@@ -658,7 +664,9 @@ def m2_documents():
 def audit_m2(documents):
     """Inventory, dependencies, slot ownership and step shopping-list boundary."""
     for example in ("retention", "crane"):
-        definitions = documents[f"m2-{example}-definitions.json"]
+        overlay = documents[f"m2-{example}-definitions.json"]
+        definitions = materialize_overlay(dict(parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis}), overlay)
+        assert "assemblies" not in overlay and overlay["assembly_patches"], "Trials must patch the base recipes"
         trial = documents[f"m2-{example}-content.json"]
         recipe = definitions["assemblies"]
         ids = [record["instance_id"] for record in trial["parts"]]
@@ -698,28 +706,30 @@ def audit_m2(documents):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--m2", action="store_true", help="Write isolated M2 overlays only; preserve all legacy assets")
-    parser.add_argument("--check-m2", action="store_true", help="Audit generated M2 overlays without writing assets")
+    parser.add_argument("--check", action="store_true", help="Audit and byte-compare all generated base and trial assets")
+    parser.add_argument("--m2", action="store_true", help="Compatibility alias; regenerate shared base and trial assets")
+    parser.add_argument("--check-m2", action="store_true", help="Compatibility alias for --check")
     args = parser.parse_args()
+    checking = args.check or args.check_m2
     audit()
-    encoded_layout = json.dumps(layout_document(), indent=2, ensure_ascii=False) + "\n"
-    if args.check_m2:
-        assert (ASSETS / "leg-bay-layout.json").read_text() == encoded_layout, "Regenerate leg-bay-layout.json with --m2"
-    elif args.m2:
-        (ASSETS / "leg-bay-layout.json").write_text(encoded_layout)
-    if args.m2 or args.check_m2:
-        generated = m2_documents()
-        audit_m2(generated)
-        for name, document in generated.items():
-            encoded = json.dumps(document, indent=2, ensure_ascii=False) + "\n"
-            if args.check_m2:
-                assert (ASSETS / name).read_text() == encoded, f"Regenerate {name} with --m2"
-            else:
-                (ASSETS / name).write_text(encoded)
-        print("M2_CONTENT_AUDIT PASS: two isolated profiles; 35/30 extension identities, 5/9 playable slots; legacy assets unchanged.")
-        raise SystemExit(0)
-    catalogue_images()
-    for name, document in (("leg-prototype-definitions.json", dict(version=1, parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis, "foot": foot})),
-                           ("leg-prototype-content.json", content)):
-        (ASSETS / name).write_text(json.dumps(document, indent=2, ensure_ascii=False)+"\n")
-    print(f"Authored {len(stock)} added physical pieces, {len(leg_slots)} leg slots and {len(pelvis_slots)} pelvis slots; context is separate.")
+    # Catalogue images are stable inputs in this consolidation; a recipe check
+    # still verifies their generator bytes and records their authored paths.
+    catalogue_images(check=checking)
+    generated = {
+        "leg-prototype-definitions.json": dict(version=1, parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis, "foot": foot}),
+        "leg-prototype-content.json": content,
+        **m2_documents(),
+    }
+    audit_m2(generated)
+    assert LAYOUT["version"] == 1
+    secure = LAYOUT["crane"]["secured"]["milestone"]
+    assert secure in leg["milestones"] and leg["milestones"][secure] == spar_slots
+    assert not {"leg_hoist", "leg_fixture", "pelvis_ring_rack_1", "pelvis_ring_rack_2"} & supports.keys()
+    assert all(record["location"] == "bin" for record in stock if record["kind"] == "pv-ring-half")
+    for name, document in generated.items():
+        encoded = json.dumps(document, indent=2, ensure_ascii=False) + "\n"
+        if checking:
+            assert (ASSETS / name).read_text() == encoded, f"Regenerate {name} with author_leg_prototype.py"
+        else:
+            (ASSETS / name).write_text(encoded)
+    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; two slot-patched trials; 35/30 extension identities, 5/9 playable slots; byte equality="+str(checking))

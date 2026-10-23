@@ -82,7 +82,7 @@ func visual_pieces(owner: String) -> Array[Dictionary]:
 	for member in descendants(owner):
 		for visual in node(member).get_children():
 			if not visual is MeshInstance3D:continue
-			if not visual.has_meta("component_uid") and not visual.has_meta("installed_uid") and not visual.has_meta("source_uid"):continue
+			if not visual.has_meta("component_uid") and not visual.has_meta("source_uid"):continue
 			result.append({"visual":visual,"transform":inverse*visual.global_transform,"owner":member})
 	return result
 

@@ -38,10 +38,7 @@ static func fill(game: Node, owner: String, permitted: Array = [], limit: int = 
 			installed += 1
 			changed = true
 		if not changed or (limit >= 0 and installed >= limit):break
-	if game.builds.has(owner):
-		game._activate(owner)
-		game._sync_installed_visuals()
-	else:game.components.sync(owner)
+	game.components.sync(owner)
 	return installed
 
 ## Completed foot on the leg, with the trial's permitted leg slots fitted.
@@ -60,7 +57,7 @@ static func prepare(game: Node) -> void:
 	game.runtime.mount("left_leg","foot","foot")
 	fill(game,"left_leg",game.leg_content.m2.staged_slots.left_leg)
 	game.refresh_assembly_collision("left_leg")
-	game._activate("pad_1")
+	game.active_build = "pad_1"
 
 static func _check(error: String, label: String) -> void:
 	if not error.is_empty():push_error("Scenario staging could not "+label+": "+error)

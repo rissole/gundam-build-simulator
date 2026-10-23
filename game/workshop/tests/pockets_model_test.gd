@@ -1,9 +1,4 @@
-extends SceneTree
-var checks: Array[Dictionary] = []
-func expect(value: bool, label: String) -> void:
-	checks.append({"check":label,"passed":value})
-	if not value:push_error(label)
-
+extends "res://tests/kit/harness.gd"
 func _initialize() -> void:
 	var data = {"version":1,"parts":{"body":{"family":"BODY","title":"BODY","carry_class":"hand"}},"assemblies":{
 		"unit":{"root_slot":"base","slots":{"base":{"accepts":"body"},"screw":{"accepts":"kind0","requires":["base"]}},"milestones":{"ready":["base","screw"]},"work_locations":["station"]},
@@ -54,6 +49,6 @@ func _initialize() -> void:
 	expect(not model.stock_pocket("body").ok,"Hand-sized components cannot occupy action-bar pockets")
 	expect(model.integrity_errors().is_empty() and model.items.size()==301,"All physical identities survive refill, replacement, installation, clearing and undo")
 	var passed: bool = checks.all(func(c):return c.passed)
-	FileAccess.open("res://verification/pockets-model-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks},"  "))
+	write_evidence("res://verification/pockets-model-audit.json",{"passed":passed,"checks":checks})
 	print("POCKETS_MODEL_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

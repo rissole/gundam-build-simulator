@@ -1,18 +1,12 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Audit the generated workshop itself, not a hand-maintained list of bad joints.
 ## Imported robot/source parts have their separate interface/assembly audits.
 const Audit = preload("res://tests/geometry_surface_audit.gd")
 var game: Node
-var checks: Array[Dictionary] = []
 var poses: Array[Dictionary] = []
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, description: String) -> void:
-	checks.append({"check":description,"passed":ok})
-	print("CHECK ","PASS " if ok else "FAIL ",description)
-	if not ok:push_error(description)
 
 func collect(node: Node, meshes: Array[MeshInstance3D]) -> void:
 	# Dynamic mesh resources cover every procedural box, cylinder and the ramp,
@@ -67,7 +61,7 @@ func run() -> void:
 	var passed: bool = checks.all(func(check):return check.passed)
 	var path = "res://verification/workshop-geometry-%s-%s.json" % [Time.get_datetime_string_from_system().replace(":","-"),Time.get_ticks_usec()]
 	DirAccess.make_dir_recursive_absolute("res://verification")
-	FileAccess.open(path,FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"rendered":false,"checks":checks,"poses":poses,"plane_tolerance_m":0.00025,"minimum_overlap_m2":0.000001,"scope":"Visible generated workshop meshes; imported source meshes are separate assembly audit scope.","engine":Engine.get_version_info().string},"  "))
+	write_evidence(path,{"passed":passed,"rendered":false,"checks":checks,"poses":poses,"plane_tolerance_m":0.00025,"minimum_overlap_m2":0.000001,"scope":"Visible generated workshop meshes; imported source meshes are separate assembly audit scope.","engine":Engine.get_version_info().string})
 	print("GEOMETRY_REPORT ",ProjectSettings.globalize_path(path))
 	print("WORKSHOP_GEOMETRY ","PASS" if passed else "FAIL"," ",checks.size()," checks; ",meshes.size()," meshes; ",poses.size()," poses")
 	game.chime.stop()

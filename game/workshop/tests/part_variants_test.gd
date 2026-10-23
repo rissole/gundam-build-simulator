@@ -1,16 +1,11 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Exercise interchangeable stock with physical identities deliberately swapped.
 const SHARED_FAMILIES = ["FA-526", "FA-527", "FA-528", "FA-221", "FA-222"]
 const VARIANT_FAMILIES = ["FA-524", "FA-525", "FA-529", "FA-220"]
-var checks: Array[Dictionary] = []
 var model = AssemblyModel.new()
 var swapped: Dictionary = {}
 var tested_swaps: Array[String] = []
 var rejected_variants: Array[String] = []
-
-func expect(value: bool, label: String) -> void:
-	checks.append({"check": label, "passed": value})
-	if not value: push_error(label)
 
 func collect(uid: String) -> bool:
 	var item: Dictionary = model.items[uid]

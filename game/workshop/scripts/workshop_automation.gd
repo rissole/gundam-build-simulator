@@ -39,22 +39,46 @@ func look_at_point(point: Vector3) -> void:
 func suspend_at_station(build_id: String, station_id: String) -> String:
 	var error: String = game.model.move_assembly(build_id,"station:"+station_id)
 	if not error.is_empty():return error
-	game._activate(build_id)
-	game._set_pad_station(station_id)
+	game.suspend_build(build_id,station_id)
 	return ""
 
 func fill(owner: String, limit: int = -1, permitted: Array = []) -> int:
 	return Staging.fill(game,owner,permitted,limit)
 
 func sync_visuals(owner: String) -> void:
-	if game.builds.has(owner):
-		var previous: String = game.active_build
-		game._activate(owner)
-		game._sync_installed_visuals()
-		game._activate(previous)
-	else:
-		game.components.sync(owner)
-		game.refresh_assembly_collision(owner)
+	game.components.sync(owner)
+	game.refresh_assembly_collision(owner)
 
+## Reader focus only. World interaction always names its owner explicitly.
 func select_build(build_id: String) -> void:
-	game._activate(build_id)
+	assert(game.builds.has(build_id),"Unknown build: "+build_id)
+	game.active_build = build_id
+
+func body(owner: String) -> Node3D:
+	return game.assembly_node(owner)
+
+func slot_point(owner: String, sid: String) -> Vector3:
+	return game.components.slot_point(owner,sid)
+
+func root_uid(owner: String) -> String:
+	return game.model.assemblies[owner].slots[game.runtime.definition(owner).root_slot]
+
+func prepared(owner: String) -> bool:
+	return game.build_prepared(owner)
+
+func complete(owner: String) -> bool:
+	return game.build_complete(owner)
+
+func mount_build(owner: String, parent: String, sid: String) -> Dictionary:
+	var result: Dictionary = game.model.install(parent,sid,owner)
+	if result.ok:game.mount_build(owner)
+	return result
+
+func refresh_presentation() -> void:
+	game.targeting.update_ghost()
+
+func refresh_markers() -> void:
+	game.targeting.update_markers()
+
+func show_assembly_ghost(owner: String) -> void:
+	game.targeting.show_assembly_ghost(owner)

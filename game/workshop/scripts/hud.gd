@@ -637,8 +637,6 @@ func discovery_context() -> Dictionary:
 		return {"owner":carried}
 	var aimed: Dictionary = game.target
 	var owner: String = aimed.get("owner",aimed.get("build",""))
-	if aimed.get("type","") == "slot" and game.model.assemblies.has(owner) and not game.model.assemblies[owner].parent.is_empty():
-		owner = game.model.assemblies[owner].parent
 	if not owner.is_empty() and game.model.assemblies.has(owner):result.owner = owner
 	elif aimed.get("type","") == "loose":result.kind = game.model.items[aimed.uid].kind
 	elif aimed.get("type","") == "bin":result.kind = aimed.kind
@@ -719,7 +717,7 @@ func _refresh_manual() -> void:
 		for id in children:
 			var child: Dictionary = game.model.assemblies[id]
 			var progress = "%d / %d pieces"%[child.slots.size()-child.slots.values().count(""),child.slots.size()]
-			if child.definition == "heel_pad":progress = "%d / 4 sleeves"%game.builds[id].installed("sleeve")
+			if child.definition == "heel_pad":progress = "%d / 4 sleeves"%(game.model.assemblies[id].slots.size()-game.model.assemblies[id].slots.values().count("")-1)
 			var status: String = "seated" if child.parent == manual_id else ("prepared" if game.model.milestone(id,"prepared") else progress)
 			var secured_child: bool = false
 			if child.parent == manual_id:

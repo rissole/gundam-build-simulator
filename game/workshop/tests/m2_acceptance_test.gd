@@ -1,4 +1,4 @@
-extends "res://tests/save_resume_test.gd"
+extends "res://tests/kit/workshop_suite.gd"
 ## Adversarial equipment snapshots and mesh/physics review.
 ## Controller pose sampling is geometry evidence; The walked suites prove input journeys.
 var attacks = 0
@@ -44,6 +44,13 @@ func reject_semantic(snapshot: Dictionary, label: String) -> void:
 	expect(not errors.is_empty() and not game.saves.apply_snapshot(snapshot) and before == JSON.stringify(game.saves.capture()),label+" rejects transactionally")
 
 func semantic_attacks(snapshot: Dictionary) -> void:
+	# Trials validate the common player, reader and fixed-world envelope too.
+	var bad_height = cloned(snapshot);bad_height.world.player.height = -99
+	reject_semantic(bad_height,game.profile.trial+" rejects invalid common player height")
+	var bad_reader = cloned(snapshot);bad_reader.world.reader.manual = "invented_manual"
+	reject_semantic(bad_reader,game.profile.trial+" rejects unknown common reader manual")
+	var moved_station = cloned(snapshot);moved_station.world.stations.prep[9] += 50
+	reject_semantic(moved_station,game.profile.trial+" rejects moved common preparation station")
 	var forged = cloned(snapshot);forged.world.equipment.leg_rail.parent = "pelvis"
 	reject_semantic(forged,"Forged rail parent")
 	forged = cloned(snapshot);forged.world.equipment.leg_rail.support = "leg_hoist"
@@ -334,7 +341,44 @@ func geometry_contacts() -> void:
 	expect(contacts.is_empty(),"101 loaded route samples clear rail hardware and scenery beyond declared rack/receiver contact")
 	if not contacts.is_empty():print("INDEPENDENT_CRANE_SWEEP_CONTACTS ",contacts)
 
+func layout_positions(workshop: Node) -> Dictionary:
+	var result = {"rack":[],"cradle":[],"gantry":workshop.leg_layout.get_node("PelvisGantry").global_position,"pelvis":workshop.assembly_node("pelvis").global_position}
+	for piece in workshop.leg_layout.static_pieces:
+		if piece.id == "BeamRack":result.rack.append(piece.visual.global_position)
+		elif piece.id == "BeamCradle":result.cradle.append(piece.visual.global_position)
+	var contract: Dictionary = workshop.leg_layout.crane_contract()
+	result.source = contract.source_pose.origin
+	result.receiver = contract.receiver_pose.origin
+	result.load = workshop.equipment.get_equipment("service_crane").load_pose(0).origin
+	return result
+
+func layout_authority() -> void:
+	# Perturb in-memory authored data: source contacts, destination contacts and
+	# the parent fixture must follow the same contract as runtime load poses.
+	var layout_script = preload("res://scripts/leg_bay_layout.gd")
+	var original: Dictionary = layout_script.layout().duplicate(true)
+	var first = instantiate_profile(self,"leg_bay_crane")
+	var before = layout_positions(first)
+	first.free();await process_frame
+	layout_script.data = original.duplicate(true)
+	layout_script.data.crane.source_pose.position[0] += .5
+	layout_script.data.crane.receiver_pose.position[0] += .5
+	layout_script.data.parent_homes.pelvis[0] += .5
+	var changed = instantiate_profile(self,"leg_bay_crane")
+	var after = layout_positions(changed)
+	var shift = Vector3(.5,0,0)
+	for key in ["source","receiver","gantry","pelvis","load"]:
+		expect(after[key].is_equal_approx(before[key]+shift),"Authored data moves "+key+" with its runtime contract")
+	for family in ["rack","cradle"]:
+		var follows: bool = before[family].size() == 2 and after[family].size() == 2
+		for index in range(mini(before[family].size(),after[family].size())):
+			follows = follows and after[family][index].is_equal_approx(before[family][index]+shift)
+		expect(follows,"Authored data moves both "+family+" contacts with their load pose")
+	changed.free();await process_frame
+	layout_script.data = original
+
 func run() -> void:
+	await layout_authority()
 	for trial in ["retention","crane"]:
 		game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_"+trial;game.automated_test = true
 		root.add_child(game);await frames(8);game.set_paused(false)
@@ -357,6 +401,6 @@ func run() -> void:
 	for file in ["workshop_save.gd","leg_bay_trial.gd","leg_rail.gd","leg_bay_layout.gd","lift_shelf.gd","service_crane.gd","assembly_runtime.gd","workshop.gd"]:hashes[file] = FileAccess.get_sha256("res://scripts/"+file)
 	var output = {"passed":passed,"checks":checks,"attacks":attacks,"rejected":rejected,"defects":defects,"rendered":false,"script_hashes":hashes}
 	DirAccess.make_dir_recursive_absolute("res://verification")
-	FileAccess.open("res://verification/m2-independent-acceptance.json",FileAccess.WRITE).store_string(JSON.stringify(output,"  "))
+	write_evidence("res://verification/m2-independent-acceptance.json",output)
 	print("M2_ACCEPTANCE ","PASS" if passed else "FAIL"," ",checks.size()," checks; ",attacks," attacks; defects ",defects)
 	quit(0 if passed else 1)

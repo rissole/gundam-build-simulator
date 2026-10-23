@@ -6,6 +6,12 @@ and visible transport issues. The historical checks below establish mechanical
 behavior; they do not establish acceptance of the workshop experience.
 
 Continue from [playtest feedback and next steps](leg-workshop-next-steps.md).
+The upright-hoist workflow described below was retired during the 2026-10-23
+architecture consolidation. Default launch now selects the foot base game;
+M2 uses separate rail/crane trial profiles. This document retains the historical
+milestone and its evidence. The
+[pre-consolidation continuation snapshot](history/workshop-pre-consolidation-state-20261023.md)
+preserves the later feedback and handoff details.
 The next iteration should establish a coherent equipment interaction and visible
 handling loop before expanding construction detail. Detailed production assets
 remain deferred.

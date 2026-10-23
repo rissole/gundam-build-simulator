@@ -216,18 +216,6 @@ func validate(data: Variant) -> Array[String]:
 	var errors: Array[String] = ModelSave.validate(data.get("model"),baseline)
 	if not errors.is_empty():return errors
 	var w = data.get("world")
-	if _trial() and w is Dictionary:
-		var candidate = AssemblyModel.new();candidate.configure(baseline.definitions,game.config);ModelSave.apply(data.model,candidate)
-		errors = game.equipment.validate(w.get("equipment"),candidate,w)
-		if not errors.is_empty():return errors
-		errors = game.trial.validate(w.get("trial"),candidate,initial,w)
-		if not errors.is_empty():return errors
-		for id in w.fixtures:
-			var a: Dictionary = candidate.assemblies[id]
-			if not a.parent.is_empty():
-				var parent_pose = _saved_assembly_pose(a.parent,w,candidate)
-				if not to_pose(w.fixtures[id]).is_equal_approx(_saved_mount_pose(a.parent,a.parent_slot,id,parent_pose)):return ["Mounted fixture pose disagrees with its parent."]
-		return []
 	if not w is Dictionary:return ["Missing workshop positions."]
 	if not same_keys(w.get("stations"),game.stations.keys()):return ["Preparation stations changed."]
 	for id in w.stations:
@@ -264,12 +252,26 @@ func validate(data: Variant) -> Array[String]:
 		if not baseline.assemblies.has(id) or not number(r.pages[id]) or r.pages[id] != int(r.pages[id]):return ["Unknown manual page."]
 		var page_count: int = baseline.definitions.assemblies[baseline.assemblies[id].definition].manual.size()
 		if r.pages[id] < 0 or r.pages[id] >= page_count:return ["Manual page is out of range."]
+	if _trial():
+		var candidate = AssemblyModel.new();candidate.configure(baseline.definitions,game.config);ModelSave.apply(data.model,candidate)
+		errors = game.equipment.validate(w.get("equipment"),candidate,w)
+		if not errors.is_empty():return errors
+		errors = game.trial.validate(w.get("trial"),candidate,initial,w)
+		if not errors.is_empty():return errors
+		for id in w.fixtures:
+			var a: Dictionary = candidate.assemblies[id]
+			if not a.parent.is_empty():
+				var parent_pose = _saved_assembly_pose(a.parent,w,candidate)
+				if not to_pose(w.fixtures[id]).is_equal_approx(_saved_mount_pose(a.parent,a.parent_slot,id,parent_pose)):return ["Mounted fixture pose disagrees with its parent."]
+
 	return _validate_support(w,data.model)
 
 func _validate_support(w: Dictionary, saved_model: Dictionary) -> Array[String]:
 	var s = w.get("support")
 	if not s is Dictionary:return ["Missing foot support state."]
-	if not is_instance_valid(game.foot_fixture):return [] if s.is_empty() else ["Unexpected foot support."]
+	if not is_instance_valid(game.foot_fixture):
+		if s.is_empty():return []
+		return ["Unexpected foot support."]
 	var candidate = AssemblyModel.new()
 	candidate.configure(baseline.definitions,game.config)
 	ModelSave.apply(saved_model,candidate)
@@ -307,7 +309,7 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 		var root_uid: String = baseline.assemblies[id].slots.get(root_slot,"")
 		for visual in game.assembly_node(id).get_children():
 			if not visual is MeshInstance3D:continue
-			if visual.has_meta("installed_uid") or (visual.has_meta("component_uid") and visual.get_meta("component_uid") != root_uid):
+			if visual.has_meta("component_uid") and visual.get_meta("component_uid") != root_uid:
 				visual.free()
 	ModelSave.apply(snapshot.model,game.model)
 	var w: Dictionary = snapshot.world
@@ -318,17 +320,15 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 	for id in w.bodies:
 		var body: WorkshopPart = game.bodies[id]
 		var location: String = game.model.assemblies[id].location
-		game._activate(id)
-		if location.begins_with("station:"):game._set_pad_station(location.trim_prefix("station:"))
+		if location.begins_with("station:"):game.suspend_build(id,location.trim_prefix("station:"))
 		_restore_body(body,w.bodies[id],location)
 	# Parent-first traversal derives exact child mount transforms from authored slots.
 	for id in game.model.assemblies:
 		if game.model.assemblies[id].parent.is_empty():_mount_children(id)
 	for id in game.builds:
-		game._activate(id)
-		game._sync_installed_visuals()
-		game.prepared_flags[id] = game.state.prepared()
-		game.completed_flags[id] = game.state.complete()
+		game.components.sync(id)
+		game.prepared_flags[id] = game.build_prepared(id)
+		game.completed_flags[id] = game.build_complete(id)
 	if _trial():
 		for id in game.runtime.nodes:
 			var body: CollisionObject3D = game.runtime.node(id)
@@ -348,7 +348,7 @@ func apply_snapshot(snapshot: Dictionary) -> bool:
 			game.components.held_body = body
 			body.add_collision_exception_with(game.player)
 			game.player.add_collision_exception_with(body)
-	game._activate(w.active_build)
+	game.active_build = w.active_build
 	game.player.global_transform = to_pose(w.player.pose)
 	game.player.velocity = to_vector(w.player.velocity)
 	game.crouched = w.player.crouched

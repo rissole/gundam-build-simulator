@@ -1,12 +1,12 @@
-extends "res://tests/m2_test_helpers.gd"
+extends "res://tests/kit/rail_suite.gd"
 var shelf: Node3D
 var snapshots: Dictionary = {}
 var replay_uid = "PV-120__001"
 func press(entry: Dictionary, click: bool = false, expected_error: String = "") -> bool:
 	look(entry.point)
-	await frames(2);game._update_target()
-	var found: bool = game.target.get("controller") == entry.get("controller") and game.target.get("action") == entry.action and game._access(game._target_receivers()) == expected_error
-	if not found:print("M2_TARGET ",entry.action," feet=",game.player.global_position," target=",game.target," access=",game._access(game._target_receivers()))
+	await frames(2);game.automation.refresh_target()
+	var found: bool = game.target.get("controller") == entry.get("controller") and game.target.get("action") == entry.action and game.automation.access_error() == expected_error
+	if not found:print("M2_TARGET ",entry.action," feet=",game.player.global_position," target=",game.target," access=",game.automation.access_error())
 	expect(found,"Normal aim reaches "+entry.action)
 	if not found:return false
 	if click:
@@ -45,7 +45,7 @@ func loop() -> bool:
 	for kind in ["lg-w24","pv-m24-140","pv-ring-half"]:
 		var bin: Node3D = game.bins[kind]
 		await walk(Vector3(bin.global_position.x,0,21.7),"ground stock "+kind)
-		look(bin.global_transform*Vector3(0,.13,.27));await frames(2);game._update_target()
+		look(bin.global_transform*Vector3(0,.13,.27));await frames(2);game.automation.refresh_target()
 		expect(game.target.get("type") == "bin" and game.target.get("kind") == kind,"Ground aim identifies "+kind)
 		key(KEY_E);key(KEY_E,false)
 		expect(game.model.held_item()==replay_uid if kind=="pv-ring-half" else game.model.count_at(kind,"pocket")==2,"E collects "+kind)
@@ -68,7 +68,7 @@ func loop() -> bool:
 	expect(game.model.held_item()==replay_uid and shelf.occupants()==["",""],"E retrieves the same ring at height")
 	await walk(Vector3(10.45,8.4,25.15),"hip working corner")
 	game.hud.open_manual("pelvis",1)
-	look(game.components.slot_point("pelvis","ring_1"));await frames(12);game._update_target()
+	look(game.components.slot_point("pelvis","ring_1"));await frames(12);game.automation.refresh_target()
 	expect(game.target.get("sid")=="ring_1","Normal aim finds ring connection")
 	var seat = InputEventMouseButton.new();seat.button_index=MOUSE_BUTTON_LEFT;seat.pressed=true;game.handle_desktop_input(seat)
 	expect(game.model.assemblies.pelvis.slots.ring_1==replay_uid,"Ordinary click installs held ring half: "+game.hud.toast_label.text)
@@ -79,7 +79,7 @@ func loop() -> bool:
 		var kind: String = game.model.slot_definition("pelvis",sid).accepts
 		var pocket: int = game.model.pocket_for(kind)
 		key(KEY_1+pocket);key(KEY_1+pocket,false)
-		look(game.components.slot_point("pelvis",sid));await frames(2);game._update_target()
+		look(game.components.slot_point("pelvis",sid));await frames(2);game.automation.refresh_target()
 		expect(game.target.get("type") == "component" and game.target.get("sid") == sid,"Ordinary aim finds "+sid)
 		if sid == "ring/bolt_3":
 			var before_wrong = JSON.stringify(game.saves.capture().model)
@@ -114,7 +114,7 @@ func loop() -> bool:
 	look(game.player.global_position+Vector3(0,.10,-1.0));await frames(15)
 	key(KEY_Q);key(KEY_Q,false);await frames(35)
 	expect(game.model.items[replay_uid].location=="loose","Q drops ring as an ordinary solid component")
-	look(game.loose[replay_uid].global_position);await frames(3);game._update_target()
+	look(game.loose[replay_uid].global_position);await frames(3);game.automation.refresh_target()
 	expect(game.target.get("type")=="loose" and game.target.get("uid")==replay_uid,"Dropped ring remains targetable in M2")
 	key(KEY_E);key(KEY_E,false)
 	expect(game.model.held_item()==replay_uid,"E recovers the same dropped ring")
@@ -135,7 +135,7 @@ func run() -> void:
 	replay_uid = "PV-120__002"
 	await loop()
 	var passed = checks.all(func(check):return check.passed)
-	FileAccess.open("/tmp/m2-retention-controls.audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":false,"teleported_player":false},"  "))
+	write_evidence("/tmp/m2-retention-controls.audit.json",{"passed":passed,"checks":checks,"rendered":false,"teleported_player":false})
 	game.free();await process_frame
 	print("M2_RETENTION_CONTROLS ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

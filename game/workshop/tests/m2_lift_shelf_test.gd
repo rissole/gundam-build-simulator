@@ -1,4 +1,4 @@
-extends "res://tests/save_resume_test.gd"
+extends "res://tests/kit/workshop_suite.gd"
 ## Bounded shelf fixture uses real unused foot components to exercise both capacities.
 ## The retention controls suite separately walks the actual ring/lift/hip journey.
 var shelf: Node3D
@@ -68,7 +68,7 @@ func run() -> void:
 	expect(stored.global_transform.is_equal_approx(physics_pose),"Shelf cargo physics follows deck immediately")
 	expect(game.model.integrity_errors().is_empty(),"Shelf storage preserves inventory integrity")
 	var passed=checks.all(func(check):return check.passed)
-	FileAccess.open("/tmp/m2-lift-shelf.audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":false},"  "))
+	write_evidence("/tmp/m2-lift-shelf.audit.json",{"passed":passed,"checks":checks,"rendered":false})
 	game.free();await process_frame
 	print("M2_LIFT_SHELF ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

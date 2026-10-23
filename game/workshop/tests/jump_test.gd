@@ -1,16 +1,10 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Exercise Space through the desktop adapter and real character collisions.
 var game: Node
 var driver: Node
-var checks: Array[Dictionary] = []
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, label: String) -> void:
-	checks.append({"check":label,"passed":ok})
-	print("CHECK ","PASS " if ok else "FAIL ",label)
-	if not ok:push_error(label)
 
 func settle_at(feet: Vector3) -> void:
 	driver.release(KEY_SPACE)
@@ -31,7 +25,7 @@ func observe_jump(frames: int = 90) -> float:
 func run() -> void:
 	game = load("res://scenes/workshop.tscn").instantiate()
 	root.add_child(game)
-	driver = load("res://tests/demo_test.gd").new()
+	driver = load("res://tests/kit/node_runner.gd").new()
 	root.add_child(driver)
 	driver.game = game
 	game.automated_test = true
@@ -87,7 +81,7 @@ func run() -> void:
 	var live_press = InputEventKey.new()
 	live_press.physical_keycode = KEY_SPACE
 	live_press.pressed = true
-	game._unhandled_input(live_press)
+	game.get_viewport().push_input(live_press,true)
 	expect(await observe_jump(8) < floor_y+0.02,"Automated input remains isolated from live Space events")
 	# Hop sideways onto the actual access platform's 0.55 m deck.
 	await settle_at(Vector3(3.22,0.025,-0.4))
@@ -125,13 +119,13 @@ func run() -> void:
 	await driver.frames(20)
 	expect(not game.crouched,"Character can stand again after leaving ceiling obstruction")
 	# Carry through the existing solid grip, without bypassing pickup ownership.
-	await driver.aim(game.pad.global_position)
+	await driver.aim(game.bodies.pad_1.global_position)
 	driver.key(KEY_E)
 	await driver.frames(12)
 	expect(not game.held_build().is_empty(),"Ordinary input picks up a build for the carrying jump check")
 	await settle_at(Vector3(0,0.025,6.4))
 	await driver.frames(30)
-	var body: RigidBody3D = game.bodies[game.held_build()] if not game.held_build().is_empty() else game.pad
+	var body: RigidBody3D = game.bodies[game.held_build()] if not game.held_build().is_empty() else game.bodies.pad_1
 	var carry_start: float = body.global_position.y
 	driver.key(KEY_SPACE)
 	await driver.frames(20)
@@ -140,7 +134,7 @@ func run() -> void:
 	expect(body.held and game.player.is_on_floor() and game.model.integrity_errors().is_empty(),"Landing preserves carried ownership and inventory integrity")
 	var passed: bool = checks.all(func(check):return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/jump")
-	FileAccess.open("res://verification/jump/audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":false},"  "))
+	write_evidence("res://verification/jump/audit.json",{"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":false})
 	print("JUMP ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	game.queue_free()
 	driver.queue_free()

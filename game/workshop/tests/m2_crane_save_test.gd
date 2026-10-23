@@ -1,4 +1,4 @@
-extends "res://tests/m2_crane_test_base.gd"
+extends "res://tests/kit/crane_suite.gd"
 const ModelSave = preload("res://scripts/save_model.gd")
 var snapshots: Array[Dictionary] = []
 

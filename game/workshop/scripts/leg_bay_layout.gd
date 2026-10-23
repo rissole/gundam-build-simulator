@@ -3,10 +3,6 @@ extends Node3D
 ## Positions come from assets/leg-bay-layout.json, shared with the generator.
 const LAYOUT_PATH = "res://assets/leg-bay-layout.json"
 static var data: Dictionary = {}
-const RAIL_X = 11.9
-const HOME_Z = 14.5
-const BAY_Z = 26.0
-const LIFT_ORIGIN = Vector3(9.6,0,24.3)
 
 static func layout() -> Dictionary:
 	if data.is_empty():data = JSON.parse_string(FileAccess.get_file_as_string(LAYOUT_PATH))
@@ -28,7 +24,8 @@ var contacts: Array[Dictionary] = []
 var static_pieces: Array[Dictionary] = []
 var moving_pieces: Array[Dictionary] = []
 var hardware: Array[RID] = []
-var source_pose = Transform3D(Basis(Vector3.RIGHT,PI/2),Vector3(7.6,1.35,15.4))
+var source_pose: Transform3D:
+	get:return authored_pose(layout().crane.source_pose)
 var rack_hardware: Array[RID] = []
 var cradle_hardware: Array[RID] = []
 var crane_bridge: Node3D
@@ -87,10 +84,10 @@ func _shell() -> void:
 func _tracks() -> void:
 	rail = Node3D.new();rail.name = "RailFloor";add_child(rail)
 	# Flush rail heads keep the entire walking and axle-extraction aisle usable.
-	for center in [RAIL_X,14.1]:
+	for center in [layout().rail.x,layout().rail.reserved_x]:
 		for dx in [-.62,.62]:box(rail,"Rail",Vector3(center+dx,.012,20.2),Vector3(.10,.024,14.0),steel,false)
 		for z in [14.0,17.0,20.0,23.0,26.8]:box(rail,"RailTie",Vector3(center,.006,z),Vector3(1.6,.012,.18),dark,false)
-	for x in [10.16,11.36]:box(self,"AxleAisle",Vector3(x,.018,HOME_Z),Vector3(.035,.012,1.1),yellow,false)
+	for x in [10.16,11.36]:box(self,"AxleAisle",Vector3(x,.018,layout().rail.home_z),Vector3(.035,.012,1.1),yellow,false)
 	sign_at("KNEE AXLE / 1.2 m CLEAR AISLE",Vector3(9.5,1.9,14.5),2.4,-PI/2)
 	for z in [13.95,15.05]:box(self,"AxleAisle",Vector3(10.76,.018,z),Vector3(1.2,.012,.035),yellow,false)
 	sign_at("RIGHT LEG ROUTE\nReserved · no second test load",Vector3(15.9,1.3,20),3,-PI/2)
@@ -99,14 +96,15 @@ func _tracks() -> void:
 
 func _gantry() -> void:
 	var gantry = Node3D.new();gantry.name = "PelvisGantry";add_child(gantry)
-	for x in [8.0,18.0]:
-		box(gantry,"GantryFoot",Vector3(x,.15,30.8),Vector3(1.2,.3,1.5),dark)
-		box(gantry,"GantryColumn",Vector3(x,10.3,30.8),Vector3(.4,20.6,.5),steel)
-	box(gantry,"GantryCrown",Vector3(13,20.8,30.8),Vector3(10.4,.4,.5),steel)
-	box(gantry,"PelvisCrosshead",Vector3(13,10.85,30.8),Vector3(10,.5,.5),dark)
-	for x in [12.25,13.75]:
-		box(gantry,"PelvisSupportArm",Vector3(x,10.65,28.65),Vector3(.24,.32,4.3),steel)
-		box(gantry,"PelvisBearing",Vector3(x,10.81,26.65),Vector3(.28,.04,.40),yellow)
+	gantry.position = AssemblyRuntime.vec(layout().parent_homes.pelvis)
+	for x in [-5.0,5.0]:
+		box(gantry,"GantryFoot",Vector3(x,-10.45,4.8),Vector3(1.2,.3,1.5),dark)
+		box(gantry,"GantryColumn",Vector3(x,-.3,4.8),Vector3(.4,20.6,.5),steel)
+	box(gantry,"GantryCrown",Vector3(0,10.2,4.8),Vector3(10.4,.4,.5),steel)
+	box(gantry,"PelvisCrosshead",Vector3(0,.25,4.8),Vector3(10,.5,.5),dark)
+	for x in [-.75,.75]:
+		box(gantry,"PelvisSupportArm",Vector3(x,.05,2.65),Vector3(.24,.32,4.3),steel)
+		box(gantry,"PelvisBearing",Vector3(x,.21,.65),Vector3(.28,.04,.40),yellow)
 
 func _fixture() -> void:
 	carrier = Node3D.new();carrier.name = "RailBogie";add_child(carrier)
@@ -134,21 +132,33 @@ func _fixture() -> void:
 func _reservations() -> void:
 	if game.has_equipment("service_crane"):
 		_crane_structure()
-		for x in [7.6,11.9]:
-			for z in [16.0,17.6]:
-				var top = 1.25
-				box(self,"BeamRack" if x < 10 else "BeamCradle",Vector3(x,top/2,z),Vector3(.60,top,.22),steel)
+		var receiver = authored_pose(layout().crane.receiver_pose)
+		for rack in [true,false]:
+			var fixture_pose = source_pose if rack else receiver
+			for along in ([.6,2.2] if rack else [.66,2.26]):
+				var center: Vector3 = fixture_pose*Vector3(0,along,.725)
+				box(self,"BeamRack" if rack else "BeamCradle",center,Vector3(.60,1.25,.22),steel)
 				var body: StaticBody3D = get_child(get_child_count()-1)
-				if x < 10:rack_hardware.append(body.get_rid())
+				if rack:rack_hardware.append(body.get_rid())
 				else:cradle_hardware.append(body.get_rid())
+
 		sign_at("UPPER-LEG BEAM\nGo to rack · Down · attach both magnetic ends",Vector3(7.6,2.7,19.4),4.2)
 	else:sign_at("UPPER-LEG BEAM\nAlready fitted in supplied leg",Vector3(7.6,2.7,19.4),4.2)
 	for x in [5.2,20.8]:box(self,"ArmApproachEnvelope",Vector3(x,.015,26),Vector3(3.2,.02,6),game.material(Color("507c78")),false)
 	box(self,"RearAccessEnvelope",Vector3(13,.015,34.7),Vector3(8,.02,4),game.material(Color("507c78")),false)
 
+static func authored_pose(record: Dictionary) -> Transform3D:
+	return Transform3D(Basis.from_euler(AssemblyRuntime.vec(record.rotation_degrees)*PI/180.0),AssemblyRuntime.vec(record.position))
+
 func crane_contract() -> Dictionary:
-	var receiver: Transform3D = game.runtime.slot_pose("left_leg","spar")
-	return {"source_pose":source_pose,"receiver_pose":receiver,"route":[source_pose,Transform3D(source_pose.basis,source_pose.origin+Vector3(0,2.17,0)),Transform3D(receiver.basis,receiver.origin+Vector3(0,2.17,.20)),Transform3D(receiver.basis,receiver.origin+Vector3(0,0,.20)),receiver],"excluded":rack_hardware+cradle_hardware+hardware,"console_position":Vector3(4.9,0,21),"support":"m2_service_crane","source_support":"leg_spar_rack","uid":"LG-120__001","route_profile":2}
+	var spec: Dictionary = layout().crane
+	var receiver = authored_pose(spec.receiver_pose)
+	var route: Array[Transform3D] = []
+	for index in range(spec.route_positions.size()):
+		route.append(Transform3D(source_pose.basis if index < 2 else receiver.basis,AssemblyRuntime.vec(spec.route_positions[index])))
+	# Endpoint poses are the same receiving/source frames as their supports.
+	route[0] = source_pose;route[route.size()-1] = receiver
+	return {"source_pose":source_pose,"receiver_pose":receiver,"route":route,"excluded":rack_hardware+cradle_hardware+hardware,"console_position":AssemblyRuntime.vec(spec.console_position),"support":spec.support,"source_support":spec.source_support,"uid":spec.load_uid,"route_profile":layout().version}
 
 func _crane_structure() -> void:
 	for x in [5.2,14.7]:
@@ -158,8 +168,8 @@ func _crane_structure() -> void:
 		box(self,"CraneRunway",Vector3(x,20.9,16.75),Vector3(.35,.4,9.5),steel)
 	crane_bridge = Node3D.new();crane_bridge.name = "ServiceCraneBridge";add_child(crane_bridge)
 	box(crane_bridge,"CraneBridge",Vector3(9.95,20.8,0),Vector3(9.85,.4,.32),steel,false)
-	crane_trolley = box(crane_bridge,"CraneTrolley",Vector3(7.6,20.63,0),Vector3(.55,.06,.50),yellow,false)
-	set_crane_anchor(Vector3(7.6,20.6,17.1))
+	crane_trolley = box(crane_bridge,"CraneTrolley",Vector3(source_pose.origin.x,20.63,0),Vector3(.55,.06,.50),yellow,false)
+	set_crane_anchor(source_pose.origin+Vector3(0,19.25,1.7))
 
 func set_crane_anchor(point: Vector3) -> void:
 	if not is_instance_valid(crane_bridge):return

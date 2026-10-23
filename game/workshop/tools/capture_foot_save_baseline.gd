@@ -3,37 +3,14 @@ extends SceneTree
 ## Run once from the pre-consolidation baseline:
 ##   ./play.command --headless --script tools/capture_foot_save_baseline.gd
 const FIXTURE = "res://tests/fixtures/foot-save-baseline.json"
+const Staging = preload("res://scripts/scenario_staging.gd")
 var game: Node
 
 func _initialize() -> void:
 	run.call_deferred()
 
 func _stage(owner: String, limit: int) -> void:
-	var count = 0
-	var definition: Dictionary = game.runtime.definition(owner)
-	for pass_index in range(definition.slots.size()):
-		var changed = false
-		for sid in definition.slots:
-			if count >= limit:break
-			if not game.model.assemblies[owner].slots[sid].is_empty():continue
-			var spec: Dictionary = definition.slots[sid]
-			if spec.has("assembly") or not spec.get("requires",[]).all(func(r):return not game.model.assemblies[owner].slots[r].is_empty()):continue
-			var uid: String
-			if game.model.definitions.parts[spec.accepts].carry_class == "pocket":
-				game.model.stock_pocket(spec.accepts)
-				uid = game.model.find_item(spec.accepts,"pocket")
-			else:
-				uid = game.model.find_item(spec.accepts,"bin")
-				game.model.carry_item(uid)
-			if uid.is_empty():continue
-			assert(game.model.install(owner,sid,uid).ok)
-			count += 1
-			changed = true
-		if count >= limit or not changed:break
-	if game.builds.has(owner):
-		game._activate(owner)
-		game._sync_installed_visuals()
-	else:game.components.sync(owner)
+	Staging.fill(game,owner,[],limit)
 
 func run() -> void:
 	game = load("res://scenes/workshop.tscn").instantiate()
@@ -42,9 +19,8 @@ func run() -> void:
 	for index in range(6):await physics_frame
 	assert(game.foot_fixture != null and game.profile.id == "foot","Baseline must use the supported foot workshop.")
 	for pair in [["pad_1","prep"],["pitch","prep3"]]:
-		assert(game.model.move_assembly(pair[0],"station:"+pair[1]).is_empty())
-		game._activate(pair[0])
-		game._set_pad_station(pair[1])
+		var error: String = game.automation.suspend_at_station(pair[0],pair[1])
+		assert(error.is_empty(),error)
 	_stage("pad_1",3)
 	_stage("pitch",6)
 	game.model.stock_pocket(game.model.definitions.assemblies.foot.slots["heel_1/washer_0"].accepts)

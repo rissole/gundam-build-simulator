@@ -1,9 +1,4 @@
-extends SceneTree
-var checks: Array[Dictionary] = []
-func expect(value: bool, name: String) -> void:
-	checks.append({"check":name,"passed":value})
-	if not value:push_error(name)
-
+extends "res://tests/kit/harness.gd"
 func _initialize() -> void:
 	var definitions = HeelAssemblyState.definition_data()
 	var scenario = HeelAssemblyState.scenario()
@@ -84,6 +79,6 @@ func _initialize() -> void:
 	expect(other.install("rack","socket","work").ok and other.milestone("rack","done"),"Generic parent mount has no foot or pad identifier dependency")
 	expect(other.integrity_errors().is_empty(),"Alternate hierarchy preserves ownership")
 	var passed = checks.all(func(c):return c.passed)
-	FileAccess.open("res://verification/assembly-model-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks},"  "))
+	write_evidence("res://verification/assembly-model-audit.json",{"passed":passed,"checks":checks})
 	print("ASSEMBLY_MODEL_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

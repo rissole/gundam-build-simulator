@@ -373,8 +373,8 @@
     "lg-thigh-spar": {
       "family": "LG-120",
       "variant": "structural",
-      "title": "LG-120 · Thigh spar with integral hip ball",
-      "short_title": "Thigh spar with integral hip ball",
+      "title": "LG-120 · Upper-leg beam",
+      "short_title": "Upper-leg beam",
       "carry_class": "equipment",
       "collision_shapes": [
         {
@@ -494,7 +494,15 @@
       "variant": "semicircular",
       "title": "PV-120 · Hip retaining ring half",
       "short_title": "Hip retaining ring half",
-      "carry_class": "equipment",
+      "carry_class": "two_hand",
+      "handling": {
+        "distance": 0.85,
+        "rotation_degrees": [
+          90,
+          0,
+          0
+        ]
+      },
       "catalogue_image": "res://assets/part-images/pv-ring-half.svg"
     },
     "pv-m24-140": {
@@ -570,7 +578,7 @@
           "rotation_degrees": [
             85.32046451960184,
             0,
-            27.93640148106313
+            27.936401481063125
           ]
         },
         {
@@ -840,7 +848,7 @@
           "rotation_degrees": [
             26.528252351365083,
             0,
-            17.159106225353735
+            17.15910622535374
           ]
         },
         {
@@ -855,7 +863,7 @@
           "rotation_degrees": [
             13.492619718169125,
             0,
-            21.71150881091002
+            21.711508810910015
           ]
         },
         {
@@ -870,7 +878,7 @@
           "rotation_degrees": [
             6.060350081914979,
             0,
-            25.877033524631123
+            25.877033524631127
           ]
         },
         {
@@ -1123,9 +1131,9 @@
             0.1369201642656326
           ],
           "rotation_degrees": [
-            -10.042023635529501,
+            -10.0420236355295,
             0,
-            -28.378204038386116
+            -28.378204038386112
           ]
         },
         {
@@ -1178,8 +1186,7 @@
           "label": "Prepared foot",
           "support_required": true,
           "source_supports": [
-            "foot_carrier",
-            "foot_hoist"
+            "foot_carrier"
           ]
         },
         "shin": {
@@ -1532,10 +1539,10 @@
             "cap/washer_2",
             "cap/screw_2"
           ],
-          "label": "LG-120 · Thigh spar with integral hip ball",
+          "label": "LG-120 · Upper-leg beam",
           "support_required": true,
           "source_supports": [
-            "leg_spar_rack"
+            "m2_service_crane"
           ]
         },
         "fork/washer_1": {
@@ -1676,12 +1683,23 @@
           "fork/bolt_3",
           "fork/washer_4",
           "fork/bolt_4"
+        ],
+        "spar_secured": [
+          "spar",
+          "fork/washer_1",
+          "fork/bolt_1",
+          "fork/washer_2",
+          "fork/bolt_2",
+          "fork/washer_3",
+          "fork/bolt_3",
+          "fork/washer_4",
+          "fork/bolt_4"
         ]
       },
       "manual": [
         {
           "title": "Dock the prepared foot",
-          "body": "Complete the foot manual, then use its carrier to dock the prepared foot in the leg fixture. The fixture supports the foot and locks ankle motion during structural work.",
+          "body": "Complete the foot manual, then use its carrier to dock the prepared foot on the supported leg. The rail holder supports the foot and locks ankle motion during structural work.",
           "slots": [
             "foot"
           ],
@@ -1932,7 +1950,7 @@
         },
         {
           "title": "Fork and axle",
-          "body": "Use the fork rack to straddle the already fitted shin boss with LG-110. Insert LG-140 from the left side through the aligned fork and bearings until its shoulder rests against the fork. The fixture keeps the unpowered knee straight.",
+          "body": "Use the fork rack to straddle the already fitted shin boss with LG-110. Insert LG-140 from the left side through the aligned fork and bearings until its shoulder rests against the fork. The rail holder keeps the unpowered knee straight.",
           "slots": [
             "fork",
             "axle"
@@ -2016,7 +2034,7 @@
         },
         {
           "title": "Join the thigh spar",
-          "body": "Use the spar rack to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four LG-W24 washers and four LG-H24100 bolts downward through the exposed flange corners.",
+          "body": "Use the service crane to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four LG-W24 washers and four LG-H24100 bolts downward through the exposed flange corners.",
           "slots": [
             "spar",
             "fork/washer_1",
@@ -2087,7 +2105,7 @@
         },
         {
           "title": "Structural leg ready",
-          "body": "The load-bearing prototype is structurally ready. Use the hoist to transfer it to the pelvis gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the pelvis manual for seating and retention.",
+          "body": "The load-bearing prototype is structurally ready. Use the leg rail to carry it to the pelvis gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the pelvis manual for seating and retention.",
           "slots": [
             "foot",
             "shin",
@@ -2159,7 +2177,7 @@
           "label": "Structural left leg",
           "support_required": true,
           "source_supports": [
-            "leg_hoist"
+            "m2_leg_rail"
           ]
         },
         "ring_1": {
@@ -2168,12 +2186,7 @@
           "requires": [
             "left_leg"
           ],
-          "label": "PV-120 · Hip retaining ring half",
-          "support_required": true,
-          "source_supports": [
-            "pelvis_ring_rack_1",
-            "pelvis_ring_rack_2"
-          ]
+          "label": "PV-120 · Hip retaining ring half"
         },
         "ring_2": {
           "accepts": "pv-ring-half",
@@ -2181,12 +2194,7 @@
           "requires": [
             "left_leg"
           ],
-          "label": "PV-120 · Hip retaining ring half",
-          "support_required": true,
-          "source_supports": [
-            "pelvis_ring_rack_1",
-            "pelvis_ring_rack_2"
-          ]
+          "label": "PV-120 · Hip retaining ring half"
         },
         "ring/washer_1": {
           "accepts": "lg-w24",
@@ -2324,7 +2332,7 @@
       "manual": [
         {
           "title": "Seat the supported leg",
-          "body": "The braced pelvis bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the hoist to lift the LG-120 hip ball into the left socket's open underside. Keep hoist support until all retaining bolts are fitted.",
+          "body": "The braced pelvis bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the leg rail to dock the LG-120 hip ball upward into the left socket's open underside. Keep rail support until all retaining bolts are fitted.",
           "slots": [
             "left_leg"
           ],
@@ -2364,7 +2372,7 @@
         },
         {
           "title": "Fit the split retaining ring",
-          "body": "Use the ring racks to fit both PV-120 semicircular halves around the already seated LG-120 neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.",
+          "body": "Carry and fit both PV-120 semicircular halves around the already seated LG-120 neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.",
           "slots": [
             "ring_1",
             "ring_2"
@@ -2402,7 +2410,7 @@
         },
         {
           "title": "Bolt the ring to the socket",
-          "body": "Fit four LG-W24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing hoist load. To remove the leg, engage the hoist first, then reverse the retention steps.",
+          "body": "Fit four LG-W24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing rail support. To remove the leg, reacquire rail support first, then reverse the retention steps.",
           "slots": [
             "ring/washer_1",
             "ring/bolt_1",

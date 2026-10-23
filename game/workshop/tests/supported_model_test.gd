@@ -1,10 +1,5 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 const SaveModel = preload("res://scripts/save_model.gd")
-var checks: Array[Dictionary] = []
-
-func expect(value: bool, label: String) -> void:
-	checks.append({"check":label,"passed":value})
-	if not value:push_error(label)
 
 func definitions() -> Dictionary:
 	return {"version":1,"parts":{

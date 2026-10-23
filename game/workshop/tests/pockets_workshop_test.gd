@@ -1,4 +1,4 @@
-extends "res://tests/demo_test.gd"
+extends "res://tests/kit/node_runner.gd"
 var review_dir = ""
 
 func review_labels(name: String) -> void:
@@ -112,6 +112,6 @@ func run(workshop: Node) -> void:
 	expect(game.get_viewport().get_visible_rect().encloses(game.hud.action_bar.get_global_rect()) and game.get_viewport().get_visible_rect().encloses(game.hud.manual.get_global_rect()),"Ten-slot bar and manual fit the viewport")
 	expect(game.model.integrity_errors().is_empty(),"Drawer, pocket and carried-part interactions preserve source identities")
 	var passed: bool = checks.all(func(c):return c.passed)
-	FileAccess.open("res://verification/pockets-workshop-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":rendered},"  "))
+	write_evidence("res://verification/pockets-workshop-audit.json",{"passed":passed,"checks":checks,"rendered":rendered})
 	print("POCKETS_WORKSHOP_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	await finish(passed)

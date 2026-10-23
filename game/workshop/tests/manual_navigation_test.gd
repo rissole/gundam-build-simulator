@@ -1,19 +1,14 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
+
+func frames(count: int = 3, _physics: bool = false) -> void:
+	await super.frames(count,false)
 ## Focused navigation regression: public browser input, physical-build identity,
 ## remembered pages, inventory isolation and the shared reader viewport.
 var game: Node
-var checks: Array[Dictionary] = []
 var output = "res://verification/manual-navigation"
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, message: String) -> void:
-	checks.append({"check":message,"passed":ok})
-	if not ok:push_error(message)
-
-func frames(count: int = 3) -> void:
-	for i in range(count):await process_frame
 
 func key(code: Key) -> void:
 	var event = InputEventKey.new()
@@ -94,6 +89,6 @@ func run() -> void:
 	var passed: bool = checks.all(func(c):return c.passed)
 	var hashes = {}
 	for path in ["res://scripts/hud.gd","res://scripts/manual_browser.gd","res://tests/manual_navigation_test.gd"]:hashes[path]=FileAccess.get_sha256(path)
-	FileAccess.open(output+("/headless-audit.json" if DisplayServer.get_name()=="headless" else "/rendered-audit.json"),FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":DisplayServer.get_name()!="headless","input_hashes":hashes},"  "))
+	write_evidence(output+("/headless-audit.json" if DisplayServer.get_name()=="headless" else "/rendered-audit.json"),{"passed":passed,"checks":checks,"rendered":DisplayServer.get_name()!="headless","input_hashes":hashes})
 	print("MANUAL_NAVIGATION ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

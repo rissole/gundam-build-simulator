@@ -1,32 +1,21 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Exercise focus feedback through real targeting, inventory, reach and occlusion.
 var game: Node
 var driver: Node
-var checks: Array[Dictionary] = []
 
 func _initialize() -> void:
 	run.call_deferred()
 
-func expect(ok: bool, message: String) -> void:
-	checks.append({"check":message,"passed":ok})
-	if not ok:push_error(message)
-
 func aim_fixture_control() -> void:
 	for control in game.foot_fixture.controls():
 		if control.action != "sole_left":continue
-		game.player.global_position = Vector3(control.point.x-1.0,0.575,control.point.z)
-		game.player.velocity = Vector3.ZERO
-		var direction: Vector3 = control.point-game.camera.global_position
-		game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
-		game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
-		await driver.frames(5)
-		game._update_target()
+		await PlayerDriver.new(game).stage_aim("fixture focus feedback",control.point,Vector3(control.point.x-1.0,.575,control.point.z))
 		return
 
 func run() -> void:
 	game = load("res://scenes/workshop.tscn").instantiate()
 	root.add_child(game)
-	driver = load("res://tests/demo_test.gd").new()
+	driver = load("res://tests/kit/node_runner.gd").new()
 	root.add_child(driver)
 	driver.game = game
 	await driver.frames(10)
@@ -40,7 +29,7 @@ func run() -> void:
 	expect(game.hud.target_panel.visible and game.hud.target_key.get_child(0).text == "E" and game.hud.target_action_label.text == "Stock pocket","Collection uses a compact keycap action beside the object")
 	var anchored: Vector2 = game.hud.target_panel.position
 	game.camera.rotate_y(0.04)
-	game._update_target()
+	game.automation.refresh_target()
 	await driver.frames(2)
 	expect(game.hud.target_panel.position.distance_to(anchored)>2.0,"World prompt follows the object's projected position as the view changes")
 	driver.key(KEY_E)
@@ -58,7 +47,7 @@ func run() -> void:
 	shape.shape.size = Vector3.ONE*0.3
 	obstacle.add_child(shape)
 	await driver.frames(3)
-	game._update_target()
+	game.automation.refresh_target()
 	expect(game.interaction_outline.focused == null and not game.hud.target_panel.visible,"Scenery hides both focus outlines and world prompts")
 	obstacle.queue_free()
 	await driver.frames(3)
@@ -83,8 +72,8 @@ func run() -> void:
 	fixture.add_child(fixture_shape)
 	game.foot = fixture
 	await driver.frames(3)
-	game._update_target()
-	expect(game.target.get("type","") == "pad" and not game.hud.target_panel.visible and game.interaction_outline.focused == null,"An unrelated receiving fixture cannot be ignored by pickup feedback")
+	game.automation.refresh_target()
+	expect(game.target.get("type","") == "assembly" and not game.hud.target_panel.visible and game.interaction_outline.focused == null,"An unrelated receiving fixture cannot be ignored by pickup feedback")
 	game.foot = original_foot
 	fixture.queue_free()
 	await driver.frames(2)
@@ -125,15 +114,15 @@ func run() -> void:
 	driver.click()
 	expect(game.model.held_item() == clevis_uid and game.model.assemblies.foot.slots[clevis_slot].is_empty(),"Distant foot guidance leaves the fitting in the player's hands")
 	game.foot_fixture.moving = true
-	game._update_ghost()
+	game.automation.refresh_presentation()
 	expect(not game.ghost.visible,"The moving fixture suppresses distant connection guidance")
 	game.foot_fixture.moving = false
 	game.components.drop(true)
 	# An actual ready assembly connection retains its green preview without a
 	# repeated click instruction; the failure path still explains compatibility.
 	game.model.move_assembly("pitch","station:prep3")
-	game._activate("pitch")
-	game._set_pad_station("prep3")
+	game.automation.select_build("pitch")
+	expect(game.automation.suspend_at_station("pitch","prep3").is_empty(),"Stage selected build at station")
 	game.model.carry_item("FA-514__001")
 	game.model.install("pitch","FA-514__001","FA-514__001")
 	game.components.sync("pitch")
@@ -143,7 +132,7 @@ func run() -> void:
 	var stable_pickup = true
 	for fraction in [0.0,0.25,0.5,0.75,1.0]:
 		await driver.aim(slot_point.lerp(game.bodies.pitch.global_position,fraction),1.2)
-		stable_pickup = stable_pickup and game.target.get("type","") == "pad" and game.target.get("build","") == "pitch" and game.hud.target_action_label.text == "Carry" and game.interaction_outline.focused == game.bodies.pitch
+		stable_pickup = stable_pickup and game.target.get("type","") == "assembly" and game.target.get("build","") == "pitch" and game.hud.target_action_label.text == "Carry" and game.interaction_outline.focused == game.bodies.pitch
 	expect(stable_pickup,"Empty-handed aim across an unfinished assembly keeps one assembly pickup prompt")
 	game.model.stock_pocket("w-12")
 	var stable_connection = true
@@ -162,8 +151,8 @@ func run() -> void:
 	driver.click()
 	expect(game.model.assemblies.pitch.slots[distant_slot].is_empty() and game.model.count_at("w-12","pocket") == stock_before,"Clicking yellow guidance cannot install or consume the distant part")
 	game.model.stock_pocket("h-12030")
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	expect(not game.ghost.visible,"A screw whose prerequisite washer is missing gets no distant preview")
 	game.model.select_pocket(game.model.pocket_for("w-12"))
 	await driver.aim(slot_point,3.0)
@@ -176,14 +165,14 @@ func run() -> void:
 	shape.shape.size = Vector3.ONE*0.5
 	obstacle.add_child(shape)
 	await driver.frames(3)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	expect(not game.ghost.visible and not game.hud.target_panel.visible,"Scenery blocks distant guidance even for a compatible part")
 	obstacle.queue_free()
 	await driver.frames(3)
 	await driver.aim(slot_point,3.0)
 	game.set_paused(true)
-	game._update_ghost()
+	game.automation.refresh_presentation()
 	expect(not game.ghost.visible,"Pause clears yellow destination guidance")
 	game.set_paused(false)
 	await driver.aim(slot_point,6.2)
@@ -192,8 +181,8 @@ func run() -> void:
 	expect(game.ghost.visible and game.ghost_material.albedo_color == game.SNAP_READY_COLOR and not game.hud.target_panel.visible,"Approaching the connection restores green ready-to-attach feedback")
 	game.model.stock_pocket("h-12030")
 	game.model.select_pocket(game.model.pocket_for("h-12030"))
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	expect(not game.ghost.visible and game.hud.target_panel.visible and not game.hud.target_action.visible and game.interaction_outline.focused == null,"Incompatible hardware keeps feedback without advertising an available action")
 	game.hud.toast_time = 0
 	driver.key(KEY_E)
@@ -233,7 +222,7 @@ func run() -> void:
 		expect(node.get_theme_stylebox("panel").bg_color.a<0.75,"HUD text panel has a translucent scrim: "+node.name)
 	var passed = checks.all(func(check):return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/interaction-feedback")
-	FileAccess.open("res://verification/interaction-feedback/audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"engine":Engine.get_version_info().string},"  "))
+	write_evidence("res://verification/interaction-feedback/audit.json",{"passed":passed,"checks":checks,"engine":Engine.get_version_info().string})
 	print("INTERACTION_FEEDBACK ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	game.queue_free()
 	driver.queue_free()

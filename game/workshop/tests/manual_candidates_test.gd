@@ -1,18 +1,13 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
+
+func frames(count: int = 3, _physics: bool = false) -> void:
+	await super.frames(count,false)
 ## Suggestions follow physical context and remaining work, without moving the reader.
 var game: Node
-var checks: Array[Dictionary] = []
 var output = "res://verification/manual-candidates"
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, message: String) -> void:
-	checks.append({"check":message,"passed":ok})
-	if not ok:push_error(message)
-
-func frames(count: int = 3) -> void:
-	for i in range(count):await process_frame
 
 func ids(suggestions: Array[Dictionary]) -> Array[String]:
 	var result: Array[String] = []
@@ -65,7 +60,7 @@ func run() -> void:
 	game.model.select_pocket(game.model.pocket_for("sleeve"))
 	game.target = {}
 	expect(ids(game.hud.candidate_manuals()) == ["pad_2"],"Fitting the first pad removes it from outstanding sleeve candidates")
-	game.target = {"type":"slot","build":"pad_1"}
+	game.target = {"type":"component","owner":"pad_1","sid":"sleeve_0"}
 	var focused: Array[Dictionary] = game.hud.candidate_manuals()
 	expect(ids(focused) == ["pad_1"],"Aiming identifies the actual prepared build even with an unrelated pocket selected")
 	expect(game.hud.manual_id == "pad_1" and game.hud.page == 1,"Progress and aim never jump the current reader")
@@ -90,7 +85,7 @@ func run() -> void:
 	var passed: bool = checks.all(func(c):return c.passed)
 	var hashes: Dictionary = {}
 	for path in ["res://scripts/hud.gd","res://scripts/manual_browser.gd","res://scripts/component_interaction.gd","res://scripts/manual_diagram.gd","res://assets/assembly-definitions.json","res://assets/pitch-actuator-definitions.json","res://assets/foot-fa01.glb","res://tests/manual_candidates_test.gd"]:hashes[path] = FileAccess.get_sha256(path)
-	FileAccess.open(output+("/headless-audit.json" if DisplayServer.get_name()=="headless" else "/rendered-audit.json"),FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":DisplayServer.get_name()!="headless","engine":Engine.get_version_info(),"input_hashes":hashes},"  "))
+	write_evidence(output+("/headless-audit.json" if DisplayServer.get_name()=="headless" else "/rendered-audit.json"),{"passed":passed,"checks":checks,"rendered":DisplayServer.get_name()!="headless","engine":Engine.get_version_info(),"input_hashes":hashes})
 	print("REVIEW_OUTPUT ",ProjectSettings.globalize_path(output))
 	print("MANUAL_CANDIDATES ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

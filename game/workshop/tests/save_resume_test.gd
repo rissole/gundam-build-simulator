@@ -1,77 +1,7 @@
-extends SceneTree
+extends "res://tests/kit/workshop_suite.gd"
 ## Native scene/geometry checks. All writes use a unique temporary save slot.
-const Store = preload("res://scripts/save_store.gd")
 const Codec = preload("res://scripts/workshop_save.gd")
-var game: Node
-var checks: Array[Dictionary] = []
 var save_path: String
-
-func _initialize() -> void:
-	run.call_deferred()
-
-func expect(ok: bool, label: String) -> void:
-	checks.append({"check":label, "passed":ok})
-	print("CHECK ", "PASS " if ok else "FAIL ", label)
-	if not ok:push_error(label)
-
-func frames(count: int = 3) -> void:
-	for index in range(count):await physics_frame
-
-func station(owner: String, id: String) -> void:
-	expect(game.model.move_assembly(owner, "station:" + id).is_empty(), "Suspend " + owner)
-	game._activate(owner)
-	game._set_pad_station(id)
-
-func stage(owner: String, limit: int) -> int:
-	var count = 0
-	var definition: Dictionary = game.runtime.definition(owner)
-	for pass_index in range(definition.slots.size()):
-		var changed = false
-		for sid in definition.slots:
-			if not game.model.assemblies[owner].slots[sid].is_empty():continue
-			var spec: Dictionary = definition.slots[sid]
-			if spec.has("assembly"):continue
-			if not spec.get("requires", []).all(func(required):return not game.model.assemblies[owner].slots[required].is_empty()):continue
-			var uid: String
-			if game.model.definitions.parts[spec.accepts].carry_class == "pocket":
-				game.model.stock_pocket(spec.accepts)
-				uid = game.model.find_item(spec.accepts, "pocket")
-			else:
-				uid = game.model.find_item(spec.accepts, "bin")
-				game.model.carry_item(uid)
-			if uid.is_empty():continue
-			var result: Dictionary = game.model.install(owner, sid, uid)
-			expect(result.ok, "Stage exact physical occupant " + owner + "/" + sid)
-			if not result.ok:return count
-			count += 1
-			changed = true
-			if count >= limit:break
-		if count >= limit or not changed:break
-	if game.builds.has(owner):
-		game._activate(owner)
-		game._sync_installed_visuals()
-	else:game.components.sync(owner)
-	return count
-
-func available_hand() -> String:
-	for uid in game.model.items:
-		var item: Dictionary = game.model.items[uid]
-		if item.location == "bin" and game.model.definitions.parts[item.kind].carry_class != "pocket":return uid
-	return ""
-
-func valid(snapshot: Dictionary, label: String) -> void:
-	var errors: Array[String] = game.saves.validate(snapshot)
-	if not errors.is_empty():print("SAVE_VALIDATION_DIAGNOSTIC ", errors)
-	expect(errors.is_empty(), label)
-
-func diagnose_json(value: Variant, path: String = "snapshot") -> void:
-	if value is Dictionary:
-		for key in value:
-			if not key is String:print("INVALID_JSON_KEY ", path, " ", key, " ", typeof(key))
-			diagnose_json(value[key], path + "/" + str(key))
-	elif value is Array:
-		for index in range(value.size()):diagnose_json(value[index], path + "/" + str(index))
-	elif typeof(value) not in [TYPE_NIL, TYPE_BOOL, TYPE_INT, TYPE_STRING, TYPE_FLOAT]:print("INVALID_JSON_VALUE ", path, " ", typeof(value), " ", value)
 
 func pause_layout() -> void:
 	await process_frame
@@ -108,7 +38,7 @@ func complete_visual_inventory() -> bool:
 	var seen: Dictionary = {}
 	for piece in game.runtime.visual_pieces("foot"):
 		var visual: MeshInstance3D = piece.visual
-		var uid: String = visual.get_meta("component_uid", visual.get_meta("installed_uid", ""))
+		var uid: String = visual.get_meta("component_uid", "")
 		if not game.model.items.has(uid):continue
 		if seen.has(uid):return false
 		seen[uid] = true
@@ -147,8 +77,8 @@ func rail_resume() -> void:
 		game.runtime.mount("foot", mount_slots[owner], owner)
 	stage("foot", 1000)
 	for owner in game.builds:
-		game._activate(owner)
-		game._sync_installed_visuals()
+		game.automation.select_build(owner)
+		game.automation.sync_visuals(owner)
 	game.components.sync("foot")
 	game.refresh_assembly_collision("foot")
 	var identities: Array = game.model.items.keys()
@@ -220,11 +150,11 @@ func run() -> void:
 	game.hud.open_manual("pad_2", 1)
 	game.hud.open_manual("pitch", 2)
 	game.hud.browser.set_suggested_only(false)
-	game._activate("pitch")
+	game.automation.select_build("pitch")
 	game.stations.prep.basis = Basis.from_euler(Vector3(0.24, -0.35, 0.16))
 	game.player.global_transform = Transform3D(Basis(Vector3.UP, 0.65), Vector3(-0.4, 0.025, -1.8))
 	game.player.velocity = Vector3(0.12, -0.1, 0.08)
-	game._update_crouch(true, 1.0)
+	game.player_controller.update_crouch(true, 1.0)
 	game.camera.rotation.x = -0.23
 	game.camera.fov = 62.0
 	var partial: Dictionary = game.saves.capture()
@@ -288,9 +218,9 @@ func run() -> void:
 	expect(stage("pad_1", 20) == 2 and game.model.milestone("pad_1", "prepared"), "Finish one saved child while sibling and actuator remain unfinished")
 	game.model.move_assembly("pad_1", "held")
 	expect(game.model.install("foot", "heel_2", "pad_1").ok, "Mount prepared compatible child at opposite parent slot")
-	game._activate("pad_1")
-	game._set_pad_foot()
-	game._sync_installed_visuals()
+	game.automation.select_build("pad_1")
+	game.runtime.mount("foot","heel_2","pad_1")
+	game.automation.sync_visuals("pad_1")
 	game.player.global_position = Vector3(-0.4, 0.025, -1.8)
 	game.player.velocity = Vector3.ZERO
 	game.set_paused(false)
@@ -306,9 +236,9 @@ func run() -> void:
 	var visuals = 0
 	var collision_owned = false
 	for visual in game.bodies.pad_1.get_children():
-		if visual is MeshInstance3D and visual.has_meta("installed_uid"):visuals += 1
+		if visual is MeshInstance3D and visual.has_meta("component_uid") and visual.get_meta("slot_id","") != "base":visuals += 1
 	for col in game.foot.get_children():
-		if col is CollisionShape3D and col.get_meta("physical_uid", "") == game.builds.pad_1.pad_id:collision_owned = true
+		if col is CollisionShape3D and col.get_meta("physical_uid", "") == build_state(game,"pad_1").pad_id:collision_owned = true
 	expect(visuals == 4 and collision_owned, "Restore installed child meshes and root-owned compound collision")
 	game.set_paused(false)
 	var follows = true
@@ -404,7 +334,7 @@ func run() -> void:
 	expect(not game.hud.discard_offered and game.saves.has_save and Store.read(save_path, game.saves.fingerprint).ok, "Saving to a repaired destination clears the discard offer")
 	await rail_resume()
 	var passed = checks.all(func(check):return check.passed)
-	FileAccess.open("/tmp/save-resume.audit.json", FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":false,"save_path":save_path}, "  "))
+	write_evidence("/tmp/save-resume.audit.json",{"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":false,"save_path":save_path})
 	for suffix in ["", ".bak"]:DirAccess.remove_absolute(save_path + suffix)
 	game.chime.stop()
 	game.chime.stream = null

@@ -1,81 +1,6 @@
-extends Node
+extends "res://tests/kit/node_runner.gd"
 ## Drives public input handlers and actual world-space targeting/collision.
 ## Camera positions are scripted; placement and inventory are never bypassed.
-var game: Node
-var checks: Array[Dictionary] = []
-var rendered: bool = false
-
-func expect(condition: bool, name: String) -> void:
-	checks.append({"check":name,"passed":condition})
-	print("CHECK ","PASS " if condition else "FAIL ",name)
-	if not condition:
-		push_error(name)
-
-func frames(n: int = 4) -> void:
-	for i in range(n):await get_tree().physics_frame
-
-func key(code: Key, shift: bool = false) -> void:
-	var event = InputEventKey.new()
-	event.physical_keycode = code
-	event.pressed = true
-	event.shift_pressed = shift
-	game.handle_desktop_input(event)
-
-func select_kind(kind: String) -> void:
-	var index: int = game.model.pocket_for(kind)
-	if index < 0:return
-	key([KEY_1,KEY_2,KEY_3,KEY_4,KEY_5,KEY_6,KEY_7,KEY_8,KEY_9,KEY_0][index])
-
-func click(button: MouseButton = MOUSE_BUTTON_LEFT, ctrl: bool = false, pressed: bool = true) -> void:
-	var event = InputEventMouseButton.new()
-	event.button_index = button
-	event.ctrl_pressed = ctrl
-	event.pressed = pressed
-	game.handle_desktop_input(event)
-
-func crouched_click(point: Vector3) -> void:
-	hold(KEY_CTRL,true)
-	await frames(18)
-	await aim(point)
-	expect(game.crouched and game.ghost.visible,"Crouched placement has a reachable, visible preview")
-	# Godot's macOS backend reports Control + left click as right + Control.
-	click(MOUSE_BUTTON_RIGHT if OS.has_feature("macos") else MOUSE_BUTTON_LEFT,true)
-	hold(KEY_CTRL,false)
-	await frames(18)
-
-func release(code: Key) -> void:
-	var event = InputEventKey.new()
-	event.physical_keycode = code
-	event.pressed = false
-	game.handle_desktop_input(event)
-
-func hold(code: Key, pressed: bool) -> void:
-	var event = InputEventKey.new()
-	event.physical_keycode = code
-	event.pressed = pressed
-	game.handle_desktop_input(event)
-
-func aim(point: Vector3, distance: float = 1.35) -> void:
-	game.player.global_position = Vector3(point.x,0.025,point.z+distance)
-	game.player.velocity = Vector3.ZERO
-	var direction: Vector3 = point-game.camera.global_position
-	game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
-	game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
-	await frames(5)
-	game._update_target()
-	game._update_ghost()
-
-func capture(name: String) -> void:
-	if not rendered:return
-	await get_tree().process_frame
-	game._update_target()
-	game._update_ghost()
-	game.hud.refresh()
-	await frames(4)
-	# Fullscreen macOS windows may stop automatic draws when another app is
-	# focused. Explicitly render this inspection frame rather than wait forever.
-	RenderingServer.force_draw(false)
-	game.get_viewport().get_texture().get_image().save_png("res://verification/"+name+".png")
 
 func run(workshop: Node) -> void:
 	game = workshop
@@ -131,8 +56,8 @@ func run(workshop: Node) -> void:
 		await aim(game.bins[kind].global_position+Vector3(0,0.13,0.27))
 		expect(game.target.get("type")=="bin" and game.target.get("kind")==kind,"Actual aim identifies "+kind+" bin")
 		key(KEY_E,true)
-		expect(game.state.count_at(kind,"pocket")==4,"Collect four "+kind+" from finite physical bin")
-	expect(game.state.pocket_count()==12,"Pockets hold all twelve demo hardware pieces")
+		expect(build_state("pad_1").count_at(kind,"pocket")==4,"Collect four "+kind+" from finite physical bin")
+	expect(build_state("pad_1").pocket_count()==12,"Pockets hold all twelve demo hardware pieces")
 	expect(game.hud.action_slots[0].count.text=="×4" and game.hud.action_slots[2].count.text=="×4","Action-bar counts track collected stock")
 	# Clearing a pocket works away from storage and does not spawn small bodies.
 	await aim(Vector3(-0.4,1.0,0.6),0.7)
@@ -142,9 +67,9 @@ func run(workshop: Node) -> void:
 	await aim(game.bins.washer.global_position+Vector3(0,0.13,0.27))
 	key(KEY_E)
 	expect(game.model.count_at("washer","pocket")==4,"E replenishes the empty pocket from a drawer")
-	await aim(game.pad.global_position)
+	await aim(game.bodies.pad_1.global_position)
 	key(KEY_E)
-	expect(game.state.pad_location=="held","E picks up the two-handed heel pad")
+	expect(build_state("pad_1").pad_location=="held","E picks up the two-handed heel pad")
 	game.player.global_position = Vector3(0,0.025,5.8)
 	game.player.rotation = Vector3.ZERO
 	game.camera.rotation = Vector3.ZERO
@@ -154,52 +79,52 @@ func run(workshop: Node) -> void:
 	var max_grip_error = 0.0
 	for i in range(30):
 		await frames(1)
-		max_grip_error = maxf(max_grip_error,game.pad.global_position.distance_to(game.pad.carry_target))
+		max_grip_error = maxf(max_grip_error,game.bodies.pad_1.global_position.distance_to(game.bodies.pad_1.carry_target))
 	hold(KEY_D,false)
 	hold(KEY_SHIFT,false)
-	if max_grip_error >= 0.02:print("GRIP_DIAGNOSTIC ",max_grip_error," body=",game.pad.global_position," target=",game.pad.carry_target," player=",game.player.position)
+	if max_grip_error >= 0.02:print("GRIP_DIAGNOSTIC ",max_grip_error," body=",game.bodies.pad_1.global_position," target=",game.bodies.pad_1.carry_target," player=",game.player.position)
 	expect(max_grip_error<0.02,"Firm grip stays within 2 cm of its target while moving fast")
 	for i in range(12):
 		game.player.rotate_y(0.06)
 		game.camera.rotation.x += 0.02
 		await frames(2)
-	expect(game.pad.global_basis.is_equal_approx(game.pad.carry_basis),"Held orientation follows view without spring lag")
-	expect(game.pad.freeze and game.hud.carry_label.text.contains("Carrying"),"Carried assembly appears separately from the ten pockets")
+	expect(game.bodies.pad_1.global_basis.is_equal_approx(game.bodies.pad_1.carry_basis),"Held orientation follows view without spring lag")
+	expect(game.bodies.pad_1.freeze and game.hud.carry_label.text.contains("Carrying"),"Carried assembly appears separately from the ten pockets")
 	await aim(game.prep.global_position)
 	await frames(35)
-	game._update_target()
-	game._update_ghost()
-	if not game.ghost.visible:print("STATION_DIAGNOSTIC ",game.target," body=",game.pad.global_position," error=",game._access([game.pad,game.foot]))
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
+	if not game.ghost.visible:print("STATION_DIAGNOSTIC ",game.target," body=",game.bodies.pad_1.global_position," error=",game.targeting.access([game.bodies.pad_1,game.foot]))
 	expect(game.target.get("type")=="prep" and game.ghost.visible,"Small station previews held pad placement")
 	await crouched_click(game.prep.global_position)
-	expect(game.state.pad_location=="prep","Crouched click suspends pad in preparation station")
+	expect(build_state("pad_1").pad_location=="prep","Crouched click suspends pad in preparation station")
 	key(KEY_3)
-	await aim(game.connection(0))
+	await aim(game.components.slot_point("pad_1","sleeve_%d"%0))
 	click()
-	expect(game.state.installed("bolt")==0 and game.hud.toast_label.text.contains("carrier"),"Premature bolt placement explains missing receiving assembly")
+	expect(build_state("pad_1").installed("bolt")==0 and game.hud.toast_label.text.contains("carrier"),"Premature bolt placement explains missing receiving assembly")
 	key(KEY_1)
-	await aim(game.connection(2))
-	var before_secondary_click = game.state.history.size()
+	await aim(game.components.slot_point("pad_1","sleeve_%d"%2))
+	var before_secondary_click = build_state("pad_1").history.size()
 	click(MOUSE_BUTTON_RIGHT)
-	expect(game.state.history.size()==before_secondary_click,"Unmodified right click does not place hardware")
+	expect(build_state("pad_1").history.size()==before_secondary_click,"Unmodified right click does not place hardware")
 	click(MOUSE_BUTTON_RIGHT,true,false)
-	expect(game.state.history.size()==before_secondary_click,"Control-click release does not place hardware")
+	expect(build_state("pad_1").history.size()==before_secondary_click,"Control-click release does not place hardware")
 	for i in [2,0,3,1]:
-		await aim(game.connection(i)+Vector3(0.065,0,0))
-		expect(game.target.get("index",-1)==i,"Generous targeting selects sleeve socket %d"%i)
+		await aim(game.components.slot_point("pad_1","sleeve_%d"%i)+Vector3(0.065,0,0))
+		expect(game.target.get("sid","")=="sleeve_%d"%i,"Generous targeting selects sleeve socket %d"%i)
 		expect(game.ghost.visible,"Valid sleeve socket %d displays actual mesh ghost"%i)
 		if i==0:await capture("02-pad-preparation")
-		if i==2:await crouched_click(game.connection(i))
+		if i==2:await crouched_click(game.components.slot_point("pad_1","sleeve_%d"%i))
 		else:click()
-		expect(game.state.slots.sleeve[i]!="","Click installs sleeve %d"%i)
-	expect(game.state.prepared(),"Prepared subassembly reaches four sleeves")
+		expect(build_state("pad_1").slots.sleeve[i]!="","Click installs sleeve %d"%i)
+	expect(build_state("pad_1").prepared(),"Prepared subassembly reaches four sleeves")
 	key(KEY_Z)
-	expect(game.state.installed("sleeve")==3 and game.state.pocket_count()==9,"Undo removes exactly one sleeve and returns it")
-	await aim(game.connection(1))
+	expect(build_state("pad_1").installed("sleeve")==3 and build_state("pad_1").pocket_count()==9,"Undo removes exactly one sleeve and returns it")
+	await aim(game.components.slot_point("pad_1","sleeve_%d"%1))
 	click()
-	expect(game.state.prepared(),"Undo can be followed by valid reconstruction")
+	expect(build_state("pad_1").prepared(),"Undo can be followed by valid reconstruction")
 	await aim(game.prep.global_position)
-	game._rotate_station(Vector2(30,15))
+	game.desktop_input.rotate_station(Vector2(30,15))
 	expect(not game.prep.basis.is_equal_approx(game.PREP_BASIS),"Station rotation changes the real assembly orientation")
 	await frames(2)
 	expect(not game.hud.target_label.text.contains("Hold R"),"Station rotation does not show a persistent tutorial banner")
@@ -218,98 +143,91 @@ func run(workshop: Node) -> void:
 	release(KEY_R)
 	expect(not game.prep.basis.is_equal_approx(game.PREP_BASIS),"Rotation drag followed by a tap is not mistaken for a double tap")
 	game.reset_station()
-	await aim(game.connection(1))
+	await aim(game.components.slot_point("pad_1","sleeve_%d"%1))
 	key(KEY_E)
-	expect(game.state.pad_location=="held","Prepared pad picked up with all its child components")
+	expect(build_state("pad_1").pad_location=="held","Prepared pad picked up with all its child components")
 	# Scripted transit advances the collision-aware grip to the receiving station.
-	await aim(game.mount_point())
+	await aim(game.mount_point("heel_1","foot","pad_1"))
 	await frames(110)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	expect(game.target.get("type")=="mount","Aim selects the rear sole carrier")
 	expect(game.ghost.visible,"Ready pad previews at the actual receiving transform")
 	await capture("03-mount-preview")
 	click()
-	expect(game.state.pad_location=="foot","Prepared assembly mounts to full-size foot")
+	expect(build_state("pad_1").pad_location=="foot","Prepared assembly mounts to full-size foot")
 	key(KEY_3)
-	await aim(game.connection(0))
+	await aim(game.components.slot_point("foot","heel_1/washer_%d"%0))
 	click()
-	expect(game.state.installed("bolt")==0 and game.hud.toast_label.text.contains("W-24"),"Missing washer produces descriptive compatible-part error")
+	expect(build_state("pad_1").installed("bolt")==0 and game.hud.toast_label.text.contains("W-24"),"Missing washer produces descriptive compatible-part error")
 	for i in [3,1,0,2]:
 		key(KEY_2)
-		await aim(game.connection(i))
-		expect(game.target.get("index",-1)==i,"Foot targeting selects mount %d"%i)
-		if i==3:await crouched_click(game.connection(i))
+		await aim(game.components.slot_point("foot","heel_1/washer_%d"%i))
+		expect(game.target.get("sid","")=="heel_1/washer_%d"%i,"Foot targeting selects mount %d"%i)
+		if i==3:await crouched_click(game.components.slot_point("foot","heel_1/washer_%d"%i))
 		else:click()
-		expect(game.state.slots.washer[i]!="","Click installs washer %d"%i)
+		expect(build_state("pad_1").slots.washer[i]!="","Click installs washer %d"%i)
 		key(KEY_3)
-		await aim(game.connection(i))
+		await aim(game.components.slot_point("foot","heel_1/washer_%d"%i))
 		expect(game.ghost.visible,"Bolt ghost available after local washer %d"%i)
-		if i==3:await crouched_click(game.connection(i))
+		if i==3:await crouched_click(game.components.slot_point("foot","heel_1/washer_%d"%i))
 		else:click()
-		expect(game.state.slots.bolt[i]!="","Independent fastening order accepted at %d"%i)
-	expect(game.state.complete(),"Complete build achieved through public interaction handlers")
-	expect(game.state.pocket_count()==0,"Exactly the original twelve pocket items consumed")
-	expect(game.state.integrity_errors().is_empty(),"No missing/duplicate pieces or invalid ownership after complete run")
-	expect(game.completed_before and game.hud.toast_label.text.contains("COMPLETE"),"Completion feedback and manual state agree")
+		expect(build_state("pad_1").slots.bolt[i]!="","Independent fastening order accepted at %d"%i)
+	expect(build_state("pad_1").complete(),"Complete build achieved through public interaction handlers")
+	expect(build_state("pad_1").pocket_count()==0,"Exactly the original twelve pocket items consumed")
+	expect(build_state("pad_1").integrity_errors().is_empty(),"No missing/duplicate pieces or invalid ownership after complete run")
+	expect(game.completed_flags.get("pad_1",false) and game.hud.toast_label.text.contains("COMPLETE"),"Completion feedback and manual state agree")
 	await capture("04-complete")
 	key(KEY_Z)
-	expect(not game.state.complete() and game.state.count_at("bolt","pocket")==1,"Undo after completion clears completion and returns exact bolt")
+	expect(not build_state("pad_1").complete() and build_state("pad_1").count_at("bolt","pocket")==1,"Undo after completion clears completion and returns exact bolt")
 	# Real target reach must prevent a click from across the workshop.
-	await aim(game.connection(2),4.0)
+	await aim(game.components.slot_point("foot","heel_1/washer_%d"%2),4.0)
 	click()
-	expect(game.state.slots.bolt[2]=="" and game.hud.toast_label.text.contains("reach"),"Attachment is blocked outside character reach")
+	expect(build_state("pad_1").slots.bolt[2]=="" and game.hud.toast_label.text.contains("reach"),"Attachment is blocked outside character reach")
 	select_kind("bolt")
-	await aim(game.connection(2))
+	await aim(game.components.slot_point("foot","heel_1/washer_%d"%2))
 	click()
-	expect(game.state.complete(),"Close-range replacement completes build again")
-	var before_pause = game.state.history.size()
+	expect(build_state("pad_1").complete(),"Close-range replacement completes build again")
+	var before_pause = build_state("pad_1").history.size()
 	key(KEY_ESCAPE)
 	expect(game.paused and game.hud.pause_panel.visible,"Escape opens pause/help")
 	expect(not game.hud.target_panel.visible,"Pause hides world interaction prompts")
 	await capture("06-paused")
 	game.hud.restart_button.pressed.emit()
-	expect(game.hud.confirm_restart and game.state.complete(),"Restart requires confirmation without losing current build")
+	expect(game.hud.confirm_restart and build_state("pad_1").complete(),"Restart requires confirmation without losing current build")
 	key(KEY_Z)
-	expect(game.state.history.size()==before_pause,"Paused input cannot change the build")
+	expect(build_state("pad_1").history.size()==before_pause,"Paused input cannot change the build")
 	key(KEY_ESCAPE)
 	expect(not game.paused,"Escape resumes workshop")
 	expect(not game.hud.confirm_restart,"Resuming cancels pending restart")
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	# Rotate the fixture to expose its back; hidden connections are ineligible.
 	game.foot.basis = Basis(Vector3.UP,PI)*game.FOOT_BASIS
-	await aim(game.connection(2),1.4)
-	game._update_ghost()
-	expect(not game._visible(game.connection(2),[game.pad,game.foot]),"Back-facing connection is occluded by solid workpiece")
+	await aim(game.components.slot_point("foot","heel_1/washer_%d"%2),1.4)
+	game.automation.refresh_presentation()
+	expect(not game.targeting.can_see(game.components.slot_point("foot","heel_1/washer_%d"%2),[game.bodies.pad_1,game.foot]),"Back-facing connection is occluded by solid workpiece")
 	game.foot.basis = game.FOOT_BASIS
 	# Undo the parent before child state; identity survives the station transfer.
 	for i in range(9):key(KEY_Z)
-	expect(game.state.pad_location=="prep" and game.state.prepared(),"Undo hardware then parent mount returns prepared pad to station")
-	expect(game.state.integrity_errors().is_empty(),"Parent undo preserves child build and counts")
+	expect(build_state("pad_1").pad_location=="prep" and build_state("pad_1").prepared(),"Undo hardware then parent mount returns prepared pad to station")
+	expect(build_state("pad_1").integrity_errors().is_empty(),"Parent undo preserves child build and counts")
 	# Collision stress: firm grip targets beyond the rear wall.
-	await aim(game.pad.global_position)
+	await aim(game.bodies.pad_1.global_position)
 	key(KEY_E)
-	game.pad.global_transform = Transform3D(game.PREP_BASIS,Vector3(-6,1.4,-5.6))
-	game.pad.linear_velocity = Vector3.ZERO
+	game.bodies.pad_1.global_transform = Transform3D(game.PREP_BASIS,Vector3(-6,1.4,-5.6))
+	game.bodies.pad_1.linear_velocity = Vector3.ZERO
 	game.player.global_position = Vector3(-6,0.02,-6.0)
 	game.player.rotation = Vector3.ZERO
 	game.camera.rotation = Vector3.ZERO
 	await frames(190)
-	expect(game.pad.global_position.z > -6.95 and game.pad.global_position.z < -6.5,"Firm grip reaches the wall and solid pad cannot pass through it")
-	expect(not game._carry_placement_error(Transform3D(game.PREP_BASIS,Vector3(-5.37,1.4,-7.8))).is_empty(),"Snap approach cannot teleport a carried pad through scenery")
+	expect(game.bodies.pad_1.global_position.z > -6.95 and game.bodies.pad_1.global_position.z < -6.5,"Firm grip reaches the wall and solid pad cannot pass through it")
+	expect(not game.targeting.carry_placement_error(Transform3D(game.PREP_BASIS,Vector3(-5.37,1.4,-7.8))).is_empty(),"Snap approach cannot teleport a carried pad through scenery")
 	key(KEY_Q)
-	expect(game.state.pad_location=="loose","Prepared pad can be set down without losing build state")
-	expect(not game.pad.freeze,"Putting the pad down restores ordinary rigid-body physics")
-	expect(game.state.prepared(),"Unfinished/resumable assembly state follows physical pad")
+	expect(build_state("pad_1").pad_location=="loose","Prepared pad can be set down without losing build state")
+	expect(not game.bodies.pad_1.freeze,"Putting the pad down restores ordinary rigid-body physics")
+	expect(build_state("pad_1").prepared(),"Unfinished/resumable assembly state follows physical pad")
 	var passed = checks.all(func(c):return c.passed)
-	var report = {"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":rendered,"renderer":RenderingServer.get_current_rendering_method(),"inventory_errors":game.state.integrity_errors()}
-	FileAccess.open("res://verification/demo-audit.json",FileAccess.WRITE).store_string(JSON.stringify(report,"  "))
+	var report = {"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":rendered,"renderer":RenderingServer.get_current_rendering_method(),"inventory_errors":build_state("pad_1").integrity_errors()}
+	write_evidence("res://verification/demo-audit.json",report)
 	print("DEMO_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	await finish(passed)
-
-func finish(passed: bool) -> void:
-	# Let the audio mixer release the last completion chord before shutdown.
-	game.chime.stop()
-	game.chime.stream = null
-	await frames(4)
-	get_tree().quit(0 if passed else 1)

@@ -6,6 +6,7 @@ inspection remains a separate operation and is never implied by a passing run.
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 import datetime as dt
 import hashlib
 import json
@@ -33,24 +34,39 @@ def is_scene_tree(path: Path, visited: frozenset[Path] = frozenset()) -> bool:
     return is_scene_tree(PROJECT / declaration.group(2).removeprefix("res://"), visited | {path})
 
 
-def cases() -> dict[str, list[str]]:
+@dataclass(frozen=True)
+class Case:
+    arguments: list[str]
+    kind: str = "godot"
+
+
+def cases() -> dict[str, Case]:
     result = {}
     for path in sorted((PROJECT / "tests").glob("*_test.gd")):
         if is_scene_tree(path):
-            result[path.stem] = ["--script", "tests/" + path.name]
-    result.update({
-        "default_workshop_launch": ["--quit-after", "5"],
-        "foot_workshop_launch": ["--quit-after", "5", "--", "--foot-workshop"],
-        "m2_workshop_launch": ["--quit-after", "5", "--", "--m2-workshop"],
-        "m2_retention_launch": ["--quit-after", "5", "--", "--m2-workshop", "--m2-trial=retention"],
-        "m2_crane_launch": ["--quit-after", "5", "--", "--m2-workshop", "--m2-trial=crane"],
-    })
+            result[path.stem] = Case(["--script", "tests/" + path.name])
+    aliases = {
+        "default_workshop_launch": [],
+        "foot_workshop_launch": ["--foot-workshop"],
+        "m2_workshop_launch": ["--m2-workshop"],
+        "m2_retention_launch": ["--m2-workshop", "--m2-trial=retention"],
+        "m2_crane_launch": ["--m2-workshop", "--m2-trial=crane"],
+    }
+    for name, arguments in aliases.items():
+        result[name] = Case(["--quit-after", "5", "--", *arguments], "launch")
+    for profile in ("foot", "pads_single", "pads_multi", "leg_bay_retention", "leg_bay_crane"):
+        result[profile + "_profile_launch"] = Case(
+            ["--quit-after", "5", "--", "--profile=" + profile], "launch")
+    result["source_assets"] = Case(
+        ["-B", "-m", "unittest", "discover", "-s", str(PROJECT / "tests"),
+         "-p", "test_source_assets.py"], "python")
     return result
 
 
 def fingerprints() -> dict[str, str]:
     paths = [PROJECT / "project.godot", ROOT / "play.command"]
-    for folder in [PROJECT / "scripts", PROJECT / "tests", PROJECT / "assets", PROJECT / "tools"]:
+    for folder in [PROJECT / "scripts", PROJECT / "tests", PROJECT / "assets", PROJECT / "tools",
+                   ROOT / "models/foot-fa01/src", ROOT / "models/foot-fa01/output"]:
         paths.extend(p for p in folder.rglob("*") if p.suffix in {".gd", ".gdshader", ".json", ".glb", ".py", ".png", ".svg"})
     return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
 
@@ -77,8 +93,10 @@ def main() -> int:
     print("REGRESSION_OUTPUT " + str(output), flush=True)
     for name in chosen:
         log = output / (name + ".log")
-        cmd = [str(ROOT / "play.command"), "--headless", "--fixed-fps", "60",
-               "--log-file", str(output / (name + ".engine.log")), *available[name]]
+        case = available[name]
+        cmd = ([sys.executable, *case.arguments] if case.kind == "python" else
+               [str(ROOT / "play.command"), "--headless", "--fixed-fps", "60",
+                "--log-file", str(output / (name + ".engine.log")), *case.arguments])
         started = time.monotonic()
         timed_out = False
         with log.open("w") as stream:
@@ -96,12 +114,16 @@ def main() -> int:
                   and 'Condition "ret != noErr"' not in line]
         summaries = [line for line in text.splitlines()
                      if re.search(r"\b(?:PASS|FAIL)\s+\d+\s+checks", line)]
-        # Normal application launches exercise selection without --script or an
-        # automated-test flag, which intentionally select legacy test scenarios.
-        # These smoke cases have no check-count summary; engine errors still fail.
-        launch_smoke = name in {"default_workshop_launch", "foot_workshop_launch",
-                               "m2_workshop_launch", "m2_retention_launch", "m2_crane_launch"}
-        passed = code == 0 and not timed_out and not errors and (bool(summaries) or launch_smoke) and not any("FAIL" in s for s in summaries)
+        # Every case shares timeout/log/error/unchanged-input gates. Python's
+        # unittest summary is required just as Godot suites require check counts.
+        if case.kind == "python":
+            summaries = [line for line in text.splitlines()
+                         if re.search(r"^Ran \d+ tests? in ", line) or line == "OK"]
+            evidence = any(line.startswith("Ran ") for line in summaries) and "OK" in summaries
+        else:
+            evidence = bool(summaries) or case.kind == "launch"
+        passed = (code == 0 and not timed_out and not errors and evidence
+                  and not any("FAIL" in summary for summary in summaries))
         result = {"name": name, "passed": passed, "exit_code": code, "timed_out": timed_out,
                   "seconds": round(time.monotonic() - started, 3), "command": cmd,
                   "summaries": summaries, "errors": errors, "log": str(log)}

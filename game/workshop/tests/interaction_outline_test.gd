@@ -1,4 +1,4 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Contour cache lifetime and cost without a renderer or the product window.
 class CountedOutline:
 	extends "res://scripts/interaction_outline.gd"
@@ -11,16 +11,11 @@ class CountedOutline:
 		material_checks += 1
 		return super._writes_depth(visual)
 
-var checks: Array[Dictionary] = []
 var outline: Node3D
 var world: Node3D
 
 func _initialize() -> void:
 	run.call_deferred()
-
-func expect(ok: bool, label: String) -> void:
-	checks.append({"check":label,"passed":ok})
-	if not ok:push_error(label)
 
 func piece(parent: Node3D, offset: Vector3 = Vector3.ZERO) -> MeshInstance3D:
 	var mesh = MeshInstance3D.new()
@@ -141,6 +136,6 @@ func run() -> void:
 	expect(not is_instance_valid(last_contour) and first.get_child_count() == 0,"Destroying the manager releases contours attached to surviving source objects")
 	var passed = checks.all(func(check):return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/interaction-outline")
-	FileAccess.open("res://verification/interaction-outline/audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"rendered":false,"stable_focus_mean_us":stable_us,"focus_samples":samples},"  "))
+	write_evidence("res://verification/interaction-outline/audit.json",{"passed":passed,"checks":checks,"rendered":false,"stable_focus_mean_us":stable_us,"focus_samples":samples})
 	print("INTERACTION_OUTLINE ","PASS" if passed else "FAIL"," ",checks.size()," checks; stable focus mean ",stable_us," us")
 	quit(0 if passed else 1)

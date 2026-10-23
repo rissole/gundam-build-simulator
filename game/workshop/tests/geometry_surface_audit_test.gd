@@ -1,13 +1,7 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 
 const Audit = preload("res://tests/geometry_surface_audit.gd")
-var checks: Array[Dictionary] = []
 var fixture: Node3D
-
-func expect(value: bool, description: String) -> void:
-	checks.append({"check": description, "passed": value})
-	if not value:
-		push_error(description)
 
 func _initialize() -> void:
 	_run.call_deferred()

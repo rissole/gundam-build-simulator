@@ -33,25 +33,12 @@ var slots: Dictionary:
 				result[kind].append(model.assemblies[owner].slots.get(sid,"") if model.assemblies.has(owner) else "")
 		return result
 
+# Standalone compatibility for historical state tests; production loads Content.
 static func scenario(single: bool = false) -> Dictionary:
-	var config: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/heel-pads.json"))
-	if single:
-		var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/heel-pad.json"))
-		config.parts = original.parts
-		config.builds.resize(1)
-		config.mounts.resize(1)
-	return config
+	return preload("res://scripts/workshop_content.gd").scenario(single)
 
 static func definition_data(single: bool = false) -> Dictionary:
-	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/assembly-definitions.json"))
-	if single:
-		for sid in data.assemblies.foot.slots.keys():
-			if sid.begins_with("heel_2"):data.assemblies.foot.slots.erase(sid)
-		data.assemblies.foot.milestones.complete = data.assemblies.foot.slots.keys()
-		data.assemblies.foot.milestones.erase("heel_2_secured")
-		data.assemblies.foot.manual.resize(2)
-		data.assemblies.foot.manual[0].slots = data.assemblies.foot.slots.keys()
-	return data
+	return preload("res://scripts/workshop_content.gd").definition_data(single)
 
 func bind(shared: AssemblyModel, id: String) -> void:
 	model = shared

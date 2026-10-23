@@ -156,7 +156,7 @@ func load_foot() -> void:
 			node.reparent(stored,false)
 			node.position -= game.FOOT_CENTER
 			continue
-		if ["FA-100","FA-101","FA-102","FA-103","FA-104","FA-105","FA-106","FA-200","FA-201","FA-300","FA-301","FA-302","FA-303","FA-304","FA-400","FA-401","FA-402","FA-403","FA-404"].has(family):
+		if game.profile.get("foot_collider_families",preload("res://scripts/scenario_profile.gd").FOOT_COLLIDER_FAMILIES).has(family):
 			var collision_mode: String = game.config.get("context_collision",{}).get(uid,"bounds")
 			var col = CollisionShape3D.new()
 			col.transform = node.transform
@@ -176,10 +176,6 @@ func load_foot() -> void:
 			col.set_meta("source_uid",uid)
 			col.set_meta("context_collision",collision_mode)
 			game.foot.add_child(col)
-	for kind in HeelAssemblyState.KINDS:
-		for i in range(4):
-			var definition = game.model.definitions.assemblies.heel_pad.slots["sleeve_%d"%i] if kind == "sleeve" else game.model.definitions.assemblies.foot.slots["heel_1/%s_%d"%[kind,i]]
-			game.slot_sources[kind].append(definition.pose_source)
 	assert(game.source.size() == 745,"Foot source must retain the full inventory.")
 
 func register_parent_fixtures() -> void:

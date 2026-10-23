@@ -7,6 +7,7 @@ const Profiles = preload("res://scripts/scenario_profile.gd")
 const Automation = preload("res://scripts/workshop_automation.gd")
 const Registry = preload("res://scripts/equipment_registry.gd")
 const Hands = preload("res://scripts/hand_slot.gd")
+const Content = preload("res://scripts/workshop_content.gd")
 const Trial = preload("res://scripts/leg_bay_trial.gd")
 ## Interaction and physics order; earlier equipment answers aggregate queries first.
 const EQUIPMENT_ORDER = ["leg_rail","lift_shelf","service_crane","foot_fixture","hip_lift"]
@@ -47,7 +48,6 @@ var foot_fixture: Node3D
 var builds: Dictionary = {}
 var bodies: Dictionary = {}
 var stations: Dictionary = {}
-var state: HeelAssemblyState
 var active_build: String = "pad_1"
 var prepared_flags: Dictionary = {}
 var completed_flags: Dictionary = {}
@@ -58,9 +58,6 @@ var source: Dictionary = {}
 var active_ids: Array[String] = []
 var part_defs: Dictionary = {}
 var type_sources: Dictionary = {}
-var slot_sources: Dictionary = {"sleeve": [], "washer": [], "bolt": []}
-var pad: WorkshopPart
-var pad_mesh: MeshInstance3D
 var ghost: MeshInstance3D
 var ghost_material: StandardMaterial3D
 var ghost_assembly_signature: String = ""
@@ -70,7 +67,6 @@ var prep: Node3D
 var loose: Dictionary = {}
 var bins: Dictionary = {}
 var bin_labels: Dictionary = {}
-var socket_markers: Array[MeshInstance3D] = []
 var player: CharacterBody3D
 var camera: Camera3D
 var player_collision: CollisionShape3D
@@ -91,8 +87,6 @@ var selected_kind: String:
 var paused: bool = true
 var target: Dictionary = {}
 var rotation_station: String = ""
-var completed_before: bool = false
-var prepared_before: bool = false
 var chime: AudioStreamPlayer
 var started: bool = false
 var screenshot_mode: bool = false
@@ -115,13 +109,12 @@ func _ready() -> void:
 		add_child(preload("res://scripts/trial_selector.gd").new())
 		return
 	var single = profile.pads == "single"
-	config = HeelAssemblyState.scenario(single)
-	var data = HeelAssemblyState.definition_data(single)
+	config = Content.scenario(single)
+	var data = Content.definition_data(single)
 	if profile.pitch:
 		config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
 		var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(config.definitions))
-		data.parts.merge(overlay.parts,true)
-		data.assemblies.merge(overlay.assemblies,true)
+		Content.apply_definitions(data,overlay)
 	if not profile.leg_content.is_empty():_load_leg_content(data)
 	components = preload("res://scripts/component_interaction.gd").new(self)
 	add_child(components)
@@ -130,7 +123,6 @@ func _ready() -> void:
 	runtime = AssemblyRuntime.new(model,source)
 	bind_build_views(config)
 	active_build = config.builds[0].id
-	state = builds[active_build]
 	for definition in config.parts:
 		active_ids.append(definition.instance_id)
 		part_defs[definition.instance_id] = definition
@@ -143,10 +135,7 @@ func _ready() -> void:
 	if not profile.leg_content.is_empty():world.make_leg_context()
 	player_controller.make()
 	_build_equipment(["foot_fixture"].filter(has_equipment))
-	for build in config.builds:
-		_activate(build.id)
-		_make_pad()
-	_activate(config.builds[0].id)
+	for build in config.builds:components.make_build(build.id)
 	components.setup()
 	if not profile.trial.is_empty():trial = Trial.new(self)
 	if profile.staging == "leg_bay":preload("res://scripts/scenario_staging.gd").prepare(self)
@@ -167,17 +156,7 @@ func _ready() -> void:
 	ghost.visible = false
 	interaction_outline = preload("res://scripts/interaction_outline.gd").new()
 	add_child(interaction_outline)
-	for i in range(4*builds.size()):
-		var marker = MeshInstance3D.new()
-		var sphere = SphereMesh.new()
-		sphere.radius = 0.009
-		sphere.height = 0.018
-		marker.mesh = sphere
-		marker.material_override = material(Color("79d8b8"),0.0,true)
-		marker.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		add_child(marker)
-		marker.visible = false
-		socket_markers.append(marker)
+	components.make_markers()
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
@@ -194,13 +173,12 @@ func _ready() -> void:
 func _load_leg_content(data: Dictionary) -> void:
 	leg_content = JSON.parse_string(FileAccess.get_file_as_string(profile.leg_content))
 	var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-definitions.json"))
-	data.parts.merge(overlay.parts,true)
-	data.assemblies.merge(overlay.assemblies,true)
+	Content.apply_definitions(data,overlay)
 	var trial_id: String = profile.trial
 	if not trial_id.is_empty():
 		var trial_definitions: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+trial_id+"-definitions.json"))
 		var trial_content: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+trial_id+"-content.json"))
-		data.parts.merge(trial_definitions.parts,true);data.assemblies.merge(trial_definitions.assemblies,true)
+		Content.apply_definitions(data,trial_definitions)
 		for support_id in trial_content.m2.remove_supports:leg_content.supports.erase(support_id)
 		leg_content.supports.merge(trial_content.supports,true)
 		for field in ["parts","parents","equipment","m2"]:leg_content[field] = trial_content[field]
@@ -212,7 +190,10 @@ func _load_leg_content(data: Dictionary) -> void:
 	config.parts.append_array(leg_content.parts)
 	config.parents = leg_content.parents.duplicate(true)
 	config.supports = leg_content.supports.duplicate(true)
-	config.parent.location = "support:foot_carrier"
+	for parent_id in profile.parent_locations:
+		if parent_id == config.parent.id:config.parent.location = profile.parent_locations[parent_id]
+		for parent in config.get("parents",[]):
+			if parent.id == parent_id:parent.location = profile.parent_locations[parent_id]
 	var homes: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().parent_homes
 	for parent in config.parents:
 		if homes.has(parent.id):parent.home = homes[parent.id]
@@ -252,27 +233,6 @@ func _mesh(uid: String) -> MeshInstance3D:
 	mesh.set_meta("source_uid",uid)
 	return mesh
 
-func _make_pad() -> void:
-	pad = Part.new()
-	pad.uid = state.pad_id
-	pad.kind = "pad"
-	pad.name = "HeelPad"
-	pad.collision_layer = 2
-	pad.collision_mask = WORLD_MASK
-	add_child(pad)
-	pad_mesh = _mesh(state.pad_id)
-	pad.add_child(pad_mesh)
-	pad_mesh.set_meta("component_uid",state.pad_id)
-	if components.is_component_build(active_build):
-		pad_mesh.transform = source[components.frame_source(active_build)].transform.affine_inverse()*source[source_uid(state.pad_id)].transform
-		pad_mesh.set_meta("component_uid",state.pad_id)
-		pad_mesh.set_meta("slot_id",components.definition(active_build).root_slot)
-	pad.add_collision_exception_with(player)
-	player.add_collision_exception_with(pad)
-	pad.position = home_position(active_build)
-	bodies[active_build] = pad
-	runtime.register_node(active_build,pad)
-	refresh_assembly_collision(active_build)
 
 func _make_audio() -> void:
 	chime = AudioStreamPlayer.new()
@@ -317,12 +277,8 @@ func _physics_process(delta: float) -> void:
 	equipment.physics(delta)
 	player_controller.physics(delta)
 	components.physics(delta)
-	var previous_build = active_build
 	var held = held_build()
-	if not held.is_empty():
-		_activate(held)
-		if not paused:apply_carry_intent(pad,delta)
-	_activate(previous_build)
+	if not held.is_empty() and not paused:apply_carry_intent(bodies[held],delta)
 	# A dropped piece cannot disappear permanently under the floor.
 	for uid in loose.keys():
 		if is_instance_valid(loose[uid]) and loose[uid].global_position.y < -3:
@@ -340,22 +296,19 @@ func _process(_delta: float) -> void:
 
 func bind_build_views(scenario: Dictionary) -> void:
 	builds.clear()
-	for build in scenario.builds:
-		var view = HeelAssemblyState.new()
-		view.bind(model,build.id)
-		builds[build.id] = view
-
-func _activate(id: String) -> void:
-	active_build = id
-	state = builds[id]
-	if bodies.has(id):
-		pad = bodies[id]
-		pad_mesh = pad.get_child(0)
+	for build in scenario.builds:builds[build.id] = build
 
 func held_build() -> String:
 	for id in builds:
-		if builds[id].pad_location == "held":return id
+		if model.assemblies[id].location == "held":return id
 	return ""
+
+func build_prepared(owner: String) -> bool:
+	return model.milestone(owner,"prepared")
+
+func build_complete(owner: String) -> bool:
+	var assembly: Dictionary = model.assemblies[owner]
+	return not assembly.parent.is_empty() and model.milestone(assembly.parent,assembly.parent_slot+"_secured")
 
 func home_position(id: String) -> Vector3:
 	for build in config.builds:
@@ -371,9 +324,6 @@ func build_label(id: String) -> String:
 	if model.assemblies.has(id):return model.definitions.assemblies[model.assemblies[id].definition].get("title",id)
 	return id
 
-func connection(index: int) -> Vector3:
-	var point: Array = model.definitions.assemblies.heel_pad.slots["sleeve_%d"%index].target
-	return pad.global_transform*Vector3(point[0],point[1],point[2])
 
 func default_parent_id() -> String:
 	var parents = AssemblyModel.scenario_parents(config)
@@ -402,25 +352,18 @@ func equipment_access_error(owner: String) -> String:
 	return equipment.access_error(owner)
 
 func mount_transform(slot: String = "", owner: String = "", child: String = "") -> Transform3D:
-	if owner.is_empty():owner = target.get("owner",model.assemblies[active_build].parent)
+	if child.is_empty():child = target.get("build",held_build())
+	if owner.is_empty():owner = target.get("owner",model.assemblies[child].parent)
 	if owner.is_empty():owner = default_parent_id()
-	if slot.is_empty():slot = target.get("mount",state.mount_slot)
-	if slot.is_empty():slot = "heel_1"
-	if child.is_empty():child = active_build
+	if slot.is_empty():slot = target.get("mount",model.assemblies[child].parent_slot)
 	return runtime.mount_pose(owner,slot,child)
 
-func mount_point(slot: String = "", owner: String = "", child: String = "") -> Vector3:
-	if owner.is_empty():owner = target.get("owner",default_parent_id())
-	if slot.is_empty():slot = target.get("mount",state.mount_slot)
-	if slot.is_empty():
-		for sid in model.assemblies[owner].slots:
-			if model.slot_definition(owner,sid).get("assembly","") == model.assemblies[active_build if child.is_empty() else child].definition:
-				slot = sid
-				break
+func mount_point(slot: String, owner: String, child: String) -> Vector3:
 	var definition: Dictionary = model.slot_definition(owner,slot)
 	if definition.has("target") or definition.has("target_position"):
 		return assembly_node(owner).global_transform*AssemblyRuntime.vec(definition.get("target",definition.get("target_position",[])))
-	return mount_transform(slot,owner,child)*Vector3(0,-0.085,0) if definition.get("assembly","") == "heel_pad" else slot_pose(owner,slot).origin
+	var offset: Array = components.presentation.get(model.assemblies[child].definition,{}).get("mount_target_offset",[0,0,0])
+	return mount_transform(slot,owner,child)*AssemblyRuntime.vec(offset)
 
 func placement_destination() -> Transform3D:
 	return stations[target.get("station","prep")].global_transform if target.type == "prep" else mount_transform()
@@ -455,7 +398,7 @@ func refresh_assembly_collision(owner: String) -> void:
 	var index = 0
 	for piece in runtime.visual_pieces(root):
 		var visual: MeshInstance3D = piece.visual
-		var uid: String = visual.get_meta("component_uid",visual.get_meta("installed_uid",""))
+		var uid: String = visual.get_meta("component_uid","")
 		var profile: Array = []
 		if model.items.has(uid):profile = model.definitions.parts[model.items[uid].kind].get("collision_shapes",[])
 		var sid: String = visual.get_meta("slot_id","")
@@ -475,127 +418,28 @@ func refresh_assembly_collision(owner: String) -> void:
 	carrier.set_meta("collision_revision",int(carrier.get_meta("collision_revision",0))+1)
 
 func interact(all_stock: bool = false) -> void:
-	if target.is_empty(): hud.toast("Aim at a drawer, shelf or loose component."); return
-	if target.type == "equipment":
-		if target.get("input","") == "place":hud.toast("Aim and click to seat this supported component.");return
-		var access_error = _access(_target_receivers())
-		if not access_error.is_empty():hud.toast(access_error);return
-		var controller: Node = target.controller
-		var equipment_error: String = controller.request(target.action)
-		hud.toast(equipment_error if not equipment_error.is_empty() else controller.status_text(),equipment_error.is_empty())
-		return
-	if target.type == "component" or (target.type == "slot" and target.get("discovery_only",false)):
-		# Pickup acts on the physical containing assembly even when its connection
-		# is focused for placement. Recheck pickup reach/visibility independently.
-		var owner: String = model.top_level(target.owner) if target.type == "component" else target.build
-		if not builds.has(owner):hud.toast("This fixture stays at its work station.");return
-		var previous_target = target
-		target = {"type":"pad","build":owner,"point":target.get("discovery_hit",target.point)}
-		_activate(owner)
-		interact(all_stock)
-		target = previous_target
-		return
-	var allowed: Array = [pad]
-	if target.type == "bin": allowed = [bins[target.kind]]
-	if target.type == "loose": allowed = [loose[target.uid]]
-	var error = _access(allowed)
-	if not error.is_empty(): hud.toast(error);return
-	if hands.payload_holder() != null:hud.toast(hands.error());return
-	match target.type:
-		"bin":components.collect(target.kind,all_stock)
-		"pad", "slot":
-			if state.pad_location == "foot":hud.toast("The pad is mounted. Undo its installation in the parent manual.");return
-			if state.pad_location == "held":return
-			var carry_error = state.move_pad("held")
-			if not carry_error.is_empty():hud.toast(carry_error);return
-			var previous = pad.global_transform
-			pad.reparent(self)
-			pad.global_transform = previous
-			pad.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
-			pad.freeze = true
-			pad.linear_velocity = Vector3.ZERO
-			pad.angular_velocity = Vector3.ZERO
-			pad.held = true
-			pad.gravity_scale = 0
-			pad.collision_layer = 2
-			pad.collision_mask = WORLD_MASK
-		"loose":components.collect(state.items[target.uid].kind,false,target.uid)
-	hud.refresh()
+	components.interact(all_stock)
 
 func attach() -> void:
-	if target.get("type","") == "equipment" and target.controller.click_operates:
-		if target.get("input","") == "pickup":hud.toast("Use E to pick up this equipment payload.");return
-		var error = _access(_target_receivers())
-		if error.is_empty():error = target.controller.request(target.action)
-		hud.toast(error if not error.is_empty() else target.controller.status_text(),error.is_empty())
-		return
-	if target.get("type","") == "component":components.attach();return
-	var allowed: Array = [pad]
-	if target.has("owner"):allowed.append(assembly_node(model.top_level(target.owner)))
-	elif is_instance_valid(foot):allowed.append(foot)
-	var error = _access(allowed)
-	if not error.is_empty():hud.toast(error);return
-	if target.type == "prep" and state.pad_location == "held":
-		var station: String = target.get("station","prep")
-		var station_error = model.move_assembly(active_build,"station:"+station)
-		if not station_error.is_empty():hud.toast(station_error);return
-		_set_pad_station(station)
-		hud.toast("Assembly suspended.",true)
-	elif target.type == "mount" and state.pad_location == "held":
-		var result = model.install(target.get("owner",default_parent_id()),target.get("mount","heel_1"),active_build)
-		if not result.ok:hud.toast(result.error);return
-		_set_pad_foot()
-		if profile.get("pads","") == "single":hud.open_manual(model.assemblies[active_build].parent,1)
-		hud.toast("Assembly seated. Follow the receiving manual to secure its connections.",true)
-	elif target.type == "slot":
-		var was_prepared = state.prepared()
-		var was_complete = state.complete()
-		var kind = selected_kind
-		var result = state.install(kind,target.index)
-		if not result.ok:hud.toast(result.error);return
-		_sync_installed_visuals()
-		if state.prepared() == was_prepared and state.complete() == was_complete:
-			hud.toast("Fitted %s · mounting point %d" % [components.title(kind),target.index+1],true)
-	else:
-		hud.toast("Select a compatible part and aim at a ready connection.")
-	hud.refresh()
+	components.attach_target()
 
-func _set_pad_station(station: String = "prep") -> void:
-	pad.held = false
-	# Attached assemblies inherit their parent's pose; the carrying mode can write
-	# an older world pose back between input and physics ticks during rotation.
-	pad.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
-	pad.freeze = true
-	pad.gravity_scale = 1
-	pad.linear_velocity = Vector3.ZERO
-	pad.angular_velocity = Vector3.ZERO
-	pad.reparent(stations[station])
-	pad.transform = Transform3D.IDENTITY
-	refresh_assembly_collision(active_build)
+func suspend_build(owner: String, station: String) -> void:
+	var body: WorkshopPart = bodies[owner]
+	body.held = false
+	# Static freeze preserves inherited station transforms between physics ticks.
+	body.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+	body.freeze = true
+	body.gravity_scale = 1
+	body.linear_velocity = Vector3.ZERO
+	body.angular_velocity = Vector3.ZERO
+	body.reparent(stations[station])
+	body.transform = Transform3D.IDENTITY
+	refresh_assembly_collision(owner)
 
-func _set_pad_foot() -> void:
-	var parent: String = model.assemblies[active_build].parent
-	runtime.mount(parent,state.mount_slot,active_build)
-	refresh_assembly_collision(parent)
-
-func _sync_installed_visuals() -> void:
-	if components.is_component_build(active_build):components.sync(active_build);return
-	for child in pad.get_children():
-		if child.has_meta("installed_uid"):
-			pad.remove_child(child)
-			child.queue_free()
-	for kind in HeelAssemblyState.KINDS:
-		for i in range(4):
-			var uid: String = state.slots[kind][i]
-			if uid.is_empty():continue
-			# Source instances can bake different axes into their vertices. Use the
-			# receiving slot's geometry/pose together, retaining inventory UID below.
-			var visual = _mesh(slot_sources[kind][i])
-			visual.transform = source["FA-302__001"].transform.affine_inverse()*source[slot_sources[kind][i]].transform
-			visual.set_meta("installed_uid",uid)
-			pad.add_child(visual)
-	pad.set_meta("visual_revision",int(pad.get_meta("visual_revision",0))+1)
-	refresh_assembly_collision(active_build)
+func mount_build(owner: String) -> void:
+	var assembly: Dictionary = model.assemblies[owner]
+	runtime.mount(assembly.parent,assembly.parent_slot,owner)
+	refresh_assembly_collision(assembly.parent)
 
 func drop_selected() -> void:
 	var dropped: Dictionary = equipment.drop()
@@ -605,19 +449,19 @@ func drop_selected() -> void:
 	if not model.held_item().is_empty():components.drop();return
 	var held = held_build()
 	if held.is_empty():hud.toast("Your hands are empty.");return
-	_activate(held)
-	pad.held = false
-	pad.freeze = false
-	pad.sleeping = false
-	pad.gravity_scale = 1
-	pad.linear_velocity = Vector3.ZERO
-	state.move_pad("loose")
+	var body: WorkshopPart = bodies[held]
+	body.held = false
+	body.freeze = false
+	body.sleeping = false
+	body.gravity_scale = 1
+	body.linear_velocity = Vector3.ZERO
+	model.move_assembly(held,"loose")
 
 func _spawn_loose(uid: String, at_output: bool = false) -> void:
 	assert(model.definitions.parts[model.items[uid].kind].carry_class != "pocket","Small items stay in drawers, pockets or assemblies.")
 	var item = Part.new()
 	item.uid = uid
-	item.kind = state.items[uid].kind
+	item.kind = model.items[uid].kind
 	item.collision_layer = 2
 	item.collision_mask = WORLD_MASK
 	add_child(item)
@@ -664,19 +508,13 @@ func undo_build() -> void:
 	var result = model.undo(owner,"station:"+destination)
 	if not result.ok:hud.toast(result.error);return
 	if result.step.action == "mount":
-		_activate(result.step.uid)
-		_set_pad_station(destination)
+		suspend_build(result.step.uid,destination)
 		refresh_assembly_collision(owner)
-		if profile.get("pads","") == "single":hud.open_manual(active_build,1)
+		if profile.get("pads","") == "single":hud.open_manual(result.step.uid,1)
 	else:
 		var uid: String = result.step.uid
 		if model.items[uid].location == "loose":_spawn_loose(uid,true)
-	var previous_build = active_build
-	for id in builds:
-		_activate(id)
-		_sync_installed_visuals()
-	_activate(previous_build)
-	for parent in AssemblyModel.scenario_parents(config):components.sync(parent.id)
+	for id in model.assemblies:components.sync(id)
 	hud.toast("Undid the last action in "+hud.manual_title()+".",true)
 
 ## Slots authored with "undo_to":"hands" return the same identity to free hands,
@@ -701,25 +539,20 @@ func _undo_to_hands(owner: String) -> bool:
 func _state_changed() -> void:
 	if hud:hud.refresh()
 	if storage:storage.refresh()
-	var previous_build = active_build
 	for id in builds:
-		_activate(id)
-		if state.prepared() and not prepared_flags.get(id,false):_milestone(build_label(id)+" prepared.")
-		if state.complete() and not completed_flags.get(id,false):_milestone(build_label(id)+" installation COMPLETE")
-		prepared_flags[id] = state.prepared()
-		completed_flags[id] = state.complete()
-	_activate(previous_build)
-	prepared_before = state.prepared()
-	completed_before = state.complete()
+		if build_prepared(id) and not prepared_flags.get(id,false):_milestone(build_label(id)+" prepared.",id)
+		if build_complete(id) and not completed_flags.get(id,false):_milestone(build_label(id)+" installation COMPLETE",id)
+		prepared_flags[id] = build_prepared(id)
+		completed_flags[id] = build_complete(id)
 	var errors = model.integrity_errors()
 	assert(errors.is_empty(),"; ".join(errors))
 
-func _milestone(message: String) -> void:
+func _milestone(message: String, owner: String) -> void:
 	if hud:hud.toast(message,true)
 	if chime and DisplayServer.get_name() != "headless":chime.play()
 	var glow = primitives.new_material(Color(0.25,0.95,0.68,0.6),0,true)
 	glow.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	var glowing_mesh = pad_mesh
+	var glowing_mesh: MeshInstance3D = bodies[owner].get_child(0)
 	glowing_mesh.material_overlay = glow
 	var tween = create_tween()
 	tween.tween_property(glow,"albedo_color:a",0.0,1.8)
@@ -742,7 +575,7 @@ func _update_crouch(wants_crouch: bool, delta: float) -> void:player_controller.
 func _update_target() -> void:targeting.update_target()
 func _update_ghost(access_result: Variant = null) -> void:targeting.update_ghost(access_result)
 func _update_markers() -> void:targeting.update_markers()
-func _show_assembly_ghost() -> void:targeting.show_assembly_ghost()
+func _show_assembly_ghost(owner: String = "") -> void:targeting.show_assembly_ghost(owner)
 func _aim_score(point: Vector3, radius: float) -> float:return targeting.aim_score(point,radius)
 func _visible(point: Vector3, allowed: Array = [], allow_body_hit: bool = false) -> bool:return targeting.can_see(point,allowed,allow_body_hit)
 func _assembly_discovery_hit(owner: String) -> Variant:return targeting.assembly_discovery_hit(owner)

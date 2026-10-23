@@ -1,25 +1,19 @@
-extends SceneTree
+extends "res://tests/kit/harness.gd"
 ## Exercise the complete workshop, its physical controls and its supported load.
 ## Stage child internals through the model; essential mounting and fastening use
 ## the same camera rays, carried bodies and input handlers as ordinary play.
 var game: Node
 var driver: Node
-var checks: Array[Dictionary] = []
 var fixture: Node
 
 func _initialize() -> void:
 	run.call_deferred()
 
-func expect(ok: bool, label: String) -> void:
-	checks.append({"check":label,"passed":ok})
-	print("CHECK ","PASS " if ok else "FAIL ",label)
-	if not ok:push_error(label)
-
 func finish() -> void:
 	checks.append_array(driver.checks)
 	var passed: bool = checks.all(func(check):return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/supported-fixture")
-	FileAccess.open("res://verification/supported-fixture/headless-audit.json",FileAccess.WRITE).store_string(JSON.stringify({"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":false},"  "))
+	write_evidence("res://verification/supported-fixture/headless-audit.json",{"passed":passed,"checks":checks,"engine":Engine.get_version_info().string,"rendered":false})
 	print("SUPPORTED_FIXTURE ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	game.chime.stop()
 	game.chime.stream = null
@@ -27,14 +21,7 @@ func finish() -> void:
 	quit(0 if passed else 1)
 
 func look_from(point: Vector3, feet: Vector3) -> void:
-	game.player.global_position = feet
-	game.player.velocity = Vector3.ZERO
-	var direction: Vector3 = point-game.camera.global_position
-	game.player.rotation = Vector3(0,atan2(-direction.x,-direction.z),0)
-	game.camera.rotation = Vector3(atan2(direction.y,Vector2(direction.x,direction.z).length()),0,0)
-	await driver.frames(5)
-	game._update_target()
-	game._update_ghost()
+	await PlayerDriver.new(game).stage_aim("supported fixture connection",point,feet)
 
 func control(action: String) -> Dictionary:
 	for button in fixture.controls():
@@ -76,33 +63,13 @@ func obstacle(point: Vector3, layer: int = 1) -> StaticBody3D:
 	return body
 
 func stage_child(owner: String, station: String) -> bool:
-	game.model.move_assembly(owner,"station:"+station)
-	game._activate(owner)
-	game._set_pad_station(station)
-	var ok = true
-	var definition: Dictionary = game.model.definitions.assemblies[game.model.assemblies[owner].definition]
-	for pass_index in range(definition.slots.size()):
-		var changed = false
-		for sid in definition.slots:
-			if not game.model.assemblies[owner].slots[sid].is_empty():continue
-			var spec: Dictionary = definition.slots[sid]
-			if spec.has("assembly"):continue
-			if not spec.requires.all(func(required):return not game.model.assemblies[owner].slots[required].is_empty()):continue
-			var uid: String = game.model.find_item(spec.accepts,"bin")
-			if game.model.definitions.parts[spec.accepts].carry_class == "pocket":
-				game.model.stock_pocket(spec.accepts)
-				uid = game.model.find_item(spec.accepts,"pocket")
-			else:game.model.carry_item(uid)
-			if uid.is_empty():continue
-			ok = game.model.install(owner,sid,uid).ok and ok
-			changed = true
-		if not changed:break
-	if game.components.is_component_build(owner):game.components.sync(owner)
-	else:game._sync_installed_visuals()
-	return ok and game.model.milestone(owner,"prepared")
+	var error: String = game.automation.suspend_at_station(owner,station)
+	if not error.is_empty():return false
+	Staging.fill(game,owner)
+	return game.model.milestone(owner,"prepared")
 
 func mount_pad(owner: String, slot: String) -> bool:
-	game._activate(owner)
+	game.automation.select_build(owner)
 	await driver.aim(game.bodies[owner].global_position)
 	driver.key(KEY_E)
 	await driver.frames(40)
@@ -117,8 +84,8 @@ func mount_pad(owner: String, slot: String) -> bool:
 	expect(game.held_build() == owner and game.model.assemblies.foot.slots[slot].is_empty(),"Yellow mounting guidance cannot remotely install "+owner)
 	await look_from(point,Vector3(point.x-1.1,0.025,point.z))
 	await driver.frames(100)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	expect(game.target.get("mount","") == slot and game.ghost.visible,"Supported sole exposes the "+slot+" carrying preview")
 	driver.click()
 	var mounted: bool = game.model.assemblies.foot.slots[slot] == owner
@@ -130,14 +97,14 @@ func mount_pad(owner: String, slot: String) -> bool:
 		for kind in ["washer","bolt"]:
 			if game.model.find_item(kind,"pocket").is_empty():await driver.collect_kind(kind)
 			else:driver.select_kind(kind)
-			game._activate(owner)
-			point = game.connection(index)
+			game.automation.select_build(owner)
+			point = game.components.slot_point("foot",slot+"/%s_%d"%[kind,index])
 			if index == 0 and kind == "washer":
 				await look_from(point,Vector3(point.x-3.0,0.025,point.z))
-				expect(game.target.get("type","") == "slot" and game.ghost.visible and game.ghost_material.albedo_color == game.SNAP_DISTANT_COLOR,"Mounted "+owner+" exposes yellow distant hardware guidance")
+				expect(game.target.get("type","") == "component" and game.ghost.visible and game.ghost_material.albedo_color == game.SNAP_DISTANT_COLOR,"Mounted "+owner+" exposes yellow distant hardware guidance")
 			await look_from(point,Vector3(point.x-1.1,0.025,point.z))
 			driver.click()
-			var fitted: bool = not game.builds[owner].slots[kind][index].is_empty()
+			var fitted: bool = not build_state(game,owner).slots[kind][index].is_empty()
 			expect(fitted,"Physical sole access fits %s %s %d"%[owner,kind,index])
 			if not fitted:
 				print("PAD_FASTENER_DIAGNOSTIC ",game.target," ",game.hud.toast_label.text)
@@ -218,7 +185,7 @@ func run() -> void:
 	var point: Vector3 = control("sole_left").point
 	var blocker = obstacle(game.camera.global_position.lerp(point,0.5))
 	await driver.frames(3)
-	game._update_target()
+	game.automation.refresh_target()
 	driver.key(KEY_E)
 	expect(not fixture.moving,"An intervening solid blocks operation of a hidden control")
 	blocker.queue_free()
@@ -248,8 +215,8 @@ func run() -> void:
 		expect(game.player.is_on_floor() and game.player.global_position.y > 0.50 and game.target.get("action","") == action and game.camera.global_position.distance_to(button.point) <= game.REACH,"Standing on the platform reaches the inward-facing "+action+" control")
 	expect(stage_child("pad_1","prep"),"Stage the small preparation task separately from the receiving foot")
 	game.model.undo("pad_1")
-	game._activate("pad_1")
-	game._sync_installed_visuals()
+	game.automation.select_build("pad_1")
+	game.automation.sync_visuals("pad_1")
 	expect(not game.model.milestone("pad_1","prepared"),"One sleeve remains to finish at the hand-sized preparation station")
 	if not await operate("sole_left"):await finish();return
 	await driver.frames(20)
@@ -260,8 +227,8 @@ func run() -> void:
 	expect(game.foot.global_transform.is_equal_approx(moving_pose),"Pause freezes powered fixture movement")
 	game.set_paused(false)
 	driver.select_kind("sleeve")
-	game._activate("pad_1")
-	await driver.aim(game.connection(3))
+	game.automation.select_build("pad_1")
+	await driver.aim(game.components.slot_point("pad_1","sleeve_3"))
 	driver.click()
 	expect(fixture.moving and game.model.milestone("pad_1","prepared"),"Hand-sized preparation remains available while the distant foot fixture moves")
 	expect(await settle() and fixture.work_pose == "sole_left","Resuming completes the guided sole working position")
@@ -279,8 +246,8 @@ func run() -> void:
 	await driver.frames(100)
 	await driver.aim(game.mount_point("pitch","foot","pitch"),1.2)
 	await driver.frames(100)
-	game._update_target()
-	game._update_ghost()
+	game.automation.refresh_target()
+	game.automation.refresh_presentation()
 	expect(game.ghost.visible and game.target.get("mount","") == "pitch","The upright fixture permits carrying the complete actuator to its clevises")
 	driver.click()
 	expect(game.model.assemblies.foot.slots.pitch == "pitch","Normal input mounts the actuator beside both prepared pads")
