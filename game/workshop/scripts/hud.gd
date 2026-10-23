@@ -136,7 +136,7 @@ func _ready() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
-	manual_id = "pad_1" if game.single_pad else game.config.parent.id
+	manual_id = "pad_1" if game.profile.pads == "single" else game.config.parent.id
 	_make_manual()
 	_make_action_bar()
 	target_panel = panel_at(root,Vector2.ZERO,Rect2(0,0,260,0))
@@ -372,9 +372,7 @@ func _make_pause() -> void:
 	header.add_child(heading)
 	pause_title = label("Your workshop",30)
 	heading.add_child(pause_title)
-	var introduction = "Prepare the heel pads and pitch actuator, then secure them to the foot."
-	if not game.get("m2_trial").is_empty():introduction = "M2 Hip retainer: a completed leg starts on its home rail. Dock upward, pocket the hardware, then carry ONE retaining half onto the lift shelf. Ride up and fit it. Use E / click / Q / Z; the holder stays supporting the leg." if game.m2_trial == "retention" else "M2 Crane delivery: completed foot and pre-beam leg supplied. Use Go to / Down / Up at the crane console, attach both magnetic ends, deliver the Upper-leg beam, fit four washer/bolt pairs and stow both ends."
-	heading.add_child(label(introduction,15,muted))
+	heading.add_child(label(game.profile.intro,15,muted))
 	resume_button = button("Start building    →",true)
 	resume_button.custom_minimum_size.x = 200
 	resume_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -416,7 +414,7 @@ func _make_pause() -> void:
 	restart_button = button("Restart build")
 	restart_button.pressed.connect(_restart_clicked)
 	footer.add_child(restart_button)
-	if not game.m2_trial.is_empty():
+	if game.profile.session.codec == "trial":
 		var choose_trial = button("Choose M2 trial")
 		footer.add_child(choose_trial)
 		choose_trial.pressed.connect(func():

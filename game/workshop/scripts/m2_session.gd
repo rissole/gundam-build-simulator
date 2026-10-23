@@ -4,12 +4,12 @@ const M2_VERSION = 2
 
 func setup(workshop: Node, path_override: String = "", use_automatic: bool = true) -> void:
 	game = workshop;automatic = use_automatic
-	path = "user://m2-"+game.m2_trial+"-save.json" if path_override.is_empty() else path_override
+	path = game.profile.session.path if path_override.is_empty() else path_override
 	enabled = not path_override.is_empty() or (DisplayServer.get_name() != "headless" and not game.automated_test and not OS.get_cmdline_args().has("--script"))
 	baseline = AssemblyModel.new();assert(baseline.configure(game.model.definitions,game.config).is_empty())
-	var materials = {"m2":M2_VERSION,"trial":game.m2_trial,"definitions":game.model.definitions,"scenario":game.config,"sources":game.leg_content.sources,"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb")}
+	var materials = {"m2":M2_VERSION,"trial":game.profile.trial,"definitions":game.model.definitions,"scenario":game.config,"sources":game.leg_content.sources,"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb")}
 	var resources = ["leg_bay_layout.gd","leg_rail.gd","m2_workshop.gd","scenario_staging.gd","m2_access_lift.gd","m2_session.gd","work_access_lift.gd","leg_source_geometry.gd"]
-	resources.append_array(["m2_lift_shelf.gd"] if game.m2_trial == "retention" else ["service_crane.gd","service_crane_console.gd"])
+	resources.append_array(["m2_lift_shelf.gd"] if game.profile.trial == "retention" else ["service_crane.gd","service_crane_console.gd"])
 	for resource in resources:
 		materials[resource] = FileAccess.get_sha256("res://scripts/"+resource) if FileAccess.file_exists("res://scripts/"+resource) else "missing"
 	fingerprint = JSON.stringify(materials).sha256_text()
@@ -22,7 +22,7 @@ func setup(workshop: Node, path_override: String = "", use_automatic: bool = tru
 	_refresh()
 
 func status_text() -> String:
-	var title = "Hip retainer" if game.m2_trial == "retention" else "Crane delivery"
+	var title = "Hip retainer" if game.profile.trial == "retention" else "Crane delivery"
 	return title+" · separate M2 save slot.\n"+(message if not message.is_empty() else ("Autosaves on pause, quit and every 30 seconds. Restart resets only this trial." if enabled else "Headless/test session; normal saves are untouched."))
 
 func capture() -> Dictionary:

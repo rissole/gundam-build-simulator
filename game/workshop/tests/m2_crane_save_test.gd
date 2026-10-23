@@ -74,7 +74,7 @@ func run() -> void:
 	reject(forged,"Contradictory source reservation")
 	var original_game = game
 	for record in snapshots:
-		var fresh = load("res://scenes/workshop.tscn").instantiate();fresh.m2_trial = "crane";fresh.automated_test = true;root.add_child(fresh);fresh.automated_test = true
+		var fresh = load("res://scenes/workshop.tscn").instantiate();fresh.profile_override = "leg_bay_crane";fresh.automated_test = true;root.add_child(fresh);fresh.automated_test = true
 		await frames(3)
 		var errors: Array[String] = fresh.saves.validate(record.snapshot)
 		var applied: bool = errors.is_empty() and fresh.saves.apply_snapshot(record.snapshot)

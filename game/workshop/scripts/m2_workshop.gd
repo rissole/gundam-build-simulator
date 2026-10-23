@@ -5,18 +5,32 @@ var shelf: Node3D
 var crane: Node3D
 func setup(workshop: Node3D) -> void:
 	game = workshop
-	preload("res://scripts/scenario_staging.gd").prepare(game)
+	if game.profile.staging == "leg_bay":preload("res://scripts/scenario_staging.gd").prepare(game)
 	rail = preload("res://scripts/leg_rail.gd").new();add_child(rail);rail.setup(game,game.leg_layout)
-	var lift = preload("res://scripts/m2_access_lift.gd").new();game.add_child(lift)
-	var levels: Array[float] = [.15,8.4]
-	lift.setup(game,"hip",preload("res://scripts/leg_bay_layout.gd").LIFT_ORIGIN,Vector2(2.6,2.6),levels)
-	lift.rotation.y = PI;game.access_lifts["hip"] = lift
-	if game.m2_trial == "retention":
+	var lift: Node3D
+	if game.has_equipment("hip_lift"):
+		lift = preload("res://scripts/m2_access_lift.gd").new();game.add_child(lift)
+		var levels: Array[float] = [.15,8.4]
+		lift.setup(game,"hip",preload("res://scripts/leg_bay_layout.gd").LIFT_ORIGIN,Vector2(2.6,2.6),levels)
+		lift.rotation.y = PI;game.access_lifts["hip"] = lift
+	if game.has_equipment("lift_shelf"):
 		shelf = preload("res://scripts/m2_lift_shelf.gd").new();add_child(shelf);shelf.setup(game,lift)
-	else:
+	if game.has_equipment("service_crane"):
 		crane = preload("res://scripts/service_crane.gd").new();add_child(crane);game.m2_crane = crane;crane.setup(game,game.leg_layout,game.leg_layout.crane_contract())
-	game.player.position = Vector3(8.3,.03,10.5) if game.m2_trial == "retention" else Vector3(4.0,.03,20)
-	game.player.rotation.y = -PI/2
+
+func position_stock() -> void:
+	# Ground stock feeds pockets and the lift's finite component shelf.
+	var index = 0
+	for kind in game.bins:
+		if game.model.count_at(kind,"bin") == 0:
+			game.bins[kind].hide()
+			continue
+		var node: Node3D = game.bins[kind]
+		if node.get_parent() != game:node.reparent(game)
+		node.global_position = Vector3(6.4+index*1.15,.7,20.7) if game.profile.trial == "retention" else Vector3(8.3+index*.9,.7,14.2)
+		node.rotation = Vector3.ZERO
+		game.box(game.leg_layout,Vector3(node.global_position.x,.245,node.global_position.z),Vector3(.8,.49,.55),game.material(Color("506971")),true)
+		index += 1
 
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = rail.controls()
@@ -69,12 +83,12 @@ func equipment_access_error(owner: String) -> String:
 	return ""
 
 func capture() -> Dictionary:
-	return {"version":2,"trial":game.m2_trial,"rail":rail.capture(),"shelf":shelf.capture() if is_instance_valid(shelf) else {},"crane":crane.capture() if is_instance_valid(crane) else {}}
+	return {"version":2,"trial":game.profile.trial,"rail":rail.capture(),"shelf":shelf.capture() if is_instance_valid(shelf) else {},"crane":crane.capture() if is_instance_valid(crane) else {}}
 
 func validate(data: Variant, candidate: AssemblyModel, _lifts: Dictionary) -> Array[String]:
 	if not data is Dictionary or data.size()!=5:return ["Missing M2 example snapshot."]
 	if not (data.get("version") is int or data.get("version") is float) or not data.get("trial") is String:return ["Invalid M2 example metadata."]
-	if data.version != 2 or data.trial != game.m2_trial:return ["Unsupported M2 example snapshot."]
+	if data.version != 2 or data.trial != game.profile.trial:return ["Unsupported M2 example snapshot."]
 	for field in ["rail","shelf","crane"]:
 		if not data.get(field) is Dictionary:return ["Missing M2 equipment snapshot."]
 	var errors: Array[String] = rail.validate(data.rail,candidate)

@@ -4,7 +4,7 @@ var crane: Node3D
 
 func boot() -> void:
 	game = load("res://scenes/workshop.tscn").instantiate()
-	game.m2_trial = "crane";game.automated_test = true
+	game.profile_override = "leg_bay_crane";game.automated_test = true
 	root.add_child(game);game.automated_test = true;await frames(8)
 	game.set_paused(false);Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	crane = game.m2_crane

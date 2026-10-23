@@ -24,9 +24,9 @@ var rotate_backup = true
 func setup(workshop: Node, path_override: String = "", use_automatic: bool = true) -> void:
 	game = workshop
 	automatic = use_automatic
-	path = SAVE_PATH if path_override.is_empty() else path_override
+	path = game.profile.session.path if path_override.is_empty() else path_override
 	var script_launch = OS.get_cmdline_args().has("--script") or OS.get_cmdline_args().has("-s")
-	enabled = not path_override.is_empty() or (not script_launch and DisplayServer.get_name() != "headless" and not game.automated_test and game.pitch_workshop and is_instance_valid(game.foot_fixture) and not OS.get_cmdline_user_args().has("--capture") and not OS.get_cmdline_user_args().has("--pitch-review"))
+	enabled = not path_override.is_empty() or (not script_launch and DisplayServer.get_name() != "headless" and not game.automated_test and not path.is_empty() and is_instance_valid(game.foot_fixture))
 	baseline = AssemblyModel.new()
 	var configuration_errors = baseline.configure(game.model.definitions,game.config)
 	assert(configuration_errors.is_empty(),str(configuration_errors))

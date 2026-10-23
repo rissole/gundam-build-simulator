@@ -97,7 +97,7 @@ func copy_mesh(original: MeshInstance3D, service: bool, root: bool = false) -> v
 	if root:
 		mesh.material_override = null
 		if service:
-			mesh.material_override = game.material(Color(0.4,0.6,0.68,0.12))
+			mesh.material_override = game.material(Color(0.4,0.6,0.68,0.12)).duplicate()
 			mesh.material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mesh.material_override.cull_mode = BaseMaterial3D.CULL_DISABLED
 

@@ -40,7 +40,7 @@ func run() -> void:
 	root.add_child(game)
 	game.automated_test = true
 	for index in range(6):await physics_frame
-	assert(game.foot_fixture != null and not game.leg_workshop,"Baseline must use the supported foot workshop.")
+	assert(game.foot_fixture != null and game.profile.id == "foot","Baseline must use the supported foot workshop.")
 	for pair in [["pad_1","prep"],["pitch","prep3"]]:
 		assert(game.model.move_assembly(pair[0],"station:"+pair[1]).is_empty())
 		game._activate(pair[0])

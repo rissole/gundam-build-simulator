@@ -3,7 +3,7 @@ func run() -> void:
 	await loop()
 	game.free();await process_frame
 	for label in snapshots:
-		game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = "retention";root.add_child(game);game.automated_test = true
+		game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_retention";root.add_child(game);game.automated_test = true
 		var codec = game.saves
 		var saved: Dictionary = snapshots[label]
 		expect(codec.validate(saved).is_empty(),"Fresh scene accepts "+label)
@@ -43,7 +43,7 @@ func run() -> void:
 			game.set_paused(false);await frames(20)
 			expect(lift.height > height and absf(game.player.global_position.y-lift.global_position.y-lift.height)<.06,"Restored rider follows the resumed moving lift")
 		game.free();await process_frame
-	game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = "retention";root.add_child(game);game.automated_test = true
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_retention";root.add_child(game);game.automated_test = true
 	var path = "/tmp/m2-retention-store-"+str(Time.get_ticks_usec())+".json"
 	game.saves.setup(game,path,false)
 	var applied: bool = game.saves.apply_snapshot(snapshots.partial_hardware)
@@ -53,7 +53,7 @@ func run() -> void:
 	var stored: Dictionary = Store.read(path,game.saves.fingerprint)
 	expect(stored.ok,"Stored M2 envelope and fingerprint verify")
 	game.free();await process_frame
-	game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = "retention";root.add_child(game);game.automated_test = true
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_retention";root.add_child(game);game.automated_test = true
 	game.saves.setup(game,path,false)
 	expect(game.saves.restored and game.paused and game.model.assemblies.pelvis.slots["ring/washer_3"] != "","Fresh M2 session resumes partial hardware from real store while paused")
 	game.free();await process_frame

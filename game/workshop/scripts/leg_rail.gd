@@ -79,7 +79,7 @@ func retention_state() -> String:
 	return "partial"
 
 func status_text() -> String:
-	if game.m2_trial == "crane":return "CRANE DELIVERY / Rail stays home\nUse the central crane console. Fit all four flange pairs before stowing the magnetic ends."
+	if game.profile.trial == "crane":return "CRANE DELIVERY / Rail stays home\nUse the central crane console. Fit all four flange pairs before stowing the magnetic ends."
 	if not blocked_reason.is_empty():return "STOPPED / "+blocked_reason
 	if moving:return "MOVING / "+(TITLES[clampi(floori(minf(path,goal)),0,2)] if goal > path else "Return · supported reverse")
 	if path >= 2.9999:return "DOCKED / Rail still supports leg\nFit one half from the lift. One half does not secure the hip.\nRemove all retention before Return."
@@ -89,7 +89,7 @@ func action_error(action: String) -> String:
 	if game.paused:return "Resume the trial before moving equipment."
 	if not action in ["advance","stop","return"]:return "Unknown rail command."
 	if action == "stop":return "" if moving else "The fixture is stopped."
-	if game.m2_trial == "crane":return "The crane example keeps the rail home. Finish the beam connection and stow both cables."
+	if game.profile.trial == "crane":return "The crane example keeps the rail home. Finish the beam connection and stow both cables."
 	if moving:return "Stop the motion before selecting a different direction."
 	if action == "return" and retention_state() != "none":return RETENTION_BLOCKS_RETURN
 	if action == "advance" and path >= 2.9999:return "One half does not secure the hip. Holder departure is outside M2."
@@ -219,7 +219,7 @@ func validate(data: Dictionary, candidate: AssemblyModel) -> Array[String]:
 	if leg.parent == "pelvis":
 		if absf(data.path-3)>0.0001 or data.moving:return ["Mounted leg must remain docked on its rail."]
 	elif leg.location != "support:m2_leg_rail":return ["Leg has no authorized rail support."]
-	if game.m2_trial == "crane" and (data.path != 0 or data.goal != 0 or data.moving):return ["Crane trial rail must stay home."]
+	if game.profile.trial == "crane" and (data.path != 0 or data.goal != 0 or data.moving):return ["Crane trial rail must stay home."]
 	return []
 
 func apply(data: Dictionary) -> void:

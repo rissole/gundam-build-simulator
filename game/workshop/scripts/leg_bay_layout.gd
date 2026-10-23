@@ -73,7 +73,7 @@ func _shell() -> void:
 			add_child(light)
 	for x in range(-12,25,4):box(self,"Grid",Vector3(x,.003,15),Vector3(.018,.006,47),steel,false)
 	for z in range(-8,39,4):box(self,"Grid",Vector3(6,.004,z),Vector3(39,.006,.018),steel,false)
-	sign_at("M2 / HANDS-ON EQUIPMENT\n"+("Hip retainer" if game.m2_trial == "retention" else "Crane delivery"),Vector3(10,3.5,7),6)
+	sign_at("M2 / HANDS-ON EQUIPMENT\n"+("Hip retainer" if game.profile.trial == "retention" else "Crane delivery"),Vector3(10,3.5,7),6)
 	sign_at("HORIZONTAL LEG STATION",Vector3(12,3.7,19.9),4)
 	sign_at("FINAL BAY / SUPPORTED HIP CONNECTION",Vector3(13,14,31),7)
 
@@ -125,7 +125,7 @@ func _fixture() -> void:
 	box(ladder,"PivotBearing",Vector3(0,0,.48),Vector3(.95,.25,.30),dark,true,true)
 
 func _reservations() -> void:
-	if game.m2_trial == "crane":
+	if game.has_equipment("service_crane"):
 		_crane_structure()
 		for x in [7.6,11.9]:
 			for z in [16.0,17.6]:

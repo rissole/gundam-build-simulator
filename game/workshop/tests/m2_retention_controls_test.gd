@@ -21,7 +21,7 @@ func take_snapshot(label: String) -> void:
 	snapshots[label] = data
 
 func loop() -> bool:
-	game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = "retention";game.m2_half_uid = replay_uid;root.add_child(game);game.automated_test = true;game.set_paused(false)
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_retention";game.m2_half_uid = replay_uid;root.add_child(game);game.automated_test = true;game.set_paused(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	trial = game.m2.rail;shelf = game.m2.shelf
 	await frames(8)

@@ -130,7 +130,7 @@ func show_parts(game: Node, entries: Array, views: Array = [], options: Dictiona
 				mesh.material_override = context_material
 				context_materials.append(context_material)
 			else:
-				mesh.material_override = game.material(Color(0.6,0.72,0.8,0.16))
+				mesh.material_override = game.material(Color(0.6,0.72,0.8,0.16)).duplicate()
 				mesh.material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		stage.add_child(mesh)
 		var aabb: AABB = mesh.transform*mesh.mesh.get_aabb()

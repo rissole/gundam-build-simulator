@@ -44,11 +44,6 @@ def cases() -> dict[str, list[str]]:
         "m2_workshop_launch": ["--quit-after", "5", "--", "--m2-workshop"],
         "m2_retention_launch": ["--quit-after", "5", "--", "--m2-workshop", "--m2-trial=retention"],
         "m2_crane_launch": ["--quit-after", "5", "--", "--m2-workshop", "--m2-trial=crane"],
-        "single_pad_desktop": ["--", "--single-pad", "--demo-test"],
-        "multi_build_desktop": ["--", "--multi-test"],
-        "pitch_desktop": ["--", "--pitch-test"],
-        "pitch_swapped_desktop": ["--", "--pitch-test", "--swap-identical-parts"],
-        "pockets_desktop": ["--", "--pockets-test"],
     })
     return result
 

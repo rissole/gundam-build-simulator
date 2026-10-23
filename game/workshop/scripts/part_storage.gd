@@ -35,7 +35,7 @@ func setup() -> void:
 	var trim = game.material(Color("83bba6"),0.2)
 	# Two rows at waist/chest height; the back wall provides a continuous aisle.
 	var groups: Array[Dictionary] = []
-	for zone in (["foot","leg","pelvis"] if game.get("leg_workshop") == true else ["foot"]):
+	for zone in (["foot","leg","pelvis"] if not game.profile.leg_content.is_empty() else ["foot"]):
 		for drawers in [true,false]:
 			var kinds: Array[String] = []
 			for kind in (drawer_kinds if drawers else shelf_kinds):

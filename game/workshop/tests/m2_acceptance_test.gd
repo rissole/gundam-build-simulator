@@ -22,7 +22,7 @@ func attack(snapshot: Dictionary, path: Array, key: String, replacement: Variant
 	var errors: Array[String] = game.saves.validate(forged)
 	attacks += 1
 	if not errors.is_empty():rejected += 1
-	else:defects.append({"trial":game.m2_trial,"path":str(path)+"/"+key,"attack":"missing" if erase else "mistyped","accepted":true})
+	else:defects.append({"trial":game.profile.trial,"path":str(path)+"/"+key,"attack":"missing" if erase else "mistyped","accepted":true})
 	if not errors.is_empty() and game.saves.apply_snapshot(forged):defects.append({"path":str(path)+"/"+key,"invalid_applied":true})
 	if before != JSON.stringify(game.saves.capture()):defects.append({"path":str(path)+"/"+key,"mutation":true})
 
@@ -54,7 +54,7 @@ func semantic_attacks(snapshot: Dictionary) -> void:
 	reject_semantic(forged,"Mounted foot world-pose contradiction")
 	forged = cloned(snapshot);forged.world.fixtures.pelvis[10] += .20
 	reject_semantic(forged,"Moved gantry parent")
-	if game.m2_trial == "retention":
+	if game.profile.trial == "retention":
 		forged = cloned(snapshot);forged.world.m2.shelf.occupants = ["PV-120__001","PV-120__001"]
 		reject_semantic(forged,"Duplicate shelf occupant")
 		forged = cloned(snapshot);forged.world.m2.shelf.occupants = ["PV-120__invented",""]
@@ -78,7 +78,7 @@ func file_persistence() -> void:
 	var prefix = "/tmp/m2-independent-"+str(Time.get_ticks_usec())
 	var records: Dictionary = {}
 	for trial_name in ["retention","crane"]:
-		game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = trial_name;game.automated_test = true;root.add_child(game)
+		game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_"+trial_name;game.automated_test = true;root.add_child(game)
 		await frames(3);game.set_paused(false)
 		var path = prefix+"-"+trial_name+".json"
 		game.saves.setup(game,path,false)
@@ -93,7 +93,7 @@ func file_persistence() -> void:
 		records[trial_name] = {"path":path,"snapshot":snapshot,"fingerprint":game.saves.fingerprint}
 		game.free();await process_frame
 		expect(Store.read(path,records[trial_name].fingerprint).ok,trial_name+" file envelope checksum and fingerprint verify")
-		game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = trial_name;game.automated_test = true;root.add_child(game)
+		game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_"+trial_name;game.automated_test = true;root.add_child(game)
 		game.saves.setup(game,path,false)
 		expect(game.saves.restored and game.paused,trial_name+" fresh scene reloads actual file paused")
 		immediate_physics(trial_name+" file restore")
@@ -109,7 +109,7 @@ func file_persistence() -> void:
 	expect(records.retention.fingerprint != records.crane.fingerprint,"Examples use distinct content/equipment fingerprints")
 	var crane_hash = FileAccess.get_sha256(records.crane.path)
 	set_meta("m2_reset",true)
-	game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = "retention";game.automated_test = true;root.add_child(game)
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_retention";game.automated_test = true;root.add_child(game)
 	game.saves.setup(game,records.retention.path,false)
 	expect(game.m2.rail.path == 0 and not game.m2.rail.moving and game.saves.has_save and not game.saves.restored,"Selector reset metadata writes a fresh retention trial to only its own slot")
 	expect(FileAccess.get_sha256(records.crane.path)==crane_hash,"Resetting retention leaves crane file bytes unchanged")
@@ -336,7 +336,7 @@ func geometry_contacts() -> void:
 
 func run() -> void:
 	for trial in ["retention","crane"]:
-		game = load("res://scenes/workshop.tscn").instantiate();game.m2_trial = trial;game.automated_test = true
+		game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "leg_bay_"+trial;game.automated_test = true
 		root.add_child(game);await frames(8);game.set_paused(false)
 		expect(not game.saves.enabled,"Headless "+trial+" does not enable automatic save writes")
 		var snapshot = cloned(game.saves.capture())

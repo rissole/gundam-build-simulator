@@ -33,6 +33,7 @@ func open() -> String:
 	var error: String = crane.console_access_error()
 	if not error.is_empty():return error
 	is_open = true;selected = 0;feedback.text = "";backdrop.show()
+	crane.game.desktop_input.push_modal(self)
 	crane.game.scripted_controls.clear();crane.game.jump_requested = false
 	crane.game.player.velocity.x = 0;crane.game.player.velocity.z = 0
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE;refresh()
@@ -40,8 +41,12 @@ func open() -> String:
 
 func shut() -> void:
 	is_open = false
+	if is_instance_valid(crane) and is_instance_valid(crane.game):crane.game.desktop_input.pop_modal(self)
 	if is_instance_valid(backdrop):backdrop.hide()
 	if is_instance_valid(crane) and not crane.game.paused:Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func handle_modal_input(event: InputEvent) -> void:
+	handle_input(event)
 
 func handle_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:

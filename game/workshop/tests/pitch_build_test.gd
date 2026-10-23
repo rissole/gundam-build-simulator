@@ -1,6 +1,7 @@
 extends "res://tests/demo_test.gd"
 ## Full source-backed actuator loop through desktop collection, targeting and placement.
 var installed_count: int = 0
+var swap_identical: bool = false
 
 func housing_is_opaque() -> bool:
 	for visual in game.bodies.pitch.get_children():
@@ -173,7 +174,7 @@ func complete_page(owner: String, page_index: int) -> bool:
 
 func run(workshop: Node) -> void:
 	game = workshop
-	var swap_copies = "--swap-identical-parts" in OS.get_cmdline_user_args()
+	var swap_copies = swap_identical or "--swap-identical-parts" in OS.get_cmdline_user_args()
 	if swap_copies:
 		# Change only stock enumeration order: normal shelf/drawer input now
 		# supplies the second physical copy first, as a shuffled stock could.
