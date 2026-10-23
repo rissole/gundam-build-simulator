@@ -78,8 +78,11 @@ Rail Return is blocked until all retention is removed. No arm or drawers ride
 the lift; small hardware stays in pockets.
 
 **Crane delivery:** At the central console press E, then choose **Go to Upper-leg
-beam rack** and **Down**. The fullscreen console stops mouse look and walking;
-click a command or use **↑/↓ + E**, and **Q** to close. Travel destinations appear
+beam rack** and **Down**. A compact control panel appears in the center of the
+screen, leaving the workshop visible. Mouse look and walking stop while it is
+open; click a command or use **↑/↓ + E/Enter**, and **Q** or **Close** to return to
+play. **Esc** closes the panel and pauses. Long command lists scroll, including
+when navigating with the keyboard. Travel destinations appear
 only while Up. Walk to the rack, E-pick each magnetic end, then aim/click a marked
 point. The held end stays in the centre of the view; Q stows it. Back at the
 console choose **Up**, **Go to Leg cradle**, then **Down**. Close the console and
@@ -105,7 +108,7 @@ M3; reset the crane example to replay from stock.
 Focused reproducible checks (headless; no rendered review):
 
 ```sh
-python3 game/workshop/tools/run_regressions.py --only m2_content_test m2_retention_controls_test m2_retention_save_test service_crane_test m2_crane_controls_test m2_crane_save_test m2_console_input_test m2_lift_shelf_test m2_acceptance_test m2_workshop_launch m2_retention_launch m2_crane_launch
+python3 game/workshop/tools/run_regressions.py --only m2_content_test m2_retention_controls_test m2_retention_save_test service_crane_test m2_crane_controls_test m2_crane_save_test m2_console_input_test crane_console_panel_test m2_lift_shelf_test m2_acceptance_test m2_workshop_launch m2_retention_launch m2_crane_launch
 ```
 
 Assess whether cable pickup and console trips are clear, whether the ring

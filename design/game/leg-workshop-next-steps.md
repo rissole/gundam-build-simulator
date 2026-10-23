@@ -62,6 +62,29 @@ exact. No protected foot assets were regenerated. No rendered review was request
 or performed. Automated verification and the M2 human acceptance below are
 separate evidence; M3 still requires explicit go-ahead.
 
+### Crane console UI revision — 2026-10-24
+
+The user subsequently reported that the crane controls fill the screen and
+initially authorized a compact panel attached visually to the physical console,
+like the existing E-to-pick-up prompts. During implementation they changed the
+placement to the center of the screen and requested no acceptance run, reserving
+verification for manual play. They selected a fixed view while operating it.
+This local UI change is separate from the final-gantry design and M4.
+
+The implementation replaces the opaque backdrop with a transparent input shield
+and a centered 340 px control panel. It stays within viewport margins and scrolls
+commands on short screens.
+Current load, crane status, feedback and Close remain visible. Mouse buttons and
+↑/↓ with E/Enter operate commands; Q/Close returns to play, and Esc pauses.
+Walking/look remain captured, outside clicks stay isolated and the ordinary
+interaction prompt is hidden. Crane mechanics, support rules and saves are
+unchanged. Before the centering revision, the panel/input and three focused crane
+suites passed 363 headless checks. The in-progress full M3 acceptance run was
+interrupted at the user's request; it is not completed acceptance evidence.
+No acceptance run or rendered review was performed for the final centered layout.
+Verification and player readability remain awaiting the user's manual playtest.
+
+
 ## Player feedback and constraints to retain
 
 | Feedback / positive finding | Current direction and unresolved question |
@@ -72,9 +95,10 @@ separate evidence; M3 still requires explicit go-ahead.
 | Large components appeared to float; transport/support was unclear | Horizontal leg rail, visible holder contact and individually attached crane magnets must explain support through collection, travel, seating, fastening and release. |
 | PV-120 halves looked collectible but were static | Ordinary two-hand carrying and a finite lift shelf replace the rejected positioning arm. Small hardware stays in pockets. |
 | Initial M2 crane delivery and magnetic attachment broadly worked | Fullscreen Up/Down/Go to console now captures mouse/look; keyboard arrows + E and Q close. Held magnets are centered. M2 replay accepted, 2026-10-23; no new detailed issues reported. |
+| Crane controls fill the screen; initially requested positioning like pickup prompts, then selected the center of the screen | Implemented compact centered controls with a fixed view and visible workshop. Acceptance run stopped at the user's request; final layout awaits their manual verification. |
 
-The console's fullscreen backdrop is deliberately unchanged during consolidation;
-the user accepted the M2 replay with no further console change requested. The shelf holds two one-hand
+The console's fullscreen backdrop was deliberately unchanged during consolidation;
+the user accepted that M2 replay before requesting the UI revision above. The shelf holds two one-hand
 components or one two-hand component, on the side opposite the hip working
 corner. Keep the accepted boarding and hip approach clear. Source and receiver
 support must remain distinct from fastening; decorative cables cannot replace

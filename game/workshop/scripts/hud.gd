@@ -274,7 +274,7 @@ func _make_action_bar() -> void:
 func present_target(text: String, action_key: String = "", action_label: String = "", screen_point: Vector2 = Vector2(-1,-1), valid: bool = false) -> void:
 	target_label.text = text
 	target_action_label.text = action_label
-	target_panel.visible = not game.paused and (not text.is_empty() or not action_label.is_empty())
+	target_panel.visible = not game.paused and not game.desktop_input.modal_active() and (not text.is_empty() or not action_label.is_empty())
 	if not target_panel.visible:return
 	target_label.visible = not text.is_empty()
 	target_action.visible = not action_label.is_empty()
