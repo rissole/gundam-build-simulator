@@ -1,6 +1,6 @@
 # Robot design record
 
-Last updated: 2026-10-21
+Last updated: 2026-10-24
 
 This is the working record for the robot and its engineering-style reference images. Update it as decisions are made so later design sessions and diagrams preserve the same details.
 
@@ -12,7 +12,7 @@ The main construction concepts and proportions are established for all six body 
 
 **The foot-and-ankle reference-design detail pass is complete (FA-01).** Its linked packet records dimensions, numbered components, 258 fasteners with washers per foot, actuator internals, wiring, assembly order and bounded envelope checks. Three engineering-style reference sheets have been generated for review; see the [image register and prompts](design/legs/foot-and-ankle/images/README.md). Exact CAD validation and real engineering sizing remain outside this milestone. Other body assemblies still need their own detail passes.
 
-The user has authorized continuing through recommendations and verification to generated reference images, with a foot parts/build summary for review. The [foot specification](design/legs/foot-and-ankle.md) and [assembly review](design/legs/foot-and-ankle/assembly-and-review.md) are the current starting points.
+The current pass develops the final robot's major interfaces after the implemented M3 leg-to-gantry prototype. The user authorized component owners to select details in the existing pelvis/hip, chest/cockpit, backpack/core, shoulder/arm and head specifications. These now define assembly boundaries, mating hardware, support handoffs and measured access requirements. The [final assembly plan](design/game/final-assembly-plan.md) integrates their workshop consequences; actual equipment geometry, solid sweeps and detailed internal workflows remain. This is design work, not authorization for a new gameplay milestone.
 
 ## 3D assembly work
 
@@ -22,12 +22,13 @@ The first [FA-01 3D model package](models/foot-fa01/README.md) contains all 745 
 
 - [Shared robot design](design/global.md): scope, 18 m scale, appearance, assembly boundaries, detail-development approach, and whole-robot open questions.
 - [Proportions and dimensional layout](design/proportions.md): accepted dimensions, working component envelopes, reference coordinates, stance, and visual benchmark.
+- [Final gantry and assembly plan](design/game/final-assembly-plan.md): active workshop access and major-section installation discussion, working backwards from the completed robot; mechanical dimensions remain in the component specifications.
 - [Reference-image requirements and workflow](design/reference-images.md): confirmed style, proposed sheet contents, and how to prepare focused briefs and review consistency.
 - [Decision history](design/decisions.md): the preserved record of choices and superseded proposals.
 
 ## Component specifications
 
-Each file contains its confirmed design, open refinement questions, and links to connected assemblies.
+Each file contains its confirmed design, selected working detail, remaining refinement and links to connected assemblies.
 
 | Body section | Component specifications |
 | --- | --- |
@@ -44,5 +45,5 @@ Each file contains its confirmed design, open refinement questions, and links to
 - If a decision changes, update the active specification and record the change in [decision history](design/decisions.md).
 - Before producing diagrams, review the shared rules, target component, and connected interfaces for unresolved dependencies and conflicting details.
 - Keep gameplay decisions in [GAME_DESIGN.md](GAME_DESIGN.md) and game-development plans separate from the robot specifications.
-- Keep each detailed construction specification in its component file and link to it from connected assemblies. Keep shared rules in the shared document and dimensions in the proportion layout rather than copying them into every file.
+- Keep each detailed construction specification and local interface dimensions in its component file and link to it from connected assemblies. Shared landmarks/envelopes belong in the proportion layout; derived equipment dimensions belong in the workshop plan.
 - Keep historical proposals out of active image briefs. Use decision history only to understand why a choice was made or changed.

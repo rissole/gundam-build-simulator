@@ -1,6 +1,6 @@
 # Shared robot design
 
-Last updated: 2026-10-20
+Last updated: 2026-10-24
 
 [Design index](../ROBOT_DESIGN.md)
 
@@ -8,16 +8,16 @@ Read this alongside the relevant component specification. These rules apply acro
 
 ## Scope and status
 
-- **Current focus:** design the robot in detail before creating its reference diagrams.
-- **Future context:** a puzzle game set in a 3D first-person workshop, where the player assembles a giant piloted machine from scratch.
-- **Game implementation:** outside the current task. Do not start building the game.
+- **Document scope:** shared robot construction concepts and boundaries; component packets develop the detailed geometry and references.
+- **Game context:** a 3D first-person workshop where the player assembles a giant piloted machine from scratch. Foot and structural-leg prototypes are implemented; see the [active workshop state](game/leg-workshop-next-steps.md).
+- **Current workshop design:** the [final gantry and assembly plan](game/final-assembly-plan.md) works backwards from the completed robot through major-section installation. Gameplay scope and authorization belong to the active task, not this robot specification.
 - **Long-term assembly ambition:** support a breakdown down to individual nuts, bolts, and other small components.
 - **Six major body sections:** left leg, right leg, torso, left arm, right arm, and head.
 - **Leg-to-torso boundary:** each hip ball belongs to its leg; the matching socket sits in the pelvis, which belongs to the torso.
 - **Arm-to-torso boundary:** each shoulder ball is integral to its upper-arm skeleton; the matching socket sits at the end of the torso's shoulder crossmember. The pauldron belongs to the arm.
 - **Head-to-torso boundary:** a fixed keyed neck spoke with a central wiring passage belongs to the torso skeleton; the head's baseplate bolts onto it and supports the head assembly.
-- **Working design order:** legs, torso, arms, then head. Develop the left leg first and mirror it for the right.
-- **Diagram status:** the FA-01 foot-and-ankle concept reference set has been generated for review; see the [image register](legs/foot-and-ankle/images/README.md). Other assemblies still need their own detail passes before diagrams.
+- **Current detail stage:** major-section interfaces and handling contracts are selected in the component documents; coordinated equipment geometry and each section's detailed internal workflow follow. Develop shared limb construction once, with explicitly handed interfaces where needed.
+- **Diagram status:** the FA-01 foot-and-ankle reference set is recorded in its [image register](legs/foot-and-ankle/images/README.md). The [torso packaging section](torso/chest-and-cockpit-layout.svg) and [workshop layout](game/final-assembly-layout.svg) are current dimensional schematics, not solid-clearance or gameplay evidence.
 
 “Confirmed” below means the user selected a choice or accepted the assistant's recommendation. A confirmed concept does not imply that its dimensions, detailed geometry, or fastener schedule have been resolved.
 
@@ -69,8 +69,8 @@ An earlier suggestion was to make a future first playable leg from roughly 8–1
 - Detailed geometry and movement clearances within the [shared dimensional layout](proportions.md).
 - Colors, materials, surface finishes, markings, and any accessories.
 
-The main design and construction approach for every body section, both proposed proportion batches, and reference pose are confirmed. Additional component envelopes have been selected under the user's direction to use the recommended proportions. Detailed geometry, clearances, component inventories, fastener schedules, finish, and reference-sheet format still need refinement.
+The main design and construction approach for every body section, both proposed proportion batches, and reference pose are confirmed. Additional envelopes and the 2026-10-24 major-interface choices were selected under delegated design authority. Component specifications now define the major seats, retention, actuation and handling/access contracts. Actual solid clearances, complete inventories, remaining internal fastener schedules and finish still need refinement.
 
 ## Shared dimensions
 
-Use [Robot proportions and dimensional layout](proportions.md) as the single source for dimensions, reference coordinates, and stance. It distinguishes explicitly accepted dimensions from assistant-selected working envelopes. Read its relevant sections alongside each component file when preparing diagrams.
+Use [Robot proportions and dimensional layout](proportions.md) as the source for shared landmarks, whole-component envelopes and stance. Local connection dimensions and hardware belong to the owning component specifications. Both distinguish explicitly accepted concepts from working detail selected under delegated authority. Read neighbors' current contracts when preparing diagrams.

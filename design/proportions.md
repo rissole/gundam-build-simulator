@@ -1,6 +1,6 @@
 # Robot proportions and dimensional layout
 
-Last updated: 2026-10-20
+Last updated: 2026-10-24
 
 [Design index](../ROBOT_DESIGN.md) · [Shared design rules](global.md)
 
@@ -12,7 +12,7 @@ Use the RX-78-2 as the visual benchmark for the classic silhouette. The assistan
 
 The numbers here are dimensions for this original robot, not published RX-78-2 specifications or measurements taken from the photograph. Preserve the agreed samurai helmet, calf thrusters, hinged backpack, and assembly boundaries.
 
-All dimensions are in metres. These are external envelopes and joint locations; detailed surfaces, moving clearances, panel thicknesses, and fastener dimensions remain open.
+All dimensions are in metres. This document owns shared landmarks, external envelopes and reference pose. The linked component specifications own detailed interfaces, moving clearances and fastening geometry; their 2026-10-24 interface designs are selected working dimensions, with solid/behavior verification still pending.
 
 ## Confirmed proportions and reference pose
 
@@ -29,7 +29,7 @@ The leg heights describe joint centers, not removable-part lengths; sockets, for
 
 | Choice | Confirmed specification | Measurement and intent |
 | --- | --- | --- |
-| Upper-body landmarks | Waist rotary-bearing center at 10.5 m, shoulder-ball centers at 14.4 m, and head-baseplate mounting plane at 15.4 m above ground | Establish the torso height and head position; the waist lean-pivot offset remains open |
+| Upper-body landmarks | Waist rotary-bearing center at 10.5 m, shoulder-ball centers at 14.4 m, and head-baseplate mounting plane at 15.4 m above ground | Establish the torso height and head position; the later working waist and chest interfaces are recorded below |
 | Head envelope | 2.0 m from baseplate mounting plane to helmet roof, 2.0 m wide across the side guards, and 1.8 m deep from mask front to rear guards | Excludes the decorative crest; roof remains at 17.4 m and crest tips at 18.0 m |
 | Arm lengths | 3.0 m shoulder-ball center to elbow axis, 2.6 m elbow axis to wrist-ball center, and 1.8 m wrist-ball center to the extended middle fingertip | Measure along the limb; with elbows, wrists, and fingers straight in the 15-degree reference pose, fingertips sit about 7.25 m above ground, near mid-thigh |
 | Torso and backpack depth | Chest armor envelope 2.4 m front to back, with the closed backpack projecting up to 1.0 m beyond the rear torso armor, including nozzle mouths | Keep a compact rear profile; cockpit, core, spine, and opening clearances still need to be laid out inside and around these envelopes |
@@ -50,11 +50,15 @@ Working coordinate convention:
 | Knee-axis centers | ±1.10 | 5.10 | Vertical leg alignment |
 | Ankle-pivot intersections | ±1.10 | 1.00 | Sets a 2.20 m foot-center spacing |
 | Waist rotary-bearing center | 0 | 10.50 | Confirmed height |
+| Waist lean axis | 0 | 10.90 | Working transverse X axis at Y0; [pelvis interface](torso/pelvis-and-waist.md) |
+| Chest receiving plane | 0 | 11.30 | Working neutral seat; distinct from the rotary-bearing centre |
+| Power cartridge axis | 0 | 11.95 | Working front–back Y axis, below the cockpit; [core interface](torso/backpack-and-power.md) |
 | Shoulder-ball centers | ±2.20 | 14.40 | Selected spacing; confirmed height |
 | Elbow-axis centers | ±2.98 | 11.50 | Derived from 3.0 m upper arms at 15 degrees |
 | Wrist-ball centers | ±3.65 | 8.99 | Derived from upper-arm and forearm lengths |
 | Extended middle fingertips | ±4.12 | 7.25 | Derived with straight wrists and fingers |
 | Head-baseplate center | 0 | 15.40 | Confirmed mounting-plane height |
+| Fixed neck pilot tip | 0 | 15.58 | Working insertion feature above the unchanged head seat; [head interface](head.md) |
 
 Coordinates derived from angles are rounded to two decimals; the confirmed lengths and angles take precedence. With 1.30 m-wide feet, the 2.20 m center spacing leaves a 0.90 m gap between the inner foot edges. The approximately 8.23 m span between middle fingertips is not an outer-hand bounding dimension.
 
@@ -79,13 +83,13 @@ Hip-to-knee and knee-to-ankle joint spans are both 4.10 m. Armor lengths and end
 
 | Component | Working dimensions or placement | Notes |
 | --- | --- | --- |
-| Waist outer envelope | 2.20 wide × 1.60 deep | Narrowest main torso region; bearing and pivot sizes still open |
+| Waist outer envelope | 2.20 wide × 1.60 deep | Narrowest main torso region; neutral mechanical detail in [pelvis/waist](torso/pelvis-and-waist.md) |
 | Fixed pelvis armor | 3.00 wide × 1.80 deep | Width already confirmed; hinged hip guards excluded |
 | Chest envelope placement | Front at Y = +1.20, rear at Y = −1.20 | Uses confirmed 2.40 m depth; shape tapers toward the waist |
-| Closed backpack | 2.40 wide × 2.80 high; top at Z = 14.10, bottom at Z = 11.30 | Envelope includes its nozzles; detailed top hinge axis and opening travel remain open |
+| Closed backpack | 2.40 wide × 2.80 high; top at Z = 14.10, bottom at Z = 11.30 | Envelope includes its nozzles; selected X-axis hinge at Y−1.20/Z14.10, opening 90° |
 | Backpack rear limit | Y = −2.20 | Uses the confirmed maximum 1.00 m projection beyond the rear torso armor |
 
-Leave fixed torso surface visible on each side of the backpack for the vertical vent strips. The internal cockpit, power cartridge, and spine require a separate packaging pass; these outer dimensions do not settle their internal shapes or prove access clearance.
+Leave fixed torso surface visible on each side of the backpack for the vertical vent strips. The [torso packaging design](torso/chest-and-cockpit.md) places the capsule above the core and uses a lower portal in the rear spine. Its [dimensioned sections](torso/chest-and-cockpit-layout.svg) distinguish internal allocations from the external envelope. Actual solid, articulation and access checks remain required; use the component documents for capsule/core dimensions and removal paths.
 
 ### Arms and hands
 
@@ -96,7 +100,7 @@ Leave fixed torso surface visible on each side of the backpack for the vertical 
 | Wrist cuff | 0.75 wide × 0.75 deep | External cuff envelope, not the socket or ball diameter |
 | Palm chassis with armor | 0.90 wide × 0.45 thick | Excludes the projecting thumb; digit lengths and full hand spread remain open |
 
-Fit the rigid pauldrons to the confirmed 5.60 m total shoulder width and the selected shoulder-joint spacing. Their local dimensions and top height must be resolved against the sloping upper chest and neck; the maximum chest width need not occur at shoulder-joint height.
+Fit the rigid pauldrons to the confirmed 5.60 m total shoulder width and the selected shoulder-joint spacing. The [shoulder specification](arms/shoulder-and-upper-arm.md) selects a reference top at Z15.05, a relieved inner skirt and the actual fixed-frame interface. The maximum chest width need not occur at shoulder-joint height. Complete-arm handling uses its separate piecewise hand/thumb bounds and a restrained 15° pose; arbitrary finger spread or shoulder motion is not covered by the elevator clearance calculation.
 
 ### Head and crest
 
@@ -105,9 +109,9 @@ The helmet envelope is the confirmed 2.00 m high × 2.00 m wide × 1.80 m deep. 
 ## Remaining dimensional work
 
 - Detailed armor outlines, overlap, and gaps within these envelopes.
-- Joint diameters, bearing stacks, waist lean-pivot position, movement limits, and actuator geometry.
-- Cockpit, core, spine, sensors, thrusters, and service-route packaging.
+- Detailed solids and bearing stacks implementing the selected waist, hip and other component interfaces.
+- Pilot/manikin, service-route and tool-path verification of the selected cockpit/core/spine packaging; detailed sensor and thruster internals.
 - Hatch, backpack, guard, and limb movement clearances.
 - Individual plates, brackets, pins, fasteners, part identifiers, and installation access.
 
-Record dimensional changes here and explain them in the decision history so component sheets continue to use one shared layout.
+Record changes to shared landmarks/envelopes here and explain them in the decision history. Keep local connection hardware and interface dimensions in their owning component sheets rather than duplicating their full specifications here.

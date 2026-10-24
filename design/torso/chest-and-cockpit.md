@@ -1,39 +1,148 @@
 # Chest, abdomen, and cockpit
 
-Last updated: 2026-10-20
+Last updated: 2026-10-24
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
 Connected assemblies and clearance checks: [pelvis and waist](pelvis-and-waist.md), [backpack, power, and cooling](backpack-and-power.md), [shoulder and upper arm](../arms/shoulder-and-upper-arm.md), [head](../head.md).
 
-Dimensions and reference pose: [shared proportion layout](../proportions.md#torso-and-backpack).
+Dimensions and reference pose: [shared proportion layout](../proportions.md#torso-and-backpack). [Canonical packaging sections](chest-and-cockpit-layout.svg).
 
 ## Confirmed design
 
-### Chest, abdomen, and cockpit
+- **Chest armor:** two broad angular pectoral plates separated by an independently upward-opening, opaque armored sternum hatch. Keep the humanlike taper toward the waist.
+- **Abdomen:** three overlapping front armor segments, with narrow mechanical gaps at the sides, accommodating waist turn and lean.
+- **Torso skeleton:** a rear structural spine, two angular side frames and a bolted shoulder crossmember. These carry the waist-to-shoulder/neck loads around the cockpit.
+- **Cockpit:** an enclosed, separate single-pilot capsule on shock-isolating mounts, installed before the front armor. A slightly reclined seat has a harness, two hand controls and pedals. Cameras supply one main and two angled side displays; the hatch remains opaque.
+- **Prepared delivery:** build the chest frame **with the cockpit fitted** at the workstation, then crane that unit onto the prepared pelvis/waist. Waist retention, services and lifting attachments must remain accessible with the cockpit installed.
+- **Neighbor boundaries:** the torso owns the shoulder sockets and fixed keyed neck spoke; arms bring their balls and removable pauldrons; the head is built on the neck in its established sequence. Core insertion follows chest installation, before backpack, arms and head.
 
-- **Chest armor:** two broad angular pectoral plates separated by a central sternum section, with the torso tapering toward the waist. Retain humanlike proportions.
-- **Abdomen:** three overlapping front armor segments with narrow mechanical gaps at the sides. Their mounting and overlap geometry must accommodate the approved waist turn and lean; those details remain open.
-- **Cockpit:** a single-pilot compartment centered inside the chest, above the waist articulation.
-- **Pilot access:** an upward-hinged central chest hatch formed by the sternum section, opening independently of the two pectoral plates.
+## Working packaging contract — 2026-10-24
 
-### Torso frame and cockpit construction
+These dimensions are selected design decisions under the user's delegated detail-design authority, coordinated with the pelvis, core, shoulder and head owners. They preserve the confirmed landmarks and concepts. They are bounded packaging and access calculations, not structural certification, source-solid validation, implemented gameplay or inspected rendered evidence. This pass resolves interfaces and preparation/access order; detailed inventories and control internals follow later.
 
-- **Torso skeleton:** a rear structural spine, two angular side frames, and an upper shoulder crossmember, joined with bolted connections. The frame surrounds the central cockpit and connects the waist to the future shoulder and neck mounts; exact joint interfaces remain open.
-- **Cockpit module:** a separate enclosed capsule mounted inside the torso frame on shock-isolating mounts, installed before the front armor. Mounting geometry, installation/removal access, and which frame braces must remain removable are unresolved.
-- **Pilot position:** a slightly reclined seat with a harness, two hand controls, and foot pedals.
-- **Pilot view:** external cameras feeding a main front display and two angled side displays. Keep the chest hatch opaque and armored; camera locations and display details remain open.
+### Coordinates and ownership
 
-## Open design work
+Use robot coordinates throughout: **X right, Y forward, Z up**, metres, sole datum Z0. Neutral chest frame `C = (0, 0, 11.30)` has robot-aligned axes; subtract C for chest-local coordinates. All tabulated robot positions describe the neutral, locked waist. The chest, cockpit, core, backpack, arms and head subsequently move together above the waist lean mechanism.
 
-### Chest, abdomen, and cockpit refinement
+The waist rotary-bearing centre remains Z10.50; it is **not** the chest seat. The lean axis is `(X, 0, 10.90)`. The agreed chest seat is Z11.30; shoulders remain `(±2.20, 0, 14.40)` and the head-baseplate plane remains Z15.40. Chest armor stays within X±2.00 and Y−1.20..+1.20. Taper the lower frame around the 2.00 × 1.50 waist receiver instead of extending maximum chest width to its foot.
 
-- Detailed chest shape and taper within the accepted width and depth in the [shared proportions](../proportions.md#confirmed-upper-body-dimensions).
-- Cockpit envelope and access-opening dimensions using a human pilot for scale.
-- Frame-member dimensions, bolted joints, cockpit isolation mounts, and access for assembly and removal.
-- Chest-hatch hinges, opening travel, actuators, latches, and surrounding clearances.
-- Pilot entry route, handholds, and any steps or access equipment.
-- Abdominal plate mounts, overlap geometry, and clearance during waist motion.
-- Seat/harness mounts, hand controls, pedals, display mounts, service connections, and internal panel layout.
-- External camera locations and routing to the cockpit displays.
-- Armor panel boundaries, mounting points, fasteners, and assembly sequence.
+The raised workshop transform is `(13 + X, 1.4 + Z, 26 − Y)`. Do not copy Godot Y-up coordinates into this specification.
+
+| Item / owner | Neutral occupied or reserved bounds |
+| --- | --- |
+| Capsule enclosure / cockpit | X±0.70, Y−0.55..+1.00, Z12.55..14.75: 1.40 W × 1.55 D × 2.20 H |
+| Prepared capsule including isolated mounting ears / cockpit | X±0.92, Y−0.55..+1.00, Z12.50..14.75; ears occupy the lower side band, not this entire box |
+| Capsule clear interior / cockpit | X±0.58, Y−0.43..+0.92, Z12.67..14.63; local panels, displays and controls must stay outside the pilot clearance below |
+| Core and fixed dock / backpack-core owner | Dock X±0.56, Y−1.15..+0.72, Z11.43..12.45; cartridge axis `(0, Y, 11.95)`. [Core specification](backpack-and-power.md) owns its shape, guide contacts, retention and carrier handoff. |
+| Unobstructed core rear corridor / chest reserves the opening | X±0.65, Z11.30..12.60, Y≤−1.15; no central spine, brace, cable or waist fastener may cross it. The core owner defines its finite extraction length. |
+| Rear spine lower limbs / chest | X−1.32..−1.08 and +1.08..+1.32, Y−1.10..−0.82, Z11.38..12.95; low spreader feet connect these outboard limbs to the flange below the tool windows at Z11.30..11.38 |
+| Rear spine header and upper central member / chest | Header X±1.32, Y−1.10..−0.82, Z12.70..12.95; central boxed member X±0.25, Y−1.10..−0.82, Z12.95..14.85 |
+| Angular side-frame structural bands / chest | Feet X±(0.72..1.00) at Z11.30..11.50, widening outside X±0.98 by Z12.45, to X±(1.40..1.70) at the upper chest; Y−0.82..+1.12, Z11.30..14.85. These are member-placement bands, **not solid slabs** across the cockpit. Keep the central insertion opening and waist pockets clear. |
+| Rear shoulder crossmember main beam / chest | X±1.85, Y−1.10..−0.65, Z14.18..14.62, with bolted end assemblies reaching the shoulder centres |
+| Shoulder socket/ring and dogleg roots / shoulder interface owner | Each socket/ring occupies X±(1.74..2.74), Y±0.48, Z13.95..14.85. Rear dogleg roots occupy X±(1.68..2.34), Y−1.05..−0.32, Z14.10..14.72; rear root plates overlap the main beam at X±(1.68..1.85), Y−1.12..−0.82, Z14.18..14.62. [Shoulder specification](../arms/shoulder-and-upper-arm.md) owns exact geometry and hardware. |
+| Neck bridge and fixed spoke / torso; head specification owns mating detail | Bridge X±0.48, Y−0.95..+0.48, Z14.85..15.40. The centred fixed spoke is Ø0.40 with Ø0.88 flange at the unchanged Z15.40 baseplate plane and Ø0.12 wiring bore. Its Ø0.32 keyed pilot projects to **Z15.58**; include it in transport. [Head interface](../head.md) owns the key, flange stack and four-bolt connection. |
+| Lower chest flange / chest | X±1.00, Y±0.75, Z11.30..11.40, with the outboard fastening/key pockets below. The dock starts above this flange; no central vertical stud. |
+
+The rear spine is one structural assembly with a **lower portal aperture** around the core, a header and an upper central member. Loads pass through the two boxed lower limbs and their low spreader feet into the waist flange and side frames. The spreader feet occupy X±(0.72..1.32), Y−1.10..−0.44, Z11.30..11.38, forming local rear/outboard frame outriggers beyond the main flange outline. Their upper face stays 0.02 m below the tool-window floor and 0.05 m below the dock; the outboard limbs leave 0.08 m to the tool windows ending at |X|1.00. This offset is necessary: limbs at |X|0.82..1.06 would obstruct rear waist fastening. Rear transverse ties above Z12.70 may link the spine and backpack roots behind the capsule; none crosses the lower core/tool openings. This develops the confirmed rear-spine concept; it does not introduce an additional independent frame. A uniform central post through Z11.3–12.6 would block the confirmed straight rear cartridge path. Keep the aperture free rather than treating the exterior envelope as permission to fill it.
+
+### Pilot accommodation and entry
+
+Reserve a seated design-manikin clearance X±0.50, Y−0.35..+0.85, Z12.75..14.50, including clothing, helmet, controls movement and boots. Use a standing stature up to 1.95 m as the later fit-check input; the bounding box alone does not prove accommodation of all body proportions. The seatback is nominally 15° rearward from vertical, seat pan near Z12.95, helmet centre near `(0, −0.12, 14.24)`, knees near Y+0.60/Z13.10 and heels near Y+0.78/Z12.77. Keep restraint release, hand controls and display edges reachable without occupying this body envelope. Fit-check a seated articulated manikin before modeling the inner panels as finished geometry.
+
+The capsule has a gasketed lightweight inner door behind the opaque sternum armor hatch, allowing the capsule to remain an enclosed manufactured module when transported separately. Clear entry opening at the capsule front Y+1.00 is **0.96 W × 1.40 H**, X±0.48/Z13.00..14.40. The outer sternum opening is at least X±0.52/Z12.95..14.45. Both hinges run along X; the outer hinge is near `(0, 1.20, 14.55)` and stops at 90° upward, forming a canopy. Open and latch the outer hatch before opening the inner door 90° upward; the inner hinge is Z14.40 and its door lies below the outer canopy. Keep their service actuators and handholds in the side margins, outside the clear aperture.
+
+Reserve the combined hatch/door sweep **X±0.60, Y+0.95..+2.85, Z12.90..14.65**, plus a front standing/entry patch X±0.65/Y+1.45..+2.75 at a working foot height near Z12.60. The 0.40 m sill rise needs a supported intermediate step/handholds; specify these with the armor detail, without introducing a transparent hatch. In the raised gantry, the selected upper-chest deck is world Y14.0 = robot Z12.60. Keep its central opening and rails outside the hatch sweep. An illustrative head-level deck underside at robot Z14.80 has only 0.15 m to the reserved canopy top; brackets/railings still need an actual sweep check. Keep the hatch closed and locked for crane travel.
+
+### Capsule insertion, isolation mounts and removable frame ties
+
+Install the capsule **from the front, translating straight along −Y**, with the rear spine, side frames, shoulder crossmember and neck bridge already assembled. The core and front armor are absent. Remove the two forward diagonal frame ties to expose a clear opening X±0.98/Z12.45..14.85 at Y+1.10; their removal is a real access prerequisite.
+
+The capsule's enclosure datum is `(0, +0.225, 13.65)`. Start 2.40 m forward and 0.05 m above its installed pose, translate −Y by 2.40 m without tilting, then lower the final 0.05 m. Its conservative supported insertion/extraction sweep is **X±0.98, Y−0.60..+3.50, Z12.45..14.85**; this includes 0.05–0.10 m guide/misalignment margins. The 1.96 m-wide opening provides 0.12 m total clearance around the 1.84 m mounting-ear span. A front rail dolly/fixture supports the capsule through this whole motion; it is never balanced on a seat bolt or held by the cockpit isolation mounts before retention.
+
+Four replaceable isolation cartridges sit on the side-frame receiving ledges at `(±0.82, −0.30, 12.57)` and `(±0.82, +0.70, 12.57)`. Each has a nominal 0.16 × 0.16 plan envelope and captured upper/lower stops. Capsule ears extend X±0.70..0.92 in the Z12.50..12.72 band. Hard guide shoes carry insertion loads; lower the capsule the final 0.05 m onto the isolators before fitting its four downward M20 retaining bolts with 4 mm washers. Captive threaded inner sleeves belong to the isolators. Reserve bolt/head targets at the four cartridge centres near Z12.72 and R0.07 vertical tool cylinders to Z13.05, accessible from the open side bays. Keep these cylinders and the capsule's side ledges outside its main X±0.70 body. The cartridges' captive stops provide handling retention; detailed dynamic ratings remain engineering work.
+
+The two removable front ties occupy Y+1.05..+1.12, running from `(±1.15, *, 12.45)` to `(±0.64, *, 14.65)`. They lie forward of the installed capsule front Y+1.00 and outside the central hatch opening. Each end uses two forward-access M24 bolts; eight tie bolts in total enter along −Y from the exposed Y+1.12 face. Reserve a 0.20 m forward tool withdrawal space. Refit and retain both ties after capsule mounting; they complete frame triangulation for transport. Do not replace them with a central bar across the pilot opening.
+
+Capsule service connectors face outward on each side near `(±0.70, +0.20, 13.10)`. Flexible service loops remain in X±(0.72..0.98), Y−0.10..+0.45, Z12.85..13.35, with isolation slack and disconnects reachable through side covers. Keep them clear of isolation tools, lower waist bolt pockets, core rails and front ties. Disconnect these services, reacquire dolly support, remove the front armor/ties and release the four mount bolts before withdrawing a capsule. Capsule removal is not intended through the pilot hatch or while suspended from the chest crane rig.
+
+### Chest-to-waist seat, retention and services
+
+The [pelvis/waist specification](pelvis-and-waist.md) owns the neutral receiver, lean/yaw mechanism, captive threaded bosses, alignment keys and mechanical assembly locks. The chest owns its receiving flange/pockets and the hardware installed when mounting the prepared chest.
+
+| Connection | Chosen geometry and access |
+| --- | --- |
+| Structural seats | Flange underside Z11.30 seats on four receiver pads in X±(0.72..1.00), Y±(0.44..0.72). The 0.10 m chest flange is above the plane. Contact faces, rather than bolt heads or keys, carry the seated load. |
+| Alignment | Four waist-owned tapered keys at `(±0.92, ±0.25)`, 0.08 X × 0.12 Y, project to Z11.42. Chest pockets 0.084 × 0.124 end at Z11.44 in locally raised receiving bosses extending to Z11.46. A 0.02 m lead chamfer precedes 0.10 m straight engagement. No central key crosses the core. |
+| Approach | Upright, robot-aligned, neutral yaw/lean. Start C at Z11.48, lower 0.06 m to the key tips, then 0.12 m to the seat: **0.18 m final lowering travel**. Both waist mechanical locks are engaged before approach and remain engaged through final assembly. |
+| Retention | Four **M36 × 160** bolts, four 6 mm washers, axes `(X±0.84, Y±0.58)`, entering down along −Z. Waist-owned captive threaded bosses occupy Z11.22..11.30; bolt head/washer envelope ends at Z11.46. Thread engagement and flange strength require later solid/strength checks. |
+| Tool space with cockpit fitted | R0.09 vertical cylinders on those bolt axes, Z11.40..12.45. Front/rear access windows X±(0.72..1.00), Y+0.75..+1.20 or −1.20..−0.75, Z11.40..12.40 stay open until retention is complete. Use front approach for the two +Y bolts and rear approach for the two −Y bolts. |
+| Services | Two waist-owned coupling groups near `(±0.80, 0, 11.15)`, facing outward ±X. Chest tails descend in the outboard X±0.80/Y±0.25 lanes and connect from the sides after structural retention; protect their motion loops below the seat. Keep the ±Y0.58 bolt lanes separate. |
+
+Fastening with the cockpit fitted is feasible at this envelope level: tool cylinders reach X±0.75 at their inner edge, leaving **0.05 m** to the X±0.70 capsule body; the fixed dock's X±0.56 leaves **0.19 m**. Mounting ears begin above the tool ceiling. The rear roots and rear spine must stay outside these windows. Reserve outboard side work patches X±(1.25..2.45), Y−0.75..+0.75 and front/rear patches facing the selected targets; no worker stands under a suspended capsule or chest. The head of each waist bolt is robot Z11.40–11.46, raised world Y12.80–12.86, almost level with the world Y12.83 eye on the proposed 11.2 m deck. A side eye position at robot `(±1.45, ±0.58, 11.43)` has an unobstructed 0.61 m horizontal approach to its bolt axis if the stated pocket is preserved. Actual character/railing fit and aim sightlines remain to be checked.
+
+Seat contact alone is not retention. The crane carries the chest until all four bolts/washers are installed, the alignment keys are fully seated, both waist locks are engaged and structural support is established. Then detach rigging, connect services and fit removable connection closures. Never place the abdomen or lower rear covers across uncompleted connections. For local correction, reattach/support the chest and verify the locks before loosening retention; no full robot teardown is required by this design task.
+
+### Rear roots, shoulder/neck interfaces and closure order
+
+The chest carries fixed reinforced backpack root pads tied to the rear spine/side frames. The [backpack/core owner](backpack-and-power.md) supplies moving brackets, pins, struts, latches and their installation hardware, and defines the opening sweep and service loop details.
+
+- Upper hinge-root pads: X±(0.80..1.00), Y−1.15..−0.95, Z13.85..14.18, for hinge axis `(X, −1.20, 14.10)`.
+- Lower locating/latch roots: X±(1.05..1.18), Y−1.20..−1.00, Z11.45..11.70; their inner edges leave the waist windows ending at |X|1.00 clear.
+- Fixed strut pivots: `(±1.08, −1.27, 13.45)`. Bound prepared fixed-root projection at Y−1.35; that is outside the armor depth and must be counted in transport.
+- Keep fixed vent-strip bands near X±(1.35..1.65) out of the core opening and hinge/strut tools. Rear lower closures follow waist retention and core installation; upper rear closures follow backpack services and support.
+
+The settled shoulder root plates overlap the rear crossmember beam as specified above. On each side, four rear-inserted M24 root bolts enter along +Y from the Y−1.12 face at |X|1.72/1.81 crossed with Z14.27/14.53. Reserve 0.30 m of rear tool/insertion space, through Y−1.42, with frame and services absent from those axes. The torso also supplies the shoulder's fixed descending spine/C-bridge within each side |X|1.56..2.42, Y−0.53..+0.51, Z13.50..14.46; its bore and work ports must remain clear for arm entry and ring fastening. Drives and their moving lugs are completed at the arm/gantry stages specified by that owner. The [shoulder specification](../arms/shoulder-and-upper-arm.md) governs socket entry, ring retention, actuation/services and hardware allocation; keep those work faces open until the connection is complete and pauldrons are fitted. Preserve the chest structural side frame through |X|1.70: the pauldron has local 0.08 m relief around the actual fixed frame, rather than requiring an unselected global upper-chest narrowing.
+
+The crossmember's rear main beam ends at Y−0.65, **0.10 m behind** the capsule rear; the neck bridge starts at Z14.85, **0.10 m above** its roof. The head's exact [fixed-neck/baseplate interface](../head.md) owns the forward pilot key, 0.02 m tip lead and four downward M24×160 bolts with 4 mm washers at X±0.27/Y±0.27. The Z15.40 mating plane does not move when its keyed pilot extends 0.18 m to Z15.58. The neck remains fixed, and the baseplate/sides/top/sensors/faceplate/mask/crown sequence is unchanged.
+
+### Workstation, lifting and prepared transport
+
+Prepare the chest **upright in its final orientation**, supported under its structural flange at Z11.30. In the proposed bulky bay choose source-frame world origin `(3.25, 0.85, 13.00)` for C, so a robot-coordinate point maps to `(3.25 + X, 0.85 + Z − 11.30, 13.00 − Y)`. This is a working equipment datum, not a change to the gantry transform. Do not rotate the fitted cockpit through 90° merely to reuse a leg fixture.
+
+The frame's four flange contact pads sit on a locked fixture; a capsule dolly feeds its open front. With the settled shoulder socket/ring bounds and neck pilot included, the prepared chest envelope is **5.48 W × 2.55 D × 4.28 H**: X±2.74, Y−1.35..+1.20, Z11.30..15.58. This envelope includes fixed roots, sockets and the projecting neck pilot; actual source-solid and route validation remains pending. No front/side armor, abdomen, core, backpack, arms or head is included. Transport is allowed only after capsule retention, front-tie refitting, frame joints, service-loop securing and hatch locking.
+
+Four structural crane contact pads remain at **`(±1.15, ±0.65, 14.85)`**, each with a 0.18 × 0.18 upward-facing ferromagnetic bearing plate integral to the side-frame/crossmember node. Use the shared four-end equalizing lifting adapter with **four individually fitted lifting shoes and outward-facing operating handles**. The player targets the visible vertical guide/handle, rather than the hidden upward bearing face. Each shoe aligns with a side-visible guide and lowers the final 0.06 m into a shouldered, positively retained seat; the magnetic clamp engages only when fully seated. Its load hook/shoulder captures the structural node, rather than depending on friction at a vertical magnet face. The handle and engagement indicator remain visible for attachment, release and local correction. No attachment bears on the capsule or neck.
+
+Front-shoe operating faces/handles centre on `(±1.15,+0.85,14.85)`, facing +Y; rear-shoe faces/handles centre on `(±1.15,−1.05,14.85)`, facing −Y. Adjustable outward handle bridges leave the structural contacts at the original Y±0.65 pads. Each visible face occupies 0.18 m across X and Z, with its surrounding shoe/bridge contained in X±(1.06..1.24), Z14.76..14.94, front Y+0.56..+1.05 or rear Y−1.25..−0.56. They fit inside the existing prepared chest envelope, and bridge above the rear crossmember top Z14.62 by 0.14 m. These are shared removable lifting adapters, not another handling machine. A working 2.60 W × 1.60 D equalizing spreader keeps four vertical legs clear of the cockpit and reserves at most 1.80 m above the Z14.85 contact plane, including these shoes. Independently fit all four shoes while the fixture carries the load, verify their visible seated/latched states, tension/equalize all four ends, then release the fixture. Set the equalizer for the actual load centre of mass; equalization and strength remain later engineering validation.
+
+| Rig work | Working patch and visible face |
+| --- | --- |
+| Source front pair | Movable platform deck world Y2.40, footprint 2.40 × 2.00 m in the upright source's front strip Z9.50..11.50. Stand at `(2.10 or 4.40,2.40,11.20)`; eye Y4.03 sees the +Y shoe faces at `(2.10 or 4.40,4.40,12.15)`, about 1.02 m away. Move the one platform laterally for each end; stow before capsule insertion or bare-frame tilt. |
+| Source rear pair | Same platform, footprint in Z14.60..16.60. Stand at `(2.10 or 4.40,2.40,14.95)`; eye Y4.03 sees the rear faces at `(2.10 or 4.40,4.40,14.05)`, about 0.97 m away. Stow before moving the fixture to its rearward tilt pivot. |
+| Gantry front pair release | After chest seating, all four waist bolts and both waist locks establish independent support, restore the upper-chest front working tips. Deck Y14.0; patches X11.25..11.75 and 14.25..14.75, Z23.90..24.50. Feet near `(11.55 or 14.45,14.0,24.20)`, eye Y15.63, see the front handles at `(11.85 or 14.15,16.25,25.15)`, about 1.17 m away. The operator is in front of the +Y faces and outside the capsule/ties. |
+| Gantry rear pair release | Deck Y14.0 rear flanks; patches X10.80..11.40 and 14.60..15.20, Z27.70..28.30. Feet near `(11.10 or 14.90,14.0,27.85)`, eye Y15.63, see the rear handles at `(11.85 or 14.15,16.25,27.05)`, about 1.26 m away. Core and backpack are absent at this stage. |
+
+The rear offset is an access requirement: leaving the handle at Y−0.65 would hide it behind the rear crossmember from the gantry deck. For the chosen rear patch, the ray to the **bottom** of the rear operating face crosses the beam's rear plane Y−1.10 at robot Z14.727, 0.107 m above its top; the centre ray clears by 0.191 m. Source rear sightlines clear that top by at least 0.124 m. These are explicit face-visibility envelope checks; actual shoes, frame, guardrails and targeting still need solid/source validation. Keep platform tips and rails out of the load/shoe envelopes. With the chest retained and waist locked, slacken the equalizer while the four shoes remain latched, operate each visible outward handle to release/retrieve its shoe, then park the unloaded crane. For local correction, return all four shoes, latch them individually and tension/equalize before releasing any waist retention. The cockpit remains fitted throughout.
+
+The [coordinated workshop layout](../game/final-assembly-plan.md#bulky-fixture-and-source-access) selects an **11 × 12 m bay**, X−2.25..8.75/Z6..18. The prepared frame occupies X0.51..5.99/Z11.80..14.35, topY5.13, leaving2.76 m each side. Capsule insertion occupies X2.27..4.23/Z9.50..13.60. Floor access serves fixture clampsY0.85–1.05, lower tie endsY2.00 and capsule mount boltsY2.27. Upper tiesY4.20, crossmember jointsY3.73–4.17, neckY4.40–5.13 and lifting shoesY4.40 use one mobile guarded platform, with stabilized footprint **2.40 × 2.00 m**, clear standing deck about 1.20 × 1.40 and working deck 1.60–2.40. The selected bay includes its side docks and parking; the former1.20 × 1.50 equipment footprint is superseded. Upper central neck work uses the bare-frame service pose below. Capsule internals are prepared on their own low fixture.
+
+Before fitting the capsule, raise/shift the supported bare-frame seat to `(3.25,1.30,14.60)` and tilt 60° forward about worldX. The full-box sweep is X0.51..5.99/Y0.261..5.788/Z10.293..15.95. Put the platform in the front service dock Z7.80..9.80, giving **0.493 m** to that sweep. Rear and normal front rigging docks are empty during the motion. Side docks X−2.15..0.25 /6.25..8.65 leave0.26 m to the upright chest. Return to the normal upright source datum before capsule insertion; the fitted capsule is never turned for fixture convenience. This replaces the earlier60° candidate that missed its platform margin in an 8 × 8 bay. Actual fixture joints, guard/tool access, stable outriggers and supported movement still require modeling; the numerical envelope fit is now established.
+
+For gantry delivery, keep the chest upright, yaw aligned and waist locks engaged. The final seat origin is world `(13, 12.70, 26)`; approach origin Y12.88, then lower 0.18 m. The prepared load occupies X10.26..15.74/Z24.80..27.35; open/retract central platform tips to at least **X10.10..15.90** (5.80 m clear), leaving 0.16 m envelope clearance each side. The selected route raises the source seat toY12.88, traverses toX13 atZ13, then advances toZ26 before the final0.18 m lowering. Open the front wings at 14.0/16.4; their stowed 14.6 m window exceeds the 5.8 m minimum. Waist deck 11.2 stays closed with guard top 12.3 below the incoming load. Check actual source solids, all rigging and fitted legs against this envelope route before gameplay implementation. At final approach the working rig top is world Y18.23, below the proposed overhead obstruction at 23.0; no need to lift this load to the roof. The final neck mating plane is world Y16.80 and the keyed pilot tip is **Y16.98**; at the 0.18 m approach the tip reaches Y17.16. Include that projection in upper platform openings. The 1.80 m rigging budget still puts the rig top at Y18.23, above the pilot and below the proposed overhead obstruction.
+
+## Assembly and review handoff
+
+The future child cockpit manual owns its seat, panels, door and internal services. The chest preparation manual owns the capsule mounting, isolation hardware, removable ties and fixed structural roots; the gantry torso manual owns mounting the prepared chest plus its four waist bolts/washers, service hookup and connection closures. A prepared child is one assembled physical delivery, not extra duplicate inventory for the pieces already inside it. Capsule-mount M20 hardware, front-tie M24 hardware and waist M36 hardware are distinct compatible types; repeated copies within each chosen size are interchangeable. Counts above cover these defined external connections only, not the complete torso inventory.
+
+| Stage | Physical/access dependency and completion evidence needed later |
+| --- | --- |
+| Frame preparation | Assemble rear portal spine, side frames, crossmember, flange and neck bridge on the supported fixture; audit actual bolted joints and preserve the front opening. |
+| Fit capsule | Front ties/armor absent; dolly and guides support insertion; seat isolators, fit four retaining bolts/washers, connect flexible services, refit both ties/eight bolts. Check ear/guide/tool clearance with actual solids. |
+| Prepared handoff | Audit retained capsule/frame, locked doors, secured service loops, four rig attachments and fixture release. Demonstrate upright supported pickup and a return to the fixture for local correction. |
+| Seat chest | Pelvis supported, both legs present, waist yaw/lean locked; perform the 0.18 m keyed lowering, fit four M36 bolts/washers through the four accessible windows, establish support, then release rigging. |
+| Complete torso services | Connect side waist groups and core from rear; retain core and remove its handling equipment before installing backpack. Close only after the associated fastening/service targets are complete. |
+| Downstream access | Check backpack opening/core extraction with arms/head fitted; complete shoulder interfaces before pauldrons; build the head on the fixed neck. Preserve pilot hatch and capsule-maintenance access separately. |
+
+Completed in this pass: coordinate/interface agreement, capsule/pilot bounding allocation, vertically separated core bay, spine aperture, removable front access, explicit waist retention/tool spaces, rear roots, upright source pose, lifting points and derived workshop impact. Arithmetic margins include 0.10 m dock-to-capsule vertical separation, 0.13 m cartridge-flange-to-capsule separation, 0.10 m rear-beam and neck-bridge gaps, 0.05 m inner waist-tool-to-capsule clearance, 0.12 m total capsule-ear insertion clearance and 0.08 m rear-tool-window-to-spine-limb clearance.
+
+Before implementation, validate **actual solids and sweeps** for the capsule opening/guides/isolators/ties, pilot fit/entry and two hatch doors, waist keys/threads/tools, neutral and articulated abdomen/pelvis clearances, backpack-root pockets, mass/rigging equalization, source support/release, full loaded route through platform openings and access to every retained fastener. Overlay the pelvis owner's ±10° lean/±25° yaw envelopes with fixed gantry/services; the local core/frame clearances remain fixed because both move with the chest, but that does not prove clearance to the stationary pelvis or workshop. Validate the settled shoulder/root and head/spoke mating details against their owning specifications, including root-bolt rear tool lanes and the projecting neck key. For later gameplay, audit unique physical slots/hardware stock and prerequisite ownership, then one ordinary-control collection → supported preparation → crane delivery → fastening → release journey, local correction and interrupted save/restore. Run rendered review only if requested. This design pass runs no gameplay tests, model export or render campaign.
+
+## Remaining detail design
+
+- Structural member sections, bolted frame-joint patterns, strength, isolation travel and rig/load ratings.
+- Final torso taper, pectoral plates, armor hardware, three abdomen segments and motion-clearance geometry.
+- Detailed controls, displays, seat/harness adjustment, ventilation and service internals outside the reserved pilot space.
+- Hatch actuators/latches, inner-door sealing, supported entry steps/handholds and emergency egress.
+- Camera locations and routing; final vent/slat detail.
+- Source-solid validation of the settled shoulder/root and fixed neck/baseplate interfaces, coordinated in the owning neighbor specifications.

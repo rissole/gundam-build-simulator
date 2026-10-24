@@ -1,6 +1,6 @@
 # Shin and calf
 
-Last updated: 2026-10-20
+Last updated: 2026-10-24
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
@@ -43,6 +43,20 @@ For this interface, use a 30 mm shin baseplate on the foot adapter at Z1380, wit
 - **Orientation:** nozzle mouths angled slightly rearward and downward; exact angles remain open.
 - **Clearance intent:** keep the nozzle mouths visually clear of the ankle and heel, and keep the rear knee clear for articulation.
 - **Supporting detail:** believable mounts, vents, and clearances. Exact pipe routes, vent geometry, and connections are not yet defined.
+
+## Workshop support boundary — 2026-10-24
+
+The [coordinated rail/cradle plan](../game/final-assembly-plan.md#shared-limb-workshop-with-different-departure-routes)
+selects exposed structural side pads near robotX±0.80/Z2.80, tied into the
+shin frame. C-shaped cradle yokes reach around the calf; the rear holder spine
+lies at robotY−1.45, outside the selected calf rear bound−1.15 by 0.20 m.
+Keep the complete stationary shin/calf transport envelope within X±0.80,
+Y−1.15..+0.75, apart from specifically modeled moving joints. These are
+workshop fit constraints to resolve against detailed armor/nozzles, not finished
+thruster geometry. Do not support the leg on nozzles or actuator rods. Keep
+these pads exposed after armor installation so holder release does not create
+an unreachable low-level closure. The shared source fixture raises/rolls the
+supported leg for rear work; return neutral before rail travel.
 
 ## Open design work
 

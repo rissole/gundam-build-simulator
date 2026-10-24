@@ -1,10 +1,10 @@
 # Mecha workshop — game design
 
-Last updated: 2026-10-22
+Last updated: 2026-10-24
 
 This records the agreed game design from the workshop-loop discussion. Robot geometry, engineering detail, and part inventories remain in [ROBOT_DESIGN.md](ROBOT_DESIGN.md). Recommendations for reaching a playable foot build are recorded separately in the [foot prototype plan](design/game/foot-prototype-plan.md).
 
-**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) now includes the original foot branches and a structural left-leg milestone in an expanded hangar. Its controls, reach values, collision approximations and layout are prototype choices for playtesting. Historical increments below record their own scope; the latest supported-leg section describes the default scenario.
+**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) has a supported-foot base game and separate M2/M3 workshop profiles. The user finds M3's complete structural leg-to-gantry journey largely satisfying. The current [final assembly plan](design/game/final-assembly-plan.md) develops the full gantry and major-section workflow before further implementation. Historical increments below retain their original scope; use the [active workshop state](design/game/leg-workshop-next-steps.md) for current status.
 
 ## Experience and purpose
 
@@ -415,82 +415,127 @@ behaviour-neutral, and foot saves keep their recorded fingerprint.
 
 The current prototype lane exposes the bounded M2 retaining-half and crane
 examples, with supplied construction and independent saves. The complete
-leg-to-robot journey remains M3 and requires explicit go-ahead after M2 replay.
+leg-to-robot M3 journey was authorized on 2026-10-23, with a prepared complete foot
+at dispatch and player construction of the remaining structural leg. Its
+[implementation and acceptance ledger](design/game/leg-workshop-m3-plan.md)
+tracks the supported handoff, full construction, retention and holder release.
+On 2026-10-24 the user removed full reverse-sequence verification from M3;
+existing supported undo remains for correcting mistakes.
 Shared assembly projection now handles heel hardware alongside other components;
 the retained single/two-pad profiles verify that earlier loop. Architecture
 checks do not establish player acceptance. On 2026-10-23 the user accepted the
 revised M2 playtest: “m2 plays great. please commit.” This authorizes the
-consolidation commit; M3 still requires explicit go-ahead.
+consolidation commit. The later “Implement the plan” request authorizes M3;
+on 2026-10-24 the user described M3 as largely satisfying and requested better
+measurement planning before expanding the workshop.
 
-## Final assembly workflow — design decisions, 2026-10-23
+## Final assembly workflow
 
-These decisions guide the next workshop design iteration; they are not yet
-implemented. They supersede the whole-leg crane-transfer proposal for the future
-workflow, while the supported-leg section above records the current prototype.
+Updated 2026-10-24. The [final gantry and assembly plan](design/game/final-assembly-plan.md)
+is the active design for whole-robot access, major-section installation and shared
+equipment. It records measured M3 constraints, selected choices and unresolved
+geometry. Develop it backwards from the completed robot, then agree major-section
+connections, then each section's workstation workflow.
 
-Most detailed component assembly happens at workstations. Final-bay personnel
-lift work focuses on joining prepared sections: mechanical retention, service
-connections and connection-area closures. The torso grows in its supporting
-gantry from prepared sections and modules. The existing head-on-neck construction
-sequence remains the recorded design; its detailed equipment workflow is still
-to be planned.
+Most detailed component assembly happens at workstations. The torso grows in the
+gantry from prepared sections. Final-bay work includes mechanical retention,
+actuator/service connections and connection-area closures. Preserve the existing
+head-on-neck construction sequence; six major body sections do not imply six
+fully assembled crane loads.
 
-The final personnel lift's successful qualities are its scale, riding upward
-alongside the robot, and satisfying operation. Its primitive appearance is not
-the accepted visual target. Preserve the sense of physical access and provide
-meaningful connection work at height.
+The first selected delivery is a prepared pelvis-and-waist unit: construct the
+bridge, both hip socket housings and waist mechanism at an accessible workstation,
+then crane it into the gantry. Join the chest above it there. The chest module
+contains its prepared frame and fitted cockpit, assembled together at a workstation
+and craned onto the waist with connection areas accessible. The component
+specifications now define their major mating geometry and support/access contracts;
+complete internal workflows and actual equipment geometry still follow.
+
+The selected manual route is pelvis/waist → both legs → chest/cockpit → power core
+→ backpack → both arms → head. Each stage includes its mounting and connections.
+Players may prepare components independently; alternative installation orders
+remain available wherever measured access permits. Each arm is
+prepared as a connected upper arm, forearm and hand at a supported workstation,
+then crane-delivered with shoulder armor off. Final shoulder retention,
+actuation/services and armor attachment happen in the gantry.
+
+Rear work installs the core first, then the prepared backpack, while the shoulder
+and head surroundings are open. The backpack's later opening sweep and core
+withdrawal path must still clear the completed robot. Build the head on its neck
+in the existing sequence, ending with the decorative crown/crest.
+
+The user selected M3's raised pose for access planning: nominal soles 1.4 m above
+the workshop floor. Eventual lowering remains undecided. Two side elevators feed
+shared front/rear work platforms. Preserve the satisfying scale and onboard lift
+operation; selected platform levels and loading openings still require actual
+equipment geometry and swept-route verification.
+The current primitive art is not an accepted final visual target.
+Each side elevator is shared across hip and shoulder work levels. Its shaft must
+clear the installed arms, with landings providing actual connection access;
+extending the current M3 hip lift vertically is not an established solution.
+The [coordinated fixture/route plan](design/game/final-assembly-plan.md#1-measured-workshop-and-gantry-layout)
+and [updated layout](design/game/final-assembly-layout.svg) now specify an 11×12 m
+bulky bay, a 7×13 m shared limb bay with passive leg/arm parking, supported rail
+indexing and empty return, rear-positioned elevators, moving access bridges and
+a low pelvis gantry. A low outboard crane bypass, outboard lift/high crossing and central rear opening
+deliver core and backpack; high routes serve head pieces and pauldrons. Four elevated levels
+remain8.4/11.2/14.0/16.4. These are checked design envelopes; actual solids,
+structural capacity and ordinary-control access remain implementation work.
+The documentation pass does not change the current M3 scene.
+
+### Shared limb construction area
+
+The user accepts one long-limb workshop for both legs and both arms. If sharing
+the physical supports makes access or handling awkward, use one arm station and
+one leg station; do not duplicate workshops by left/right side. Plan the common
+bay first, with appropriate support configurations and supported parking.
+
+Legs are built horizontally on their transport cradle and remain supported by it
+through rail delivery, tilt and upward docking to the pelvis. Arms are rigged and
+picked up by the shared crane after construction, then delivered to the shoulders.
+Keep those departure methods distinct even when the work area is shared. Routing
+one leg bay to both hip destinations, fixture release to the crane, and parking
+unfinished work are now specified in the coordinated plan. Preserve those support
+and route contracts while developing each component workflow and actual equipment.
 
 ### Leg construction rail and docking
 
-- Build the leg horizontally on a supported, movable rail fixture. The precise
-  foot-workstation handoff and access to all construction faces remain open.
-- Move the completed assembly toward the robot, power the fixture from
-  horizontal to upright, then raise the leg into the pelvis socket. Exact motion
-  order, pivot position and clearances need a coordinated spatial design.
-- Docking positions the ball; it does not automatically secure the hip.
-  Preserve the original two-piece bolted retaining ring.
-- Keep the leg supported until both retaining halves and their hardware are
-  secured and the necessary stabilization is engaged. The player uses the
-  personnel lift for retention and cable/service connections.
-- Supported removal must reverse the handoff: reacquire support before releasing
-  retention. Preserve the same physical assembly and its construction progress.
+M3 implements a prepared-foot handoff, horizontal structural leg construction,
+rail travel, tilt and upward docking. Seating the ball does not secure the hip:
+both retaining halves and their fastening hardware are required before holder
+release, with unpowered joint restraints maintained. Local support reacquisition
+protects mistake correction. Full teardown is not a completion gate.
 
-Other major sections use crane delivery and connection work from the personnel
-lift. The change from dedicated leg rails to crane-served assembly is intended
-to add novelty and progression.
+The complete leg interface now specifies three hydraulic hip cartridges, positive
+neutral locks, services and guard closure after retention, using ordinary carrying
+and local supported pin installation. The right-leg route is only reserved; routing from the shared
+bay and access with the first leg fitted remain open. Other major sections use
+crane deliveries, adding variety while retaining one shared handling vocabulary.
 
-### Crane attachments and equipment controls
+### Crane, carrying and access controls
 
-- A central physical crane console handles crane calls and transfers. A later
-  crane PDA upgrade allows remote operation, reducing trips to the console.
-  Upgrade timing and acquisition are not yet designed.
-- Call the crane to a workstation and lower its lifting beam. The player handles
-  individual magnetic cable ends and snaps them onto marked component points,
-  then commands the supported transfer. Cable length adjusts automatically;
-  loose-chain manipulation is not required.
-- Leg construction stations use local tactile buttons, preserving a more
-  low-tech machinery feel. Do not replace them with the central crane interface
-  or reproduce every internal operation as another permanent button.
-- Preserve satisfying onboard personnel-lift operation. Exact button grouping,
-  motion semantics and console presentation remain implementation-design work.
-- A lift-mounted positioning arm for PV-120 is a proposal under evaluation. The
-  user's concern is another control system. The proposed response is to reuse
-  ordinary pickup, assisted placement and return inputs while the arm visibly
-  supports the half; this interaction has not yet been accepted or prototyped.
+- Retain the central crane console's Up / Down / Go operation and individual
+  magnetic-end attachment. Relevant work areas are destinations; each component
+  should not add another permanent control. High deliveries need measured rigging,
+  orientation and receiver routes beyond M3's low horizontal transfers.
+- Keep local tactile Advance / Stop / Return for the rail and guided carrier.
+  Support changes follow the visible handling sequence; do not reintroduce the
+  rejected extra external stabilizer/capture command.
+- Retaining halves use ordinary two-hand carrying and the finite lift shelf. The
+  earlier lift-mounted positioning arm was rejected and is no longer a proposal.
+  Small hardware stays in pockets. The shelf holds one two-hand component or two
+  one-hand components.
+- Reuse onboard elevator controls across shared work levels. The player walks
+  from the elevator onto platforms to reach the connection; cargo openings and
+  front/rear access must be designed together.
+- A later remote crane control remains a convenience/progression possibility;
+  acquisition and timing are undecided.
 
-Crane insertion directions, attachment-point access, receiving supports and
-support handoffs still need component-specific planning. Incompatible placements
-must be rejected with an explanation while the load remains supported; precise
-feedback presentation remains open.
-
-Before implementation, resolve the remaining handling choices and map each
-major connection's approach, visible support, fastening/service access and
-release/removal sequence. Validate one representative player journey through
-ordinary controls, including blocked motion, incomplete retention, undo and
-save/resume, before expanding the workflow. Rendered review remains by explicit
-request; mechanical checks alone do not establish readable controls or believable
-support.
-
-The [leg workshop next steps](design/game/leg-workshop-next-steps.md) are the
-single active continuation plan, including playtest feedback, the proposed
-delivery sequence and remaining design decisions.
+Before implementation, dimension the robot, equipment, load routes, standing
+areas, insertion paths and fastening/service access in one coordinated layout.
+The next implementation is the [M3 wider-workshop adaptation](design/game/m3-wide-workshop-plan.md),
+before deeper component internals. The user will check walking and connection
+access; automated checks cover content, equipment movement, support, interlocks
+and save/resume. Supply pause-menu playtest checkpoints for later assembly stages.
+Rendered review remains by explicit request. Keep numerical geometry, automated
+behavior, inspected presentation and player feedback distinct.

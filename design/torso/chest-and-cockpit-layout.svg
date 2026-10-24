@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1070" viewBox="0 0 1440 1070" role="img" aria-labelledby="title desc">
+<title id="title">Chest and cockpit packaging, neutral robot coordinates</title>
+<desc id="desc">Dimensioned front and side reference sections show a seated cockpit above a rear-inserted core, a lower portal in the rear structural spine, waist interface, rear crossmember, settled shoulder roots, projecting neck pilot and lifting points. A lower diagram shows the upright source pose and capsule insertion inside the selected eleven by twelve metre bulky-module bay. These are bounding design sections, not solid or strength validation.</desc>
+<defs>
+ <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse"><path d="M0 0L8 4L0 8Z" fill="#3c5266"/></marker>
+ <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8L8 0" stroke="#b1bec9" stroke-width="1"/></pattern>
+ <style>
+ text{font-family:Arial,sans-serif;fill:#233443;font-size:14px} .title{font-size:25px;font-weight:700}.head{font-size:18px;font-weight:700}.small{font-size:12px}.dim{font-size:13px;fill:#405569}.guide{stroke:#aab8c3;stroke-width:1;stroke-dasharray:5 5;fill:none}.frame{fill:#657b8e;stroke:#344c60;stroke-width:1.5}.capsule{fill:#dceaf6;stroke:#2c6b9a;stroke-width:2}.core{fill:#f6d8a4;stroke:#ac6c19;stroke-width:2}.reserved{fill:#f4f1e8;stroke:#718493;stroke-dasharray:5 3}.dimension{stroke:#3c5266;stroke-width:1;fill:none;marker-start:url(#arrow);marker-end:url(#arrow)}.path{stroke:#3c5266;stroke-width:2;fill:none;marker-end:url(#arrow)}.note{fill:#f1f5f7;stroke:#c7d1d8}
+ </style>
+</defs>
+<rect width="1440" height="1070" fill="#fff"/>
+<text class="title" x="36" y="40">Chest / cockpit / lower core packaging</text>
+<text x="36" y="65">Working design • 2026-10-24 • metres • ROBOT X right / Y forward / Z up • neutral locked waist</text>
+<text class="small" x="36" y="86">Written component specifications govern. Reference boxes and projected members do not prove solid clearance, strength, pilot fit or swept movement.</text>
+<text class="head" x="36" y="119">Front section — X / Z</text>
+<text class="head" x="750" y="119">Side section — Y / Z (front →)</text>
+<!-- Shared height references, scale 120 px/m; Z15.6 at y120. -->
+<g class="guide">
+ <path d="M30 144H1380M30 264H1380M30 636H1380"/>
+ <path d="M350 133V676M950 133V676"/>
+</g>
+<text class="dim" x="676" y="148">15.40</text><text class="dim" x="676" y="268">14.40</text><text class="dim" x="676" y="640">11.30</text>
+<!-- front armor depth/width reference and projected frame -->
+<rect class="reserved" x="110" y="192" width="480" height="444" fill-opacity=".25"/>
+<path class="frame" d="M222 636L206 480L146 252L174 224L236 476L248 636ZM452 636L464 476L526 224L554 252L494 480L478 636Z"/>
+<rect class="frame" x="191.6" y="438" width="28.8" height="188.4"/>
+<rect class="frame" x="479.6" y="438" width="28.8" height="188.4"/>
+<rect class="frame" x="191.6" y="438" width="316.8" height="30"/>
+<path class="frame" d="M191.6 626.4H263.6V636H191.6ZM436.4 626.4H508.4V636H436.4Z"/>
+<rect x="230" y="504" width="33.6" height="120" fill="#e2f5ee" stroke="#24856a" stroke-dasharray="4 3"/>
+<rect x="436.4" y="504" width="33.6" height="120" fill="#e2f5ee" stroke="#24856a" stroke-dasharray="4 3"/>
+<rect class="frame" x="320" y="210" width="60" height="228"/>
+<rect class="frame" x="128" y="237.6" width="444" height="52.8"/>
+<rect class="frame" x="69.2" y="225.6" width="79.2" height="74.4"/>
+<rect class="frame" x="551.6" y="225.6" width="79.2" height="74.4"/>
+<rect class="reserved" x="21.2" y="211.2" width="120" height="102"/>
+<rect class="reserved" x="558.8" y="211.2" width="120" height="102"/>
+<circle cx="86" cy="264" r="4" fill="#344c60"/><circle cx="614" cy="264" r="4" fill="#344c60"/>
+<text class="small" x="35" y="186">socket / ring</text><text class="small" x="559" y="186">socket / ring</text>
+<rect class="capsule" x="266" y="222" width="168" height="264" rx="20"/>
+<rect x="280.4" y="236.4" width="139.2" height="235.2" rx="12" fill="none" stroke="#769cb7" stroke-dasharray="5 4"/>
+<rect class="capsule" x="239.6" y="465.6" width="26.4" height="26.4"/>
+<rect class="capsule" x="434" y="465.6" width="26.4" height="26.4"/>
+<text x="282" y="355">enclosed capsule</text><text class="dim" x="289" y="377">1.40 × 2.20</text>
+<rect class="reserved" x="292.4" y="144" width="115.2" height="66"/>
+<rect class="frame" x="330.8" y="122.4" width="38.4" height="21.6"/>
+<path d="M297.2 144H402.8" stroke="#344c60" stroke-width="5"/>
+<text class="small" x="414" y="146">pilot tip Z15.58</text>
+<text class="small" x="414" y="164">flange plane Z15.40</text>
+<path d="M230 618H470V636H230Z" class="frame"/>
+<circle class="core" cx="350" cy="558" r="56.4"/>
+<rect class="guide" x="272" y="480" width="156" height="156"/>
+<text x="319" y="556">CORE</text><text class="dim" x="303" y="575">axis Z11.95</text>
+<text class="small" x="38" y="514">portal lower limbs</text><path d="M154 510H187" stroke="#344c60" fill="none"/>
+<text class="small" x="38" y="541">open rear tool ports</text><path d="M135 537H268" stroke="#344c60" fill="none"/>
+<g fill="#2b927d" stroke="#19634f"><rect x="201.2" y="204" width="21.6" height="8"/><rect x="477.2" y="204" width="21.6" height="8"/></g>
+<text class="small" x="36" y="215">lift pads Z14.85</text><path d="M144 211H197" stroke="#19634f" fill="none"/>
+<path class="dimension" d="M21.2 682H678.8"/><path d="M21.2 657V689M678.8 657V689" stroke="#3c5266"/>
+<text class="dim" x="239" y="705">prepared width 5.48 (settled socket / ring bounds)</text>
+<!-- side section -->
+<path class="reserved" d="M806 192H1094V636H806Z" fill-opacity=".2"/>
+<rect class="frame" x="818" y="438" width="33.6" height="198"/>
+<rect class="frame" x="818" y="210" width="33.6" height="228"/>
+<rect class="frame" x="818" y="237.6" width="54" height="52.8"/>
+<rect class="reserved" x="836" y="144" width="171.6" height="66"/>
+<rect class="frame" x="930.8" y="122.4" width="38.4" height="21.6"/>
+<path d="M897.2 144H1002.8" stroke="#344c60" stroke-width="5"/>
+<path d="M969.2 122.4V144H974V122.4Z" fill="#344c60"/>
+<rect x="821" y="199.2" width="6" height="21.6" fill="#2b927d" stroke="#19634f"/>
+<rect x="1049" y="199.2" width="6" height="21.6" fill="#2b927d" stroke="#19634f"/>
+<text class="small" x="1090" y="202">side-operated lifting shoes</text>
+<rect class="capsule" x="884" y="222" width="186" height="264" rx="19"/>
+<rect x="898.4" y="236.4" width="162" height="235.2" rx="10" fill="none" stroke="#769cb7" stroke-dasharray="5 4"/>
+<!-- schematic reclined pilot/seat: not an anthropometric proof -->
+<circle cx="935.6" cy="283.2" r="18" fill="#bdd3e2" stroke="#4b758f"/>
+<path d="M939 305L962 429L1014 420L1043 460" fill="none" stroke="#4b758f" stroke-width="11" stroke-linecap="round"/>
+<path d="M919 312L945 444H1003" fill="none" stroke="#536c80" stroke-width="7"/>
+<text class="small" x="909" y="336">15° recline</text>
+<rect class="core" x="812" y="498" width="224.4" height="120"/>
+<rect x="826.4" y="507.6" width="192" height="100.8" fill="#f9e6c5" stroke="#ac6c19"/>
+<rect class="core" x="813.2" y="501.6" width="13.2" height="112.8"/>
+<text class="small" x="866" y="547">dock below capsule</text><text class="small" x="866" y="570">body length 1.60</text>
+<rect class="frame" x="860" y="624" width="180" height="12"/>
+<path class="guide" d="M746 480H812V636H746"/>
+<path class="path" d="M747 558H805"/><text class="small" x="746" y="660">core from rear +Y</text>
+<path class="path" d="M1355 378H1082"/>
+<text class="small" x="1117" y="359">capsule from front −Y</text><text class="small" x="1134" y="400">2.40 slide + 0.05 lower</text>
+<path class="guide" d="M878 210H1370V498H878"/>
+<text class="small" x="1130" y="232">capsule insertion sweep to Y+3.50</text>
+<!-- front ties and hatch canopy -->
+<path d="M1076 234V498" stroke="#657b8e" stroke-width="8"/>
+<path d="M1094 246H1286" stroke="#3d596d" stroke-width="7"/>
+<path class="guide" d="M1094 438A192 192 0 0 0 1286 246"/>
+<text class="small" x="1120" y="273">opaque hatch at 90°</text><text class="small" x="1109" y="292">reserve through Z14.65</text>
+<path class="dimension" d="M806 682H1094"/><path d="M806 651V689M1094 651V689" stroke="#3c5266"/>
+<text class="dim" x="871" y="705">armor depth 2.40</text>
+<text class="small" x="750" y="728">Core path is behind the lower portal; capsule occupies the upper/front volume.</text>
+<!-- source plan and concise contract: scale16px/m, bay X-2.25..8.75 Z6..18 -->
+<rect class="note" x="36" y="755" width="650" height="280" rx="8"/>
+<text class="head" x="54" y="783">Source station / 11 × 12 m bulky bay</text>
+<rect x="59" y="807" width="176" height="192" fill="#fff" stroke="#718493"/>
+<rect x="103.16" y="899.8" width="87.68" height="40.8" fill="#d5e0e8" stroke="#344c60"/>
+<rect x="131.32" y="863" width="31.36" height="65.6" fill="#dceaf6" fill-opacity=".7" stroke="#2c6b9a" stroke-dasharray="4 3"/>
+<rect x="103.16" y="875.69" width="87.68" height="90.51" fill="none" stroke="#ab742c" stroke-dasharray="4 3"/>
+<rect x="60.6" y="899.8" width="38.4" height="32" fill="none" stroke="#746090" stroke-dasharray="4 3"/>
+<path class="path" d="M147 850V895"/>
+<text class="small" x="64" y="824">front</text><text class="small" x="64" y="988">rear</text>
+<text class="small" x="252" y="817">Source C world (3.25,0.85,13.00)</text>
+<text class="small" x="252" y="841">Prepared 5.48 W × 2.55 D × 4.28 H</text>
+<text class="small" x="252" y="865">2.76 m each side; top world Y5.13.</text>
+<text class="small" x="252" y="889">One mobile platform: 2.40 × 2.00 footprint.</text>
+<text class="small" x="252" y="913">Bare-frame pivot (3.25,1.30,14.60), tilt60°.</text>
+<text class="small" x="252" y="937">Front dock Z7.8–9.8: sweep gap0.493 m.</text>
+<text class="small" x="252" y="961">Return upright before capsule insertion.</text>
+<text class="small" x="252" y="985">No fitted-capsule tilt; actual equipment still to model.</text>
+<text class="small" x="59" y="1018">Orange: bare-frame sweep. Purple: one alternative platform dock.</text>
+<rect class="note" x="708" y="755" width="696" height="280" rx="8"/>
+<text class="head" x="727" y="783">Installation / ownership contract</text>
+<text x="727" y="813">Waist seat Z11.30; approach Z11.48 → lower 0.18 m.</text>
+<text x="727" y="840">4M36 × 160 + 6mm washers at X±0.84 / Y±0.58, downward.</text>
+<text x="727" y="867">Four tool cylinders R0.09, Z11.40–12.45; no armor over pockets.</text>
+<text x="727" y="894">Four shoes: contacts(±1.15,±0.65,14.85); visible side handles.</text>
+<text x="727" y="921">Gantry opening ≥5.80 m; prepared rear roots reach Y−1.35.</text>
+<text x="727" y="948">Core/dock: backpack-and-power.md; receiver/locks: pelvis-and-waist.md.</text>
+<text class="small" x="727" y="980">Minimum selected bounds: dock→capsule 0.10; rear beam/neck→capsule 0.10;</text>
+<text class="small" x="727" y="1001">waist tool→capsule 0.05; insertion-ear total width clearance 0.12 m.</text>
+<text class="small" x="36" y="1055">Authoritative detail: chest-and-cockpit.md • Shoulder/head specifications own exact mating details • No gameplay or rendered-game review performed.</text>
+</svg>

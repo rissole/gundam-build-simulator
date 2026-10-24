@@ -52,7 +52,7 @@ feedback, agreed direction, remaining questions and proposed implementation
 sequence. The execution team (now archived) and checks below were developed
 through three read-only subagent planning reviews. M1 implementation began on 2026-10-23;
 later checkpoints remain held for explicit human go-ahead. Confirmed gameplay choices are
-also recorded in [GAME_DESIGN.md](../../../GAME_DESIGN.md#final-assembly-workflow--design-decisions-2026-10-23).
+also recorded in [GAME_DESIGN.md](../../../GAME_DESIGN.md#final-assembly-workflow).
 
 ## Player feedback to carry forward
 

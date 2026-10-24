@@ -1,0 +1,361 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1540" viewBox="0 0 1800 1540" role="img" aria-labelledby="title desc">
+<title id="title">Full workshop fixture and route layout</title>
+<desc id="desc">Dimensioned floor layout, three elevated access plans and a rear side section. One shared limb bay, enlarged bulky fixture bay, passive limb parking, two rear side elevators, moving front and aft platforms, a low pelvis gantry and loaded crane routes. Design envelopes, not implemented geometry.</desc>
+<defs>
+<marker id="arrow-orange" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#b16b23"/></marker>
+<marker id="arrow-teal" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#277c72"/></marker>
+<marker id="arrow-purple" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#8056a0"/></marker>
+<marker id="arrow-ink" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#203b43"/></marker>
+</defs>
+<rect width="1800" height="1540" fill="#f7f9f7"/>
+<text x="42.00" y="48.00" font-family="Arial,sans-serif" font-size="29" fill="#203b43" text-anchor="start" font-weight="700">FULL WORKSHOP / FIXTURES, ROUTES AND ACCESS</text>
+<text x="42.00" y="78.00" font-family="Arial,sans-serif" font-size="16" fill="#203b43" text-anchor="start">2026-10-24  •  World metres: X right, Y up, −Z forward  •  Robot centre X13 / Z26; soles Y1.40</text>
+<text x="42.00" y="105.00" font-family="Arial,sans-serif" font-size="14" fill="#60767c" text-anchor="start">Selected dimensioned design. Swept boxes and route arithmetic checked; actual solids, structural capacity and ordinary-control play remain to verify.</text>
+<rect x="42.00" y="123.00" width="18.00" height="18.00" fill="#d9e9e1" stroke="#60767c" stroke-width="1"/>
+<text x="70.00" y="138.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Work / passive parking</text>
+<rect x="290.00" y="123.00" width="18.00" height="18.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<text x="318.00" y="138.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Elevated walking decks</text>
+<rect x="552.00" y="123.00" width="18.00" height="18.00" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<text x="580.00" y="138.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Shared elevators</text>
+<rect x="765.00" y="123.00" width="18.00" height="18.00" fill="#f8e9ba" stroke="#60767c" stroke-width="1"/>
+<text x="793.00" y="138.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Loaded route / keep clear</text>
+<path d="M1065.00,132.00L1100.00,132.00" fill="none" stroke="#b16b23" stroke-width="3" marker-end="url(#arrow-orange)"/>
+<text x="1115.00" y="138.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Rear delivery</text>
+<path d="M1285.00,132.00L1320.00,132.00" fill="none" stroke="#277c72" stroke-width="3" marker-end="url(#arrow-teal)"/>
+<text x="1335.00" y="138.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Front delivery</text>
+<path d="M1510.00,132.00L1545.00,132.00" fill="none" stroke="#8056a0" stroke-width="3" stroke-dasharray="6 4"/>
+<text x="1560.00" y="138.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Open / moving</text>
+<text x="42.00" y="184.00" font-family="Arial,sans-serif" font-size="20" fill="#203b43" text-anchor="start" font-weight="700">A  FLOOR / 40 × 48 m</text>
+<text x="42.00" y="205.00" font-family="Arial,sans-serif" font-size="13" fill="#60767c" text-anchor="start">Elevated paths are projected faintly; separate work-level plans are at right.</text>
+<rect x="66.00" y="238.00" width="680.00" height="816.00" fill="#fff" stroke="#203b43" stroke-width="2"/>
+<path d="M66.00,238.00L66.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="66.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">-14</text>
+<path d="M134.00,238.00L134.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="134.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">-10</text>
+<path d="M202.00,238.00L202.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="202.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">-6</text>
+<path d="M270.00,238.00L270.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="270.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">-2</text>
+<path d="M338.00,238.00L338.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="338.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">2</text>
+<path d="M406.00,238.00L406.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="406.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">6</text>
+<path d="M474.00,238.00L474.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="474.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">10</text>
+<path d="M542.00,238.00L542.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="542.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">14</text>
+<path d="M610.00,238.00L610.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="610.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">18</text>
+<path d="M678.00,238.00L678.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="678.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">22</text>
+<path d="M746.00,238.00L746.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="746.00" y="230.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">26</text>
+<path d="M66.00,238.00L746.00,238.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="242.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">-9</text>
+<path d="M66.00,306.00L746.00,306.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="310.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">-5</text>
+<path d="M66.00,374.00L746.00,374.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="378.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">-1</text>
+<path d="M66.00,442.00L746.00,442.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="446.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">3</text>
+<path d="M66.00,510.00L746.00,510.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="514.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">7</text>
+<path d="M66.00,578.00L746.00,578.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="582.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">11</text>
+<path d="M66.00,646.00L746.00,646.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="650.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">15</text>
+<path d="M66.00,714.00L746.00,714.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="718.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">19</text>
+<path d="M66.00,782.00L746.00,782.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="786.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">23</text>
+<path d="M66.00,850.00L746.00,850.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="854.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">27</text>
+<path d="M66.00,918.00L746.00,918.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="922.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">31</text>
+<path d="M66.00,986.00L746.00,986.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="990.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">35</text>
+<path d="M66.00,1054.00L746.00,1054.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="58.00" y="1058.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="end">39</text>
+<rect x="108.50" y="306.00" width="344.25" height="119.00" fill="#d9e9e1" stroke="#60767c" stroke-width="1"/>
+<text x="280.20" y="343.40" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="middle">SMALL PREPARATION + STOCK</text>
+<text x="280.20" y="363.40" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="middle">Racks ≤3.2 m beneath distribution route</text>
+<rect x="504.60" y="272.00" width="74.80" height="161.50" fill="#e9eee5" stroke="#60767c" stroke-width="1"/>
+<text x="542.00" y="304.30" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">ARM</text>
+<text x="542.00" y="323.30" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">PARKING</text>
+<text x="542.00" y="342.30" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">2 × 9 jig</text>
+<rect x="525.00" y="275.40" width="34.00" height="153.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="108.50" y="476.00" width="136.00" height="187.00" fill="#d9e9e1" stroke="#60767c" stroke-width="1"/>
+<text x="176.50" y="574.60" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="middle">FOOT / SMALL</text>
+<text x="176.50" y="594.60" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="middle">COMPONENT BAY</text>
+<text x="176.50" y="614.60" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="middle">8 × 11 reservation</text>
+<rect x="265.75" y="493.00" width="187.00" height="204.00" fill="#d9e9e1" stroke="#60767c" stroke-width="1"/>
+<text x="359.25" y="530.40" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="middle">BULKY BAY</text>
+<text x="359.25" y="550.40" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="middle">11 × 12 m</text>
+<rect x="312.67" y="591.60" width="93.16" height="43.35" fill="#778990" stroke="#60767c" stroke-width="1"/>
+<text x="359.25" y="629.60" font-family="Arial,sans-serif" font-size="12" fill="#fff" text-anchor="middle">chest</text>
+<rect x="267.45" y="591.60" width="40.80" height="34.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="312.67" y="565.98" width="93.16" height="96.17" fill="none" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="359.25" y="681.70" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">Tilt sweep / 0.493 front gap</text>
+<rect x="397.50" y="702.10" width="40.80" height="34.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<text x="417.90" y="725.05" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="middle">P</text>
+<rect x="482.50" y="523.60" width="119.00" height="221.00" fill="#d9e9e1" stroke="#60767c" stroke-width="1"/>
+<text x="542.00" y="538.90" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="middle">SHARED LIMB</text>
+<text x="542.00" y="733.55" font-family="Arial,sans-serif" font-size="16" fill="#203b43" text-anchor="middle">7 × 13 m</text>
+<rect x="524.15" y="550.80" width="35.70" height="164.05" fill="#edf0e9" stroke="#60767c" stroke-width="1"/>
+<path d="M542.00,559.30L542.00,710.60" fill="none" stroke="#60767c" stroke-width="2"/>
+<rect x="644.00" y="527.00" width="68.00" height="212.50" fill="#e9eee5" stroke="#60767c" stroke-width="1"/>
+<text x="678.00" y="557.60" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">LEG</text>
+<text x="678.00" y="577.60" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">PARKING</text>
+<text x="678.00" y="597.60" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">same cradle</text>
+<rect x="660.15" y="550.80" width="35.70" height="164.05" fill="none" stroke="#60767c" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="482.50" y="616.25" width="219.30" height="42.50" fill="none" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<path d="M506.30,637.50L678.00,637.50" fill="none" stroke="#b16b23" stroke-width="3"/>
+<text x="669.50" y="674.90" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">index table</text>
+<rect x="482.50" y="739.50" width="85.00" height="171.70" fill="#f8e9ba" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<path d="M506.30,637.50L506.30,833.00" fill="none" stroke="#b16b23" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-orange)"/>
+<path d="M543.70,637.50L543.70,833.00" fill="none" stroke="#b16b23" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-orange)"/>
+<text x="525.00" y="770.10" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">RAIL → HIPS</text>
+<rect x="455.30" y="438.60" width="25.50" height="326.40" fill="none" stroke="#60767c" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="604.05" y="438.60" width="25.50" height="326.40" fill="none" stroke="#60767c" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="542.00" y="459.00" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">front crossing Z2.8–4.3</text>
+<circle cx="542.00" cy="510.00" r="10" fill="#277c72"/>
+<text x="542.00" y="514.00" font-family="Arial,sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="700">F</text>
+<path d="M185.00,527.00L185.00,510.00L542.00,510.00" fill="none" stroke="#277c72" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-teal)"/>
+<rect x="363.50" y="788.80" width="25.50" height="236.30" fill="#f0f5f8" stroke="#60767c" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="661.00" y="788.80" width="25.50" height="236.30" fill="#f0f5f8" stroke="#60767c" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="389.00" y="999.60" width="272.00" height="25.50" fill="#f0f5f8" stroke="#60767c" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="389.00" y="856.80" width="54.40" height="54.40" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<rect x="606.60" y="856.80" width="54.40" height="54.40" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<text x="416.20" y="876.35" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">LIFT</text>
+<text x="416.20" y="891.35" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">Z29</text>
+<text x="633.80" y="876.35" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">LIFT</text>
+<text x="633.80" y="891.35" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">Z29</text>
+<rect x="497.80" y="853.40" width="54.40" height="137.70" fill="#f8e9ba" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="691.60" y="929.90" width="40.80" height="51.00" fill="none" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="491.00" y="812.60" width="68.00" height="40.80" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<text x="525.00" y="836.40" font-family="Arial,sans-serif" font-size="12" fill="#fff" text-anchor="middle">ROBOT</text>
+<rect x="495.25" y="795.60" width="22.10" height="51.00" fill="none" stroke="#203b43" stroke-width="1"/>
+<rect x="532.65" y="795.60" width="22.10" height="51.00" fill="none" stroke="#203b43" stroke-width="1"/>
+<rect x="448.50" y="914.60" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="591.30" y="914.60" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<path d="M453.60,919.70L596.40,919.70" fill="none" stroke="#60767c" stroke-width="3"/>
+<rect x="86.40" y="266.90" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="86.40" y="436.90" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="86.40" y="708.90" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="86.40" y="1014.90" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="730.70" y="266.90" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="730.70" y="436.90" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="730.70" y="708.90" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="730.70" y="1014.90" width="10.20" height="10.20" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="117.00" y="272.00" width="595.00" height="731.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<path d="M359.25,612.00L706.90,612.00L706.90,931.60L712.00,931.60L525.00,931.60L525.00,853.40" fill="none" stroke="#b16b23" stroke-width="3" marker-end="url(#arrow-orange)"/>
+<circle cx="706.90" cy="705.50" r="10" fill="#b16b23"/>
+<text x="706.90" y="709.50" font-family="Arial,sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+<circle cx="712.00" cy="931.60" r="10" fill="#b16b23"/>
+<text x="712.00" y="935.60" font-family="Arial,sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="700">3</text>
+<circle cx="525.00" cy="931.60" r="10" fill="#b16b23"/>
+<text x="525.00" y="935.60" font-family="Arial,sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="700">4</text>
+<path d="M359.25,612.00L525.00,612.00L525.00,833.00" fill="none" stroke="#277c72" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-teal)"/>
+<path d="M542.00,559.30L542.00,722.50L565.26,722.50L565.26,833.00" fill="none" stroke="#8056a0" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-purple)"/>
+<text x="525.00" y="1042.10" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">Rear crossover Z35.8–37.3</text>
+<text x="66.00" y="1090.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Crane useful coverage: X−11..24 / Z−7..36. Roof Y25; lowest fitting Y23.</text>
+<text x="872.00" y="184.00" font-family="Arial,sans-serif" font-size="18" fill="#203b43" text-anchor="start" font-weight="700">B  HIPS / DECK Y8.4</text>
+<path d="M928.00,232.00L928.00,584.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="928.00" y="224.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">5</text>
+<path d="M1056.00,232.00L1056.00,584.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1056.00" y="224.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">13</text>
+<path d="M1184.00,232.00L1184.00,584.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1184.00" y="224.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">21</text>
+<path d="M888.00,296.00L1232.00,296.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="300.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">20</text>
+<path d="M888.00,360.00L1232.00,360.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="364.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">24</text>
+<path d="M888.00,424.00L1232.00,424.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="428.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">28</text>
+<path d="M888.00,488.00L1232.00,488.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="492.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">32</text>
+<path d="M888.00,552.00L1232.00,552.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="556.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">36</text>
+<rect x="904.00" y="350.40" width="24.00" height="222.40" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1184.00" y="350.40" width="24.00" height="222.40" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="928.00" y="548.80" width="256.00" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="928.00" y="414.40" width="51.20" height="51.20" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<rect x="1132.80" y="414.40" width="51.20" height="51.20" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<rect x="928.00" y="350.40" width="256.00" height="19.20" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="916.80" y="232.00" width="22.40" height="128.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1172.80" y="232.00" width="22.40" height="128.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="974.40" y="432.00" width="28.80" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1108.80" y="432.00" width="28.80" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1030.40" y="411.20" width="51.20" height="129.60" fill="#f8e9ba" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1024.00" y="372.80" width="64.00" height="38.40" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="979.20" y="413.60" width="30.40" height="44.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1102.40" y="413.60" width="30.40" height="44.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1009.60" y="413.60" width="92.80" height="19.20" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1008.00" y="413.60" width="3.20" height="19.20" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1100.80" y="413.60" width="3.20" height="19.20" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1001.60" y="364.80" width="19.20" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1091.20" y="364.80" width="19.20" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<path d="M1038.40,296.00L1038.40,392.00" fill="none" stroke="#b16b23" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-orange)"/>
+<path d="M1073.60,296.00L1073.60,392.00" fill="none" stroke="#b16b23" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-orange)"/>
+<text x="1056.00" y="500.80" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">Rear hip bridges fold UP in two leaves</text>
+<text x="1056.00" y="256.00" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">Front wings swing 90° forward</text>
+<path d="M939.20,283.20L1172.80,283.20" fill="none" stroke="#8056a0" stroke-width="2"/>
+<text x="1056.00" y="278.40" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">14.6 m clear when open</text>
+<text x="888.00" y="610.00" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="start">Front + rear close for pins; same elevators.</text>
+<text x="1308.00" y="184.00" font-family="Arial,sans-serif" font-size="18" fill="#203b43" text-anchor="start" font-weight="700">C  WAIST / DECK Y11.2</text>
+<path d="M1364.00,232.00L1364.00,584.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1364.00" y="224.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">5</text>
+<path d="M1492.00,232.00L1492.00,584.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1492.00" y="224.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">13</text>
+<path d="M1620.00,232.00L1620.00,584.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1620.00" y="224.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">21</text>
+<path d="M1324.00,296.00L1668.00,296.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1319.00" y="300.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">20</text>
+<path d="M1324.00,360.00L1668.00,360.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1319.00" y="364.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">24</text>
+<path d="M1324.00,424.00L1668.00,424.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1319.00" y="428.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">28</text>
+<path d="M1324.00,488.00L1668.00,488.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1319.00" y="492.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">32</text>
+<path d="M1324.00,552.00L1668.00,552.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1319.00" y="556.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">36</text>
+<rect x="1340.00" y="350.40" width="24.00" height="222.40" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1620.00" y="350.40" width="24.00" height="222.40" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1364.00" y="548.80" width="256.00" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1364.00" y="414.40" width="51.20" height="51.20" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<rect x="1568.80" y="414.40" width="51.20" height="51.20" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<rect x="1364.00" y="350.40" width="256.00" height="19.20" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1352.80" y="232.00" width="22.40" height="128.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1608.80" y="232.00" width="22.40" height="128.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1410.40" y="432.00" width="28.80" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1544.80" y="432.00" width="28.80" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1466.40" y="411.20" width="51.20" height="129.60" fill="#f8e9ba" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1460.00" y="372.80" width="64.00" height="38.40" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="1439.20" y="414.40" width="27.20" height="43.20" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1517.60" y="414.40" width="27.20" height="43.20" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1439.20" y="483.20" width="27.20" height="65.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1517.60" y="483.20" width="27.20" height="65.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1449.60" y="369.60" width="20.80" height="32.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1513.60" y="369.60" width="20.80" height="32.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="1492.00" y="508.80" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">AFT</text>
+<text x="1492.00" y="521.60" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">WELL</text>
+<text x="1492.00" y="318.40" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">Stow waist fingers before arms</text>
+<text x="1492.00" y="256.00" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">Front wings swing 90° forward</text>
+<path d="M1375.20,283.20L1608.80,283.20" fill="none" stroke="#8056a0" stroke-width="2"/>
+<text x="1492.00" y="278.40" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">14.6 m clear when open</text>
+<text x="1324.00" y="610.00" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="start">Fixed aft fingers; cargo crosses above guards.</text>
+<text x="872.00" y="674.00" font-family="Arial,sans-serif" font-size="18" fill="#203b43" text-anchor="start" font-weight="700">D  SHOULDERS 14 / HEAD 16.4</text>
+<path d="M928.00,722.00L928.00,1074.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="928.00" y="714.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">5</text>
+<path d="M1056.00,722.00L1056.00,1074.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1056.00" y="714.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">13</text>
+<path d="M1184.00,722.00L1184.00,1074.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1184.00" y="714.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="middle">21</text>
+<path d="M888.00,786.00L1232.00,786.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="790.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">20</text>
+<path d="M888.00,850.00L1232.00,850.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="854.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">24</text>
+<path d="M888.00,914.00L1232.00,914.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="918.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">28</text>
+<path d="M888.00,978.00L1232.00,978.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="982.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">32</text>
+<path d="M888.00,1042.00L1232.00,1042.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="883.00" y="1046.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">36</text>
+<rect x="904.00" y="840.40" width="24.00" height="222.40" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1184.00" y="840.40" width="24.00" height="222.40" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="928.00" y="1038.80" width="256.00" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="928.00" y="904.40" width="51.20" height="51.20" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<rect x="1132.80" y="904.40" width="51.20" height="51.20" fill="#91b7d2" stroke="#60767c" stroke-width="1"/>
+<rect x="928.00" y="840.40" width="256.00" height="19.20" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="916.80" y="722.00" width="22.40" height="128.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1172.80" y="722.00" width="22.40" height="128.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="974.40" y="922.00" width="28.80" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1108.80" y="922.00" width="28.80" height="24.00" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1030.40" y="901.20" width="51.20" height="129.60" fill="#f8e9ba" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1024.00" y="862.80" width="64.00" height="38.40" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="1003.20" y="904.40" width="27.20" height="43.20" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1081.60" y="904.40" width="27.20" height="43.20" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1012.80" y="870.00" width="16.00" height="24.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1083.20" y="870.00" width="16.00" height="24.00" fill="none" stroke="#8056a0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="1056.00" y="990.80" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">No inner shortcut over rigging</text>
+<text x="1056.00" y="746.00" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">Front wings swing 90° forward</text>
+<path d="M939.20,773.20L1172.80,773.20" fill="none" stroke="#8056a0" stroke-width="2"/>
+<text x="1056.00" y="768.40" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">14.6 m clear when open</text>
+<text x="888.00" y="1100.00" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="start">Same outer routes; local work patches differ.</text>
+<text x="1308.00" y="674.00" font-family="Arial,sans-serif" font-size="18" fill="#203b43" text-anchor="start" font-weight="700">E  REAR SIDE SECTION / X13</text>
+<text x="1308.00" y="697.00" font-family="Arial,sans-serif" font-size="12" fill="#60767c" text-anchor="start">Z → rear; open pack lowers in the rear well.</text>
+<path d="M1338.00,1069.00L1716.00,1069.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1331.00" y="1073.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">0</text>
+<path d="M1338.00,959.80L1716.00,959.80" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1331.00" y="963.80" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">8.4</text>
+<path d="M1338.00,923.40L1716.00,923.40" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1331.00" y="927.40" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">11.2</text>
+<path d="M1338.00,887.00L1716.00,887.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1331.00" y="891.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">14</text>
+<path d="M1338.00,855.80L1716.00,855.80" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1331.00" y="859.80" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">16.4</text>
+<path d="M1338.00,770.00L1716.00,770.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1331.00" y="774.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">23</text>
+<path d="M1338.00,744.00L1716.00,744.00" fill="none" stroke="#e3e9e7" stroke-width="1"/>
+<text x="1331.00" y="748.00" font-family="Arial,sans-serif" font-size="10" fill="#60767c" text-anchor="end">25</text>
+<path d="M1338.00,1069.00L1716.00,1069.00" fill="none" stroke="#203b43" stroke-width="2"/>
+<path d="M1338.00,770.00L1716.00,770.00" fill="none" stroke="#8056a0" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="1711.80" y="764.00" font-family="Arial,sans-serif" font-size="11" fill="#8056a0" text-anchor="end">lowest fitting 23</text>
+<path d="M1338.00,744.00L1716.00,744.00" fill="none" stroke="#203b43" stroke-width="2"/>
+<rect x="1386.30" y="959.80" width="29.40" height="2.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1646.70" y="959.80" width="35.70" height="2.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<path d="M1386.30,959.80L1386.30,945.50" fill="none" stroke="#60767c" stroke-width="1"/>
+<rect x="1386.30" y="923.40" width="29.40" height="2.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1646.70" y="923.40" width="35.70" height="2.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<path d="M1386.30,923.40L1386.30,909.10" fill="none" stroke="#60767c" stroke-width="1"/>
+<rect x="1386.30" y="887.00" width="29.40" height="2.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1646.70" y="887.00" width="35.70" height="2.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<path d="M1386.30,887.00L1386.30,872.70" fill="none" stroke="#60767c" stroke-width="1"/>
+<rect x="1386.30" y="855.80" width="29.40" height="2.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<rect x="1646.70" y="855.80" width="35.70" height="2.60" fill="#cddfec" stroke="#60767c" stroke-width="1"/>
+<path d="M1386.30,855.80L1386.30,841.50" fill="none" stroke="#60767c" stroke-width="1"/>
+<rect x="1417.80" y="850.60" width="53.55" height="53.30" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="1453.50" y="926.65" width="96.60" height="3.90" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<rect x="1543.80" y="924.70" width="12.60" height="7.80" fill="#778990" stroke="#203b43" stroke-width="1"/>
+<text x="1543.80" y="940.30" font-family="Arial,sans-serif" font-size="11" fill="#203b43" text-anchor="middle">crosshead</text>
+<rect x="1468.20" y="854.50" width="58.80" height="13.00" fill="#f8e9ba" stroke="#b16b23" stroke-width="1"/>
+<rect x="1564.80" y="851.90" width="58.80" height="13.00" fill="none" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="1564.80" y="822.00" width="58.80" height="13.00" fill="none" stroke="#b16b23" stroke-width="1" stroke-dasharray="6 4"/>
+<path d="M1564.80,835.00L1564.80,864.90L1468.20,864.90" fill="none" stroke="#b16b23" stroke-width="2" marker-end="url(#arrow-orange)"/>
+<path d="M1562.70,923.40L1640.40,923.40" fill="none" stroke="#8056a0" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="1711.80" y="991.00" font-family="Arial,sans-serif" font-size="11" fill="#8056a0" text-anchor="end">Aft finger projected from side flank</text>
+<text x="1543.80" y="1028.70" font-family="Arial,sans-serif" font-size="12" fill="#203b43" text-anchor="middle">Raise at X24; cross with lowest point Y18</text>
+<text x="1401.00" y="1087.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">24</text>
+<text x="1443.00" y="1087.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">26</text>
+<text x="1527.00" y="1087.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">30</text>
+<text x="1611.00" y="1087.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">34</text>
+<text x="1695.00" y="1087.00" font-family="Arial,sans-serif" font-size="11" fill="#60767c" text-anchor="middle">38</text>
+<text x="1324.00" y="1100.00" font-family="Arial,sans-serif" font-size="13" fill="#203b43" text-anchor="start">High crossing clears head-level guards by0.5 m.</text>
+<rect x="42.00" y="1142.00" width="548.00" height="265.00" fill="#fff" stroke="#ccd8d7" stroke-width="1"/>
+<rect x="616.00" y="1142.00" width="548.00" height="265.00" fill="#fff" stroke="#ccd8d7" stroke-width="1"/>
+<rect x="1190.00" y="1142.00" width="568.00" height="265.00" fill="#fff" stroke="#ccd8d7" stroke-width="1"/>
+<text x="60.00" y="1173.00" font-family="Arial,sans-serif" font-size="17" fill="#203b43" text-anchor="start" font-weight="700">ONE BUILD STATION, TWO PASSIVE PARKS</text>
+<text x="60.00" y="1202.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Leg: supported rail cradle, common centre X14.</text>
+<text x="60.00" y="1229.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Index to hip lanes11.9 /14.1 or parking22.</text>
+<text x="60.00" y="1256.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Arm: removable jig; crane parks it at front.</text>
+<text x="60.00" y="1283.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Empty leg fork withdraws1.4 m then shifts2 m</text>
+<text x="60.00" y="1310.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">outboard; bogie stays beneath raised soles.</text>
+<text x="60.00" y="1337.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">One mobile platform serves bulky and limb work.</text>
+<text x="634.00" y="1173.00" font-family="Arial,sans-serif" font-size="17" fill="#203b43" text-anchor="start" font-weight="700">REAR DELIVERY / ORANGE ROUTE</text>
+<text x="634.00" y="1202.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">2  Bypass X23.7: core axis6 / pack hinge5.5.</text>
+<text x="634.00" y="1229.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">3  At rear: core origin32.4 / pack hinge31.8.</text>
+<text x="634.00" y="1256.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">    Shift X24; raise lowest pointY18; cross toX13.</text>
+<text x="634.00" y="1283.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">4  Lower inside the central rear opening:</text>
+<text x="634.00" y="1310.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">    core axisY13.35 / backpack hingeY15.7.</text>
+<text x="634.00" y="1337.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">    Approach robot; retain before crane release.</text>
+<text x="1208.00" y="1173.00" font-family="Arial,sans-serif" font-size="17" fill="#203b43" text-anchor="start" font-weight="700">SELECTED LIMITING MARGINS</text>
+<text x="1208.00" y="1202.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Leg tilt floor0.30; empty return floor0.40 m.</text>
+<text x="1208.00" y="1229.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Second leg / opened holder gap0.25 m.</text>
+<text x="1208.00" y="1256.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Chest tilt / front work platform gap0.493 m.</text>
+<text x="1208.00" y="1283.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Rear bypass cable / deck and load / column0.20 m.</text>
+<text x="1208.00" y="1310.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Rear hip headroom under support arms2.25 m.</text>
+<text x="1208.00" y="1337.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Highest head hook21.58; overhead margin1.42 m.</text>
+<text x="42.00" y="1450.00" font-family="Arial,sans-serif" font-size="19" fill="#203b43" text-anchor="start" font-weight="700">BUILD   Pelvis / waist → both legs → chest / cockpit → core → backpack → both arms → head</text>
+<text x="42.00" y="1482.00" font-family="Arial,sans-serif" font-size="15" fill="#203b43" text-anchor="start">Four elevated levels: 8.4 / 11.2 / 14.0 / 16.4 m. One contextual delivery configuration moves the required bridges and gates.</text>
+<text x="42.00" y="1510.00" font-family="Arial,sans-serif" font-size="14" fill="#60767c" text-anchor="start">Authoritative dimensions, support states and remaining checks: final-assembly-plan.md. Current M3 gameplay and scene are unchanged.</text>
+</svg>
