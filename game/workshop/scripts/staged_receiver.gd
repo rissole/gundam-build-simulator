@@ -1,6 +1,8 @@
 extends "res://scripts/guided_receiver.gd"
 ## Seat -> retain -> release. Physical ownership and filled slots are authoritative;
 ## this controller deliberately inherits the equipment's empty save contract.
+var released_operations: Dictionary = {}
+var operation_nodes: Dictionary = {}
 var state: String:
 	get:
 		if not active:return "idle"
@@ -10,7 +12,43 @@ var state: String:
 func setup(workshop: Node, id: String, definition: Dictionary) -> void:
 	game=workshop;equipment_id=id;spec=definition
 	game.model.changed.connect(_sync)
+	for operation in spec.get("operations",[]):
+		var body=game.runtime.node(operation.owner)
+		var visual: MeshInstance3D
+		var collision: CollisionShape3D
+		for node in body.get_node("PreparedStructure").get_children():
+			if node.get_meta("source_uid","")==operation.source:visual=node
+		for node in body.get_children():
+			if node is CollisionShape3D and node.get_meta("source_uid","")==operation.source:collision=node
+		var handle=game.box(body,AssemblyRuntime.vec(operation.point),Vector3(.10,.08,.08),game.material(Color("e8b46b"),.3))
+		operation_nodes[operation.id]={"visual":visual,"collision":collision,"handle":handle,"owner":body}
+		released_operations[operation.id]=false
 	_sync()
+
+func controls() -> Array[Dictionary]:
+	var result: Array[Dictionary]=[]
+	for operation in spec.get("operations",[]):
+		var nodes: Dictionary=operation_nodes[operation.id]
+		result.append(control_entry(nodes.handle,("engage:" if released_operations[operation.id] else "release:")+operation.id,("Re-engage " if released_operations[operation.id] else "Release ")+operation.label,.12,{"point":nodes.handle.global_position,"allowed":[nodes.owner],"allow_body_hit":true}))
+	return result
+
+func action_error(action: String) -> String:
+	if game.paused:return "Resume before operating the local restraint."
+	var operation=action.get_slice(":",1)
+	if action.get_slice(":",0) not in ["release","engage"] or not released_operations.has(operation):return "Unknown receiver operation."
+	if action.begins_with("release:") and (not retained() or not _has(spec.closure_slots) or _attached()):return "Retain the carrier, release its rig and close both panels before releasing restraints."
+	return game.hands.error(equipment_id)
+
+func request(action: String) -> String:
+	var error=action_error(action)
+	if not error.is_empty():return error
+	var operation=action.get_slice(":",1);var released=action.begins_with("release:")
+	released_operations[operation]=released
+	operation_nodes[operation].visual.visible=not released
+	operation_nodes[operation].collision.disabled=released
+	return ""
+
+func operations_released() -> bool:return released_operations.values().all(func(value):return value)
 
 func _sync() -> void:
 	active=game.model.assemblies[spec.uid].parent==spec.owner and game.model.assemblies[spec.uid].parent_slot==spec.slot
@@ -45,6 +83,13 @@ func load_pose() -> Transform3D:
 
 func beam_pose() -> Transform3D:return _crane()._load_beam(load_pose())
 
+func end_transform(frame: Transform3D, index: int) -> Transform3D:
+	var normal=AssemblyRuntime.vec(spec.rig.normals[index])
+	return Transform3D(Basis(Quaternion(Vector3.UP,normal)),frame*(_crane().points[index]+normal*.045))
+
+func cable_position(frame: Transform3D, index: int) -> Vector3:
+	return frame*(_crane().points[index]+AssemblyRuntime.vec(spec.rig.normals[index])*.09)
+
 func accept() -> String:
 	var error=receiving_error()
 	if not error.is_empty():return error
@@ -76,5 +121,6 @@ func access_error(owner: String) -> String:
 func undo(owner: String) -> Dictionary:
 	if owner!=spec.owner or game.model.assemblies[owner].history.is_empty():return {"handled":false,"error":""}
 	var sid: String=game.model.assemblies[owner].history.back().slot
+	if sid in spec.closure_slots and released_operations.values().any(func(value):return value):return {"handled":true,"error":"Re-engage the local restraints before opening closure panels for correction."}
 	if sid in spec.retention_slots and not rigged():return {"handled":true,"error":"Lower the matching crane and attach every end before removing retention."}
 	return {"handled":false,"error":""}

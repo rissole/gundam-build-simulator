@@ -371,6 +371,8 @@ def contract():
                 if level==11.2:deck("aft_finger_"+side,a,b,31.7,35.8,level,["left","right","front"])
         deck("rear_crossover_"+tag,5,21,35.8,37.3,level,["rear"])
 
+    from author_m3_pauldrons import stores
+    stores(data)
     return data
 
 
@@ -534,6 +536,9 @@ def delivery_inputs(layout, data):
         route_positions=[[21,1.55,-6.3],[21,4.8,-6.3],[14,4.8,-6.3],[14,4.8,9.9],[14,1.55,9.9]],route_rotations=[[0,0,0]]*5)
     layout["crane"]["tasks"]["right_arm_store"]=right
     for key,value in layout["crane"]["tasks"][layout["crane"]["task"]].items():layout["crane"][key]=deepcopy(value)
+    from author_m3_pauldrons import routes
+    layout["workshop"]=data
+    routes(layout)
     return layout
 
 

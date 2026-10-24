@@ -2210,6 +2210,90 @@
       "part_id": "SH-SERVICE",
       "kind": "sh-service",
       "location": "bin"
+    },
+    {
+      "instance_id": "PD-M20__001",
+      "source_id": "PD-M20__001",
+      "part_id": "PD-M20-LONG",
+      "kind": "pd-bolt-long",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-M20__002",
+      "source_id": "PD-M20__002",
+      "part_id": "PD-M20-LONG",
+      "kind": "pd-bolt-long",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-M20__003",
+      "source_id": "PD-M20__003",
+      "part_id": "PD-M20-SHORT",
+      "kind": "pd-bolt-short",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-M20__004",
+      "source_id": "PD-M20__004",
+      "part_id": "PD-M20-SHORT",
+      "kind": "pd-bolt-short",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-FRONT__001",
+      "source_id": "PD-FRONT__001",
+      "part_id": "PD-FRONT",
+      "kind": "pd-front",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-REAR__001",
+      "source_id": "PD-REAR__001",
+      "part_id": "PD-REAR",
+      "kind": "pd-rear",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-M20__005",
+      "source_id": "PD-M20__005",
+      "part_id": "PD-M20-LONG",
+      "kind": "pd-bolt-long",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-M20__006",
+      "source_id": "PD-M20__006",
+      "part_id": "PD-M20-LONG",
+      "kind": "pd-bolt-long",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-M20__007",
+      "source_id": "PD-M20__007",
+      "part_id": "PD-M20-SHORT",
+      "kind": "pd-bolt-short",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-M20__008",
+      "source_id": "PD-M20__008",
+      "part_id": "PD-M20-SHORT",
+      "kind": "pd-bolt-short",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-FRONT__002",
+      "source_id": "PD-FRONT__002",
+      "part_id": "PD-FRONT",
+      "kind": "pd-front",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PD-REAR__002",
+      "source_id": "PD-REAR__002",
+      "part_id": "PD-REAR",
+      "kind": "pd-rear",
+      "location": "bin"
     }
   ],
   "parents": [
@@ -2333,6 +2417,28 @@
         0,
         -6.3
       ]
+    },
+    {
+      "id": "left_pauldron",
+      "definition": "left_pauldron",
+      "label": "Prepared left pauldron carrier",
+      "location": "support:left_pauldron_store",
+      "home": [
+        -9.0,
+        1.45,
+        1.0
+      ]
+    },
+    {
+      "id": "right_pauldron",
+      "definition": "right_pauldron",
+      "label": "Prepared right pauldron carrier",
+      "location": "support:right_pauldron_store",
+      "home": [
+        -5.0,
+        1.45,
+        1.0
+      ]
     }
   ],
   "supports": {
@@ -2371,7 +2477,9 @@
         "backpack",
         "arm_cassette",
         "left_arm",
-        "right_arm"
+        "right_arm",
+        "left_pauldron",
+        "right_pauldron"
       ],
       "assembly_ids": [
         "foot",
@@ -2382,7 +2490,9 @@
         "backpack",
         "arm_cassette",
         "left_arm",
-        "right_arm"
+        "right_arm",
+        "left_pauldron",
+        "right_pauldron"
       ]
     },
     "left_shelf_0": {
@@ -2412,7 +2522,9 @@
         "pv-ring-half",
         "pv-stop-half",
         "pv-cylinder",
-        "pv-eye-pin"
+        "pv-eye-pin",
+        "pd-front",
+        "pd-rear"
       ]
     },
     "left_shelf_1": {
@@ -2442,7 +2554,9 @@
         "pv-ring-half",
         "pv-stop-half",
         "pv-cylinder",
-        "pv-eye-pin"
+        "pv-eye-pin",
+        "pd-front",
+        "pd-rear"
       ]
     },
     "right_shelf_0": {
@@ -2472,7 +2586,9 @@
         "pv-ring-half",
         "pv-stop-half",
         "pv-cylinder",
-        "pv-eye-pin"
+        "pv-eye-pin",
+        "pd-front",
+        "pd-rear"
       ]
     },
     "right_shelf_1": {
@@ -2502,7 +2618,9 @@
         "pv-ring-half",
         "pv-stop-half",
         "pv-cylinder",
-        "pv-eye-pin"
+        "pv-eye-pin",
+        "pd-front",
+        "pd-rear"
       ]
     },
     "leg_queue_right": {
@@ -2648,6 +2766,22 @@
       ],
       "assembly_ids": [
         "arm_cassette"
+      ]
+    },
+    "left_pauldron_store": {
+      "assemblies": [
+        "left_pauldron"
+      ],
+      "assembly_ids": [
+        "left_pauldron"
+      ]
+    },
+    "right_pauldron_store": {
+      "assemblies": [
+        "right_pauldron"
+      ],
+      "assembly_ids": [
+        "right_pauldron"
       ]
     }
   },
@@ -3827,6 +3961,146 @@
       "service_slots": [
         "right_arm/service"
       ]
+    },
+    "receivers": {
+      "left_pauldron_receiver": {
+        "uid": "left_pauldron",
+        "owner": "chest",
+        "slot": "left_pauldron",
+        "seat": {
+          "position": [
+            -2.21,
+            3.05,
+            0
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "crane_task": "left_pauldron",
+        "requires": [
+          "chest:left_arm_connected"
+        ],
+        "retention_slots": [
+          "left_pauldron/bolt_1",
+          "left_pauldron/bolt_2",
+          "left_pauldron/bolt_3",
+          "left_pauldron/bolt_4"
+        ],
+        "closure_slots": [
+          "left_pauldron/front",
+          "left_pauldron/rear"
+        ],
+        "rig": {
+          "normals": [
+            [
+              0,
+              0,
+              -1
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        },
+        "operations": [
+          {
+            "id": "joint_restraints",
+            "owner": "left_arm",
+            "source": "AL-JOINT-RESTRAINTS__001",
+            "point": [
+              -0.46,
+              0,
+              3
+            ],
+            "label": "elbow / wrist restraints"
+          },
+          {
+            "id": "digit_cradle",
+            "owner": "left_arm",
+            "source": "AL-DIGIT-CRADLE__001",
+            "point": [
+              0,
+              -0.3,
+              6.82
+            ],
+            "label": "digit cradle"
+          }
+        ]
+      },
+      "right_pauldron_receiver": {
+        "uid": "right_pauldron",
+        "owner": "chest",
+        "slot": "right_pauldron",
+        "seat": {
+          "position": [
+            2.21,
+            3.05,
+            0
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "crane_task": "right_pauldron",
+        "requires": [
+          "chest:right_arm_connected"
+        ],
+        "retention_slots": [
+          "right_pauldron/bolt_1",
+          "right_pauldron/bolt_2",
+          "right_pauldron/bolt_3",
+          "right_pauldron/bolt_4"
+        ],
+        "closure_slots": [
+          "right_pauldron/front",
+          "right_pauldron/rear"
+        ],
+        "rig": {
+          "normals": [
+            [
+              0,
+              0,
+              -1
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        },
+        "operations": [
+          {
+            "id": "joint_restraints",
+            "owner": "right_arm",
+            "source": "AR-JOINT-RESTRAINTS__001",
+            "point": [
+              0.46,
+              0,
+              3
+            ],
+            "label": "elbow / wrist restraints"
+          },
+          {
+            "id": "digit_cradle",
+            "owner": "right_arm",
+            "source": "AR-DIGIT-CRADLE__001",
+            "point": [
+              0,
+              -0.3,
+              6.82
+            ],
+            "label": "digit cradle"
+          }
+        ]
+      }
     }
   },
   "m3": {
@@ -4058,7 +4332,21 @@
         "right_arm/drive_3_a_keeper",
         "right_arm/drive_3_b_pin",
         "right_arm/drive_3_b_keeper",
-        "right_arm/service"
+        "right_arm/service",
+        "left_pauldron",
+        "left_pauldron/bolt_1",
+        "left_pauldron/bolt_2",
+        "left_pauldron/bolt_3",
+        "left_pauldron/bolt_4",
+        "left_pauldron/front",
+        "left_pauldron/rear",
+        "right_pauldron",
+        "right_pauldron/bolt_1",
+        "right_pauldron/bolt_2",
+        "right_pauldron/bolt_3",
+        "right_pauldron/bolt_4",
+        "right_pauldron/front",
+        "right_pauldron/rear"
       ]
     },
     "controlled_mount_slots": [
@@ -4070,7 +4358,9 @@
       "chest.core",
       "chest.backpack",
       "chest.left_arm",
-      "chest.right_arm"
+      "chest.right_arm",
+      "chest.left_pauldron",
+      "chest.right_pauldron"
     ],
     "security_slots": {
       "shin": [
@@ -4222,6 +4512,20 @@
         "right_arm/drive_3_a_keeper",
         "right_arm/drive_3_b_pin",
         "right_arm/drive_3_b_keeper"
+      ],
+      "left_pauldron": [
+        "left_pauldron",
+        "left_pauldron/bolt_1",
+        "left_pauldron/bolt_2",
+        "left_pauldron/bolt_3",
+        "left_pauldron/bolt_4"
+      ],
+      "right_pauldron": [
+        "right_pauldron",
+        "right_pauldron/bolt_1",
+        "right_pauldron/bolt_2",
+        "right_pauldron/bolt_3",
+        "right_pauldron/bolt_4"
       ]
     }
   },
@@ -30925,6 +31229,106 @@
             0.0,
             -1.0
           ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.055,
+            0.38,
+            0.6
+          ],
+          "outer": 0.028,
+          "inner": 0.0105,
+          "length": 0.066,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.055,
+            0.245,
+            0.6
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.055,
+            0.38,
+            0.6
+          ],
+          "outer": 0.028,
+          "inner": 0.0105,
+          "length": 0.066,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.055,
+            0.245,
+            0.6
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.055,
+            0.38,
+            0.75
+          ],
+          "outer": 0.028,
+          "inner": 0.0105,
+          "length": 0.066,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.055,
+            0.245,
+            0.75
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.055,
+            0.38,
+            0.75
+          ],
+          "outer": 0.028,
+          "inner": 0.0105,
+          "length": 0.066,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.055,
+            0.245,
+            0.75
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
         }
       ],
       "motion_shapes": [
@@ -31093,6 +31497,110 @@
             0.036,
             0.036,
             0.176
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.055,
+            0.38,
+            0.6
+          ],
+          "size": [
+            0.066,
+            0.056,
+            0.056
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.055,
+            0.245,
+            0.6
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.055,
+            0.38,
+            0.6
+          ],
+          "size": [
+            0.066,
+            0.056,
+            0.056
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.055,
+            0.245,
+            0.6
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.055,
+            0.38,
+            0.75
+          ],
+          "size": [
+            0.066,
+            0.056,
+            0.056
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.055,
+            0.245,
+            0.75
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.055,
+            0.38,
+            0.75
+          ],
+          "size": [
+            0.066,
+            0.056,
+            0.056
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.055,
+            0.245,
+            0.75
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
           ]
         }
       ],
@@ -33696,6 +34204,106 @@
             0.0,
             -1.0
           ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.055,
+            0.38,
+            0.6
+          ],
+          "outer": 0.028,
+          "inner": 0.0105,
+          "length": 0.066,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.055,
+            0.245,
+            0.6
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.055,
+            0.38,
+            0.6
+          ],
+          "outer": 0.028,
+          "inner": 0.0105,
+          "length": 0.066,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.055,
+            0.245,
+            0.6
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.055,
+            0.38,
+            0.75
+          ],
+          "outer": 0.028,
+          "inner": 0.0105,
+          "length": 0.066,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.055,
+            0.245,
+            0.75
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.055,
+            0.38,
+            0.75
+          ],
+          "outer": 0.028,
+          "inner": 0.0105,
+          "length": 0.066,
+          "axis": "x"
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.055,
+            0.245,
+            0.75
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
         }
       ],
       "motion_shapes": [
@@ -33864,6 +34472,110 @@
             0.036,
             0.036,
             0.176
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.055,
+            0.38,
+            0.6
+          ],
+          "size": [
+            0.066,
+            0.056,
+            0.056
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.055,
+            0.245,
+            0.6
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.055,
+            0.38,
+            0.6
+          ],
+          "size": [
+            0.066,
+            0.056,
+            0.056
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.055,
+            0.245,
+            0.6
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.055,
+            0.38,
+            0.75
+          ],
+          "size": [
+            0.066,
+            0.056,
+            0.056
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.055,
+            0.245,
+            0.75
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.055,
+            0.38,
+            0.75
+          ],
+          "size": [
+            0.066,
+            0.056,
+            0.056
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.055,
+            0.245,
+            0.75
+          ],
+          "size": [
+            0.05,
+            0.23,
+            0.025
           ]
         }
       ],
@@ -41196,32 +41908,32 @@
           "shape": "tube",
           "center": [
             0.0,
-            0.5502740897570197,
-            0.6702599690732574
+            0.5309555732312387,
+            0.6650835881712069
           ],
           "outer": 0.017,
           "inner": 0,
-          "length": 1.015972440571103,
+          "length": 1.012422836565831,
           "axis": [
             0.0,
-            -0.1527161451097358,
-            0.9882700941659736
+            -0.1914145164590134,
+            0.9815092882335663
           ]
         },
         {
           "shape": "tube",
           "center": [
             0.0,
-            0.45517620748890386,
-            1.1910034587138627
+            0.43585769096312277,
+            1.1858270778118123
           ],
           "outer": 0.017,
           "inner": 0,
-          "length": 0.05127345467988432,
+          "length": 0.04791972778141198,
           "axis": [
             0.0,
-            -0.6834017737492131,
-            0.7300424752275919
+            0.07505600185138374,
+            0.997179320175707
           ]
         },
         {
@@ -44150,32 +44862,32 @@
           "shape": "tube",
           "center": [
             0.0,
-            0.5502740897570197,
-            0.6702599690732574
+            0.5309555732312387,
+            0.6650835881712069
           ],
           "outer": 0.017,
           "inner": 0,
-          "length": 1.015972440571103,
+          "length": 1.012422836565831,
           "axis": [
             0.0,
-            -0.1527161451097358,
-            0.9882700941659736
+            -0.1914145164590134,
+            0.9815092882335663
           ]
         },
         {
           "shape": "tube",
           "center": [
             0.0,
-            0.45517620748890386,
-            1.1910034587138627
+            0.43585769096312277,
+            1.1858270778118123
           ],
           "outer": 0.017,
           "inner": 0,
-          "length": 0.05127345467988432,
+          "length": 0.04791972778141198,
           "axis": [
             0.0,
-            -0.6834017737492131,
-            0.7300424752275919
+            0.07505600185138374,
+            0.997179320175707
           ]
         },
         {
@@ -44217,6 +44929,1584 @@
           "inner": 0,
           "length": 0.08,
           "axis": "x"
+        }
+      ]
+    },
+    "PD-LEFT-SHELL__001": {
+      "family": "PD-LEFT-SHELL",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0.685,
+            0
+          ],
+          "size": [
+            1.18,
+            0.03,
+            1.3
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.575,
+            0.075,
+            0
+          ],
+          "size": [
+            0.03,
+            1.19,
+            1.3
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.575,
+            -0.61,
+            -0.3775
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.545
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.575,
+            -0.61,
+            0.0
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.01
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.575,
+            -0.61,
+            0.3775
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.545
+          ]
+        }
+      ],
+      "motion_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0,
+            0.685,
+            0
+          ],
+          "size": [
+            1.18,
+            0.03,
+            1.3
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.575,
+            0.075,
+            0
+          ],
+          "size": [
+            0.03,
+            1.19,
+            1.3
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.575,
+            -0.61,
+            -0.3775
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.545
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.575,
+            -0.61,
+            0.0
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.01
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.575,
+            -0.61,
+            0.3775
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.545
+          ]
+        }
+      ]
+    },
+    "PD-LEFT-LIFT__001": {
+      "family": "PD-LEFT-LIFT",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            -0.14,
+            0.63,
+            -0.64
+          ],
+          "size": [
+            0.14,
+            0.12,
+            0.02
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.14,
+            0.63,
+            0.64
+          ],
+          "size": [
+            0.14,
+            0.12,
+            0.02
+          ]
+        }
+      ],
+      "motion_shapes": [
+        {
+          "type": "box",
+          "position": [
+            -0.14,
+            0.63,
+            -0.64
+          ],
+          "size": [
+            0.14,
+            0.12,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.14,
+            0.63,
+            0.64
+          ],
+          "size": [
+            0.14,
+            0.12,
+            0.02
+          ]
+        }
+      ]
+    },
+    "PD-M20__001": {
+      "family": "PD-M20",
+      "position": [
+        -2.722343241051359,
+        2.618795741365517,
+        -0.11
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0.06
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            -0.007
+          ],
+          "outer": 0.015,
+          "inner": 0,
+          "length": 0.014,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.023828379474320593,
+            0,
+            -0.006
+          ],
+          "size": [
+            0.06965675894864118,
+            0.045,
+            0.012
+          ]
+        }
+      ]
+    },
+    "PD-M20__002": {
+      "family": "PD-M20",
+      "position": [
+        -2.722343241051359,
+        2.618795741365517,
+        0.11
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            -0.06
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0.007
+          ],
+          "outer": 0.015,
+          "inner": 0,
+          "length": 0.014,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.023828379474320593,
+            0,
+            0.006
+          ],
+          "size": [
+            0.06965675894864118,
+            0.045,
+            0.012
+          ]
+        }
+      ]
+    },
+    "PD-M20__003": {
+      "family": "PD-M20",
+      "position": [
+        -2.7611660978167367,
+        2.4739068674221567,
+        -0.11
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0.06
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            -0.007
+          ],
+          "outer": 0.015,
+          "inner": 0,
+          "length": 0.014,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.004416951091631649,
+            0,
+            -0.006
+          ],
+          "size": [
+            0.030833902183263297,
+            0.045,
+            0.012
+          ]
+        }
+      ]
+    },
+    "PD-M20__004": {
+      "family": "PD-M20",
+      "position": [
+        -2.7611660978167367,
+        2.4739068674221567,
+        0.11
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            -0.06
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0.007
+          ],
+          "outer": 0.015,
+          "inner": 0,
+          "length": 0.014,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.004416951091631649,
+            0,
+            0.006
+          ],
+          "size": [
+            0.030833902183263297,
+            0.045,
+            0.012
+          ]
+        }
+      ]
+    },
+    "PD-LEFT-LUGS__001": {
+      "family": "PD-LEFT-LUGS",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            -0.5675,
+            -0.43120425863448286,
+            -0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.5675,
+            -0.43120425863448286,
+            0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.5675,
+            -0.5760931325778431,
+            -0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            -0.5675,
+            -0.5760931325778431,
+            0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        }
+      ],
+      "motion_shapes": [
+        {
+          "type": "box",
+          "position": [
+            -0.5675,
+            -0.43120425863448286,
+            -0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.5675,
+            -0.43120425863448286,
+            0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.5675,
+            -0.5760931325778431,
+            -0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.5675,
+            -0.5760931325778431,
+            0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        }
+      ]
+    },
+    "PD-LEFT-SEAT__001": {
+      "family": "PD-LEFT-SEAT",
+      "position": [
+        -2.21,
+        3.05,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            0.02,
+            0.02,
+            0.02
+          ]
+        }
+      ]
+    },
+    "PD-FRONT__001": {
+      "family": "PD-FRONT",
+      "position": [
+        -2.195,
+        3.3099999999999996,
+        -0.635
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            1.15,
+            0.8200000000000001,
+            0.03
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.44,
+            -0.26,
+            -0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.44,
+            0.26,
+            -0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.44,
+            -0.26,
+            -0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.44,
+            0.26,
+            -0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "PD-REAR__001": {
+      "family": "PD-REAR",
+      "position": [
+        -2.195,
+        3.61,
+        0.635
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            1.15,
+            0.22000000000000003,
+            0.03
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.44,
+            -0.050000000000000044,
+            0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.44,
+            0.06999999999999995,
+            0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.44,
+            -0.050000000000000044,
+            0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.44,
+            0.06999999999999995,
+            0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "PD-RIGHT-SHELL__001": {
+      "family": "PD-RIGHT-SHELL",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0.685,
+            0
+          ],
+          "size": [
+            1.18,
+            0.03,
+            1.3
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.575,
+            0.075,
+            0
+          ],
+          "size": [
+            0.03,
+            1.19,
+            1.3
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.575,
+            -0.61,
+            -0.3775
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.545
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.575,
+            -0.61,
+            0.0
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.01
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.575,
+            -0.61,
+            0.3775
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.545
+          ]
+        }
+      ],
+      "motion_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0,
+            0.685,
+            0
+          ],
+          "size": [
+            1.18,
+            0.03,
+            1.3
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.575,
+            0.075,
+            0
+          ],
+          "size": [
+            0.03,
+            1.19,
+            1.3
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.575,
+            -0.61,
+            -0.3775
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.545
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.575,
+            -0.61,
+            0.0
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.01
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.575,
+            -0.61,
+            0.3775
+          ],
+          "size": [
+            0.03,
+            0.18,
+            0.545
+          ]
+        }
+      ]
+    },
+    "PD-RIGHT-LIFT__001": {
+      "family": "PD-RIGHT-LIFT",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0.14,
+            0.63,
+            -0.64
+          ],
+          "size": [
+            0.14,
+            0.12,
+            0.02
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.14,
+            0.63,
+            0.64
+          ],
+          "size": [
+            0.14,
+            0.12,
+            0.02
+          ]
+        }
+      ],
+      "motion_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0.14,
+            0.63,
+            -0.64
+          ],
+          "size": [
+            0.14,
+            0.12,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.14,
+            0.63,
+            0.64
+          ],
+          "size": [
+            0.14,
+            0.12,
+            0.02
+          ]
+        }
+      ]
+    },
+    "PD-M20__005": {
+      "family": "PD-M20",
+      "position": [
+        2.722343241051359,
+        2.618795741365517,
+        0.11
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            -0.06
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0.007
+          ],
+          "outer": 0.015,
+          "inner": 0,
+          "length": 0.014,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.023828379474320593,
+            0,
+            0.006
+          ],
+          "size": [
+            0.06965675894864118,
+            0.045,
+            0.012
+          ]
+        }
+      ]
+    },
+    "PD-M20__006": {
+      "family": "PD-M20",
+      "position": [
+        2.722343241051359,
+        2.618795741365517,
+        -0.11
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0.06
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            -0.007
+          ],
+          "outer": 0.015,
+          "inner": 0,
+          "length": 0.014,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.023828379474320593,
+            0,
+            -0.006
+          ],
+          "size": [
+            0.06965675894864118,
+            0.045,
+            0.012
+          ]
+        }
+      ]
+    },
+    "PD-M20__007": {
+      "family": "PD-M20",
+      "position": [
+        2.7611660978167367,
+        2.4739068674221567,
+        0.11
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            -0.06
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0.007
+          ],
+          "outer": 0.015,
+          "inner": 0,
+          "length": 0.014,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.004416951091631649,
+            0,
+            0.006
+          ],
+          "size": [
+            0.030833902183263297,
+            0.045,
+            0.012
+          ]
+        }
+      ]
+    },
+    "PD-M20__008": {
+      "family": "PD-M20",
+      "position": [
+        2.7611660978167367,
+        2.4739068674221567,
+        -0.11
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            0.06
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.12,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0,
+            0,
+            -0.007
+          ],
+          "outer": 0.015,
+          "inner": 0,
+          "length": 0.014,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.004416951091631649,
+            0,
+            -0.006
+          ],
+          "size": [
+            0.030833902183263297,
+            0.045,
+            0.012
+          ]
+        }
+      ]
+    },
+    "PD-RIGHT-LUGS__001": {
+      "family": "PD-RIGHT-LUGS",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0.5675,
+            -0.43120425863448286,
+            0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.5675,
+            -0.43120425863448286,
+            -0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.5675,
+            -0.5760931325778431,
+            0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "shape": "box",
+          "center": [
+            0.5675,
+            -0.5760931325778431,
+            -0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        }
+      ],
+      "motion_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0.5675,
+            -0.43120425863448286,
+            0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.5675,
+            -0.43120425863448286,
+            -0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.5675,
+            -0.5760931325778431,
+            0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.5675,
+            -0.5760931325778431,
+            -0.1
+          ],
+          "size": [
+            0.045,
+            0.055,
+            0.02
+          ]
+        }
+      ]
+    },
+    "PD-RIGHT-SEAT__001": {
+      "family": "PD-RIGHT-SEAT",
+      "position": [
+        2.21,
+        3.05,
+        0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            0.02,
+            0.02,
+            0.02
+          ]
+        }
+      ]
+    },
+    "PD-FRONT__002": {
+      "family": "PD-FRONT",
+      "position": [
+        2.195,
+        3.3099999999999996,
+        -0.635
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            1.15,
+            0.8200000000000001,
+            0.03
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.44,
+            -0.26,
+            -0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.44,
+            0.26,
+            -0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.44,
+            -0.26,
+            -0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.44,
+            0.26,
+            -0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    "PD-REAR__002": {
+      "family": "PD-REAR",
+      "position": [
+        2.195,
+        3.61,
+        0.635
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ],
+      "primitives": [
+        {
+          "shape": "box",
+          "center": [
+            0,
+            0,
+            0
+          ],
+          "size": [
+            1.15,
+            0.22000000000000003,
+            0.03
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.44,
+            -0.050000000000000044,
+            0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            -0.44,
+            0.06999999999999995,
+            0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.44,
+            -0.050000000000000044,
+            0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "shape": "tube",
+          "center": [
+            0.44,
+            0.06999999999999995,
+            0.023
+          ],
+          "outer": 0.01,
+          "inner": 0,
+          "length": 0.016,
+          "axis": [
+            0,
+            0,
+            1
+          ]
         }
       ]
     }

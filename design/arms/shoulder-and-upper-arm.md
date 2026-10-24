@@ -341,6 +341,25 @@ tool rays. Recheck these comparisons with actual solids, shoulder travel and
 head/backpack fitted. The 16.4 m world deck has foot height robot Z15.0 and
 must notch/retract around the pauldron rather than pass through its upper 0.05 m.
 
+### Wider M3 pauldron implementation — 2026-10-24
+
+Source: `tools/author_m3_pauldrons.py` (within `game/workshop`), with two data-driven receivers.
+Passive upright stores at world X−9/−5, Z1 replace the optional vacant limb fixture;
+carrier bottoms are Y0.75 and tops Y2.15, within the small-stock height limit.
+Both two-end rigs use the specified Y18.0 transit bottom, Z13 distribution and 1.60 m final descent.
+Mount detail: bottom-open outer-wall reliefs pass the arm-owned bosses. Rigid inboard
+ears crossed the fitted ring during descent, so captive clamp shoes travel with the four
+M20 bolt units and fit after seating. Two proximal long-shoe and two distal short-shoe
+units are distinct fitting variants; carrier/panel/fastener quantities stay as specified.
+The harness centreline moves from |X|2.76 to 2.72 within its selected channel, leaving
+0.033 m to the wall; segment colliders preserve the open loop rather than filling it.
+Front/rear upper panels measure 1.15×0.046×0.82/0.22 m including captive screw heads;
+both fit the unchanged shelf. Panel fitting includes fastening its four captive M12 screws.
+The existing 16.4 m deck opening leaves 0.75 m fore/aft of the carrier; no deck enlargement is needed.
+After both panels close and the rig releases, local handles release/re-engage the supplied
+joint-restraint group (elbow/wrist together) and digit cradle; no new stock or controller.
+Full payload/rig preflight and mechanical delivery checks do not establish walking/access or visual approval.
+
 ### Shared long-limb preparation and supported upending
 
 Prepare one connected upper arm/forearm/hand at the same shared long-limb bay

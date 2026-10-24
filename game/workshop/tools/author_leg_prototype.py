@@ -814,16 +814,18 @@ def m3_documents(check=False):
     cassette=prepared_cassette(trial,m3_layout)
     from author_m3_shoulders import extend as shoulder_connections
     shoulder_connections(trial,chest,arms,trial_parts,diagram)
+    from author_m3_pauldrons import extend as pauldrons_content
+    pauldrons=pauldrons_content(trial,chest,arms,trial_parts,m3_layout,diagram)
     for task in m3_layout["crane"]["tasks"].values():
         if task.get("payload")!="assembly":trial["equipment"]["parts"][task["load_uid"]]["stock_position"]=list(task["source_pose"]["position"])
     catalogue_images(check, {key: value for key,value in trial_parts.items() if key not in parts and "catalogue_image" not in value},trial["parts"],trial["sources"])
-    return {"m3-definitions.json": dict(version=1, parts=trial_parts, assemblies={"pelvis": trial_pelvis,"chest":chest,"core":core,"backpack":backpack,"arm_cassette":cassette,**arms,**mirrored}, assembly_patches={"left_leg": assembly_patch(leg, trial_leg)}), "m3-content.json": trial}
+    return {"m3-definitions.json": dict(version=1, parts=trial_parts, assemblies={"pelvis": trial_pelvis,"chest":chest,"core":core,"backpack":backpack,"arm_cassette":cassette,**arms,**pauldrons,**mirrored}, assembly_patches={"left_leg": assembly_patch(leg, trial_leg)}), "m3-content.json": trial}
 
 
 def audit_m3(documents):
     overlay, trial = documents["m3-definitions.json"], documents["m3-content.json"]
     recipes = materialize_overlay(dict(parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis}), overlay)["assemblies"]
-    assert set(overlay["assemblies"]) == {"pelvis","chest","core","backpack","arm_cassette","left_arm","right_arm","right_leg","right_foot","right_heel_pad","right_pitch_actuator"}
+    assert set(overlay["assemblies"]) == {"pelvis","chest","core","backpack","arm_cassette","left_arm","right_arm","left_pauldron","right_pauldron","right_leg","right_foot","right_heel_pad","right_pitch_actuator"}
     for side in ["left","right"]:
         recipe=recipes[side+"_arm"]
         assert len(recipe["context_sources"])==22 and recipe["slots"]=={}
@@ -832,10 +834,10 @@ def audit_m3(documents):
         moment=sum(trial["sources"][uid]["mass_kg"]*trial["sources"][uid]["mass_center"][2] for uid in recipe["context_sources"])
         assert mass==2033 and .75<moment/mass<4.40
     assert set(recipes["left_arm"]["context_sources"]).isdisjoint(recipes["right_arm"]["context_sources"])
-    assert len(trial["parts"]) == len({p["instance_id"] for p in trial["parts"]}) == 335
+    assert len(trial["parts"]) == len({p["instance_id"] for p in trial["parts"]}) == 347
     assert Counter(p["kind"] for p in trial["parts"])["lg-w24"] == 16
     playable={owner:recipes[owner] for owner in ["left_leg","right_leg","pelvis","chest"]}
-    assert sum(len(r["slots"]) for r in playable.values()) == 209
+    assert sum(len(r["slots"]) for r in playable.values()) == 223
     for owner, recipe in playable.items():
         coverage = Counter(sid for step in recipe["manual"] if step["view"] == "components" for sid in step["slots"])
         assert coverage == Counter({sid: 1 for sid in recipe["slots"]})
@@ -855,7 +857,7 @@ def audit_m3(documents):
     assert left.isdisjoint(right) and left|right|set(recipes["pelvis"]["milestones"]["chest_connected"])==set(recipes["pelvis"]["slots"])
     needed=Counter(spec["accepts"] for recipe in playable.values() for spec in recipe["slots"].values() if "accepts" in spec)
     extension_ids={part["instance_id"] for part in stock}|{"R-"+part["instance_id"] for part in stock}
-    extension_ids |= {part["instance_id"] for part in trial["parts"] if part["kind"].startswith(("pv-","ch-","bp-","sh-")) or part["instance_id"].startswith(("LG-W12__","R-LG-W12__"))}
+    extension_ids |= {part["instance_id"] for part in trial["parts"] if part["kind"].startswith(("pv-","ch-","bp-","sh-","pd-")) or part["instance_id"].startswith(("LG-W12__","R-LG-W12__"))}
     assert needed == Counter(part["kind"] for part in trial["parts"] if part["instance_id"] in extension_ids)
     assert trial["m3"]["staged_slots"] == {"left_leg": [], "right_leg": [], "pelvis": []}
     for task in ("shin", "fork", "spar"):
@@ -893,4 +895,4 @@ if __name__ == "__main__":
             assert (ASSETS / name).read_text() == encoded, f"Regenerate {name} with author_leg_prototype.py"
         else:
             (ASSETS / name).write_text(encoded)
-    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; preserved M2 trials; M3 335 extension identities, 209 playable leg/hip/torso slots; byte equality="+str(checking))
+    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; preserved M2 trials; M3 347 extension identities, 223 playable leg/hip/torso slots; byte equality="+str(checking))

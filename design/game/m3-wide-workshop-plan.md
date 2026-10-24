@@ -37,6 +37,15 @@ existing scenarios. Replacement applies to M3.
 
 ### Implementation ledger — 2026-10-24
 
+- Task 07 adds content-driven guided receivers, `game.zones` occupancy for the
+  shared limb station, and both pauldron carriers, M20 bolt units, independent
+  shelf-carried panels and local restraint release. The `head` development stage
+  starts with closed pauldrons, released restraints and a parked crane. See the
+  [pauldron implementation detail](../arms/shoulder-and-upper-arm.md#wider-m3-pauldron-implementation--2026-10-24)
+  for passive stores, mounting reliefs/shoes, harness clearance and panel sizes.
+  Payload/full-rig preflight and mechanical regression evidence are separate from
+  the user's pending walking/access playtest; presentation remains unreviewed.
+
 Integrated foundation:
 
 - `tools/author_workshop_blockout.py` authors the `workshop` spatial contract in

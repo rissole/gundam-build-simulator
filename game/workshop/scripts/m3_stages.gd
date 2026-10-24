@@ -3,8 +3,8 @@ extends RefCounted
 ## Fastenings and rig attachments are supplied (Staging.fill / supplied rig state);
 ## this is never playtest evidence and never a save.
 const Staging=preload("res://scripts/scenario_staging.gd")
-const STAGES = ["pelvis","left_leg_build","left_leg_dock","right_leg_build","right_leg_dock","chest","core","backpack","left_arm","right_arm","pauldrons"]
-const TITLES = {"pelvis":"Pelvis delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting"}
+const STAGES = ["pelvis","left_leg_build","left_leg_dock","right_leg_build","right_leg_dock","chest","core","backpack","left_arm","right_arm","pauldrons","head"]
+const TITLES = {"pelvis":"Pelvis delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting","head":"Head fitting"}
 var game: Node
 
 func _init(workshop: Node) -> void:game=workshop
@@ -73,7 +73,11 @@ func stage_errors(stage: String) -> Array[String]:
 			_location(errors,"right_arm","support:right_arm_store")
 		"pauldrons":
 			for side in ["left","right"]:_need(errors,_equipment(side+"_shoulder").secured(),"Secure the "+side+" shoulder.")
-	if stage in ["right_arm","pauldrons"]:
+		"head":
+			for side in ["left","right"]:
+				_need(errors,model.milestone("chest",side+"_pauldron_closed"),"Retain and close the "+side+" pauldron.")
+				_need(errors,_equipment(side+"_pauldron_receiver").operations_released(),"Release the "+side+" arm's joint and digit restraints.")
+	if stage in ["right_arm","pauldrons","head"]:
 		_need(errors,crane.endpoints.values().all(func(end):return end.state=="stowed"),"Stow every arm crane end.")
 	return errors
 
@@ -92,6 +96,7 @@ func complete(stage: String) -> String:
 		"backpack":return _backpack()
 		"left_arm":return _arm("left")
 		"right_arm":return _arm("right")
+		"pauldrons":return _pauldrons()
 	return stage+": No completion is defined for the last stage."
 
 ## Runs earlier stages from a fresh workshop, yielding between their commands.
@@ -294,3 +299,17 @@ func _arm(side: String) -> String:
 	if not error.is_empty():return error
 	Staging.fill(game,"chest",shoulder.spec.service_slots)
 	return _park()
+
+func _pauldrons() -> String:
+	for side in ["left","right"]:
+		var receiver=_equipment(side+"_pauldron_receiver")
+		var error=_transfer(side+"_pauldron")
+		if not error.is_empty():return error
+		Staging.fill(game,receiver.spec.owner,receiver.spec.retention_slots)
+		error=_park()
+		if not error.is_empty():return error
+		Staging.fill(game,receiver.spec.owner,receiver.spec.closure_slots)
+		for operation in receiver.spec.operations:
+			error=receiver.request("release:"+operation.id)
+			if not error.is_empty():return side+" "+operation.id+": "+error
+	return ""

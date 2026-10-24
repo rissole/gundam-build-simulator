@@ -221,7 +221,7 @@ func has_equipment(id: String) -> bool:
 
 ## One factory: creates `ids` in dependency order, then registers them in EQUIPMENT_ORDER.
 func _build_equipment(ids: Array) -> void:
-	zones=preload("res://scripts/zone_register.gd").new(leg_layout.layout().get("workshop",{}).get("zones",[]))
+	if zones==null:zones=preload("res://scripts/zone_register.gd").new(leg_layout.layout().get("workshop",{}).get("zones",[]) if is_instance_valid(leg_layout) else [])
 	var made: Dictionary = {}
 	for id in ids:
 		var item: Node3D
@@ -277,6 +277,7 @@ func _build_equipment(ids: Array) -> void:
 	for id in EQUIPMENT_ORDER:
 		if made.has(id):equipment.register(made[id])
 	for id in leg_content.get("equipment",{}).get("receivers",{}):
+		if equipment.get_equipment(id)!=null:continue
 		var receiver=preload("res://scripts/staged_receiver.gd").new()
 		add_child(receiver);receiver.setup(self,id,leg_content.equipment.receivers[id]);equipment.register(receiver)
 

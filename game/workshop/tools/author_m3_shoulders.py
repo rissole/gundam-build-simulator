@@ -119,7 +119,7 @@ def extend(trial, chest, arms, kinds, diagram):
         fixed="SH-"+side.upper()+"-SERVICE-PORT__001"
         source(fixed,[tube(bulk,.038,.023,.08),link(bulk,[sign*.40,-.15,-.08],.022)])
         chest["context_sources"].append(fixed)
-        path=[bulk,[sign*.56,bulk[1],bulk[2]],channel(2.65,14.46),channel(2.76,13.45),[sign*.56,.26,1.10],tail]
+        path=[bulk,[sign*.56,bulk[1],bulk[2]],channel(2.65,14.46),channel(2.72,13.45),[sign*.56,.26,1.10],tail]
         service=part("service","service",[link(a,b,.017) for a,b in zip(path,path[1:])]+[tube(p,.022,0,.08) for p in [bulk,tail]],retention+bracing+drives,tuple(path[1]),False)
         def page(title,body,ids):
             return dict(title=side.title()+" shoulder: "+title,body=body,slots=ids,view="components",
