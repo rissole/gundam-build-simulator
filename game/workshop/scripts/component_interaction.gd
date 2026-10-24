@@ -4,6 +4,9 @@ var game: Node
 var held_body: WorkshopPart
 var presentation: Dictionary = {}
 var markers: Array[Dictionary] = []
+# Local target bounds move with their assembly, including authored targets that
+# lie outside its collision hull. Eligibility and obstruction remain live.
+var _candidate_geometry: Dictionary = {}
 
 func _init(workshop: Node) -> void:
 	game = workshop
@@ -19,6 +22,36 @@ func title(kind: String) -> String:
 
 func setup() -> void:
 	presentation = preload("res://scripts/workshop_content.gd").presentation(game.model.definitions)
+	invalidate_candidate_geometry()
+	if not game.model.changed.is_connected(invalidate_candidate_geometry):
+		game.model.changed.connect(invalidate_candidate_geometry)
+
+func invalidate_candidate_geometry() -> void:
+	_candidate_geometry.clear()
+
+func candidate_geometry(owner: String) -> Dictionary:
+	if _candidate_geometry.has(owner):return _candidate_geometry[owner]
+	var records: Array[Dictionary] = []
+	var dynamic: Array[Dictionary] = []
+	var bounds = AABB()
+	var first = true
+	var inverse: Transform3D = game.assembly_node(owner).global_transform.affine_inverse()
+	var root_slot: String = definition(owner).get("root_slot","")
+	for sid in game.model.assemblies[owner].slots:
+		var spec: Dictionary = game.model.slot_definition(owner,sid)
+		if spec.has("assembly") or sid == root_slot:continue
+		var record = {"sid":sid,"spec":spec,"radius":slot_presentation(owner,sid).get("target_radius",0.24)}
+		# Child targets and articulated mounts cannot be frozen in this frame.
+		record.dynamic = spec.has("target_child") or slot_presentation(owner,sid).has("target_child") or game.runtime.mounted_poses.has(owner+"."+sid)
+		if record.dynamic:dynamic.append(record)
+		else:
+			record.point = inverse*slot_point(owner,sid)
+			bounds = AABB(record.point,Vector3.ZERO) if first else bounds.expand(record.point)
+			first = false
+		records.append(record)
+	var result = {"records":records,"dynamic":dynamic,"bounds":bounds,"has_static":not first}
+	_candidate_geometry[owner] = result
+	return result
 
 func slot_pose(owner: String, sid: String) -> Transform3D:
 	return game.slot_pose(owner,sid)
@@ -51,18 +84,28 @@ func candidates() -> Array[Dictionary]:
 	var selected: String = game.selected_kind
 	var held: String = game.model.held_item()
 	if not held.is_empty():selected = game.model.items[held].kind
+	var eye: Vector3 = game.camera.global_position
+	var range_squared: float = game.SNAP_DISCOVERY_RANGE*game.SNAP_DISCOVERY_RANGE
 	for owner in game.model.assemblies:
 		if not game.interactable_assembly(owner):continue
 		var a: Dictionary = game.model.assemblies[owner]
-		for sid in a.slots:
-			var d: Dictionary = game.model.slot_definition(owner,sid)
-			if d.has("assembly") or sid == definition(owner).get("root_slot","") or not a.slots[sid].is_empty():continue
+		var geometry = candidate_geometry(owner)
+		var pose: Transform3D = game.assembly_node(owner).global_transform
+		var nearby = false
+		if geometry.has_static:
+			var world_bounds: AABB = pose*geometry.bounds
+			nearby = eye.distance_squared_to(eye.clamp(world_bounds.position,world_bounds.end)) <= range_squared
+		# A distant owner visits only articulated targets, not all its hardware.
+		for record in geometry.records if nearby else geometry.dynamic:
+			var sid: String = record.sid
+			var d: Dictionary = record.spec
+			if not a.slots[sid].is_empty():continue
 			if not game.model.assembly_access_error(owner,sid).is_empty():continue
 			if not d.get("requires",[]).all(func(r):return not a.slots[r].is_empty()):continue
-			var point: Vector3 = slot_point(owner,sid)
-			if game.camera.global_position.distance_to(point) > game.SNAP_DISCOVERY_RANGE:continue
+			var point: Vector3 = slot_point(owner,sid) if record.dynamic else pose*record.point
+			if eye.distance_squared_to(point) > range_squared:continue
 			# Preserve feedback for a wrong variant; selection only affects ranking.
-			result.append({"type":"component","owner":owner,"sid":sid,"point":point,"radius":slot_presentation(owner,sid).get("target_radius",0.24),"compatible":d.accepts == selected})
+			result.append({"type":"component","owner":owner,"sid":sid,"point":point,"radius":record.radius,"compatible":d.accepts == selected})
 	return result
 
 func service_access(owner: String, sid: String = "") -> bool:

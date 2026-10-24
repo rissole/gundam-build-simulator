@@ -39,7 +39,11 @@ func build() -> void:
 	game.add_child(game.leg_layout)
 	game.leg_layout.setup(game)
 	sun.directional_shadow_max_distance = 65.0
-	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	# Two blended cascades retain room-wide shadows and close working detail
+	# without submitting casters to four maps. Keep the 4096 atlas and 65 m
+	# coverage; the far cascade trades fine distant detail for fewer draws.
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+	sun.directional_shadow_split_1 = 0.12
 	sun.directional_shadow_blend_splits = true
 	fill.queue_free()
 	preload("res://scripts/hangar_dressing.gd").new(game).build(env,sun)

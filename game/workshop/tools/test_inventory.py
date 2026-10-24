@@ -24,6 +24,7 @@ ROUTINE = (
     'source_assets',
     'stage_contract_test',
     'staging_policy_test',
+    'targeting_candidates_test',
     'state_test',
     'supported_model_test',
     'wide_elevators_test',
