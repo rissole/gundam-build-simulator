@@ -54,6 +54,8 @@ var prepared_flags: Dictionary = {}
 var completed_flags: Dictionary = {}
 var automated_test: bool = false
 var m3_stage: String = ""
+## Pause-menu note describing the last --m3-stage preparation.
+var m3_stage_notice: String = ""
 var scripted_controls: Dictionary = {}
 var config: Dictionary
 var source: Dictionary = {}
@@ -636,8 +638,9 @@ func run_m3_stage(stage: String) -> String:
 	var error: String = await M3Stages.new(self).run_to(stage,func(step: String):note.text = "Preparing M3 stage: "+title+"\nNow: "+step)
 	automated_test = was_automated
 	overlay.queue_free()
+	m3_stage_notice=("Started at stage: "+title+". Earlier work was supplied by script, not playtested.") if error.is_empty() else ("Stage preparation stopped: "+error)
 	set_paused(true)
-	if is_instance_valid(hud):hud.toast(("Stage ready: "+title+". Earlier work was supplied by script.") if error.is_empty() else ("Stage preparation stopped: "+error),error.is_empty())
+	if is_instance_valid(hud):hud.toast(m3_stage_notice,error.is_empty());hud.refresh_save_status()
 	if not error.is_empty():push_error("M3 stage "+stage+": "+error)
 	return error
 
