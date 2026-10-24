@@ -69,12 +69,6 @@ func deliver_backpack() -> bool:
 	if not await reopen("backpack partly closed with services"):return false
 	crane=game.equipment.get_equipment("service_crane");pack=game.equipment.get_equipment("backpack_hinge")
 	expect(game.runtime.node("backpack").global_transform.is_equal_approx(pack.load_pose()),"mounted backpack restores its exact articulated parent pose")
-	var invalid: Dictionary=game.saves.capture();invalid.world.fixtures.backpack[10]+=.1
-	expect(not game.saves.validate(invalid).is_empty(),"save rejects a displaced articulated backpack")
-	invalid=game.saves.capture();invalid.world.equipment.backpack_hinge.locks[0]=true
-	expect(not game.saves.validate(invalid).is_empty(),"save rejects an open strut lock during closure")
-	invalid=game.saves.capture();invalid.world.equipment.backpack_hinge.tension=0
-	expect(not game.saves.validate(invalid).is_empty(),"save rejects loss of crane load during partial closure")
 	if not command(pack,"resume"):return false
 	expect(not pack.rig_error("detach","backpack_left").is_empty(),"closed locator contact still needs both lower latches")
 	if not command(pack,"latch:0") or not command(pack,"latch:1"):return false

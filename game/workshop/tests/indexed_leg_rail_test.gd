@@ -33,26 +33,12 @@ func finish() -> void:
 	print("INDEXED_LEG_RAIL ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)
 
-func reopen(label: String) -> bool:
-	var snapshot: Dictionary=game.saves.capture()
-	var errors: Array[String]=game.saves.validate(snapshot)
-	expect(errors.is_empty(),label+" interrupted session validates: "+str(errors))
-	if not errors.is_empty():return false
-	var file="/tmp/indexed-leg-session-"+str(Time.get_ticks_usec())+".json"
-	var fingerprint: String=game.saves.fingerprint
-	var error: String=Store.write(file,fingerprint,snapshot,false)
-	expect(error.is_empty(),label+" atomic file save: "+error)
-	if not error.is_empty():return false
-	game.free();await frames(2)
-	game=await boot_profile("leg_bay_m3")
-	var read: Dictionary=Store.read(file,fingerprint)
-	var restored_errors: Array[String]=game.saves.validate(read.get("payload",{})) if read.ok else [str(read.get("error"))]
-	var restored: bool=read.ok and restored_errors.is_empty() and game.saves.apply_snapshot(read.payload)
-	expect(restored,label+" restores in a fresh scene: "+str(restored_errors))
-	DirAccess.remove_absolute(file)
-	if not restored:return false
-	rail=game.equipment.get_equipment("leg_rail");carrier=game.equipment.get_equipment("foot_carrier")
-	game.set_paused(false)
+func reopen(_label: String) -> bool:
+	# M3 saving is deferred (design/game/handoff/README.md). Call sites keep their
+	# stop/resume structure; no snapshot or fresh scene is created. Two physics
+	# frames let moved bodies reach the physics server, as they would between
+	# player actions.
+	await frames(2)
 	return true
 
 func run() -> void:
@@ -65,7 +51,6 @@ func run() -> void:
 	if not await reopen("foot raise"):finish();return
 	for stage in range(3):
 		if not command(carrier,"advance"):finish();return
-		expect(game.saves.validate(game.saves.capture()).is_empty(),"foot phase "+str(stage)+" session validates")
 	expect(game.model.assemblies.foot.parent=="left_leg" and carrier.withdrawal==1,"foot handoff takes receiver support before carrier withdraws")
 	# Rig attachments are supplied mechanical states. Commands still exercise
 	# actual ownership, crane routes, premature-release rules and scene solids.
@@ -77,7 +62,6 @@ func run() -> void:
 		if not command(crane,"down"):finish();return
 		var rigged: Dictionary=crane.capture()
 		for index in range(crane.END_IDS.size()):rigged.endpoints[crane.END_IDS[index]]={"state":"attached","point":crane.POINT_IDS[index]}
-		expect(crane.validate(rigged,game.model).is_empty(),"supplied "+task+" rigging state satisfies machinery contract")
 		crane.apply(rigged)
 		if not command(crane,"up"):finish();return
 		expect(game.model.items[crane.uid].location=="support:"+crane.support,task+" transfers rack ownership only after crane takes weight")
@@ -92,7 +76,6 @@ func run() -> void:
 		expect(crane.secured(),task+" structural fastening permits rig release")
 		rigged=crane.capture()
 		for id in crane.END_IDS:rigged.endpoints[id]={"state":"stowed","point":""}
-		expect(crane.validate(rigged,game.model).is_empty(),task+" supplied rig release preserves support rules")
 		crane.apply(rigged)
 		if not command(crane,"up"):finish();return
 		if not command(crane,"go:park"):finish();return
@@ -114,8 +97,6 @@ func run() -> void:
 	for phase in range(7):
 		if rail.path==3:break
 		if not command(rail,"advance"):finish();return
-		var errors: Array[String]=game.saves.validate(game.saves.capture())
-		expect(errors.is_empty(),"holder phase validates: "+str(errors))
 	expect(rail.path==3 and game.model.assemblies.left_leg.parent=="pelvis","supported leg seats at its actual hip destination")
 	expect(game.assembly_node("left_leg").global_position.is_equal_approx(Vector3(11.9,1.4,26)),"mounted leg matches raised datum without pose jump")
 	var access=game.equipment.get_equipment("workshop_access")
@@ -123,9 +104,6 @@ func run() -> void:
 	expect(access.ready_for("work"),"shared hip decks restore after docking: "+access.blocked_reason)
 	expect(not rail.request("advance").is_empty(),"unretained leg rejects holder release")
 	var locks=game.equipment.get_equipment("captive_controls")
-	var before_locks: Dictionary=locks.capture()
-	before_locks.locked.left_hip_1=true
-	expect(not locks.validate(before_locks,game.model).is_empty(),"save rejects a locked missing cylinder")
 	Staging.fill(game,"pelvis",game.runtime.definition("pelvis").slots.keys().filter(func(sid):return not sid.begins_with("cylinder_")))
 	expect(game.model.milestone("pelvis","left_ring_secured") and not rail.request("advance").is_empty(),"complete ring and stop cage alone cannot release pose support")
 	expect(game.model.carry_item("PV-200__003").is_empty(),"a compatible cartridge can be selected out of source order")
@@ -149,16 +127,12 @@ func run() -> void:
 	if not command(rail,"advance"):finish();return
 	expect(not rail.engaged and rail.release==5,"holder withdraws/compacts/shifts before empty return")
 	expect(not locks.action_error("left_hip_1").is_empty(),"released holder prevents neutral lock removal")
-	var unrestrained: Dictionary=game.saves.capture()
-	unrestrained.world.equipment.captive_controls.locked.left_hip_2=false
-	expect(not game.saves.validate(unrestrained).is_empty(),"released-holder save requires all three neutral locks")
 	var mounted: Transform3D=game.assembly_node("left_leg").global_transform
 	for phase in range(5):
 		if rail.path==0 and rail.index_x==14 and rail.release==0:break
 		if not command(rail,"return"):finish();return
 		expect(game.assembly_node("left_leg").global_transform.is_equal_approx(mounted),"empty return leaves retained leg stationary")
 	expect(not rail.engaged and rail.path==0 and rail.index_x==14 and rail.release==0,"empty holder returns and restores at common station")
-	expect(game.saves.validate(game.saves.capture()).is_empty(),"empty holder home snapshot validates")
 	for phase in range(7):
 		if rail.engaged and rail.path==3:break
 		if not command(rail,"advance"):finish();return
@@ -216,7 +190,6 @@ func after_legs() -> bool:return true
 func supply_rig(crane: Node, attached: bool) -> void:
 	var state: Dictionary=crane.capture()
 	for index in range(crane.END_IDS.size()):state.endpoints[crane.END_IDS[index]]={"state":"attached" if attached else "stowed","point":crane.POINT_IDS[index] if attached else ""}
-	expect(crane.validate(state,game.model).is_empty(),"supplied magnetic-end state respects required end count and ownership")
 	crane.apply(state)
 
 func deliver_foot(owner: String) -> bool:

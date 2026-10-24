@@ -28,8 +28,6 @@ func run() -> void:
 	for y in [.25,.65,1.05]:
 		var query=PhysicsRayQueryParameters3D.create(chest.global_transform*Vector3(0,y,2),chest.global_transform*Vector3(0,y,.8),4)
 		expect(space.intersect_ray(query).is_empty(),"prepared rear spine preserves the core corridor at "+str(y))
-	var altered=game.saves.capture();altered.world.fixtures.chest[9]+=.2
-	expect(not game.saves.validate(altered).is_empty(),"storage support rejects a displaced chest snapshot")
 	var passed=checks.all(func(check):return check.passed)
 	write_evidence("res://verification/chest-content.json",{"scope":"actual source bounds and interface bore rays; no visibility/reach acceptance","checks":checks})
 	print("CHEST_CONTENT ","PASS " if passed else "FAIL ",checks.size()," checks")

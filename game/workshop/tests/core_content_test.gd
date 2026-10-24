@@ -30,10 +30,6 @@ func run() -> void:
 			core_col_count+=1
 			expect(child.has_meta("motion_shapes"),"each moving source has a compound preserving the cylindrical/guide profile")
 	expect(core_col_count==descriptor.context_sources.size(),"every prepared core source participates in physical motion")
-	var saved=game.saves.capture();saved.world.equipment.core_guide.active=true
-	expect(not game.saves.validate(saved).is_empty(),"save cannot invent guide support for a stored core")
-	saved=game.saves.capture();saved.world.fixtures.core[9]+=.2
-	expect(not game.saves.validate(saved).is_empty(),"stored core cannot move away from its declared saddles")
 	var passed=checks.all(func(check):return check.passed)
 	write_evidence("res://verification/core-content.json",{"scope":"actual source envelopes and guide/key mating solids; no walking/access review","checks":checks})
 	print("CORE_CONTENT ","PASS " if passed else "FAIL ",checks.size()," checks")

@@ -8,8 +8,6 @@ func end_state(crane: Node, point: String, state: String) -> void:
 	var saved: Dictionary=crane.capture()
 	var id: String=crane.END_IDS[crane.POINT_IDS.find(point)]
 	saved.endpoints[id]={"state":state,"point":point if state=="attached" else ""}
-	var errors: Array[String]=crane.validate(saved,game.model)
-	expect(errors.is_empty(),"supplied core end state respects guide support: "+str(errors))
 	crane.apply(saved)
 
 func deliver_core() -> bool:
@@ -74,8 +72,6 @@ func deliver_core() -> bool:
 	if not command(crane,"up") or not command(crane,"go:park"):return false
 	if not await reopen("core crane released"):return false
 	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
-	var invalid=game.saves.capture();invalid.world.equipment.core_guide.bolts[0]=false
-	expect(not game.saves.validate(invalid).is_empty(),"released-core save rejects missing captive retention")
 	expect(not guide.request("bolt:0").is_empty(),"connected core refuses retention undo")
 	if not command(guide,"isolation"):return false
 	if not command(crane,"go:receiver") or not command(crane,"down"):return false

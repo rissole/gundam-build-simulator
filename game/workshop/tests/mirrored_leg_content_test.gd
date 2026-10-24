@@ -29,8 +29,6 @@ func run() -> void:
 	var carrier=game.equipment.get_equipment("foot_carrier")
 	expect(not carrier.can_receive("right_foot"),"carrier cannot accept a foot while the other leg is selected")
 	expect(rail.request("build").is_empty() and carrier.can_receive("right_foot"),"empty common holder can switch before any physical construction")
-	var wrong: Dictionary=game.saves.capture();wrong.world.equipment.leg_rail.assembly="left_leg";wrong.world.equipment.leg_rail.slot="left_leg"
-	expect(not game.saves.validate(wrong).is_empty(),"save rejects another selected leg occupying the shared holder")
 	expect(rail.request("build").is_empty(),"empty common holder returns to left build without moving a foot")
 	var passing=checks.all(func(check):return check.passed)
 	write_evidence("res://verification/mirrored-leg-content.json",{"scope":"physical geometry and support ownership","checks":checks})

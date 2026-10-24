@@ -13,7 +13,6 @@ func _initialize() -> void:call_deferred("run")
 
 func run() -> void:
 	game=await boot_profile("leg_bay_m3")
-	expect(game.saves.validate(game.saves.capture()).is_empty(),"both prepared arms begin on declared physical supports")
 	var rail=game.equipment.get_equipment("leg_rail")
 	expect(rail.request("park").is_empty(),"park the actual leg cradle before using the common limb station")
 	for tick in range(1000):

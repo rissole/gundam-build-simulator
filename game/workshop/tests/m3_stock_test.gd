@@ -23,12 +23,6 @@ func run() -> void:
 		expect(crane.request("task:"+task).is_empty(),"Direct controller layer selects "+task+" at parked rig")
 		verify_stock(crane,"Selected "+task)
 		expect(crane.stock_bodies == bodies and crane.load_body == bodies[crane.uid],"Task selection preserves all existing bodies and selects exact identity")
-	var snapshot: Dictionary = JSON.parse_string(JSON.stringify(game.saves.capture()))
-	expect(game.saves.validate(snapshot).is_empty(),"All visible source stock validates in detached snapshot")
-	game.free();await process_frame
-	game = await boot_profile("leg_bay_m3")
-	expect(game.saves.apply_snapshot(snapshot),"Fresh scene restores independent source-stock projection")
-	crane = game.equipment.get_equipment("service_crane");verify_stock(crane,"Restored")
 	var passed = checks.all(func(check):return check.passed)
 	write_evidence("res://verification/m3-stock.json",{"passed":passed,"checks":checks,"rendered":false,"ordinary_controls":false})
 	game.free();print("M3_STOCK ","PASS" if passed else "FAIL"," ",checks.size()," checks");quit(0 if passed else 1)

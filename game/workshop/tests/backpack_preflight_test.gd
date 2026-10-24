@@ -14,7 +14,6 @@ func _initialize() -> void:call_deferred("run")
 func run() -> void:
 	game=await boot_profile("leg_bay_m3");crane=game.equipment.get_equipment("service_crane")
 	body=game.runtime.node("backpack");descriptor=game.runtime.definition("backpack")
-	expect(game.saves.validate(game.saves.capture()).is_empty(),"prepared backpack starts on declared source support")
 	expect(crane.request("task:backpack_store").is_empty(),"same shared crane selects backpack source task")
 	var low=Vector3(INF,INF,INF);var high=-low
 	for uid in descriptor.context_sources:

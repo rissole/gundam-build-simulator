@@ -1,22 +1,8 @@
 extends "res://tests/backpack_delivery_test.gd"
 ## Mechanical commands and staged rig/stock, with fresh-scene restores.
 ## No walking, reach, aiming or rendered acceptance is inferred.
-func run() -> void:
-	# Optional supplied fixture shortens iterations of this new branch. The
-	# default run still constructs every preceding section through its controls.
-	var path=OS.get_environment("WORKSHOP_ARM_FIXTURE")
-	if path.is_empty():await super.run();return
-	game=await boot_profile("leg_bay_m3");rail=game.equipment.get_equipment("leg_rail");carrier=game.equipment.get_equipment("foot_carrier")
-	var data=JSON.parse_string(FileAccess.get_file_as_string(path))
-	var errors: Array[String]=game.saves.validate(data)
-	expect(errors.is_empty(),"supplied preceding-assembly fixture validates against current definitions: "+str(errors))
-	if errors.is_empty() and game.saves.apply_snapshot(data):
-		game.set_paused(false);await deliver_arms()
-	finish()
-
 func after_legs() -> bool:
 	if not await super.after_legs():return false
-	write_evidence("/tmp/arm-ready-fixture.json",game.saves.capture())
 	return await deliver_arms()
 
 func deliver_arms() -> bool:
@@ -78,8 +64,6 @@ func deliver_arms() -> bool:
 		if not await reopen(uid+" seated unretained"):return false
 		crane=game.equipment.get_equipment("service_crane");cassette=game.equipment.get_equipment("arm_cassette");shoulder=game.equipment.get_equipment(side+"_shoulder")
 		var root=uid+"/"
-		var bad: Dictionary=game.saves.capture();bad.world.equipment[side+"_shoulder"].tension=0;bad.world.equipment[side+"_shoulder"].goal=0
-		expect(not game.saves.validate(bad).is_empty(),uid+" save rejects loss of crane weight before retention")
 		fit_shoulder([root+"ring_front",root+"ring_rear"])
 		if side=="left":
 			expect(game.model.transfer("sh-washer","bin","pocket","SH-WASHER__008")=="SH-WASHER__008" and game.model.install("chest",root+"washer_1","SH-WASHER__008").ok,"compatible opposite-side washer copy retains its own identity")

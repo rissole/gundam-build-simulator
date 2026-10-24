@@ -6,7 +6,6 @@ func run() -> void:
 		await super.run()
 		return
 	game=await boot_profile("leg_bay_m3");rail=game.equipment.get_equipment("leg_rail");carrier=game.equipment.get_equipment("foot_carrier")
-	expect(game.saves.validate(game.saves.capture()).is_empty(),"fresh chest storage session validates")
 	var fixture=game.equipment.get_equipment("module_supports")
 	expect(not fixture.request("template:chest").is_empty(),"occupied pelvis fixture refuses contact exchange")
 	if not await deliver_pelvis():finish();return
@@ -24,6 +23,9 @@ func deliver_chest() -> bool:
 	supply_rig(crane,true)
 	if not command(crane,"up") or not command(crane,"go:receiver"):return false
 	crane.request("down");crane.physics(4.7);crane.request("stop")
+	var pelvis_body: AnimatableBody3D=game.assembly_node("pelvis")
+	var pelvis_physics: Transform3D=PhysicsServer3D.body_get_state(pelvis_body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+	print("PELVIS_AT_CHEST node=",pelvis_body.global_position," physics=",pelvis_physics.origin)
 	expect(fixture.source_release>0 and fixture.source_release<1,"fixture clamps close after chest seat contact")
 	if not await reopen("chest receiving clamp contact"):return false
 	crane=game.equipment.get_equipment("service_crane");fixture=game.equipment.get_equipment("module_supports")
@@ -62,9 +64,6 @@ func deliver_chest() -> bool:
 	Staging.fill(game,"pelvis",["chest/service_1","chest/service_2"])
 	expect(game.model.milestone("pelvis","chest_connected") and game.model.integrity_errors().is_empty(),"retained and serviced chest preserves unique ownership")
 	if not await reopen("chest connected"):return false
-	var valid: Dictionary=game.saves.capture()
-	var displaced=valid.duplicate(true);displaced.world.fixtures.chest[9]+=.5
-	expect(not game.saves.validate(displaced).is_empty(),"save rejects a displaced mounted chest")
 	# Undo the two service plugs through the normal history, then reacquire the
 	# same four-ended crane before touching any structural retention.
 	for i in range(2):
