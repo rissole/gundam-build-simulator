@@ -64,6 +64,7 @@ func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels:
 			var member = _solid(deck,Vector3(beams.position_x,beams.position_y,z),Vector3(beams.span_x,beams.height,beams.depth),steel)
 			member.name = "CantileverDeckBeam"
 	var panel_at = Vector3(size.x/2-.07,1.1,0) if side_gates.is_empty() else Vector3(1.1,1.1,-1.12)
+	if layout_options.has("panel_position"):panel_at=AssemblyRuntime.vec(layout_options.panel_position)
 	_solid(deck,panel_at,Vector3(0.12,0.36,0.90) if side_gates.is_empty() else Vector3(.36,.36,.12),steel)
 	for pair in [["down",-0.25],["up",0.0],["ground",0.25]]:
 		_button(deck,panel_at+Vector3(-.07,0,float(pair[1])) if side_gates.is_empty() else panel_at+Vector3(float(pair[1]),0,.1),pair[0],yellow)

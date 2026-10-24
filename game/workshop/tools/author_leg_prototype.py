@@ -827,7 +827,7 @@ def m3_documents(check=False):
 def audit_m3(documents):
     overlay, trial = documents["m3-definitions.json"], documents["m3-content.json"]
     recipes = materialize_overlay(dict(parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis}), overlay)["assemblies"]
-    assert set(overlay["assemblies"]) == {"pelvis","chest","core","backpack","arm_cassette","left_arm","right_arm","left_pauldron","right_pauldron","right_leg","right_foot","right_heel_pad","right_pitch_actuator","head_baseplate","head_left","head_right","head_top"}
+    assert set(overlay["assemblies"]) == {"pelvis","chest","core","backpack","arm_cassette","left_arm","right_arm","left_pauldron","right_pauldron","right_leg","right_foot","right_heel_pad","right_pitch_actuator","head_baseplate","head_left","head_right","head_top","head_crown"}
     for side in ["left","right"]:
         recipe=recipes[side+"_arm"]
         assert len(recipe["context_sources"])==22 and recipe["slots"]=={}
@@ -836,10 +836,10 @@ def audit_m3(documents):
         moment=sum(trial["sources"][uid]["mass_kg"]*trial["sources"][uid]["mass_center"][2] for uid in recipe["context_sources"])
         assert mass==2033 and .75<moment/mass<4.40
     assert set(recipes["left_arm"]["context_sources"]).isdisjoint(recipes["right_arm"]["context_sources"])
-    assert len(trial["parts"]) == len({p["instance_id"] for p in trial["parts"]}) == 364
+    assert len(trial["parts"]) == len({p["instance_id"] for p in trial["parts"]}) == 380
     assert Counter(p["kind"] for p in trial["parts"])["lg-w24"] == 16
     playable={owner:recipes[owner] for owner in ["left_leg","right_leg","pelvis","chest"]}
-    assert sum(len(r["slots"]) for r in playable.values()) == 244
+    assert sum(len(r["slots"]) for r in playable.values()) == 261
     for owner, recipe in playable.items():
         coverage = Counter(sid for step in recipe["manual"] if step["view"] == "components" for sid in step["slots"])
         assert coverage == Counter({sid: 1 for sid in recipe["slots"]})
@@ -897,4 +897,4 @@ if __name__ == "__main__":
             assert (ASSETS / name).read_text() == encoded, f"Regenerate {name} with author_leg_prototype.py"
         else:
             (ASSETS / name).write_text(encoded)
-    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; preserved M2 trials; M3 364 extension identities, 244 playable leg/hip/torso slots; byte equality="+str(checking))
+    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; preserved M2 trials; M3 380 extension identities, 261 playable leg/hip/torso slots; byte equality="+str(checking))

@@ -2146,6 +2146,1282 @@
       "short_title": "Keyed central power/data loom and strain relief",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/hd-loom.svg"
+    },
+    "hd-sensors": {
+      "family": "HD-SENSORS",
+      "variant": "hd-sensors",
+      "title": "HD-SENSORS · Prepared two-camera / range-sensor carrier",
+      "short_title": "Prepared two-camera / range-sensor carrier",
+      "carry_class": "two_hand",
+      "collision_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.1225,
+            -0.2
+          ],
+          "size": [
+            0.94,
+            0.045,
+            0.04
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.4,
+            -0.2
+          ],
+          "size": [
+            1.02,
+            0.51,
+            0.04
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.68,
+            -0.2
+          ],
+          "size": [
+            0.94,
+            0.05,
+            0.04
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.7225,
+            -0.2
+          ],
+          "size": [
+            1.02,
+            0.035,
+            0.04
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            1.09,
+            -0.2
+          ],
+          "size": [
+            0.9,
+            0.02,
+            0.04
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.27,
+            1.26,
+            -0.33
+          ],
+          "size": [
+            0.18,
+            0.14,
+            0.22
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            -0.27,
+            1.26,
+            -0.49
+          ],
+          "radius": 0.044800000000000006,
+          "height": 0.02,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            -0.342,
+            1.215,
+            -0.46
+          ],
+          "radius": 0.005,
+          "height": 0.012,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            -0.198,
+            1.215,
+            -0.46
+          ],
+          "radius": 0.005,
+          "height": 0.012,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.27,
+            1.26,
+            -0.33
+          ],
+          "size": [
+            0.18,
+            0.14,
+            0.22
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            0.27,
+            1.26,
+            -0.49
+          ],
+          "radius": 0.044800000000000006,
+          "height": 0.02,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            0.198,
+            1.215,
+            -0.46
+          ],
+          "radius": 0.005,
+          "height": 0.012,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            0.342,
+            1.215,
+            -0.46
+          ],
+          "radius": 0.005,
+          "height": 0.012,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            1.62,
+            -0.33
+          ],
+          "size": [
+            0.14,
+            0.14,
+            0.22
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            0,
+            1.62,
+            -0.49
+          ],
+          "radius": 0.044800000000000006,
+          "height": 0.02,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            -0.052000000000000005,
+            1.575,
+            -0.46
+          ],
+          "radius": 0.005,
+          "height": 0.012,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "cylinder",
+          "position": [
+            0.052000000000000005,
+            1.575,
+            -0.46
+          ],
+          "radius": 0.005,
+          "height": 0.012,
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.52,
+            1.09,
+            -0.28
+          ],
+          "size": [
+            0.02,
+            0.02,
+            0.16
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.515,
+            1.09,
+            -0.28
+          ],
+          "size": [
+            0.03,
+            0.02,
+            0.16
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.49,
+            1.12,
+            -0.49
+          ],
+          "size": [
+            0.036,
+            0.036,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.49,
+            1.17,
+            -0.35
+          ],
+          "size": [
+            0.03,
+            0.015,
+            0.3
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.49,
+            1.154,
+            -0.49
+          ],
+          "size": [
+            0.03,
+            0.035,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.49,
+            1.68,
+            -0.49
+          ],
+          "size": [
+            0.036,
+            0.036,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.49,
+            1.73,
+            -0.35
+          ],
+          "size": [
+            0.03,
+            0.015,
+            0.3
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.49,
+            1.714,
+            -0.49
+          ],
+          "size": [
+            0.03,
+            0.035,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.49,
+            1.12,
+            -0.49
+          ],
+          "size": [
+            0.036,
+            0.036,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.49,
+            1.17,
+            -0.35
+          ],
+          "size": [
+            0.03,
+            0.015,
+            0.3
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.49,
+            1.154,
+            -0.49
+          ],
+          "size": [
+            0.03,
+            0.035,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.49,
+            1.68,
+            -0.49
+          ],
+          "size": [
+            0.036,
+            0.036,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.49,
+            1.73,
+            -0.35
+          ],
+          "size": [
+            0.03,
+            0.015,
+            0.3
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.49,
+            1.714,
+            -0.49
+          ],
+          "size": [
+            0.03,
+            0.035,
+            0.02
+          ]
+        }
+      ],
+      "catalogue_image": "res://assets/part-images/hd-sensors.svg"
+    },
+    "hd-faceplate": {
+      "family": "HD-FACE",
+      "variant": "hd-faceplate",
+      "title": "HD-FACE · Front faceplate",
+      "short_title": "Front faceplate",
+      "carry_class": "two_hand",
+      "collision_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.752,
+            -0.68
+          ],
+          "size": [
+            1.3,
+            0.044,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.613,
+            0.8,
+            -0.68
+          ],
+          "size": [
+            0.074,
+            0.052,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.8,
+            -0.68
+          ],
+          "size": [
+            1.048,
+            0.052,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.613,
+            0.8,
+            -0.68
+          ],
+          "size": [
+            0.074,
+            0.052,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.933,
+            -0.68
+          ],
+          "size": [
+            1.3,
+            0.214,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.625,
+            1.13,
+            -0.68
+          ],
+          "size": [
+            0.05,
+            0.18,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.105,
+            -0.68
+          ],
+          "size": [
+            0.94,
+            0.13,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.625,
+            1.13,
+            -0.68
+          ],
+          "size": [
+            0.05,
+            0.18,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.46,
+            1.195,
+            -0.68
+          ],
+          "size": [
+            0.02,
+            0.05,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.26,
+            -0.68
+          ],
+          "size": [
+            0.18,
+            0.18,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.46,
+            1.195,
+            -0.68
+          ],
+          "size": [
+            0.02,
+            0.05,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.55,
+            1.285,
+            -0.68
+          ],
+          "size": [
+            0.2,
+            0.13,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.55,
+            1.285,
+            -0.68
+          ],
+          "size": [
+            0.2,
+            0.13,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.4425,
+            -0.68
+          ],
+          "size": [
+            1.3,
+            0.185,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.385,
+            1.5375,
+            -0.68
+          ],
+          "size": [
+            0.53,
+            0.005,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.385,
+            1.5375,
+            -0.68
+          ],
+          "size": [
+            0.53,
+            0.005,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.36,
+            1.617,
+            -0.68
+          ],
+          "size": [
+            0.48,
+            0.154,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.36,
+            1.617,
+            -0.68
+          ],
+          "size": [
+            0.48,
+            0.154,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.588,
+            1.697,
+            -0.68
+          ],
+          "size": [
+            0.024,
+            0.006,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.322,
+            1.6995,
+            -0.68
+          ],
+          "size": [
+            0.404,
+            0.011,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.322,
+            1.6995,
+            -0.68
+          ],
+          "size": [
+            0.404,
+            0.011,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.588,
+            1.697,
+            -0.68
+          ],
+          "size": [
+            0.024,
+            0.006,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.613,
+            1.723,
+            -0.68
+          ],
+          "size": [
+            0.074,
+            0.046,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.613,
+            1.723,
+            -0.68
+          ],
+          "size": [
+            0.074,
+            0.046,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.7255,
+            -0.68
+          ],
+          "size": [
+            1.048,
+            0.041,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.763,
+            -0.68
+          ],
+          "size": [
+            1.3,
+            0.034,
+            0.08
+          ]
+        }
+      ],
+      "catalogue_image": "res://assets/part-images/hd-faceplate.svg"
+    },
+    "hd-mask": {
+      "family": "HD-MASK",
+      "variant": "hd-mask",
+      "title": "HD-MASK · Samurai mask",
+      "short_title": "Samurai mask",
+      "carry_class": "two_hand",
+      "collision_shapes": [
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.467,
+            -0.84
+          ],
+          "size": [
+            1.4,
+            0.214,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.633,
+            0.58,
+            -0.84
+          ],
+          "size": [
+            0.134,
+            0.012,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.58,
+            -0.84
+          ],
+          "size": [
+            1.108,
+            0.012,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.633,
+            0.58,
+            -0.84
+          ],
+          "size": [
+            0.134,
+            0.012,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.878,
+            -0.84
+          ],
+          "size": [
+            1.4,
+            0.584,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.575,
+            1.26,
+            -0.84
+          ],
+          "size": [
+            0.25,
+            0.18,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.26,
+            -0.84
+          ],
+          "size": [
+            0.18,
+            0.18,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.575,
+            1.26,
+            -0.84
+          ],
+          "size": [
+            0.25,
+            0.18,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.435,
+            -0.84
+          ],
+          "size": [
+            1.4,
+            0.17,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.467,
+            -0.79
+          ],
+          "size": [
+            1.4,
+            0.214,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.633,
+            0.58,
+            -0.79
+          ],
+          "size": [
+            0.134,
+            0.012,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.58,
+            -0.79
+          ],
+          "size": [
+            1.108,
+            0.012,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.633,
+            0.58,
+            -0.79
+          ],
+          "size": [
+            0.134,
+            0.012,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.773,
+            -0.79
+          ],
+          "size": [
+            1.4,
+            0.374,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.065,
+            -0.79
+          ],
+          "size": [
+            1.31,
+            0.21,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.575,
+            1.26,
+            -0.79
+          ],
+          "size": [
+            0.25,
+            0.18,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.26,
+            -0.79
+          ],
+          "size": [
+            0.18,
+            0.18,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.575,
+            1.26,
+            -0.79
+          ],
+          "size": [
+            0.25,
+            0.18,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.435,
+            -0.79
+          ],
+          "size": [
+            1.4,
+            0.17,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.464,
+            -0.89
+          ],
+          "size": [
+            1.4,
+            0.208,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.636,
+            0.58,
+            -0.89
+          ],
+          "size": [
+            0.128,
+            0.024,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.58,
+            -0.89
+          ],
+          "size": [
+            1.096,
+            0.024,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.636,
+            0.58,
+            -0.89
+          ],
+          "size": [
+            0.128,
+            0.024,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            0.881,
+            -0.89
+          ],
+          "size": [
+            1.4,
+            0.578,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.575,
+            1.26,
+            -0.89
+          ],
+          "size": [
+            0.25,
+            0.18,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.26,
+            -0.89
+          ],
+          "size": [
+            0.18,
+            0.18,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.575,
+            1.26,
+            -0.89
+          ],
+          "size": [
+            0.25,
+            0.18,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.0,
+            1.435,
+            -0.89
+          ],
+          "size": [
+            1.4,
+            0.17,
+            0.02
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0,
+            1.23,
+            -0.88
+          ],
+          "size": [
+            0.12,
+            0.4,
+            0.04
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.6970000000000001,
+            1.13,
+            -0.74
+          ],
+          "size": [
+            0.006,
+            0.06,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.663,
+            1.13,
+            -0.74
+          ],
+          "size": [
+            0.006,
+            0.06,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            -0.68,
+            1.145,
+            -0.75
+          ],
+          "size": [
+            0.04,
+            0.01,
+            0.1
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.663,
+            1.13,
+            -0.74
+          ],
+          "size": [
+            0.006,
+            0.06,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.6970000000000001,
+            1.13,
+            -0.74
+          ],
+          "size": [
+            0.006,
+            0.06,
+            0.08
+          ]
+        },
+        {
+          "type": "box",
+          "position": [
+            0.68,
+            1.145,
+            -0.75
+          ],
+          "size": [
+            0.04,
+            0.01,
+            0.1
+          ]
+        }
+      ],
+      "catalogue_image": "res://assets/part-images/hd-mask.svg"
+    },
+    "hd-m8": {
+      "family": "HD-M8",
+      "variant": "hd-m8",
+      "title": "HD-M8 · Captive M8 carrier bolt",
+      "short_title": "Captive M8 carrier bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-m8.svg"
+    },
+    "hd-sensor-loom": {
+      "family": "HD-SERVICE",
+      "variant": "hd-sensor-loom",
+      "title": "HD-SERVICE · Keyed sensor power/data plug and service-loop clip",
+      "short_title": "Keyed sensor power/data plug and service-loop clip",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-sensor-loom.svg"
+    },
+    "hd-m10-80": {
+      "family": "HD-M10080",
+      "variant": "hd-m10-80",
+      "title": "HD-M10080 · M10 × 80 faceplate bolt",
+      "short_title": "M10 × 80 faceplate bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-m10-80.svg"
+    },
+    "hd-m10-160": {
+      "family": "HD-M10160",
+      "variant": "hd-m10-160",
+      "title": "HD-M10160 · M10 × 160 mask bolt",
+      "short_title": "M10 × 160 mask bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-m10-160.svg"
     }
   },
   "assemblies": {
@@ -8358,6 +9634,208 @@
           "label": "HD-M12160 · M12 × 160 top bolt",
           "access_policy": "mounted",
           "undo_requires_support": "m2_service_crane"
+        },
+        "head_sensors": {
+          "accepts": "hd-sensors",
+          "pose_source": "HD-SENSORS__001",
+          "requires": [
+            "head_top",
+            "hd-m12160/001",
+            "hd-m12160/002",
+            "hd-m12160/003",
+            "hd-m12160/004"
+          ],
+          "label": "HD-SENSORS · Prepared two-camera / range-sensor carrier",
+          "access_policy": "mounted",
+          "undo_to": "hands"
+        },
+        "hd-m8/001": {
+          "accepts": "hd-m8",
+          "pose_source": "HD-M8__001",
+          "requires": [
+            "head_sensors"
+          ],
+          "label": "HD-M8 · Captive M8 carrier bolt",
+          "access_policy": "mounted",
+          "support_required": true,
+          "source_supports": [
+            "captive_hd-m8__001"
+          ]
+        },
+        "hd-m8/002": {
+          "accepts": "hd-m8",
+          "pose_source": "HD-M8__002",
+          "requires": [
+            "head_sensors"
+          ],
+          "label": "HD-M8 · Captive M8 carrier bolt",
+          "access_policy": "mounted",
+          "support_required": true,
+          "source_supports": [
+            "captive_hd-m8__002"
+          ]
+        },
+        "hd-m8/003": {
+          "accepts": "hd-m8",
+          "pose_source": "HD-M8__003",
+          "requires": [
+            "head_sensors"
+          ],
+          "label": "HD-M8 · Captive M8 carrier bolt",
+          "access_policy": "mounted",
+          "support_required": true,
+          "source_supports": [
+            "captive_hd-m8__003"
+          ]
+        },
+        "hd-m8/004": {
+          "accepts": "hd-m8",
+          "pose_source": "HD-M8__004",
+          "requires": [
+            "head_sensors"
+          ],
+          "label": "HD-M8 · Captive M8 carrier bolt",
+          "access_policy": "mounted",
+          "support_required": true,
+          "source_supports": [
+            "captive_hd-m8__004"
+          ]
+        },
+        "hd-service/001": {
+          "accepts": "hd-sensor-loom",
+          "pose_source": "HD-SERVICE__001",
+          "requires": [
+            "hd-m8/001",
+            "hd-m8/002",
+            "hd-m8/003",
+            "hd-m8/004"
+          ],
+          "label": "HD-SERVICE · Keyed sensor power/data plug and service-loop clip",
+          "access_policy": "mounted"
+        },
+        "head_faceplate": {
+          "accepts": "hd-faceplate",
+          "pose_source": "HD-FACE__001",
+          "requires": [
+            "head_sensors",
+            "hd-m8/001",
+            "hd-m8/002",
+            "hd-m8/003",
+            "hd-m8/004",
+            "hd-service/001"
+          ],
+          "label": "HD-FACE · Front faceplate",
+          "access_policy": "mounted",
+          "undo_to": "hands"
+        },
+        "hd-m10080/001": {
+          "accepts": "hd-m10-80",
+          "pose_source": "HD-M10080__001",
+          "requires": [
+            "head_faceplate"
+          ],
+          "label": "HD-M10080 · M10 × 80 faceplate bolt",
+          "access_policy": "mounted"
+        },
+        "hd-m10080/002": {
+          "accepts": "hd-m10-80",
+          "pose_source": "HD-M10080__002",
+          "requires": [
+            "head_faceplate"
+          ],
+          "label": "HD-M10080 · M10 × 80 faceplate bolt",
+          "access_policy": "mounted"
+        },
+        "hd-m10080/003": {
+          "accepts": "hd-m10-80",
+          "pose_source": "HD-M10080__003",
+          "requires": [
+            "head_faceplate"
+          ],
+          "label": "HD-M10080 · M10 × 80 faceplate bolt",
+          "access_policy": "mounted"
+        },
+        "hd-m10080/004": {
+          "accepts": "hd-m10-80",
+          "pose_source": "HD-M10080__004",
+          "requires": [
+            "head_faceplate"
+          ],
+          "label": "HD-M10080 · M10 × 80 faceplate bolt",
+          "access_policy": "mounted"
+        },
+        "head_mask": {
+          "accepts": "hd-mask",
+          "pose_source": "HD-MASK__001",
+          "requires": [
+            "head_faceplate",
+            "hd-m10080/001",
+            "hd-m10080/002",
+            "hd-m10080/003",
+            "hd-m10080/004"
+          ],
+          "label": "HD-MASK · Samurai mask",
+          "access_policy": "mounted",
+          "undo_to": "hands"
+        },
+        "hd-m10160/001": {
+          "accepts": "hd-m10-160",
+          "pose_source": "HD-M10160__001",
+          "requires": [
+            "head_mask"
+          ],
+          "label": "HD-M10160 · M10 × 160 mask bolt",
+          "access_policy": "mounted"
+        },
+        "hd-m10160/002": {
+          "accepts": "hd-m10-160",
+          "pose_source": "HD-M10160__002",
+          "requires": [
+            "head_mask"
+          ],
+          "label": "HD-M10160 · M10 × 160 mask bolt",
+          "access_policy": "mounted"
+        },
+        "head_crown": {
+          "assembly": "head_crown",
+          "milestone": "prepared",
+          "requires": [
+            "head_mask",
+            "hd-m10160/001",
+            "hd-m10160/002"
+          ],
+          "pose_source": "HD-HEAD_CROWN-SEAT__001",
+          "label": "Decorative head crown",
+          "support_required": true,
+          "source_supports": [
+            "m2_service_crane"
+          ],
+          "undo_requires_support": "m2_service_crane",
+          "secured_by": [
+            "hd-m12100/005",
+            "hd-m12100/006"
+          ],
+          "access_policy": "mounted"
+        },
+        "hd-m12100/005": {
+          "accepts": "hd-m12-100",
+          "pose_source": "HD-M12100__005",
+          "requires": [
+            "head_crown"
+          ],
+          "label": "HD-M12100 · M12 × 100 side bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m12100/006": {
+          "accepts": "hd-m12-100",
+          "pose_source": "HD-M12100__006",
+          "requires": [
+            "head_crown"
+          ],
+          "label": "HD-M12100 · M12 × 100 side bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
         }
       },
       "supplied_milestones": [
@@ -8597,6 +10075,46 @@
           "hd-m12160/002",
           "hd-m12160/003",
           "hd-m12160/004"
+        ],
+        "head_sensors_retained": [
+          "head_sensors",
+          "hd-m8/001",
+          "hd-m8/002",
+          "hd-m8/003",
+          "hd-m8/004"
+        ],
+        "head_sensors_connected": [
+          "head_sensors",
+          "hd-m8/001",
+          "hd-m8/002",
+          "hd-m8/003",
+          "hd-m8/004",
+          "hd-service/001"
+        ],
+        "head_faceplate_retained": [
+          "head_faceplate",
+          "hd-m10080/001",
+          "hd-m10080/002",
+          "hd-m10080/003",
+          "hd-m10080/004"
+        ],
+        "head_mask_retained": [
+          "head_mask",
+          "hd-m10160/001",
+          "hd-m10160/002"
+        ],
+        "head_crown_retained": [
+          "head_crown",
+          "hd-m12100/005",
+          "hd-m12100/006"
+        ],
+        "head_complete": [
+          "head_mask",
+          "hd-m10160/001",
+          "hd-m10160/002",
+          "head_crown",
+          "hd-m12100/005",
+          "hd-m12100/006"
         ]
       },
       "manual": [
@@ -9842,7 +11360,7 @@
         },
         {
           "title": "Left wraparound side: retain",
-          "body": "Fit 2 HD-M12100 bolts horizontally through the exposed recesses into captive frame threads. Rear top bolts enter forward from the rear flanks; front bolts enter rearward from the front landing. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "body": "Fit both HD-M12100 bolts rearward through the exposed side-shell recesses into captive upright threads. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
           "slots": [
             "hd-m12100/001",
             "hd-m12100/002"
@@ -9902,7 +11420,7 @@
         },
         {
           "title": "Right wraparound side: retain",
-          "body": "Fit 2 HD-M12100 bolts horizontally through the exposed recesses into captive frame threads. Rear top bolts enter forward from the rear flanks; front bolts enter rearward from the front landing. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "body": "Fit both HD-M12100 bolts rearward through the exposed side-shell recesses into captive upright threads. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
           "slots": [
             "hd-m12100/003",
             "hd-m12100/004"
@@ -9962,7 +11480,7 @@
         },
         {
           "title": "Structural head top: retain",
-          "body": "Fit 4 HD-M12160 bolts horizontally through the exposed recesses into captive frame threads. Rear top bolts enter forward from the rear flanks; front bolts enter rearward from the front landing. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "body": "Fit four HD-M12160 bolts horizontally through the exposed roof-ear recesses into captive side-frame threads. Rear bolts enter forward from the rear flanks; front bolts enter rearward from the front landing. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
           "slots": [
             "hd-m12160/001",
             "hd-m12160/002",
@@ -9978,6 +11496,283 @@
                 "HD-M12160__002",
                 "HD-M12160__003",
                 "HD-M12160__004"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Sensor carrier: slide onto guides",
+          "body": "Bench preparation is supplied: two interchangeable cameras and one distinct range sensor, two M6 screws each, wired on HD-SENSORS. Carry with two hands; use one elevator shelf trip with the padded grips. With structural top retained and every end stowed, approach 1 m forward, then slide straight rearward through the open front. The unequal guide shoes reject reversed orientation; captured rails and the rear stop support the seated carrier.",
+          "slots": [
+            "head_sensors"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Sensor carrier: slide onto guides",
+              "sources": [
+                "HD-SENSORS__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Sensor carrier: retain",
+          "body": "Tighten the four captive M8 carrier bolts at their front heads after the rails capture the carrier. The two-camera and range-sensor preparation screws are already supplied; no loose module stock is required.",
+          "slots": [
+            "hd-m8/001",
+            "hd-m8/002",
+            "hd-m8/003",
+            "hd-m8/004"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Sensor carrier: retain",
+              "sources": [
+                "HD-M8__001",
+                "HD-M8__002",
+                "HD-M8__003",
+                "HD-M8__004"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Sensor carrier: connect and check",
+          "body": "Plug the single keyed power/data connection near the lower right front. Clip the prepared short service loop inside the right portal, clear of the guides and all three optical apertures. Check all three modules before closing the faceplate.",
+          "slots": [
+            "hd-service/001"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Sensor carrier: connect and check",
+              "sources": [
+                "HD-SERVICE__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Front faceplate: seat",
+          "body": "Carry HD-FACE with both hands on the elevator shelf. After all four carrier bolts and its keyed power/data check, approach 18 cm forward and translate rearward onto the two lower support ledges and side-frame locators. The ledges support fastening; the camera and range openings remain clear.",
+          "slots": [
+            "head_faceplate"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Front faceplate: seat",
+              "sources": [
+                "HD-FACE__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Front faceplate: retain",
+          "body": "Fit all four HD-M10080 M10 × 80 front bolts rearward into the independent frame bosses. All four are required before fitting the mask; support ledges alone do not retain the faceplate.",
+          "slots": [
+            "hd-m10080/001",
+            "hd-m10080/002",
+            "hd-m10080/003",
+            "hd-m10080/004"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Front faceplate: retain",
+              "sources": [
+                "HD-M10080__001",
+                "HD-M10080__002",
+                "HD-M10080__003",
+                "HD-M10080__004"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Samurai mask: hook",
+          "body": "Carry HD-MASK on the enlarged shared shelf with two hands. With the faceplate fully retained, approach 16 cm forward and 10 cm high. Translate rearward, then lower 10 cm onto the two independent hooks outside the faceplate edges. Once hooked the mask is hands-free, ready for its uplift bolts.",
+          "slots": [
+            "head_mask"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Samurai mask: hook",
+              "sources": [
+                "HD-MASK__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Samurai mask: retain",
+          "body": "Fit both HD-M10160 M10 × 160 front bolts rearward into the lower portal bosses. These prevent uplift; hooks alone are temporary support. For a local correction before the crown, undo both bolts, lift the mask clear into free hands, then refit that same mask and both bolts.",
+          "slots": [
+            "hd-m10160/001",
+            "hd-m10160/002"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Samurai mask: retain",
+              "sources": [
+                "HD-M10160__001",
+                "HD-M10160__002"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Decorative head crown: deliver",
+          "body": "Fit matching decorative head crown upright inserts on the empty lowered bulky fixture. Use Decorative head crown to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Decorative head crown; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 18 cm onto the seat. Keep the rig attached. After mask retention, the final crown lowers 18 cm: 6 cm clear lead and 12 cm onto the two unequal keyed prongs. Keep both front-facing ends attached.",
+          "slots": [
+            "head_crown"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Decorative head crown: deliver",
+              "sources": [
+                "HD-HEAD_CROWN-SEAT__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Decorative head crown: retain",
+          "body": "Fit both HD-M12100 M12 × 100 front bolts rearward through the crown feet into the independent keyed root bosses. Only after both bolts are complete may the two front-facing magnetic ends be released and stowed. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "slots": [
+            "hd-m12100/005",
+            "hd-m12100/006"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Decorative head crown: retain",
+              "sources": [
+                "HD-M12100__005",
+                "HD-M12100__006"
               ],
               "context": [],
               "offsets": {},
@@ -10456,6 +12251,38 @@
       "manual": [
         {
           "title": "Structural head top preparation supplied",
+          "view": "overview",
+          "slots": [],
+          "body": "Upright structural frames, locating tabs and magnetic pads are prepared. The chest manual owns installation and external hardware."
+        }
+      ]
+    },
+    "head_crown": {
+      "title": "Prepared decorative head crown",
+      "carry_class": "equipment",
+      "bounds": [
+        2,
+        2,
+        1.8
+      ],
+      "work_locations": [
+        "support",
+        "parent"
+      ],
+      "interaction": "components",
+      "context_sources": [
+        "HD-HEAD_CROWN__001"
+      ],
+      "slots": {},
+      "supplied_milestones": [
+        "prepared"
+      ],
+      "milestones": {
+        "prepared": []
+      },
+      "manual": [
+        {
+          "title": "Decorative head crown preparation supplied",
           "view": "overview",
           "slots": [],
           "body": "Upright structural frames, locating tabs and magnetic pads are prepared. The chest manual owns installation and external hardware."

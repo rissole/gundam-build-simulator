@@ -64,7 +64,7 @@ func coverage(t: Dictionary) -> void:
 			pages.append({"owner": owner, "title": step.title, "slots": step.slots, "supplies": supplies})
 		expect(counts.size() == t.data.assemblies[owner].slots.size() and counts.values().all(func(n): return n == 1), owner + " manual owns each installation slot exactly once")
 		total += counts.size()
-	expect(total == 244, "Both legs, pelvis and chest manuals cover exactly the 244 audited installation connections")
+	expect(total == 261, "Both legs, pelvis and chest manuals cover exactly the 261 audited installation connections")
 	manifests.m3 = {"pages": pages, "stock_count": t.model.items.size(), "staged_slots": t.content.m3.staged_slots}
 
 func reject_variant(model: AssemblyModel, owner: String, sid: String, uid: String) -> void:
@@ -173,7 +173,7 @@ func recover(t: Dictionary) -> void:
 func run() -> void:
 	for harness_first in [false, true]:
 		var t = m3_trial()
-		expect(t.model.items.size() == 499 and t.content.parts.size() == 364, "M3 supplies 135 base foot identities and the audited 364 wider-workshop identities")
+		expect(t.model.items.size() == 515 and t.content.parts.size() == 380, "M3 supplies 135 base foot identities and the audited 380 wider-workshop identities")
 		expect(t.model.items.values().filter(func(record): return record.kind == "lg-w24").size() == 16, "Sixteen M24 washers share one stock type across both legs and hips")
 		if not harness_first: coverage(t)
 		prepared_foot(t)

@@ -243,8 +243,8 @@ walking clearance is 2.20 m; car roof/gear must fit within 2.10 m above its deck
 | --- | --- |
 | Complete shafts | X5.0..8.2 /17.8..21.0; Z27.4..30.6 |
 | Cars | 2.6 × 2.6 m: X5.3..7.9 /18.1..20.7; Z27.7..30.3 |
-| Shelf | Inside car's front wall, Z27.8..28.2; left X5.65..7.05/right 18.95..20.35; shelf +0.65 above deck |
-| Shelf capacity | One two-hand panel up to 1.35 × 0.35 × 1.10 m, or two one-hand parts. Car retains a 2.6 × 2.1 m rear turning area. |
+| Shelf | Inside car's front wall, Z27.8..28.2; 1.50 m wide, left X5.60..7.10/right 18.90..20.40; shelf surface +0.65 above deck |
+| Shelf capacity | One two-hand panel up to 1.45 × 0.35 × 1.20 m, or two one-hand parts. Panel top +1.85 fits the 2.10 m roof/gear budget. Car retains a 2.6 × 2.1 m rear turning area. |
 | Car doors | Inboard and outboard, 1.5 m clear across Z28.5..30.0. Guides stay in corner bands Z27.4..27.7/30.3..30.6. |
 | Outer walks, all elevated levels | Left X3.5..5.0/right 21.0..22.5, Z23.4..37.3; 1.5 m clear, rails add ≤0.10 m outside |
 | Rear crossover | X5.0..21.0/Z35.8..37.3; 1.5 m clear, behind the rear lifting well |

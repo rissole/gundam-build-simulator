@@ -124,10 +124,12 @@ def contract():
         data["elevators"][side] = dict(
             name=side, origin=[x,0,29], size=[2.6,2.6], levels=[.15,8.4,11.2,14,16.4],
             yaw_degrees=0, side_doors=True, shaft_size=[3.2,3.2],
+            panel_position=[1.1 if side=="left" else -1.1,1.1,-1.12],
             guide_positions=[[-1.45,-1.45],[1.45,1.45]],
             shelf=dict(id=side+"_shelf",supports=[side+"_shelf_0",side+"_shelf_1"],
-                       position=[-.25,.65,-1],yaw_degrees=0,size=[1.4,.08,.4],
-                       places=[-.35,.35]))
+                       # Surface at +.65; the full panel tops out at +1.85.
+                       position=[-.25 if side=="left" else .25,.61,-1],yaw_degrees=0,size=[1.5,.08,.4],
+                       two_hand_capacity=[1.45,.35,1.20],places=[-.35,.35]))
 
     def group(name, parent="", at=(0,0,0), rotation=(0,0,0), **extra):
         data["groups"][name] = dict(parent=parent, **pose(at,rotation), **extra)

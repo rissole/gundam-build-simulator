@@ -4398,6 +4398,294 @@
         "receiver_support": "bulky_fixture",
         "receiver_contact": true,
         "rig_adapter": "head_top_receiver"
+      },
+      "head_crown": {
+        "title": "Decorative head crown",
+        "payload": "assembly",
+        "load_uid": "head_crown",
+        "owner": "chest",
+        "slot": "head_crown",
+        "source_support": "bulky_fixture",
+        "source_equipment": "module_supports",
+        "support": "m2_service_crane",
+        "guided_receiver": "head_crown_receiver",
+        "receiver_equipment": "head_crown_receiver",
+        "secured": {
+          "milestone": "head_crown_retained"
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            -0.58,
+            2.36,
+            -0.68
+          ],
+          "head_pad_1": [
+            0.58,
+            2.36,
+            -0.68
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            -0.58,
+            2.36,
+            -0.68
+          ],
+          "head_pad_1": [
+            0.58,
+            2.36,
+            -0.68
+          ]
+        },
+        "spreader_points": [
+          [
+            -0.58,
+            0,
+            0
+          ],
+          [
+            0.58,
+            0,
+            0
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            3.25,
+            -0.95,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            13,
+            16.8,
+            26
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            3.25,
+            -0.95,
+            13
+          ],
+          [
+            3.25,
+            17.2,
+            13
+          ],
+          [
+            13,
+            17.2,
+            13
+          ],
+          [
+            13,
+            17.2,
+            26
+          ],
+          [
+            13,
+            16.98,
+            26
+          ],
+          [
+            13,
+            16.8,
+            26
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.18
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "exact_receiver": true,
+        "sweep_radius": 2.1,
+        "up_y": 20.759999999999998,
+        "access_mode": "head",
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": [],
+        "rig_center_offset": [
+          0,
+          0,
+          -0.3
+        ]
+      },
+      "head_crown_to_fixture": {
+        "title": "Decorative head crown to fixture",
+        "payload": "assembly",
+        "load_uid": "head_crown",
+        "owner": "head_crown",
+        "slot": "",
+        "source_support": "head_crown_store",
+        "support": "m2_service_crane",
+        "receiver_equipment": "module_supports",
+        "secured": {
+          "milestone": ""
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            -0.58,
+            2.36,
+            -0.68
+          ],
+          "head_pad_1": [
+            0.58,
+            2.36,
+            -0.68
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            -0.58,
+            2.36,
+            -0.68
+          ],
+          "head_pad_1": [
+            0.58,
+            2.36,
+            -0.68
+          ]
+        },
+        "spreader_points": [
+          [
+            -0.58,
+            0,
+            0
+          ],
+          [
+            0.58,
+            0,
+            0
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            5.15,
+            -0.95,
+            17.1
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            3.25,
+            -0.95,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            5.15,
+            -0.95,
+            17.1
+          ],
+          [
+            5.15,
+            6,
+            17.1
+          ],
+          [
+            3.25,
+            6,
+            17.1
+          ],
+          [
+            3.25,
+            6,
+            13
+          ],
+          [
+            3.25,
+            -0.95,
+            13
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.18
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "sweep_radius": 2.1,
+        "up_y": 9,
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": [],
+        "rig_center_offset": [
+          0,
+          0,
+          -0.3
+        ],
+        "receiver_support": "bulky_fixture",
+        "receiver_contact": true,
+        "rig_adapter": "head_crown_receiver"
       }
     },
     "rack_contacts": [
@@ -5874,6 +6162,18 @@
             0,
             0
           ]
+        },
+        "head_crown": {
+          "position": [
+            3.25,
+            -0.95,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
         }
       },
       "pelvis_envelope": [
@@ -6209,7 +6509,8 @@
       "head_baseplate_rig",
       "head_left_rig",
       "head_right_rig",
-      "head_top_rig"
+      "head_top_rig",
+      "head_crown_rig"
     ],
     "elevators": {
       "left": {
@@ -6236,6 +6537,11 @@
           3.2,
           3.2
         ],
+        "panel_position": [
+          1.1,
+          1.1,
+          -1.12
+        ],
         "guide_positions": [
           [
             -1.45,
@@ -6254,14 +6560,19 @@
           ],
           "position": [
             -0.25,
-            0.65,
+            0.61,
             -1
           ],
           "yaw_degrees": 0,
           "size": [
-            1.4,
+            1.5,
             0.08,
             0.4
+          ],
+          "two_hand_capacity": [
+            1.45,
+            0.35,
+            1.2
           ],
           "places": [
             -0.35,
@@ -6293,6 +6604,11 @@
           3.2,
           3.2
         ],
+        "panel_position": [
+          -1.1,
+          1.1,
+          -1.12
+        ],
         "guide_positions": [
           [
             -1.45,
@@ -6310,15 +6626,20 @@
             "right_shelf_1"
           ],
           "position": [
-            -0.25,
-            0.65,
+            0.25,
+            0.61,
             -1
           ],
           "yaw_degrees": 0,
           "size": [
-            1.4,
+            1.5,
             0.08,
             0.4
+          ],
+          "two_hand_capacity": [
+            1.45,
+            0.35,
+            1.2
           ],
           "places": [
             -0.35,
@@ -7628,6 +7949,48 @@
           0,
           0.9299999999999999,
           0.84
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_insert_head_crown": {
+        "parent": "bulky_frame",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": false
+      },
+      "bulky_jaw_head_crown_0": {
+        "parent": "bulky_insert_head_crown",
+        "position": [
+          0,
+          0.9299999999999999,
+          -0.64
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_jaw_head_crown_1": {
+        "parent": "bulky_insert_head_crown",
+        "position": [
+          0,
+          0.9299999999999999,
+          -0.42
         ],
         "rotation_degrees": [
           0,
@@ -17317,6 +17680,166 @@
           5.7700000000000005,
           0.825,
           11.44
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_crown_0_0_post",
+        "parent": "bulky_insert_head_crown",
+        "position": [
+          -0.2,
+          0.39999999999999997,
+          -0.53
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_crown_0_0_saddle",
+        "parent": "bulky_insert_head_crown",
+        "position": [
+          -0.2,
+          0.825,
+          -0.53
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_crown_1_0_post",
+        "parent": "bulky_insert_head_crown",
+        "position": [
+          0.2,
+          0.39999999999999997,
+          -0.53
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_crown_1_0_saddle",
+        "parent": "bulky_insert_head_crown",
+        "position": [
+          0.2,
+          0.825,
+          -0.53
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_crown_0_pad",
+        "parent": "bulky_jaw_head_crown_0",
+        "position": [
+          -0.2,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_crown_1_pad",
+        "parent": "bulky_jaw_head_crown_1",
+        "position": [
+          -0.2,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_crown_store_0_0_post",
+        "parent": "",
+        "position": [
+          4.95,
+          0.39999999999999997,
+          16.57
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_crown_store_0_0_saddle",
+        "parent": "",
+        "position": [
+          4.95,
+          0.825,
+          16.57
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_crown_store_1_0_post",
+        "parent": "",
+        "position": [
+          5.3500000000000005,
+          0.39999999999999997,
+          16.57
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_crown_store_1_0_saddle",
+        "parent": "",
+        "position": [
+          5.3500000000000005,
+          0.825,
+          16.57
         ],
         "size": [
           0.14,

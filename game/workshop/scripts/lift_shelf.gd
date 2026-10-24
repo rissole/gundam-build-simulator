@@ -38,6 +38,10 @@ func capacity_error(uid: String) -> String:
 	for occupant in occupants():
 		if not occupant.is_empty():used += size_of(occupant)
 	if used+size_of(uid)>2:return "Shelf full: it holds two one-hand components or one two-hand component."
+	if size_of(uid)==2 and shelf.has("two_hand_capacity"):
+		var bound: AABB=game.source[game.source_uid(uid)].mesh.get_aabb()
+		var limit: Array=shelf.two_hand_capacity
+		if bound.size.x>float(limit[0])+.00001 or bound.size.z>float(limit[1])+.00001 or bound.size.y>float(limit[2])+.00001:return "This component exceeds the shelf's upright panel capacity."
 	return ""
 
 func _pose(uid: String, index: int) -> Transform3D:

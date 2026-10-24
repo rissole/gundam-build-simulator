@@ -21,14 +21,15 @@ requested a `--m3-stage` development launch flag. Work resumes from the task
 files in [handoff/README.md](handoff/README.md); they override older instructions
 in this document where they differ.
 
-Task 09 has stopped at the required mask shelf-fit gate. Its hook locations span
-1.36 m against the 1.35 m stock limit; the shelf stores meshes upright, and no
-mask source currently demonstrates a fit. The maximum envelope also exceeds the
-height limit, but is not actual mesh evidence. Keep the shelf unchanged. Resolve
-actual source/transport fit or the mask interface/handling contract before
-resuming the [task's deferred deliverables and acceptance](handoff/09-head-hand-pieces-and-crown.md).
-The [plan ledger](m3-wide-workshop-plan.md#implementation-ledger--2026-10-24)
-records this stop; the structural head remains the task-08 baseline.
+Task 09 resumes from `94d37c2` with the user's 2026-10-24 shelf-enlargement
+choice. Both M3 shelves now accept one 1.45 × 0.35 × 1.20 m panel on a 1.50 m
+surface; the authored mask fits with its hook/bolt interfaces preserved. Sensor
+carrier, faceplate, hooked mask and final crane crown are implemented on the
+shared staged receiver. `--m3-stage=complete` prepares the retained/connected head
+and parks the crane. See the [plan ledger](m3-wide-workshop-plan.md#implementation-ledger--2026-10-24)
+and [head implementation](../head.md#wider-m3-head-implementation--2026-10-24).
+Mechanical checks remain separate from pending user walking, access and
+presentation playtesting; M3 saving and full teardown remain deferred.
 
 The last regression run before review passed 17 of 18 cases. The full sequence
 stopped before cassette pickup because the test never returned the right-foot
@@ -62,10 +63,9 @@ Both lower draw latches precede rig release and service-cover closure. Local
 correction reopens under crane support, with interrupted deployment, weight
 transfer and hinge angles preserved through fresh-scene saves. Its source,
 rigging and service-display geometry have preflight coverage; walking and
-connection access remain the user's playtest. Pauldrons, head and remaining fixture work
-continue before the complete handoff. Other prepared major sections, remaining bulky/arm transfers and playtest checkpoints
-remain in progress. This is not yet a complete playtest
-handoff. Historical evidence below does not establish the adaptation's completion.
+connection access remain the user's playtest. The later task-07–09 work adds
+pauldrons and the complete head; the ledger above records that structure.
+Historical evidence below does not establish fresh gameplay or usability approval.
 
 Arm source preflight now includes both prepared arms, the connected cassette,
 actual fixed shoulder drive brackets and the complete four-end rig/taglines.

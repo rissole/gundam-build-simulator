@@ -3,8 +3,8 @@ extends RefCounted
 ## Fastenings and rig attachments are supplied (Staging.fill / supplied rig state);
 ## this is never playtest evidence and never a save.
 const Staging=preload("res://scripts/scenario_staging.gd")
-const STAGES = ["pelvis","left_leg_build","left_leg_dock","right_leg_build","right_leg_dock","chest","core","backpack","left_arm","right_arm","pauldrons","head","head_sensors"]
-const TITLES = {"pelvis":"Pelvis delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting","head":"Head fitting","head_sensors":"Head sensor fitting"}
+const STAGES = ["pelvis","left_leg_build","left_leg_dock","right_leg_build","right_leg_dock","chest","core","backpack","left_arm","right_arm","pauldrons","head","head_sensors","complete"]
+const TITLES = {"pelvis":"Pelvis delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting","head":"Head fitting","head_sensors":"Head sensor fitting","complete":"Robot structure complete"}
 var game: Node
 
 func _init(workshop: Node) -> void:game=workshop
@@ -77,13 +77,18 @@ func stage_errors(stage: String) -> Array[String]:
 			for side in ["left","right"]:
 				_need(errors,model.milestone("chest",side+"_pauldron_closed"),"Retain and close the "+side+" pauldron.")
 				_need(errors,_equipment(side+"_pauldron_receiver").operations_released(),"Release the "+side+" arm's joint and digit restraints.")
-		"head_sensors":
+		"head_sensors","complete":
 			for uid in ["head_baseplate","head_left","head_right","head_top"]:
 				_need(errors,model.milestone("chest",uid+"_retained") and _equipment(uid+"_receiver").state=="released","Retain "+uid+" and release its rig.")
 				_need(errors,game.zones.holder(uid+"_rig").is_empty(),"Stow every end of "+uid+".")
 			_need(errors,model.milestone("chest","head_baseplate_connected"),"Connect and clip the central head loom.")
 			_need(errors,model.support_occupant("bulky_fixture").is_empty(),"Clear the bulky fixture.")
-	if stage in ["right_arm","pauldrons","head","head_sensors"]:
+	if stage=="complete":
+		for uid in ["head_sensors","head_faceplate","head_mask","head_crown"]:
+			_need(errors,model.milestone("chest",uid+"_retained"),"Retain "+uid+".")
+		_need(errors,model.milestone("chest","head_sensors_connected"),"Connect the sensor carrier power/data.")
+		_need(errors,_equipment("head_crown_receiver").state=="released" and game.zones.holder("head_crown_rig").is_empty(),"Release and stow the final crown rig.")
+	if stage in ["right_arm","pauldrons","head","head_sensors","complete"]:
 		_need(errors,crane.endpoints.values().all(func(end):return end.state=="stowed"),"Stow every arm crane end.")
 	return errors
 
@@ -104,6 +109,7 @@ func complete(stage: String) -> String:
 		"right_arm":return _arm("right")
 		"pauldrons":return _pauldrons()
 		"head":return _head()
+		"head_sensors":return _head_closure()
 	return stage+": No completion is defined for the last stage."
 
 ## Runs earlier stages from a fresh workshop, yielding between their commands.
@@ -336,3 +342,45 @@ func _head() -> String:
 		error=_park()
 		if not error.is_empty():return error
 	return ""
+
+func _shelf_item(sid: String, side: String = "left") -> String:
+	var slot=game.model.slot_definition("chest",sid);var uid: String=slot.pose_source
+	var shelf=_equipment(side+"_shelf");var lift=_equipment(side+"_lift")
+	var error="" if is_equal_approx(lift.height,lift.stops[0]) else command(lift,"ground")
+	if not error.is_empty():return error
+	error=game.model.carry_item(uid)
+	if not error.is_empty():return sid+": "+error
+	game.components.hold_at(uid,shelf._pose(uid,0).translated(Vector3.UP*.10))
+	error=shelf.request("store")
+	if not error.is_empty():return sid+" shelf: "+error
+	error=command(lift,"stop4")
+	if not error.is_empty():return error
+	error=shelf.request("take:0")
+	if not error.is_empty():return error
+	error=game.components.placement_error("chest",sid,uid)
+	if not error.is_empty():return error
+	var result: Dictionary=game.model.install("chest",sid,uid)
+	if not result.ok:return sid+": "+result.error
+	game.components.held_body.free();game.components.held_body=null;game.components.sync("chest")
+	return ""
+
+func _head_closure() -> String:
+	for uid in ["head_sensors","head_faceplate","head_mask"]:
+		var receiver=_equipment(uid+"_receiver")
+		var error=_shelf_item(uid)
+		if not error.is_empty():return error
+		for sid in receiver.spec.get("captive_slots",[]):
+			error=receiver.request("fasten:"+sid)
+			if not error.is_empty():return error
+		Staging.fill(game,"chest",receiver.spec.retention_slots)
+		if not receiver.retained():return uid+": Retain and connect the seated hand-carried piece."
+	var error=command(_equipment("module_supports"),"template:head_crown")
+	if not error.is_empty():return error
+	error=_transfer("head_crown_to_fixture")
+	if not error.is_empty():return error
+	error=_park()
+	if not error.is_empty():return error
+	error=_transfer("head_crown")
+	if not error.is_empty():return error
+	Staging.fill(game,"chest",_equipment("head_crown_receiver").spec.retention_slots)
+	return _park()

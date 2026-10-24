@@ -230,7 +230,8 @@ carrier or through the roof is required.
 
 Faceplate and mask use ordinary assisted two-hand carrying and a finite elevator
 shelf, one piece at a time, with protective edge grips. Reserve an upright shelf
-contact width **1.35 m × 0.35 m depth**, retaining a piece up to 1.10 m high; this
+contact width **1.45 m × 0.35 m depth**, retaining a piece up to 1.20 m high
+(user shelf-enlargement decision, 2026-10-24); this
 is a use of the shared shelf, not a dedicated head machine. They remain separate
 collect/place/fasten steps. Carrier transport uses its own padded support on that
 same shelf; no invisible equipment load or pocketing of a large panel is assumed.
@@ -432,14 +433,19 @@ questions; they are not additional user-approved dimensions or gameplay evidence
 - Payload/full-rig preflight includes fitted neighbors/hardware and rejects low
   crossings and reversed plate entry. Mechanical/manual checks are automated;
   walking, reach/visibility, manufactured detail and presentation remain unreviewed.
-- Task 09 stopped at its shelf-fit gate. The mask's maximum envelope is
-  1.40 W × 0.20 D × 1.16 H against the unchanged 1.35 × 0.35 × 1.10 m limit.
-  Its specified hook locations alone span 1.36 m; an upright narrower silhouette
-  cannot be assumed to fit while preserving those receiving interfaces.
-  `lift_shelf.gd::_pose` centres the source mesh with identity basis; carrying
-  rotation does not change its stored orientation. No mask source mesh exists
-  in the task-08 content, so this is an unresolved geometry proof, not a tested
-  mesh-fit failure. Resume with an actual source/transport-fit proof preserving
-  the mounts and shelf contract, or a resolved mask interface/handling revision.
-  Sensors, faceplate, mask, crown and `complete` remain unimplemented; see
-  [task 09](game/handoff/09-head-hand-pieces-and-crown.md) for deferred acceptance.
+- The 2026-10-24 user decision resolves the task-09 shelf blocker: both M3 shelves
+  are 1.50 m wide, accepting one 1.45 × 0.35 × 1.20 m panel; M2 is unchanged.
+- Task 09 adds shelf-carried HD-SENSORS, HD-FACE and HD-MASK, followed by the
+  upright two-end crown crane load; the chest manual owns all external slots.
+- Bench preparation supplies two identical cameras, one range sensor and six M6
+  screws. The carrier has four locally tightened captive M8 bolts and one keyed
+  power/data connection; closure requires retention and the connection check.
+- The compact carrier occupies 1.06 × 0.32 × 0.66 m inside the stated insertion
+  envelope. Faceplate and mask retain their specified bolt/hook coordinates.
+- Ordinary item seating uses the hip-cylinder parking-catch ownership pattern:
+  the hooked mask frees both hands before its two uplift bolts are fitted.
+- Roof key pockets and panel reliefs clear fitted guides/hooks; M12×100 crown/side
+  bolts stay interchangeable. `complete` requires head retention/services and parked rig.
+- Closure tests cover shelf transfers, order, optical corridors and mask correction;
+  full payload/rig preflight covers the crown with fitted head closures. The new
+  surfaces remain blockout geometry; walking, reach and presentation await the user.

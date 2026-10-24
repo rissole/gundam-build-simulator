@@ -30,23 +30,24 @@ Explicit user decisions:
 - Add pause-menu playtest checkpoints for inspecting later workshop stages quickly. *Deferred 2026-10-24; see [Saves and checkpoints](#saves-and-checkpoints).*
 - Retain the current centered crane controls and shared equipment approach.
 
-The full wider-workshop journey is not complete yet. The implementation ledger
-below distinguishes integrated equipment from the remaining assembly work.
+The wider-workshop structure is implemented through the final head crown. The
+implementation ledger distinguishes mechanical evidence from pending user
+walking, access and presentation playtesting.
 The current default supported-foot profile and independent M2 trials remain their
 existing scenarios. Replacement applies to M3.
 
 ### Implementation ledger — 2026-10-24
 
-- Task 09 stopped under its shelf-capacity rule before gameplay changes. Mask
-  envelope 1.40 × 0.20 × 1.16 m exceeds the 1.35 × 0.35 × 1.10 m contract;
-  hook locations span 1.36 m, and the shelf stores source meshes upright.
-  No mask source currently proves a compliant fit. Preserve the existing shelf;
-  resolve actual source/transport geometry or the mask interface/handling contract
-  before resuming [all task-09 work](handoff/09-head-hand-pieces-and-crown.md),
-  including closure/crown tests, `complete` and unknown/early/furthest stage-flag
-  coverage under approximately 150 s. The unchanged task-08 authoring byte check
-  passed (0.198 s); no new mechanical or presentation evidence was produced.
-  See [head details](../head.md#wider-m3-head-implementation--2026-10-24).
+- Task 09 resolves the stop recorded in `94d37c2` using the user's 2026-10-24
+  shelf decision: both M3 shelves are 1.50 m wide with a 1.45 × 0.35 × 1.20 m
+  single-panel capacity; M2's shelf contract is unchanged. Adds the prepared sensor
+  carrier/captive M8 actions and power/data connection, separate faceplate and
+  hands-free hooked mask, then the two-key crown via the shared fixture/crane.
+  `complete` is the final development boundary. Manual/stock, shelf/elevator,
+  optical, supported correction and full-rig route checks are mechanical evidence;
+  walking, reach/visibility and rendered presentation remain unreviewed.
+  See [head details](../head.md#wider-m3-head-implementation--2026-10-24) and
+  [task 09](handoff/09-head-hand-pieces-and-crown.md) for scope and acceptance.
 
 - Task 08 adds four head crane pieces on staged receivers, upright bulky-fixture
   inserts and store transfers, separate retention/loom stock, and `head_sensors`.

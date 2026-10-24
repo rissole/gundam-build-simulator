@@ -52,7 +52,15 @@ func run() -> void:
 	var access_state: Dictionary=access.capture();access_state.mode="head";access_state.moving=false
 	for key in access_state.channels:access_state.channels[key]={"value":0.0,"goal":0.0}
 	access.apply(access_state);await frames(2)
-	for uid in ["head_baseplate","head_left","head_right","head_top"]:
+	for uid in ["head_baseplate","head_left","head_right","head_top","head_crown"]:
+		if uid=="head_crown":
+			for item in ["head_sensors","head_faceplate","head_mask"]:
+				var hand=game.equipment.get_equipment(item+"_receiver")
+				neighbor_hardware(item,true)
+				var source: Dictionary=game.source[hand.spec.uid]
+				var body=StaticBody3D.new();game.add_child(body);body.collision_layer=2
+				var col=CollisionShape3D.new();col.shape=source.mesh.create_trimesh_shape();body.add_child(col)
+				body.global_transform=game.runtime.node("chest").global_transform*source.transform;publish(body)
 		neighbor_hardware(uid,false)
 		game.set_paused(false);expect(fixture.request("template:"+uid).is_empty(),uid+" fits reusable upright inserts");game.set_paused(true)
 		# Both handed routes are checked with the opposite side already seated.

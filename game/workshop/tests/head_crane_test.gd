@@ -66,12 +66,21 @@ func run() -> void:
 		if not command(crane,"up") or not command(crane,"go:park"):finish();return
 	expect(stages.stage_errors("head_sensors").is_empty(),"head_sensors begins with all four pieces retained, rig stowed and crane parked")
 	expect(game.model.integrity_errors().is_empty(),"head construction preserves every physical owner and identity")
-	# Leave the straight front sensor prism open after the structural roof.
-	var shape=BoxShape3D.new();shape.size=Vector3(1.06,.66,1.42)
-	var at=Transform3D(Basis.IDENTITY,Vector3(13,18.21,25.21))
-	var query=PhysicsShapeQueryParameters3D.new();query.shape=shape;query.transform=at;query.collision_mask=15
+	# The captured rails now occupy empty corners of the bounding prism.
+	# Sweep the actual prepared carrier compound, just above its bearing contact.
+	var sweep=preload("res://scripts/motion_sweep.gd")
+	var receiver=game.equipment.get_equipment("head_sensors_receiver")
+	var source: Dictionary=game.source[receiver.spec.uid]
+	var solids: Array[Dictionary]=SolidHandling.authored_shapes(game.model.definitions.parts["hd-sensors"].collision_shapes,source.mesh.get_aabb())
+	var at: Transform3D=receiver.load_pose().translated(Vector3.UP*.002)
+	var start_pose=at.translated(Vector3(0,0,-1))
 	await frames(2)
-	expect(game.get_world_3d().direct_space_state.intersect_shape(query).is_empty(),"installed sides and roof preserve the complete straight front sensor insertion prism")
+	var groups=[{"shapes":solids,"margin":.001,"error":"Carrier hits {collider}"}]
+	var result=sweep.sweep(game.get_world_3d().direct_space_state,groups,40,func(p: float)->Transform3D:return start_pose.interpolate_with(at,p),15,[],"sensor_front")
+	expect(result.is_empty(),"installed sides and roof preserve the complete straight front sensor insertion path: "+str(result))
+	var reversed_start=start_pose;reversed_start.basis=Basis(Vector3.UP,PI)
+	var reversed_end=at;reversed_end.basis=reversed_start.basis
+	expect(not sweep.sweep(game.get_world_3d().direct_space_state,groups,40,func(p: float)->Transform3D:return reversed_start.interpolate_with(reversed_end,p),15,[],"sensor_reversed").is_empty(),"the reversed carrier is physically rejected by its keyed receiving geometry")
 	finish()
 
 func transfer(task: String) -> bool:
@@ -82,9 +91,12 @@ func transfer(task: String) -> bool:
 
 func audit_manual() -> void:
 	var definition: Dictionary=game.runtime.definition("chest");var counts={};var pages=0
+	var structural: Array=[]
+	for uid in ["head_baseplate","head_left","head_right","head_top"]:
+		structural.append(uid);structural.append_array(game.equipment.get_equipment(uid+"_receiver").spec.retention_slots)
 	for index in range(definition.manual.size()):
 		var page: Dictionary=definition.manual[index]
-		if page.slots.is_empty() or not (page.slots[0].begins_with("head_") or page.slots[0].begins_with("hd-")):continue
+		if page.slots.is_empty() or not page.slots.all(func(sid):return sid in structural):continue
 		game.hud.open_manual("chest",index)
 		var supplies: String=game.hud.page_body.text.get_slice("Parts for this step\n",1)
 		expect(not supplies.is_empty(),"runtime HUD shows supplies for "+page.title)
