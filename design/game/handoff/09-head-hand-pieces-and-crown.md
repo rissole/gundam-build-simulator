@@ -21,6 +21,31 @@ and exact open-front path", "Separate faceplate, mask, and decorative crown moun
 visibility, and fitted-neighbor checks" and "Manual dependencies and remaining
 verification".
 
+## User decision, 2026-10-24: enlarge the shelf
+
+The first run stopped at the shelf-fit gate (commit `94d37c2`). The mask is
+~1.40 W × 0.20 D × 1.16 H and its hooks alone span 1.36 m, against the 1.35 × 0.35
+× 1.10 m single-panel limit. **The user chose to enlarge the shared shelf** rather
+than crane, shrink or split the mask. Implement it as part of this task:
+
+- Single two-hand panel capacity becomes **1.45 × 0.35 × 1.20 m**. The two-one-hand-part
+  capacity is unchanged.
+- Physical shelf width becomes **1.50 m**: left X5.60..7.10, right X18.90..20.40, with
+  the same Z27.8..28.2 band and +0.65 m height above the deck. Its top is 1.85 m above
+  the deck, inside the car's 2.10 m roof/gear budget. The 2.6 × 2.1 m rear turning
+  area is unchanged.
+- Apply to **both** elevators through the authored layout data
+  (`author_workshop_blockout.py`) and the shelf/lift scripts that read it. Keep
+  M2's shelf (`leg-bay-layout.json` / `lift_shelf.gd` M2 path) unchanged unless the
+  code is shared; if shared, prove the M2 shelf tests still pass.
+- Check the wider shelf against the car doors (1.5 m clear), car walls and shaft
+  guides. Re-run `wide_elevators_test` and the pauldron panel shelf checks.
+- Update the shelf rows of the access table in `design/game/final-assembly-plan.md`
+  ("Shelf" and "Shelf capacity"), and replace the task-09 blocker note in
+  `design/head.md` with the resolution (one or two lines).
+- Then implement the rest of this task as written. The mask must fit the new
+  capacity using its actual authored geometry, with mounts unchanged.
+
 ## Rules
 
 Same as task 08: data on `staged_receiver` plus authoring Python; no new controllers
@@ -57,8 +82,9 @@ review; no sandbox escalation; assembly-review part/manual audit.
   - 2 M12×100 front bolts at `(±0.20,+0.66,17.28)`.
   - Keep the camera and range-sensor optical corridors clear through faceplate, mask
     and crown (head.md gives the aperture positions).
-- **Shelf capacity:** one two-hand piece up to 1.35 × 0.35 × 1.10 m. If the faceplate
-  or mask doesn't fit, stop and report; don't resize the shelf.
+- **Shelf capacity (after the enlargement above):** one two-hand piece up to
+  1.45 × 0.35 × 1.20 m. If the faceplate or mask still doesn't fit with its actual
+  geometry, stop and report.
 
 ## Deliverables
 
