@@ -159,22 +159,25 @@ def contract():
     # Shell, flush crossings, marked reservations and a single expanded crane.
     box("floor",[6,-.15,15],[40,.3,48],"floor")
     for x in [-14,26]:box("wall_x"+str(x),[x,12.5,15],[.3,25,48],"wall")
-    for z in [-9,39]:box("wall_z"+str(z),[6,12.5,z],[40,25,.3],"wall")
+    for z in [-9,39]:box("wall_z"+str(z),[6,12.5,z],[39.7,25,.3],"wall")
     box("roof",[6,25.15,15],[40,.3,48],"dark")
     for z in [-6,2,10,18,26,34]:box("truss"+str(z),[6,24.7,z],[39.6,.4,.3])
     for key,bay in data["bays"].items():
         x0,x1,z0,z1=bay["bounds"]
-        for edge,x,z,sx,sz in [("l",x0,(z0+z1)/2,.04,z1-z0),("r",x1,(z0+z1)/2,.04,z1-z0),
-                              ("f",(x0+x1)/2,z0,x1-x0,.04),("b",(x0+x1)/2,z1,x1-x0,.04)]:
-            box(key+"_mark_"+edge,[x,.006,z],[sx,.012,sz],"yellow",solid=False)
-        data["signs"].append(dict(text=key.replace("_"," ").upper(),position=[(x0+x1)/2,2.8,z0],width=min(5,x1-x0)))
+        # Short corner marks leave the floor calm and never cross adjacent bays.
+        for ix,x in enumerate([x0+.10,x1-.10]):
+            for iz,z in enumerate([z0+.10,z1-.10]):
+                dx=1 if ix==0 else -1;dz=1 if iz==0 else -1
+                box(f"{key}_mark_{ix}_{iz}_x",[x+dx*.35,.006,z],[.70,.012,.035],"yellow",solid=False)
+                box(f"{key}_mark_{ix}_{iz}_z",[x,.006,z+dz*.385],[.035,.012,.70],"yellow",solid=False)
+        data["signs"].append(dict(text=key.replace("_"," ").upper(),position=[x0+.9,1.12,z0+.1],width=1.6))
     for x in data["crane"]["runways"]:
         for z in data["crane"]["columns"]:
             box(f"crane_base_{x}_{z}",[x,.12,z],[.8,.24,.8],"dark")
-            box(f"crane_column_{x}_{z}",[x,11.7,z],[.4,23.4,.4])
+            box(f"crane_column_{x}_{z}",[x,11.6,z],[.4,23.2,.4])
         box(f"crane_runway_{x}",[x,23.4,15],[.4,.4,46])
     group("crane_bridge",at=[0,0,18])
-    box("crane_bridge",[6.4,23.15,0],[38.2,.3,.4],parent="crane_bridge")
+    box("crane_bridge",[6.4,23.15,0],[37.8,.3,.4],parent="crane_bridge")
     group("crane_trolley",parent="crane_bridge",at=[8.4,23,0])
     box("crane_trolley",[0,0,0],[.55,.25,.5],"yellow","crane_trolley")
     for lane,x in data["rail"]["lanes"].items():
@@ -195,7 +198,7 @@ def contract():
         group(key,at=[x,0,20.5],closed_angle=0,open_angle=angle,motion_contacts=[key+"_post"])
         box(key+"_bar",[0,1.02,.85],[.10,.18,1.50],"yellow",key)
         box(key+"_lower_bar",[0,.60,.85],[.08,.12,1.50],"yellow",key)
-        box(key+"_link",[0,.81,.12],[.08,.60,.08],parent=key)
+        box(key+"_link",[0,.81,.14],[.06,.42,.06],parent=key)
         data["signs"].append(dict(text="RAIL CROSSING / WAIT FOR OPEN GATES",position=[x,1.65,20.5],width=2.6))
 
     # The one adjustable bulky fixture, initially using pelvis bearing inserts.
@@ -209,7 +212,7 @@ def contract():
     group("bulky_insert_chest",parent="bulky_frame",enabled=False)
     for x in [-.65,.65]:
         box(f"bulky_foot_{x}",[x,.12,.65],[.75,.24,1.8],"dark","bulky_fixture")
-        box(f"bulky_screw_{x}",[x,.40,.65],[.18,.36,.18],parent="bulky_fixture")
+        box(f"bulky_screw_{x}",[x,.38,.65],[.18,.32,.18],parent="bulky_fixture")
         box(f"bulky_inner_{x}",[x,.49,.65],[.12,.18,.12],parent="bulky_frame")
         box(f"bulky_insert_{x}",[x,1.52,.65],[.24,.10,.26],"yellow","bulky_insert_pelvis")
         box(f"bulky_pelvis_riser_{x}",[x,1.05,.65],[.18,.94,.18],parent="bulky_insert_pelvis")
@@ -217,7 +220,8 @@ def contract():
             key=f"bulky_jaw_pelvis_{x}_{z}";group(key,parent="bulky_insert_pelvis",at=[x,1.88,z])
             box(key+"_contact",[0,0,0],[.18,.10,.16],"yellow",key)
             box(key+"_back",[0,-.23,.91-z],[.12,.46,.10],parent=key)
-            box(key+"_link",[0,0,(.91-z)/2],[.12,.10,.91-z],parent=key)
+            if z==.75:data["solids"][-1]["visual_size"]=[.10,.44,.08]
+            box(key+"_link",[0,-.01 if z==.55 else -.015,(.91-z)/2],[.10 if z==.55 else .08,.06,.91-z-.012],parent=key)
     box("bulky_crossbeam",[0,.48,.65],[1.66,.2,.24],parent="bulky_frame")
     for x in [-.84,.84]:
         box(f"bulky_chest_rail_{x}",[x,.70,0],[.18,.20,1.1],parent="bulky_insert_chest")
@@ -293,7 +297,7 @@ def contract():
     group("right_arm_store",at=[21,0,-6.3])
     for t in data["cassette"]["saddles"]:
         box(f"right_arm_store_pad_{t}",[0,.93,t],[1.4,.14,.24],"yellow","right_arm_store")
-        for x in [-.55,.55]:box(f"right_arm_store_leg_{x}_{t}",[x,.465,t],[.16,.93,.24],"dark","right_arm_store")
+        for x in [-.55,.55]:box(f"right_arm_store_leg_{x}_{t}",[x,.43,t],[.16,.86,.22],"dark","right_arm_store")
 
     # Readable source contacts in the reserved foot area. Detailed foot tooling
     # remains a later component workflow; the prepared foot uses its carrier.
@@ -301,9 +305,9 @@ def contract():
     # Low portal: no crown across the rear suspension corridor.
     for x in [8.8,17.2]:
         box(f"gantry_foot_{x}",[x,.15,31.7],[1.4,.3,1.6],"dark")
-        box(f"gantry_column_{x}",[x,5.55,31.1],[.6,11.1,.6])
+        box(f"gantry_column_{x}",[x,5.25,31.1],[.6,10.5,.6])
         # Stepped blockout braces stay wholly behind the portal and out of wells.
-        for i in range(4):box(f"gantry_brace_{x}_{i}",[x,.5+i*.65,32.7-i*.32],[.35,1,.35])
+        for i in range(4):box(f"gantry_brace_{x}_{i}",[x,.5+i*.65,32.7-i*.32],[.35,.65,.35])
     bounds("gantry_crosshead",8.5,17.5,10.5,11.1,30.8,31.4,"dark")
     for x in [12.35,13.65]:
         bounds(f"gantry_arm_{x}",x-.18,x+.18,10.65,10.95,26.5,31.1)
@@ -373,6 +377,29 @@ def contract():
                 if level==11.2:deck("aft_finger_"+side,a,b,31.7,35.8,level,["left","right","front"])
         deck("rear_crossover_"+tag,5,21,35.8,37.3,level,["rear"])
 
+    # Rendered joints have distinct sections while physics retains the authored
+    # envelopes. Telescoping plates must not share their host's top/side planes.
+    for entry in data["solids"]:
+        name=entry["id"]
+        sx,sy,sz=entry["size"]
+        if name.startswith("finger_") and name.endswith("_floor"):
+            inset=.016 if name.startswith("finger_middle_") else .008
+            entry["visual_size"]=[sx-inset,sy-inset,sz-inset]
+            entry["visual_offset"]=[0,-.008 if name.startswith("finger_middle_") else .008,0]
+        elif name.startswith("wing_") and not name.startswith("wing_hinge_") and name.endswith("_floor"):
+            entry["visual_size"]=[sx,sy-.012,sz]
+        elif name.startswith("rear_inner_") and name.endswith("_guard"):
+            entry["visual_size"]=[sx-.012,sy-.012,.06]
+        elif name.startswith("bulky_jaw_pelvis_") and name.endswith("_link") and "_0.75_" in name:
+            entry["visual_size"]=[sx,sy,sz-.008]
+        elif name.startswith("bulky_jaw_") and not name.startswith("bulky_jaw_pelvis_") and (name.endswith("_link") or name.endswith("_arm")):
+            entry["visual_size"]=[sx-.008,sy-.014,sz-.012]
+        elif name.startswith("bulky_inner_"):
+            entry["visual_size"]=[sx,sy-.012,sz]
+        elif name.startswith("bulky_backpack_crossbeam_"):
+            entry["visual_size"]=[sx-.012,sy-.012,sz-.012]
+        if entry["id"]=="transverse_table" or entry["id"].startswith("arm_cassette_floor_pad_"):
+            entry["visual_offset"]=[0,.004,0]
     from author_m3_pauldrons import stores
     stores(data)
     from author_m3_head import fixtures

@@ -1,5 +1,5 @@
 extends "res://tests/kit/harness.gd"
-## Opt-in survey of the live workshop, at standing eye height. Run with:
+## Opt-in survey of the live workshop. M3 includes an elevated room overview. Run with:
 ## ./play.command --windowed --resolution 1440x900 --disable-render-loop \
 ##   --fixed-fps 60 --script tests/workshop_visual_review.gd -- --review-tag=before
 var game: Node
@@ -60,6 +60,18 @@ func run() -> void:
 	# Keep exact, repeatable standing views while rendering the actual live scene.
 	game.set_physics_process(false)
 	for frame in range(5):await process_frame
+	if game.profile.trial == "m3":
+		await capture("01-workshop",Vector3(23,4.2,22),Vector3(3,2.5,10),false)
+		await capture("02-limb-bay",Vector3(18,1.66,20),Vector3(12,1.6,10),false)
+		await capture("03-gantry",Vector3(3,2.5,19),Vector3(13,11,27),false)
+		await capture("04-preparation",Vector3(-1,1.66,17),Vector3(3.25,1.4,13),false)
+		await capture("05-stock",Vector3(-3,1.66,3),Vector3(-3,1.0,-3),false)
+		for index in range(12):
+			await capture("motion-%02d" % index,Vector3(10+index*.06,1.66,12),Vector3(15,0.1,16),false)
+		await capture("static-a",Vector3(10,1.66,12),Vector3(15,0.1,16),false)
+		await capture("static-b",Vector3(10,1.66,12),Vector3(15,0.1,16),false)
+		finish(inputs)
+		return
 	if OS.get_cmdline_user_args().has("--review-harness"):
 		await capture("01-front-west",Vector3(0.7,1.05,1.8),Vector3(1.4,0.17,0),false)
 		await capture("02-front-east",Vector3(3.9,1.05,1.8),Vector3(3.2,0.17,0),false)

@@ -64,6 +64,17 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 
 func _solid(parent: CollisionObject3D, at: Vector3, size: Vector3, material: Material) -> CollisionShape3D:
 	var visual = game.box(parent,at,size,material)
+	# Butt the visible handrail members; retain the established solid envelopes.
+	if size.is_equal_approx(Vector3(.07,1.04,.07)):
+		visual.mesh.size.y = 1.015;visual.position.y -= .0125
+	elif is_equal_approx(size.y,.07) and size.z>.3:
+		visual.mesh.size.z -= .14
+	elif is_equal_approx(size.y,.07) and size.x>.3:
+		visual.mesh.size.x -= .14
+	elif size.is_equal_approx(Vector3(.12,.1,1.7)):
+		visual.mesh.size.z = 1.55;visual.mesh.size.y = .12
+	elif size.is_equal_approx(Vector3(.08,.1,.08)):
+		visual.mesh.size = Vector3(.07,.095,.07)
 	var col = CollisionShape3D.new();col.position = at;var shape = BoxShape3D.new();shape.size = size;col.shape = shape
 	parent.add_child(col);col.set_meta("visual",visual);return col
 

@@ -22,6 +22,10 @@ a one-line summary here. The full text of this file before it was condensed is
 - **Crane console:** compact, centered 340 px panel with a fixed view. Awaiting
   the user's manual check; no acceptance run or rendered review was done for the
   final layout.
+- **Workshop visuals:** minimal engineering palette, calmer signs/markings and
+  neutral lighting implemented. Workshop surface audit passes 14 checks; rendered
+  screenshots inspected. User style/playtest acceptance remains pending.
+  [Changes, screenshots and verification](history/workshop-visual-refresh-20261024.md).
 - **M4:** held while the whole-robot workflow is designed.
 
 ## Next
@@ -103,6 +107,7 @@ a one-line summary here. The full text of this file before it was condensed is
 
 | Feedback / positive finding | Current direction and open question |
 | --- | --- |
+| Workshop was ugly/crowded, lighting needed improvement, and overlapping surfaces flickered prolifically (2026-10-24) | Minimal practical engineering style implemented for the workshop only; robot models remain for later detail. 142 initial surface overlaps repaired, with moving equipment/alternate fixtures checked too. [Screenshots and evidence](history/workshop-visual-refresh-20261024.md); awaiting user judgment. |
 | Implementation took 6 h+; the user suspected poor architecture (2026-10-24) | Addressed by the handoff tasks: a generic staged receiver, an occupancy register and the shared stage sequence. Keep new sections as data. |
 | Saving and checkpoints keep adding work and are often wrong (2026-10-24) | Deferred for M3 until the structure exists; `--m3-stage` replaces checkpoints. |
 | Rigging paths were already clear in the agreed plan; extra discovery iterations undermine its purpose | The core sweep first omitted the full spreader/cable envelope, and parked gates intruded into the bypass. That was an implementation/verification miss, not planning ambiguity. See the rigging rule above. |

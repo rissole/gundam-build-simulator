@@ -10,26 +10,27 @@ func build() -> void:
 	environment.environment = Environment.new()
 	var env = environment.environment
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color("91a4aa")
+	env.background_color = Color("d6d8d2")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("cbd8dd")
-	env.ambient_light_energy = 0.35
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	env.ambient_light_color = Color("e7ebe8")
+	env.ambient_light_energy = 0.55
+	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	game.add_child(environment)
 	var sun = DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-48,-28,0)
-	sun.light_energy = 0.85
-	sun.light_color = Color("ffebce")
+	sun.rotation_degrees = Vector3(-68,-25,0)
+	sun.light_energy = 0.55
+	sun.light_color = Color("fff8ec")
 	sun.shadow_enabled = true
+	sun.shadow_opacity = 0.45
 	# Resolve small joints within this room instead of allocating shadow detail
 	# across a distant outdoor scene.
 	sun.directional_shadow_max_distance = 32.0
 	game.add_child(sun)
 	var fill = OmniLight3D.new()
 	fill.position = Vector3(-2,4,3)
-	fill.light_energy = 0.65
+	fill.light_energy = 0.35
 	fill.omni_range = 14
-	fill.light_color = Color("d1edff")
+	fill.light_color = Color("edf2f4")
 	game.add_child(fill)
 	var floor_mat = game.material(Color("7c8886"))
 	var wall_mat = game.material(Color("abb9b6"))
@@ -40,10 +41,45 @@ func build() -> void:
 		game.leg_layout = preload("res://scripts/leg_bay_layout.gd").new()
 		game.add_child(game.leg_layout)
 		game.leg_layout.setup(game)
-		sun.directional_shadow_max_distance = 58.0
+		sun.directional_shadow_max_distance = 65.0
+		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+		sun.directional_shadow_blend_splits = true
+		if game.leg_layout.blockout != null:
+			_hangar_lighting()
+			_hangar_wayfinding()
 	else:
 		_make_component_room(floor_mat,wall_mat,dark,metal,warm)
 	_make_preparation_area(dark,metal,warm)
+
+func _hangar_lighting() -> void:
+	# Regular high-bay strips provide scale without adding ground-level clutter.
+	# Shadowless fill avoids overlapping shadow maps on fine assembly hardware.
+	var fixture = game.material(Color("edf2ed"),0,true)
+	for x in [-7.0,6.0,19.0]:
+		for z in [-3.0,9.0,21.0,33.0]:
+			var strip = game.box(game,Vector3(x,24.42,z),Vector3(0.30,0.08,5.0),fixture)
+			strip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			# Four broad fills stay below Compatibility's eight lights per mesh.
+			if x==6.0 or z in [-3.0,21.0]:continue
+			var light = OmniLight3D.new()
+			light.position = Vector3(x,17,z)
+			light.light_color = Color("f1f3ef")
+			light.light_energy = 0.55
+			light.omni_range = 26.0
+			game.add_child(light)
+
+func _hangar_wayfinding() -> void:
+	# A quiet protective wall band and wall-mounted zone lettering establish
+	# scale and orientation without another layer of objects in the working aisles.
+	var band = game.material(Color("a8afaa"))
+	for x in [-13.83,25.83]:
+		game.box(game,Vector3(x,.46,15),Vector3(.025,.90,47.65),band)
+	for z in [-8.83,38.83]:
+		game.box(game,Vector3(6,.46,z),Vector3(39.63,.90,.025),band)
+	var ink = Color("465153")
+	game.sign_text(game,"01   /   PARTS + PREPARATION",Vector3(-3,3.8,-8.82),72,ink,.006)
+	var rear = game.sign_text(game,"02   /   FINAL ASSEMBLY",Vector3(13,5.0,38.82),90,ink,.006)
+	rear.rotation.y = PI
 
 func _make_component_room(floor_mat: Material, wall_mat: Material, dark: Material, metal: Material, _warm: Material) -> void:
 	game.box(game,Vector3(0,-0.15,0),Vector3(22,0.3,20),floor_mat,true)
@@ -52,12 +88,6 @@ func _make_component_room(floor_mat: Material, wall_mat: Material, dark: Materia
 	game.box(game,Vector3(-10.8,4,0.075),Vector3(0.3,8,13.85),wall_mat,true)
 	game.box(game,Vector3(10.8,4,0.075),Vector3(0.3,8,13.85),wall_mat,true)
 	game.box(game,Vector3(0,4,9.8),Vector3(22,8,0.3),wall_mat,true)
-	for x in range(-10,11,2):
-		game.box(game,Vector3(x,0.002,0),Vector3(0.016,0.004,19),game.material(Color("687875")))
-	for z in range(-6,10,2):
-		# Split at grid intersections so the floor markings have no overlapping faces.
-		for x in range(-10,10,2):
-			game.box(game,Vector3(x+1,0.002,z),Vector3(1.984,0.004,0.016),game.material(Color("687875")))
 	for x in [-8.0,-4.0,0.0,4.0,8.0]:
 		# Pilasters start at the wall face so their tops do not overlap the wall top.
 		game.box(game,Vector3(x,4,-6.75),Vector3(0.22,8,0.20),metal)

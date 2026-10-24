@@ -318,7 +318,7 @@ func _m3_racks() -> void:
 			var top: Vector3 = frame*AssemblyRuntime.vec(contact)
 			box(self,"M3Rack_"+task,Vector3(top.x,top.y/2,top.z),Vector3(.20,top.y,.22),steel)
 			rack_hardware.append(get_child(get_child_count()-1).get_rid())
-		sign_at(spec.title+" / CRANE\nSelect task · Go to rack · Down · E / click magnets",Vector3(frame.origin.x,2.55,frame.origin.z-.55),2.8)
+		sign_at(spec.title.to_upper(),Vector3(frame.origin.x,2.55,frame.origin.z-.55),2.8)
 	if is_instance_valid(cradle):return
 	# The sole's two pads remain in contact as the foot is handed to the rail.
 	var foot_frame = authored_pose(layout().foot_carrier.receiver_pose)

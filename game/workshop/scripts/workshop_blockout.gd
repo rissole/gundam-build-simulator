@@ -17,14 +17,22 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 		var parent: Node3D = self if entry.parent.is_empty() else groups[entry.parent]
 		var visual: MeshInstance3D = game.box(parent,AssemblyRuntime.vec(entry.position),AssemblyRuntime.vec(entry.size),materials[entry.material])
 		visual.name = entry.id;visual.visible = not entry.get("hidden",false)
+		if entry.has("visual_offset"):visual.position += AssemblyRuntime.vec(entry.visual_offset)
+		if entry.has("visual_size"):visual.mesh.size = AssemblyRuntime.vec(entry.visual_size)
+		# The directional key represents the overhead luminaires inside the room.
+		if entry.id == "roof" or entry.id.begins_with("truss"):visual.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		var piece = {"spec":entry,"visual":visual}
 		if entry.solid:
 			var body = StaticBody3D.new();body.name = entry.id+"Solid";body.collision_layer = 1
-			body.position = visual.position;body.set_meta("blockout_id",entry.id);parent.add_child(body)
+			body.position = AssemblyRuntime.vec(entry.position);body.set_meta("blockout_id",entry.id);parent.add_child(body)
 			var shape = CollisionShape3D.new();var box = BoxShape3D.new();box.size = AssemblyRuntime.vec(entry.size)
 			shape.shape = box;body.add_child(shape);piece.body = body;piece.shape = shape
 		pieces[entry.id] = piece
-	for entry in spec.signs:game.sign_panel(self,entry.text,AssemblyRuntime.vec(entry.position),Vector2(entry.width,.5),48,.002)
+	for entry in spec.signs:
+		var at = AssemblyRuntime.vec(entry.position)
+		var width: float = minf(entry.width,2.4)
+		game.sign_panel(self,entry.text.split(" / ")[0],at,Vector2(width,.24),40,.0018)
+		game.box(self,at-Vector3(0,at.y/2+.06,0),Vector3(.035,maxf(.1,at.y-.12),.035),materials.dark)
 	for id in spec.groups:
 		if not spec.groups[id].get("enabled",true):enable_group(id,false)
 	publish()

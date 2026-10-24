@@ -153,6 +153,17 @@ func _make_guides(steel: Material, yellow: Material) -> void:
 
 func _solid(parent: CollisionObject3D, at: Vector3, size: Vector3, mat: Material) -> CollisionShape3D:
 	var visual = game.box(parent,at,size,mat)
+	# Rail uprights end at the underside of the handrail. Only the visible
+	# joint changes; the accepted collision and passenger envelope stays intact.
+	if size.is_equal_approx(Vector3(.06,1.04,.06)):
+		visual.mesh.size.y = 1.02;visual.position.y -= .01
+	elif is_equal_approx(size.y,.06):
+		if size.z>.1:visual.mesh.size.z -= .08
+		else:visual.mesh.size.x -= .16
+	elif is_equal_approx(size.y,1.0) and size.x>1.0:
+		visual.mesh.size.x -= .025
+	elif size.is_equal_approx(Vector3(.10,.20,.55)):
+		visual.mesh.size.x = .14
 	var shape = CollisionShape3D.new()
 	var box = BoxShape3D.new()
 	box.size = size

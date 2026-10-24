@@ -8058,7 +8058,7 @@
           -9
         ],
         "size": [
-          40,
+          39.7,
           25,
           0.3
         ],
@@ -8074,7 +8074,7 @@
           39
         ],
         "size": [
-          40,
+          39.7,
           25,
           0.3
         ],
@@ -8194,449 +8194,897 @@
         "solid": true
       },
       {
-        "id": "bulky_mark_l",
+        "id": "bulky_mark_0_0_x",
         "parent": "",
         "position": [
-          -2.25,
+          -1.7999999999999998,
           0.006,
-          12.0
+          6.1
         ],
         "size": [
-          0.04,
+          0.7,
           0.012,
-          12
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "bulky_mark_r",
+        "id": "bulky_mark_0_0_z",
         "parent": "",
         "position": [
-          8.75,
+          -2.15,
           0.006,
-          12.0
+          6.484999999999999
         ],
         "size": [
-          0.04,
+          0.035,
           0.012,
-          12
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "bulky_mark_f",
+        "id": "bulky_mark_0_1_x",
         "parent": "",
         "position": [
-          3.25,
+          -1.7999999999999998,
           0.006,
-          6
+          17.9
         ],
         "size": [
-          11.0,
+          0.7,
           0.012,
-          0.04
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "bulky_mark_b",
+        "id": "bulky_mark_0_1_z",
         "parent": "",
         "position": [
-          3.25,
+          -2.15,
           0.006,
-          18
+          17.514999999999997
         ],
         "size": [
-          11.0,
+          0.035,
           0.012,
-          0.04
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "limb_mark_l",
+        "id": "bulky_mark_1_0_x",
         "parent": "",
         "position": [
-          10.5,
+          8.3,
           0.006,
-          14.3
+          6.1
         ],
         "size": [
-          0.04,
+          0.7,
           0.012,
-          13.0
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "limb_mark_r",
+        "id": "bulky_mark_1_0_z",
         "parent": "",
         "position": [
-          17.5,
+          8.65,
           0.006,
-          14.3
+          6.484999999999999
         ],
         "size": [
-          0.04,
+          0.035,
           0.012,
-          13.0
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "limb_mark_f",
+        "id": "bulky_mark_1_1_x",
         "parent": "",
         "position": [
-          14.0,
+          8.3,
           0.006,
-          7.8
+          17.9
         ],
         "size": [
-          7.0,
+          0.7,
           0.012,
-          0.04
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "limb_mark_b",
+        "id": "bulky_mark_1_1_z",
         "parent": "",
         "position": [
-          14.0,
+          8.65,
           0.006,
-          20.8
+          17.514999999999997
         ],
         "size": [
-          7.0,
+          0.035,
           0.012,
-          0.04
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "leg_parking_mark_l",
+        "id": "limb_mark_0_0_x",
         "parent": "",
         "position": [
-          20,
+          10.95,
           0.006,
-          14.25
+          7.8999999999999995
         ],
         "size": [
-          0.04,
+          0.7,
           0.012,
-          12.5
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "leg_parking_mark_r",
+        "id": "limb_mark_0_0_z",
         "parent": "",
         "position": [
-          24,
+          10.6,
           0.006,
-          14.25
+          8.285
         ],
         "size": [
-          0.04,
+          0.035,
           0.012,
-          12.5
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "leg_parking_mark_f",
+        "id": "limb_mark_0_1_x",
         "parent": "",
         "position": [
-          22.0,
+          10.95,
           0.006,
-          8
+          20.7
         ],
         "size": [
-          4,
+          0.7,
           0.012,
-          0.04
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "leg_parking_mark_b",
+        "id": "limb_mark_0_1_z",
         "parent": "",
         "position": [
-          22.0,
+          10.6,
           0.006,
-          20.5
+          20.314999999999998
         ],
         "size": [
-          4,
+          0.035,
           0.012,
-          0.04
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "arm_parking_mark_l",
+        "id": "limb_mark_1_0_x",
         "parent": "",
         "position": [
-          11.8,
+          17.049999999999997,
           0.006,
-          -2.25
+          7.8999999999999995
         ],
         "size": [
-          0.04,
+          0.7,
           0.012,
-          9.5
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "arm_parking_mark_r",
+        "id": "limb_mark_1_0_z",
         "parent": "",
         "position": [
-          16.2,
+          17.4,
           0.006,
-          -2.25
+          8.285
         ],
         "size": [
-          0.04,
+          0.035,
           0.012,
-          9.5
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "arm_parking_mark_f",
+        "id": "limb_mark_1_1_x",
         "parent": "",
         "position": [
-          14.0,
+          17.049999999999997,
           0.006,
-          -7
+          20.7
         ],
         "size": [
-          4.399999999999999,
+          0.7,
           0.012,
-          0.04
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "arm_parking_mark_b",
+        "id": "limb_mark_1_1_z",
         "parent": "",
         "position": [
-          14.0,
+          17.4,
           0.006,
-          2.5
+          20.314999999999998
         ],
         "size": [
-          4.399999999999999,
+          0.035,
           0.012,
-          0.04
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "foot_mark_l",
+        "id": "leg_parking_mark_0_0_x",
         "parent": "",
         "position": [
-          -11.5,
+          20.450000000000003,
           0.006,
-          10.5
+          8.1
         ],
         "size": [
-          0.04,
+          0.7,
           0.012,
-          11
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "foot_mark_r",
+        "id": "leg_parking_mark_0_0_z",
         "parent": "",
         "position": [
-          -3.5,
+          20.1,
           0.006,
-          10.5
+          8.485
         ],
         "size": [
-          0.04,
+          0.035,
           0.012,
-          11
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "foot_mark_f",
+        "id": "leg_parking_mark_0_1_x",
         "parent": "",
         "position": [
-          -7.5,
+          20.450000000000003,
           0.006,
-          5
+          20.4
         ],
         "size": [
-          8.0,
+          0.7,
           0.012,
-          0.04
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "foot_mark_b",
+        "id": "leg_parking_mark_0_1_z",
         "parent": "",
         "position": [
-          -7.5,
+          20.1,
           0.006,
-          16
+          20.014999999999997
         ],
         "size": [
-          8.0,
+          0.035,
           0.012,
-          0.04
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "stock_mark_l",
+        "id": "leg_parking_mark_1_0_x",
         "parent": "",
         "position": [
-          -11.5,
+          23.549999999999997,
           0.006,
-          -1.5
+          8.1
         ],
         "size": [
-          0.04,
+          0.7,
           0.012,
-          7
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "stock_mark_r",
+        "id": "leg_parking_mark_1_0_z",
         "parent": "",
         "position": [
-          8.75,
+          23.9,
           0.006,
-          -1.5
+          8.485
         ],
         "size": [
-          0.04,
+          0.035,
           0.012,
-          7
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "stock_mark_f",
+        "id": "leg_parking_mark_1_1_x",
         "parent": "",
         "position": [
-          -1.375,
+          23.549999999999997,
           0.006,
-          -5
+          20.4
         ],
         "size": [
-          20.25,
+          0.7,
           0.012,
-          0.04
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "stock_mark_b",
+        "id": "leg_parking_mark_1_1_z",
         "parent": "",
         "position": [
-          -1.375,
+          23.9,
           0.006,
-          2
+          20.014999999999997
         ],
         "size": [
-          20.25,
+          0.035,
           0.012,
-          0.04
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "structural_stock_mark_l",
+        "id": "arm_parking_mark_0_0_x",
         "parent": "",
         "position": [
-          -11.25,
+          12.25,
           0.006,
-          20.5
+          -6.9
         ],
         "size": [
-          0.04,
+          0.7,
           0.012,
-          6.0
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "structural_stock_mark_r",
+        "id": "arm_parking_mark_0_0_z",
         "parent": "",
         "position": [
-          -2.25,
+          11.9,
           0.006,
-          20.5
+          -6.515000000000001
         ],
         "size": [
-          0.04,
+          0.035,
           0.012,
-          6.0
+          0.7
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "structural_stock_mark_f",
+        "id": "arm_parking_mark_0_1_x",
         "parent": "",
         "position": [
-          -6.75,
+          12.25,
           0.006,
-          17.5
+          2.4
         ],
         "size": [
-          9.0,
+          0.7,
           0.012,
-          0.04
+          0.035
         ],
         "material": "yellow",
         "solid": false
       },
       {
-        "id": "structural_stock_mark_b",
+        "id": "arm_parking_mark_0_1_z",
         "parent": "",
         "position": [
-          -6.75,
+          11.9,
           0.006,
-          23.5
+          2.0149999999999997
         ],
         "size": [
-          9.0,
+          0.035,
           0.012,
-          0.04
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "arm_parking_mark_1_0_x",
+        "parent": "",
+        "position": [
+          15.749999999999998,
+          0.006,
+          -6.9
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "arm_parking_mark_1_0_z",
+        "parent": "",
+        "position": [
+          16.099999999999998,
+          0.006,
+          -6.515000000000001
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "arm_parking_mark_1_1_x",
+        "parent": "",
+        "position": [
+          15.749999999999998,
+          0.006,
+          2.4
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "arm_parking_mark_1_1_z",
+        "parent": "",
+        "position": [
+          16.099999999999998,
+          0.006,
+          2.0149999999999997
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "foot_mark_0_0_x",
+        "parent": "",
+        "position": [
+          -11.05,
+          0.006,
+          5.1
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "foot_mark_0_0_z",
+        "parent": "",
+        "position": [
+          -11.4,
+          0.006,
+          5.484999999999999
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "foot_mark_0_1_x",
+        "parent": "",
+        "position": [
+          -11.05,
+          0.006,
+          15.9
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "foot_mark_0_1_z",
+        "parent": "",
+        "position": [
+          -11.4,
+          0.006,
+          15.515
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "foot_mark_1_0_x",
+        "parent": "",
+        "position": [
+          -3.95,
+          0.006,
+          5.1
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "foot_mark_1_0_z",
+        "parent": "",
+        "position": [
+          -3.6,
+          0.006,
+          5.484999999999999
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "foot_mark_1_1_x",
+        "parent": "",
+        "position": [
+          -3.95,
+          0.006,
+          15.9
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "foot_mark_1_1_z",
+        "parent": "",
+        "position": [
+          -3.6,
+          0.006,
+          15.515
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "stock_mark_0_0_x",
+        "parent": "",
+        "position": [
+          -11.05,
+          0.006,
+          -4.9
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "stock_mark_0_0_z",
+        "parent": "",
+        "position": [
+          -11.4,
+          0.006,
+          -4.515000000000001
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "stock_mark_0_1_x",
+        "parent": "",
+        "position": [
+          -11.05,
+          0.006,
+          1.9
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "stock_mark_0_1_z",
+        "parent": "",
+        "position": [
+          -11.4,
+          0.006,
+          1.515
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "stock_mark_1_0_x",
+        "parent": "",
+        "position": [
+          8.3,
+          0.006,
+          -4.9
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "stock_mark_1_0_z",
+        "parent": "",
+        "position": [
+          8.65,
+          0.006,
+          -4.515000000000001
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "stock_mark_1_1_x",
+        "parent": "",
+        "position": [
+          8.3,
+          0.006,
+          1.9
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "stock_mark_1_1_z",
+        "parent": "",
+        "position": [
+          8.65,
+          0.006,
+          1.515
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "structural_stock_mark_0_0_x",
+        "parent": "",
+        "position": [
+          -10.8,
+          0.006,
+          17.6
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "structural_stock_mark_0_0_z",
+        "parent": "",
+        "position": [
+          -11.15,
+          0.006,
+          17.985000000000003
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "structural_stock_mark_0_1_x",
+        "parent": "",
+        "position": [
+          -10.8,
+          0.006,
+          23.4
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "structural_stock_mark_0_1_z",
+        "parent": "",
+        "position": [
+          -11.15,
+          0.006,
+          23.014999999999997
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "structural_stock_mark_1_0_x",
+        "parent": "",
+        "position": [
+          -2.7,
+          0.006,
+          17.6
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "structural_stock_mark_1_0_z",
+        "parent": "",
+        "position": [
+          -2.35,
+          0.006,
+          17.985000000000003
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "structural_stock_mark_1_1_x",
+        "parent": "",
+        "position": [
+          -2.7,
+          0.006,
+          23.4
+        ],
+        "size": [
+          0.7,
+          0.012,
+          0.035
+        ],
+        "material": "yellow",
+        "solid": false
+      },
+      {
+        "id": "structural_stock_mark_1_1_z",
+        "parent": "",
+        "position": [
+          -2.35,
+          0.006,
+          23.014999999999997
+        ],
+        "size": [
+          0.035,
+          0.012,
+          0.7
         ],
         "material": "yellow",
         "solid": false
@@ -8662,12 +9110,12 @@
         "parent": "",
         "position": [
           -12.5,
-          11.7,
+          11.6,
           -7
         ],
         "size": [
           0.4,
-          23.4,
+          23.2,
           0.4
         ],
         "material": "steel",
@@ -8694,12 +9142,12 @@
         "parent": "",
         "position": [
           -12.5,
-          11.7,
+          11.6,
           1
         ],
         "size": [
           0.4,
-          23.4,
+          23.2,
           0.4
         ],
         "material": "steel",
@@ -8726,12 +9174,12 @@
         "parent": "",
         "position": [
           -12.5,
-          11.7,
+          11.6,
           19
         ],
         "size": [
           0.4,
-          23.4,
+          23.2,
           0.4
         ],
         "material": "steel",
@@ -8758,12 +9206,12 @@
         "parent": "",
         "position": [
           -12.5,
-          11.7,
+          11.6,
           37
         ],
         "size": [
           0.4,
-          23.4,
+          23.2,
           0.4
         ],
         "material": "steel",
@@ -8806,12 +9254,12 @@
         "parent": "",
         "position": [
           25.3,
-          11.7,
+          11.6,
           -7
         ],
         "size": [
           0.4,
-          23.4,
+          23.2,
           0.4
         ],
         "material": "steel",
@@ -8838,12 +9286,12 @@
         "parent": "",
         "position": [
           25.3,
-          11.7,
+          11.6,
           1
         ],
         "size": [
           0.4,
-          23.4,
+          23.2,
           0.4
         ],
         "material": "steel",
@@ -8870,12 +9318,12 @@
         "parent": "",
         "position": [
           25.3,
-          11.7,
+          11.6,
           19
         ],
         "size": [
           0.4,
-          23.4,
+          23.2,
           0.4
         ],
         "material": "steel",
@@ -8902,12 +9350,12 @@
         "parent": "",
         "position": [
           25.3,
-          11.7,
+          11.6,
           37
         ],
         "size": [
           0.4,
-          23.4,
+          23.2,
           0.4
         ],
         "material": "steel",
@@ -8938,7 +9386,7 @@
           0
         ],
         "size": [
-          38.2,
+          37.8,
           0.3,
           0.4
         ],
@@ -9071,7 +9519,12 @@
           2.5
         ],
         "material": "dark",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "foot_store_mast_-1",
@@ -9255,12 +9708,12 @@
         "position": [
           0,
           0.81,
-          0.12
+          0.14
         ],
         "size": [
-          0.08,
-          0.6,
-          0.08
+          0.06,
+          0.42,
+          0.06
         ],
         "material": "steel",
         "solid": true
@@ -9319,12 +9772,12 @@
         "position": [
           0,
           0.81,
-          0.12
+          0.14
         ],
         "size": [
-          0.08,
-          0.6,
-          0.08
+          0.06,
+          0.42,
+          0.06
         ],
         "material": "steel",
         "solid": true
@@ -9350,12 +9803,12 @@
         "parent": "bulky_fixture",
         "position": [
           -0.65,
-          0.4,
+          0.38,
           0.65
         ],
         "size": [
           0.18,
-          0.36,
+          0.32,
           0.18
         ],
         "material": "steel",
@@ -9375,7 +9828,12 @@
           0.12
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.12,
+          0.16799999999999998,
+          0.12
+        ]
       },
       {
         "id": "bulky_insert_-0.65",
@@ -9446,13 +9904,13 @@
         "parent": "bulky_jaw_pelvis_-0.65_0.55",
         "position": [
           0,
-          0,
+          -0.01,
           0.18
         ],
         "size": [
-          0.12,
           0.1,
-          0.36
+          0.06,
+          0.348
         ],
         "material": "steel",
         "solid": true
@@ -9487,23 +9945,33 @@
           0.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.1,
+          0.44,
+          0.08
+        ]
       },
       {
         "id": "bulky_jaw_pelvis_-0.65_0.75_link",
         "parent": "bulky_jaw_pelvis_-0.65_0.75",
         "position": [
           0,
-          0,
+          -0.015,
           0.08000000000000002
         ],
         "size": [
-          0.12,
-          0.1,
-          0.16000000000000003
+          0.08,
+          0.06,
+          0.14800000000000002
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          0.06,
+          0.14
+        ]
       },
       {
         "id": "bulky_foot_0.65",
@@ -9526,12 +9994,12 @@
         "parent": "bulky_fixture",
         "position": [
           0.65,
-          0.4,
+          0.38,
           0.65
         ],
         "size": [
           0.18,
-          0.36,
+          0.32,
           0.18
         ],
         "material": "steel",
@@ -9551,7 +10019,12 @@
           0.12
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.12,
+          0.16799999999999998,
+          0.12
+        ]
       },
       {
         "id": "bulky_insert_0.65",
@@ -9622,13 +10095,13 @@
         "parent": "bulky_jaw_pelvis_0.65_0.55",
         "position": [
           0,
-          0,
+          -0.01,
           0.18
         ],
         "size": [
-          0.12,
           0.1,
-          0.36
+          0.06,
+          0.348
         ],
         "material": "steel",
         "solid": true
@@ -9663,23 +10136,33 @@
           0.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.1,
+          0.44,
+          0.08
+        ]
       },
       {
         "id": "bulky_jaw_pelvis_0.65_0.75_link",
         "parent": "bulky_jaw_pelvis_0.65_0.75",
         "position": [
           0,
-          0,
+          -0.015,
           0.08000000000000002
         ],
         "size": [
-          0.12,
-          0.1,
-          0.16000000000000003
+          0.08,
+          0.06,
+          0.14800000000000002
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          0.06,
+          0.14
+        ]
       },
       {
         "id": "bulky_crossbeam",
@@ -9759,7 +10242,12 @@
           0.12
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.292,
+          0.08600000000000001,
+          0.108
+        ]
       },
       {
         "id": "bulky_jaw_chest_-0.84_-0.45_back",
@@ -9823,7 +10311,12 @@
           0.12
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.292,
+          0.08600000000000001,
+          0.108
+        ]
       },
       {
         "id": "bulky_jaw_chest_-0.84_0.45_back",
@@ -9903,7 +10396,12 @@
           0.12
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.292,
+          0.08600000000000001,
+          0.108
+        ]
       },
       {
         "id": "bulky_jaw_chest_0.84_-0.45_back",
@@ -9967,7 +10465,12 @@
           0.12
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.292,
+          0.08600000000000001,
+          0.108
+        ]
       },
       {
         "id": "bulky_jaw_chest_0.84_0.45_back",
@@ -10495,7 +10998,12 @@
           0.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.552,
+          0.08600000000000001,
+          0.08800000000000001
+        ]
       },
       {
         "id": "bulky_jaw_core_-0.35_back",
@@ -10543,7 +11051,12 @@
           0.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.552,
+          0.08600000000000001,
+          0.08800000000000001
+        ]
       },
       {
         "id": "bulky_jaw_core_0.75_back",
@@ -10623,7 +11136,12 @@
           0.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.272,
+          0.08600000000000001,
+          0.08800000000000001
+        ]
       },
       {
         "id": "bulky_jaw_backpack_-1.18_0.5_back",
@@ -10687,7 +11205,12 @@
           0.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.272,
+          0.08600000000000001,
+          0.08800000000000001
+        ]
       },
       {
         "id": "bulky_jaw_backpack_-1.18_2.4_back",
@@ -10767,7 +11290,12 @@
           0.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.272,
+          0.08600000000000001,
+          0.08800000000000001
+        ]
       },
       {
         "id": "bulky_jaw_backpack_1.18_0.5_back",
@@ -10831,7 +11359,12 @@
           0.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.272,
+          0.08600000000000001,
+          0.08800000000000001
+        ]
       },
       {
         "id": "bulky_jaw_backpack_1.18_2.4_back",
@@ -11023,7 +11556,12 @@
           0.16
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          2.448,
+          0.108,
+          0.148
+        ]
       },
       {
         "id": "bulky_backpack_crossbeam_2.4",
@@ -11039,7 +11577,12 @@
           0.16
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          2.448,
+          0.108,
+          0.148
+        ]
       },
       {
         "id": "bulky_backpack_spine_-0.65",
@@ -11103,7 +11646,12 @@
           0.36
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "arm_cassette_floor_pad_-0.7_1.35_9.9",
@@ -11119,7 +11667,12 @@
           0.36
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "arm_cassette_foot_0.7_1.35",
@@ -11151,7 +11704,12 @@
           0.36
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "arm_cassette_floor_pad_0.7_1.35_9.9",
@@ -11167,7 +11725,12 @@
           0.36
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "arm_cassette_saddle_1.35",
@@ -11487,7 +12050,12 @@
           0.36
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "arm_cassette_floor_pad_-0.7_6.05_9.9",
@@ -11503,7 +12071,12 @@
           0.36
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "arm_cassette_foot_0.7_6.05",
@@ -11535,7 +12108,12 @@
           0.36
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "arm_cassette_floor_pad_0.7_6.05_9.9",
@@ -11551,7 +12129,12 @@
           0.36
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_offset": [
+          0,
+          0.004,
+          0
+        ]
       },
       {
         "id": "arm_cassette_saddle_6.05",
@@ -11798,13 +12381,13 @@
         "parent": "right_arm_store",
         "position": [
           -0.55,
-          0.465,
+          0.43,
           1.35
         ],
         "size": [
           0.16,
-          0.93,
-          0.24
+          0.86,
+          0.22
         ],
         "material": "dark",
         "solid": true
@@ -11814,13 +12397,13 @@
         "parent": "right_arm_store",
         "position": [
           0.55,
-          0.465,
+          0.43,
           1.35
         ],
         "size": [
           0.16,
-          0.93,
-          0.24
+          0.86,
+          0.22
         ],
         "material": "dark",
         "solid": true
@@ -11846,13 +12429,13 @@
         "parent": "right_arm_store",
         "position": [
           -0.55,
-          0.465,
+          0.43,
           4.05
         ],
         "size": [
           0.16,
-          0.93,
-          0.24
+          0.86,
+          0.22
         ],
         "material": "dark",
         "solid": true
@@ -11862,13 +12445,13 @@
         "parent": "right_arm_store",
         "position": [
           0.55,
-          0.465,
+          0.43,
           4.05
         ],
         "size": [
           0.16,
-          0.93,
-          0.24
+          0.86,
+          0.22
         ],
         "material": "dark",
         "solid": true
@@ -11894,13 +12477,13 @@
         "parent": "right_arm_store",
         "position": [
           -0.55,
-          0.465,
+          0.43,
           6.05
         ],
         "size": [
           0.16,
-          0.93,
-          0.24
+          0.86,
+          0.22
         ],
         "material": "dark",
         "solid": true
@@ -11910,13 +12493,13 @@
         "parent": "right_arm_store",
         "position": [
           0.55,
-          0.465,
+          0.43,
           6.05
         ],
         "size": [
           0.16,
-          0.93,
-          0.24
+          0.86,
+          0.22
         ],
         "material": "dark",
         "solid": true
@@ -11942,12 +12525,12 @@
         "parent": "",
         "position": [
           8.8,
-          5.55,
+          5.25,
           31.1
         ],
         "size": [
           0.6,
-          11.1,
+          10.5,
           0.6
         ],
         "material": "steel",
@@ -11963,7 +12546,7 @@
         ],
         "size": [
           0.35,
-          1,
+          0.65,
           0.35
         ],
         "material": "steel",
@@ -11979,7 +12562,7 @@
         ],
         "size": [
           0.35,
-          1,
+          0.65,
           0.35
         ],
         "material": "steel",
@@ -11995,7 +12578,7 @@
         ],
         "size": [
           0.35,
-          1,
+          0.65,
           0.35
         ],
         "material": "steel",
@@ -12011,7 +12594,7 @@
         ],
         "size": [
           0.35,
-          1,
+          0.65,
           0.35
         ],
         "material": "steel",
@@ -12038,12 +12621,12 @@
         "parent": "",
         "position": [
           17.2,
-          5.55,
+          5.25,
           31.1
         ],
         "size": [
           0.6,
-          11.1,
+          10.5,
           0.6
         ],
         "material": "steel",
@@ -12059,7 +12642,7 @@
         ],
         "size": [
           0.35,
-          1,
+          0.65,
           0.35
         ],
         "material": "steel",
@@ -12075,7 +12658,7 @@
         ],
         "size": [
           0.35,
-          1,
+          0.65,
           0.35
         ],
         "material": "steel",
@@ -12091,7 +12674,7 @@
         ],
         "size": [
           0.35,
-          1,
+          0.65,
           0.35
         ],
         "material": "steel",
@@ -12107,7 +12690,7 @@
         ],
         "size": [
           0.35,
-          1,
+          0.65,
           0.35
         ],
         "material": "steel",
@@ -12719,7 +13302,12 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          7.960000000000001,
+          0.188,
+          1.2
+        ]
       },
       {
         "id": "wing_left_8.4_front_rail",
@@ -12834,7 +13422,17 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.192,
+          0.192,
+          1.192
+        ],
+        "visual_offset": [
+          0,
+          0.008,
+          0
+        ]
       },
       {
         "id": "hip_apron_left_floor",
@@ -12962,7 +13560,12 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.438,
+          1.088,
+          0.06
+        ]
       },
       {
         "id": "outer_right_8.4_floor",
@@ -13170,7 +13773,12 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          7.960000000000001,
+          0.188,
+          1.2
+        ]
       },
       {
         "id": "wing_right_8.4_front_rail",
@@ -13285,7 +13893,17 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.192,
+          0.192,
+          1.192
+        ],
+        "visual_offset": [
+          0,
+          0.008,
+          0
+        ]
       },
       {
         "id": "hip_apron_right_floor",
@@ -13413,7 +14031,12 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.438,
+          1.088,
+          0.06
+        ]
       },
       {
         "id": "rear_crossover_8.4_floor",
@@ -13685,7 +14308,12 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          7.960000000000001,
+          0.188,
+          1.2
+        ]
       },
       {
         "id": "wing_left_11.2_front_rail",
@@ -13800,7 +14428,17 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.142,
+          0.192,
+          1.192
+        ],
+        "visual_offset": [
+          0,
+          0.008,
+          0
+        ]
       },
       {
         "id": "finger_middle_left_11.2_floor",
@@ -13816,7 +14454,17 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.284,
+          0.184,
+          1.184
+        ],
+        "visual_offset": [
+          0,
+          -0.008,
+          0
+        ]
       },
       {
         "id": "rear_branch_left_11.2_floor",
@@ -14312,7 +14960,12 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          7.960000000000001,
+          0.188,
+          1.2
+        ]
       },
       {
         "id": "wing_right_11.2_front_rail",
@@ -14427,7 +15080,17 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.142,
+          0.192,
+          1.192
+        ],
+        "visual_offset": [
+          0,
+          0.008,
+          0
+        ]
       },
       {
         "id": "finger_middle_right_11.2_floor",
@@ -14443,7 +15106,17 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.284,
+          0.184,
+          1.184
+        ],
+        "visual_offset": [
+          0,
+          -0.008,
+          0
+        ]
       },
       {
         "id": "rear_branch_right_11.2_floor",
@@ -15003,7 +15676,12 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          7.960000000000001,
+          0.188,
+          1.2
+        ]
       },
       {
         "id": "wing_left_14_front_rail",
@@ -15438,7 +16116,12 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          7.960000000000001,
+          0.188,
+          1.2
+        ]
       },
       {
         "id": "wing_right_14_front_rail",
@@ -15937,7 +16620,12 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          7.960000000000001,
+          0.188,
+          1.2
+        ]
       },
       {
         "id": "wing_left_16.4_front_rail",
@@ -16372,7 +17060,12 @@
           1.2
         ],
         "material": "deck",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          7.960000000000001,
+          0.188,
+          1.2
+        ]
       },
       {
         "id": "wing_right_16.4_front_rail",
@@ -17854,65 +18547,65 @@
       {
         "text": "BULKY",
         "position": [
-          3.25,
-          2.8,
-          6
+          -1.35,
+          1.12,
+          6.1
         ],
-        "width": 5
+        "width": 1.6
       },
       {
         "text": "LIMB",
         "position": [
-          14.0,
-          2.8,
-          7.8
+          11.4,
+          1.12,
+          7.8999999999999995
         ],
-        "width": 5
+        "width": 1.6
       },
       {
         "text": "LEG PARKING",
         "position": [
-          22.0,
-          2.8,
-          8
+          20.9,
+          1.12,
+          8.1
         ],
-        "width": 4
+        "width": 1.6
       },
       {
         "text": "ARM PARKING",
         "position": [
-          14.0,
-          2.8,
-          -7
+          12.700000000000001,
+          1.12,
+          -6.9
         ],
-        "width": 4.399999999999999
+        "width": 1.6
       },
       {
         "text": "FOOT",
         "position": [
-          -7.5,
-          2.8,
-          5
+          -10.6,
+          1.12,
+          5.1
         ],
-        "width": 5
+        "width": 1.6
       },
       {
         "text": "STOCK",
         "position": [
-          -1.375,
-          2.8,
-          -5
+          -10.6,
+          1.12,
+          -4.9
         ],
-        "width": 5
+        "width": 1.6
       },
       {
         "text": "STRUCTURAL STOCK",
         "position": [
-          -6.75,
-          2.8,
-          17.5
+          -10.35,
+          1.12,
+          17.6
         ],
-        "width": 5
+        "width": 1.6
       },
       {
         "text": "RAIL CROSSING / WAIT FOR OPEN GATES",

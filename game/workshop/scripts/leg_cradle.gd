@@ -62,4 +62,12 @@ func apply_geometry(records: Array[Dictionary]) -> void:
 	for record in records:
 		var piece: Dictionary = pieces[record.id]
 		piece.body.global_transform = record.pose;piece.shape.shape.size = record.size;piece.visual.scale = record.size
+		# Give telescoping members distinct sections instead of coincident skins.
+		# Collision/query records continue to use the authored support envelope.
+		if record.id.begins_with("CradleSide_"):piece.visual.scale.z -= .008
+		elif record.id=="CradleMast":piece.visual.scale.z -= .012
+		elif record.id.begins_with("CradleCrossbar_"):piece.visual.scale.z -= .012
+		elif record.id.begins_with("BolsterOutrigger_"):piece.visual.scale.x -= .012;piece.visual.scale.z -= .018
+		elif record.id.begins_with("BolsterLink_"):piece.visual.scale.y -= .012;piece.visual.scale.x -= .012
+		elif record.id=="CradleLowCrossSlide":piece.visual.scale.y -= .012
 		piece.body.force_update_transform();PhysicsServer3D.body_set_state(piece.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,piece.body.global_transform)
