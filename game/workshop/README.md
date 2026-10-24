@@ -77,7 +77,7 @@ editor and runs tests. From a terminal at the repository root:
 ./play.command                                  # play from the start
 ./play.command -- --stage=pelvis                # play from a later stage
 ./play.command --editor                         # open the project in the Godot editor
-./play.command --headless --script tests/stage_flag_test.gd   # run one test
+python3 game/workshop/tools/run_regressions.py --only stage_contract_test
 ```
 
 Godot options go before `--`; game options such as `--stage` go after it. You can
@@ -241,19 +241,30 @@ Run the headless regression set from the repository root:
 python3 game/workshop/tools/run_regressions.py
 ```
 
-The runner discovers suites built on `tests/kit/harness.gd`, launches desktop
-adapters through the same test entry path, includes the Python source-asset tests,
-and smoke-tests a plain launch and a `--stage` launch. `--list` shows case
-names; `--only NAME ...` selects cases. The kit shares assertions, frame waits,
-evidence output and a player driver for ordinary desktop input; setup teleports
-are explicitly staged. Logs and input hashes are retained in a unique
-`verification/regressions-*` directory. Engine errors fail even when Godot exits
-successfully; changed inputs invalidate a run.
+The default is the explicit fast routine suite (four workers), including model,
+small-scene physics, source geometry, Python runner contracts and one fresh-workshop
+smoke test. `--list` lists routine cases; `--only NAME ...` narrows the selection.
+Three warm runs on 2026-10-25 passed all 28 routine cases in 8.82 s, 8.72 s and
+8.77 s, including startup/fingerprinting and excluding asset import.
+A run over 60 seconds warns and finishes normally, then lists the slowest tests.
+Improve slow tests rather than raising the performance budget. Hang timeouts,
+engine errors, missing/failed summaries and changed inputs still fail verification.
 
-Cases normally have a 180-second cap; the arm section and the suites that script
-the whole build have longer caps. `--timeout SECONDS` overrides the cap for every
-selected case; the runner still stops immediately on script errors or detected
-stalls.
+Import assets separately before the first run with
+`./play.command --headless --editor --import --quit`. Test timings exclude import.
+Logs, input hashes and total/per-case timing live under `verification/regressions-*`.
+
+Whole-build replays and expensive geometry investigations are separate diagnostics.
+Run them only when explicitly requested, naming the relevant cases:
+
+```sh
+python3 game/workshop/tools/run_diagnostics.py --list
+python3 game/workshop/tools/run_diagnostics.py --only arm_preflight_test
+```
+
+Diagnostics have no default/run-all selection and cannot be selected through the
+routine runner. See [coverage migration and test contracts](tests/TESTING.md) for
+retained assertions, isolated replacements and the exact diagnostic boundary.
 
 Current status and remaining human acceptance are recorded in the
 [workshop state](../../design/game/leg-workshop-next-steps.md).
@@ -283,7 +294,7 @@ and inspection of the affected scope.
 - [Geometry audit regression](tests/geometry_surface_audit_test.gd): known harness failure, near-coplanar faces, valid contacts, transformed meshes, indexed/unindexed triangles and conservative occlusion checks.
 - [Supported model](tests/supported_model_test.gd): named support ownership, authorized transfers, equipment-only handling, mounted undo and atomic rejection.
 - [Robot content](tests/robot_content_test.gd): robot stock, playable slots, crane-task sources and the complete leg and hip graph.
-- [Stage sequence](tests/stage_sequence_test.gd) and [stage flag](tests/stage_flag_test.gd): every stage boundary from the foot to the complete structure, and the `--stage` handover.
+- [Stage contracts](tests/stage_contract_test.gd) cover orchestration and handover routinely; [stage sequence](tests/stage_sequence_test.gd) retains the complete build as a named diagnostic.
 - [Leg content](tests/leg_content_test.gd): complete structural recipe, stock identities, compatible swaps, unique manual coverage and actual source geometry at the ankle, knee and hip interfaces.
 - [Access lifts](tests/access_lift_test.gd): occupied travel, carried-part clearance, gates, headroom, blocked movement and pause behavior.
 - Earlier pad captures showed independent builds and completed pads. Those images
@@ -292,7 +303,7 @@ and inspection of the affected scope.
 
 ```sh
 python3 game/workshop/tools/run_regressions.py --list
-python3 game/workshop/tools/run_regressions.py --only robot_workshop_test pitch_desktop_test stage_flag_test
+python3 game/workshop/tools/run_regressions.py --only staging_policy_test stage_contract_test workshop_smoke_test
 python3 game/workshop/tools/author_leg_prototype.py --check
 ```
 

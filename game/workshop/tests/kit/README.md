@@ -16,5 +16,12 @@ stage views.
 
 `build_state(workshop, owner)` is an explicitly bound compatibility view used by
 historical heel assertions. It does not select or mutate a runtime build cursor.
-Run all headless suites, the launch smoke check and Python source assets through
-`python3 game/workshop/tools/run_regressions.py`. Rendered review is separate.
+Run routine checks through `python3 game/workshop/tools/run_regressions.py`.
+Expensive journeys require explicitly requested names through `run_diagnostics.py`;
+there is no default full-suite run. See [coverage and migration](../TESTING.md).
+
+Use `model_workshop.gd` for authored model/staging rules (presentation is inert),
+`equipment_fixture.gd` for small real-physics scenes, and `source_fixture.gd` for
+selected authored meshes with production collision projection. Tests of real
+controller transitions must not stub those transitions. `boot_workshop(stage)`
+remains for named diagnostic journeys; the routine smoke boots only once at foot.

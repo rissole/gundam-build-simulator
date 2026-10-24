@@ -66,15 +66,17 @@ Run from the repository root, choosing the suites affected by the change:
 ```sh
 python3 game/workshop/tools/author_leg_prototype.py --check
 python3 game/workshop/tools/run_regressions.py --list
-python3 game/workshop/tools/run_regressions.py --only assembly_model_test pitch_interface_test pitch_desktop_test robot_workshop_test
+python3 game/workshop/tools/run_regressions.py --only assembly_model_test pitch_interface_test staging_policy_test
 python3 game/workshop/tools/run_regressions.py
 ```
 
-The single runner includes the Python source-asset audit, ordinary desktop tests
-and smokes for a plain and a `--stage` launch. It retains logs and input hashes
-in an ignored local run directory and rejects changed inputs or engine errors.
-`./play.command` opens the one robot workshop, starting with the foot build;
-`--stage=<name>` starts later, and tests reach a stage with `boot_workshop()`.
+The default runner selects fast model/component/source tests and one startup smoke.
+It warns above 60 seconds and reports slow cases; improve tests instead of raising
+the performance budget. Expensive journeys and route audits require an explicit
+user request and named `run_diagnostics.py --only NAME ...` cases. There is no
+run-all diagnostic mode or automatic fallback. See `game/workshop/tests/TESTING.md`
+for coverage migration. Logs and hashes remain local; engine errors and changed
+inputs invalidate results. The one game still launches through `./play.command`.
 Human replay is tracked separately from automated passes.
 
 The README also lists the state and pocket-model suites. Input tests drive the

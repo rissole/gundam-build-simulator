@@ -1,4 +1,12 @@
 extends "res://tests/kit/harness.gd"
+## Fixed-fps headless runs can enqueue thousands of Jolt jobs faster than worker
+## threads drain them. Keep the same simulated ticks, with a scheduling slice
+## per tick; this prevents resource exhaustion without retries or weaker checks.
+func frames(count: int = 3, physics: bool = true) -> void:
+	for tick in range(count):
+		await super.frames(1,physics)
+		OS.delay_usec(1000)
+
 class Holder extends Node:
 	var held_body: CollisionObject3D
 class Harness extends Node3D:

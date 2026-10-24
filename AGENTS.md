@@ -39,3 +39,18 @@ options in the relevant state/next-steps document. Link it from the milestone so
 the next session can resume without treating historical test passes as usability
 approval. Keep automated behavior, inspected presentation and player feedback
 distinct when reporting completion.
+
+# Routine verification
+
+Use `python3 game/workshop/tools/run_regressions.py` (or `--only NAME ...`) for
+routine verification. It selects fast model/component/source tests and one startup
+smoke, warns above 60 seconds, and reports slowest cases. Improve slow tests; do
+not increase the performance budget or interpret a warning as a correctness pass.
+
+Expensive diagnostics require an explicit user request and named cases through
+`python3 game/workshop/tools/run_diagnostics.py --only NAME ...`. Never run them
+as automatic extra verification, enumerate all names to emulate a full suite, or
+fall back to them after routine failures. Keep new tests isolated; classify every
+runnable suite in `game/workshop/tools/test_inventory.py`. See
+[coverage migration](game/workshop/tests/TESTING.md). Retired old-room/access tests
+stay retired; human playtesting and optional requested visual review remain separate.

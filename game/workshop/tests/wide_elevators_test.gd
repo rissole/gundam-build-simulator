@@ -1,7 +1,7 @@
 extends "res://tests/kit/harness.gd"
 ## Actual carriage/cargo movement against the whole blockout. No walking,
 ## targetability, connection access or visibility acceptance is automated.
-const Fixture = preload("res://tests/wide_access_test.gd").Fixture
+const Fixture = preload("res://tests/kit/equipment_fixture.gd")
 const Blockout = preload("res://scripts/workshop_blockout.gd")
 const Lift = preload("res://scripts/work_access_lift.gd")
 const Shelf = preload("res://scripts/lift_shelf.gd")

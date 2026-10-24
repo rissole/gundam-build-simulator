@@ -11,17 +11,10 @@ func _initialize() -> void:
 	call_deferred("run")
 
 func robot_content() -> Dictionary:
-	var data = HeelAssemblyState.definition_data()
-	for path in ["pitch-actuator-definitions.json", "leg-prototype-definitions.json", "robot-definitions.json"]:
-		Content.apply_definitions(data, document(path))
-	var content = document("robot-content.json")
-	var scenario = document("pitch-workshop.json")
-	scenario.parent.location = "support:foot_store"
-	scenario.parts.append_array(content.parts)
-	scenario.builds.append_array(content.builds)
-	scenario.parents = content.parents
-	scenario.supports = document("leg-prototype-content.json").supports.duplicate(true)
-	scenario.supports.merge(content.supports, true)
+	var loaded = Content.load_workshop()
+	var data: Dictionary = loaded.data
+	var content: Dictionary = loaded.content
+	var scenario: Dictionary = loaded.scenario
 	var model = AssemblyModel.new()
 	var errors = model.configure(data, scenario)
 	expect(errors.is_empty(), "Robot content configures all real supports: " + str(errors))

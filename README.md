@@ -96,8 +96,8 @@ The foot measures approximately **3.0 m long × 1.3 m wide**. Its inventory cont
 ```sh
 ./play.command --editor                                   # Godot editor
 ./play.command --headless --script tests/state_test.gd    # one headless test
-python3 game/workshop/tools/run_regressions.py            # every headless check
-python3 game/workshop/tools/run_regressions.py --only stage_flag_test robot_workshop_test
+python3 game/workshop/tools/run_regressions.py            # fast routine checks
+python3 game/workshop/tools/run_regressions.py --only stage_contract_test workshop_smoke_test
 ```
 
 The model generator uses Blender's built-in Python API. With **Blender 4.5 or later** available as `blender`, regenerate the scene and exports with:

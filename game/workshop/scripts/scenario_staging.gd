@@ -6,6 +6,7 @@ extends RefCounted
 ## Returns the number of installed identities. A negative limit fills everything.
 static func fill(game: Node, owner: String, permitted: Array = [], limit: int = -1) -> int:
 	var installed = 0
+	var mirrors: Dictionary = game.leg_content.get("mirror_sources",{})
 	var definition: Dictionary = game.runtime.definition(owner)
 	for pass_index in range(definition.slots.size()):
 		var changed = false
@@ -23,6 +24,9 @@ static func fill(game: Node, owner: String, permitted: Array = [], limit: int = 
 			for candidate in game.model.items:
 				if not uid.is_empty():break
 				var item: Dictionary = game.model.items[candidate]
+				# Shared mirrored recipes (both right pads) exhaust the preferred
+				# copy. Keep their fallback within authored mirrored stock as well.
+				if mirrors.has(spec.get("pose_source","")) and not mirrors.has(item.source_id):continue
 				if item.kind == spec.accepts and item.owner.is_empty() and item.location != "installed":uid = candidate;break
 			if uid.is_empty():continue
 			var item: Dictionary = game.model.items[uid]

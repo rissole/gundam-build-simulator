@@ -2,7 +2,9 @@ extends "res://tests/kit/harness.gd"
 func _initialize() -> void:call_deferred("run")
 
 func run() -> void:
-	var game=await boot_workshop("pelvis")
+	var game=preload("res://tests/kit/source_fixture.gd").new();root.add_child(game)
+	expect(game.prepare_sources(["chest"]).is_empty(),"chest-only production source fixture configures")
+	await frames(2)
 	var chest=game.runtime.node("chest")
 	var definition=game.runtime.definition("chest")
 	var low=Vector3(INF,INF,INF);var high=-low

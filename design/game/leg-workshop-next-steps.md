@@ -10,6 +10,18 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Fast verification (2026-10-25):** the default runner now selects isolated tests
+  and one fresh-workshop smoke. Expensive investigations require explicitly requested
+  named diagnostics, never automatic full-suite verification. A 60-second warning
+  calls for improving tests, not extending timeouts. See the
+  [coverage migration](../../game/workshop/tests/TESTING.md). The new staging test
+  caught and fixed right-pad fallback consuming left sleeves; mirrored staging now
+  keeps fallback stock within authored mirrored sources. All 28 routine cases passed
+  three warm runs in 8.82 s, 8.72 s and 8.77 s (existing imports; no import timed).
+  An existing lift test now yields between simulated frames after a Jolt worker
+  exhaustion failure; assertions are unchanged. No diagnostics or rendered review
+  ran. Mechanical checks only.
+
 - **One workshop, one command (2026-10-25):** at the user's request,
   `./play.command` is the only launcher and the robot workshop is the only game.
   The foot-only workshop, the leg-bay equipment trials and their trial selector,
@@ -76,7 +88,9 @@ last version before consolidation.
 - **Process.** Use one fresh session and one commit per task. Before work that adds
   part icons, ask the user to run `./play.command --headless --editor --import --quit`
   (no sandbox escalation). Regression runner:
-  `python3 game/workshop/tools/run_regressions.py --only <cases> --jobs 4`.
+  `python3 game/workshop/tools/run_regressions.py` (or `--only <cases>`).
+  Expensive `run_diagnostics.py --only <cases>` runs require an explicit user request.
+  Do not run every diagnostic or use diagnostics as automatic fallback.
 - **Where answers go.** Put decisions in the existing component documents and the
   shared plan. Keep temporary evidence outside the design-document tree.
 - **Preserve:** the robot workshop's scale, supported handling and local
@@ -122,6 +136,7 @@ last version before consolidation.
 
 | Feedback / positive finding | Current direction and open question |
 | --- | --- |
+| Regression verification took 10–15 minutes per change; agents kept running full suites despite documentation. Wants unit-style tests around one minute, separate named diagnostics, and a warning rather than a 60-second timeout (2026-10-25) | Default runner structurally selects routine tests only. Shared content, local crane/receiver/staging contracts and isolated chest/shoulder geometry replace routine journeys. Unique full-scene checks remain named-only diagnostics; never automatically selected. Warn and improve tests above 60 seconds; do not raise the budget. Existing fast model/physics tests were a positive baseline. See the coverage migration linked above. |
 | Wanted everything consolidated into a single play command (the full workshop) with flags such as `--stage=` to skip stages or support tests, and no milestone references outside history (2026-10-25) | Implemented as described under “Where things stand”. The user chose to remove the foot workshop with its save code, and to delete the leg-bay trials with their tests. Removed with them: the single/two-pad, trial and save suites, the broken walked-journey suites, the stale single-leg geometry review, and (at the user's request, who will verify the foot build by hand) the foot-room suites that depended on the old room's coordinates: jump, snap discovery, manual navigation, free-build targeting, interaction feedback, workshop geometry, supported fixture and crane console panel. Porting the foot suites found and fixed three robot-game bugs: the journey filter removed carry, station and mount targets (the pads and actuator could not be picked up, suspended or mounted); staging the supplied right foot consumed the left foot's own identities; and the foot carrier refused undo of the left foot while it was still in its fixture. The stock grid now also keeps a 1.6 m aisle clear in front of the preparation stations, tray and actuator start. Preparation-station rotation (hold R) is enabled, as it was in the foot workshop; the hangar had disabled it. Mechanically checked only; awaiting the user's check of the foot build. |
 | Workshop was ugly/crowded, lighting needed improvement, and overlapping surfaces flickered prolifically (2026-10-24) | Minimal practical engineering style implemented for the workshop only; robot models remain for later detail. 142 initial surface overlaps repaired, with moving equipment/alternate fixtures checked too. [Screenshots and evidence](history/workshop-visual-refresh-20261024.md); awaiting user judgment. |
 | Implementation took 6 h+; the user suspected poor architecture (2026-10-24) | Addressed by the handoff tasks: a generic staged receiver, an occupancy register and the shared stage sequence. Keep new sections as data. |

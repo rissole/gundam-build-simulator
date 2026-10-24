@@ -114,11 +114,11 @@ func _init() -> void:
 	hands = Hands.new(self)
 
 func _ready() -> void:
-	config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
-	var data = Content.definition_data()
-	Content.apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string(config.definitions)))
-	for definition in config.parts:foot_kinds[definition.kind] = true
-	_load_leg_content(data)
+	var loaded = Content.load_workshop()
+	config = loaded.scenario
+	var data: Dictionary = loaded.data
+	foot_kinds = loaded.foot_kinds
+	leg_content = loaded.content
 	components = preload("res://scripts/component_interaction.gd").new(self)
 	add_child(components)
 	var errors = model.configure(data,config)
@@ -171,29 +171,6 @@ func _ready() -> void:
 	started = true
 	start_stage = Stages.stage_flag(Array(OS.get_cmdline_user_args()))
 	if not start_stage.is_empty() and not automated_test:call_deferred("run_stage",start_stage)
-
-func _load_leg_content(data: Dictionary) -> void:
-	leg_content = JSON.parse_string(FileAccess.get_file_as_string(LEG_CONTENT))
-	Content.apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-definitions.json")))
-	Content.apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-definitions.json")))
-	var extension: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-content.json"))
-	leg_content.sources.merge(extension.get("sources",{}),true)
-	if extension.has("context_sources"):leg_content.context_sources = extension.context_sources
-	leg_content.supports.merge(extension.supports,true)
-	for field in ["parts","parents","equipment","robot"]:leg_content[field] = extension[field]
-	for field in ["builds","mirror_sources","prepared_branches"]:
-		if extension.has(field):leg_content[field] = extension[field]
-	config.parts.append_array(leg_content.parts)
-	config.builds.append_array(leg_content.get("builds",[]))
-	config.parents = leg_content.parents.duplicate(true)
-	config.supports = leg_content.supports.duplicate(true)
-	# The turning foot fixture stands in for the left foot's bay store.
-	config.parent.location = "support:foot_store"
-	for parent in config.parents:
-		if parent.id == "foot":parent.location = "support:foot_store"
-	var homes: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().parent_homes
-	for parent in config.parents:
-		if homes.has(parent.id):parent.home = homes[parent.id]
 
 func has_equipment(id: String) -> bool:
 	return id in EQUIPMENT
@@ -592,6 +569,9 @@ func reset_demo() -> void:
 	# Nothing is saved; reloading also re-runs any --stage launch flag.
 	get_tree().reload_current_scene()
 
+## Overridable orchestration boundary; production always uses the real stage runner.
+func create_stage_runner() -> RefCounted:return Stages.new(self)
+
 ## Development shortcut: script the sequence up to `stage`, then hand over
 ## paused. Supplied progress only; never a save or playtest evidence.
 func run_stage(stage: String) -> String:
@@ -614,7 +594,7 @@ func run_stage(stage: String) -> String:
 	var was_automated = automated_test
 	automated_test = true
 	set_paused(false)
-	var error: String = await Stages.new(self).run_to(stage,func(step: String):note.text = "Preparing stage: "+title+"\nNow: "+step)
+	var error: String = await create_stage_runner().run_to(stage,func(step: String):note.text = "Preparing stage: "+title+"\nNow: "+step)
 	automated_test = was_automated
 	overlay.queue_free()
 	stage_notice=("Started at stage: "+title+". Earlier work was supplied by script, not playtested.") if error.is_empty() else ("Stage preparation stopped: "+error)

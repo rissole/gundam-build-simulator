@@ -14,7 +14,9 @@ func source_body(uid: String,frame: Transform3D) -> StaticBody3D:
 	bodies[uid]=body
 	return body
 func run() -> void:
-	game=await boot_workshop("pelvis");fixture=Node3D.new();game.add_child(fixture)
+	game=preload("res://tests/kit/source_fixture.gd").new();root.add_child(game)
+	expect(game.prepare_sources(["chest","left_arm","right_arm"]).is_empty(),"shoulder-only source fixture configures")
+	fixture=Node3D.new();game.add_child(fixture)
 	var scene=Transform3D(Basis.IDENTITY,Vector3(70,20,0))
 	for uid in game.runtime.definition("chest").context_sources:source_body(uid,scene)
 	for side in ["left","right"]:

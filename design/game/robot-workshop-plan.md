@@ -244,7 +244,10 @@ checks for:
 - Valid stage boundaries and the `--stage` launch.
 - Relevant shared-system regressions affected by these changes.
 
-Use model/equipment harnesses for mechanical checks. Do not automate walking,
+Use the fast routine runner and model/equipment harnesses for mechanical checks.
+Expensive sequence and route diagnostics require an explicit user request and
+named `run_diagnostics.py --only` cases; never run them as automatic extra verification.
+See [coverage migration](../../game/workshop/tests/TESTING.md). Do not automate walking,
 targetability, connection-access acceptance or rendered inspection. Replace the
 old walked acceptance gate with the human playtest handoff. Do not run a broad
 suite that silently reintroduces those access checks; select relevant logic tests.

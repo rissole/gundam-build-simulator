@@ -49,6 +49,9 @@ automatic review of the entire workshop.
   summaries and failures into context, not full manifests or successful logs.
   Maintain one compact review status with remaining findings and evidence paths
   so a continuation can resume without replaying completed work.
+- Use the fast routine runner for normal verification. Named expensive diagnostics
+  require an explicit user request; never run them automatically as extra verification.
+  A runtime warning calls for faster tests, not a larger performance budget.
 - Stop when relevant checks for the requested scope pass.
   Report unrelated findings separately rather than extending the task. If work
   expands materially, explain the cause and revised scope in a short update.

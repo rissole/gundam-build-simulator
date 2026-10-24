@@ -1,6 +1,6 @@
 extends "res://tests/kit/harness.gd"
 ## Supplied collision blockers test machinery, not a walked access journey.
-const Fixture = preload("res://tests/wide_access_test.gd").Fixture
+const Fixture = preload("res://tests/kit/equipment_fixture.gd")
 const Blockout = preload("res://scripts/workshop_blockout.gd")
 const Gates = preload("res://scripts/rail_crossing_gates.gd")
 func _initialize() -> void:call_deferred("run")

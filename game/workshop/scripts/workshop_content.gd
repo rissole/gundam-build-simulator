@@ -47,3 +47,34 @@ static func presentation(data: Dictionary) -> Dictionary:
 	result.heel_pad["parent_hardware"] = parent_hardware
 	result.foot = {"slots":parent_slots}
 	return result
+
+## Compose fresh workshop data without creating nodes, equipment or source meshes.
+static func load_workshop() -> Dictionary:
+	var config: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
+	var data = definition_data()
+	apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string(config.definitions)))
+	var foot_kinds: Dictionary = {}
+	for part in config.parts:foot_kinds[part.kind] = true
+	var leg_content = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-content.json"))
+	apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-definitions.json")))
+	apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-definitions.json")))
+	var extension: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-content.json"))
+	leg_content.sources.merge(extension.get("sources",{}),true)
+	if extension.has("context_sources"):leg_content.context_sources = extension.context_sources
+	leg_content.supports.merge(extension.supports,true)
+	for field in ["parts","parents","equipment","robot"]:leg_content[field] = extension[field]
+	for field in ["builds","mirror_sources","prepared_branches"]:
+		if extension.has(field):leg_content[field] = extension[field]
+	config.parts.append_array(leg_content.parts)
+	config.builds.append_array(leg_content.get("builds",[]))
+	config.parents = leg_content.parents.duplicate(true)
+	config.supports = leg_content.supports.duplicate(true)
+	# The turning foot fixture stands in for the left foot's bay store.
+	config.parent.location = "support:foot_store"
+	for parent in config.parents:
+		if parent.id == "foot":parent.location = "support:foot_store"
+	var homes: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().parent_homes
+	for parent in config.parents:
+		if homes.has(parent.id):parent.home = homes[parent.id]
+
+	return {"data":data,"scenario":config,"content":leg_content,"foot_kinds":foot_kinds}

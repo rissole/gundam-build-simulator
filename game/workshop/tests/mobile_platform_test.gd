@@ -1,6 +1,6 @@
 extends "res://tests/kit/harness.gd"
 ## Mechanical equipment harness; supplied blockers are not a walked/access test.
-const Fixture = preload("res://tests/wide_access_test.gd").Fixture
+const Fixture = preload("res://tests/kit/equipment_fixture.gd")
 const Platform = preload("res://scripts/mobile_work_platform.gd")
 const Blockout = preload("res://scripts/workshop_blockout.gd")
 class Hands extends RefCounted:
