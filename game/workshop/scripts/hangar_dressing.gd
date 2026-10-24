@@ -8,8 +8,8 @@ extends RefCounted
 ## frame and 8 spots per mesh, so the rig uses 17 spots, the floor is split
 ## into 4 m slabs (at most 8 cones reach any one) and the walls into panels.
 ## General high-bay fixtures only glow.
-const AMBIENT = 0.11
-const KEY = 0.16
+const AMBIENT = 0.24
+const KEY = 0.35
 # Blender preview watts -> Godot energy with physical (squared) falloff.
 const WATTS_TO_ENERGY = 1.0/(4.0*PI*PI)
 # Inner faces: axis, plane, inward sign.
@@ -47,6 +47,7 @@ func _environment(env: Environment, key: DirectionalLight3D) -> void:
 	env.ambient_light_color = Color("9fb0bc")
 	env.ambient_light_energy = AMBIENT
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX
+	env.tonemap_exposure = 1.1
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.08
 	# Light depth haze lets the far end of the 48 m hall recede.

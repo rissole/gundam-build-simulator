@@ -55,7 +55,9 @@ last version before consolidation.
   approved (`scripts/hangar_dressing.gd`): pooled bay task beams, 17 spotlights,
   slabs, cladding, clerestories, services and a north hangar door. Headless boot
   only; **no regressions, surface audit or rendered review run**, at the user's
-  request. Awaiting the user's in-game check.
+  request. User found it too dark in game (2026-10-25): ambient 0.11→0.42, key
+  0.16→0.5, exposure 1.25 (frame median 22→75/255) was then too bright; settled
+  between at ambient 0.24, key 0.35, exposure 1.1 (median 46/255). User approved this brightness in game.
 - **Expanded workshop acceptance:** held while the whole-robot workflow is designed.
 
 ## Next
