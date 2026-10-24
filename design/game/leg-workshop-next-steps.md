@@ -21,6 +21,15 @@ requested a `--m3-stage` development launch flag. Work resumes from the task
 files in [handoff/README.md](handoff/README.md); they override older instructions
 in this document where they differ.
 
+Task 09 has stopped at the required mask shelf-fit gate. Its hook locations span
+1.36 m against the 1.35 m stock limit; the shelf stores meshes upright, and no
+mask source currently demonstrates a fit. The maximum envelope also exceeds the
+height limit, but is not actual mesh evidence. Keep the shelf unchanged. Resolve
+actual source/transport fit or the mask interface/handling contract before
+resuming the [task's deferred deliverables and acceptance](handoff/09-head-hand-pieces-and-crown.md).
+The [plan ledger](m3-wide-workshop-plan.md#implementation-ledger--2026-10-24)
+records this stop; the structural head remains the task-08 baseline.
+
 The last regression run before review passed 17 of 18 cases. The full sequence
 stopped before cassette pickup because the test never returned the right-foot
 carrier; task 01 adds that step. The isolated arm branch's 299 mechanical checks

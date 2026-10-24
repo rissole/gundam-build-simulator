@@ -432,3 +432,14 @@ questions; they are not additional user-approved dimensions or gameplay evidence
 - Payload/full-rig preflight includes fitted neighbors/hardware and rejects low
   crossings and reversed plate entry. Mechanical/manual checks are automated;
   walking, reach/visibility, manufactured detail and presentation remain unreviewed.
+- Task 09 stopped at its shelf-fit gate. The mask's maximum envelope is
+  1.40 W × 0.20 D × 1.16 H against the unchanged 1.35 × 0.35 × 1.10 m limit.
+  Its specified hook locations alone span 1.36 m; an upright narrower silhouette
+  cannot be assumed to fit while preserving those receiving interfaces.
+  `lift_shelf.gd::_pose` centres the source mesh with identity basis; carrying
+  rotation does not change its stored orientation. No mask source mesh exists
+  in the task-08 content, so this is an unresolved geometry proof, not a tested
+  mesh-fit failure. Resume with an actual source/transport-fit proof preserving
+  the mounts and shelf contract, or a resolved mask interface/handling revision.
+  Sensors, faceplate, mask, crown and `complete` remain unimplemented; see
+  [task 09](game/handoff/09-head-hand-pieces-and-crown.md) for deferred acceptance.
