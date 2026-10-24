@@ -52,7 +52,15 @@ func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 	label = game.sign_panel(panel,"",Vector3(-.04,2,0),Vector2(2.5,.8),32,.002,-PI/2)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;label.width = 1100
 	game.model.changed.connect(_load_changed)
+	game.zones.changed.connect(func(_zone):_sync_zone())
 	_pose()
+
+func _sync_zone() -> void:
+	# The cradle owns their intentional shared foot handoff. If it parks while
+	# the carrier remains out, the release signal transfers the occupancy claim.
+	if path>0 or moving or not handoff.is_empty():
+		if game.zones.holder("limb_station") in ["",equipment_id]:game.zones.claim("limb_station",equipment_id)
+	else:game.zones.release("limb_station",equipment_id)
 
 func carrying(model: AssemblyModel = null, selected: String = "") -> bool:
 	var m: AssemblyModel=game.model if model==null else model
@@ -116,9 +124,9 @@ func request(action: String) -> String:
 		var history: Array=game.model.assemblies[receiving_assembly].history
 		var rail=game.equipment.get_equipment("leg_rail")
 		if rail.can_construct() and rail.active_assembly==receiving_assembly and not history.is_empty() and history.back().slot==slot:
-			handoff = "capture";moving = true;goal = path;blocked_reason = "";return ""
+			handoff = "capture";moving = true;goal = path;blocked_reason = "";_sync_zone();return ""
 	if action=="return" and path==0 and withdrawal>0:
-		handoff="extend";moving=true;goal=path;blocked_reason="";return ""
+		handoff="extend";moving=true;goal=path;blocked_reason="";_sync_zone();return ""
 	goal = minf(last_phase,floorf(path+.0001)+1) if action == "advance" else maxf(0,ceilf(path-.0001)-1)
 	moving = true;blocked_reason = "";_pose();return ""
 
@@ -128,6 +136,7 @@ func pose_at(value: float) -> Transform3D:
 	return sole*Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(spec.root_offset))
 
 func _pose() -> void:
+	_sync_zone()
 	var frame = pose_at(path)
 	cradle.global_transform = frame*Transform3D(Basis.IDENTITY,Vector3(0,-withdrawal*.45,0))
 	if game.model.assemblies[assembly_id].location == "support:"+spec.support:game.runtime.node(assembly_id).global_transform = frame

@@ -40,6 +40,7 @@ var components: Node
 var storage: Node
 var m2_half_uid = "PV-120__001"
 var equipment: RefCounted
+var zones: RefCounted
 var hands: RefCounted
 var trial: RefCounted
 var leg_content: Dictionary = {}
@@ -220,6 +221,7 @@ func has_equipment(id: String) -> bool:
 
 ## One factory: creates `ids` in dependency order, then registers them in EQUIPMENT_ORDER.
 func _build_equipment(ids: Array) -> void:
+	zones=preload("res://scripts/zone_register.gd").new(leg_layout.layout().get("workshop",{}).get("zones",[]))
 	var made: Dictionary = {}
 	for id in ids:
 		var item: Node3D

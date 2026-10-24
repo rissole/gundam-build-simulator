@@ -284,6 +284,8 @@ func _pose() -> void:
 	_refresh()
 
 func _refresh() -> void:
+	if path==0 and is_equal_approx(index_x,spec.lanes.parking) and not moving and mode.is_empty():game.zones.release("limb_station",equipment_id)
+	else:game.zones.claim("limb_station",equipment_id)
 	for label in labels:label.text=status_text()
 
 func _model_changed() -> void:_refresh()

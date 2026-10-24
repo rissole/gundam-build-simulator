@@ -118,7 +118,7 @@ def contract():
                            "chest":[14,16.4],"arm":[8.4,11.2,14,16.4],
                            "rear":[],"head":[]},
                     duration=6.0),
-        elevators={}, groups={}, solids=[], signs=[],
+        zones=["limb_station"], elevators={}, groups={}, solids=[], signs=[],
     )
     for side, x in [("left",6.6),("right",19.4)]:
         data["elevators"][side] = dict(

@@ -112,10 +112,9 @@ func receiving_error(uid: String,destination: String="cassette_station") -> Stri
 		if occupant() not in ["",uid]:return "Install the first arm before loading the second onto this cassette."
 		return "" if clamp_index<0 else "Finish the cassette clamp movement first."
 	if destination=="cassette_station":
-		var rail=game.equipment.get_equipment("leg_rail")
-		if rail==null or rail.path!=0 or not is_equal_approx(rail.index_x,22) or rail.moving or not rail.mode.is_empty():return "Park the leg cradle at X22 before bringing the cassette into the common station."
-		var carrier=game.equipment.get_equipment("foot_carrier")
-		if carrier!=null and (carrier.path!=0 or carrier.moving or not carrier.handoff.is_empty()):return "Clear the foot carrier from the common station before lowering the cassette."
+		var holder: String=game.zones.holder("limb_station")
+		if holder=="leg_rail":return "Park the leg cradle at X22 before bringing the cassette into the common station."
+		if holder=="foot_carrier":return "Clear the foot carrier from the common station before lowering the cassette."
 	return ""
 
 func source_error(uid: String="arm_cassette") -> String:
@@ -191,6 +190,8 @@ func refresh_rig() -> void:
 		game.leg_layout.set_crane_anchor(Vector3(hook.x,23,hook.z))
 
 func _pose() -> void:
+	if _record().location=="support:cassette_station":game.zones.claim("limb_station",equipment_id)
+	else:game.zones.release("limb_station",equipment_id)
 	if not is_instance_valid(body):return
 	var location: String=_record().location
 	if location in ["support:cassette_park","support:cassette_station"]:

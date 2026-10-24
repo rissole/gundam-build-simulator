@@ -4698,6 +4698,9 @@
       },
       "duration": 6.0
     },
+    "zones": [
+      "limb_station"
+    ],
     "elevators": {
       "left": {
         "name": "left",
