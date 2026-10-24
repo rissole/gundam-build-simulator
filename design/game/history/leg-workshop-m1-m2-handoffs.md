@@ -532,7 +532,7 @@ Assess these three questions:
   useful hip access? Flag awkward views, walks, labels or controls.
 
 The coordinated dimensions are recorded in the
-[provisional interface contract](leg-prototype-interface.md#provisional-m1-layout-and-support-contract--2026-10-23).
+[provisional interface contract](../leg-prototype-interface.md#provisional-m1-layout-and-support-contract--2026-10-23).
 The final sample uses active rail X11.9, empty return lane X6.3 and a front-left
 2.6 m square lift at `[9.6, 0, 24.3]`, yaw π. Empty withdrawal includes a .40 m
 rearward bogie detour before transverse travel, keeping the lift clear. The

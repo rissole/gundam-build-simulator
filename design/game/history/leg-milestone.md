@@ -1,23 +1,25 @@
 # Supported left-leg milestone
 
+> **Archived 2026-10-24.** Historical structural-leg milestone for the retired hoist workflow. Its headless passes do not approve current UX.
+
 Structural blockout implemented and verified headlessly 2026-10-22. The first
 player feedback on 2026-10-23 identifies unresolved controls, handling affordances
 and visible transport issues. The historical checks below establish mechanical
 behavior; they do not establish acceptance of the workshop experience.
 
-Continue from [playtest feedback and next steps](leg-workshop-next-steps.md).
+Continue from [playtest feedback and next steps](../leg-workshop-next-steps.md).
 The authorized [M3 implementation plan](leg-workshop-m3-plan.md) tracks completion
 of the current rail-based construction journey. Full teardown verification was
 stopped by request on 2026-10-24; existing undo remains for mistake correction.
 The user now describes M3 as largely satisfying. The next design discussion works
 backwards from the completed robot in the
-[final gantry and assembly plan](final-assembly-plan.md), addressing measurement,
+[final gantry and assembly plan](../final-assembly-plan.md), addressing measurement,
 access, shared equipment and major-section installation before further detail.
 The upright-hoist workflow described below was retired during the 2026-10-23
 architecture consolidation. Default launch now selects the foot base game;
 M2 uses separate rail/crane trial profiles. This document retains the historical
 milestone and its evidence. The
-[pre-consolidation continuation snapshot](history/workshop-pre-consolidation-state-20261023.md)
+[pre-consolidation continuation snapshot](workshop-pre-consolidation-state-20261023.md)
 preserves the later feedback and handoff details.
 The next iteration should establish a coherent equipment interaction and visible
 handling loop before expanding construction detail. Detailed production assets
@@ -109,7 +111,7 @@ from automated behavior evidence.
 `python3 game/workshop/tools/run_regressions.py` passed **38 cases / 4,539
 checks**, including both normal application launches. The final run retained
 logs and SHA-256 hashes for 140 input files; inputs remained unchanged throughout.
-The local [results report](../../game/workshop/verification/regressions-20261022T124455.194604Z/results.json)
+The local [results report](../../../game/workshop/verification/regressions-20261022T124455.194604Z/results.json)
 records each command, result and log. `git diff --check` also passed.
 
 The new desktop build audit passed 539 checks across all 35 hand/pocket

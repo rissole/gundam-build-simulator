@@ -15,7 +15,7 @@ Finish the head in its specified order after the structural top:
 | 3 | Samurai mask | Two-hand stock via the shelf; rests on its hooks hands-free before bolting |
 | 4 | Decorative crown/crest | Crane, last |
 
-Source of truth: [head.md](../../head.md), sections "Sensor carrier: bench preparation
+Source of truth: [head.md](../../../head.md), sections "Sensor carrier: bench preparation
 and exact open-front path", "Separate faceplate, mask, and decorative crown mounts",
 "Supported source-to-head handling and overhead envelope", "Standing areas, tool
 visibility, and fitted-neighbor checks" and "Manual dependencies and remaining

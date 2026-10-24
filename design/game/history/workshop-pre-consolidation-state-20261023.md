@@ -6,7 +6,7 @@ launches, completed consolidation or verification below describe that earlier
 state; they do not override the active note.
 
 Updated 2026-10-23. This is the current continuation note for the expanded
-workshop. The [milestone record](../leg-milestone.md) and
+workshop. The [milestone record](leg-milestone.md) and
 [interface specification](../leg-prototype-interface.md) describe the implemented
 structural subset and its historical verification. Superseded M1/M2 handoffs,
 the earlier delivery-team assignments and the delivery retrospective are archived

@@ -8,9 +8,11 @@ or page inventory.
 
 - `GAME_DESIGN.md`: collecting/manual-focused gameplay, desktop first, future AR,
   comfortable carrying, current pockets and storage behavior.
-- `design/game/leg-workshop-next-steps.md`: active feedback, consolidation state and
-  human checkpoints; read before continuing workshop work. Its linked
-  `design/game/history/` archive preserves superseded plans and historical evidence.
+- `design/game/leg-workshop-next-steps.md`: current status, active rules, player
+  feedback, human checkpoints and a table of which design document to read when.
+  Read it before continuing workshop work. `design/game/history/` holds finished
+  work orders, superseded plans and evidence; open those only when a current
+  document links to a specific one.
 - `ROBOT_DESIGN.md` and `design/legs/foot-and-ankle/`: mechanical design and assembly
   references. Start with `assembly-and-review.md`, `actuators.md` and `hardware.csv`
   when working on the foot/actuators.

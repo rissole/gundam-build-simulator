@@ -97,9 +97,9 @@ Commit B: `Route limb-station occupancy through a shared zone register`.
 ## Part C — pauldrons on the generic receiver
 
 Source of truth:
-[shoulder spec, "Rigid removable pauldron"](../../arms/shoulder-and-upper-arm.md#rigid-removable-pauldron)
+[shoulder spec, "Rigid removable pauldron"](../../../arms/shoulder-and-upper-arm.md#rigid-removable-pauldron)
 and the state sequence in the same document (step 5, "Closed"), plus the pauldron
-row of the crane-route table in [final-assembly-plan.md](../final-assembly-plan.md).
+row of the crane-route table in [final-assembly-plan.md](../../final-assembly-plan.md).
 Key facts:
 
 - **Per side:** 1 carrier (prepared assembly), 4 M20 carrier bolts, 2 closure panels.

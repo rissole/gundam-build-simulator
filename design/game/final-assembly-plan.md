@@ -6,7 +6,7 @@ fixture contacts, equipment motions, parking, loaded routes and worker access
 against the component contracts. These are **dimensioned design envelopes**, not
 implemented equipment, structural certification or actual-solid clearance proof.
 That documentation pass did not change the M3 scene, saves or runtime. Subsequent
-implementation is tracked in the [M3 adaptation ledger](m3-wide-workshop-plan.md#implementation-ledger--2026-10-24);
+implementation is tracked in the [M3 adaptation ledger](history/m3-wide-evidence-20261024.md#plan-implementation-ledger-through-task-09);
 its partial equipment checks do not establish full-workshop or human access approval.
 
 [Active workshop state](leg-workshop-next-steps.md) · [Layout drawing](final-assembly-layout.svg)

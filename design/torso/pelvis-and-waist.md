@@ -507,7 +507,7 @@ the eyes. The waist-level work fingers end at world X11.50/14.50 rather than
 are outside the bridge and their fixed drives stay beside those fingers.
 Height adjustment, source clamp transfer, interrupted jaw closing, gantry
 retention, both leg deliveries and fresh-scene saves are mechanically checked in
-the [active implementation ledger](../game/m3-wide-workshop-plan.md#implementation-ledger--2026-10-24).
+the [M3 implementation ledger](../game/history/m3-wide-evidence-20261024.md#plan-implementation-ledger-through-task-09).
 Walking, rigging access, tool approach and visual presentation remain unreviewed.
 The following broader mechanism/articulation checks remain for detailed models.
 

@@ -16,8 +16,8 @@ feature modules. The accepted M1 rail/lift layout survives in the M2 trials;
 the standalone M1 trial and upright-hoist expanded workshop are retired.
 The user accepted the revised M2 playtest on 2026-10-23: “m2 plays great.”
 Read the [active plan and feedback](../../design/game/leg-workshop-next-steps.md)
-before continuing development. The authorized
-[M3 journey](../../design/game/leg-workshop-m3-plan.md) is ready for forward playtest.
+before continuing development. The wider M3 workshop is implemented and awaits
+playtest with the [checklist](../../design/game/m3-wide-playtest-checklist.md).
 
 The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
 
@@ -133,9 +133,10 @@ in M1. Record feedback in the existing
 
 ## M3 complete structural leg
 
-M3's fresh forward journey passes 636 checks and 30 real save/reopen checkpoints.
-It is ready for human playtest; evidence and scope are in the
-[M3 ledger](../../design/game/leg-workshop-m3-plan.md). Launch it separately:
+M3 is now the wider whole-robot workshop; see the
+[wider M3 plan](../../design/game/m3-wide-workshop-plan.md). The original leg-only
+journey's evidence is [archived](../../design/game/history/leg-workshop-m3-plan.md).
+Launch it separately:
 
 ```sh
 ./play.command -- --m3-workshop
@@ -322,9 +323,9 @@ route ends at full retention and holder release. `--timeout SECONDS` overrides
 the cap for every selected
 case; the runner still stops immediately on script errors or detected stalls.
 
-Current consolidation evidence and remaining human acceptance are recorded in the
-[active continuation note](../../design/game/leg-workshop-next-steps.md).
-The earlier [structural milestone](../../design/game/leg-milestone.md#final-verification)
+Current status and remaining human acceptance are recorded in the
+[workshop state](../../design/game/leg-workshop-next-steps.md).
+The earlier [structural milestone](../../design/game/history/leg-milestone.md#final-verification)
 records historical results for the retired hoist workflow.
 
 The linked test scripts generate local JSON audits under `verification/`. Audits,

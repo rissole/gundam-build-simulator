@@ -64,8 +64,8 @@ The foot measures approximately **3.0 m long × 1.3 m wide**. Its inventory cont
 | [Reference sheets](design/legs/foot-and-ankle/images/README.md) | Engineering-style images and their generation prompts |
 | [FA-01 model](models/foot-fa01/README.md) | Model deliverables, Blender workflow, exports, and audit records |
 | [Modeling notes](models/foot-fa01/MODELING_NOTES.md) | Geometry decisions and visualization scope |
-| [Current workshop plan](design/game/leg-workshop-next-steps.md) | Playtest feedback, agreed handling direction, and implementation steps |
-| [Supported left-leg milestone](design/game/leg-milestone.md) | Expanded workshop, equipment, construction scope and verification |
+| [Current workshop state](design/game/leg-workshop-next-steps.md) | Current status, active rules, player feedback, and which design document to read when |
+| [Wider M3 workshop plan](design/game/m3-wide-workshop-plan.md) | Whole-robot workshop stages, equipment and verification scope |
 | [Leg and pelvis interfaces](design/game/leg-prototype-interface.md) | Physical parts, dimensions, ownership and manual dependencies |
 
 ![Foot mechanisms with the armor hidden](models/foot-fa01/output/foot-fa01-skeleton.png)

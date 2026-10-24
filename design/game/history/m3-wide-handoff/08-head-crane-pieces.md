@@ -11,11 +11,11 @@ task 07's `staged_receiver` and zone register:
 2. **left/right wraparound sides** (crane; handed geometry);
 3. **structural top** (crane).
 
-Source of truth: [head.md](../../head.md), sections "Baseplate construction and
+Source of truth: [head.md](../../../head.md), sections "Baseplate construction and
 assembly order", "Torso spoke to baseplate", "Wraparound side shells, rear seam, and
 structural top", "Supported source-to-head handling and overhead envelope" and
 "Standing areas, tool visibility, and fitted-neighbor checks". Also use the head
-rows of [final-assembly-plan.md](../final-assembly-plan.md) (bulky-fixture source
+rows of [final-assembly-plan.md](../../final-assembly-plan.md) (bulky-fixture source
 table, crane route table, work-patch table).
 
 ## Rules

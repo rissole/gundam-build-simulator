@@ -115,7 +115,7 @@ Contacts in the playable foot-root frame are X±0.50/Y−0.36/Z−0.20 and1.20 m
 their positions are checked against the imported structural rail triangles.
 Both crane deliveries, carrier handoffs, mirrored geometry, support ownership and
 interrupted saves have mechanical coverage in the
-[active implementation ledger](../game/m3-wide-workshop-plan.md#implementation-ledger--2026-10-24).
+[M3 implementation ledger](../game/history/m3-wide-evidence-20261024.md#plan-implementation-ledger-through-task-09).
 That evidence does not establish player reach, rigging usability or rendered
 approval. The complete wider workshop and its later major-section deliveries are
 still in development.

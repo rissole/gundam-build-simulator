@@ -36,7 +36,7 @@ CASE_TIMEOUTS = {"m3_acceptance_test": 900.0, "arm_delivery_test": 600.0}
 # wider-workshop plan explicitly assigns those acceptance checks to the user.
 # Do not silently bring them back through default discovery or --only.
 HUMAN_M3_CHECKS = {"m3_acceptance_test", "m3_hip_access_test", "m3_route_clearance_test"}
-# M3 saving is deferred until the wider structure exists (design/game/handoff/README.md).
+# M3 saving is deferred until the wider structure exists (design/game/m3-wide-workshop-plan.md, "Saves and checkpoints").
 DEFERRED_M3_SAVE_CHECKS = {"m3_save_validation_test"}
 
 

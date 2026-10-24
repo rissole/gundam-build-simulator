@@ -390,7 +390,7 @@ Starting the expanded prototype does not overwrite that earlier profile.
 
 This establishes structural readiness only. Detailed leg actuators, additional
 services, armor, thrusters, waist/torso and the second leg remain deferred. The
-[milestone record](design/game/leg-milestone.md) tracks verification; the
+[milestone record](design/game/history/leg-milestone.md) tracks verification; the
 [interface specification](design/game/leg-prototype-interface.md) records the
 selected geometry, parts and manuals. Headless behavior/geometry evidence does
 not establish a human playtest or rendered approval for this expansion.
@@ -417,7 +417,7 @@ The current prototype lane exposes the bounded M2 retaining-half and crane
 examples, with supplied construction and independent saves. The complete
 leg-to-robot M3 journey was authorized on 2026-10-23, with a prepared complete foot
 at dispatch and player construction of the remaining structural leg. Its
-[implementation and acceptance ledger](design/game/leg-workshop-m3-plan.md)
+[implementation and acceptance ledger](design/game/history/leg-workshop-m3-plan.md)
 tracks the supported handoff, full construction, retention and holder release.
 On 2026-10-24 the user removed full reverse-sequence verification from M3;
 existing supported undo remains for correcting mistakes.

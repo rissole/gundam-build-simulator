@@ -23,7 +23,7 @@ tests pass. These four failures remain:
    It last passed at 02:36 UTC, before the backpack bulky-fixture inserts were added.
    The platform's authored route to the bulky rear dock now crosses a backpack insert
    crossbeam. Decide whether the route, the dock or the insert's enable state is
-   wrong per [final-assembly-plan.md](../final-assembly-plan.md) (bulky fixture and
+   wrong per [final-assembly-plan.md](../../final-assembly-plan.md) (bulky fixture and
    mobile platform sections), and fix the authored data, not the test.
 3. **`m3_stock_test`**: `SCRIPT ERROR: Invalid access to property or key 'foot'`.
    **`m3_content_test`**: `M3 supplies 135 foot identities and 40 extension identities`

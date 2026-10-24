@@ -1,5 +1,7 @@
 # M3 complete leg to robot journey
 
+> **Archived 2026-10-24.** Superseded by the [wider M3 plan](../m3-wide-workshop-plan.md), which replaced M3 in place. Kept for its reverse investigation and delivery retrospective.
+
 Implementation authorized on 2026-10-23. The user selected a completed foot at
 dispatch, followed by player construction of the remaining structural left leg.
 This checkpoint ends with a leg secured to the supplied pelvis and a working
@@ -8,7 +10,7 @@ holder release. M4 and other robot branches remain separate work.
 Player feedback, 2026-10-24: the user finds the complete journey “largely
 satisfying,” but wants detailed measurement and access planning to reduce future
 implementation effort. Continue the design discussion in the
-[final gantry and assembly plan](final-assembly-plan.md); this ledger retains M3's
+[final gantry and assembly plan](../final-assembly-plan.md); this ledger retains M3's
 implementation evidence and retrospective rather than becoming the full-robot plan.
 
 Scope update, 2026-10-24: the user stopped full reverse-sequence verification.
@@ -17,7 +19,7 @@ leg and return everything to stock. Keep implemented undo/support safeguards;
 finish one fresh forward journey through full retention and holder release.
 Do not reopen full teardown validation as an M3 completion gate.
 
-Current continuation: the user selected [replacing M3 with the wider workshop](m3-wide-workshop-plan.md)
+Current continuation: the user selected [replacing M3 with the wider workshop](../m3-wide-workshop-plan.md)
 before detailed component workflows. That plan supersedes this historical
 implementation scope and its automated access gates; the user owns walking and
 connection-access playtesting for the adaptation.
@@ -131,9 +133,9 @@ receiving component, preserving the same physical identities.
 
 ## Verification and acceptance ledger
 
-The final [forward gate](../../game/workshop/verification/regressions-20261023T203841.362193Z/results.json)
+The final [forward gate](../../../game/workshop/verification/regressions-20261023T203841.362193Z/results.json)
 passes 636 ordinary-input checks and 11 source-asset tests with unchanged run
-inputs. The [journey evidence](../../game/workshop/verification/m3-independent-acceptance.json)
+inputs. The [journey evidence](../../../game/workshop/verification/m3-independent-acceptance.json)
 records 30 real-file/fresh-scene checkpoints, no staged player poses and no debug
 fixture. It starts from the prepared foot and ends after full retention and
 holder release. Human playtest acceptance remains separate.
@@ -165,7 +167,7 @@ requested and is separate from human playtest and automated behavior evidence.
 ### Authoring checkpoint
 
 The integrated `m3_content_test.gd` run passed 318 model/content checks, with evidence
-in [m3-content-audit.json](../../game/workshop/verification/m3-content-audit.json).
+in [m3-content-audit.json](../../../game/workshop/verification/m3-content-audit.json).
 It covers the 135-piece supplied foot boundary, all 42 installation slots,
 independent harness/knee order, pooled washers, swapped retaining halves, wrong
 variants, security milestones and complete supported model reversal. Hand-carried
@@ -207,14 +209,14 @@ alignment. Minimum measured loaded floor clearance is 0.50000006 m. The empty
 holder withdraws from the load before using its bounded left cross-slide; the
 bogie stays on the active left track and the right-leg reserve remains clear.
 
-The [save validation report](../../game/workshop/verification/m3-save-validation.json)
+The [save validation report](../../../game/workshop/verification/m3-save-validation.json)
 passes 174 staged checks, including 104 malformed snapshots and fresh scenes for
 full retention, release, empty return and reacquisition. This suite explicitly
 stages its model/holder states; the separate walked suite supplies ordinary-input
 and real-file interruption evidence. The final forward gate supplies the current
 walked interruption proof; the staged suite is retained as bounded earlier evidence.
 
-The bounded [carrying-route check](../../game/workshop/verification/m3-route-clearance.json)
+The bounded [carrying-route check](../../../game/workshop/verification/m3-route-clearance.json)
 passes 19 checks with an actual two-hand PV-120 half. It walks both directions
 around the crane console, reaches the leg work aisle and boards the lift through
 its front ramp. Its complete-leg starting state is explicitly staged; this is
@@ -236,7 +238,7 @@ rack bodies, and the second half's far fasteners needed a clearer lift work
 position. The stock projection now passes 88 focused checks and the M2 crane's
 63 checks. The M3 lift moves 0.25 m toward the hip, with its ramp, shelf and
 controls following the authoritative origin. Height, size and M2 layout remain
-unchanged. The [hip-access check](../../game/workshop/verification/m3-hip-access.json)
+unchanged. The [hip-access check](../../../game/workshop/verification/m3-hip-access.json)
 passes 23 checks: nine legal standing positions reach and see all four far-half
 fasteners, and an ordinary local walk and four fastening actions succeed from
 the working corner. Its initial retained-leg state is explicitly staged.
@@ -248,7 +250,7 @@ conflicts. Its failing evidence is preserved in
 `verification/m3-geometry-world-before-fix.json`. Direct upright travel home was
 rejected because it crosses the stationary robot.
 
-An independent [trajectory probe](../../game/workshop/verification/m3-left-route-design-probe.json)
+An independent [trajectory probe](../../../game/workshop/verification/m3-left-route-design-probe.json)
 established a viable active-left contract: outboard lift guides, stepped holder
 support, an explicit withdrawal bearing link and extra empty-holder tilt height.
 It preserves the usable hip work area and original foot support width. The probe
@@ -260,7 +262,7 @@ reciprocal sweeps and actual cantilever support were subsequently integrated and
 verified as follows. The later user scope update removed full ordinary recovery
 from the final gate.
 
-The final independent [geometry report](../../game/workshop/verification/m3-geometry-review.json)
+The final independent [geometry report](../../../game/workshop/verification/m3-geometry-review.json)
 passes 84 checks: 61 loaded and 284 empty reciprocal world intervals, 345
 support/physics samples, static robot clearances, and lift support chains at
 ground, intermediate and upper height. The shifted lift uses two grounded
@@ -269,7 +271,7 @@ measured stepped support, bearing link and raised tilt path; its bogie remains
 on the active left rail. Strict before/after world-pose checks apply to static
 rail/carrier/brace supports. The kinematic passenger deck's shapes agree locally
 immediately and globally after the physics step, preserving platform velocity
-semantics. The [review](../../game/workshop/verification/m3-geometry-review.md)
+semantics. The [review](../../../game/workshop/verification/m3-geometry-review.md)
 records the evidence boundary and engine-source rationale. No rendered review
 was requested or performed.
 

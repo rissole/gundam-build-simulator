@@ -3,7 +3,9 @@
 When continuing the workshop prototype, read the current
 [playtest feedback and next steps](design/game/leg-workshop-next-steps.md) before
 planning changes. It records unresolved player-facing issues beyond the historical
-headless milestone results.
+headless milestone results, and its document table says which other design
+documents a task needs. Files in `design/game/history/` are archives: open one
+only when a current document links to it for a specific fact.
 
 For taking a robot component from its high-level design Markdown through detailed
 parts/interfaces, exploded references, source models and playable manuals, read
