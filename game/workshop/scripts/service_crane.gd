@@ -4,6 +4,7 @@ extends "res://scripts/equipment.gd"
 signal changed
 const Console = preload("res://scripts/service_crane_console.gd")
 const Sweep = preload("res://scripts/motion_sweep.gd")
+const Layout = preload("res://scripts/leg_bay_layout.gd")
 const VERSION = 2
 var END_IDS: Array = []
 var POINT_IDS: Array = []
@@ -54,6 +55,10 @@ var task = ""
 var complete_journey = false
 var assembly_payload = false
 var receiver_support = ""
+# Routes are hidden: an empty crane serves the next load in crane.order, and
+# travels to it from its current beam pose. Undo can request one route back.
+var travel_from: Variant = null
+var reacquire = ""
 var required_ends: int:
 	get:return END_IDS.size()
 
@@ -204,11 +209,17 @@ func menu_options() -> Array[Dictionary]:
 	if not motion.is_empty():
 		options.append({"action":"stop" if moving else "resume","label":"Stop" if moving else "Resume"})
 		return options
-	if complete_journey and station == "park" and raised and attached_count() == 0 and hand_payload().is_empty():
-		for key in tasks:
-			if key != task:options.append({"action":"task:"+key,"label":"Select task: "+tasks[key].title})
 	if station != "park":options.append({"action":"down" if raised else "up","label":"↓  Lower crane" if raised else "↑  Raise crane"})
-	if raised:
+	if raised and complete_journey:
+		if _empty():
+			var next: String = next_route()
+			var role: String = _pickup_role(next)
+			if not next.is_empty() and not (next == task and station == role):options.append({"action":"pickup","label":"Move to pickup · "+Layout.place_title(place_of(role,next))})
+		else:
+			if station != "receiver":options.append({"action":"go:receiver","label":"Move to delivery · "+_station_title("receiver")})
+			if station != "source":options.append({"action":"go:source","label":"Put back · "+_station_title("source")})
+		if station != "park" and _empty():options.append({"action":"go:park","label":"Move to "+_station_title("park")})
+	elif raised:
 		for destination in STATIONS:
 			var action = "go:"+destination
 			if destination != station:options.append({"action":action,"label":"Move to "+(_station_title(destination))})
@@ -278,6 +289,12 @@ func action_error(action: String) -> String:
 			if _installed():return _beam_undo_error()
 			if not game.model.support_occupant(support).is_empty():return "The crane support is occupied."
 		return ""
+	if action == "pickup":
+		var next: String = next_route() if complete_journey and _empty() else ""
+		if next.is_empty():return "No crane load is waiting." if complete_journey and _empty() else "Set the load down before collecting another."
+		if next == task:return action_error("go:"+_pickup_role(next))
+		if not raised:return "Raise the crane before travelling to another location."
+		return "" if next == reacquire else _ready_error(next)
 	if action == "down":
 		if station=="source" and config.spec.has("source_equipment"):
 			var source_error: String=game.equipment.get_equipment(config.spec.source_equipment).source_error(uid)
@@ -316,16 +333,22 @@ func request(action: String) -> String:
 	if action.begins_with("guide:"):
 		error=_guide().request(action.trim_prefix("guide:"));_refresh();return error
 	if complete_journey and action.begins_with("task:"):
-		task = action.get_slice(":",1);config = layout.crane_contract(task)
-		_configure_task(config);_configure_rig_bar()
-		load_body = _stock_body(uid);_refresh();return ""
+		_select_route(action.get_slice(":",1));_refresh();return ""
+	if action == "pickup":
+		var next: String = next_route()
+		if next != task:
+			# The empty beam travels from where it hangs to the next load.
+			travel_from = _beam_pose();_select_route(next);station = "park"
+		action = "go:"+_pickup_role(next)
 	if action == "open_console":return console.open()
 	if action == "close_console":console.shut();return ""
 	if action == "stop":moving = false
 	elif action == "resume":moving = true;blocked_reason = ""
 	elif action == "stow":endpoints[hand_payload()] = {"state":"stowed","point":""}
 	elif action.begins_with("pick:") or action.begins_with("detach:"):endpoints[action.get_slice(":",1)] = {"state":"held","point":""}
-	elif action.begins_with("attach:"):endpoints[hand_payload()] = {"state":"attached","point":action.get_slice(":",1)}
+	elif action.begins_with("attach:"):
+		endpoints[hand_payload()] = {"state":"attached","point":action.get_slice(":",1)}
+		if reacquire == task:reacquire = ""
 	else:
 		if action=="up" and _guided_live():_guide().depart()
 		if action == "up" and _installed() and attached_count()==required_ends and not config.spec.get("receiver_contact",false):
@@ -487,6 +510,7 @@ func _station_beam(at: String, up: bool) -> Transform3D:
 	return Transform3D(Basis.IDENTITY,origin)
 
 func _beam_at(at: String, up: bool, action: String, p: float) -> Transform3D:
+	if travel_from != null and action.begins_with("go:"):return travel_from.interpolate_with(_station_beam(action.get_slice(":",1),true),p)
 	if at=="receiver" and _guide()!=null and _guide().active and not action.begins_with("go:"):
 		var lift=.2*p if action=="up" else .2*(1-p) if action=="down" else .2 if up else 0.0
 		return _guide().beam_pose().translated(Vector3.UP*lift)
@@ -557,7 +581,7 @@ func physics(delta: float) -> void:
 					var error=_seat()
 					if not error.is_empty():blocked_reason=error;moving=false;return
 					if config.spec.get("restore_access",false):game.equipment.get_equipment("workshop_access").request_mode("work")
-			if motion.begins_with("go:"):station = motion.get_slice(":",1)
+			if motion.begins_with("go:"):station = motion.get_slice(":",1);travel_from = null
 			else:raised = motion == "up"
 			motion = "";progress = 0;moving = false
 	_refresh()
@@ -687,13 +711,74 @@ func _refresh() -> void:
 	changed.emit()
 
 func status_text() -> String:
-	var label: String = _station_title(station)+" · "+("Up" if raised else "Down")
+	var label: String = ("To "+_station_title(motion.get_slice(":",1)) if motion.begins_with("go:") else _station_title(station))+" · "+("Up" if raised else "Down")
 	if not motion.is_empty():label += " · "+("Moving" if moving else "Stopped")
 	if attached_count()>0:label += "\nMagnetic ends attached: %d/%d"%[attached_count(),required_ends]
 	if _installed() and not receiver_support.is_empty():label+="\nReceiving support has taken the load."
 	elif _installed():label += ("\nConnection retention: %d/%d" if complete_journey else "\nFlange fasteners: %d/%d")%[hardware_count(),fastener_slots.size()]
 	if not blocked_reason.is_empty():label += "\n"+blocked_reason
 	return label
+
+## Console header: the load being carried, or the next one to collect.
+func load_text() -> String:
+	if not complete_journey:return config.spec.get("title","Upper-leg beam")
+	if _crane_owned():return "Carrying: "+_load_title(task)
+	if attached_count()>0:return "Rigged: "+_load_title(task)
+	var next: String = next_route()
+	return "Next pickup: "+_load_title(next) if not next.is_empty() else "No load waiting"
+
+## Why the next pickup cannot start yet, while the empty crane waits.
+func next_hint() -> String:
+	if not complete_journey or not raised or not motion.is_empty() or not _empty():return ""
+	var next: String = next_route()
+	return "" if next.is_empty() or next == reacquire else _ready_error(next)
+
+## The route an empty crane serves: a requested reacquire, otherwise the first
+## route in crane.order whose load still waits at its source.
+func next_route() -> String:
+	if reacquire in tasks:return reacquire
+	for key in Layout.layout().crane.get("order",tasks.keys()):
+		if _waiting(key):return key
+	return ""
+
+## An undo reacquires its load where it is installed; other pickups are at the source.
+func _pickup_role(key: String) -> String:
+	return "receiver" if not key.is_empty() and key == reacquire else "source"
+
+func _load_title(key: String) -> String:
+	var id: String = tasks[key].load_uid
+	return game.runtime.definition(id).get("title",tasks[key].title) if game.model.assemblies.has(id) else tasks[key].title
+
+func _select_route(key: String) -> void:
+	task = key;config = layout.crane_contract(task)
+	_configure_task(config);_configure_rig_bar();load_body = _stock_body(uid)
+
+## Place holding a route's source or receiver, named for the console.
+func place_of(role: String, key: String = "") -> String:
+	if role == "park":return "park"
+	var spec: Dictionary = config.spec if key.is_empty() else tasks[key]
+	var receiver: String = spec.get("receiver_support","")
+	if receiver.is_empty():receiver = spec.get("guided_receiver",spec.owner)
+	return Layout.crane_place(spec.source_support if role == "source" else receiver)
+
+func _empty() -> bool:
+	return attached_count()==0 and hand_payload().is_empty() and not _crane_owned()
+
+func _waiting(key: String) -> bool:
+	return _record(game.model,tasks[key].load_uid).location == "support:"+tasks[key].source_support
+
+## Why a route cannot start now: its receiver, the connection's prerequisites,
+## then its source equipment (the arm cassette must be at the station).
+func _ready_error(key: String) -> String:
+	var spec: Dictionary = tasks[key]
+	var error: String = _receiver_error(spec)
+	if error.is_empty() and spec.get("receiver_support","").is_empty() and not spec.has("guided_receiver") and not spec.slot.is_empty():
+		for required in game.model.slot_definition(spec.owner,spec.slot).get("requires",[]):
+			if game.model.assemblies[spec.owner].slots[required].is_empty():
+				var dependency: Dictionary = game.model.slot_definition(spec.owner,required)
+				error = "Fit the "+dependency.get("label",required.replace("_"," "))+" before collecting the "+_load_title(key).to_lower()+".";break
+	if error.is_empty() and spec.has("source_equipment"):error = game.equipment.get_equipment(spec.source_equipment).source_error(spec.load_uid)
+	return error
 
 func capture() -> Dictionary:
 	var result = {"version":VERSION,"station":station,"raised":raised,"motion":motion,"progress":progress,"moving":moving,"blocked_reason":blocked_reason,"endpoints":endpoints.duplicate(true)}
@@ -799,29 +884,32 @@ func placement_error(owner: String, sid: String) -> String:
 	return ""
 
 func apply(data: Dictionary) -> void:
-	if complete_journey and data.task != task:
-		task = data.task;config = layout.crane_contract(task);_configure_task(config);_configure_rig_bar();load_body = _stock_body(uid)
+	if complete_journey and data.task != task:_select_route(data.task)
 	station = data.station;raised = data.raised;motion = data.motion;progress = float(data.progress);moving = data.moving;blocked_reason = data.blocked_reason;endpoints = data.endpoints.duplicate(true)
+	travel_from = null
 	console.shut();_refresh()
 
 func _station_title(at: String) -> String:
-	if not complete_journey:return TITLES[at]
-	if uid=="arm_cassette" and at!="park":return "Cassette parking" if at=="source" else "Shared limb station"
-	if at == "source":return tasks[task].title+" rack"
-	return ("Pelvis gantry" if receiver_support=="pelvis_gantry" else "Bulky fixture" if receiver_support=="bulky_fixture" else "Foot dispatch" if not receiver_support.is_empty() else "Waist seat" if assembly_payload else "Leg cradle") if at == "receiver" else "Parking bay"
+	if not complete_journey or at == "park":return TITLES[at]
+	return Layout.place_title(place_of(at))
 
-func _receiver_error() -> String:
-	if _guide()!=null:return _guide().receiving_error(uid)
-	if config.spec.get("receiver_equipment","")=="module_supports":return game.equipment.get_equipment("module_supports").receiving_error(uid,receiver_support)
-	if not receiver_support.is_empty():
-		var receiver=game.equipment.get_equipment(config.spec.receiver_equipment)
-		if receiver.has_method("receiving_error"):return receiver.receiving_error(uid)
-		if _installed():return "" if receiver.path==0 and receiver.withdrawal==0 and not receiver.moving else "Return the receiving carrier to dispatch first."
-		return "" if receiver.can_receive(uid) else "Return the empty foot carrier to dispatch, extend its sole pads and select the matching leg on the home holder."
+## Whether a route's receiver accepts its load now; the active route by default.
+func _receiver_error(route: Dictionary = {}) -> String:
+	var live = route.is_empty()
+	var spec: Dictionary = config.spec if live else route
+	var id: String = spec.load_uid;var receiving: String = spec.get("receiver_support","")
+	var guide: Node = game.equipment.get_equipment(spec.guided_receiver) if spec.has("guided_receiver") else null
+	if guide!=null:return guide.receiving_error(id)
+	if spec.get("receiver_equipment","")=="module_supports":return game.equipment.get_equipment("module_supports").receiving_error(id,receiving)
+	if not receiving.is_empty():
+		var receiver=game.equipment.get_equipment(spec.receiver_equipment)
+		if receiver.has_method("receiving_error"):return receiver.receiving_error(id)
+		if live and _installed():return "" if receiver.path==0 and receiver.withdrawal==0 and not receiver.moving else "Return the receiving carrier to dispatch first."
+		return "" if receiver.can_receive(id) else "Return the empty foot carrier to dispatch, extend its sole pads and select the matching leg on the home holder."
 	var rail = game.equipment.get_equipment("leg_rail")
 	if rail == null or rail.path > .0001 or rail.moving or not rail.engaged:return "Return the engaged leg holder home before crane delivery or reacquisition."
 	if rail.has_method("can_construct") and not rail.can_construct():return "Return the holder to the common station and lock neutral roll before crane delivery."
-	if rail.has_method("can_construct") and rail.active_assembly!=load_owner:return "Select the "+load_owner.replace("_"," ")+" build on the clear shared holder first."
+	if rail.has_method("can_construct") and rail.active_assembly!=spec.owner:return "Select the "+spec.owner.replace("_"," ")+" build on the clear shared holder first."
 	return ""
 
 func _journey_undo(subject: String) -> Dictionary:
@@ -832,7 +920,10 @@ func _journey_undo(subject: String) -> Dictionary:
 	var spec: Dictionary = game.model.slot_definition(subject,sid)
 	if spec.get("undo_requires_support","") != support:return {"handled":false,"error":""}
 	var active_security: Array = game.leg_content.m3.security_slots.get(task,[])
-	if subject!=load_owner or sid not in active_security:return {"handled":true,"error":"Select the matching crane task and reacquire its lifting ends before undoing this connection."}
+	if subject!=load_owner or sid not in active_security:
+		for key in tasks:
+			if tasks[key].owner==subject and sid in game.leg_content.m3.security_slots.get(key,[]):reacquire = key
+		return {"handled":true,"error":"Move the empty crane to pickup and attach its lifting ends before undoing this connection."}
 	if attached_count()!=required_ends or raised or not motion.is_empty() or station != "receiver" or not _receiver_error().is_empty():return {"handled":true,"error":"Lower the matching crane at this connection and attach all required lifting ends before removing retention hardware."}
 	if assembly_payload and game.model.assemblies[uid].slots.values().any(func(value):return not value.is_empty()):return {"handled":true,"error":"Remove dependent construction before undoing this module’s structural retention."}
 	if sid == slot:return {"handled":true,"error":"Use Up at the crane console to lift the unfastened component from its seat."}

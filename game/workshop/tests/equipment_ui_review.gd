@@ -22,12 +22,6 @@ func run() -> void:
 	var error: String = crane.console.open()
 	if not error.is_empty():push_error(error);quit(2);return
 	await capture("02-crane-controls",eye,point,false)
-	if crane.console.has_method("_show_tasks"):
-		crane.console._show_tasks(true)
-		await capture("03-crane-loads",eye,point,false)
-		crane.console.search.text = "pelvis";crane.console.refresh()
-		await capture("03b-crane-search",eye,point,false)
-		crane.console._show_tasks(false)
 	root.content_scale_size=Vector2i(1280,720);root.size=Vector2i(1280,720)
 	await capture("04-crane-720",eye,point,false)
 	# Supplied empty-crane poses illustrate the operating states; no delivery claim.

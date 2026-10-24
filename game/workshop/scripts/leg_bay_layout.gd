@@ -176,6 +176,17 @@ func _reservations() -> void:
 	for x in [5.2,20.8]:box(self,"ArmApproachEnvelope",Vector3(x,.015,26),Vector3(3.2,.02,6),game.material(Color("507c78")),false)
 	box(self,"RearAccessEnvelope",Vector3(13,.015,34.7),Vector3(8,.02,4),game.material(Color("507c78")),false)
 
+## Crane places name the supports at one physical location for the console's
+## pickup and delivery labels.
+static func crane_place(support_id: String) -> String:
+	var places: Dictionary = layout().crane.get("places",{})
+	for id in places:
+		if support_id in places[id].supports:return id
+	return ""
+
+static func place_title(id: String) -> String:
+	return layout().crane.get("places",{}).get(id,{}).get("title",id.capitalize())
+
 static func authored_pose(record: Dictionary) -> Transform3D:
 	return Transform3D(Basis.from_euler(AssemblyRuntime.vec(record.rotation_degrees)*PI/180.0),AssemblyRuntime.vec(record.position))
 

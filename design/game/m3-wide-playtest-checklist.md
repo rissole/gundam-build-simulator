@@ -26,9 +26,9 @@ Rendered UI screenshots were inspected; these steps still need your hands-on che
 Start with `./play.command -- --m3-workshop`.
 
 - [ ] Open the crane with E. Movement should be visible immediately; the manual and pockets should return when you close it. Mouse look must stay fixed while open.
-- [ ] Choose **Change load…**, search for `pelvis` (including typing E), select **Pelvis and waist**, and return to the movement controls. Try a search with no results, clear it, and scroll to the final load.
-- [ ] Use mouse and ↑/↓ + E/Enter; Tab should reach the search and Close buttons. Q closes when not typing; Esc pauses even when typing. Check your usual window size.
-- [ ] Follow one crane delivery: move to pickup → Lower crane → close and rig → Raise crane → move to receiver → Lower crane. Check blocked-command explanations, fastening, release and parking before changing load.
+- [ ] The crane shows no load list. Parked and empty, it should name the next pickup and offer **Move to pickup · <place>**. Carrying, it should offer only **Move to delivery** or **Put back**. When the next load is blocked, the panel should say why.
+- [ ] Use mouse and ↑/↓ + E/Enter; Tab should reach Close. Q closes; Esc pauses. Check your usual window size.
+- [ ] Follow one crane delivery: move to pickup → Lower crane → close and rig → Raise crane → move to receiver → Lower crane. Check blocked-command explanations, fastening, release, and that the next pickup advances to the following load.
 - [ ] Board both side elevators. Up and Down should each travel one level and stop automatically. Try top/bottom limits and call the elevator from a landing. Repeat carrying a component and using the shelf.
 - [ ] On the mobile platform, press **MOVE**, choose a destination from the menu, and ride it. Try mouse and ↑/↓ + E/Enter. Q/Close must cancel without moving; Esc must pause. Up/Down only change height. Down at ground must not send it to parking. To park, choose **Parking bay** from Move. Try Move while raised and check the explanation.
 - [ ] Try a blocked mobile transfer. Clear the obstacle, open **MOVE** and choose **Resume to…**, or choose **Return to…** to reverse along the route. Check the rider and anything carried stay with the deck.

@@ -153,7 +153,10 @@ current single-load assumptions:
   lane instead of hardcoding `left_leg`.
 - Each elevator and shelf gets its own equipment/support identities.
 - Crane tasks describe payload, source support, receiver, required lifting ends,
-  route phases and retention milestone.
+  route phases and retention milestone. They are hidden routes. The player never
+  picks one: the console's pickup serves the first route in `crane.order` whose
+  load waits at its source. A new section adds its route to `crane.order` and its
+  supports to `crane.places`, never a console entry.
 - Support loose structural parts and prepared assemblies through the same crane
   controller. Use each task's required two- or four-end configuration rather than
   assuming every task has exactly two ends.

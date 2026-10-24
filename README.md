@@ -14,8 +14,9 @@ The full-game design targets an **18 m piloted mecha**. The current prototype is
 
 ![Compact crane movement controls with a separate Change load button](docs/images/workshop-crane-controls.png)
 
-*Current M3 crane controls. Choose a load separately, then operate the crane from
-one compact panel. The manual and pockets return when you close the console.*
+*Earlier M3 crane controls. The load chooser shown here has since been removed: the
+crane now offers Move to pickup / Move to delivery for the next load in build
+order. The manual and pockets return when you close the console.*
 
 ![Mobile platform with labelled Up, Down and Move buttons](docs/images/workshop-mobile-controls.png)
 

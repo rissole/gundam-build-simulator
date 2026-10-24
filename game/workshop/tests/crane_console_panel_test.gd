@@ -53,10 +53,7 @@ func run() -> void:
 		crane.console.feedback.text="Move within reach of the central crane console. The connection must be secured before releasing the magnetic ends. ".repeat(2)
 		await frames(6)
 		expect(root.get_visible_rect().grow(-16).encloses(crane.console.panel.get_global_rect()),profile_id+": wrapped feedback and controls fit a short viewport")
-		if crane.console.buttons.has("ui:loads"):
-			await click_at(crane.console.buttons["ui:loads"].get_global_rect().get_center())
-			var bar: VScrollBar=crane.console.scroll.get_v_scroll_bar()
-			expect(bar.max_value>bar.page,profile_id+": load chooser scrolls separately from movement")
+		expect(not crane.console.order.any(func(action):return action.begins_with("task:")),profile_id+": console offers movement, never a load list")
 		for index in range(crane.console.order.size()-1):await press_key(KEY_DOWN)
 		var last: Button=crane.console.buttons[crane.console.order.back()]
 		var visible_commands: Rect2=crane.console.scroll.get_global_rect()

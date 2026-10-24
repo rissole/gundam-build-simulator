@@ -26,15 +26,13 @@ The FA-513 motor starts on the floor beside preparation C. Pick it up with E, th
 
 ## Equipment controls
 
-The crane's main view shows its selected load, position and movement buttons.
-**Change load…** opens a searchable list while the empty crane is parked.
-**Raise crane / Lower crane** describe vertical motion; **Move to…** names the
-destination. Unavailable moves explain their prerequisites. The workshop stays
+The crane console is movement only. The empty crane names its next pickup, the
+first load in the layout's `crane.order` still waiting at its source, and offers
+**Move to pickup · place**. A carried load offers **Move to delivery · place** or
+**Put back**. **Raise crane / Lower crane** describe vertical motion. Unavailable moves explain their prerequisites. The workshop stays
 visible, while the manual and inventory are tucked away until the console closes.
-Click controls or use ↑/↓ and E/Enter. Tab reaches search and Close; while typing,
-letter shortcuts enter text. Esc pauses; Q closes when the search is not focused.
-
-![Searchable crane load chooser filtered to the pelvis](../../docs/images/workshop-crane-loads.png)
+Click controls or use ↑/↓ and E/Enter. Esc pauses; Q closes. (The screenshot
+above predates this and still shows the removed load chooser.)
 
 Elevators have **Up / Down** onboard and **Call** at each landing. Each press
 travels to the next level and stops automatically. The mobile work platform has
@@ -212,12 +210,11 @@ The foot base game and both M2 saves have independent progress.
 1. At the **foot carrier**, use **Advance** to raise the foot, then Advance again
    to turn and seat it on the horizontal holder. The carrier withdraws after the
    receiving supports take the foot. Stop interrupts motion.
-2. At the **crane console**, open **Change load…** and select **Structural shin**, **Knee fork** or
-   **Upper-leg beam** as the manual requires. Task changes require the empty
-   crane raised at Parking bay with both magnets stowed. Use **Move to** the task's
-   rack, **Lower crane**, then Q to leave the console. E-pick and aim/click each magnetic
-   end onto a separate marked point. Return to the console: **Raise crane → Move to Leg
-   cradle → Lower crane**. Fit the task's retaining hardware before detaching/stowing
+2. At the **crane console**, choose **Move to pickup**. The crane brings the
+   next leg part in build order (shin, knee fork, upper-leg beam) and says what
+   is missing if that part isn't ready yet. **Lower crane**, then Q to leave the console. E-pick and aim/click each magnetic
+   end onto a separate marked point. Return to the console: **Raise crane → Move to delivery →
+   Lower crane**. Fit the task's retaining hardware before detaching/stowing
    the magnets, raising the empty crane and parking it.
 3. Follow the **Structural left leg** manual for ankle fasteners, the main
    disconnect, bearings, spacers, fork, axle, cap and beam fastening. Small

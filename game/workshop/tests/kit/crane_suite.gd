@@ -38,8 +38,6 @@ func console_action(action: String) -> bool:
 
 func console_click(action: String) -> void:
 	await process_frame
-	if action.begins_with("task:") and not crane.console.choosing_load:
-		await console_click("ui:loads")
 	if not crane.console.buttons.has(action):expect(false,"Console offers "+action);return
 	var button: Button = crane.console.buttons[action]
 	crane.console.scroll.ensure_control_visible(button);await process_frame

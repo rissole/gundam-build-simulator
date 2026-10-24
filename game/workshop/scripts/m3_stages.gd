@@ -188,8 +188,10 @@ func _commands(controller: Node, actions: Array) -> String:
 		if not error.is_empty():return error
 	return ""
 func _transfer(task: String) -> String:
+	# The player's console path: the crane's next pickup must be this stage's load.
 	var crane=_equipment("service_crane")
-	var error=_commands(crane,["task:"+task,"go:source","down"])
+	if crane.next_route()!=task:return "service_crane: next pickup is "+crane.next_route()+", not "+task+"."
+	var error=_commands(crane,(["pickup"] if crane.task!=task or crane.station!="source" else [])+["down"])
 	if not error.is_empty():return error
 	supply_rig(crane,true)
 	return _commands(crane,["up","go:receiver","down"])

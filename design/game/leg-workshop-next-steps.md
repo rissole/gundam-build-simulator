@@ -27,8 +27,10 @@ a one-line summary here. The full text of this file before it was condensed is
   last full regression run passed 41 of 41 cases. That is mechanical evidence
   only. The [design contract](m3-wide-workshop-plan.md) and the
   [spatial contract](final-assembly-plan.md) are both current.
-- **Equipment controls:** compact crane movement view with a separate searchable
-  load chooser; labelled physical buttons, elevator Up/Down and separate mobile
+- **Equipment controls:** the crane console is movement only. There is no load
+  list: the empty crane offers **Move to pickup** for the next load in
+  `crane.order`, and a carried load offers **Move to delivery** or **Put back**
+  (2026-10-25, see the feedback table). Labelled physical buttons, elevator Up/Down and separate mobile
   height controls and a single Move destination menu. Screenshots inspected; **no regressions run**, as requested.
   [Change and evidence](history/equipment-ui-20261024.md); use the
   [focused controls checklist](m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24).
@@ -140,6 +142,7 @@ a one-line summary here. The full text of this file before it was condensed is
 | Crane controls fill the screen; first asked for placement like pickup prompts, then chose the center of the screen | Centered placement and fixed view preserved. Movement now stays visible on the main view; load selection is a separate searchable page. Screenshots inspected, awaiting the user's manual check. |
 | Crane menu is confusing/cluttered; simplify other inputs, especially elevators and the mobile lift. Prefer Up/Down without Stop (2026-10-24) | Elevator's third onboard button was Ground; replaced the onboard trio with labelled Up/Down, retaining separate landing Call buttons. Mobile lift separates Up/Down from travel; the follow-up replaces Dock/Move with one Move destination menu, including interrupted-trip recovery. Other physical equipment keys now carry labels. No regressions run at the user's request; screenshots and README refreshed. See the focused controls checklist. |
 
+| Too many crane load types, unclear; the crane should be generic with controls focused on movement. A place-picker draft still felt like "a million options" (2026-10-25) | Pickup/Deliver: at most Lower/Raise, Move to pickup · place, Move to delivery · place, Put back, Park. The next load is the first in `crane.order` still at its source. A blocked load explains why (receiver, prerequisite or source equipment) instead of the crane skipping ahead. An undo points the pickup at that connection. The 31 authored routes stay hidden. Places only name locations (`crane.places`). Out-of-order deliveries are no longer possible from the console. `crane_pickup_test` passes (mechanical). The stage-driven suites that reach the head timed out under heavy machine load and were stopped before rerun; the screenshots still show the old chooser. Awaiting the user's check. |
 | Replace mobile platform Dock/Move with one Move button and a crane-style destination menu (2026-10-25) | Implemented: choose a destination to start travel; Q/Close cancels, and interrupted travel offers Resume/Return in the same menu. Screenshots refreshed; no regressions run. Hands-on verification remains pending. |
 
 ## Human checkpoints
