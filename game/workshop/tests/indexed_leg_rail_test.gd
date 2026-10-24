@@ -205,6 +205,9 @@ func run() -> void:
 		if rail.path==0 and rail.index_x==14 and rail.release==0:break
 		if not command(rail,"return"):finish();return
 	if not await reopen("second empty return"):finish();return
+	for phase in range(3):
+		if not command(carrier,"return"):finish();return
+	expect(carrier.path==0 and carrier.withdrawal==0 and not carrier.carrying(),"empty carrier returns without moving retained right foot")
 	if not await after_legs():finish();return
 	finish()
 

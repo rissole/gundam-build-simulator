@@ -30,7 +30,7 @@ JOLT_STALL = "Waiting for jobs to become available"
 SUMMARY_GRACE = 5.0
 # The complete walked M3 route includes repeated construction and fresh-scene
 # disk restores. Other cases retain the short cap and all fail-fast checks.
-CASE_TIMEOUTS = {"m3_acceptance_test": 900.0}
+CASE_TIMEOUTS = {"m3_acceptance_test": 900.0, "arm_after_legs_test": 600.0, "arm_delivery_test": 600.0}
 # Historical single-leg walking/access evidence is retained on disk. M3's
 # wider-workshop plan explicitly assigns those acceptance checks to the user.
 # Do not silently bring them back through default discovery or --only.
