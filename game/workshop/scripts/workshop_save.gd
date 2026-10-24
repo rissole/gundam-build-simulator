@@ -49,6 +49,7 @@ func _trial() -> bool:
 	return game.profile.session.codec == "trial"
 
 func status_text() -> String:
+	if game.profile.trial == "m3" and not enabled:return "M3 wider workshop · saving is off while the structure is built.\nRestart begins again from this launch's starting point."
 	if _trial():
 		var title = "M3 Complete leg" if game.profile.trial == "m3" else ("Hip retainer" if game.profile.trial == "retention" else "Crane delivery")
 		return title+" · separate workshop save slot.\n"+(message if not message.is_empty() else ("Autosaves on pause, quit and every 30 seconds. Restart resets only this trial." if enabled else "Headless/test session; normal saves are untouched."))

@@ -43,7 +43,8 @@ static func profile(id: String, legacy_stations: bool = false) -> Dictionary:
 			p.leg_content = LEG_CONTENT;p.trial = "m3";p.layout = "leg_bay";p.staging = "leg_bay_m3"
 			p.layout_path = "res://assets/leg-bay-m3-layout.json"
 			p.equipment = ["module_supports","core_guide","backpack_hinge","arm_cassette","left_shoulder","right_shoulder","leg_rail","left_lift","right_lift","left_shelf","right_shelf","service_crane","foot_carrier","joint_restraints","workshop_access","mobile_platform","captive_controls","rail_gates"]
-			p.session = {"codec":"trial","path":"user://m3-workshop-save.json"}
+			# Saving is deferred while the wider structure is built (design/game/handoff/README.md).
+			p.session = {"codec":"trial","path":""}
 			p.spawn = [8.8,.03,7.1,-PI/2];p.station_rotation = false
 			p.intro = "M3 / Begin with the prepared pelvis at the bulky fixture. Engage both waist locks, attach four crane ends and deliver it to the gantry. Close all four hold-down jaws before releasing rigging. Then crane a prepared foot to dispatch and build each structural leg on the shared holder. Manuals describe each connection; shared equipment carries every large load."
 		"leg_bay_retention","leg_bay_crane":

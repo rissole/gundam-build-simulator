@@ -417,7 +417,7 @@ func _make_pause() -> void:
 	restart_button = button("Restart build")
 	restart_button.pressed.connect(_restart_clicked)
 	footer.add_child(restart_button)
-	if game.profile.session.codec == "trial":
+	if game.profile.session.codec == "trial" and game.profile.trial != "m3":
 		var choose_trial = button("Choose M2 trial")
 		footer.add_child(choose_trial)
 		choose_trial.pressed.connect(func():

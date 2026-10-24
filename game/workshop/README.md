@@ -48,7 +48,7 @@ Profiles select content, layout, equipment, staging, spawn and save behavior.
 | Two-pad regression | `./play.command -- --profile=pads_multi` | Session only; alias `--pads-only` |
 | Hip-retainer trial | `./play.command -- --profile=leg_bay_retention` | `user://m2-retention-save.json` |
 | Crane-delivery trial | `./play.command -- --profile=leg_bay_crane` | `user://m2-crane-save.json` |
-| Complete structural leg | `./play.command -- --m3-workshop` or `--profile=leg_bay_m3` | `user://m3-workshop-save.json` |
+| Complete structural leg | `./play.command -- --m3-workshop` or `--profile=leg_bay_m3` | none (saving deferred) |
 
 `./play.command -- --m2-workshop` opens the trial selector. The earlier
 `--m2-workshop --m2-trial=retention` and `--m2-trial=crane` aliases remain.

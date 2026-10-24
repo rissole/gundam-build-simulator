@@ -601,7 +601,8 @@ func _milestone(message: String, owner: String) -> void:
 		if is_instance_valid(glowing_mesh) and glowing_mesh.material_overlay == glow:glowing_mesh.material_overlay = null)
 
 func reset_demo() -> void:
-	if is_instance_valid(saves):saves.new_workshop()
+	# M3 has no save slot; reloading also re-runs any --m3-stage launch flag.
+	if is_instance_valid(saves) and (saves.enabled or profile.trial != "m3"):saves.new_workshop()
 	else:get_tree().reload_current_scene()
 
 # Facades kept for the many layout, equipment and test callers.
