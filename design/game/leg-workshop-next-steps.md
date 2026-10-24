@@ -1,6 +1,6 @@
 # Workshop: current state and next steps
 
-Updated 2026-10-24. Read this before continuing workshop development. Keep it short:
+Updated 2026-10-25. Read this before continuing workshop development. Keep it short:
 current state, active rules, open decisions and player feedback. When a piece of
 work finishes, move its narrative and evidence into [history/](history/) and leave
 a one-line summary here. The full text of this file before it was condensed is
@@ -21,7 +21,7 @@ a one-line summary here. The full text of this file before it was condensed is
   [spatial contract](final-assembly-plan.md) are both current.
 - **Equipment controls:** compact crane movement view with a separate searchable
   load chooser; labelled physical buttons, elevator Up/Down and separate mobile
-  height/dock controls. Screenshots inspected; **no regressions run**, as requested.
+  height controls and a single Move destination menu. Screenshots inspected; **no regressions run**, as requested.
   [Change and evidence](history/equipment-ui-20261024.md); use the
   [focused controls checklist](m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24).
 - **Workshop visuals:** minimal engineering palette, calmer signs/markings and
@@ -126,7 +126,9 @@ a one-line summary here. The full text of this file before it was condensed is
 | Initial M2 crane delivery and magnetic attachment broadly worked | Console captures mouse/look; arrows + E operate it and Q closes. Held magnets are centered. M2 replay accepted 2026-10-23. |
 | The mobile work platform (“bulky platform”) wouldn't move with the player on it; any moveable platform should carry the player, even when they're holding something, as a shared system (2026-10-24) | Ground transfers now accept a rider on the lowered deck; loose loads on the deck still block. Riding moved into the shared registry, and elevators and the lift shelf use it too. Mechanically checked only; awaiting the user's ride. |
 | Crane controls fill the screen; first asked for placement like pickup prompts, then chose the center of the screen | Centered placement and fixed view preserved. Movement now stays visible on the main view; load selection is a separate searchable page. Screenshots inspected, awaiting the user's manual check. |
-| Crane menu is confusing/cluttered; simplify other inputs, especially elevators and the mobile lift. Prefer Up/Down without Stop (2026-10-24) | Elevator's third onboard button was Ground; replaced the onboard trio with labelled Up/Down, retaining separate landing Call buttons. Mobile lift now separates Up/Down from Dock/Move, with Resume/Back only for an interrupted transfer. Other physical equipment keys now carry labels. No regressions run at the user's request; screenshots and README refreshed. See the focused controls checklist. |
+| Crane menu is confusing/cluttered; simplify other inputs, especially elevators and the mobile lift. Prefer Up/Down without Stop (2026-10-24) | Elevator's third onboard button was Ground; replaced the onboard trio with labelled Up/Down, retaining separate landing Call buttons. Mobile lift separates Up/Down from travel; the follow-up replaces Dock/Move with one Move destination menu, including interrupted-trip recovery. Other physical equipment keys now carry labels. No regressions run at the user's request; screenshots and README refreshed. See the focused controls checklist. |
+
+| Replace mobile platform Dock/Move with one Move button and a crane-style destination menu (2026-10-25) | Implemented: choose a destination to start travel; Q/Close cancels, and interrupted travel offers Resume/Return in the same menu. Screenshots refreshed; no regressions run. Hands-on verification remains pending. |
 
 ## Human checkpoints
 

@@ -35,13 +35,17 @@ letter shortcuts enter text. Esc pauses; Q closes when the search is not focused
 
 Elevators have **Up / Down** onboard and **Call** at each landing. Each press
 travels to the next level and stops automatically. The mobile work platform has
-its own **Up / Down** pair plus **DOCK › / MOVE**: select a dock, then travel there
-at ground level. Down at ground does nothing. To return to parking, select
-`park` and Move. An interrupted ground transfer offers **RESUME / ← BACK**.
+its own **Up / Down** pair plus one **MOVE** button. Move opens a centered menu
+like the crane's; choose a destination to start travelling there at ground level.
+The menu closes when travel starts. Down at ground does nothing. To return to
+parking, open Move and choose **Parking bay**. Interrupted travel offers **Resume
+to… / Return to…** in the same menu. Q/Close cancels without moving; Esc pauses.
 
 ![Elevator panel with two labelled vertical-travel buttons](../../docs/images/workshop-lift-controls.png)
 
-![Mobile platform separates height from dock travel](../../docs/images/workshop-mobile-controls.png)
+![Mobile platform with Up, Down and Move](../../docs/images/workshop-mobile-controls.png)
+
+![Move menu lists destinations directly](../../docs/images/workshop-mobile-destinations.png)
 
 Rail, foot-carrier and bulky-fixture buttons also carry face labels. Their
 existing staged movement and Stop/recovery functions remain available.
@@ -56,6 +60,9 @@ for hands-on verification. Reproduce the screenshots with:
 ./play.command --windowed --resolution 1440x900 --disable-render-loop \
   --fixed-fps 60 --script tests/equipment_ui_review.gd -- --review-tag=review
 ```
+
+Append `--platform-only` after the review tag to capture just the platform controls,
+destination menu and supplied interrupted-trip recovery menu.
 
 The capture manifest records input/image hashes. Its supplied empty-crane poses
 illustrate UI states and do not establish successful delivery or reachability.

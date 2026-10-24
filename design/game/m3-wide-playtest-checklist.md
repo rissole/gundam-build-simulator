@@ -29,8 +29,8 @@ Start with `./play.command -- --m3-workshop`.
 - [ ] Use mouse and ↑/↓ + E/Enter; Tab should reach the search and Close buttons. Q closes when not typing; Esc pauses even when typing. Check your usual window size.
 - [ ] Follow one crane delivery: move to pickup → Lower crane → close and rig → Raise crane → move to receiver → Lower crane. Check blocked-command explanations, fastening, release and parking before changing load.
 - [ ] Board both side elevators. Up and Down should each travel one level and stop automatically. Try top/bottom limits and call the elevator from a landing. Repeat carrying a component and using the shelf.
-- [ ] On the mobile platform, choose a dock with **DOCK ›**, press **MOVE**, and ride it. Up/Down must only change height, even with a different dock selected; Down at ground must not send it to parking. To park, choose `park` and press Move.
-- [ ] Try a blocked mobile transfer. Clear the obstacle and use **RESUME**, or use **← BACK** to return along the route. Check the rider and anything carried stay with the deck.
+- [ ] On the mobile platform, press **MOVE**, choose a destination from the menu, and ride it. Try mouse and ↑/↓ + E/Enter. Q/Close must cancel without moving; Esc must pause. Up/Down only change height. Down at ground must not send it to parking. To park, choose **Parking bay** from Move. Try Move while raised and check the explanation.
+- [ ] Try a blocked mobile transfer. Clear the obstacle, open **MOVE** and choose **Resume to…**, or choose **Return to…** to reverse along the route. Check the rider and anything carried stay with the deck.
 - [ ] Read and target the labelled rail, foot-carrier and bulky-fixture buttons. Confirm neighbouring buttons are distinct and the smaller signs remain legible. Their Stop/recovery controls remain available.
 
 Report confusing wording, missed targets, unexpected motion and positive findings

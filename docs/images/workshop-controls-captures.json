@@ -209,17 +209,9 @@
       "look_at": "(7.7, 1.37, 27.98)",
       "path": "docs/images/workshop-lift-controls.png",
       "sha256": "a7df49e79e34dd49f4eede496b0f3bdba08deee5bdc46007bfea70058c8313bc"
-    },
-    {
-      "eye": "(6.32, 1.67, 19.8)",
-      "fixture_pose": "[X: (1.0, 0.0, 0.0), Y: (0.0, 1.0, 0.0), Z: (0.0, 0.0, 1.0), O: (-7.0, 2.0, 7.3)]",
-      "hud": true,
-      "id": "05-mobile_platform",
-      "look_at": "(6.32, 1.17, 18.7)",
-      "path": "docs/images/workshop-mobile-controls.png",
-      "sha256": "f8fdeb9e80617b1cbba8ef2098414b3441ce77e1c1ca93da4359f9ece70c7f25"
     }
   ],
   "review": "Inspected crane movement/search views, elevator pair and mobile controls. Labels remain visible beside the interaction prompt. Hands-on acceptance pending.",
-  "regressions_run": false
+  "regressions_run": false,
+  "mobile_platform_superseded_by": "docs/images/platform-move-captures.json"
 }

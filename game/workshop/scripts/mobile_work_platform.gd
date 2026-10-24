@@ -22,6 +22,8 @@ var gate: CollisionShape3D
 var posts: Array[Dictionary] = []
 var buttons: Array[Dictionary] = []
 var label: Label3D
+var move_menu: CanvasLayer
+var move_button: MeshInstance3D
 
 func setup(workshop: Node3D, definition: Dictionary) -> void:
 	game = workshop;spec = definition;equipment_id = "mobile_platform"
@@ -58,10 +60,12 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 	surface.generate_normals();var visual = MeshInstance3D.new();visual.mesh = surface.commit();visual.material_override = steel;base.add_child(visual)
 	game.box(deck,Vector3(-.13,.90,-.64),Vector3(.84,.50,.045),steel)
 	# Vertical travel has its own fixed pair. Dock selection never changes Up/Down.
-	for entry in [["up",-.38,1.02,"↑ UP"],["down",-.38,.78,"↓ DOWN"],["destination",.12,1.02,"DOCK ›"],["go",.12,.78,"MOVE"]]:
+	for entry in [["up",-.38,1.02,"↑ UP"],["down",-.38,.78,"↓ DOWN"],["open_move",.12,.90,"MOVE"]]:
 		var button = preload("res://scripts/equipment_button.gd").make(game,deck,Vector3(entry[1],entry[2],-.60),entry[3],0,entry[0] == "up")
 		buttons.append(control_entry(button,entry[0],entry[0],.11,{"allowed":[deck]}))
+		if entry[0] == "open_move":move_button = button
 	label = game.sign_panel(deck,"",Vector3(-.13,1.34,-.62),Vector2(.84,.26),28,.0015)
+	move_menu = preload("res://scripts/platform_move_menu.gd").new();add_child(move_menu);move_menu.setup(self)
 	_pose()
 
 func _solid(parent: CollisionObject3D, at: Vector3, size: Vector3, material: Material) -> CollisionShape3D:
@@ -87,9 +91,24 @@ func controls() -> Array[Dictionary]:
 		match entry.action:
 			"up":entry.label = "Raise platform · next level"
 			"down":entry.label = "Lower platform · next level"
-			"destination":entry.label = "Return to "+from_dock.replace("_"," ") if mode == "travel" and not moving else "Choose dock · "+selected.replace("_"," ")
-			"go":entry.label = "Resume travel" if mode == "travel" else "Move to "+selected.replace("_"," ")
+			"open_move":entry.label = "Move platform · choose destination"
 		result.append(entry)
+	return result
+
+func dock_title(id: String) -> String:
+	if id == "park":return "Parking bay"
+	return ("Module bay · " if id.begins_with("bulky_") else "Limb station · ")+id.get_slice("_",1).capitalize()
+
+func menu_access_error() -> String:
+	if game.camera.global_position.distance_to(move_button.global_position)>game.REACH:return "Move within reach of the platform controls."
+	if not game._visible(move_button.global_position,[deck]):return "The platform controls are obstructed."
+	return ""
+
+func move_options() -> Array[Dictionary]:
+	if mode == "travel":return [{"action":"go","label":"Resume to "+dock_title(to_dock)},{"action":"return","label":"Return to "+dock_title(from_dock)}]
+	var result: Array[Dictionary] = []
+	for destination in spec.docks:
+		if destination != dock:result.append({"action":"dock:"+destination,"label":dock_title(destination)})
 	return result
 
 func _route(start: String = "", end: String = "") -> Array[Vector3]:
@@ -119,6 +138,7 @@ func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the work platform."
 	if action=="stop":return "" if moving else "The work platform is stopped."
 	if moving:return "Wait for the platform to arrive."
+	if action == "open_move":return menu_access_error()
 	if action in ["up","down"]:
 		if mode == "travel":return "Finish the ground transfer before changing height."
 		if action == "up" and height >= spec.heights[-1]-.001:return "Already at the highest level."
@@ -132,6 +152,7 @@ func action_error(action: String) -> String:
 	if action=="destination":return "" if mode.is_empty() or mode == "travel" else "Finish the height adjustment first."
 	if action.begins_with("dock:"):
 		if not spec.docks.has(action.trim_prefix("dock:")):return "Unknown work platform dock."
+		if action.trim_prefix("dock:") == dock:return "The work platform is already at this dock."
 		if not mode.is_empty():return "Complete or return the interrupted transfer first."
 		if height>spec.heights[0]+.001:return "Lower the work platform before ground transfer."
 		if _deck_occupied():return "Remove loose loads from the deck before ground transfer."
@@ -146,6 +167,7 @@ func action_error(action: String) -> String:
 func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():return error
+	if action == "open_move":return move_menu.open()
 	blocked_reason = ""
 	if action == "go":
 		if mode == "travel":moving = true;_pose();return ""
@@ -227,14 +249,11 @@ func _pose() -> void:
 		post.shape.shape.size.y = length;post.visual.scale.y = length/.1
 	base.force_update_transform();PhysicsServer3D.body_set_state(base.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,base.global_transform)
 	label.text = status_text()
-	for entry in buttons:
-		if entry.action == "go":entry.node.get_child(0).text = "RESUME" if mode == "travel" and not moving else "MOVE"
-		elif entry.action == "destination":entry.node.get_child(0).text = "← BACK" if mode == "travel" and not moving else "DOCK ›"
 
 func status_text() -> String:
 	if not blocked_reason.is_empty():return "Platform blocked\nClear the route, then retry"
 	if moving:return ("Travelling to "+to_dock.replace("_"," ") if mode == "travel" else "Moving to %.2f m"%goal_height)+"\nStops automatically"
-	return "Platform · %.2f m"%height+"\nDock: "+selected.replace("_"," ")
+	return "Platform · %.2f m"%height+"\n"+dock_title(dock)
 
 func busy_reason(subject: String) -> String:
 	if subject in ["source_roll","arm_upend","bulky_tilt"] and (dock!="park" or not mode.is_empty()):return "Return the movable work platform to parking first."

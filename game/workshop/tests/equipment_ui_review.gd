@@ -13,6 +13,8 @@ func run() -> void:
 	await frames(5,false)
 	game.hud.manual.hide();game.hud.toast_time = 0;game.hud.toast_panel.hide()
 	root.content_scale_size=Vector2i(1440,900);root.size=Vector2i(1440,900)
+	if "--platform-only" in OS.get_cmdline_user_args():
+		await capture_platform();finish(inputs);return
 	var crane = game.equipment.get_equipment("service_crane")
 	var point: Vector3 = crane.console_node.global_position
 	var eye = point+Vector3(0,.5,1.25)
@@ -47,3 +49,23 @@ func run() -> void:
 		var offset = Vector3(-1.1,.5,0) if id in ["leg_rail","foot_carrier","module_supports"] else Vector3(0,.5,1.1)
 		await capture("05-"+id,point+offset,point)
 	finish(inputs)
+
+func capture_platform() -> void:
+	root.content_scale_size=Vector2i(1280,720);root.size=Vector2i(1280,720)
+	var platform = game.equipment.get_equipment("mobile_platform")
+	var point: Vector3 = platform.move_button.global_position
+	var eye = point+Vector3(0,.73,1.1)
+	await capture("platform-controls",eye,point)
+	var error: String = platform.request("open_move")
+	if not error.is_empty():push_error(error);quit(2);return
+	await capture("platform-destinations",eye,point,false)
+	platform.move_menu.shut()
+	# Supplied interrupted-route pose: review the recovery menu, not travel success.
+	platform.from_dock = "park";platform.to_dock = "bulky_left"
+	platform.mode = "travel";platform.travel = .2;platform.moving = false;platform._pose()
+	point = platform.move_button.global_position;eye = point+Vector3(0,.73,1.1)
+	await capture("platform-interrupted",eye,point)
+	error = platform.request("open_move")
+	if not error.is_empty():push_error(error);quit(2);return
+	await capture("platform-recovery",eye,point,false)
+	platform.move_menu.shut()

@@ -61,3 +61,28 @@ Prioritize one full crane delivery, both elevator rides, mobile height versus
 dock selection, recovery after blockage, and keyboard/search/Close behavior.
 Retain the previously praised physical handling, boarding and workshop scale.
 Hands-on usability acceptance remains pending.
+
+
+## Follow-up — 2026-10-25
+
+The user requested replacing mobile Dock/Move with one Move button and a menu
+like the crane's. The three physical keys are now **Up, Down, Move**. Move opens
+a centered destination picker; selecting a destination dispatches the existing
+route and closes the menu. Current dock is omitted. Ground-height, occupancy and
+local reach/visibility guards remain active. Interrupted travel exposes Resume
+and Return in the same menu; Q/Close cancels without changing the route. The old
+controller commands remain internal for compatibility, but no longer appear as
+physical controls. The sign now names the current location instead of a cycled
+selection.
+
+Captured four views with `equipment_ui_review.gd -- --platform-only` into
+`game/workshop/verification/equipment-ui-destination-menu-final-624747/`.
+Inspected the physical panel, destination list and supplied interrupted-route
+menu: all choices and Close fit, with readable labels and no prompt overlap.
+Both READMEs show the updated physical panel; the workshop README also embeds
+the destination menu. `docs/images/platform-move-captures.json` records their
+source/image hashes. The local `review.json` records the inspection limits.
+
+No regressions ran. The render fixture completed without script errors and
+`git diff --check` passed. Selecting destinations, cancellation, raised-platform
+feedback, riding and recovery still need the user's focused controls checklist.

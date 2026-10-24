@@ -17,9 +17,9 @@ The full-game design targets an **18 m piloted mecha**. The base game builds **t
 *Current M3 crane controls. Choose a load separately, then operate the crane from
 one compact panel. The manual and pockets return when you close the console.*
 
-![Mobile platform with labelled Up, Down, Dock and Move buttons](docs/images/workshop-mobile-controls.png)
+![Mobile platform with labelled Up, Down and Move buttons](docs/images/workshop-mobile-controls.png)
 
-*Dedicated height controls and separate dock travel. Elevators use only Up/Down
+*Dedicated height controls and a Move menu for choosing a destination. Elevators use only Up/Down
 onboard, with Call buttons at landings. See the [load chooser and elevator
 screenshots](game/workshop/README.md#equipment-controls) and the
 [verification checklist](design/game/m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24).
