@@ -49,10 +49,13 @@ last version before consolidation.
   height controls and a single Move destination menu. Screenshots inspected.
   [Change and evidence](history/equipment-ui-20261024.md); use the
   [focused controls checklist](robot-workshop-playtest-checklist.md#focused-controls-check--2026-10-24).
-- **Workshop visuals:** minimal engineering palette, calmer signs/markings and
-  neutral lighting implemented. Workshop surface audit passes 14 checks; rendered
-  screenshots inspected. User style/playtest acceptance remains pending.
-  [Changes, screenshots and verification](history/workshop-visual-refresh-20261024.md).
+- **Workshop visuals:** minimal engineering palette and calmer signs/markings
+  ([2026-10-24 refresh](history/workshop-visual-refresh-20261024.md)). Hangar
+  lighting and room finish rebuilt 2026-10-25 from a Blender preview the user
+  approved (`scripts/hangar_dressing.gd`): pooled bay task beams, 17 spotlights,
+  slabs, cladding, clerestories, services and a north hangar door. Headless boot
+  only; **no regressions, surface audit or rendered review run**, at the user's
+  request. Awaiting the user's in-game check.
 - **Expanded workshop acceptance:** held while the whole-robot workflow is designed.
 
 ## Next
@@ -159,6 +162,7 @@ last version before consolidation.
 | Crane menu is confusing/cluttered; simplify other inputs, especially elevators and the mobile lift. Prefer Up/Down without Stop (2026-10-24) | Elevator's third onboard button was Ground; replaced the onboard trio with labelled Up/Down, retaining separate landing Call buttons. Mobile lift separates Up/Down from travel; the follow-up replaces Dock/Move with one Move destination menu, including interrupted-trip recovery. Other physical equipment keys now carry labels. Screenshots and README refreshed. See the focused controls checklist. |
 | Too many crane load types, unclear; the crane should be generic with controls focused on movement. A place-picker draft still felt like "a million options" (2026-10-25) | Pickup/Deliver: at most Lower/Raise, Move to pickup · place, Move to delivery · place, Put back, Park. The next load is the first in `crane.order` still at its source. A blocked load explains why (receiver, prerequisite or source equipment) instead of the crane skipping ahead. An undo points the pickup at that connection. The 31 authored routes stay hidden. Places only name locations (`crane.places`). Out-of-order deliveries are no longer possible from the console. `crane_pickup_test` passes (mechanical); the screenshots still show the old chooser. Awaiting the user's check. |
 | Replace mobile platform Dock/Move with one Move button and a crane-style destination menu (2026-10-25) | Implemented: choose a destination to start travel; Q/Close cancels, and interrupted travel offers Resume/Return in the same menu. Screenshots refreshed. Hands-on verification remains pending. |
+| Workshop looks flat and bright; wanted improved lighting and workshop details, previewed in Blender before building in game (2026-10-25) | Blender preview of the live scene (exported from Godot) rendered; user: “a lot better… the rest of the workshop lighting is great.” Follow-ups applied in the preview: near-black ceiling replaced by a lighter ribbed deck with faint emission standing in for floor bounce; red fire points made small, matte and muted so they don't read as interactive; spotlights cut from 34 to 17 to stay within Compatibility's default 32 per frame / 8 spot per mesh without raising limits (general high-bay fixtures are emissive only; ambient + shadowed key carry general fill). Lighting: cool ambient ~0.11, AgX, light depth fog, key 0.5; 9 roof task beams pooled on bays (two on stock and leg parking); 4 column floods; 2 clerestory fills; 2 gantry under-deck downlights + LED strips. Details: 8 m slabs with joints, tonal epoxy bay pads, precast dado, ribbed cladding, window band, truss webs above the crane (23.8 m+), cable tray/duct, wall panels, hazard sleeves, north hangar door. Built in game 2026-10-25 with 4 m slabs (a cone-coverage estimate puts at most 8 spots on any slab, at most 2 on any wall panel) and the energy conversion from the preview's watts; **brightness is uncalibrated against Godot until the user's check.** Open: in-game brightness/contrast, AgX rendering in Compatibility, the dim green panel status lamps (asked whether they read as interactive, no answer yet), and the style audit on the new floor/wall layers. |
 
 ## Human checkpoints
 

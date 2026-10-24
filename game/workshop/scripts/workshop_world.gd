@@ -41,38 +41,18 @@ func build() -> void:
 	sun.directional_shadow_max_distance = 65.0
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	sun.directional_shadow_blend_splits = true
-	_hangar_lighting()
+	fill.queue_free()
+	preload("res://scripts/hangar_dressing.gd").new(game).build(env,sun)
 	_hangar_wayfinding()
 	_make_preparation_area(dark,metal,warm)
 
-func _hangar_lighting() -> void:
-	# Regular high-bay strips provide scale without adding ground-level clutter.
-	# Shadowless fill avoids overlapping shadow maps on fine assembly hardware.
-	var fixture = game.material(Color("edf2ed"),0,true)
-	for x in [-7.0,6.0,19.0]:
-		for z in [-3.0,9.0,21.0,33.0]:
-			var strip = game.box(game,Vector3(x,24.42,z),Vector3(0.30,0.08,5.0),fixture)
-			strip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			# Four broad fills stay below Compatibility's eight lights per mesh.
-			if x==6.0 or z in [-3.0,21.0]:continue
-			var light = OmniLight3D.new()
-			light.position = Vector3(x,17,z)
-			light.light_color = Color("f1f3ef")
-			light.light_energy = 0.55
-			light.omni_range = 26.0
-			game.add_child(light)
-
 func _hangar_wayfinding() -> void:
-	# A quiet protective wall band and wall-mounted zone lettering establish
-	# scale and orientation without another layer of objects in the working aisles.
-	var band = game.material(Color("a8afaa"))
-	for x in [-13.83,25.83]:
-		game.box(game,Vector3(x,.46,15),Vector3(.025,.90,47.65),band)
-	for z in [-8.83,38.83]:
-		game.box(game,Vector3(6,.46,z),Vector3(39.63,.90,.025),band)
+	# Wall-mounted zone lettering establishes scale and orientation without
+	# another layer of objects in the working aisles. The north sign sits beside
+	# the hangar door, above the cable tray.
 	var ink = Color("465153")
 	game.sign_text(game,"01   /   PARTS + PREPARATION",Vector3(-3,3.8,-8.82),72,ink,.006)
-	var rear = game.sign_text(game,"02   /   FINAL ASSEMBLY",Vector3(13,5.0,38.82),90,ink,.006)
+	var rear = game.sign_text(game,"02   /   FINAL ASSEMBLY",Vector3(-5.8,6.0,38.82),90,ink,.006)
 	rear.rotation.y = PI
 
 func _make_preparation_area(dark: Material, metal: Material, warm: Material) -> void:
