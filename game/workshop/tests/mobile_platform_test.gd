@@ -15,11 +15,13 @@ func settle(platform: Node) -> void:
 		if not platform.moving:return
 		platform.physics(.25)
 
-## Ridden motion runs one registry tick per frame, as in play: the registry
-## carries the rider and physics queries see poses only after a step.
+## Ridden motion runs one registry tick per frame, as in play: the rider moves,
+## then the registry carries them; Jolt applies kinematic poses at the next step.
 func ride(platform: Node) -> void:
 	for tick in range(1000):
 		if not platform.moving:return
+		# The rider moves first, as in play, against the deck pose of the last step.
+		if is_instance_valid(platform.game.player):platform.game.player.velocity = Vector3(0,-.1,0);platform.game.player.move_and_slide()
 		platform.game.equipment.physics(.1);await frames(1)
 
 func obstacle(parent: Node3D, at: Vector3, size: Vector3) -> StaticBody3D:
@@ -36,7 +38,11 @@ func run() -> void:
 	for dock in platform.spec.docks:
 		if dock=="park":continue
 		expect(platform.request("dock:"+dock).is_empty(),"request "+dock+" transfer")
-		platform.physics(.2);platform.request("stop")
+		platform.physics(.2)
+		var stop = platform.controls().filter(func(entry):return entry.action=="stop")
+		expect(stop.size()==1 and platform.action_error("stop").is_empty(),"moving platform offers its stop button")
+		var stopped_at: Vector3 = platform.position;platform.request("stop");platform.physics(.2)
+		expect(not platform.moving and platform.position.is_equal_approx(stopped_at) and platform.mode=="travel","stop holds the platform partway along "+dock)
 		var snapshot: Dictionary = JSON.parse_string(JSON.stringify(platform.capture()))
 		expect(platform.validate(snapshot).is_empty(),"interrupted "+dock+" transfer validates")
 		platform.apply(snapshot);platform.request("advance");settle(platform)
@@ -72,20 +78,23 @@ func run() -> void:
 	expect(is_equal_approx(platform.height,1.6),"cleared overhead route resumes raising")
 	platform.request("return");settle(platform)
 	game.player = CharacterBody3D.new();game.player.collision_layer = 8;game.add_child(game.player)
+	preload("res://scripts/player_controller.gd").ignore_platform_motion(game.player)
 	var capsule = CapsuleShape3D.new();capsule.radius = .26;capsule.height = 1.7
 	var body = CollisionShape3D.new();body.shape = capsule;body.position.y = .86;game.player.add_child(body)
 	game.player.global_position = platform.global_position+Vector3(0,platform.height,0);await frames(2)
-	var load = obstacle(game,game.player.global_position+Vector3(0,1.2,-.35),Vector3(.3,.3,.3));game.components.held_body = load;await frames(2)
+	var load = obstacle(game,game.player.global_position+Vector3(0,1.2,-.45),Vector3(.3,.3,.3));game.components.held_body = load
+	for tick in range(10):game.player.velocity = Vector3(0,-.1,0);game.player.move_and_slide();await frames(1)
 	var grip: Vector3 = load.global_position-game.player.global_position
+	var seat: Vector3 = game.player.global_position-(platform.global_position+Vector3(0,platform.height,0))
 	expect(platform.rider()==game.player,"player on the lowered deck rides")
 	expect(platform.request("dock:bulky_right").is_empty(),"ridden platform accepts ground transfer")
 	await ride(platform)
 	expect(platform.dock=="bulky_right","ridden transfer reaches bulky right: "+platform.blocked_reason)
-	expect(game.player.global_position.is_equal_approx(platform.global_position+Vector3(0,platform.height,0)),"rider travels with the deck")
+	expect(game.player.global_position.distance_to(platform.global_position+Vector3(0,platform.height,0)+seat)<.001,"rider travels with the deck without extra platform motion")
 	expect(load.global_position.is_equal_approx(game.player.global_position+grip),"hand load travels with the rider")
 	platform.request("advance");await ride(platform)
 	expect(is_equal_approx(platform.height,1.6),"rider can raise the platform holding a load: "+platform.blocked_reason)
-	expect(load.global_position.is_equal_approx(game.player.global_position+grip) and absf(game.player.global_position.y-1.6)<.001,"rider and load rise with the deck")
+	expect(load.global_position.is_equal_approx(game.player.global_position+grip) and absf(game.player.global_position.y-1.6-seat.y)<.001,"rider and load rise with the deck")
 	platform.request("return");await ride(platform)
 	game.components.held_body = null;load.free()
 	game.player.global_position = platform.global_position+Vector3(-2.5,0,0);await frames(2)
@@ -93,7 +102,7 @@ func run() -> void:
 	expect(platform.rider()==null,"player beside the platform is not a rider")
 	expect(platform.request("dock:park").is_empty(),"empty transfer back to parking")
 	await ride(platform)
-	expect(platform.dock=="park" and game.player.global_position.is_equal_approx(walker),"empty transfer leaves the walker behind: "+platform.blocked_reason)
+	expect(platform.dock=="park" and Vector2(game.player.global_position.x-walker.x,game.player.global_position.z-walker.z).length()<.001,"empty transfer leaves the walker behind: "+platform.blocked_reason)
 	platform.request("advance");await ride(platform)
 	var invalid: Dictionary = platform.capture();invalid.mode="travel";invalid.from="park";invalid.to="bulky_right"
 	expect(not platform.validate(invalid).is_empty(),"save rejects raised ground transfer")

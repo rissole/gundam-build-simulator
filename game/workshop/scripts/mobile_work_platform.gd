@@ -60,7 +60,7 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 	surface.generate_normals();var visual = MeshInstance3D.new();visual.mesh = surface.commit();visual.material_override = steel;base.add_child(visual)
 	game.box(deck,Vector3(-.13,.90,-.64),Vector3(.84,.50,.045),steel)
 	# Vertical travel has its own fixed pair. Dock selection never changes Up/Down.
-	for entry in [["up",-.38,1.02,"↑ UP"],["down",-.38,.78,"↓ DOWN"],["open_move",.12,.90,"MOVE"]]:
+	for entry in [["up",-.38,1.02,"↑ UP"],["down",-.38,.78,"↓ DOWN"],["open_move",.12,1.02,"MOVE"],["stop",.12,.78,"■ STOP"]]:
 		var button = preload("res://scripts/equipment_button.gd").make(game,deck,Vector3(entry[1],entry[2],-.60),entry[3],0,entry[0] == "up")
 		buttons.append(control_entry(button,entry[0],entry[0],.11,{"allowed":[deck]}))
 		if entry[0] == "open_move":move_button = button
@@ -92,6 +92,7 @@ func controls() -> Array[Dictionary]:
 			"up":entry.label = "Raise platform · next level"
 			"down":entry.label = "Lower platform · next level"
 			"open_move":entry.label = "Move platform · choose destination"
+			"stop":entry.label = "Stop platform"
 		result.append(entry)
 	return result
 
@@ -253,6 +254,8 @@ func _pose() -> void:
 func status_text() -> String:
 	if not blocked_reason.is_empty():return "Platform blocked\nClear the route, then retry"
 	if moving:return ("Travelling to "+to_dock.replace("_"," ") if mode == "travel" else "Moving to %.2f m"%goal_height)+"\nStops automatically"
+	if mode == "travel":return "Platform stopped\nMOVE to resume or return"
+	if mode == "height":return "Platform stopped · %.2f m"%height+"\nUP or DOWN to continue"
 	return "Platform · %.2f m"%height+"\n"+dock_title(dock)
 
 func busy_reason(subject: String) -> String:

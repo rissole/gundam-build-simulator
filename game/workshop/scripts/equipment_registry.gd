@@ -45,7 +45,8 @@ func physics(delta: float) -> void:
 	game.player.rotate_y(moved.basis.get_euler().y)
 	var carried = carried_body(game)
 	if carried != null:carried.global_transform = moved*carried.global_transform
-	# Later queries this tick, including the player's own move, see the new poses.
+	# Later queries this tick see the new poses. Jolt applies a kinematic floor's
+	# pose only at the next step, so the player moves before equipment does.
 	for body in [floor,game.player,carried]:
 		if body != null:PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
 

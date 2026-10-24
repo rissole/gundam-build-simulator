@@ -11,6 +11,7 @@ func make() -> void:
 	game.player.name = "Player"
 	game.player.collision_layer = 8
 	game.player.collision_mask = game.WORLD_MASK
+	ignore_platform_motion(game.player)
 	game.add_child(game.player)
 	game.player.position = Vector3(0.0,0.1,6.4)
 	var col = CollisionShape3D.new()
@@ -28,6 +29,14 @@ func make() -> void:
 	game.camera.fov = 75
 	game.player.add_child(game.camera)
 	game.camera.current = true
+
+## Equipment carries its riders exactly (EquipmentRegistry.physics). The body's
+## own floor-platform velocity would move them a second time, into the rails,
+## and fling them on stepping off.
+static func ignore_platform_motion(body: CharacterBody3D) -> void:
+	body.platform_floor_layers = 0
+	body.platform_wall_layers = 0
+	body.platform_on_leave = CharacterBody3D.PLATFORM_ON_LEAVE_DO_NOTHING
 
 ## `spawn` is [x, y, z, yaw]; an empty spawn keeps the default position.
 func spawn(at: Array) -> void:

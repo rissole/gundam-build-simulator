@@ -281,8 +281,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not started: return
-	equipment.physics(delta)
+	# The player moves against equipment poses Jolt has already stepped; the
+	# equipment then moves and carries any rider exactly.
 	player_controller.physics(delta)
+	equipment.physics(delta)
 	components.physics(delta)
 	var held = held_build()
 	if not held.is_empty() and not paused:apply_carry_intent(bodies[held],delta)
