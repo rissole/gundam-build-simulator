@@ -21,6 +21,8 @@ requested a `--m3-stage` development launch flag. Work resumes from the task
 files in [handoff/README.md](handoff/README.md); they override older instructions
 in this document where they differ.
 
+The playtest checklist for the complete wider workshop is [m3-wide-playtest-checklist.md](m3-wide-playtest-checklist.md); record results there and summarize them here.
+
 Task 09 resumes from `94d37c2` with the user's 2026-10-24 shelf-enlargement
 choice. Both M3 shelves now accept one 1.45 × 0.35 × 1.20 m panel on a 1.50 m
 surface; the authored mask fits with its hook/bolt interfaces preserved. Sensor

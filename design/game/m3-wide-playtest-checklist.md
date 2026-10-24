@@ -1,0 +1,59 @@
+# Wider M3 workshop playtest
+
+Walk the complete wider workshop yourself. A stage jump only sets the scene.
+
+## How to launch
+
+Fresh start, from the repository root:
+
+```sh
+./play.command -- --m3-workshop
+```
+
+One stage:
+
+```sh
+./play.command -- --m3-stage=<stage>
+```
+
+Stage preparation is supplied progress and nothing is saved. Wait for the overlay to close before using the controls. Restart re-runs the shortcut.
+
+## Stages
+
+| Command | What to try | What to watch for |
+| --- | --- | --- |
+| `./play.command -- --m3-stage=pelvis` (Pelvis delivery) | Rig the pelvis, deliver it, close the gantry hold-downs and set the waist locks before crane release. | Fixture clearance, crane-end reach, hold-down handles. |
+| `./play.command -- --m3-stage=left_leg_build` (Left-leg construction) | Seat the foot, then crane and fasten the shin, knee fork and upper-leg beam. | Cradle access, console use, fastening reach. |
+| `./play.command -- --m3-stage=left_leg_dock` (Left-leg docking) | Travel, stand and dock the leg; finish hip retention and locks; return the empty holder. | Support through the move, hip reach, empty-return path. |
+| `./play.command -- --m3-stage=right_leg_build` (Right-leg construction) | Build the right leg on the returned holder, knee axle outward. | Clearance beside the docked left leg. |
+| `./play.command -- --m3-stage=right_leg_dock` (Right-leg docking) | Dock the right leg beside the left and return the empty holder. | Side-by-side hip access. |
+| `./play.command -- --m3-stage=chest` (Chest delivery) | Deliver the upright chest, fit four waist bolt pairs, release the rig and connect the side services. | Waist reach and service-lead access. |
+| `./play.command -- --m3-stage=core` (Core delivery) | Follow the rear route, capture the guide, fit the flange bolts and connect the rear interface. | Rear walking space and connection visibility. |
+| `./play.command -- --m3-stage=backpack` (Backpack delivery) | Deliver it open, pin the hinges and struts, connect services, then close and latch under crane support. | Hinge reach, latches, crane reacquisition. |
+| `./play.command -- --m3-stage=left_arm` (Left-arm delivery) | Bring the cassette to the station, rig the arm and run the seat route, then retain and connect it. | Cassette boarding, four-end rig, shoulder reach. |
+| `./play.command -- --m3-stage=right_arm` (Right-arm delivery) | Transfer the right arm from its store onto the cleared cassette and seat it. | Store pickup and the opposite shoulder approach. |
+| `./play.command -- --m3-stage=pauldrons` (Pauldron fitting) | Fit both pauldrons and their shelf-carried panels, then release the local restraints. | Panel carry and how close each pauldron sits. |
+| `./play.command -- --m3-stage=head` (Head fitting) | Crane on the baseplate, sides and top; retain them and connect the central loom. | Fixture transfers, loom reach, rig stow. |
+| `./play.command -- --m3-stage=head_sensors` (Head sensor fitting) | Fit the sensor carrier, faceplate and hooked mask; connect sensor power and data. | Shelf fit, hook and bolt reach. |
+| `./play.command -- --m3-stage=complete` (Robot structure complete) | Walk the retained, connected robot with the crane parked. | Anything that still blocks access. |
+
+## Checks
+
+- [ ] Walking and elevator boarding at every level.
+- [ ] Connection visibility, reach and tool approach.
+- [ ] Rigging attachment and release.
+- [ ] Carrying and shelves.
+- [ ] Equipment controls (crane console, local Advance/Stop/Return, locks, latches).
+- [ ] Overall flow and the manual's suggested order.
+
+The right elevator's local button panel moved to the opposite front corner.
+The shelves were enlarged for the mask.
+The pauldron route's tightest clearance is about 1 mm at seating.
+
+## Findings
+
+| Date | Stage | Issue or positive finding | Severity |
+| --- | --- | --- | --- |
+|  |  |  |  |
+
+Mechanical test passes are separate from these playtest results.
