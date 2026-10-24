@@ -218,12 +218,8 @@ func physics(delta: float) -> void:
 	if is_equal_approx(height,destination):moving = false
 	_pose()
 
-func rider() -> CharacterBody3D:
-	var player = game.get("player") as CharacterBody3D
-	if not is_instance_valid(player):return null
-	var local = to_local(player.global_position)
-	if absf(local.x) < deck_size.x/2-0.28 and absf(local.z) < deck_size.y/2-0.28 and absf(local.y-height) < 0.12 and player.velocity.y <= 0.1:return player
-	return null
+## Only the deck rides; landings and ramps stay put.
+func carries(body: CollisionObject3D) -> bool:return body == deck
 
 ## Fixed and deck-mounted bodies that travel with, or guide, this lift.
 func hardware() -> Array[RID]:
@@ -247,12 +243,9 @@ func _sweep_error(from: float, to: float) -> String:
 	var high = maxf(from,to)+clearance
 	var box = BoxShape3D.new()
 	box.size = Vector3(deck_size.x-0.006,high-low,deck_size.y-0.006)
-	var excluded: Array[RID] = hardware()
-	var carried: CollisionObject3D = null
-	if current_rider != null:
-		excluded.append(current_rider.get_rid())
-		carried = _carried_body()
-		if carried != null:Sweep.collect_rids(carried,excluded)
+	var excluded: Array[RID] = without_passengers(hardware())
+	var riders = passengers()
+	var carried: CollisionObject3D = riders[1] if riders.size() > 1 else null
 	var space = get_world_3d().direct_space_state
 	if not Sweep.overlap(space,box,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0)),MASK,excluded,0.002).is_empty():
 		return "Clear the lift travel area, including overhead and loose parts."
@@ -268,17 +261,6 @@ func _sweep_error(from: float, to: float) -> String:
 	# Equipment riding the deck reserves its own cargo route.
 	var registry = game.get("equipment")
 	return registry.travel_error(equipment_id,from,to) if registry != null else ""
-
-func _carried_body() -> CollisionObject3D:
-	var components = game.get("components")
-	if is_instance_valid(components):
-		var held = components.get("held_body") as CollisionObject3D
-		if is_instance_valid(held):return held
-	if game.has_method("held_build"):
-		var owner: String = game.held_build()
-		var bodies = game.get("bodies")
-		if not owner.is_empty() and bodies is Dictionary:return bodies.get(owner) as CollisionObject3D
-	return null
 
 func _pose() -> void:
 	deck.position.y = height

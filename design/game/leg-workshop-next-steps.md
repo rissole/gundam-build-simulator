@@ -62,6 +62,10 @@ a one-line summary here. The full text of this file before it was condensed is
 - **Preserve:** M3's scale, supported handling and local correction. Reversing is
   for correcting mistakes; full teardown is outside acceptance. Keep the
   head-on-neck sequence.
+- **Riding is shared.** Anything the player stands on carries them and the load in
+  their hands as it moves (`EquipmentRegistry.physics`). Equipment treats its rider
+  and hand load as part of its moving envelope (`WorkshopEquipment.passengers()`),
+  not as obstacles. Don't add per-platform rider code.
 - **Handling rules kept from M1/M2:** the lift shelf holds two one-hand parts or one
   two-hand part, on the side opposite the hip working corner. Keep the accepted
   boarding and hip approach clear. Source and receiver support stay distinct from
@@ -113,6 +117,7 @@ a one-line summary here. The full text of this file before it was condensed is
 | Large components appeared to float; transport and support were unclear | The leg rail, visible holder contact and individually attached crane magnets must show support through collection, travel, seating, fastening and release. |
 | PV-120 halves looked collectible but were static | Ordinary two-hand carrying and a finite lift shelf replace the rejected positioning arm. Small hardware stays in pockets. |
 | Initial M2 crane delivery and magnetic attachment broadly worked | Console captures mouse/look; arrows + E operate it and Q closes. Held magnets are centered. M2 replay accepted 2026-10-23. |
+| The mobile work platform (“bulky platform”) wouldn't move with the player on it; any moveable platform should carry the player, even when they're holding something, as a shared system (2026-10-24) | Ground transfers now accept a rider on the lowered deck; loose loads on the deck still block. Riding moved into the shared registry, and elevators and the lift shelf use it too. Mechanically checked only; awaiting the user's ride. |
 | Crane controls fill the screen; first asked for placement like pickup prompts, then chose the center of the screen | Compact centered controls with a fixed view are implemented. Awaiting the user's manual check. |
 
 ## Human checkpoints

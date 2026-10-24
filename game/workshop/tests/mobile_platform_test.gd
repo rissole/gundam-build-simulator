@@ -3,6 +3,11 @@ extends "res://tests/kit/harness.gd"
 const Fixture = preload("res://tests/wide_access_test.gd").Fixture
 const Platform = preload("res://scripts/mobile_work_platform.gd")
 const Blockout = preload("res://scripts/workshop_blockout.gd")
+class Hands extends RefCounted:
+	var held_body: CollisionObject3D
+class RiderFixture extends Fixture:
+	var player: CharacterBody3D
+	var components = Hands.new()
 func _initialize() -> void:call_deferred("run")
 
 func settle(platform: Node) -> void:
@@ -10,13 +15,20 @@ func settle(platform: Node) -> void:
 		if not platform.moving:return
 		platform.physics(.25)
 
+## Ridden motion runs one registry tick per frame, as in play: the registry
+## carries the rider and physics queries see poses only after a step.
+func ride(platform: Node) -> void:
+	for tick in range(1000):
+		if not platform.moving:return
+		platform.game.equipment.physics(.1);await frames(1)
+
 func obstacle(parent: Node3D, at: Vector3, size: Vector3) -> StaticBody3D:
 	var body = StaticBody3D.new();parent.add_child(body);body.name="SuppliedBlocker";body.position=at
 	var col = CollisionShape3D.new();var shape = BoxShape3D.new();shape.size=size;col.shape=shape;body.add_child(col)
 	return body
 
 func run() -> void:
-	var game = Fixture.new();root.add_child(game)
+	var game = RiderFixture.new();root.add_child(game)
 	var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-bay-m3-layout.json"))
 	var world = Blockout.new();game.add_child(world);world.setup(game,layout.workshop)
 	var platform = Platform.new();game.add_child(platform);platform.setup(game,layout.workshop.mobile_platform);game.equipment.register(platform)
@@ -58,6 +70,31 @@ func run() -> void:
 	obstruction.free();await frames(2)
 	platform.request("advance");settle(platform)
 	expect(is_equal_approx(platform.height,1.6),"cleared overhead route resumes raising")
+	platform.request("return");settle(platform)
+	game.player = CharacterBody3D.new();game.player.collision_layer = 8;game.add_child(game.player)
+	var capsule = CapsuleShape3D.new();capsule.radius = .26;capsule.height = 1.7
+	var body = CollisionShape3D.new();body.shape = capsule;body.position.y = .86;game.player.add_child(body)
+	game.player.global_position = platform.global_position+Vector3(0,platform.height,0);await frames(2)
+	var load = obstacle(game,game.player.global_position+Vector3(0,1.2,-.35),Vector3(.3,.3,.3));game.components.held_body = load;await frames(2)
+	var grip: Vector3 = load.global_position-game.player.global_position
+	expect(platform.rider()==game.player,"player on the lowered deck rides")
+	expect(platform.request("dock:bulky_right").is_empty(),"ridden platform accepts ground transfer")
+	await ride(platform)
+	expect(platform.dock=="bulky_right","ridden transfer reaches bulky right: "+platform.blocked_reason)
+	expect(game.player.global_position.is_equal_approx(platform.global_position+Vector3(0,platform.height,0)),"rider travels with the deck")
+	expect(load.global_position.is_equal_approx(game.player.global_position+grip),"hand load travels with the rider")
+	platform.request("advance");await ride(platform)
+	expect(is_equal_approx(platform.height,1.6),"rider can raise the platform holding a load: "+platform.blocked_reason)
+	expect(load.global_position.is_equal_approx(game.player.global_position+grip) and absf(game.player.global_position.y-1.6)<.001,"rider and load rise with the deck")
+	platform.request("return");await ride(platform)
+	game.components.held_body = null;load.free()
+	game.player.global_position = platform.global_position+Vector3(-2.5,0,0);await frames(2)
+	var walker: Vector3 = game.player.global_position
+	expect(platform.rider()==null,"player beside the platform is not a rider")
+	expect(platform.request("dock:park").is_empty(),"empty transfer back to parking")
+	await ride(platform)
+	expect(platform.dock=="park" and game.player.global_position.is_equal_approx(walker),"empty transfer leaves the walker behind: "+platform.blocked_reason)
+	platform.request("advance");await ride(platform)
 	var invalid: Dictionary = platform.capture();invalid.mode="travel";invalid.from="park";invalid.to="bulky_right"
 	expect(not platform.validate(invalid).is_empty(),"save rejects raised ground transfer")
 	var passed = checks.all(func(check):return check.passed)

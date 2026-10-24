@@ -221,7 +221,8 @@ future saves. Never release the last load-bearing clamp just to change pose.
 
 The **one mobile guarded platform** has a stabilized 2.40 × 2.00 m footprint,
 clear standing deck approximately 1.20 × 1.40 m and deck settings 1.60–2.40 m
-with ground boarding/lowering. It must not need a separate fixed staircase
+with ground boarding/lowering. The player may ride it, with a hand load, between
+docks on the lowered deck; loose loads on the deck block a transfer. It must not need a separate fixed staircase
 outside that footprint. Chest side docks are left X−2.15..0.25 or right
 X6.25..8.65, leaving 0.26 m to the upright load and the opposite side open for
 walking. Front dock Z7.8..9.8 leaves **0.493 m** to the bare-frame tilt sweep.

@@ -1,8 +1,12 @@
 class_name EquipmentRegistry
 extends RefCounted
 ## Workshop equipment in interaction order. Every aggregate visits that order,
-## so the first registered answer wins.
+## so the first registered answer wins. It also carries the player, and the
+## load in their hands, with whatever moving body they stand on.
 const Codec = preload("res://scripts/pose_codec.gd")
+const Sweep = preload("res://scripts/motion_sweep.gd")
+## How far above a deck a hopping player still counts as riding it.
+const RIDE_HOP = 0.6
 var _items: Array = []
 
 func register(equipment: Node) -> void:
@@ -29,7 +33,46 @@ func controls() -> Array[Dictionary]:
 	return result
 
 func physics(delta: float) -> void:
-	for equipment in all():equipment.physics(delta)
+	var items = all()
+	var game: Node = items[0].game if not items.is_empty() else null
+	var floor = rider_floor(game)
+	var before = floor.global_transform if floor != null else Transform3D.IDENTITY
+	for equipment in items:equipment.physics(delta)
+	if floor == null or not is_instance_valid(floor):return
+	var moved = floor.global_transform*before.affine_inverse()
+	if moved.is_equal_approx(Transform3D.IDENTITY):return
+	game.player.global_position = moved*game.player.global_position
+	game.player.rotate_y(moved.basis.get_euler().y)
+	var carried = carried_body(game)
+	if carried != null:carried.global_transform = moved*carried.global_transform
+	# Later queries this tick, including the player's own move, see the new poses.
+	for body in [floor,game.player,carried]:
+		if body != null:PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
+
+## The body under the player's feet, allowing a short hop, or null.
+static func rider_floor(game: Node) -> CollisionObject3D:
+	if game == null:return null
+	var player = game.get("player") as CharacterBody3D
+	if not is_instance_valid(player) or not player.is_inside_tree():return null
+	var excluded: Array[RID] = [player.get_rid()]
+	var carried = carried_body(game)
+	if carried != null:Sweep.collect_rids(carried,excluded)
+	var query = PhysicsRayQueryParameters3D.create(player.global_position+Vector3.UP*0.1,player.global_position-Vector3.UP*RIDE_HOP,15,excluded)
+	var hit = player.get_world_3d().direct_space_state.intersect_ray(query)
+	return hit.collider as CollisionObject3D if not hit.is_empty() else null
+
+## The component or build in the player's hands, which travels with a rider.
+static func carried_body(game: Node) -> CollisionObject3D:
+	if game == null:return null
+	var components = game.get("components")
+	if is_instance_valid(components):
+		var held = components.get("held_body") as CollisionObject3D
+		if is_instance_valid(held):return held
+	if game.has_method("held_build"):
+		var owner: String = game.held_build()
+		var bodies = game.get("bodies")
+		if not owner.is_empty() and bodies is Dictionary:return bodies.get(owner) as CollisionObject3D
+	return null
 
 func access_error(owner: String) -> String:
 	for equipment in all():

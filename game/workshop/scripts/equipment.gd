@@ -31,6 +31,35 @@ func capture() -> Dictionary:return {}
 func validate(_data: Variant, _candidate: AssemblyModel = null, _world: Dictionary = {}) -> Array[String]:return []
 func apply(_data: Dictionary) -> void:pass
 
+## Whether the player standing on `body` rides this equipment. By default every
+## body under this node moves with it.
+func carries(body: CollisionObject3D) -> bool:return is_ancestor_of(body)
+
+## The player while standing on, or hopping just above, a body this moves.
+## The registry carries a rider and their hand load with that body.
+func rider() -> CharacterBody3D:
+	var floor = EquipmentRegistry.rider_floor(game)
+	return game.get("player") if floor != null and carries(floor) else null
+
+## The component or build in the player's hands.
+func carried_body() -> CollisionObject3D:return EquipmentRegistry.carried_body(game)
+
+## The rider and their hand load: moving parts of this equipment's envelope,
+## not obstacles to it.
+func passengers() -> Array[CollisionObject3D]:
+	var result: Array[CollisionObject3D] = []
+	if rider() == null:return result
+	result.append(game.player)
+	var carried = carried_body()
+	if carried != null:result.append(carried)
+	return result
+
+## `excluded` plus every passenger body.
+func without_passengers(excluded: Array[RID]) -> Array[RID]:
+	var result = excluded.duplicate()
+	for body in passengers():MotionSweep.collect_rids(body,result)
+	return result
+
 ## The registry finds the controller of any targeted entry through "controller".
 func control_entry(node: Node3D, action: String, label: String, radius: float, extra: Dictionary = {}) -> Dictionary:
 	var entry = {"type":"equipment","controller":self,"node":node,"action":action,"label":label,"radius":radius}

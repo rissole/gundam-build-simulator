@@ -1,7 +1,8 @@
 extends "res://scripts/equipment.gd"
 ## One ground-transferred, stabilized personnel platform. Dock routes, occupied
-## footprint and heights are authored in the shared M3 layout. Riding is allowed
-## for vertical work; ground transfers require an empty, lowered deck.
+## footprint and heights are authored in the shared M3 layout. The player may ride
+## height changes and ground transfers with a hand load; ground transfers require
+## a lowered deck clear of loose loads.
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
 var spec: Dictionary
@@ -97,15 +98,9 @@ func position_at(value: float, path: Array[Vector3]) -> Vector3:
 func hardware() -> Array[RID]:
 	var result: Array[RID] = [];Sweep.collect_rids(self,result);return result
 
-func rider() -> CharacterBody3D:
-	var player = game.get("player") as CharacterBody3D
-	if not is_instance_valid(player):return null
-	var at = to_local(player.global_position)
-	return player if absf(at.x)<spec.deck_size[0]/2-.15 and absf(at.z)<spec.deck_size[1]/2-.15 and absf(at.y-height)<.15 else null
-
 func _deck_occupied() -> bool:
 	var shape = BoxShape3D.new();shape.size = Vector3(spec.deck_size[0],2.0,spec.deck_size[1])
-	return not Sweep.overlap(get_world_3d().direct_space_state,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,height+1.01,0)),15,hardware(),0).is_empty()
+	return not Sweep.overlap(get_world_3d().direct_space_state,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,height+1.01,0)),15,without_passengers(hardware()),0).is_empty()
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the work platform."
@@ -116,7 +111,7 @@ func action_error(action: String) -> String:
 		if not spec.docks.has(action.trim_prefix("dock:")):return "Unknown work platform dock."
 		if not mode.is_empty():return "Complete or return the interrupted transfer first."
 		if height>spec.heights[0]+.001:return "Lower the work platform before ground transfer."
-		if _deck_occupied():return "Step off and remove loose loads before ground transfer."
+		if _deck_occupied():return "Remove loose loads from the deck before ground transfer."
 		var rail = game.equipment.get_equipment("leg_rail")
 		if rail!=null:
 			var reason: String = rail.busy_reason("mobile_platform")
@@ -155,7 +150,7 @@ func request(action: String) -> String:
 func physics(delta: float) -> void:
 	if not moving or game.paused:return
 	if mode=="travel":
-		if _deck_occupied():blocked_reason = "Clear the work platform before ground transfer.";moving = false;return
+		if _deck_occupied():blocked_reason = "Remove loose loads from the deck before ground transfer.";moving = false;return
 		var path = _route();var index = mini(path.size()-2,floori(travel+.00001))
 		var next = minf(index+1,travel+spec.speed*delta/maxf(.01,path[index].distance_to(path[index+1])))
 		var destination = Transform3D(Basis.IDENTITY,position_at(next,path))
@@ -171,19 +166,25 @@ func physics(delta: float) -> void:
 		if is_equal_approx(height,goal_height):mode = "";moving = false;_pose()
 
 func _travel_error(destination: Transform3D) -> String:
-	var shapes: Array[Dictionary] = [];Sweep.collect_shapes(self,global_transform.affine_inverse(),shapes)
+	var shapes: Array[Dictionary] = [];var inverse = global_transform.affine_inverse()
+	Sweep.collect_shapes(self,inverse,shapes)
+	for body in passengers():Sweep.collect_shapes(body,inverse,shapes)
 	var count = Sweep.steps(global_transform,destination,2,.025)
-	var hit = Sweep.sweep(get_world_3d().direct_space_state,[{"shapes":shapes,"margin":-.002,"error":"Clear the work platform ground route ({collider}).","cast":true}],count,func(p):return global_transform.interpolate_with(destination,p),15,hardware(),equipment_id)
+	var hit = Sweep.sweep(get_world_3d().direct_space_state,[{"shapes":shapes,"margin":-.002,"error":"Clear the work platform ground route ({collider}).","cast":true}],count,func(p):return global_transform.interpolate_with(destination,p),15,without_passengers(hardware()),equipment_id)
 	return hit.get("error","")
 
 func _height_error(next: float) -> String:
-	var excluded = hardware();var passenger = rider()
-	if passenger!=null:excluded.append(passenger.get_rid())
-	var clearance = 1.12 if passenger==null else 1.76
+	var excluded = without_passengers(hardware());var riders = passengers()
+	var clearance = 1.12 if riders.is_empty() else 1.76
 	var low = minf(height,next)-.115;var high = maxf(height,next)+clearance
 	var shape = BoxShape3D.new();shape.size = Vector3(spec.deck_size[0],high-low,spec.deck_size[1])
 	var hit = Sweep.overlap(get_world_3d().direct_space_state,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0)),15,excluded,0)
-	return "Clear the work platform height adjustment." if not hit.is_empty() else ""
+	if not hit.is_empty():return "Clear the work platform height adjustment."
+	# A hand load can overhang the deck; reserve its own vertical route.
+	var shapes: Array[Dictionary] = []
+	for body in riders.slice(1):Sweep.collect_shapes(body,global_transform.affine_inverse(),shapes)
+	if shapes.is_empty():return ""
+	return Sweep.sweep(get_world_3d().direct_space_state,[{"shapes":shapes,"margin":.001,"error":"Clear the carried component's platform route ({collider})."}],Sweep.steps(global_transform,global_transform.translated(Vector3.UP*(next-height)),0,.025),func(p):return global_transform.translated(Vector3.UP*(next-height)*p),15,excluded,equipment_id).get("error","")
 
 func _pose() -> void:
 	position = position_at(travel,_route()) if mode=="travel" else AssemblyRuntime.vec(spec.docks[dock])

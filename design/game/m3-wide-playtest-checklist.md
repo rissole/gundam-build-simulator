@@ -54,6 +54,6 @@ The pauldron route's tightest clearance is about 1 mm at seating.
 
 | Date | Stage | Issue or positive finding | Severity |
 | --- | --- | --- | --- |
-|  |  |  |  |
+| 2026-10-24 | Any (mobile work platform) | Couldn't stay on the work platform while it moved between docks. Fixed: riding is now shared by every moving platform, hand load included. Re-check by riding it. | Blocking |
 
 Mechanical test passes are separate from these playtest results.

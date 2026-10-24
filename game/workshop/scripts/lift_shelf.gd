@@ -111,8 +111,7 @@ func sync() -> void:
 
 func travel_error(carrier_id: String, from: float, to: float) -> String:
 	if carrier_id != lift.equipment_id:return ""
-	var excluded: Array[RID] = lift.hardware()
-	if lift.rider()!=null:excluded.append(game.player.get_rid())
+	var excluded: Array[RID] = lift.without_passengers(lift.hardware())
 	for body in cargo.values():
 		var destination: Transform3D = body.global_transform;destination.origin.y += to-from
 		if not SolidHandling.sweep_error(body,destination,excluded,15).is_empty():return "Clear the stored component's lift route."
