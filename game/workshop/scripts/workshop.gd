@@ -9,6 +9,7 @@ const Registry = preload("res://scripts/equipment_registry.gd")
 const Hands = preload("res://scripts/hand_slot.gd")
 const Content = preload("res://scripts/workshop_content.gd")
 const Trial = preload("res://scripts/leg_bay_trial.gd")
+const M3Stages = preload("res://scripts/m3_stages.gd")
 ## Interaction and physics order; earlier equipment answers aggregate queries first.
 const EQUIPMENT_ORDER = ["workshop_access","rail_gates","mobile_platform","module_supports","core_guide","backpack_hinge","captive_controls","joint_restraints","foot_carrier","leg_rail","arm_cassette","left_shoulder","right_shoulder","lift_shelf","left_shelf","right_shelf","service_crane","foot_fixture","hip_lift","left_lift","right_lift"]
 const FOOT_CENTER = Vector3(0,0.8,-0.7)
@@ -52,6 +53,7 @@ var active_build: String = "pad_1"
 var prepared_flags: Dictionary = {}
 var completed_flags: Dictionary = {}
 var automated_test: bool = false
+var m3_stage: String = ""
 var scripted_controls: Dictionary = {}
 var config: Dictionary
 var source: Dictionary = {}
@@ -171,6 +173,10 @@ func _ready() -> void:
 	saves = preload("res://scripts/workshop_save.gd").new()
 	add_child(saves)
 	saves.setup(self)
+	if profile.id == "leg_bay_m3":
+		for arg in OS.get_cmdline_user_args():
+			if str(arg).begins_with("--m3-stage="):m3_stage = str(arg).trim_prefix("--m3-stage=")
+		if not m3_stage.is_empty() and not automated_test:call_deferred("run_m3_stage",m3_stage)
 
 func _load_leg_content(data: Dictionary) -> void:
 	leg_content = JSON.parse_string(FileAccess.get_file_as_string(profile.leg_content))
@@ -604,6 +610,36 @@ func reset_demo() -> void:
 	# M3 has no save slot; reloading also re-runs any --m3-stage launch flag.
 	if is_instance_valid(saves) and (saves.enabled or profile.trial != "m3"):saves.new_workshop()
 	else:get_tree().reload_current_scene()
+
+## Development shortcut: script the M3 sequence up to `stage`, then hand over
+## paused. Supplied progress only; never a save or playtest evidence.
+func run_m3_stage(stage: String) -> String:
+	if stage not in M3Stages.STAGES:
+		var unknown = "Unknown M3 stage '"+stage+"'. Use one of: "+", ".join(M3Stages.STAGES)
+		if is_instance_valid(hud):hud.toast(unknown)
+		# Headless suites already record the returned message. push_error would
+		# fail the regression runner, which treats every ERROR line as a failure.
+		if not automated_test:push_error(unknown)
+		return unknown
+	var title: String = M3Stages.TITLES[stage]
+	var overlay = CanvasLayer.new();overlay.layer = 100;add_child(overlay)
+	var shade = ColorRect.new();shade.color = Color("111d26e6");shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);overlay.add_child(shade)
+	var note = Label.new();note.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER;note.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	note.add_theme_font_size_override("font_size",24);overlay.add_child(note)
+	note.text = "Preparing M3 stage: "+title+"\nEarlier work is supplied by script, not playtested."
+	await get_tree().process_frame;await get_tree().process_frame
+	# Scripted controls block walking/look so the player can't step into a route.
+	var was_automated = automated_test
+	automated_test = true
+	set_paused(false)
+	var error: String = await M3Stages.new(self).run_to(stage,func(step: String):note.text = "Preparing M3 stage: "+title+"\nNow: "+step)
+	automated_test = was_automated
+	overlay.queue_free()
+	set_paused(true)
+	if is_instance_valid(hud):hud.toast(("Stage ready: "+title+". Earlier work was supplied by script.") if error.is_empty() else ("Stage preparation stopped: "+error),error.is_empty())
+	if not error.is_empty():push_error("M3 stage "+stage+": "+error)
+	return error
 
 # Facades kept for the many layout, equipment and test callers.
 func material(color: Color, metal: float = 0.0, emissive: bool = false) -> StandardMaterial3D:return primitives.material(color,metal,emissive)

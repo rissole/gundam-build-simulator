@@ -55,6 +55,17 @@ Profiles select content, layout, equipment, staging, spawn and save behavior.
 The retired hoist and M1 saves are no longer loaded. The historical layout and
 feedback remain in [the archive](../../design/game/history/leg-workshop-m1-m2-handoffs.md).
 
+### M3 stage shortcut (development)
+
+`./play.command -- --m3-stage=<stage>` launches M3 and scripts the earlier work
+with the same equipment commands as the mechanical tests, then hands over paused.
+Fastenings and rigging are supplied, so this is not playtest evidence, and nothing
+is saved. Restart re-runs the shortcut. Stages: `pelvis`, `left_leg_build`,
+`left_leg_dock`, `right_leg_build`, `right_leg_dock`, `chest`, `core`, `backpack`,
+`left_arm`, `right_arm`, `pauldrons` (later tasks add `head`, `head_sensors`,
+`complete`). Preparation takes up to about a minute. Don't use the controls until
+the overlay closes.
+
 ## M2 equipment trials
 
 Launch the checkpoint selector from the repository root:

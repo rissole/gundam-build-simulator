@@ -18,6 +18,8 @@ static func resolve(user_args: Array, tree: SceneTree, override: String = "") ->
 	for arg in user_args:
 		if str(arg).begins_with("--m2-trial="):trial = str(arg).trim_prefix("--m2-trial=")
 	if trial.is_empty() and tree != null and tree.has_meta("m2_trial"):trial = tree.get_meta("m2_trial")
+	for arg in user_args:
+		if str(arg).begins_with("--m3-stage="):return profile("leg_bay_m3",legacy)
 	if user_args.has("--m3-workshop"):return profile("leg_bay_m3",legacy)
 	if user_args.has("--m2-workshop") and trial.is_empty():return {"selector":"m2"}
 	if not trial.is_empty():return profile("leg_bay_"+trial,legacy)
