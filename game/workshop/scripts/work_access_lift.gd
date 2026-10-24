@@ -65,9 +65,9 @@ func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels:
 			member.name = "CantileverDeckBeam"
 	var panel_at = Vector3(size.x/2-.07,1.1,0) if side_gates.is_empty() else Vector3(1.1,1.1,-1.12)
 	if layout_options.has("panel_position"):panel_at=AssemblyRuntime.vec(layout_options.panel_position)
-	_solid(deck,panel_at,Vector3(0.12,0.36,0.90) if side_gates.is_empty() else Vector3(.36,.36,.12),steel)
-	for pair in [["down",-0.25],["up",0.0],["ground",0.25]]:
-		_button(deck,panel_at+Vector3(-.07,0,float(pair[1])) if side_gates.is_empty() else panel_at+Vector3(float(pair[1]),0,.1),pair[0],yellow)
+	_solid(deck,panel_at,Vector3(0.12,0.52,0.36) if side_gates.is_empty() else Vector3(.36,.52,.12),steel)
+	for pair in [["up",.12],["down",-.12]]:
+		_button(deck,panel_at+Vector3(-.09,float(pair[1]),0) if side_gates.is_empty() else panel_at+Vector3(0,float(pair[1]),.1),pair[0],yellow)
 	if side_gates.is_empty():
 		var call_post = StaticBody3D.new()
 		add_child(call_post)
@@ -75,10 +75,11 @@ func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels:
 		_solid(call_post,Vector3(size.x/2+0.25,0.55,size.y/2+0.3),Vector3(0.08,1.1,0.08),steel)
 		_button(self,Vector3(size.x/2+0.25,1.1,size.y/2+0.3),"ground",yellow)
 	_label = Label3D.new()
-	_label.position = panel_at+Vector3(-.11,.3,0) if side_gates.is_empty() else panel_at+Vector3(0,.3,.1)
+	_label.position = panel_at+Vector3(-.11,.43,0) if side_gates.is_empty() else panel_at+Vector3(0,.43,.1)
 	_label.rotation.y = -PI/2 if side_gates.is_empty() else 0
-	_label.font_size = 32
-	_label.pixel_size = 0.002
+	_label.font_size = 24
+	_label.pixel_size = 0.0015
+	_label.outline_size = 0
 	deck.add_child(_label)
 	_pose()
 
@@ -173,9 +174,11 @@ func _solid(parent: CollisionObject3D, at: Vector3, size: Vector3, mat: Material
 	shape.set_meta("visual",visual)
 	return shape
 
-func _button(parent: Node3D, at: Vector3, action: String, mat: Material) -> void:
-	var node = game.box(parent,at,Vector3(0.12,0.13,0.16),mat)
-	_buttons.append(control_entry(node,action,lift_name.capitalize()+" lift / "+action,0.16,{"equipment_id":equipment_id,"title":lift_name.capitalize()+" lift / "+action}))
+func _button(parent: Node3D, at: Vector3, action: String, _mat: Material) -> void:
+	var caption = "↑ UP" if action == "up" else "↓ DOWN" if action == "down" else "CALL"
+	var title = lift_name.capitalize()+" lift · "+(action.capitalize() if action in ["up","down"] else "Call to this landing")
+	var node = preload("res://scripts/equipment_button.gd").make(game,parent,at,caption,-PI/2 if side_gates.is_empty() else 0,action == "up")
+	_buttons.append(control_entry(node,action,title,.11,{"equipment_id":equipment_id,"title":title}))
 
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []

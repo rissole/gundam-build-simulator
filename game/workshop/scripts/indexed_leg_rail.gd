@@ -35,13 +35,14 @@ func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 
 func _panel(at: Vector3) -> void:
 	var panel = Node3D.new();add_child(panel);panel.position=at
-	var dark = game.material(Color("263a43"),.4);var yellow = game.material(Color("e8b46b"),.3)
+	var dark = game.material(Color("263a43"),.4)
 	game.box(panel,Vector3(0,.6,0),Vector3(.12,1.2,.9),dark,true)
 	for index in range(7):
 		var action: String = ["advance","stop","return","lane","roll","park","build"][index]
-		var button = game.box(panel,Vector3(-.09,1.15-(index/3)*.24,-.30+(index%3)*.30),Vector3(.12,.15,.15),yellow)
-		buttons.append(control_entry(button,action,action,.14))
-	labels.append(game.sign_panel(panel,"",Vector3(-.08,1.72,0),Vector2(2.5,.6),26,.002,-PI/2))
+		var caption: String = ["NEXT","STOP","BACK","LANE","ROLL","PARK","BUILD"][index]
+		var button = preload("res://scripts/equipment_button.gd").make(game,panel,Vector3(-.09,1.15-(index/3)*.24,-.30+(index%3)*.30),caption,-PI/2,index == 0)
+		buttons.append(control_entry(button,action,action,.11))
+	labels.append(game.sign_panel(panel,"",Vector3(-.08,1.72,0),Vector2(1.3,.4),26,.0015,-PI/2))
 
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []

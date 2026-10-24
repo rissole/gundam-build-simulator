@@ -46,11 +46,10 @@ func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 	for index in range(3):
 		var action: String = ["advance","stop","return"][index]
 		var at = Vector3(-.02,1.2,-.52+index*.52)
-		var button = game.box(panel,at,Vector3(.12,.16,.20),yellow)
-		buttons.append(control_entry(button,action,["Advance foot carrier","Stop carrier","Return foot to dispatch"][index],.14))
-		game.sign_panel(panel,["ADVANCE","STOP","RETURN"][index],at+Vector3(-.06,-.2,0),Vector2(.45,.13),32,.0018,-PI/2)
-	label = game.sign_panel(panel,"",Vector3(-.04,2,0),Vector2(2.5,.8),32,.002,-PI/2)
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;label.width = 1100
+		var button = preload("res://scripts/equipment_button.gd").make(game,panel,at,["NEXT","STOP","BACK"][index],-PI/2,index == 0)
+		buttons.append(control_entry(button,action,["Advance foot carrier","Stop carrier","Return foot to dispatch"][index],.11))
+	label = game.sign_panel(panel,"",Vector3(-.04,2,0),Vector2(1.6,.5),28,.0015,-PI/2)
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;label.width = 1000
 	game.model.changed.connect(_load_changed)
 	game.zones.changed.connect(func(_zone):_sync_zone())
 	_pose()

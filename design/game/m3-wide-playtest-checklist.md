@@ -18,6 +18,24 @@ One stage:
 
 Stage preparation is supplied progress and nothing is saved. Wait for the overlay to close before using the controls. Restart re-runs the shortcut.
 
+## Focused controls check — 2026-10-24
+
+The crane/lift UI revision has **no regression run**, at the user's request.
+Rendered UI screenshots were inspected; these steps still need your hands-on check.
+Start with `./play.command -- --m3-workshop`.
+
+- [ ] Open the crane with E. Movement should be visible immediately; the manual and pockets should return when you close it. Mouse look must stay fixed while open.
+- [ ] Choose **Change load…**, search for `pelvis` (including typing E), select **Pelvis and waist**, and return to the movement controls. Try a search with no results, clear it, and scroll to the final load.
+- [ ] Use mouse and ↑/↓ + E/Enter; Tab should reach the search and Close buttons. Q closes when not typing; Esc pauses even when typing. Check your usual window size.
+- [ ] Follow one crane delivery: move to pickup → Lower crane → close and rig → Raise crane → move to receiver → Lower crane. Check blocked-command explanations, fastening, release and parking before changing load.
+- [ ] Board both side elevators. Up and Down should each travel one level and stop automatically. Try top/bottom limits and call the elevator from a landing. Repeat carrying a component and using the shelf.
+- [ ] On the mobile platform, choose a dock with **DOCK ›**, press **MOVE**, and ride it. Up/Down must only change height, even with a different dock selected; Down at ground must not send it to parking. To park, choose `park` and press Move.
+- [ ] Try a blocked mobile transfer. Clear the obstacle and use **RESUME**, or use **← BACK** to return along the route. Check the rider and anything carried stay with the deck.
+- [ ] Read and target the labelled rail, foot-carrier and bulky-fixture buttons. Confirm neighbouring buttons are distinct and the smaller signs remain legible. Their Stop/recovery controls remain available.
+
+Report confusing wording, missed targets, unexpected motion and positive findings
+in the table below. The complete workshop journey remains a separate playtest.
+
 ## Stages
 
 | Command | What to try | What to watch for |
@@ -43,7 +61,7 @@ Stage preparation is supplied progress and nothing is saved. Wait for the overla
 - [ ] Connection visibility, reach and tool approach.
 - [ ] Rigging attachment and release.
 - [ ] Carrying and shelves.
-- [ ] Equipment controls (crane console, local Advance/Stop/Return, locks, latches).
+- [ ] Equipment controls (crane console, lift Up/Down, mobile dock selection, labelled local buttons, locks and latches).
 - [ ] Overall flow and the manual's suggested order.
 
 The right elevator's local button panel moved to the opposite front corner.

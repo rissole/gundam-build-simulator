@@ -16,16 +16,15 @@ func run() -> void:
 	key(KEY_W);await frames(15);key(KEY_W,false)
 	expect(game.camera.global_transform.is_equal_approx(view) and game.player.global_position.distance_to(feet)<.01,"Modal mouse/keyboard cannot rotate or walk the player")
 	expect(Input.mouse_mode==Input.MOUSE_MODE_VISIBLE,"Modal releases mouse for ordinary buttons")
-	expect(not game.hud.target_panel.visible,"Opening console hides the ordinary pickup prompt")
+	expect(not game.hud.visible,"Opening console tucks away the manual and inventory HUD")
 	var untouched = crane.capture()
 	for down in [true,false]:
 		var outside = InputEventMouseButton.new();outside.button_index=MOUSE_BUTTON_LEFT
 		outside.position=Vector2(8,8);outside.global_position=outside.position;outside.pressed=down
 		game.get_viewport().push_input(outside,true);await process_frame
 	expect(crane.console.is_open and crane.capture()==untouched,"Outside clicks keep console open without issuing world or crane commands")
-	# First row is Down, second is the source destination; exercise native GUI events.
-	await actual_key(KEY_DOWN)
-	expect(crane.console.order[crane.console.selected]=="go:source","Down arrow selects next command without moving view")
+	# Parking offers movement first, without an unusable Lower command.
+	expect(crane.console.order[crane.console.selected]=="go:source","Pickup destination has initial keyboard focus")
 	await actual_key(KEY_E)
 	expect(crane.motion=="go:source" and crane.moving,"E executes focused command through viewport input")
 	expect(crane.console.buttons.stop.has_focus(),"Changing command list focuses Stop during motion")

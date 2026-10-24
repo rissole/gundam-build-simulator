@@ -2,7 +2,7 @@
 
 A first-person mecha workshop prototype: organise parts, follow illustrated manuals, and assemble a giant robot one component at a time.
 
-The full-game design targets an **18 m piloted mecha**. The current prototype is a **175-piece supported left-leg workshop**: build the foot and structural leg, hoist it into a pelvis held by a gantry, then fasten the hip retainers. The expanded Godot hangar includes component stations, lifting equipment, personnel platforms, linked manuals and save/resume. Its FA-01 foot retains **745 separate source parts** and a reproducible Blender generation pipeline.
+The full-game design targets an **18 m piloted mecha**. The base game builds **two heel pads and a pitch actuator in a supported foot bay**. The separate **M3 whole-robot workshop** adds both legs, torso, arms and head with shared lifting equipment, personnel platforms and linked manuals. M3 saving is deferred; the foot game and M2 trials retain their own saves. Its FA-01 foot retains **745 separate source parts** and a reproducible Blender generation pipeline.
 
 ![FA-01 assembled foot, with separate armor, frame, ankle mechanisms, and sole pads](models/foot-fa01/output/foot-fa01-assembled.png)
 
@@ -12,9 +12,19 @@ The full-game design targets an **18 m piloted mecha**. The current prototype is
 
 ## Play the workshop
 
-![Heel-pad assembly in the workshop, with the illustrated manual, placement preview and square inventory pockets](docs/images/heel-pad-demo.png)
+![Compact crane movement controls with a separate Change load button](docs/images/workshop-crane-controls.png)
 
-*Earlier component-workshop view; the default scene now includes leg assembly and a final bay.*
+*Current M3 crane controls. Choose a load separately, then operate the crane from
+one compact panel. The manual and pockets return when you close the console.*
+
+![Mobile platform with labelled Up, Down, Dock and Move buttons](docs/images/workshop-mobile-controls.png)
+
+*Dedicated height controls and separate dock travel. Elevators use only Up/Down
+onboard, with Call buttons at landings. See the [load chooser and elevator
+screenshots](game/workshop/README.md#equipment-controls) and the
+[verification checklist](design/game/m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24).
+These are rendered UI fixtures; hands-on acceptance is pending. Regressions were
+not run for this revision, at the user's request.*
 
 Use **Godot 4.7.2**. On macOS, double-click [play.command](play.command), or run it from the repository root:
 

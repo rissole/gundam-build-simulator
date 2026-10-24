@@ -312,6 +312,21 @@ func _fit_target() -> void:
 	# Keep the object prompt out of the reader, even when the object is near it.
 	if manual.visible and manual.get_parent() == root and point.y < manual.get_global_rect().end.y and point.y+panel_size.y > manual.global_position.y:
 		right_edge = minf(right_edge,manual.global_position.x-12.0)
+	# Labelled equipment keys need their neighbours visible while one is aimed.
+	var target_node: Node = game.target.get("node")
+	if is_instance_valid(target_node) and target_node.has_meta("control_bank"):
+		var bank: Node = target_node.get_meta("control_bank")
+		var left = anchor.x;var right = anchor.x
+		for face in bank.get_meta("button_faces",[]):
+			if not is_instance_valid(face) or face.global_position.distance_to(target_node.global_position)>1.8:continue
+			var box: AABB = face.get_aabb()
+			for index in range(8):
+				var corner: Vector3 = face.global_transform*box.get_endpoint(index)
+				if game.camera.is_position_behind(corner):continue
+				var projected: Vector2 = game.camera.unproject_position(corner)
+				left = minf(left,projected.x);right = maxf(right,projected.x)
+		point.x = left-panel_size.x-24
+		if point.x<16 and right+24+panel_size.x<=right_edge:point.x = right+24
 	if point.x+panel_size.x > right_edge:point.x = anchor.x-panel_size.x-24.0
 	point.x = clampf(point.x,16.0,maxf(16.0,right_edge-panel_size.x))
 	target_panel.position = point

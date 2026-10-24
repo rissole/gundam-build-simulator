@@ -45,6 +45,12 @@ Component-specific implementation detail lives in each component document's
 "Wider M3 … — 2026-10-24" section. Deferred items are listed in the
 [workshop state](leg-workshop-next-steps.md#deferred-needs-a-decision).
 
+The subsequent [equipment UI revision](history/equipment-ui-20261024.md) separates
+crane load selection from motion and gives the lifts explicit Up/Down controls.
+Screenshots were inspected; the user requested no regression run for that revision.
+Its [focused verification checklist](m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24)
+remains pending alongside the wider workshop playtest.
+
 ## 1. Build the workshop and adapt the leg journey
 
 Implement these stages in order. Use internal integration checks rather than

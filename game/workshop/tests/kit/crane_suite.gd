@@ -31,15 +31,18 @@ func console_action(action: String) -> bool:
 	var before = crane.capture()
 	await console_click(action)
 	var error: String = crane.console.feedback.text
-	var accepted = error == "Command accepted."
+	var accepted = error.is_empty()
 	if not accepted:print("M2_CRANE_CONSOLE ",action," ",error," before=",before)
 	expect(accepted,"Console accepts "+action)
 	return accepted
 
 func console_click(action: String) -> void:
 	await process_frame
+	if action.begins_with("task:") and not crane.console.choosing_load:
+		await console_click("ui:loads")
 	if not crane.console.buttons.has(action):expect(false,"Console offers "+action);return
 	var button: Button = crane.console.buttons[action]
+	crane.console.scroll.ensure_control_visible(button);await process_frame
 	var position: Vector2 = button.get_global_rect().get_center()
 	for down in [true,false]:
 		var event = InputEventMouseButton.new();event.button_index = MOUSE_BUTTON_LEFT;event.position = position;event.global_position = position;event.pressed = down

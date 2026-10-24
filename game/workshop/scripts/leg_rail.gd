@@ -46,10 +46,8 @@ func _panel(at: Vector3) -> void:
 	for index in range(3):
 		var action: String = ["advance","stop","return"][index]
 		var point = Vector3(-.02,1.20,-.52+index*.52)
-		var mat = game.material(Color("d57562") if index == 1 else Color("e8b46b"),.2)
-		var button = game.box(panel,point,Vector3(.12,.16,.20),mat)
-		buttons.append(control_entry(button,action,["Advance","Stop","Return"][index],.14))
-		game.sign_panel(panel,["ADVANCE","STOP","RETURN"][index],point+Vector3(-.06,-.20,0),Vector2(.45,.13),32,.0018,-PI/2)
+		var button = preload("res://scripts/equipment_button.gd").make(game,panel,point,["NEXT","STOP","BACK"][index],-PI/2,index == 0)
+		buttons.append(control_entry(button,action,["Advance","Stop","Return"][index],.11))
 	var label = game.sign_panel(panel,"",Vector3(-.04,2.0,0),Vector2(2.4,.8),32,.002,-PI/2)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.width = 1100

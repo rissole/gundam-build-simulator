@@ -31,11 +31,11 @@ func setup(workshop: Node3D, geometry: Node3D) -> void:
 	var panel=Node3D.new();add_child(panel);panel.position=AssemblyRuntime.vec(spec.panel)
 	game.box(panel,Vector3(0,.65,0),Vector3(.14,1.3,.7),game.material(Color("263a43")),true)
 	for i in range(3):
-		var button=game.box(panel,Vector3(-.10,1.2,-.24+i*.24),Vector3(.12,.16,.16),game.material(Color("e8b46b")))
-		buttons.append(control_entry(button,["advance","stop","return"][i],["Raise bulky fixture","Stop fixture","Lower bulky fixture"][i],.12))
-	var insert_button=game.box(panel,Vector3(-.10,.90,0),Vector3(.12,.16,.30),game.material(Color("7cc7a7")))
+		var button=preload("res://scripts/equipment_button.gd").make(game,panel,Vector3(-.10,1.2,-.26+i*.26),["↑ UP","STOP","↓ DOWN"][i],-PI/2,i == 0)
+		buttons.append(control_entry(button,["advance","stop","return"][i],["Raise bulky fixture","Stop fixture","Lower bulky fixture"][i],.11))
+	var insert_button=preload("res://scripts/equipment_button.gd").make(game,panel,Vector3(-.10,.90,0),"INSERT",-PI/2)
 	buttons.append(control_entry(insert_button,"template:chest","Cycle fixture inserts",.15,{"cycle_templates":true}))
-	label=game.sign_panel(panel,"",Vector3(-.08,1.75,0),Vector2(2.4,.55),30,.002,-PI/2)
+	label=game.sign_panel(panel,"",Vector3(-.08,1.75,0),Vector2(1.4,.4),28,.0015,-PI/2)
 	for key in locks:
 		var root=Node3D.new();root.name="Waist_"+key+"_lock";game.runtime.node("pelvis").add_child(root);root.position=AssemblyRuntime.vec(spec.locks[key])
 		lock_nodes[key]=game.box(root,Vector3.ZERO,Vector3(.12,.10,.12),game.material(Color("e8b46b")))

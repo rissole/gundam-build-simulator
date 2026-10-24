@@ -3,6 +3,11 @@ extends CanvasLayer
 var crane: Node3D
 var panel: PanelContainer
 var backdrop: Control
+var heading: Label
+var hint: Label
+var search: LineEdit
+var choosing_load = false
+var hud_was_visible = true
 var status: Label
 var load_label: Label
 var feedback: Label
@@ -29,18 +34,22 @@ func _make_panel() -> void:
 	backdrop = Control.new();backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);add_child(backdrop)
 	panel = PanelContainer.new();panel.custom_minimum_size.x = PANEL_WIDTH;backdrop.add_child(panel)
-	panel.add_theme_stylebox_override("panel",crane.game.hud.style(Color("101b23ed"),Color("a6bac344"),16))
+	panel.add_theme_stylebox_override("panel",crane.game.hud.style(Color("101b23"),Color("a6bac344"),16))
 	var column = VBoxContainer.new();column.add_theme_constant_override("separation",8);panel.add_child(column)
-	var heading = crane.game.hud.label("Crane control",20);column.add_child(heading)
+	heading = crane.game.hud.label("Crane",20);column.add_child(heading)
 	load_label = _label(column,15)
 	load_label.add_theme_color_override("font_color",crane.game.hud.tone)
 	status = _label(column,14)
+	search = LineEdit.new();search.placeholder_text = "Find a load…";search.custom_minimum_size.y = 38
+	column.add_child(search);search.hide();search.text_changed.connect(func(_text):refresh())
 	scroll = ScrollContainer.new();scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL;column.add_child(scroll)
 	choices = VBoxContainer.new();choices.add_theme_constant_override("separation",6)
 	choices.size_flags_horizontal = Control.SIZE_EXPAND_FILL;scroll.add_child(choices)
+	hint = _label(column,14)
+	hint.add_theme_color_override("font_color",crane.game.hud.muted)
 	feedback = _label(column,14)
-	help = _label(column,12);help.text = "↑ / ↓ choose · E select\nQ close · Esc pause"
+	help = _label(column,12);help.text = "↑ ↓ choose · E select · Q close"
 	help.add_theme_color_override("font_color",crane.game.hud.muted)
 	var close = crane.game.hud.button("Close");column.add_child(close);close.pressed.connect(shut)
 	backdrop.hide()
@@ -54,8 +63,9 @@ func _label(parent: Control, font_size: int) -> Label:
 func open() -> String:
 	var error: String = crane.console_access_error()
 	if not error.is_empty():return error
-	is_open = true;selected = 0;feedback.text = "";backdrop.show();layout_key.clear()
-	crane.game.hud.target_panel.hide()
+	is_open = true;selected = 0;choosing_load = false;search.clear();feedback.text = "";backdrop.show();layout_key.clear()
+	hud_was_visible = crane.game.hud.visible
+	crane.game.hud.hide()
 	crane.game.desktop_input.push_modal(self)
 	crane.game.scripted_controls.clear();crane.game.jump_requested = false
 	crane.game.player.velocity.x = 0;crane.game.player.velocity.z = 0
@@ -64,7 +74,9 @@ func open() -> String:
 
 func shut() -> void:
 	is_open = false
-	if is_instance_valid(crane) and is_instance_valid(crane.game):crane.game.desktop_input.pop_modal(self)
+	if is_instance_valid(crane) and is_instance_valid(crane.game):
+		crane.game.desktop_input.pop_modal(self)
+		crane.game.hud.visible = hud_was_visible
 	if is_instance_valid(backdrop):backdrop.hide()
 	if is_instance_valid(crane) and not crane.game.paused:Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
@@ -72,6 +84,10 @@ func handle_modal_input(event: InputEvent) -> void:
 	handle_input(event)
 
 func handle_input(event: InputEvent) -> void:
+	if search.has_focus() and event is InputEventKey and event.physical_keycode != KEY_ESCAPE:
+		if event.physical_keycode in [KEY_DOWN,KEY_ENTER] and event.pressed and not event.echo:
+			selected = mini(1,order.size()-1);_focus()
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
 			KEY_ESCAPE:shut();crane.game.set_paused(true)
@@ -79,7 +95,9 @@ func handle_input(event: InputEvent) -> void:
 			KEY_UP:selected = posmod(selected-1,maxi(1,order.size()));_focus()
 			KEY_DOWN:selected = posmod(selected+1,maxi(1,order.size()));_focus()
 			KEY_E, KEY_ENTER:
-				if not order.is_empty():_command(order[selected])
+				var focused = get_viewport().gui_get_focus_owner()
+				if focused is Button and not focused in buttons.values():focused.pressed.emit()
+				elif not order.is_empty():_command(order[selected])
 
 func _focus() -> void:
 	if is_open and not order.is_empty():
@@ -89,31 +107,60 @@ func _focus() -> void:
 func _select(action: String) -> void:
 	selected = order.find(action)
 
+func _show_tasks(show: bool) -> void:
+	choosing_load = show;search.clear();selected = 0;feedback.text = "";refresh();_focus()
+
 func _command(action: String) -> void:
+	if action == "ui:loads":_show_tasks(true);return
+	if action == "ui:back":_show_tasks(false);return
 	var error: String = crane.request_console(action)
-	feedback.text = error if not error.is_empty() else "Command accepted."
+	feedback.text = error if not error.is_empty() else ""
+	if error.is_empty() and action.begins_with("task:"):choosing_load = false;search.clear();selected = 0
 	refresh()
 
 func refresh() -> void:
 	if not is_instance_valid(status):return
 	status.text = crane.status_text()
 	load_label.text = crane.config.get("spec",{}).get("title","Upper-leg beam")
-	var options: Array[Dictionary] = crane.menu_options()
+	heading.text = "Choose load" if choosing_load else "Crane"
+	search.visible = choosing_load
+	var available: Array[Dictionary] = crane.menu_options()
+	var tasks: Array[Dictionary] = []
+	var options: Array[Dictionary] = []
+	for option in available:
+		if option.action.begins_with("task:"):tasks.append(option)
+		else:options.append(option)
+	if choosing_load and tasks.is_empty():choosing_load = false;search.hide();heading.text = "Crane"
+	if choosing_load:
+		options = [{"action":"ui:back","label":"← Back to controls"}]
+		for option in tasks:
+			var title: String = option.label.trim_prefix("Select task: ")
+			if search.text.is_empty() or title.to_lower().contains(search.text.to_lower()):
+				options.append({"action":option.action,"label":title})
+	elif not tasks.is_empty():options.append({"action":"ui:loads","label":"Change load…"})
 	var actions: Array[String] = []
 	for option in options:actions.append(option.action)
 	if actions != order:
 		for child in choices.get_children():choices.remove_child(child);child.queue_free()
 		buttons.clear();order = actions;selected = mini(selected,maxi(0,order.size()-1))
 		for option in options:
-			var button: Button = crane.game.hud.button(option.label)
+			var button: Button = crane.game.hud.button(option.label,options.find(option) == 0 and not choosing_load)
 			button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			choices.add_child(button);buttons[option.action] = button
 			button.focus_entered.connect(_select.bind(option.action))
 			button.pressed.connect(_command.bind(option.action))
-		_focus()
-	for action in order:buttons[action].tooltip_text = crane.action_error(action)
+		if not search.has_focus():_focus()
+	for action in order:
+		var error: String = "" if action.begins_with("ui:") else crane.action_error(action)
+		buttons[action].tooltip_text = error
+		buttons[action].modulate = Color("8c989e") if not error.is_empty() else Color.WHITE
+	hint.text = _guidance()
+	if choosing_load:hint.text = "Select a load, then move the crane." if options.size()>1 else "No matching loads. Try another name."
+	elif not order.is_empty():
+		var reason: String = buttons[order[selected]].tooltip_text
+		if not reason.is_empty():hint.text = reason
 	if is_open:
-		var key: Array = [backdrop.size,status.text,load_label.text,feedback.text,order.duplicate()]
+		var key: Array = [backdrop.size,status.text,load_label.text,hint.text,feedback.text,order.duplicate()]
 		if key != layout_key:
 			layout_key = key
 			if not layout_queued:
@@ -127,17 +174,27 @@ func _fit_panel() -> void:
 	panel.custom_minimum_size.x = width
 	# Supply the wrapping width before measuring the fixed header/footer. Only
 	# the commands scroll; status, feedback and Close remain accessible.
-	for label in [load_label,status,feedback,help]:
+	for label in [load_label,status,hint,feedback,help]:
 		label.custom_minimum_size.x = width-32
 		label.size = Vector2(width-32,0)
 	feedback.visible = not feedback.text.is_empty()
 	scroll.custom_minimum_size.y = 0
 	var fixed_height = panel.get_combined_minimum_size().y
 	var commands_height = choices.get_combined_minimum_size().y
-	scroll.custom_minimum_size.y = minf(commands_height,maxf(42,bounds.y-EDGE_MARGIN*2-fixed_height))
+	scroll.custom_minimum_size.y = minf(minf(commands_height,300),maxf(42,bounds.y-EDGE_MARGIN*2-fixed_height))
 	panel.size = Vector2(width,0);panel.reset_size()
 	panel.position = (bounds-panel.size)*.5
 	if not order.is_empty():scroll.ensure_control_visible.call_deferred(buttons[order[selected]])
+
+func _guidance() -> String:
+	if not crane.blocked_reason.is_empty():return crane.blocked_reason
+	if not crane.motion.is_empty():return "The crane stops automatically at its destination."
+	if crane.station == "park":return "Choose a load, then move to its pickup location."
+	if not crane.raised:
+		if crane.attached_count() < crane.required_ends:
+			return "Close controls to attach or release the magnets at the load."
+		return "Raise to take the load, or close controls to work at the connection."
+	return "Lower at this location to reach the magnets and load."+ (" Park the empty crane to change load." if crane.complete_journey else "")
 
 func physics() -> void:
 	if not is_open:return
@@ -145,6 +202,10 @@ func physics() -> void:
 	else:refresh()
 
 func _input(event: InputEvent) -> void:
+	if is_open and search.has_focus():
+		if event is InputEventKey and event.physical_keycode in [KEY_DOWN,KEY_ENTER,KEY_ESCAPE]:
+			handle_input(event);get_viewport().set_input_as_handled()
+		return
 	if is_open and event is InputEventKey and event.physical_keycode in [KEY_UP,KEY_DOWN,KEY_E,KEY_ENTER,KEY_Q,KEY_ESCAPE]:
 		handle_input(event)
 		get_viewport().set_input_as_handled()

@@ -56,10 +56,12 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 	var surface = SurfaceTool.new();surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for i in [0,2,1,3,4,5,1,2,4,2,5,4,0,1,3,1,4,3,0,3,2,3,5,2]:surface.add_vertex(points[i])
 	surface.generate_normals();var visual = MeshInstance3D.new();visual.mesh = surface.commit();visual.material_override = steel;base.add_child(visual)
-	for entry in [["destination",-.45],["advance",-.15],["stop",.15],["return",.45]]:
-		var button = game.box(deck,Vector3(entry[1],.93,-.60),Vector3(.13,.16,.13),yellow)
-		buttons.append(control_entry(button,entry[0],entry[0],.14,{"allowed":[deck]}))
-	label = game.sign_panel(deck,"",Vector3(0,1.22,-.62),Vector2(1.4,.35),24,.002)
+	game.box(deck,Vector3(-.13,.90,-.64),Vector3(.84,.50,.045),steel)
+	# Vertical travel has its own fixed pair. Dock selection never changes Up/Down.
+	for entry in [["up",-.38,1.02,"↑ UP"],["down",-.38,.78,"↓ DOWN"],["destination",.12,1.02,"DOCK ›"],["go",.12,.78,"MOVE"]]:
+		var button = preload("res://scripts/equipment_button.gd").make(game,deck,Vector3(entry[1],entry[2],-.60),entry[3],0,entry[0] == "up")
+		buttons.append(control_entry(button,entry[0],entry[0],.11,{"allowed":[deck]}))
+	label = game.sign_panel(deck,"",Vector3(-.13,1.34,-.62),Vector2(.84,.26),28,.0015)
 	_pose()
 
 func _solid(parent: CollisionObject3D, at: Vector3, size: Vector3, material: Material) -> CollisionShape3D:
@@ -83,10 +85,10 @@ func controls() -> Array[Dictionary]:
 	for button in buttons:
 		var entry: Dictionary = button.duplicate();entry.point = entry.node.global_position
 		match entry.action:
-			"destination":entry.label = "Next work platform dock · selected: "+selected.replace("_"," ")
-			"advance":entry.label = "Advance / "+("resume" if not mode.is_empty() else "Go to "+selected.replace("_"," ") if selected!=dock else "raise work platform")
-			"stop":entry.label = "Stop work platform"
-			"return":entry.label = "Return / lower platform" if height>spec.heights[0]+.001 else "Return platform to parking"
+			"up":entry.label = "Raise platform · next level"
+			"down":entry.label = "Lower platform · next level"
+			"destination":entry.label = "Return to "+from_dock.replace("_"," ") if mode == "travel" and not moving else "Choose dock · "+selected.replace("_"," ")
+			"go":entry.label = "Resume travel" if mode == "travel" else "Move to "+selected.replace("_"," ")
 		result.append(entry)
 	return result
 
@@ -116,8 +118,18 @@ func _deck_occupied() -> bool:
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the work platform."
 	if action=="stop":return "" if moving else "The work platform is stopped."
-	if moving:return "Stop the work platform before selecting another command."
-	if action=="destination":return "" if mode.is_empty() else "Complete or return the interrupted transfer first."
+	if moving:return "Wait for the platform to arrive."
+	if action in ["up","down"]:
+		if mode == "travel":return "Finish the ground transfer before changing height."
+		if action == "up" and height >= spec.heights[-1]-.001:return "Already at the highest level."
+		if action == "down" and height <= spec.heights[0]+.001:return "Already at ground level."
+		return ""
+	if action == "go":
+		if mode == "travel":return ""
+		if mode == "height":return "Use Up or Down to finish the height adjustment."
+		if selected == dock:return "Choose another dock first."
+		return action_error("dock:"+selected)
+	if action=="destination":return "" if mode.is_empty() or mode == "travel" else "Finish the height adjustment first."
 	if action.begins_with("dock:"):
 		if not spec.docks.has(action.trim_prefix("dock:")):return "Unknown work platform dock."
 		if not mode.is_empty():return "Complete or return the interrupted transfer first."
@@ -133,9 +145,14 @@ func action_error(action: String) -> String:
 
 func request(action: String) -> String:
 	var error = action_error(action)
-	if not error.is_empty():blocked_reason = error;return error
+	if not error.is_empty():return error
 	blocked_reason = ""
+	if action == "go":
+		if mode == "travel":moving = true;_pose();return ""
+		return request("dock:"+selected)
+	if action in ["up","down"]:return _request_height(action == "up")
 	if action=="stop":moving = false;_pose();return ""
+	if action == "destination" and mode == "travel":return request("return")
 	if action=="destination":selected = spec.docks.keys()[(spec.docks.keys().find(selected)+1)%spec.docks.size()];_pose();return ""
 	if action=="advance" and not mode.is_empty():moving = true;return ""
 	if action=="advance" and selected!=dock:return request("dock:"+selected)
@@ -146,10 +163,13 @@ func request(action: String) -> String:
 	if action=="return" and mode=="travel":
 		# Reverse the exact authored route from the stopped position.
 		var count = _route().size()-1;var previous = from_dock;from_dock = to_dock;to_dock = previous
-		travel = count-travel;selected = to_dock;moving = true;return ""
+		travel = count-travel;selected = to_dock;moving = true;_pose();return ""
 	if action=="return" and height<=spec.heights[0]+.001:return request("dock:park")
+	return _request_height(action == "advance")
+
+func _request_height(up: bool) -> String:
 	goal_height = height
-	if action=="advance":
+	if up:
 		for level in spec.heights:
 			if level>height+.001:goal_height = level;break
 	else:
@@ -161,18 +181,18 @@ func request(action: String) -> String:
 func physics(delta: float) -> void:
 	if not moving or game.paused:return
 	if mode=="travel":
-		if _deck_occupied():blocked_reason = "Remove loose loads from the deck before ground transfer.";moving = false;return
+		if _deck_occupied():blocked_reason = "Remove loose loads from the deck before ground transfer.";moving = false;_pose();return
 		var path = _route();var index = mini(path.size()-2,floori(travel+.00001))
 		var next = minf(index+1,travel+spec.speed*delta/maxf(.01,path[index].distance_to(path[index+1])))
 		var destination = Transform3D(Basis.IDENTITY,position_at(next,path))
 		blocked_reason = _travel_error(destination)
-		if not blocked_reason.is_empty():moving = false;return
+		if not blocked_reason.is_empty():moving = false;_pose();return
 		travel = next;_pose()
 		if travel>=path.size()-1-.00001:dock = to_dock;from_dock = dock;travel = 0;mode = "";moving = false;_pose()
 	else:
 		var next = move_toward(height,goal_height,spec.lift_speed*delta)
 		blocked_reason = _height_error(next)
-		if not blocked_reason.is_empty():moving = false;return
+		if not blocked_reason.is_empty():moving = false;_pose();return
 		height = next;_pose()
 		if is_equal_approx(height,goal_height):mode = "";moving = false;_pose()
 
@@ -207,10 +227,14 @@ func _pose() -> void:
 		post.shape.shape.size.y = length;post.visual.scale.y = length/.1
 	base.force_update_transform();PhysicsServer3D.body_set_state(base.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,base.global_transform)
 	label.text = status_text()
+	for entry in buttons:
+		if entry.action == "go":entry.node.get_child(0).text = "RESUME" if mode == "travel" and not moving else "MOVE"
+		elif entry.action == "destination":entry.node.get_child(0).text = "← BACK" if mode == "travel" and not moving else "DOCK ›"
 
 func status_text() -> String:
-	if not blocked_reason.is_empty():return blocked_reason
-	return "WORK PLATFORM / "+(to_dock if mode=="travel" else dock).replace("_"," ")+" · %.2f m"%height+(" · moving" if moving else "")
+	if not blocked_reason.is_empty():return "Platform blocked\nClear the route, then retry"
+	if moving:return ("Travelling to "+to_dock.replace("_"," ") if mode == "travel" else "Moving to %.2f m"%goal_height)+"\nStops automatically"
+	return "Platform · %.2f m"%height+"\nDock: "+selected.replace("_"," ")
 
 func busy_reason(subject: String) -> String:
 	if subject in ["source_roll","arm_upend","bulky_tilt"] and (dock!="park" or not mode.is_empty()):return "Return the movable work platform to parking first."

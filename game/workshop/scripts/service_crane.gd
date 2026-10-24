@@ -142,9 +142,9 @@ func _make_console(at: Vector3) -> void:
 	game.box(self,at+Vector3(0,.06,0),Vector3(.65,.12,.65),dark,true)
 	console_node = game.box(self,at+Vector3(0,1.15,-.08),Vector3(.48,.40,.12),yellow)
 	console_node.name = "CentralCraneConsole"
-	game.sign_panel(self,"SERVICE CRANE\nE · control",at+Vector3(0,1.65,.03),Vector2(1.9,.45),42,.0025)
-	physical_status = game.sign_panel(self,"",at+Vector3(0,2.24,.03),Vector2(3.7,.65),34,.002)
-	physical_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;physical_status.width = 1650
+	game.sign_panel(self,"SERVICE CRANE\nE · control",at+Vector3(0,1.65,.03),Vector2(.84,.28),32,.0018)
+	physical_status = game.sign_panel(self,"",at+Vector3(0,2.24,.03),Vector2(1.4,.4),28,.0015)
+	physical_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;physical_status.width = 850
 
 func _guide() -> Node:
 	return game.equipment.get_equipment(config.spec.guided_receiver) if config.spec.has("guided_receiver") else null
@@ -207,11 +207,11 @@ func menu_options() -> Array[Dictionary]:
 	if complete_journey and station == "park" and raised and attached_count() == 0 and hand_payload().is_empty():
 		for key in tasks:
 			if key != task:options.append({"action":"task:"+key,"label":"Select task: "+tasks[key].title})
-	options.append({"action":"down" if raised else "up","label":"Down" if raised else "Up"})
+	if station != "park":options.append({"action":"down" if raised else "up","label":"↓  Lower crane" if raised else "↑  Raise crane"})
 	if raised:
 		for destination in STATIONS:
 			var action = "go:"+destination
-			if action_error(action).is_empty():options.append({"action":action,"label":"Go to "+(_station_title(destination))})
+			if destination != station:options.append({"action":action,"label":"Move to "+(_station_title(destination))})
 	return options
 
 func action_error(action: String) -> String:

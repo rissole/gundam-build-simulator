@@ -2,9 +2,9 @@
 
 Godot 4.7.2 · GDScript · Jolt Physics · macOS desktop · Shared assembly model and nested manuals
 
-![Heel-pad preparation with the illustrated manual, placement preview and compact inventory HUD](../../docs/images/heel-pad-demo.png)
+![Current M3 crane controls: movement first, with a separate load chooser](../../docs/images/workshop-crane-controls.png)
 
-*Earlier suspension-station view; the default workshop now uses a supported foot bay.*
+*Current M3 equipment interface; the default profile remains the supported foot bay.*
 
 The base game builds **two heel pads and the 91-piece pitch actuator**, then
 secures them to the foot: **135 playable physical identities** from the preserved
@@ -20,6 +20,45 @@ before continuing development. The wider M3 workshop is implemented and awaits
 playtest with the [checklist](../../design/game/m3-wide-playtest-checklist.md).
 
 The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
+
+## Equipment controls
+
+The crane's main view shows its selected load, position and movement buttons.
+**Change load…** opens a searchable list while the empty crane is parked.
+**Raise crane / Lower crane** describe vertical motion; **Move to…** names the
+destination. Unavailable moves explain their prerequisites. The workshop stays
+visible, while the manual and inventory are tucked away until the console closes.
+Click controls or use ↑/↓ and E/Enter. Tab reaches search and Close; while typing,
+letter shortcuts enter text. Esc pauses; Q closes when the search is not focused.
+
+![Searchable crane load chooser filtered to the pelvis](../../docs/images/workshop-crane-loads.png)
+
+Elevators have **Up / Down** onboard and **Call** at each landing. Each press
+travels to the next level and stops automatically. The mobile work platform has
+its own **Up / Down** pair plus **DOCK › / MOVE**: select a dock, then travel there
+at ground level. Down at ground does nothing. To return to parking, select
+`park` and Move. An interrupted ground transfer offers **RESUME / ← BACK**.
+
+![Elevator panel with two labelled vertical-travel buttons](../../docs/images/workshop-lift-controls.png)
+
+![Mobile platform separates height from dock travel](../../docs/images/workshop-mobile-controls.png)
+
+Rail, foot-carrier and bulky-fixture buttons also carry face labels. Their
+existing staged movement and Stop/recovery functions remain available.
+
+These screenshots were captured with Godot's real renderer from supplied camera
+poses, with the manual closed for the physical-panel views. UI presentation was
+inspected; **regressions were not run**, as requested. Follow the
+[focused controls checklist](../../design/game/m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24)
+for hands-on verification. Reproduce the screenshots with:
+
+```sh
+./play.command --windowed --resolution 1440x900 --disable-render-loop \
+  --fixed-fps 60 --script tests/equipment_ui_review.gd -- --review-tag=review
+```
+
+The capture manifest records input/image hashes. Its supplied empty-crane poses
+illustrate UI states and do not establish successful delivery or reachability.
 
 ## Launch
 
@@ -87,21 +126,21 @@ near the lift. **E** picks up the ring half with both hands; board the lift and
 two-hand component**. Ride Up, E-pick the half from the shelf, then aim/click the
 hip connection and fit its hardware. In the pelvis manual, **Z** removes the
 hardware and then returns the half to your hands. Store it on the shelf and ride
-Ground to bring it down. **Q** drops a carried component; E picks it up again.
+Down to bring it down. **Q** drops a carried component; E picks it up again.
 Rail Return is blocked until all retention is removed. No arm or drawers ride
 the lift; small hardware stays in pockets.
 
-**Crane delivery:** At the central console press E, then choose **Go to Upper-leg
-beam rack** and **Down**. A compact control panel appears in the center of the
+**Crane delivery:** At the central console press E, then choose **Move to Upper-leg
+beam rack** and **Lower crane**. A compact control panel appears in the center of the
 screen, leaving the workshop visible. Mouse look and walking stop while it is
 open; click a command or use **↑/↓ + E/Enter**, and **Q** or **Close** to return to
 play. **Esc** closes the panel and pauses. Long command lists scroll, including
 when navigating with the keyboard. Travel destinations appear
 only while Up. Walk to the rack, E-pick each magnetic end, then aim/click a marked
 point. The held end stays in the centre of the view; Q stows it. Back at the
-console choose **Up**, **Go to Leg cradle**, then **Down**. Close the console and
+console choose **Raise crane**, **Move to Leg cradle**, then **Lower crane**. Close the console and
 fit all four flange washer/bolt pairs. E-detach and Q-stow both ends, then choose
-Up and Go to Parking bay. To recover the beam before fastening: Up, Go to its
+Raise crane and Move to Parking bay. To recover the beam before fastening: Up, Go to its
 rack, Down. Undo any fitted flange hardware before lifting a loaded beam.
 
 Use **Reset** for these revised M2 trials; older M2 saves have an incompatible
@@ -151,12 +190,12 @@ The foot base game and both M2 saves have independent progress.
 1. At the **foot carrier**, use **Advance** to raise the foot, then Advance again
    to turn and seat it on the horizontal holder. The carrier withdraws after the
    receiving supports take the foot. Stop interrupts motion.
-2. At the **crane console**, select **Structural shin**, **Knee fork** or
+2. At the **crane console**, open **Change load…** and select **Structural shin**, **Knee fork** or
    **Upper-leg beam** as the manual requires. Task changes require the empty
-   crane raised at Parking bay with both magnets stowed. Use **Go to** the task's
-   rack, **Down**, then Q to leave the console. E-pick and aim/click each magnetic
-   end onto a separate marked point. Return to the console: **Up → Go to Leg
-   cradle → Down**. Fit the task's retaining hardware before detaching/stowing
+   crane raised at Parking bay with both magnets stowed. Use **Move to** the task's
+   rack, **Lower crane**, then Q to leave the console. E-pick and aim/click each magnetic
+   end onto a separate marked point. Return to the console: **Raise crane → Move to Leg
+   cradle → Lower crane**. Fit the task's retaining hardware before detaching/stowing
    the magnets, raising the empty crane and parking it.
 3. Follow the **Structural left leg** manual for ankle fasteners, the main
    disconnect, bearings, spacers, fork, axle, cap and beam fastening. Small
@@ -170,7 +209,7 @@ The foot base game and both M2 saves have independent progress.
    upright tilt and upward docking. The holder continues supporting the leg.
 5. Carry either **PV-120** half onto the personnel lift, click the component shelf
    to store it, and ride **Up**. Retrieve and seat it, then fit its two washer/bolt
-   pairs from below. Return to **Ground** and repeat with the other half. The
+   pairs from below. Ride **Down** to ground and repeat with the other half. The
    shelf holds one two-hand component, so the halves make separate trips.
    Move toward the hip-facing end of the working corner to see the far half's
    washer seats past the beam.
@@ -184,10 +223,9 @@ wait for its engaged status. To select a completed build, press **N** and turn
 off **Suggested only**. Existing recovery controls remain available, but full
 disassembly and return-to-stock verification are outside the current M3 gate.
 
-Escape pauses equipment and opens save controls. Reopening M3 restores its own
-slot into the pause menu, including interrupted motion. **New workshop** replaces
-only M3 progress after confirmation. Incompatible saves remain protected until
-that explicit choice. The supplied foot's internal construction stays assembled.
+Escape pauses equipment. M3 saving is deferred; restart or use `--m3-stage=<stage>`
+to supply earlier construction for inspection. The foot game and M2 save slots
+remain independent.
 
 The current forward M3 gate uses the common runner:
 
