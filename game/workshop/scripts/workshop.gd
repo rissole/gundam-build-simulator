@@ -274,6 +274,9 @@ func _build_equipment(ids: Array) -> void:
 		if item != null:made[id] = item
 	for id in EQUIPMENT_ORDER:
 		if made.has(id):equipment.register(made[id])
+	for id in leg_content.get("equipment",{}).get("receivers",{}):
+		var receiver=preload("res://scripts/staged_receiver.gd").new()
+		add_child(receiver);receiver.setup(self,id,leg_content.equipment.receivers[id]);equipment.register(receiver)
 
 func _mesh(uid: String) -> MeshInstance3D:
 	var mesh = MeshInstance3D.new()
