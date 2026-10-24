@@ -13,7 +13,7 @@ func aim_fixture_control() -> void:
 		return
 
 func run() -> void:
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	driver = load("res://tests/kit/node_runner.gd").new()
 	root.add_child(driver)

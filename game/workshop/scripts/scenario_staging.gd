@@ -41,18 +41,26 @@ static func fill(game: Node, owner: String, permitted: Array = [], limit: int = 
 	game.components.sync(owner)
 	return installed
 
-## Completed foot on the leg, with the trial's permitted leg slots fitted.
-static func prepare(game: Node) -> void:
-	for pair in [["pad_1","prep"],["pad_2","prep2"],["pitch","prep3"]]:
-		_check(game.automation.suspend_at_station(pair[0],pair[1]),"suspend "+pair[0])
-		fill(game,pair[0])
-	for child in ["pad_1","pad_2","pitch"]:
+## Supplies the left foot's heel pads and, unless `pads_only`, its pitch actuator.
+## The robot game's stage shortcut uses this for progress the player skipped.
+static func prepare_foot(game: Node, pads_only: bool = false) -> void:
+	var children: Array = ["pad_1","pad_2"] if pads_only else ["pad_1","pad_2","pitch"]
+	for child in children:
+		if not game.model.assemblies[child].parent.is_empty():continue
+		_check(game.automation.suspend_at_station(child,{"pad_1":"prep","pad_2":"prep2","pitch":"prep3"}[child]),"suspend "+child)
+		fill(game,child)
+	for child in children:
+		if not game.model.assemblies[child].parent.is_empty():continue
 		if child == "pitch":fill(game,"foot")
 		_check(game.model.move_assembly(child,"held"),"carry "+child)
 		var sid: String = {"pad_1":"heel_1","pad_2":"heel_2","pitch":"pitch"}[child]
 		_check_result(game.model.install("foot",sid,child),"mount "+child)
 		game.runtime.mount("foot",sid,child)
-	fill(game,"foot")
+	if not pads_only:fill(game,"foot")
+
+## Completed foot on the leg, with the trial's permitted leg slots fitted.
+static func prepare(game: Node) -> void:
+	if game.profile.get("prepared_foot",true):prepare_foot(game)
 	if game.profile.trial == "m3":
 		for owner in game.leg_content.get("prepared_branches",{}):
 			var children: Array=game.leg_content.prepared_branches[owner]

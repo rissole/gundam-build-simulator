@@ -12,7 +12,7 @@ func carry(uid: String) -> void:
 	game.components.held_body.global_position.y += .25
 
 func run() -> void:
-	game = load("res://scenes/workshop.tscn").instantiate();game.automated_test=true;root.add_child(game);await frames(3);game.set_paused(false)
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot";game.automated_test=true;root.add_child(game);await frames(3);game.set_paused(false)
 	var kinds: Array = []
 	for kind in game.model.definitions.parts:
 		if game.model.definitions.parts[kind].carry_class in ["hand","two_hand"]:kinds.append(kind)

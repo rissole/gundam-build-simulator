@@ -71,15 +71,13 @@ def cases() -> dict[str, Case]:
                                      timeout=CASE_TIMEOUTS.get(path.stem, 180.0))
     aliases = {
         "default_workshop_launch": [],
-        "foot_workshop_launch": ["--foot-workshop"],
         "m2_workshop_launch": ["--m2-workshop"],
         "m2_retention_launch": ["--m2-workshop", "--m2-trial=retention"],
         "m2_crane_launch": ["--m2-workshop", "--m2-trial=crane"],
-        "m3_workshop_launch": ["--m3-workshop"],
     }
     for name, arguments in aliases.items():
         result[name] = Case(["--quit-after", "5", "--", *arguments], "launch")
-    for profile in ("foot", "pads_single", "pads_multi", "leg_bay_retention", "leg_bay_crane", "leg_bay_m3"):
+    for profile in ("robot", "foot", "pads_single", "pads_multi", "leg_bay_retention", "leg_bay_crane", "leg_bay_m3"):
         result[profile + "_profile_launch"] = Case(
             ["--quit-after", "5", "--", "--profile=" + profile], "launch")
     result["source_assets"] = Case(

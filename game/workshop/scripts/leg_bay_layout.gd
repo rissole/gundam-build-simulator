@@ -194,6 +194,11 @@ func crane_contract(task: String = "") -> Dictionary:
 	if spec.get("payload","")=="assembly" and is_instance_valid(blockout):
 		for id in blockout.pieces:
 			if id.begins_with(spec.load_uid+"_store_"):exclusions.append(blockout.pieces[id].body.get_rid())
+	# A foot fixture standing in for that store releases the foot straight upward
+	# out of its carriage clamps, as the store's own masts are excluded above.
+	var fixture: Node3D = game.get("foot_fixture")
+	if spec.get("payload","")=="assembly" and is_instance_valid(fixture) and spec.load_uid==game.default_parent_id():
+		preload("res://scripts/motion_sweep.gd").collect_rids(fixture.carriage,exclusions)
 	return {"spec":spec,"source_pose":source_frame,"receiver_pose":receiver,"route":route,"excluded":exclusions,"console_position":AssemblyRuntime.vec(spec.console_position),"support":spec.support,"source_support":spec.source_support,"uid":spec.load_uid,"route_profile":layout().version}
 
 func _crane_structure() -> void:

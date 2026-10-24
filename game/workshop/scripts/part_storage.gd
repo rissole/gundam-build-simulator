@@ -35,11 +35,15 @@ func setup() -> void:
 	var trim = game.material(Color("83bba6"),0.2)
 	# Two rows at waist/chest height; the back wall provides a continuous aisle.
 	var groups: Array[Dictionary] = []
-	for zone in (["foot","leg","pelvis"] if not game.profile.leg_content.is_empty() else ["foot"]):
+	# The robot game keeps the foot build's own cabinets, against the hangar's
+	# rear wall; its other stock moves onto the authored grid.
+	var hangar_cabinets: bool = game.profile.trial=="m3" and not game.profile.get("prepared_foot",true)
+	for zone in (["foot","leg","pelvis","stock"] if not game.profile.leg_content.is_empty() else ["foot"]):
 		for drawers in [true,false]:
 			var kinds: Array[String] = []
 			for kind in (drawer_kinds if drawers else shelf_kinds):
 				var part_zone = "leg" if kind.begins_with("lg-") else "pelvis" if kind.begins_with("pv-") else "foot"
+				if hangar_cabinets:part_zone = "foot" if game.foot_kinds.has(kind) else "stock"
 				if part_zone == zone:kinds.append(kind)
 			if not kinds.is_empty():groups.append({"kinds":kinds,"drawers":drawers,"zone":zone})
 	for entry in groups:
@@ -47,7 +51,8 @@ func setup() -> void:
 		var drawers: bool = entry.drawers
 		var columns = ceili(group.size()/2.0)
 		var origin = -9.6 if drawers else 1.0
-		var depth = -6.55
+		var depth = -8.6 if hangar_cabinets else -6.55
+		var cabinet_stock: bool = game.profile.trial!="m3" or hangar_cabinets and entry.zone == "foot"
 		if entry.zone == "leg":
 			origin = -10.0 if drawers else -5.5
 			depth = 10.2
@@ -59,7 +64,7 @@ func setup() -> void:
 		var center = origin+(columns-1)*spacing*0.5
 		# The wide workshop supplies cabinet supports from its authored stock
 		# grid. Do not leave old cabinet solids behind after relocating the bins.
-		if game.profile.trial!="m3":
+		if cabinet_stock:
 			game.box(game,Vector3(center,0.92,depth),Vector3(columns*spacing,1.84,0.16),cabinet,true)
 			for offset in [-0.78,0.78]:
 				game.box(game,Vector3(center+offset,1.98,depth+0.05),Vector3(0.04,0.30,0.04),cabinet)
@@ -72,6 +77,7 @@ func setup() -> void:
 			bin.position = Vector3(origin+(i%columns)*spacing,0.82+floorf(i/float(columns))*0.70,depth+0.40)
 			bin.set_meta("bin_kind",kind)
 			bin.set_meta("drawer",drawers)
+			bin.set_meta("cabinet",cabinet_stock and hangar_cabinets)
 			game.add_child(bin)
 			game.bins[kind] = bin
 			var collision = CollisionShape3D.new()

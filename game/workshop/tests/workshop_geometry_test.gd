@@ -22,7 +22,7 @@ func audit_pose(id: String, meshes: Array[MeshInstance3D], pose: Transform3D) ->
 	expect(findings.is_empty(),id+": no overlapping same-facing surfaces (%d findings)" % findings.size())
 
 func run() -> void:
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	game.automated_test = true
 	game.set_physics_process(false)

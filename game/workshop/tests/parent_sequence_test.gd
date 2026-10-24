@@ -15,7 +15,7 @@ func finish() -> void:
 	quit(0 if passed else 1)
 
 func run() -> void:
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	driver = load("res://tests/pitch_build_test.gd").new()
 	root.add_child(driver)

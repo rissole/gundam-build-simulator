@@ -169,7 +169,7 @@ func rejected_without_mutation(snapshot: Dictionary, label: String) -> void:
 
 func run() -> void:
 	save_path = "/tmp/gundam-save-resume-%s-%s.json" % [OS.get_process_id(), Time.get_ticks_usec()]
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	game.automated_test = true
 	await frames(6)
@@ -214,7 +214,7 @@ func run() -> void:
 	expect(game.bodies.pitch.get_parent() == game.stations.prep3 and game.bodies.pad_2.get_parent() == game.stations.prep2, "Restore suspended bodies to their own stations")
 	expect(game.stations.prep.global_transform.is_equal_approx(Codec.to_pose(partial.world.stations.prep)) and game.bodies.pad_1.global_transform.is_equal_approx(game.stations.prep.global_transform), "Restore multi-axis station rotation and its suspended assembly")
 	expect(game.player.global_transform.is_equal_approx(Codec.to_pose(partial.world.player.pose)) and game.player.velocity.is_equal_approx(Codec.to_vector(partial.world.player.velocity)) and game.crouched and is_equal_approx(game.camera.position.y, 0.93) and is_equal_approx(game.camera.rotation.x, -0.23) and is_equal_approx(game.camera.fov, 62.0) and is_equal_approx(game.player_collision.shape.height, 1.0), "Restore player pose, velocity, crouch collision and camera view")
-	var clone = load("res://scenes/workshop.tscn").instantiate()
+	var clone = load("res://scenes/workshop.tscn").instantiate();clone.profile_override = "foot"
 	root.add_child(clone)
 	clone.automated_test = true
 	clone.saves.setup(clone, save_path, false)

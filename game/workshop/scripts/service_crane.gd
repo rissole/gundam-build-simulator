@@ -254,6 +254,8 @@ func action_error(action: String) -> String:
 			var guide_error: String=_guide().rig_error("attach",point)
 			if not guide_error.is_empty():return guide_error
 		if raised or not motion.is_empty() or station == "park":return "Lower the crane at the beam before attaching ends."
+		var held_by: String = game.equipment.busy_reason("rig:"+load_owner,equipment_id)
+		if not held_by.is_empty():return held_by
 		if _installed() and attached_count()==0 and not complete_journey:return "Released-beam disassembly is outside this M2 trial."
 		if complete_journey and station == "receiver":
 			var receiver_error = _receiver_error()
@@ -388,6 +390,7 @@ func secured(model: AssemblyModel = null) -> bool:
 	return _installed(m) and m.milestone(load_owner,secured_milestone)
 
 func busy_reason(subject: String) -> String:
+	if subject == "foot_fixture":return "Detach the crane rigging before turning the foot." if attached_count()>0 and load_owner == game.default_parent_id() else ""
 	if complete_journey and subject in ["rail","foot_transfer"]:
 		if attached_count()>0 or not motion.is_empty() and _crane_owned():return "Stow the crane magnets and set the load down before moving the fixture."
 		for key in tasks:

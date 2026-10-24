@@ -8,14 +8,22 @@ a one-line summary here. The full text of this file before it was condensed is
 
 ## Where things stand
 
-- **Base game:** the supported-foot workshop (two heel pads and the pitch actuator).
-  The upright-hoist workshop and isolated M1 trial are retired. The M-series is a
-  prototype lane of profiles on shared equipment, layout, assembly and save
-  modules. It is meant to fold back into the base game later.
+- **One robot game (2026-10-24):** at the user's request, `./play.command`
+  launches profile `robot`. The base foot build (two heel pads and the pitch
+  actuator) happens in the M3 hangar, then the wider M3 workshop continues in the
+  same session. `--stage=<name>` starts later: `foot`, `actuator`, then the M3
+  stages. The left foot rests in the turning foot fixture, which stands in for its
+  bay store (store masts and soles removed, no dispatch rails). The crane collects
+  it from the same pose once it is upright. The foot's 35 cabinets sit on the
+  hangar's rear wall, and the grid skips the preparation stations, tray and
+  actuator start. Mechanically checked (`robot_workshop_test`); **awaiting the
+  user's playtest.** The foot-only workshop (`--profile=foot`, with its save),
+  the M2 trials and `leg_bay_m3` (prepared foot) stay as development profiles.
+  The upright-hoist workshop and isolated M1 trial remain retired.
 - **M2 trials:** accepted by the user, 2026-10-23 (“m2 plays great”).
 - **Wider M3 workshop:** implemented on branch `m3-wide-structure`, not merged or
   pushed. It covers pelvis → both legs → chest → core → backpack → both arms →
-  pauldrons → head → crown, and `--m3-stage=complete` is the final boundary. The
+  pauldrons → head → crown, and `--stage=complete` is the final boundary. The
   last full regression run passed 41 of 41 cases. That is mechanical evidence
   only. The [design contract](m3-wide-workshop-plan.md) and the
   [spatial contract](final-assembly-plan.md) are both current.
@@ -32,9 +40,10 @@ a one-line summary here. The full text of this file before it was condensed is
 
 ## Next
 
-1. The user playtests the wider workshop with the
-   [playtest checklist](m3-wide-playtest-checklist.md). Record results there and
-   summarize them in the feedback table below.
+1. The user playtests the robot game with the
+   [playtest checklist](m3-wide-playtest-checklist.md), from the foot build in the
+   hangar onward. Record results there and summarize them in the feedback table
+   below.
 2. Decide whether to merge `m3-wide-structure`.
 3. Pick from the deferred items below only after a decision.
 
@@ -49,9 +58,11 @@ a one-line summary here. The full text of this file before it was condensed is
   player responses separate. A test pass or elapsed time never counts as acceptance.
   At a human checkpoint, finish the coherent work, stop, present it and wait for
   explicit go-ahead.
-- **M3 has no saves.** `--m3-stage=<name>` gives supplied progress for inspection.
-  It is not a save and not playtest evidence. Default-foot and M2 saves are
-  unchanged, and existing incompatible saves must stay protected.
+- **M3 has no saves**, so neither does the robot game that now contains the foot
+  build. `--stage=<name>` (older spelling `--m3-stage`) gives supplied progress for
+  inspection. It is not a save and not playtest evidence. The foot-only profile
+  and M2 saves are unchanged and are no longer read by the default launch.
+  Existing incompatible saves must stay protected.
 - **New sections are data.** Add them on the shared staged receiver and the
   `game.zones` occupancy register. Don't add bespoke receiver controllers,
   pairwise machine checks or new crane-contract flags.
@@ -111,7 +122,8 @@ a one-line summary here. The full text of this file before it was condensed is
 | --- | --- |
 | Workshop was ugly/crowded, lighting needed improvement, and overlapping surfaces flickered prolifically (2026-10-24) | Minimal practical engineering style implemented for the workshop only; robot models remain for later detail. 142 initial surface overlaps repaired, with moving equipment/alternate fixtures checked too. [Screenshots and evidence](history/workshop-visual-refresh-20261024.md); awaiting user judgment. |
 | Implementation took 6 h+; the user suspected poor architecture (2026-10-24) | Addressed by the handoff tasks: a generic staged receiver, an occupancy register and the shared stage sequence. Keep new sections as data. |
-| Saving and checkpoints keep adding work and are often wrong (2026-10-24) | Deferred for M3 until the structure exists; `--m3-stage` replaces checkpoints. |
+| Saving and checkpoints keep adding work and are often wrong (2026-10-24) | Deferred for M3 until the structure exists; `--stage` replaces checkpoints. |
+| Wanted one command to launch the game, with the base foot build combined with M3, while flags still skip to progress points (2026-10-24) | Implemented as the `robot` profile with `foot` and `actuator` stages ahead of M3's. Open: the combined game loses the foot workshop's saves until M3 saving returns. The fixture's store position and raised work height (foot origin 2.0 m, previously 1.55 m) are an implementation choice; reaching the heel seats and upper fasteners there is untested. Walking from the rear-wall cabinets is untested. One grid drawer spills to (−10.8, 3.6), outside the authored stock bay. |
 | Rigging paths were already clear in the agreed plan; extra discovery iterations undermine its purpose | The core sweep first omitted the full spreader/cable envelope, and parked gates intruded into the bypass. That was an implementation/verification miss, not planning ambiguity. See the rigging rule above. |
 | M3 leg-to-gantry build is “largely satisfying”, but implementation relied too much on in-game discovery (2026-10-24) | Preserve its physical handling. Define coordinates, load routes, work faces, standing areas and equipment clearances before implementing, working backwards through the [final assembly plan](final-assembly-plan.md). |
 | Prefer side elevators and walking onto shared front/rear work platforms | Selected for the full gantry. Keep the raised M3 datum; lowering is undecided. |
@@ -138,6 +150,7 @@ a one-line summary here. The full text of this file before it was condensed is
 | M2 equipment interactions | Accepted 2026-10-23 (“m2 plays great”). |
 | M3 original leg-to-robot journey | Forward-verified; the user called it “largely satisfying”, 2026-10-24. Replaced in place by the wider workshop. [Archived plan and evidence](history/leg-workshop-m3-plan.md). |
 | M3 wider workshop | Implemented and mechanically verified; **awaiting the user's playtest**. |
+| One robot game (foot build + M3) | Implemented 2026-10-24 and mechanically verified; **awaiting the user's playtest**, starting with the two foot rows of the [checklist](m3-wide-playtest-checklist.md). |
 | M4 expanded workshop acceptance | Not started. Needs the earlier checkpoints and explicit acceptance. |
 
 ## Documents: what to read when

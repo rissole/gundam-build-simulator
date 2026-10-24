@@ -36,10 +36,13 @@ existing scenarios. Replacement applies to M3.
 ### Status — 2026-10-24
 
 Implemented through the head crown on branch `m3-wide-structure` (handoff tasks
-01–10 and 04b). `--m3-stage=complete` is the final development boundary, and the
+01–10 and 04b). `--stage=complete` is the final development boundary, and the
 last full regression run passed 41 of 41 cases. These are mechanical results;
 walking, reach, visibility, connection access and presentation await the user's
-[playtest](m3-wide-playtest-checklist.md). The per-increment implementation ledger
+[playtest](m3-wide-playtest-checklist.md). Since the user's 2026-10-24 request,
+`./play.command` launches one robot game (profile `robot`). The base foot build
+comes first, in a turning fixture at the left foot's store, and M3 follows in the
+same session. Profile `leg_bay_m3` keeps the prepared left foot for development. The per-increment implementation ledger
 and evidence are archived in [history/m3-wide-evidence-20261024.md](history/m3-wide-evidence-20261024.md).
 Component-specific implementation detail lives in each component document's
 "Wider M3 … — 2026-10-24" section. Deferred items are listed in the
@@ -187,11 +190,13 @@ checkpoints from this adaptation until the broad workshop structure exists.
 Maintaining interrupted-motion saves for every new machine added large amounts
 of work and was repeatedly wrong. M3 launches without a save slot, and Restart
 starts again from the launch point. Mechanical tests no longer save or restore
-M3 sessions. To inspect later stages, the development flag `--m3-stage=<name>`
+M3 sessions. To inspect later stages, the development flag `--stage=<name>`
+(formerly `--m3-stage`)
 runs the same scripted equipment sequence as the mechanical tests and then starts
 paused. That is supplied progress, not playtest evidence, and not a save. When
 saves return, save only at rest (no equipment moving, every load on a support),
-which removes mid-motion validation. The default foot workshop and the M2 trials
+which removes mid-motion validation. The robot game, which now includes the foot
+build, follows this rule too. The foot-only workshop profile and the M2 trials
 keep their existing saves. The original requirements below are preserved for
 that later work.
 

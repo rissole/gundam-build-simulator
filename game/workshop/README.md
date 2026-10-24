@@ -4,20 +4,23 @@ Godot 4.7.2 · GDScript · Jolt Physics · macOS desktop · Shared assembly mode
 
 ![Current M3 crane controls: movement first, with a separate load chooser](../../docs/images/workshop-crane-controls.png)
 
-*Current M3 equipment interface; the default profile remains the supported foot bay.*
+*Current crane controls in the final-assembly hangar.*
 
-The base game builds **two heel pads and the 91-piece pitch actuator**, then
-secures them to the foot: **135 playable physical identities** from the preserved
-745-piece source inventory. The foot cradle, preparation stations and shared
-stock support the collecting/manual/assembly loop.
+`./play.command` opens the one robot game (profile `robot`). It begins with the
+base foot build: **two heel pads and the 91-piece pitch actuator**, secured to the
+left foot. That is **135 playable physical identities** from the preserved
+745-piece source inventory. The foot rests in a turning fixture in the hangar's
+foot bay, standing in for the left foot's store. The preparation stations,
+heel-pad table and the foot's own wall cabinets share the hangar's parts and
+preparation zone. Once the upright foot is complete, the wider M3 workshop
+continues in the same session: pelvis → both legs → chest → core → backpack →
+both arms → pauldrons → head → crown. The right foot stays supplied complete.
 
-M-series equipment experiments run separately as scenario profiles on shared
-feature modules. The accepted M1 rail/lift layout survives in the M2 trials;
-the standalone M1 trial and upright-hoist expanded workshop are retired.
-The user accepted the revised M2 playtest on 2026-10-23: “m2 plays great.”
-Read the [active plan and feedback](../../design/game/leg-workshop-next-steps.md)
-before continuing development. The wider M3 workshop is implemented and awaits
-playtest with the [checklist](../../design/game/m3-wide-playtest-checklist.md).
+The M-series equipment experiments remain development profiles on shared
+feature modules. The user accepted the revised M2 playtest on 2026-10-23: “m2
+plays great.” Read the [active plan and feedback](../../design/game/leg-workshop-next-steps.md)
+before continuing development. The wider workshop awaits playtest with the
+[checklist](../../design/game/m3-wide-playtest-checklist.md).
 
 The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
 
@@ -69,7 +72,7 @@ illustrate UI states and do not establish successful delivery or reachability.
 
 ## Launch
 
-Double-click [play.command](../../play.command) in Finder. The game opens the supported-foot workshop in **non-exclusive (borderless) fullscreen**. A saved workshop resumes automatically into the pause menu; click **Resume** to continue. On a fresh workshop, click **Start building**. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
+Double-click [play.command](../../play.command) in Finder. The game opens the robot workshop in **non-exclusive (borderless) fullscreen**, paused; click **Start building**. The robot game does not save yet (see [Saves and checkpoints](../../design/game/m3-wide-workshop-plan.md#saves-and-checkpoints)): Restart and relaunch begin again from the launch's starting stage. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
 
 To inspect or edit the project, double-click [edit.command](../../edit.command), or open [project.godot](project.godot) in Godot 4.7.2.
 
@@ -82,36 +85,49 @@ From a terminal at the repository root:
 
 The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tools/Godot-4.7.2/Godot.app/Contents/MacOS/Godot`. It also accepts `GODOT_BIN` and can find a `godot` command or `/Applications/Godot.app`. The official macOS download was checked against its published SHA-512 manifest before installation. The launcher imports assets automatically when the import cache is absent.
 
-## Scenario profiles
+## Stages
+
+`./play.command -- --stage=<stage>` starts the robot game later in the build.
+It scripts the earlier work with the same model and equipment commands as the
+mechanical tests, then hands over paused. Fastenings and rigging are supplied,
+so this is not playtest evidence, and nothing is saved. Restart re-runs the
+shortcut. Wait for the preparation overlay to close before using the controls.
+
+| Stage | Starts with |
+| --- | --- |
+| `foot` | The fresh game (the same as no flag) |
+| `actuator` | Both heel pads fitted; build the pitch actuator |
+| `pelvis` | The foot complete; deliver the pelvis to the gantry |
+| `left_leg_build`, `left_leg_dock` | The left leg's construction, then its docking |
+| `right_leg_build`, `right_leg_dock` | The same for the right leg |
+| `chest`, `core`, `backpack` | Each torso delivery |
+| `left_arm`, `right_arm`, `pauldrons` | Each arm, then both pauldrons |
+| `head`, `head_sensors` | The head's structure, then its sensors, faceplate, mask and crown |
+| `complete` | The retained and connected whole robot, with the crane parked |
+
+`--m3-stage=<stage>` is the older spelling and still works.
+
+## Development profiles
 
 Profiles select content, layout, equipment, staging, spawn and save behavior.
-`./play.command` and `--foot-workshop` both select the base foot game.
+Development and regression scenarios stay selectable with `--profile=<id>`:
 
 | Profile | Launch | Save behavior |
 | --- | --- | --- |
-| Foot base game | `./play.command` or `./play.command -- --profile=foot` | Existing `user://workshop-save.json` |
+| Robot game (default) | `./play.command` | none (saving deferred) |
+| Foot-only workshop | `./play.command -- --profile=foot` | Existing `user://workshop-save.json` |
 | Single-pad regression | `./play.command -- --profile=pads_single` | Session only; alias `--single-pad` |
 | Two-pad regression | `./play.command -- --profile=pads_multi` | Session only; alias `--pads-only` |
 | Hip-retainer trial | `./play.command -- --profile=leg_bay_retention` | `user://m2-retention-save.json` |
 | Crane-delivery trial | `./play.command -- --profile=leg_bay_crane` | `user://m2-crane-save.json` |
-| Complete structural leg | `./play.command -- --m3-workshop` or `--profile=leg_bay_m3` | none (saving deferred) |
+| M3 with a prepared left foot | `./play.command -- --profile=leg_bay_m3` | none (saving deferred) |
 
-`./play.command -- --m2-workshop` opens the trial selector. The earlier
+`--stage` also works with `--profile=leg_bay_m3`, from `pelvis` onward.
+`./play.command -- --m2-workshop` opens the M2 trial selector. The earlier
 `--m2-workshop --m2-trial=retention` and `--m2-trial=crane` aliases remain.
-The retired hoist and M1 saves are no longer loaded. The historical layout and
-feedback remain in [the archive](../../design/game/history/leg-workshop-m1-m2-handoffs.md).
-
-### M3 stage shortcut (development)
-
-`./play.command -- --m3-stage=<stage>` launches M3 and scripts the earlier work
-with the same equipment commands as the mechanical tests, then hands over paused.
-Fastenings and rigging are supplied, so this is not playtest evidence, and nothing
-is saved. Restart re-runs the shortcut. Stages: `pelvis`, `left_leg_build`,
-`left_leg_dock`, `right_leg_build`, `right_leg_dock`, `chest`, `core`, `backpack`,
-`left_arm`, `right_arm`, `pauldrons`, `head`, `head_sensors`, `complete`. The last
-stage supplies the retained and connected whole head and parks the crane.
-Preparation time depends on the stage; wait for the overlay to close before using
-the controls.
+The foot-only workshop is the earlier base game; its fixture, dispatch rails and
+save are unchanged. The retired hoist and M1 saves are no longer loaded. The
+historical layout and feedback remain in [the archive](../../design/game/history/leg-workshop-m1-m2-handoffs.md).
 
 ## M2 equipment trials
 
@@ -182,11 +198,10 @@ in M1. Record feedback in the existing
 M3 is now the wider whole-robot workshop; see the
 [wider M3 plan](../../design/game/m3-wide-workshop-plan.md). The original leg-only
 journey's evidence is [archived](../../design/game/history/leg-workshop-m3-plan.md).
-Launch it separately:
-
-```sh
-./play.command -- --m3-workshop
-```
+It continues after the foot build in `./play.command`; start at its first step
+with `./play.command -- --stage=pelvis`. The left-leg steps below predate the
+wider workshop; the [playtest checklist](../../design/game/m3-wide-playtest-checklist.md)
+describes each current stage.
 
 The complete 135-piece foot starts on its dispatch carrier. Build the remaining
 40 structural and hip-retention pieces, mount the leg to the supplied pelvis,
@@ -237,7 +252,7 @@ remain independent.
 The current forward M3 gate uses the common runner:
 
 ```sh
-python3 game/workshop/tools/run_regressions.py --only m3_acceptance_test m3_workshop_launch leg_bay_m3_profile_launch
+python3 game/workshop/tools/run_regressions.py --only m3_acceptance_test robot_workshop_test robot_profile_launch leg_bay_m3_profile_launch
 ```
 
 ## Collecting and building

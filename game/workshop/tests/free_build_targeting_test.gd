@@ -18,7 +18,7 @@ func blocker(position: Vector3, size: float = 0.16) -> StaticBody3D:
 	return body
 
 func run() -> void:
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	driver = load("res://tests/kit/node_runner.gd").new()
 	root.add_child(driver)

@@ -26,7 +26,7 @@ func capture(name: String) -> void:
 func run() -> void:
 	DirAccess.make_dir_recursive_absolute(output)
 	root.size = Vector2i(1440,900)
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	await frames(8)
 	game.automated_test = true

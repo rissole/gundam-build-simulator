@@ -2,7 +2,7 @@
 
 A first-person mecha workshop prototype: organise parts, follow illustrated manuals, and assemble a giant robot one component at a time.
 
-The full-game design targets an **18 m piloted mecha**. The base game builds **two heel pads and a pitch actuator in a supported foot bay**. The separate **M3 whole-robot workshop** adds both legs, torso, arms and head with shared lifting equipment, personnel platforms and linked manuals. M3 saving is deferred; the foot game and M2 trials retain their own saves. Its FA-01 foot retains **745 separate source parts** and a reproducible Blender generation pipeline.
+The full-game design targets an **18 m piloted mecha**. The current prototype is one continuous build in a Godot hangar. Build the left foot's heel pads and pitch actuator, then assemble the robot's structure: pelvis, both legs, torso, arms and head. The hangar includes component stations, a turning foot fixture, a service crane, lifting equipment, personnel platforms and linked manuals. Its FA-01 foot retains **745 separate source parts** and a reproducible Blender generation pipeline.
 
 ![FA-01 assembled foot, with separate armor, frame, ankle mechanisms, and sole pads](models/foot-fa01/output/foot-fa01-assembled.png)
 
@@ -40,9 +40,17 @@ GODOT_BIN=/path/to/godot ./play.command
 
 On other platforms, open [game/workshop/project.godot](game/workshop/project.godot) in Godot and run the project. The first launch imports the model.
 
-Prepare two independent heel pads and a pitch actuator at the workshop stations, then secure them to the foot. Labelled drawers supply small hardware; shelves hold larger components. The parent foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
+The game starts in the final-assembly hangar. Prepare two independent heel pads and the pitch actuator at the preparation stations, then secure them to the left foot, which waits in a turning fixture in the foot bay. Use **E** at the fixture controls to turn the foot to a working position. Labelled wall drawers supply small hardware; shelves hold larger components. The foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
 
-The foot stays in a mechanical cradle. Use **E** at its controls to select a working position, then transfer the completed upright foot to dispatch. The leg-area hoist moves it into the assembly fixture. Fit the shin, knee and thigh, using the personnel lifts to reach each connection. Transfer the supported leg to the final bay, seat its integral hip ball, fit both retaining halves and their hardware, engage the stabilizer and release the hoist. Small preparation stations retain free rotation.
+With the foot upright, the wider workshop continues. Deliver the pelvis to the gantry, then crane the foot to dispatch and build the structural leg on the shared holder. The right leg, chest, core, backpack, arms, pauldrons and head follow, using the crane console, personnel lifts and local equipment controls.
+
+To start later in the build, add a stage. The game supplies the earlier work by script:
+
+```sh
+./play.command -- --stage=actuator      # heel pads fitted; build the pitch actuator
+./play.command -- --stage=pelvis        # foot complete; deliver the pelvis
+./play.command -- --stage=left_arm      # any later stage, up to --stage=complete
+```
 
 | Input | Action |
 | --- | --- |
@@ -60,7 +68,7 @@ The foot stays in a mechanical cradle. Use **E** at its controls to select a wor
 | Z | Undo in the selected manual |
 | Escape | Release the mouse and open help |
 
-See the [workshop README](game/workshop/README.md) for the build sequence, controls and limitations. The default workshop saves locally every 30 seconds of active play, on pause and on quit, then resumes into the pause menu. The earlier foot-only workshop remains available with `./play.command -- --foot-workshop` and retains its separate save. This is a structural leg blockout: the pelvis starts assembled; detailed leg actuators, armor, torso and second leg remain future work.
+See the [workshop README](game/workshop/README.md) for every stage name, the build sequence, controls and limitations. The robot game does not save yet: quitting or restarting begins again from the launch's starting stage. The earlier saved foot-only workshop remains a development profile (`./play.command -- --profile=foot`) and keeps its separate save. This is a structural blockout: detailed actuators, armor and finished art remain future work.
 
 ## Explore the model and design
 

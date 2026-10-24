@@ -9,7 +9,7 @@ func _initialize() -> void:
 	run.call_deferred()
 
 func run() -> void:
-	var game = load("res://scenes/workshop.tscn").instantiate()
+	var game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	game.automated_test = true
 	for index in range(6):await physics_frame

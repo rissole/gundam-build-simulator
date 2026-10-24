@@ -2,6 +2,8 @@ class_name SupportedFootFixture
 extends "res://scripts/equipment.gd"
 ## The receiving foot stays in the assembly model. This equipment only supports
 ## and repositions its existing body; a carriage is never another inventory item.
+## In the hangar it stands at the foot's bay store without dispatch rails; the
+## crane then collects the upright foot from the same pose.
 
 const WORK_ORIGIN = Vector3(2.3, 1.55, -1.8)
 const DISPATCH_ORIGIN = Vector3(2.3, 1.55, 4.4)
@@ -13,6 +15,12 @@ const Sweep = preload("res://scripts/motion_sweep.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
 
 var foot: AnimatableBody3D
+var work_origin = WORK_ORIGIN
+var dispatch_origin = DISPATCH_ORIGIN
+## False in the hangar, where the crane collects the foot instead of the carrier.
+var has_dispatch = true
+## The foot's model location while it rests in this fixture.
+var holding_location = ""
 var carriage: AnimatableBody3D
 var rotator: AnimatableBody3D
 var moving = false
@@ -30,11 +38,19 @@ var _yellow: StandardMaterial3D
 var _work_label: Label3D
 var _dispatch_label: Label3D
 
-func setup(workshop: Node3D, receiving_foot: AnimatableBody3D) -> void:
+## `placement.origin` moves the whole fixture so the upright foot rests there.
+func setup(workshop: Node3D, receiving_foot: AnimatableBody3D, placement: Dictionary = {}) -> void:
 	game = workshop
 	equipment_id = "foot_fixture"
 	click_operates = false
 	foot = receiving_foot
+	holding_location = game.model.assemblies[game.default_parent_id()].location
+	if placement.has("origin"):
+		work_origin = placement.origin
+		has_dispatch = false
+		# Static parts are authored around the component-room bay; shift them as one.
+		position = Vector3(work_origin.x-WORK_ORIGIN.x, 0, work_origin.z-WORK_ORIGIN.z)
+		dispatch_origin = work_origin
 	_steel = game.material(Color("526970"), 0.55)
 	_dark = game.material(Color("23353b"), 0.4)
 	_yellow = game.material(Color("e8b46b"), 0.2)
@@ -44,8 +60,8 @@ func setup(workshop: Node3D, receiving_foot: AnimatableBody3D) -> void:
 	# The working controls face inward from the platform's parallel outer rail.
 	# An operator can turn the foot without leaving its connection access aisle.
 	_make_console(Vector3(4.87, 0.55, -1.8), false)
-	_make_console(Vector3(0.78, 0, 6.9), true)
-	_apply_pose(Transform3D(Basis.IDENTITY, WORK_ORIGIN))
+	if has_dispatch:_make_console(Vector3(0.78, 0, 6.9), true)
+	_apply_pose(Transform3D(Basis.IDENTITY, work_origin))
 	_refresh_labels()
 
 func controls() -> Array[Dictionary]:
@@ -59,11 +75,18 @@ func controls() -> Array[Dictionary]:
 func action_error(action: String) -> String:
 	if moving:
 		return blocked_reason if not blocked_reason.is_empty() else "Wait for the fixture to stop."
+	if game.model.assemblies[game.default_parent_id()].location != holding_location:
+		return "The foot has left its fixture."
+	var held_by: String = game.equipment.busy_reason("foot_fixture", equipment_id)
+	if not held_by.is_empty():
+		return held_by
 	if action == "return":
 		return "The carrier is already in the work bay." if not at_dispatch else ""
 	if at_dispatch:
 		return "Return the carrier to the work bay first."
 	if action == "transfer":
+		if not has_dispatch:
+			return "Unknown fixture control."
 		if not game.model.milestone(game.default_parent_id(), "complete"):
 			return "Secure both heel pads and the pitch actuator before transferring the foot."
 		if work_pose != "upright":
@@ -81,7 +104,7 @@ func request(action: String) -> String:
 		return error
 	var next_dispatch = action == "transfer"
 	var next_pose = "upright" if action == "transfer" or action == "return" else action
-	var next_origin = DISPATCH_ORIGIN if next_dispatch else WORK_ORIGIN
+	var next_origin = dispatch_origin if next_dispatch else work_origin
 	var destination = Transform3D(Basis(Vector3.BACK, POSE_ANGLES[next_pose]), next_origin)
 	error = _sweep_error(foot.global_transform, destination)
 	if not error.is_empty():
@@ -105,6 +128,15 @@ func status_text() -> String:
 		return "DISPATCH BAY — foot secured on its carrier"
 	return "FOOT FIXTURE — " + _pose_title(work_pose)
 
+## Rigging the foot needs it upright and still: the crane collects the store pose.
+func busy_reason(subject: String) -> String:
+	if subject == "rig:" + game.default_parent_id() and game.model.assemblies[game.default_parent_id()].location == holding_location:
+		if moving:
+			return "Wait for the foot fixture to stop."
+		if work_pose != "upright":
+			return "Turn the foot fixture to Upright before rigging the foot."
+	return ""
+
 func access_error(owner: String) -> String:
 	if not game.model.assemblies.has(owner) or game.model.top_level(owner) != game.default_parent_id():
 		return ""
@@ -125,17 +157,17 @@ func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary 
 	var transform = Codec.to_pose(world.fixtures[game.default_parent_id()])
 	var angle = atan2(transform.basis.x.y,transform.basis.x.x)
 	var origin = transform.origin
-	if not transform.basis.is_equal_approx(Basis(Vector3.BACK,angle)) or absf(angle)>PI/2+0.001 or absf(origin.x-2.3)>0.001 or absf(origin.y-1.55)>0.001 or origin.z < -1.801 or origin.z > 4.401:return ["Foot has left its supported path."]
-	if s.at_dispatch or s.destination_dispatch or origin.z > -1.799:
+	if not transform.basis.is_equal_approx(Basis(Vector3.BACK,angle)) or absf(angle)>PI/2+0.001 or absf(origin.x-work_origin.x)>0.001 or absf(origin.y-work_origin.y)>0.001 or origin.z < work_origin.z-0.001 or origin.z > dispatch_origin.z+0.001:return ["Foot has left its supported path."]
+	if s.at_dispatch or s.destination_dispatch or origin.z > work_origin.z+0.001:
 		# A carrier must never bypass the completion interlock through a save.
 		if not candidate.milestone(game.default_parent_id(),"complete") or absf(angle)>0.001 or s.work_pose != "upright" or s.destination_pose != "upright":return ["Dispatch requires a secured upright foot."]
 	if not s.moving:
-		var expected = Transform3D(Basis(Vector3.BACK,POSE_ANGLES[s.work_pose]),DISPATCH_ORIGIN if s.at_dispatch else WORK_ORIGIN)
+		var expected = Transform3D(Basis(Vector3.BACK,POSE_ANGLES[s.work_pose]),dispatch_origin if s.at_dispatch else work_origin)
 		if not transform.is_equal_approx(expected) or s.destination_pose != s.work_pose or s.destination_dispatch != s.at_dispatch:return ["Stopped foot does not match its indexed pose."]
 	elif s.at_dispatch == s.destination_dispatch:
 		var from_angle: float = POSE_ANGLES[s.work_pose]
 		var to_angle: float = POSE_ANGLES[s.destination_pose]
-		if s.at_dispatch or s.work_pose == s.destination_pose or not origin.is_equal_approx(WORK_ORIGIN) or angle < minf(from_angle,to_angle)-0.001 or angle > maxf(from_angle,to_angle)+0.001:return ["Turning foot is outside its indexed movement."]
+		if s.at_dispatch or s.work_pose == s.destination_pose or not origin.is_equal_approx(work_origin) or angle < minf(from_angle,to_angle)-0.001 or angle > maxf(from_angle,to_angle)+0.001:return ["Turning foot is outside its indexed movement."]
 	return []
 
 func apply(data: Dictionary) -> void:
@@ -144,7 +176,7 @@ func apply(data: Dictionary) -> void:
 	work_pose = data.work_pose
 	_destination_pose = data.destination_pose
 	_destination_dispatch = data.destination_dispatch
-	_destination = Transform3D(Basis(Vector3.BACK, POSE_ANGLES[data.destination_pose]), DISPATCH_ORIGIN if data.destination_dispatch else WORK_ORIGIN)
+	_destination = Transform3D(Basis(Vector3.BACK, POSE_ANGLES[data.destination_pose]), dispatch_origin if data.destination_dispatch else work_origin)
 	blocked_reason = ""
 	_apply_pose(foot.global_transform)
 	_refresh_labels()
@@ -214,15 +246,20 @@ func _sweep_error(from: Transform3D, to: Transform3D) -> String:
 	return Sweep.sweep(foot.get_world_3d().direct_space_state, groups, steps, func(weight: float) -> Transform3D: return _guided_pose(from, to, weight), OBSTACLE_MASK, excluded, "foot_fixture").get("error", "")
 
 func _make_rails() -> void:
+	# Without dispatch the rails only seat the carriage under the work position.
+	var rail_center = 1.3 if has_dispatch else -1.8
+	var rail_length = 10.5 if has_dispatch else 4.3
 	for x in [1.4, 3.2]:
 		var rail = StaticBody3D.new()
 		rail.collision_layer = 1
 		add_child(rail)
 		# Rails are flush strips: no kerb to block walking or a carried pad.
-		_solid_box(rail, Vector3(x, 0.012, 1.3), Vector3(0.10, 0.024, 10.5), _steel)
+		_solid_box(rail, Vector3(x, 0.012, rail_center), Vector3(0.10, 0.024, rail_length), _steel)
 		_rail_bodies.append(rail)
-	for z in [-3.8, 6.4]:
+	for z in ([-3.8, 6.4] if has_dispatch else [-4.0, 0.4]):
 		game.box(self, Vector3(2.3, 0.014, z), Vector3(2.2, 0.012, 0.08), _yellow)
+	if not has_dispatch:
+		return
 	game.sign_panel(self, "FOOT / WORK BAY", Vector3(2.3, 3.15, -6.82), Vector2(1.75, 0.28), 52, 0.002)
 	# A posted sign faces the operator standing at the dispatch controls.
 	game.box(self, Vector3(3.35, 1.05, 6.65), Vector3(0.06, 2.10, 0.06), _steel)
@@ -252,9 +289,12 @@ func _make_carriage() -> void:
 		# Inset the welded crossbar skin inside the runner's outer faces. The
 		# collision dimensions remain unchanged, without coincident render faces.
 		_solid_box(carriage, Vector3(0, 0.25, z), Vector3(1.94, 0.16, 0.19), _dark, Vector3(1.936, 0.16, 0.19))
-		_solid_box(carriage, Vector3(0, 0.87, z), Vector3(0.22, 1.18, 0.22), _steel, Vector3(0.22, 1.18, 0.216))
-		_solid_box(carriage, Vector3(0, 1.55, z), Vector3(0.44, 0.44, 0.22), _yellow)
-		_cylinder(carriage, Vector3(0, 1.55, z), 0.145, 0.32, _dark)
+		# Pedestals rise from the crossbar to the bearing at the foot's work height.
+		var bearing = work_origin.y
+		var pedestal = bearing - 0.37
+		_solid_box(carriage, Vector3(0, 0.28 + pedestal / 2.0, z), Vector3(0.22, pedestal, 0.22), _steel, Vector3(0.22, pedestal, 0.216))
+		_solid_box(carriage, Vector3(0, bearing, z), Vector3(0.44, 0.44, 0.22), _yellow)
+		_cylinder(carriage, Vector3(0, bearing, z), 0.145, 0.32, _dark)
 	rotator = AnimatableBody3D.new()
 	rotator.name = "FrameClamps"
 	rotator.collision_layer = 1
@@ -327,7 +367,7 @@ func _make_console(origin: Vector3, dispatch: bool) -> void:
 		for z in [-0.45, 0.45]:
 			_solid_box(panel, Vector3(-0.11, 0.94, z), Vector3(0.20, 0.05, 0.045), _steel)
 	_solid_box(panel, Vector3(0, 1.16, 0), Vector3(0.12, 0.48, 1.36 if not dispatch else 0.56), _dark)
-	var actions = ["return"] if dispatch else ["upright", "sole_left", "sole_right", "transfer"]
+	var actions = ["return"] if dispatch else (["upright", "sole_left", "sole_right", "transfer"] if has_dispatch else ["upright", "sole_left", "sole_right"])
 	for index in range(actions.size()):
 		var action: String = actions[index]
 		var z = 0.0 if dispatch else -0.45 + float(index) * 0.3

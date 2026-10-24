@@ -4,7 +4,7 @@ func _initialize() -> void:
 	capture.call_deferred()
 
 func capture() -> void:
-	var game = load("res://scenes/workshop.tscn").instantiate()
+	var game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	game.set_paused(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

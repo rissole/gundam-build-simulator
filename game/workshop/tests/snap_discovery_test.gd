@@ -28,7 +28,7 @@ func wall(point: Vector3) -> StaticBody3D:
 	return body
 
 func run() -> void:
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	game.targeting = MeasuredTargeting.new(game)
 	driver = load("res://tests/kit/node_runner.gd").new()

@@ -52,7 +52,7 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(output_dir)
 	var inputs = hashes()
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	game.automated_test = true
 	game.set_paused(false)

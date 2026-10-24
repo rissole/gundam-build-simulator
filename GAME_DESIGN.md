@@ -4,7 +4,7 @@ Last updated: 2026-10-24
 
 This records the agreed game design from the workshop-loop discussion. Robot geometry, engineering detail, and part inventories remain in [ROBOT_DESIGN.md](ROBOT_DESIGN.md). Recommendations for reaching a playable foot build are recorded separately in the [foot prototype plan](design/game/foot-prototype-plan.md).
 
-**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) has a supported-foot base game and separate M2/M3 workshop profiles. The user finds M3's complete structural leg-to-gantry journey largely satisfying. The current [final assembly plan](design/game/final-assembly-plan.md) develops the full gantry and major-section workflow before further implementation. Historical increments below retain their original scope; use the [active workshop state](design/game/leg-workshop-next-steps.md) for current status.
+**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) launches one robot game: the supported-foot build in the hangar, followed by the wider M3 workshop. M2 trials and the foot-only workshop remain development profiles. The user finds M3's complete structural leg-to-gantry journey largely satisfying. The current [final assembly plan](design/game/final-assembly-plan.md) develops the full gantry and major-section workflow before further implementation. Historical increments below retain their original scope; use the [active workshop state](design/game/leg-workshop-next-steps.md) for current status.
 
 ## Experience and purpose
 
@@ -396,6 +396,14 @@ selected geometry, parts and manuals. Headless behavior/geometry evidence does
 not establish a human playtest or rendered approval for this expansion.
 
 ## Base game and prototype lane, 2026-10-23
+
+**Superseded on 2026-10-24:** the user asked for one launch command, with the base
+foot build combined with M3. `./play.command` now opens the robot game: the
+pads and pitch actuator are built in the hangar on a turning fixture at the left
+foot's store, and the wider M3 workshop continues in the same session.
+`--stage=<name>` starts later. Like M3, the robot game has no saves yet. The
+foot-only workshop below remains the `--profile=foot` development profile with
+its save. The rest of this section is the 2026-10-23 decision as recorded.
 
 The user decided that default `./play.command` launches only the supported-foot
 workshop: the pads, the pitch actuator and its save. The actuator work is the

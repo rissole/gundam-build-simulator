@@ -3,20 +3,38 @@ extends RefCounted
 ## Fastenings and rig attachments are supplied (Staging.fill / supplied rig state);
 ## this is never playtest evidence and never a save.
 const Staging=preload("res://scripts/scenario_staging.gd")
+## The robot game builds the left foot before M3's first stage.
+const FOOT_STAGES = ["foot","actuator"]
 const STAGES = ["pelvis","left_leg_build","left_leg_dock","right_leg_build","right_leg_dock","chest","core","backpack","left_arm","right_arm","pauldrons","head","head_sensors","complete"]
-const TITLES = {"pelvis":"Pelvis delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting","head":"Head fitting","head_sensors":"Head sensor fitting","complete":"Robot structure complete"}
+const TITLES = {"foot":"Left-foot heel pads","actuator":"Left-foot pitch actuator","pelvis":"Pelvis delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting","head":"Head fitting","head_sensors":"Head sensor fitting","complete":"Robot structure complete"}
 var game: Node
 
 func _init(workshop: Node) -> void:game=workshop
 
+## Stage names this workshop offers, in order.
+static func stages_for(profile: Dictionary) -> Array:
+	return (FOOT_STAGES if not profile.get("prepared_foot",true) else [])+STAGES
+
+func stages() -> Array:return stages_for(game.profile)
+
 ## Errors describing why the workshop is not at the start of stage.
 func stage_errors(stage: String) -> Array[String]:
 	var errors: Array[String]=[]
-	if stage not in STAGES:return ["Unknown M3 stage: "+stage]
-	if not is_instance_valid(game) or game.profile.id!="leg_bay_m3":return ["M3 stages require a leg_bay_m3 workshop."]
+	if not is_instance_valid(game) or game.profile.trial!="m3":return ["M3 stages require the robot or leg_bay_m3 workshop."]
+	if stage not in stages():return ["Unknown stage: "+stage]
 	var model=game.model;var rail=_equipment("leg_rail");var carrier=_equipment("foot_carrier")
 	var fixture=_equipment("module_supports");var crane=_equipment("service_crane")
 	_need(errors,crane.station=="park" and crane.raised and crane.attached_count()==0 and not crane.moving and crane.motion.is_empty(),"Park the empty crane raised with no motion.")
+	if stage in FOOT_STAGES:
+		var turning=_equipment("foot_fixture")
+		_location(errors,"foot","support:foot_store")
+		_need(errors,turning!=null and turning.work_pose=="upright" and not turning.moving,"Set the foot fixture upright.")
+		var fitted=["pad_1","pad_2"] if stage=="actuator" else []
+		for child in ["pad_1","pad_2","pitch"]:
+			_need(errors,(model.assemblies[child].parent=="foot")==(child in fitted),child+(" must be fitted to the foot." if child in fitted else " must not be fitted yet."))
+		if stage=="foot":
+			_need(errors,model.items.keys().all(func(uid):return not model.items[uid].owner.is_empty() or model.items[uid].location==game.part_defs[uid].get("location","bin")),"Fresh workshop stock must remain at its authored source.")
+		return errors
 	match stage:
 		"pelvis":
 			_location(errors,"pelvis","support:bulky_fixture")
@@ -97,6 +115,8 @@ func complete(stage: String) -> String:
 	var errors=stage_errors(stage)
 	if not errors.is_empty():return stage+": "+"; ".join(errors)
 	match stage:
+		"foot":Staging.prepare_foot(game,true);return ""
+		"actuator":Staging.prepare_foot(game);return ""
 		"pelvis":return _pelvis()
 		"left_leg_build":return _leg_build("left")
 		"right_leg_build":return _leg_build("right")
@@ -114,10 +134,10 @@ func complete(stage: String) -> String:
 
 ## Runs earlier stages from a fresh workshop, yielding between their commands.
 func run_to(stage: String, progress: Callable = Callable()) -> String:
-	if stage not in STAGES:return "Unknown M3 stage: "+stage
-	var fresh=stage_errors("pelvis")
+	if stage not in stages():return "Unknown stage: "+stage
+	var fresh=stage_errors(stages()[0])
 	if not fresh.is_empty():return "Fresh workshop required: "+"; ".join(fresh)
-	for s in STAGES:
+	for s in stages():
 		if progress.is_valid():progress.call(TITLES[s])
 		var errors=stage_errors(s)
 		if not errors.is_empty():return s+": "+"; ".join(errors)
@@ -125,7 +145,7 @@ func run_to(stage: String, progress: Callable = Callable()) -> String:
 		var error=complete(s)
 		if not error.is_empty():return error
 		await game.get_tree().process_frame
-	return "Unknown M3 stage: "+stage
+	return "Unknown stage: "+stage
 
 ## Shared mechanical settling; supplied progress does not bypass interlocks.
 func settle(controller: Node, limit: int = 1600) -> String:

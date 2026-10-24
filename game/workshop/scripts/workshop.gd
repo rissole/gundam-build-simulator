@@ -55,12 +55,14 @@ var prepared_flags: Dictionary = {}
 var completed_flags: Dictionary = {}
 var automated_test: bool = false
 var m3_stage: String = ""
-## Pause-menu note describing the last --m3-stage preparation.
+## Pause-menu note describing the last --stage preparation.
 var m3_stage_notice: String = ""
 var scripted_controls: Dictionary = {}
 var config: Dictionary
 var source: Dictionary = {}
 var active_ids: Array[String] = []
+## Part kinds of the foot build itself, before any milestone content is added.
+var foot_kinds: Dictionary = {}
 var part_defs: Dictionary = {}
 var type_sources: Dictionary = {}
 var ghost: MeshInstance3D
@@ -121,6 +123,7 @@ func _ready() -> void:
 		config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
 		var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(config.definitions))
 		Content.apply_definitions(data,overlay)
+	for definition in config.parts:foot_kinds[definition.kind] = true
 	if not profile.leg_content.is_empty():_load_leg_content(data)
 	components = preload("res://scripts/component_interaction.gd").new(self)
 	add_child(components)
@@ -167,7 +170,7 @@ func _ready() -> void:
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
-	if not profile.trial.is_empty():hud.open_manual("pelvis" if profile.trial in ["retention","m3"] else "left_leg")
+	if not profile.trial.is_empty():hud.open_manual("foot" if not profile.prepared_foot else "pelvis" if profile.trial in ["retention","m3"] else "left_leg")
 	model.changed.connect(_state_changed)
 	_make_audio()
 	_state_changed()
@@ -176,9 +179,8 @@ func _ready() -> void:
 	saves = preload("res://scripts/workshop_save.gd").new()
 	add_child(saves)
 	saves.setup(self)
-	if profile.id == "leg_bay_m3":
-		for arg in OS.get_cmdline_user_args():
-			if str(arg).begins_with("--m3-stage="):m3_stage = str(arg).trim_prefix("--m3-stage=")
+	if profile.trial == "m3":
+		m3_stage = Profiles.stage_flag(Array(OS.get_cmdline_user_args()))
 		if not m3_stage.is_empty() and not automated_test:call_deferred("run_m3_stage",m3_stage)
 
 func _load_leg_content(data: Dictionary) -> void:
@@ -245,7 +247,16 @@ func _build_equipment(ids: Array) -> void:
 			"workshop_access":
 				item = preload("res://scripts/workshop_access.gd").new();add_child(item);item.setup(self,leg_layout.blockout)
 			"foot_fixture":
-				item = preload("res://scripts/supported_fixture.gd").new();add_child(item);item.setup(self,foot);foot_fixture = item
+				item = preload("res://scripts/supported_fixture.gd").new();add_child(item)
+				# In the hangar the fixture stands in for the left foot's bay store.
+				var store: Dictionary = {"origin":AssemblyRuntime.vec(leg_layout.layout().workshop.foot_storage.foot.position)} if is_instance_valid(leg_layout) else {}
+				item.setup(self,foot,store);foot_fixture = item
+				if not store.is_empty() and leg_layout.blockout != null:
+					for piece_id in leg_layout.blockout.pieces:
+						if not piece_id.begins_with("foot_store_"):continue
+						var piece: Dictionary = leg_layout.blockout.pieces[piece_id]
+						piece.visual.hide()
+						if piece.has("body"):piece.body.collision_layer = 0
 			"joint_restraints":
 				item = preload("res://scripts/passive_joint_restraints.gd").new();add_child(item);item.setup(self)
 			"foot_carrier":
@@ -615,15 +626,15 @@ func _milestone(message: String, owner: String) -> void:
 		if is_instance_valid(glowing_mesh) and glowing_mesh.material_overlay == glow:glowing_mesh.material_overlay = null)
 
 func reset_demo() -> void:
-	# M3 has no save slot; reloading also re-runs any --m3-stage launch flag.
+	# M3 has no save slot; reloading also re-runs any --stage launch flag.
 	if is_instance_valid(saves) and (saves.enabled or profile.trial != "m3"):saves.new_workshop()
 	else:get_tree().reload_current_scene()
 
-## Development shortcut: script the M3 sequence up to `stage`, then hand over
+## Development shortcut: script the sequence up to `stage`, then hand over
 ## paused. Supplied progress only; never a save or playtest evidence.
 func run_m3_stage(stage: String) -> String:
-	if stage not in M3Stages.STAGES:
-		var unknown = "Unknown M3 stage '"+stage+"'. Use one of: "+", ".join(M3Stages.STAGES)
+	if stage not in M3Stages.stages_for(profile):
+		var unknown = "Unknown stage '"+stage+"'. Use one of: "+", ".join(M3Stages.stages_for(profile))
 		if is_instance_valid(hud):hud.toast(unknown)
 		# Headless suites already record the returned message. push_error would
 		# fail the regression runner, which treats every ERROR line as a failure.
@@ -635,19 +646,19 @@ func run_m3_stage(stage: String) -> String:
 	var note = Label.new();note.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER;note.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	note.add_theme_font_size_override("font_size",24);overlay.add_child(note)
-	note.text = "Preparing M3 stage: "+title+"\nEarlier work is supplied by script, not playtested."
+	note.text = "Preparing stage: "+title+"\nEarlier work is supplied by script, not playtested."
 	await get_tree().process_frame;await get_tree().process_frame
 	# Scripted controls block walking/look so the player can't step into a route.
 	var was_automated = automated_test
 	automated_test = true
 	set_paused(false)
-	var error: String = await M3Stages.new(self).run_to(stage,func(step: String):note.text = "Preparing M3 stage: "+title+"\nNow: "+step)
+	var error: String = await M3Stages.new(self).run_to(stage,func(step: String):note.text = "Preparing stage: "+title+"\nNow: "+step)
 	automated_test = was_automated
 	overlay.queue_free()
 	m3_stage_notice=("Started at stage: "+title+". Earlier work was supplied by script, not playtested.") if error.is_empty() else ("Stage preparation stopped: "+error)
 	set_paused(true)
 	if is_instance_valid(hud):hud.toast(m3_stage_notice,error.is_empty());hud.refresh_save_status()
-	if not error.is_empty():push_error("M3 stage "+stage+": "+error)
+	if not error.is_empty():push_error("Stage "+stage+": "+error)
 	return error
 
 # Facades kept for the many layout, equipment and test callers.

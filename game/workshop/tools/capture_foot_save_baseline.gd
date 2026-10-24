@@ -13,7 +13,7 @@ func _stage(owner: String, limit: int) -> void:
 	Staging.fill(game,owner,[],limit)
 
 func run() -> void:
-	game = load("res://scenes/workshop.tscn").instantiate()
+	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
 	root.add_child(game)
 	game.automated_test = true
 	for index in range(6):await physics_frame
