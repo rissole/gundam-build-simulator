@@ -8,21 +8,23 @@ modules; it is intended to fold back into the base game later.
 
 ## Current work: implement the wider M3 workshop
 
-The user requested an **intermediate human review on 2026-10-24** and instructed
-the agent to stop after the regression run. Implementation is paused for that
-review. This overrides the earlier request to wait until the whole milestone
-before review; it does not establish milestone completion or usability approval.
-Resume implementation only when the user asks.
+On 2026-10-24 the user paused the Codex implementation for intermediate review
+after 6h20m, judging it too slow and suspecting the architecture. A review of the
+session log and working tree found: 62 min waiting on one sandbox permission
+prompt (Godot editor import of new part icons); about 25–35 min of model
+generation per section that never decreased; and, per section, a bespoke receiver
+controller, direct checks against other machines, growing crane-contract flags
+and another layer in a linear test-inheritance chain whose fresh-scene restores
+took about three quarters of its runtime. The user then deferred M3 saving and
+checkpoints (see the [plan](m3-wide-workshop-plan.md#saves-and-checkpoints)) and
+requested a `--m3-stage` development launch flag. Work resumes from the task
+files in [handoff/README.md](handoff/README.md); they override older instructions
+in this document where they differ.
 
-The [final18-case run](../../game/workshop/verification/regressions-20261024T065004.057954Z/results.json)
-passed17 cases with unchanged inputs and no rendering. The full sequence through
-both legs/torso stopped before cassette pickup: `go:source` rejected the foot
-carrier state with “Clear the foot carrier from the common station before
-lowering the cassette.” The sequence had not returned the carrier to the state
-required by the cassette interlock. Do not weaken that guard without checking
-the intended carrier-return step. This failure remains unfixed at the user's
-requested pause. The isolated arm branch previously passed299 mechanical checks;
-that does not replace the failed full-sequence integration check.
+The last regression run before review passed 17 of 18 cases. The full sequence
+stopped before cassette pickup because the test never returned the right-foot
+carrier; task 01 adds that step. The isolated arm branch's 299 mechanical checks
+do not replace the full-sequence check.
 
 The user has now requested implementation of
 [m3-wide-workshop-plan.md](m3-wide-workshop-plan.md). Its implementation ledger
@@ -215,6 +217,8 @@ supplies the complete spatial contract. See the sources in the final assembly pl
 
 | Feedback / positive finding | Current direction and unresolved question |
 | --- | --- |
+| Implementation took 6 h+; the user suspected poor architecture (2026-10-24) | Reviewed; see Current work. Before pauldrons/head, add one generic receiving interface and an occupancy register so new sections are mostly data. One fresh agent session and one commit per task; run the Godot import before work that adds part icons. |
+| Saving and checkpoints keep adding work and are often wrong (2026-10-24) | Deferred for M3 until the structure exists. `--m3-stage=<name>` supplies earlier progress for inspection. Default foot and M2 saves are unchanged. |
 | Rigging paths were already clear in the agreed plan; extra discovery iterations undermine its purpose | The core implementation initially swept the load without the full spreader/cable envelope and let parked access gates intrude into the reserved bypass. Treat this as an implementation/verification miss. Before expanding subsequent deliveries, compare source geometry, parked equipment, adapters, spreader and every cable against the existing measured route and handoff contract. Preserve the selected routes; record any actual design discrepancy before changing them. |
 | M3 leg-to-gantry build is largely satisfying, but implementation relied too much on in-game discovery | Preserve its physical handling; define shared coordinates, load routes, work faces, player standing areas and equipment clearances before implementation. Work backwards through the [final assembly plan](final-assembly-plan.md). |
 | Prefer side elevators and walking onto shared front/rear work platforms | Selected for the full gantry; measure loading openings and access levels together. Keep M3's raised datum for planning; eventual lowering remains undecided. |
