@@ -208,15 +208,15 @@ def contract():
     for x in [-.65,.65]:
         box(f"bulky_foot_{x}",[x,.12,.65],[.75,.24,1.8],"dark","bulky_fixture")
         box(f"bulky_screw_{x}",[x,.40,.65],[.18,.36,.18],parent="bulky_fixture")
-        box(f"bulky_inner_{x}",[x,.58,.65],[.12,.36,.12],parent="bulky_frame")
+        box(f"bulky_inner_{x}",[x,.49,.65],[.12,.18,.12],parent="bulky_frame")
         box(f"bulky_insert_{x}",[x,1.52,.65],[.24,.10,.26],"yellow","bulky_insert_pelvis")
-        box(f"bulky_pelvis_riser_{x}",[x,1.08,.65],[.18,.88,.18],parent="bulky_insert_pelvis")
+        box(f"bulky_pelvis_riser_{x}",[x,1.05,.65],[.18,.94,.18],parent="bulky_insert_pelvis")
         for z in [.55,.75]:
             key=f"bulky_jaw_pelvis_{x}_{z}";group(key,parent="bulky_insert_pelvis",at=[x,1.88,z])
             box(key+"_contact",[0,0,0],[.18,.10,.16],"yellow",key)
             box(key+"_back",[0,-.23,.91-z],[.12,.46,.10],parent=key)
             box(key+"_link",[0,0,(.91-z)/2],[.12,.10,.91-z],parent=key)
-    box("bulky_crossbeam",[0,.55,.65],[1.66,.2,.24],parent="bulky_frame")
+    box("bulky_crossbeam",[0,.48,.65],[1.66,.2,.24],parent="bulky_frame")
     for x in [-.84,.84]:
         box(f"bulky_chest_rail_{x}",[x,.70,0],[.18,.20,1.1],parent="bulky_insert_chest")
         for z in [-.45,.45]:
@@ -373,6 +373,8 @@ def contract():
 
     from author_m3_pauldrons import stores
     stores(data)
+    from author_m3_head import fixtures
+    fixtures(data)
     return data
 
 
@@ -539,6 +541,8 @@ def delivery_inputs(layout, data):
     from author_m3_pauldrons import routes
     layout["workshop"]=data
     routes(layout)
+    from author_m3_head import routes as head_routes
+    head_routes(layout)
     return layout
 
 
@@ -552,7 +556,7 @@ if __name__=="__main__":
     expected=delivery_inputs(json.loads(PATH.read_text()),authored)
     expected["workshop"]=authored
     if args.check:
-        assert layout==expected, "Regenerate with author_workshop_blockout.py"
+        assert PATH.read_text()==json.dumps(expected,indent=2,ensure_ascii=False)+"\n", "Regenerate with author_workshop_blockout.py"
     else:
         PATH.write_text(json.dumps(expected,indent=2,ensure_ascii=False)+"\n")
     print(f"WORKSHOP_BLOCKOUT PASS: {len(authored['solids'])} solids, {len(authored['groups'])} equipment frames; byte equality={args.check}")

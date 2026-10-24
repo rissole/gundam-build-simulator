@@ -9,7 +9,7 @@ func run() -> void:
 	expect(not rejected.is_empty(),"unknown stage is rejected")
 	expect(M3Stages.new(game).stage_errors("pelvis").is_empty(),"rejected stage leaves the fresh workshop untouched")
 	game.free();await frames(2)
-	for stage in ["left_leg_dock","chest","pauldrons","head"]:
+	for stage in ["left_leg_dock","chest","pauldrons","head","head_sensors"]:
 		game = await boot_profile("leg_bay_m3")
 		var error: String = await game.run_m3_stage(stage)
 		expect(error.is_empty(),stage+" prepares: "+error)

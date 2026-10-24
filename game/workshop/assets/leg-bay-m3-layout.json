@@ -3222,6 +3222,1182 @@
           18
         ],
         "rack_contacts": []
+      },
+      "head_baseplate": {
+        "title": "Head baseplate",
+        "payload": "assembly",
+        "load_uid": "head_baseplate",
+        "owner": "chest",
+        "slot": "head_baseplate",
+        "source_support": "bulky_fixture",
+        "source_equipment": "module_supports",
+        "support": "m2_service_crane",
+        "guided_receiver": "head_baseplate_receiver",
+        "receiver_equipment": "head_baseplate_receiver",
+        "secured": {
+          "milestone": "head_baseplate_retained"
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            -0.62,
+            0.8,
+            0
+          ],
+          "head_pad_1": [
+            0.62,
+            0.8,
+            0
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            -0.62,
+            0.8,
+            0
+          ],
+          "head_pad_1": [
+            0.62,
+            0.8,
+            0
+          ]
+        },
+        "spreader_points": [
+          [
+            -0.62,
+            0,
+            0
+          ],
+          [
+            0.62,
+            0,
+            0
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            3.25,
+            0.6,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            13,
+            16.8,
+            26
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            3.25,
+            0.6,
+            13
+          ],
+          [
+            3.25,
+            19.0,
+            13
+          ],
+          [
+            13,
+            19.0,
+            13
+          ],
+          [
+            13,
+            19.0,
+            26
+          ],
+          [
+            13,
+            17.04,
+            26
+          ],
+          [
+            13,
+            16.8,
+            26
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.24
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "exact_receiver": true,
+        "sweep_radius": 2.1,
+        "up_y": 21.0,
+        "access_mode": "head",
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": []
+      },
+      "head_baseplate_to_fixture": {
+        "title": "Head baseplate to fixture",
+        "payload": "assembly",
+        "load_uid": "head_baseplate",
+        "owner": "head_baseplate",
+        "slot": "",
+        "source_support": "head_baseplate_store",
+        "support": "m2_service_crane",
+        "receiver_equipment": "module_supports",
+        "secured": {
+          "milestone": ""
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            -0.62,
+            0.8,
+            0
+          ],
+          "head_pad_1": [
+            0.62,
+            0.8,
+            0
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            -0.62,
+            0.8,
+            0
+          ],
+          "head_pad_1": [
+            0.62,
+            0.8,
+            0
+          ]
+        },
+        "spreader_points": [
+          [
+            -0.62,
+            0,
+            0
+          ],
+          [
+            0.62,
+            0,
+            0
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            0.95,
+            0.6,
+            15.6
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            3.25,
+            0.6,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            0.95,
+            0.6,
+            15.6
+          ],
+          [
+            0.95,
+            6,
+            15.6
+          ],
+          [
+            3.25,
+            6,
+            15.6
+          ],
+          [
+            3.25,
+            6,
+            13
+          ],
+          [
+            3.25,
+            0.6,
+            13
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.24
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "sweep_radius": 2.1,
+        "up_y": 9,
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": [],
+        "receiver_support": "bulky_fixture",
+        "receiver_contact": true,
+        "rig_adapter": "head_baseplate_receiver"
+      },
+      "head_left": {
+        "title": "Left wraparound side",
+        "payload": "assembly",
+        "load_uid": "head_left",
+        "owner": "chest",
+        "slot": "head_left",
+        "source_support": "bulky_fixture",
+        "source_equipment": "module_supports",
+        "support": "m2_service_crane",
+        "guided_receiver": "head_left_receiver",
+        "receiver_equipment": "head_left_receiver",
+        "secured": {
+          "milestone": "head_left_retained"
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            -0.62,
+            1.5,
+            -0.58
+          ],
+          "head_pad_1": [
+            -0.62,
+            1.5,
+            0.9
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            -0.62,
+            1.5,
+            -0.58
+          ],
+          "head_pad_1": [
+            -0.62,
+            1.5,
+            0.9
+          ]
+        },
+        "spreader_points": [
+          [
+            0,
+            0,
+            -1.11
+          ],
+          [
+            0,
+            0,
+            0.99
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            3.25,
+            0.73,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            13,
+            16.8,
+            26
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            3.25,
+            0.73,
+            13
+          ],
+          [
+            3.25,
+            18.88,
+            13
+          ],
+          [
+            13,
+            18.88,
+            13
+          ],
+          [
+            13,
+            18.88,
+            26
+          ],
+          [
+            13,
+            17.02,
+            26
+          ],
+          [
+            13,
+            16.8,
+            26
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.22
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "exact_receiver": true,
+        "sweep_radius": 2.1,
+        "up_y": 21.58,
+        "access_mode": "head",
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": []
+      },
+      "head_left_to_fixture": {
+        "title": "Left wraparound side to fixture",
+        "payload": "assembly",
+        "load_uid": "head_left",
+        "owner": "head_left",
+        "slot": "",
+        "source_support": "head_left_store",
+        "support": "m2_service_crane",
+        "receiver_equipment": "module_supports",
+        "secured": {
+          "milestone": ""
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            -0.62,
+            1.5,
+            -0.58
+          ],
+          "head_pad_1": [
+            -0.62,
+            1.5,
+            0.9
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            -0.62,
+            1.5,
+            -0.58
+          ],
+          "head_pad_1": [
+            -0.62,
+            1.5,
+            0.9
+          ]
+        },
+        "spreader_points": [
+          [
+            0,
+            0,
+            -1.11
+          ],
+          [
+            0,
+            0,
+            0.99
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            1.4,
+            0.73,
+            10.6
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            3.25,
+            0.73,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            1.4,
+            0.73,
+            10.6
+          ],
+          [
+            1.4,
+            6,
+            10.6
+          ],
+          [
+            3.25,
+            6,
+            10.6
+          ],
+          [
+            3.25,
+            6,
+            13
+          ],
+          [
+            3.25,
+            0.73,
+            13
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.22
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "sweep_radius": 2.1,
+        "up_y": 9,
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": [],
+        "receiver_support": "bulky_fixture",
+        "receiver_contact": true,
+        "rig_adapter": "head_left_receiver"
+      },
+      "head_right": {
+        "title": "Right wraparound side",
+        "payload": "assembly",
+        "load_uid": "head_right",
+        "owner": "chest",
+        "slot": "head_right",
+        "source_support": "bulky_fixture",
+        "source_equipment": "module_supports",
+        "support": "m2_service_crane",
+        "guided_receiver": "head_right_receiver",
+        "receiver_equipment": "head_right_receiver",
+        "secured": {
+          "milestone": "head_right_retained"
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            0.62,
+            1.5,
+            -0.58
+          ],
+          "head_pad_1": [
+            0.62,
+            1.5,
+            0.9
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            0.62,
+            1.5,
+            -0.58
+          ],
+          "head_pad_1": [
+            0.62,
+            1.5,
+            0.9
+          ]
+        },
+        "spreader_points": [
+          [
+            0,
+            0,
+            -1.11
+          ],
+          [
+            0,
+            0,
+            0.99
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            3.25,
+            0.73,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            13,
+            16.8,
+            26
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            3.25,
+            0.73,
+            13
+          ],
+          [
+            3.25,
+            18.88,
+            13
+          ],
+          [
+            13,
+            18.88,
+            13
+          ],
+          [
+            13,
+            18.88,
+            26
+          ],
+          [
+            13,
+            17.02,
+            26
+          ],
+          [
+            13,
+            16.8,
+            26
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.22
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "exact_receiver": true,
+        "sweep_radius": 2.1,
+        "up_y": 21.58,
+        "access_mode": "head",
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": []
+      },
+      "head_right_to_fixture": {
+        "title": "Right wraparound side to fixture",
+        "payload": "assembly",
+        "load_uid": "head_right",
+        "owner": "head_right",
+        "slot": "",
+        "source_support": "head_right_store",
+        "support": "m2_service_crane",
+        "receiver_equipment": "module_supports",
+        "secured": {
+          "milestone": ""
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            0.62,
+            1.5,
+            -0.58
+          ],
+          "head_pad_1": [
+            0.62,
+            1.5,
+            0.9
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            0.62,
+            1.5,
+            -0.58
+          ],
+          "head_pad_1": [
+            0.62,
+            1.5,
+            0.9
+          ]
+        },
+        "spreader_points": [
+          [
+            0,
+            0,
+            -1.11
+          ],
+          [
+            0,
+            0,
+            0.99
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            0.8,
+            0.73,
+            17.1
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            3.25,
+            0.73,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            0.8,
+            0.73,
+            17.1
+          ],
+          [
+            0.8,
+            6,
+            17.1
+          ],
+          [
+            3.25,
+            6,
+            17.1
+          ],
+          [
+            3.25,
+            6,
+            13
+          ],
+          [
+            3.25,
+            0.73,
+            13
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.22
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "sweep_radius": 2.1,
+        "up_y": 9,
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": [],
+        "receiver_support": "bulky_fixture",
+        "receiver_contact": true,
+        "rig_adapter": "head_right_receiver"
+      },
+      "head_top": {
+        "title": "Structural head top",
+        "payload": "assembly",
+        "load_uid": "head_top",
+        "owner": "chest",
+        "slot": "head_top",
+        "source_support": "bulky_fixture",
+        "source_equipment": "module_supports",
+        "support": "m2_service_crane",
+        "guided_receiver": "head_top_receiver",
+        "receiver_equipment": "head_top_receiver",
+        "secured": {
+          "milestone": "head_top_retained"
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b",
+          "magnet_c",
+          "magnet_d"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            -0.62,
+            1.88,
+            -0.7
+          ],
+          "head_pad_1": [
+            -0.62,
+            1.88,
+            0.9
+          ],
+          "head_pad_2": [
+            0.62,
+            1.88,
+            -0.7
+          ],
+          "head_pad_3": [
+            0.62,
+            1.88,
+            0.9
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            -0.62,
+            1.88,
+            -0.7
+          ],
+          "head_pad_1": [
+            -0.62,
+            1.88,
+            0.9
+          ],
+          "head_pad_2": [
+            0.62,
+            1.88,
+            -0.7
+          ],
+          "head_pad_3": [
+            0.62,
+            1.88,
+            0.9
+          ]
+        },
+        "spreader_points": [
+          [
+            -0.62,
+            0,
+            -1.05
+          ],
+          [
+            -0.62,
+            0,
+            1.05
+          ],
+          [
+            0.62,
+            0,
+            -1.05
+          ],
+          [
+            0.62,
+            0,
+            1.05
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            3.25,
+            -0.71,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            13,
+            16.8,
+            26
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            3.25,
+            -0.71,
+            13
+          ],
+          [
+            3.25,
+            17.44,
+            13
+          ],
+          [
+            13,
+            17.44,
+            13
+          ],
+          [
+            13,
+            17.44,
+            26
+          ],
+          [
+            13,
+            17.02,
+            26
+          ],
+          [
+            13,
+            16.8,
+            26
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.22
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "exact_receiver": true,
+        "sweep_radius": 2.1,
+        "up_y": 20.52,
+        "access_mode": "head",
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": []
+      },
+      "head_top_to_fixture": {
+        "title": "Structural head top to fixture",
+        "payload": "assembly",
+        "load_uid": "head_top",
+        "owner": "head_top",
+        "slot": "",
+        "source_support": "head_top_store",
+        "support": "m2_service_crane",
+        "receiver_equipment": "module_supports",
+        "secured": {
+          "milestone": ""
+        },
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b",
+          "magnet_c",
+          "magnet_d"
+        ],
+        "magnetic_points": {
+          "head_pad_0": [
+            -0.62,
+            1.88,
+            -0.7
+          ],
+          "head_pad_1": [
+            -0.62,
+            1.88,
+            0.9
+          ],
+          "head_pad_2": [
+            0.62,
+            1.88,
+            -0.7
+          ],
+          "head_pad_3": [
+            0.62,
+            1.88,
+            0.9
+          ]
+        },
+        "magnetic_normal": [
+          0,
+          1,
+          0
+        ],
+        "handle_points": {
+          "head_pad_0": [
+            -0.62,
+            1.88,
+            -0.7
+          ],
+          "head_pad_1": [
+            -0.62,
+            1.88,
+            0.9
+          ],
+          "head_pad_2": [
+            0.62,
+            1.88,
+            -0.7
+          ],
+          "head_pad_3": [
+            0.62,
+            1.88,
+            0.9
+          ]
+        },
+        "spreader_points": [
+          [
+            -0.62,
+            0,
+            -1.05
+          ],
+          [
+            -0.62,
+            0,
+            1.05
+          ],
+          [
+            0.62,
+            0,
+            -1.05
+          ],
+          [
+            0.62,
+            0,
+            1.05
+          ]
+        ],
+        "source_pose": {
+          "position": [
+            5.15,
+            -0.71,
+            10.6
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            3.25,
+            -0.71,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "route_positions": [
+          [
+            5.15,
+            -0.71,
+            10.6
+          ],
+          [
+            5.15,
+            6,
+            10.6
+          ],
+          [
+            3.25,
+            6,
+            10.6
+          ],
+          [
+            3.25,
+            6,
+            13
+          ],
+          [
+            3.25,
+            -0.71,
+            13
+          ]
+        ],
+        "approach": {
+          "axis": [
+            0,
+            -1,
+            0
+          ],
+          "distance": 0.22
+        },
+        "rig_clearance": 1.2,
+        "sweep_rig": true,
+        "sweep_radius": 2.1,
+        "up_y": 9,
+        "console_position": [
+          7.8,
+          0,
+          22.8
+        ],
+        "overhead_y": 23.0,
+        "park_position": [
+          8.4,
+          0,
+          18
+        ],
+        "rack_contacts": [],
+        "receiver_support": "bulky_fixture",
+        "receiver_contact": true,
+        "rig_adapter": "head_top_receiver"
       }
     },
     "rack_contacts": [
@@ -4650,6 +5826,54 @@
             0,
             0
           ]
+        },
+        "head_baseplate": {
+          "position": [
+            3.25,
+            0.6,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "head_left": {
+          "position": [
+            3.25,
+            0.73,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "head_right": {
+          "position": [
+            3.25,
+            0.73,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
+        },
+        "head_top": {
+          "position": [
+            3.25,
+            -0.71,
+            13
+          ],
+          "rotation_degrees": [
+            0,
+            0,
+            0
+          ]
         }
       },
       "pelvis_envelope": [
@@ -4981,7 +6205,11 @@
       "duration": 6.0
     },
     "zones": [
-      "limb_station"
+      "limb_station",
+      "head_baseplate_rig",
+      "head_left_rig",
+      "head_right_rig",
+      "head_top_rig"
     ],
     "elevators": {
       "left": {
@@ -6239,6 +7467,174 @@
         "motion_contacts": [
           "wing_hinge_right_16.4_floor"
         ]
+      },
+      "bulky_insert_head_baseplate": {
+        "parent": "bulky_frame",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": false
+      },
+      "bulky_jaw_head_baseplate_0": {
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          0,
+          0.6799999999999999,
+          -0.4
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_jaw_head_baseplate_1": {
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          0,
+          0.6799999999999999,
+          0.4
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_insert_head_left": {
+        "parent": "bulky_frame",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": false
+      },
+      "bulky_jaw_head_left_0": {
+        "parent": "bulky_insert_head_left",
+        "position": [
+          0,
+          0.9299999999999999,
+          -0.4
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_jaw_head_left_1": {
+        "parent": "bulky_insert_head_left",
+        "position": [
+          0,
+          0.9299999999999999,
+          0.4
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_insert_head_right": {
+        "parent": "bulky_frame",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": false
+      },
+      "bulky_jaw_head_right_0": {
+        "parent": "bulky_insert_head_right",
+        "position": [
+          0,
+          0.9299999999999999,
+          -0.4
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_jaw_head_right_1": {
+        "parent": "bulky_insert_head_right",
+        "position": [
+          0,
+          0.9299999999999999,
+          0.4
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_insert_head_top": {
+        "parent": "bulky_frame",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": false
+      },
+      "bulky_jaw_head_top_0": {
+        "parent": "bulky_insert_head_top",
+        "position": [
+          0,
+          0.9299999999999999,
+          -0.64
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
+      },
+      "bulky_jaw_head_top_1": {
+        "parent": "bulky_insert_head_top",
+        "position": [
+          0,
+          0.9299999999999999,
+          0.84
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ],
+        "enabled": true
       }
     },
     "solids": [
@@ -7607,12 +9003,12 @@
         "parent": "bulky_frame",
         "position": [
           -0.65,
-          0.58,
+          0.49,
           0.65
         ],
         "size": [
           0.12,
-          0.36,
+          0.18,
           0.12
         ],
         "material": "steel",
@@ -7639,12 +9035,12 @@
         "parent": "bulky_insert_pelvis",
         "position": [
           -0.65,
-          1.08,
+          1.05,
           0.65
         ],
         "size": [
           0.18,
-          0.88,
+          0.94,
           0.18
         ],
         "material": "steel",
@@ -7783,12 +9179,12 @@
         "parent": "bulky_frame",
         "position": [
           0.65,
-          0.58,
+          0.49,
           0.65
         ],
         "size": [
           0.12,
-          0.36,
+          0.18,
           0.12
         ],
         "material": "steel",
@@ -7815,12 +9211,12 @@
         "parent": "bulky_insert_pelvis",
         "position": [
           0.65,
-          1.08,
+          1.05,
           0.65
         ],
         "size": [
           0.18,
-          0.88,
+          0.94,
           0.18
         ],
         "material": "steel",
@@ -7927,7 +9323,7 @@
         "parent": "bulky_frame",
         "position": [
           0,
-          0.55,
+          0.48,
           0.65
         ],
         "size": [
@@ -15030,6 +16426,902 @@
           0.22,
           0.06,
           0.3
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_baseplate_0_0_post",
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          -0.62,
+          0.27499999999999997,
+          -0.35
+        ],
+        "size": [
+          0.1,
+          0.5499999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_baseplate_0_0_saddle",
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          -0.62,
+          0.575,
+          -0.35
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_baseplate_0_1_post",
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          -0.62,
+          0.27499999999999997,
+          0.35
+        ],
+        "size": [
+          0.1,
+          0.5499999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_baseplate_0_1_saddle",
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          -0.62,
+          0.575,
+          0.35
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_baseplate_1_0_post",
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          0.62,
+          0.27499999999999997,
+          -0.35
+        ],
+        "size": [
+          0.1,
+          0.5499999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_baseplate_1_0_saddle",
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          0.62,
+          0.575,
+          -0.35
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_baseplate_1_1_post",
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          0.62,
+          0.27499999999999997,
+          0.35
+        ],
+        "size": [
+          0.1,
+          0.5499999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_baseplate_1_1_saddle",
+        "parent": "bulky_insert_head_baseplate",
+        "position": [
+          0.62,
+          0.575,
+          0.35
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_baseplate_0_pad",
+        "parent": "bulky_jaw_head_baseplate_0",
+        "position": [
+          -0.62,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_baseplate_1_pad",
+        "parent": "bulky_jaw_head_baseplate_1",
+        "position": [
+          -0.62,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_baseplate_store_0_0_post",
+        "parent": "",
+        "position": [
+          0.32999999999999996,
+          0.27499999999999997,
+          15.25
+        ],
+        "size": [
+          0.1,
+          0.5499999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_baseplate_store_0_0_saddle",
+        "parent": "",
+        "position": [
+          0.32999999999999996,
+          0.575,
+          15.25
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_baseplate_store_0_1_post",
+        "parent": "",
+        "position": [
+          0.32999999999999996,
+          0.27499999999999997,
+          15.95
+        ],
+        "size": [
+          0.1,
+          0.5499999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_baseplate_store_0_1_saddle",
+        "parent": "",
+        "position": [
+          0.32999999999999996,
+          0.575,
+          15.95
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_baseplate_store_1_0_post",
+        "parent": "",
+        "position": [
+          1.5699999999999998,
+          0.27499999999999997,
+          15.25
+        ],
+        "size": [
+          0.1,
+          0.5499999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_baseplate_store_1_0_saddle",
+        "parent": "",
+        "position": [
+          1.5699999999999998,
+          0.575,
+          15.25
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_baseplate_store_1_1_post",
+        "parent": "",
+        "position": [
+          1.5699999999999998,
+          0.27499999999999997,
+          15.95
+        ],
+        "size": [
+          0.1,
+          0.5499999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_baseplate_store_1_1_saddle",
+        "parent": "",
+        "position": [
+          1.5699999999999998,
+          0.575,
+          15.95
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_left_0_0_post",
+        "parent": "bulky_insert_head_left",
+        "position": [
+          -0.76,
+          0.39999999999999997,
+          -0.35
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_left_0_0_saddle",
+        "parent": "bulky_insert_head_left",
+        "position": [
+          -0.76,
+          0.825,
+          -0.35
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_left_0_1_post",
+        "parent": "bulky_insert_head_left",
+        "position": [
+          -0.76,
+          0.39999999999999997,
+          0.35
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_left_0_1_saddle",
+        "parent": "bulky_insert_head_left",
+        "position": [
+          -0.76,
+          0.825,
+          0.35
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_left_0_pad",
+        "parent": "bulky_jaw_head_left_0",
+        "position": [
+          -0.76,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_left_1_pad",
+        "parent": "bulky_jaw_head_left_1",
+        "position": [
+          -0.76,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_left_store_0_0_post",
+        "parent": "",
+        "position": [
+          0.6399999999999999,
+          0.39999999999999997,
+          10.25
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_left_store_0_0_saddle",
+        "parent": "",
+        "position": [
+          0.6399999999999999,
+          0.825,
+          10.25
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_left_store_0_1_post",
+        "parent": "",
+        "position": [
+          0.6399999999999999,
+          0.39999999999999997,
+          10.95
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_left_store_0_1_saddle",
+        "parent": "",
+        "position": [
+          0.6399999999999999,
+          0.825,
+          10.95
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_right_0_0_post",
+        "parent": "bulky_insert_head_right",
+        "position": [
+          0.76,
+          0.39999999999999997,
+          -0.35
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_right_0_0_saddle",
+        "parent": "bulky_insert_head_right",
+        "position": [
+          0.76,
+          0.825,
+          -0.35
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_right_0_1_post",
+        "parent": "bulky_insert_head_right",
+        "position": [
+          0.76,
+          0.39999999999999997,
+          0.35
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_right_0_1_saddle",
+        "parent": "bulky_insert_head_right",
+        "position": [
+          0.76,
+          0.825,
+          0.35
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_right_0_pad",
+        "parent": "bulky_jaw_head_right_0",
+        "position": [
+          0.76,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_right_1_pad",
+        "parent": "bulky_jaw_head_right_1",
+        "position": [
+          0.76,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_right_store_0_0_post",
+        "parent": "",
+        "position": [
+          1.56,
+          0.39999999999999997,
+          16.75
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_right_store_0_0_saddle",
+        "parent": "",
+        "position": [
+          1.56,
+          0.825,
+          16.75
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_right_store_0_1_post",
+        "parent": "",
+        "position": [
+          1.56,
+          0.39999999999999997,
+          17.450000000000003
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_right_store_0_1_saddle",
+        "parent": "",
+        "position": [
+          1.56,
+          0.825,
+          17.450000000000003
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_top_0_0_post",
+        "parent": "bulky_insert_head_top",
+        "position": [
+          -0.62,
+          0.39999999999999997,
+          -0.64
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_top_0_0_saddle",
+        "parent": "bulky_insert_head_top",
+        "position": [
+          -0.62,
+          0.825,
+          -0.64
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_top_0_1_post",
+        "parent": "bulky_insert_head_top",
+        "position": [
+          -0.62,
+          0.39999999999999997,
+          0.84
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_top_0_1_saddle",
+        "parent": "bulky_insert_head_top",
+        "position": [
+          -0.62,
+          0.825,
+          0.84
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_top_1_0_post",
+        "parent": "bulky_insert_head_top",
+        "position": [
+          0.62,
+          0.39999999999999997,
+          -0.64
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_top_1_0_saddle",
+        "parent": "bulky_insert_head_top",
+        "position": [
+          0.62,
+          0.825,
+          -0.64
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_top_1_1_post",
+        "parent": "bulky_insert_head_top",
+        "position": [
+          0.62,
+          0.39999999999999997,
+          0.84
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "bulky_insert_head_top_1_1_saddle",
+        "parent": "bulky_insert_head_top",
+        "position": [
+          0.62,
+          0.825,
+          0.84
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_top_0_pad",
+        "parent": "bulky_jaw_head_top_0",
+        "position": [
+          -0.62,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "bulky_jaw_head_top_1_pad",
+        "parent": "bulky_jaw_head_top_1",
+        "position": [
+          -0.62,
+          0,
+          0
+        ],
+        "size": [
+          0.08,
+          0.08,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_top_store_0_0_post",
+        "parent": "",
+        "position": [
+          4.53,
+          0.39999999999999997,
+          9.959999999999999
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_top_store_0_0_saddle",
+        "parent": "",
+        "position": [
+          4.53,
+          0.825,
+          9.959999999999999
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_top_store_0_1_post",
+        "parent": "",
+        "position": [
+          4.53,
+          0.39999999999999997,
+          11.44
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_top_store_0_1_saddle",
+        "parent": "",
+        "position": [
+          4.53,
+          0.825,
+          11.44
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_top_store_1_0_post",
+        "parent": "",
+        "position": [
+          5.7700000000000005,
+          0.39999999999999997,
+          9.959999999999999
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_top_store_1_0_saddle",
+        "parent": "",
+        "position": [
+          5.7700000000000005,
+          0.825,
+          9.959999999999999
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "head_top_store_1_1_post",
+        "parent": "",
+        "position": [
+          5.7700000000000005,
+          0.39999999999999997,
+          11.44
+        ],
+        "size": [
+          0.1,
+          0.7999999999999999,
+          0.1
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "head_top_store_1_1_saddle",
+        "parent": "",
+        "position": [
+          5.7700000000000005,
+          0.825,
+          11.44
+        ],
+        "size": [
+          0.14,
+          0.05,
+          0.16
         ],
         "material": "yellow",
         "solid": true

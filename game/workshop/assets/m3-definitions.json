@@ -2106,6 +2106,46 @@
       "short_title": "Rear upper panel",
       "carry_class": "two_hand",
       "catalogue_image": "res://assets/part-images/pd-rear.svg"
+    },
+    "hd-m24-160": {
+      "family": "HD-M24160",
+      "variant": "hd-m24-160",
+      "title": "HD-M24160 · M24 × 160 neck bolt",
+      "short_title": "M24 × 160 neck bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-m24-160.svg"
+    },
+    "hd-w24": {
+      "family": "HD-W24",
+      "variant": "hd-w24",
+      "title": "HD-W24 · M24 / 4 mm washer",
+      "short_title": "M24 / 4 mm washer",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-w24.svg"
+    },
+    "hd-m12-100": {
+      "family": "HD-M12100",
+      "variant": "hd-m12-100",
+      "title": "HD-M12100 · M12 × 100 side bolt",
+      "short_title": "M12 × 100 side bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-m12-100.svg"
+    },
+    "hd-m12-160": {
+      "family": "HD-M12160",
+      "variant": "hd-m12-160",
+      "title": "HD-M12160 · M12 × 160 top bolt",
+      "short_title": "M12 × 160 top bolt",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-m12-160.svg"
+    },
+    "hd-loom": {
+      "family": "HD-LOOM",
+      "variant": "hd-loom",
+      "title": "HD-LOOM · Keyed central power/data loom and strain relief",
+      "short_title": "Keyed central power/data loom and strain relief",
+      "carry_class": "pocket",
+      "catalogue_image": "res://assets/part-images/hd-loom.svg"
     }
   },
   "assemblies": {
@@ -8031,6 +8071,293 @@
           "label": "PD-REAR · Rear upper closure panel",
           "access_policy": "mounted",
           "undo_to": "hands"
+        },
+        "head_baseplate": {
+          "assembly": "head_baseplate",
+          "milestone": "prepared",
+          "requires": [
+            "left_pauldron/front",
+            "left_pauldron/rear",
+            "right_pauldron/front",
+            "right_pauldron/rear"
+          ],
+          "pose_source": "HD-HEAD_BASEPLATE-SEAT__001",
+          "label": "Head baseplate",
+          "support_required": true,
+          "source_supports": [
+            "m2_service_crane"
+          ],
+          "undo_requires_support": "m2_service_crane",
+          "secured_by": [
+            "hd-w24/001",
+            "hd-m24160/001",
+            "hd-w24/002",
+            "hd-m24160/002",
+            "hd-w24/003",
+            "hd-m24160/003",
+            "hd-w24/004",
+            "hd-m24160/004"
+          ],
+          "access_policy": "mounted"
+        },
+        "hd-w24/001": {
+          "accepts": "hd-w24",
+          "pose_source": "HD-W24__001",
+          "requires": [
+            "head_baseplate"
+          ],
+          "label": "HD-W24 · M24 / 4 mm washer",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m24160/001": {
+          "accepts": "hd-m24-160",
+          "pose_source": "HD-M24160__001",
+          "requires": [
+            "hd-w24/001"
+          ],
+          "label": "HD-M24160 · M24 × 160 neck bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-w24/002": {
+          "accepts": "hd-w24",
+          "pose_source": "HD-W24__002",
+          "requires": [
+            "head_baseplate"
+          ],
+          "label": "HD-W24 · M24 / 4 mm washer",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m24160/002": {
+          "accepts": "hd-m24-160",
+          "pose_source": "HD-M24160__002",
+          "requires": [
+            "hd-w24/002"
+          ],
+          "label": "HD-M24160 · M24 × 160 neck bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-w24/003": {
+          "accepts": "hd-w24",
+          "pose_source": "HD-W24__003",
+          "requires": [
+            "head_baseplate"
+          ],
+          "label": "HD-W24 · M24 / 4 mm washer",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m24160/003": {
+          "accepts": "hd-m24-160",
+          "pose_source": "HD-M24160__003",
+          "requires": [
+            "hd-w24/003"
+          ],
+          "label": "HD-M24160 · M24 × 160 neck bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-w24/004": {
+          "accepts": "hd-w24",
+          "pose_source": "HD-W24__004",
+          "requires": [
+            "head_baseplate"
+          ],
+          "label": "HD-W24 · M24 / 4 mm washer",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m24160/004": {
+          "accepts": "hd-m24-160",
+          "pose_source": "HD-M24160__004",
+          "requires": [
+            "hd-w24/004"
+          ],
+          "label": "HD-M24160 · M24 × 160 neck bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-loom/001": {
+          "accepts": "hd-loom",
+          "pose_source": "HD-LOOM__001",
+          "requires": [
+            "hd-w24/001",
+            "hd-m24160/001",
+            "hd-w24/002",
+            "hd-m24160/002",
+            "hd-w24/003",
+            "hd-m24160/003",
+            "hd-w24/004",
+            "hd-m24160/004"
+          ],
+          "label": "HD-LOOM · Keyed central power/data loom and strain relief",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "head_left": {
+          "assembly": "head_left",
+          "milestone": "prepared",
+          "requires": [
+            "head_baseplate",
+            "hd-w24/001",
+            "hd-m24160/001",
+            "hd-w24/002",
+            "hd-m24160/002",
+            "hd-w24/003",
+            "hd-m24160/003",
+            "hd-w24/004",
+            "hd-m24160/004",
+            "hd-loom/001"
+          ],
+          "pose_source": "HD-HEAD_LEFT-SEAT__001",
+          "label": "Left wraparound side",
+          "support_required": true,
+          "source_supports": [
+            "m2_service_crane"
+          ],
+          "undo_requires_support": "m2_service_crane",
+          "secured_by": [
+            "hd-m12100/001",
+            "hd-m12100/002"
+          ],
+          "access_policy": "mounted"
+        },
+        "hd-m12100/001": {
+          "accepts": "hd-m12-100",
+          "pose_source": "HD-M12100__001",
+          "requires": [
+            "head_left"
+          ],
+          "label": "HD-M12100 · M12 × 100 side bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m12100/002": {
+          "accepts": "hd-m12-100",
+          "pose_source": "HD-M12100__002",
+          "requires": [
+            "head_left"
+          ],
+          "label": "HD-M12100 · M12 × 100 side bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "head_right": {
+          "assembly": "head_right",
+          "milestone": "prepared",
+          "requires": [
+            "head_baseplate",
+            "hd-w24/001",
+            "hd-m24160/001",
+            "hd-w24/002",
+            "hd-m24160/002",
+            "hd-w24/003",
+            "hd-m24160/003",
+            "hd-w24/004",
+            "hd-m24160/004",
+            "hd-loom/001"
+          ],
+          "pose_source": "HD-HEAD_RIGHT-SEAT__001",
+          "label": "Right wraparound side",
+          "support_required": true,
+          "source_supports": [
+            "m2_service_crane"
+          ],
+          "undo_requires_support": "m2_service_crane",
+          "secured_by": [
+            "hd-m12100/003",
+            "hd-m12100/004"
+          ],
+          "access_policy": "mounted"
+        },
+        "hd-m12100/003": {
+          "accepts": "hd-m12-100",
+          "pose_source": "HD-M12100__003",
+          "requires": [
+            "head_right"
+          ],
+          "label": "HD-M12100 · M12 × 100 side bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m12100/004": {
+          "accepts": "hd-m12-100",
+          "pose_source": "HD-M12100__004",
+          "requires": [
+            "head_right"
+          ],
+          "label": "HD-M12100 · M12 × 100 side bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "head_top": {
+          "assembly": "head_top",
+          "milestone": "prepared",
+          "requires": [
+            "head_left",
+            "hd-m12100/001",
+            "hd-m12100/002",
+            "head_right",
+            "hd-m12100/003",
+            "hd-m12100/004"
+          ],
+          "pose_source": "HD-HEAD_TOP-SEAT__001",
+          "label": "Structural head top",
+          "support_required": true,
+          "source_supports": [
+            "m2_service_crane"
+          ],
+          "undo_requires_support": "m2_service_crane",
+          "secured_by": [
+            "hd-m12160/001",
+            "hd-m12160/002",
+            "hd-m12160/003",
+            "hd-m12160/004"
+          ],
+          "access_policy": "mounted"
+        },
+        "hd-m12160/001": {
+          "accepts": "hd-m12-160",
+          "pose_source": "HD-M12160__001",
+          "requires": [
+            "head_top"
+          ],
+          "label": "HD-M12160 · M12 × 160 top bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m12160/002": {
+          "accepts": "hd-m12-160",
+          "pose_source": "HD-M12160__002",
+          "requires": [
+            "head_top"
+          ],
+          "label": "HD-M12160 · M12 × 160 top bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m12160/003": {
+          "accepts": "hd-m12-160",
+          "pose_source": "HD-M12160__003",
+          "requires": [
+            "head_top"
+          ],
+          "label": "HD-M12160 · M12 × 160 top bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
+        },
+        "hd-m12160/004": {
+          "accepts": "hd-m12-160",
+          "pose_source": "HD-M12160__004",
+          "requires": [
+            "head_top"
+          ],
+          "label": "HD-M12160 · M12 × 160 top bolt",
+          "access_policy": "mounted",
+          "undo_requires_support": "m2_service_crane"
         }
       },
       "supplied_milestones": [
@@ -8230,6 +8557,46 @@
           "right_pauldron/bolt_4",
           "right_pauldron/front",
           "right_pauldron/rear"
+        ],
+        "head_baseplate_retained": [
+          "head_baseplate",
+          "hd-w24/001",
+          "hd-m24160/001",
+          "hd-w24/002",
+          "hd-m24160/002",
+          "hd-w24/003",
+          "hd-m24160/003",
+          "hd-w24/004",
+          "hd-m24160/004"
+        ],
+        "head_baseplate_connected": [
+          "head_baseplate",
+          "hd-w24/001",
+          "hd-m24160/001",
+          "hd-w24/002",
+          "hd-m24160/002",
+          "hd-w24/003",
+          "hd-m24160/003",
+          "hd-w24/004",
+          "hd-m24160/004",
+          "hd-loom/001"
+        ],
+        "head_left_retained": [
+          "head_left",
+          "hd-m12100/001",
+          "hd-m12100/002"
+        ],
+        "head_right_retained": [
+          "head_right",
+          "hd-m12100/003",
+          "hd-m12100/004"
+        ],
+        "head_top_retained": [
+          "head_top",
+          "hd-m12160/001",
+          "hd-m12160/002",
+          "hd-m12160/003",
+          "hd-m12160/004"
         ]
       },
       "manual": [
@@ -9342,6 +9709,291 @@
               "context_padding": 0.08
             }
           ]
+        },
+        {
+          "title": "Head baseplate: deliver",
+          "body": "Fit matching head baseplate upright inserts on the empty lowered bulky fixture. Use Head baseplate to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Head baseplate; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 24 cm onto the seat. Keep the rig attached. The underside starts at robot Z15.64: 6 cm to pilot entry, then 18 cm to the flange; the front key rejects reversed yaw.",
+          "slots": [
+            "head_baseplate"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Head baseplate: deliver",
+              "sources": [
+                "HD-HEAD_BASEPLATE-SEAT__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Head baseplate: retain",
+          "body": "Fit four HD-W24 4 mm washers and four HD-M24160 bolts down into the torso's captive flange threads. Work from the open front before shells close access; the rear pair uses the specified deeper tool lane. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "slots": [
+            "hd-w24/001",
+            "hd-m24160/001",
+            "hd-w24/002",
+            "hd-m24160/002",
+            "hd-w24/003",
+            "hd-m24160/003",
+            "hd-w24/004",
+            "hd-m24160/004"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Head baseplate: retain",
+              "sources": [
+                "HD-W24__001",
+                "HD-M24160__001",
+                "HD-W24__002",
+                "HD-M24160__002",
+                "HD-W24__003",
+                "HD-M24160__003",
+                "HD-W24__004",
+                "HD-M24160__004"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Head baseplate: connect loom",
+          "body": "After all four neck bolt/washer pairs, plug the keyed central power/data loom and bond at the exposed front disconnects. Clip strain relief up the right portal, keeping bolt lanes and the future sensor slide clear. Then release and stow both upward magnetic ends from the open front before either side shell.",
+          "slots": [
+            "hd-loom/001"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Head baseplate: connect loom",
+              "sources": [
+                "HD-LOOM__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Left wraparound side: deliver",
+          "body": "Fit matching left wraparound side upright inserts on the empty lowered bulky fixture. Use Left wraparound side to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Left wraparound side; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the rig attached. The side pockets/hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "slots": [
+            "head_left"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Left wraparound side: deliver",
+              "sources": [
+                "HD-HEAD_LEFT-SEAT__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Left wraparound side: retain",
+          "body": "Fit 2 HD-M12100 bolts horizontally through the exposed recesses into captive frame threads. Rear top bolts enter forward from the rear flanks; front bolts enter rearward from the front landing. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "slots": [
+            "hd-m12100/001",
+            "hd-m12100/002"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Left wraparound side: retain",
+              "sources": [
+                "HD-M12100__001",
+                "HD-M12100__002"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Right wraparound side: deliver",
+          "body": "Fit matching right wraparound side upright inserts on the empty lowered bulky fixture. Use Right wraparound side to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Right wraparound side; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the rig attached. The side pockets/hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "slots": [
+            "head_right"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Right wraparound side: deliver",
+              "sources": [
+                "HD-HEAD_RIGHT-SEAT__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Right wraparound side: retain",
+          "body": "Fit 2 HD-M12100 bolts horizontally through the exposed recesses into captive frame threads. Rear top bolts enter forward from the rear flanks; front bolts enter rearward from the front landing. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "slots": [
+            "hd-m12100/003",
+            "hd-m12100/004"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Right wraparound side: retain",
+              "sources": [
+                "HD-M12100__003",
+                "HD-M12100__004"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Structural head top: deliver",
+          "body": "Fit matching structural head top upright inserts on the empty lowered bulky fixture. Use Structural head top to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Structural head top; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the rig attached. The side pockets/hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "slots": [
+            "head_top"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Structural head top: deliver",
+              "sources": [
+                "HD-HEAD_TOP-SEAT__001"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Structural head top: retain",
+          "body": "Fit 4 HD-M12160 bolts horizontally through the exposed recesses into captive frame threads. Rear top bolts enter forward from the rear flanks; front bolts enter rearward from the front landing. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "slots": [
+            "hd-m12160/001",
+            "hd-m12160/002",
+            "hd-m12160/003",
+            "hd-m12160/004"
+          ],
+          "view": "components",
+          "diagram_views": [
+            {
+              "title": "Structural head top: retain",
+              "sources": [
+                "HD-M12160__001",
+                "HD-M12160__002",
+                "HD-M12160__003",
+                "HD-M12160__004"
+              ],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
         }
       ]
     },
@@ -9679,6 +10331,134 @@
           "view": "overview",
           "slots": [],
           "body": "Open bottom and inboard cavity; use the two front/rear rig plates. Mounting bolts and panels belong to the chest manual."
+        }
+      ]
+    },
+    "head_baseplate": {
+      "title": "Prepared head baseplate",
+      "carry_class": "equipment",
+      "bounds": [
+        2,
+        2,
+        1.8
+      ],
+      "work_locations": [
+        "support",
+        "parent"
+      ],
+      "interaction": "components",
+      "context_sources": [
+        "HD-HEAD_BASEPLATE__001"
+      ],
+      "slots": {},
+      "supplied_milestones": [
+        "prepared"
+      ],
+      "milestones": {
+        "prepared": []
+      },
+      "manual": [
+        {
+          "title": "Head baseplate preparation supplied",
+          "view": "overview",
+          "slots": [],
+          "body": "Upright structural frames, locating tabs and magnetic pads are prepared. The chest manual owns installation and external hardware."
+        }
+      ]
+    },
+    "head_left": {
+      "title": "Prepared left wraparound side",
+      "carry_class": "equipment",
+      "bounds": [
+        2,
+        2,
+        1.8
+      ],
+      "work_locations": [
+        "support",
+        "parent"
+      ],
+      "interaction": "components",
+      "context_sources": [
+        "HD-HEAD_LEFT__001"
+      ],
+      "slots": {},
+      "supplied_milestones": [
+        "prepared"
+      ],
+      "milestones": {
+        "prepared": []
+      },
+      "manual": [
+        {
+          "title": "Left wraparound side preparation supplied",
+          "view": "overview",
+          "slots": [],
+          "body": "Upright structural frames, locating tabs and magnetic pads are prepared. The chest manual owns installation and external hardware."
+        }
+      ]
+    },
+    "head_right": {
+      "title": "Prepared right wraparound side",
+      "carry_class": "equipment",
+      "bounds": [
+        2,
+        2,
+        1.8
+      ],
+      "work_locations": [
+        "support",
+        "parent"
+      ],
+      "interaction": "components",
+      "context_sources": [
+        "HD-HEAD_RIGHT__001"
+      ],
+      "slots": {},
+      "supplied_milestones": [
+        "prepared"
+      ],
+      "milestones": {
+        "prepared": []
+      },
+      "manual": [
+        {
+          "title": "Right wraparound side preparation supplied",
+          "view": "overview",
+          "slots": [],
+          "body": "Upright structural frames, locating tabs and magnetic pads are prepared. The chest manual owns installation and external hardware."
+        }
+      ]
+    },
+    "head_top": {
+      "title": "Prepared structural head top",
+      "carry_class": "equipment",
+      "bounds": [
+        2,
+        2,
+        1.8
+      ],
+      "work_locations": [
+        "support",
+        "parent"
+      ],
+      "interaction": "components",
+      "context_sources": [
+        "HD-HEAD_TOP__001"
+      ],
+      "slots": {},
+      "supplied_milestones": [
+        "prepared"
+      ],
+      "milestones": {
+        "prepared": []
+      },
+      "manual": [
+        {
+          "title": "Structural head top preparation supplied",
+          "view": "overview",
+          "slots": [],
+          "body": "Upright structural frames, locating tabs and magnetic pads are prepared. The chest manual owns installation and external hardware."
         }
       ]
     },

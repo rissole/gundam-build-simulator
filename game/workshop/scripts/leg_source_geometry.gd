@@ -60,7 +60,7 @@ static func make_mesh(descriptor: Dictionary) -> ArrayMesh:
 				_extrude(surface, contours, shape.length, _axis_basis(shape.get("axis", "y")), center)
 			"plate":
 				var size = vec(shape.size)
-				if shape.get("axis", "y") == "x":
+				if shape.get("axis", "y") is String and shape.get("axis", "y") == "x":
 					size = Vector3(size.y, size.x, size.z)
 				var contours: Array[PackedVector2Array] = [_rectangle(Vector2.ZERO, Vector2(size.x, size.z))]
 				_add_holes(contours, shape)

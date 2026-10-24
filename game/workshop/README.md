@@ -62,7 +62,7 @@ with the same equipment commands as the mechanical tests, then hands over paused
 Fastenings and rigging are supplied, so this is not playtest evidence, and nothing
 is saved. Restart re-runs the shortcut. Stages: `pelvis`, `left_leg_build`,
 `left_leg_dock`, `right_leg_build`, `right_leg_dock`, `chest`, `core`, `backpack`,
-`left_arm`, `right_arm`, `pauldrons` (later tasks add `head`, `head_sensors`,
+`left_arm`, `right_arm`, `pauldrons`, `head`, `head_sensors` (task 09 adds
 `complete`). Preparation takes up to about a minute. Don't use the controls until
 the overlay closes.
 

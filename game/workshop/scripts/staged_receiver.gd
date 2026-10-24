@@ -36,7 +36,7 @@ func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the local restraint."
 	var operation=action.get_slice(":",1)
 	if action.get_slice(":",0) not in ["release","engage"] or not released_operations.has(operation):return "Unknown receiver operation."
-	if action.begins_with("release:") and (not retained() or not _has(spec.closure_slots) or _attached()):return "Retain the carrier, release its rig and close both panels before releasing restraints."
+	if action.begins_with("release:") and (not retained() or not _has(spec.closure_slots) or _attached()):return "Retain "+_title()+", release its rig and fit all closures before releasing "+spec.operations.filter(func(op):return op.id==operation)[0].label+"."
 	return game.hands.error(equipment_id)
 
 func request(action: String) -> String:
@@ -52,6 +52,15 @@ func operations_released() -> bool:return released_operations.values().all(func(
 
 func _sync() -> void:
 	active=game.model.assemblies[spec.uid].parent==spec.owner and game.model.assemblies[spec.uid].parent_slot==spec.slot
+
+func _title() -> String:return spec.get("title",spec.uid.replace("_"," "))
+
+func rig_changed() -> void:
+	if not spec.has("rig_zone"):return
+	var crane=_crane()
+	if crane.task==spec.crane_task and crane.endpoints.values().any(func(end):return end.state!="stowed"):
+		game.zones.claim(spec.rig_zone,equipment_id)
+	else:game.zones.release(spec.rig_zone,equipment_id)
 
 func _crane() -> Node:return game.equipment.get_equipment("service_crane")
 func _attached() -> bool:
@@ -76,12 +85,25 @@ func receiving_error(_uid: String = "") -> String:
 	for requirement in spec.get("requires",[]):
 		if not game.model.milestone(requirement.get_slice(":",0),requirement.get_slice(":",1)):
 			return "Complete "+requirement.replace(":"," · ").replace("_"," ")+" before delivery."
+	for zone in spec.get("clear_zones",[]):
+		if not game.zones.holder(zone).is_empty():return "Stow every crane end at "+zone.trim_suffix("_rig").replace("_"," ")+" before delivery."
 	return ""
 
 func load_pose() -> Transform3D:
 	return game.runtime.node(spec.owner).global_transform*Transform3D(Basis.from_euler(AssemblyRuntime.vec(spec.seat.get("rotation_degrees",[0,0,0]))*PI/180),AssemblyRuntime.vec(spec.seat.position))
 
 func beam_pose() -> Transform3D:return _crane()._load_beam(load_pose())
+
+## Existing rig-adapter contract lets fixture transfers use the same pad normals.
+func beam_for_load(frame: Transform3D) -> Transform3D:
+	var crane=_crane();var center=Vector3.ZERO;var top=-INF
+	for point in crane.points:
+		var at: Vector3=frame*point;center+=at;top=maxf(top,at.y)
+	center/=crane.points.size();center.y=top+float(crane.config.spec.rig_clearance)
+	return Transform3D(Basis.IDENTITY,center)
+func transport_shapes() -> Array[Dictionary]:return []
+func rig_solids(frame: Transform3D, _progress: float) -> Array[Dictionary]:return _crane().rig_solids(frame)
+func refresh_rig() -> void:pass
 
 func end_transform(frame: Transform3D, index: int) -> Transform3D:
 	var normal=AssemblyRuntime.vec(spec.rig.normals[index])
@@ -93,6 +115,7 @@ func cable_position(frame: Transform3D, index: int) -> Vector3:
 func accept() -> String:
 	var error=receiving_error()
 	if not error.is_empty():return error
+	if spec.get("keyed",false) and not game.runtime.node(spec.uid).global_basis.is_equal_approx(load_pose().basis):return "Align the keyed front of "+_title()+" before seating."
 	var result: Dictionary=game.model.install_supported(spec.owner,spec.slot,spec.uid,_crane().support)
 	if not result.ok:return result.error
 	game.runtime.mount(spec.owner,spec.slot,spec.uid);game.refresh_assembly_collision(spec.owner)
@@ -100,7 +123,7 @@ func accept() -> String:
 
 func rig_error(action: String, _point: String) -> String:
 	if action=="detach" and not retained():return "Fit all receiver retention before releasing a crane end."
-	if action=="attach" and spec.closure_slots.any(func(sid):return _has([sid])):return "Remove the closure panels before refitting the crane ends."
+	if action=="attach" and spec.closure_slots.any(func(sid):return _has([sid])):return "Remove the closures of "+_title()+" before refitting the crane ends."
 	return ""
 
 func departure_error() -> String:
@@ -111,7 +134,7 @@ func departure_error() -> String:
 func placement_error(owner: String, sid: String) -> String:
 	if owner!=spec.owner:return ""
 	if sid in spec.closure_slots:
-		return "Retain the carrier and release every crane end before fitting closure panels." if not retained() or _attached() else ""
+		return "Retain "+_title()+" and release every crane end before fitting its closures." if not retained() or _attached() else ""
 	if sid in spec.retention_slots:return "Keep the matching crane down with all ends attached while fitting retention." if not active or not rigged() else ""
 	return ""
 
@@ -121,6 +144,6 @@ func access_error(owner: String) -> String:
 func undo(owner: String) -> Dictionary:
 	if owner!=spec.owner or game.model.assemblies[owner].history.is_empty():return {"handled":false,"error":""}
 	var sid: String=game.model.assemblies[owner].history.back().slot
-	if sid in spec.closure_slots and released_operations.values().any(func(value):return value):return {"handled":true,"error":"Re-engage the local restraints before opening closure panels for correction."}
+	if sid in spec.closure_slots and released_operations.values().any(func(value):return value):return {"handled":true,"error":"Re-engage the local restraints of "+_title()+" before opening its closures for correction."}
 	if sid in spec.retention_slots and not rigged():return {"handled":true,"error":"Lower the matching crane and attach every end before removing retention."}
 	return {"handled":false,"error":""}

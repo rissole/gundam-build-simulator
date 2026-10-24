@@ -412,3 +412,23 @@ strength, rated magnets/rigging and mass distribution, optical technology,
 weather seals, full manufactured inventory/part identifiers, source models and
 playable manuals. These selected interfaces supersede the earlier open interface
 questions; they are not additional user-approved dimensions or gameplay evidence.
+
+## Wider M3 head implementation — 2026-10-24
+
+- `game/workshop/tools/author_m3_head.py` authors the baseplate, handed rear-wrap
+  sides and structural roof from the interface/handling sections above and the
+  final-assembly plan's fixture, crane-route and work-patch tables.
+- Four passive upright stores in the bulky bay feed the shared fixture at
+  X3.25/Z13; exchangeable saddles/jaws use 0.60 m baseplate and 0.85 m shell seats.
+  The fixture's common upper members now end at Y0.58 to clear the low plate.
+- Separate M24×160 bolts/4 mm washers, M12×100 side bolts, M12×160 roof bolts
+  and the head-owned loom belong to the chest manual; preparation is supplied.
+- Receiver milestones gate retention/services; rig zones require every preceding
+  end stowed before shells/roof. `head_sensors` starts after structural retention,
+  loom connection, rig release and crane parking, with the front slide open.
+- Blockout deviation: the raised hub has a faceted, flared front-key relief;
+  moving bearing-face proxies use 2 mm contact tolerance around the 1 mm sweep
+  margin. Actual source seats retain the specified planes and keyed pilot bore.
+- Payload/full-rig preflight includes fitted neighbors/hardware and rejects low
+  crossings and reversed plate entry. Mechanical/manual checks are automated;
+  walking, reach/visibility, manufactured detail and presentation remain unreviewed.

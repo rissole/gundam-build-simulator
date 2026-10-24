@@ -17,7 +17,7 @@ func run() -> void:
 		var errors: Array[String]=stages.stage_errors(stage)
 		expect(errors.is_empty(),stage+" starts at its boundary: "+str(errors))
 		if not errors.is_empty():break
-		if stage=="head":
+		if stage=="head_sensors":
 			expect(not stages.complete(stage).is_empty(),"last stage has no completion yet")
 			break
 		var error: String=stages.complete(stage)
@@ -26,6 +26,6 @@ func run() -> void:
 		if stage=="pelvis":expect(not (await stages.run_to("chest")).is_empty(),"stage runner rejects a non-fresh workshop")
 		await process_frame
 	var passed=checks.all(func(check):return check.passed)
-	write_evidence("res://verification/m3-sequence.json",{"scope":"shared supplied happy path through closed pauldrons and released restraints; no walking/access/rendered review","checks":checks})
+	write_evidence("res://verification/m3-sequence.json",{"scope":"shared supplied happy path through retained structural head and connected loom; no walking/access/rendered review","checks":checks})
 	print("M3_SEQUENCE ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)

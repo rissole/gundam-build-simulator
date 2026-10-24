@@ -155,7 +155,7 @@ def extend(trial, chest, arms, kinds, layout, diagram):
         trial["parents"].append(dict(id=uid,definition=uid,label=definitions[uid]["title"],location="support:"+uid+"_store",home=task["source_pose"]["position"]))
         trial["supports"][uid+"_store"]=dict(assemblies=[uid],assembly_ids=[uid])
         for key in ["assemblies","assembly_ids"]:trial["supports"]["m2_service_crane"][key].append(uid)
-        trial["equipment"].setdefault("receivers",{})[uid+"_receiver"]=dict(uid=uid,owner="chest",slot=uid,seat=pose(carrier_at),crane_task=uid,
+        trial["equipment"].setdefault("receivers",{})[uid+"_receiver"]=dict(title=definitions[uid]["title"],uid=uid,owner="chest",slot=uid,seat=pose(carrier_at),crane_task=uid,
             requires=["chest:"+side+"_arm_connected"],retention_slots=bolts,closure_slots=panels,
             rig=dict(normals=[[0,0,-1],[0,0,1]]),
             operations=[dict(id="joint_restraints",owner=side+"_arm",source=prefix+"-JOINT-RESTRAINTS__001",point=[sign*.46,0,3],label="elbow / wrist restraints"),

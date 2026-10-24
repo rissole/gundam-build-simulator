@@ -37,6 +37,14 @@ existing scenarios. Replacement applies to M3.
 
 ### Implementation ledger — 2026-10-24
 
+- Task 08 adds four head crane pieces on staged receivers, upright bulky-fixture
+  inserts and store transfers, separate retention/loom stock, and `head_sensors`.
+  Full-payload/full-rig preflight and supported-correction/manual checks cover
+  this structural subset; hand-carried closures and crown remain task 09.
+  See [head implementation details](../head.md#wider-m3-head-implementation--2026-10-24)
+  for source locations, contact tolerance and the hub relief deviation. Walking,
+  reach/visibility and rendered presentation have not been reviewed.
+
 - Task 07 adds content-driven guided receivers, `game.zones` occupancy for the
   shared limb station, and both pauldron carriers, M20 bolt units, independent
   shelf-carried panels and local restraint release. The `head` development stage

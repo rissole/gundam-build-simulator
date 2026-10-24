@@ -461,12 +461,14 @@ func point_position(id: String) -> Vector3:
 	return load_pose()*points[POINT_IDS.find(id)]
 
 func _end_transform(frame: Transform3D,index: int) -> Transform3D:
+	if config.spec.has("rig_adapter") and game.equipment.get_equipment(config.spec.rig_adapter).has_method("end_transform"):return game.equipment.get_equipment(config.spec.rig_adapter).end_transform(frame,index)
 	if _guide()!=null and _guide().has_method("end_transform"):return _guide().end_transform(frame,index)
 	if config.spec.has("magnetic_normal"):
 		return Transform3D(frame.basis,frame*(points[index]+AssemblyRuntime.vec(config.spec.magnetic_normal)*.045))
 	return Transform3D(Basis.IDENTITY,frame*points[index])
 
 func _cable_position(frame: Transform3D,index: int) -> Vector3:
+	if config.spec.has("rig_adapter") and game.equipment.get_equipment(config.spec.rig_adapter).has_method("cable_position"):return game.equipment.get_equipment(config.spec.rig_adapter).cable_position(frame,index)
 	if _guide()!=null and _guide().has_method("cable_position"):return _guide().cable_position(frame,index)
 	return frame*(points[index]+AssemblyRuntime.vec(config.spec.get("magnetic_normal",[0,0,0]))*.09)
 

@@ -28,9 +28,10 @@ JOLT_STALL = "Waiting for jobs to become available"
 # A finished suite prints its summary and should exit immediately. Longer than
 # this means quit() never ran; the case's time cap covers a suite still working.
 SUMMARY_GRACE = 5.0
-# The complete walked M3 route includes repeated construction and fresh-scene
-# disk restores. Other cases retain the short cap and all fail-fast checks.
-CASE_TIMEOUTS = {"m3_acceptance_test": 900.0, "arm_delivery_test": 600.0}
+# The historical walked route and arm section have longer caps. Stage-flag
+# coverage prepares five independent fresh workshops, including the structural
+# head; its full replay exceeds 180 s. Fail-fast engine checks still apply.
+CASE_TIMEOUTS = {"m3_acceptance_test": 900.0, "arm_delivery_test": 600.0, "m3_stage_flag_test": 360.0}
 # Historical single-leg walking/access evidence is retained on disk. M3's
 # wider-workshop plan explicitly assigns those acceptance checks to the user.
 # Do not silently bring them back through default discovery or --only.
