@@ -26,8 +26,11 @@ PYTHON_SUMMARY = re.compile(r"^Ran \d+ tests? in |^(?:OK|FAILED)\b", re.MULTILIN
 SCRIPT_ERROR = "SCRIPT ERROR:"
 JOLT_STALL = "Waiting for jobs to become available"
 # A finished suite prints its summary and should exit immediately. Longer than
-# this means quit() never ran; the 180s cap remains for a case still working.
+# this means quit() never ran; the case's time cap covers a suite still working.
 SUMMARY_GRACE = 5.0
+# The complete walked M3 route includes repeated construction and fresh-scene
+# disk restores. Other cases retain the short cap and all fail-fast checks.
+CASE_TIMEOUTS = {"m3_acceptance_test": 900.0}
 
 
 def is_scene_tree(path: Path, visited: frozenset[Path] = frozenset()) -> bool:
@@ -48,23 +51,26 @@ def is_scene_tree(path: Path, visited: frozenset[Path] = frozenset()) -> bool:
 class Case:
     arguments: list[str]
     kind: str = "godot"
+    timeout: float = 180.0
 
 
 def cases() -> dict[str, Case]:
     result = {}
     for path in sorted((PROJECT / "tests").glob("*_test.gd")):
         if is_scene_tree(path):
-            result[path.stem] = Case(["--script", "tests/" + path.name])
+            result[path.stem] = Case(["--script", "tests/" + path.name],
+                                     timeout=CASE_TIMEOUTS.get(path.stem, 180.0))
     aliases = {
         "default_workshop_launch": [],
         "foot_workshop_launch": ["--foot-workshop"],
         "m2_workshop_launch": ["--m2-workshop"],
         "m2_retention_launch": ["--m2-workshop", "--m2-trial=retention"],
         "m2_crane_launch": ["--m2-workshop", "--m2-trial=crane"],
+        "m3_workshop_launch": ["--m3-workshop"],
     }
     for name, arguments in aliases.items():
         result[name] = Case(["--quit-after", "5", "--", *arguments], "launch")
-    for profile in ("foot", "pads_single", "pads_multi", "leg_bay_retention", "leg_bay_crane"):
+    for profile in ("foot", "pads_single", "pads_multi", "leg_bay_retention", "leg_bay_crane", "leg_bay_m3"):
         result[profile + "_profile_launch"] = Case(
             ["--quit-after", "5", "--", "--profile=" + profile], "launch")
     result["source_assets"] = Case(
@@ -202,7 +208,7 @@ def settle_job(job: Job, now: float, timeout: float) -> dict | None:
     return job.result(code, timed_out)
 
 
-def run_pool(chosen: list[str], available: dict[str, Case], output: Path, jobs: int, timeout: float) -> list[dict]:
+def run_pool(chosen: list[str], available: dict[str, Case], output: Path, jobs: int, timeout: float | None) -> list[dict]:
     queue = list(chosen)
     active: list[Job] = []
     finished: dict[str, dict] = {}
@@ -223,7 +229,7 @@ def run_pool(chosen: list[str], available: dict[str, Case], output: Path, jobs: 
         for job in active:
             if job.process.stdout is not None and id(job.process.stdout) in ready_ids:
                 job.drain()
-            result = settle_job(job, now, timeout)
+            result = settle_job(job, now, job.case.timeout if timeout is None else timeout)
             if result is None:
                 still.append(job)
                 continue
@@ -241,7 +247,8 @@ def main() -> int:
     parser.add_argument("--list", action="store_true")
     parser.add_argument("--only", nargs="+", help="Case names from --list")
     parser.add_argument("--jobs", type=int, default=3, help="Independent cases to run at once")
-    parser.add_argument("--timeout", type=float, default=180, help="Per-case timeout in seconds")
+    parser.add_argument("--timeout", type=float,
+                        help="Override every case's timeout in seconds (default 180; full M3 journey 900)")
     args = parser.parse_args()
     if args.jobs < 1:
         parser.error("--jobs must be at least 1")

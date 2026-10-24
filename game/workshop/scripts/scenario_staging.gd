@@ -53,6 +53,9 @@ static func prepare(game: Node) -> void:
 		_check_result(game.model.install("foot",sid,child),"mount "+child)
 		game.runtime.mount("foot",sid,child)
 	fill(game,"foot")
+	if game.profile.trial == "m3":
+		game.active_build = "pad_1"
+		return
 	_check_result(game.model.install_supported("left_leg","foot","foot","foot_carrier"),"seat foot on leg")
 	game.runtime.mount("left_leg","foot","foot")
 	fill(game,"left_leg",game.leg_content.m2.staged_slots.left_leg)

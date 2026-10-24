@@ -37,7 +37,10 @@ var path: float:
 	get:return _path(station,raised,motion,progress)
 var endpoints: Dictionary = {}
 var load_body: AnimatableBody3D
+var stock_bodies: Dictionary = {}
 var beam: Node3D
+var rig_bar: MeshInstance3D
+var rig_center = 1.7
 var end_nodes: Dictionary = {}
 var cables: Dictionary = {}
 var markers: Dictionary = {}
@@ -45,6 +48,10 @@ var mast_cable: MeshInstance3D
 var console_node: MeshInstance3D
 var console: CanvasLayer
 var physical_status: Label3D
+
+var tasks: Dictionary = {}
+var task = ""
+var complete_journey = false
 
 var assisting: bool:
 	get:return _installed() and attached_count() > 0
@@ -54,38 +61,52 @@ func setup(workshop: Node3D, scene_layout: Node3D, contract: Dictionary = {}) ->
 	hand_payload_hint = "Attach or Q-stow the held magnetic end first."
 	hands_full_hint = "Stow the component or assembly in your hand before handling a magnetic end."
 	support = contract.get("support",support);source_support = contract.get("source_support",source_support);uid = contract.get("uid",uid)
-	var spec: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().crane
-	load_owner = spec.owner;slot = spec.slot
-	secured_milestone = spec.secured.milestone
-	fastener_slots = game.runtime.definition(load_owner).milestones[secured_milestone].filter(func(sid):return sid != slot)
-	END_IDS = spec.endpoint_ids.duplicate();POINT_IDS = spec.magnetic_points.keys()
-	for id in END_IDS:endpoints[id] = {"state":"stowed","point":""}
-	for id in POINT_IDS:points.append(AssemblyRuntime.vec(spec.magnetic_points[id]))
-	up_y = spec.up_y;park_position = AssemblyRuntime.vec(spec.park_position)
-	approach_offset = -AssemblyRuntime.vec(spec.approach.axis)*spec.approach.distance
-	source_pose = contract.source_pose
-	receiver_pose = contract.receiver_pose
-	route.assign(contract.route)
-	excluded.assign(contract.get("excluded",[]))
+	var crane_spec: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().crane
+	complete_journey = crane_spec.has("tasks")
+	if complete_journey:tasks = crane_spec.tasks;task = crane_spec.task
+	_configure_task(contract)
 	_make_load();_make_rig();_make_console(contract.console_position)
 	console = Console.new();add_child(console);console.setup(self)
 	game.model.changed.connect(_refresh)
 	_refresh()
 
 
+func _configure_task(contract: Dictionary) -> void:
+	var spec: Dictionary = contract.get("spec",preload("res://scripts/leg_bay_layout.gd").layout().crane)
+	support = spec.support;source_support = spec.source_support;uid = spec.load_uid
+	load_owner = spec.owner;slot = spec.slot;secured_milestone = spec.secured.milestone
+	fastener_slots = game.runtime.definition(load_owner).milestones[secured_milestone].filter(func(sid):return sid != slot)
+	END_IDS = spec.endpoint_ids.duplicate();POINT_IDS = spec.magnetic_points.keys();points.clear();endpoints.clear()
+	for id in END_IDS:endpoints[id] = {"state":"stowed","point":""}
+	for id in POINT_IDS:points.append(AssemblyRuntime.vec(spec.magnetic_points[id]))
+	up_y = spec.up_y;park_position = AssemblyRuntime.vec(spec.park_position)
+	approach_offset = -AssemblyRuntime.vec(spec.approach.axis)*spec.approach.distance
+	source_pose = contract.source_pose;receiver_pose = contract.receiver_pose
+	route.assign(contract.route);excluded.assign(contract.get("excluded",[]))
+
 func _make_load() -> void:
-	load_body = AnimatableBody3D.new();load_body.name = "CraneUpperLegBeam";load_body.sync_to_physics = false;load_body.collision_layer = 2;load_body.collision_mask = 0;add_child(load_body)
-	load_body.add_child(game._mesh(uid))
-	var source: Dictionary = game.source[game.source_uid(uid)]
-	for record in SolidHandling.authored_shapes(game.model.definitions.parts[game.model.items[uid].kind].get("collision_shapes",[]),source.mesh.get_aabb()):
-		var shape = CollisionShape3D.new();shape.shape = record.shape;shape.transform = record.transform;load_body.add_child(shape)
+	load_body = _stock_body(uid)
+	if complete_journey:
+		for spec in tasks.values():_stock_body(spec.load_uid)
+
+func _stock_body(item_uid: String) -> AnimatableBody3D:
+	if stock_bodies.has(item_uid):return stock_bodies[item_uid]
+	var body = AnimatableBody3D.new();body.name = "CraneLoad_"+item_uid if complete_journey else "CraneUpperLegBeam"
+	body.sync_to_physics = false;body.collision_layer = 2;body.collision_mask = 0;add_child(body)
+	body.set_meta("equipment_item_uid",item_uid);body.add_child(game._mesh(item_uid))
+	var source: Dictionary = game.source[game.source_uid(item_uid)]
+	for record in SolidHandling.authored_shapes(game.model.definitions.parts[game.model.items[item_uid].kind].get("collision_shapes",[]),source.mesh.get_aabb()):
+		var shape = CollisionShape3D.new();shape.shape = record.shape;shape.transform = record.transform;body.add_child(shape)
+	stock_bodies[item_uid] = body
+	return body
 
 func _make_rig() -> void:
 	var steel = game.material(Color("e8b46b"),.45)
 	var dark = game.material(Color("263a43"),.45)
 	var green = game.material(Color("7cc7a7"),.25)
 	beam = Node3D.new();beam.name = "LoweredMagneticBeam";add_child(beam)
-	game.box(beam,Vector3(0,0,1.7),Vector3(.28,.18,2.9),steel)
+	rig_bar = game.box(beam,Vector3(0,0,1.7),Vector3(.28,.18,2.9),steel)
+	_configure_rig_bar()
 	for index in range(2):
 		var id: String = END_IDS[index]
 		var end = game.box(self,Vector3.ZERO,Vector3(.12,.09,.12),steel);end.name = id;end_nodes[id] = end
@@ -155,15 +176,22 @@ func menu_options() -> Array[Dictionary]:
 	if not motion.is_empty():
 		options.append({"action":"stop" if moving else "resume","label":"Stop" if moving else "Resume"})
 		return options
+	if complete_journey and station == "park" and raised and attached_count() == 0 and hand_payload().is_empty():
+		for key in tasks:
+			if key != task:options.append({"action":"task:"+key,"label":"Select task: "+tasks[key].title})
 	options.append({"action":"down" if raised else "up","label":"Down" if raised else "Up"})
 	if raised:
 		for destination in STATIONS:
 			var action = "go:"+destination
-			if action_error(action).is_empty():options.append({"action":action,"label":"Go to "+TITLES[destination]})
+			if action_error(action).is_empty():options.append({"action":action,"label":"Go to "+(_station_title(destination))})
 	return options
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the trial before operating the crane."
+	if complete_journey and action.begins_with("task:"):
+		if action.get_slice(":",1) not in tasks:return "Unknown crane task."
+		if station != "park" or not raised or not motion.is_empty() or attached_count()>0 or not hand_payload().is_empty():return "Park the empty crane and stow both magnets before changing task."
+		return ""
 	if action == "open_console":return console_access_error()
 	if action == "close_console":return ""
 	if action == "stop":return "" if moving else "The crane is stopped."
@@ -179,14 +207,17 @@ func action_error(action: String) -> String:
 		if action.begins_with("pick:") and endpoints[id].state != "stowed":return "That magnetic end is already attached."
 		if action.begins_with("detach:"):
 			if endpoints[id].state != "attached":return "That magnetic end is not attached."
-			if _installed() and not secured():return "Fit all four flange washer/bolt pairs before detaching a magnetic end."
+			if _installed() and not secured():return "Complete this connection’s retaining hardware before detaching a magnetic end." if complete_journey else "Fit all four flange washer/bolt pairs before detaching a magnetic end."
 		return _interaction_error(end_nodes[id].global_position,[load_body,game.runtime.node(load_owner)])
 	if action.begins_with("attach:"):
 		var point = action.get_slice(":",1)
 		if not POINT_IDS.has(point):return "Choose a marked magnetic attachment point."
 		if hand_payload().is_empty():return "Pick up a magnetic end first."
 		if raised or not motion.is_empty() or station == "park":return "Lower the crane at the beam before attaching ends."
-		if _installed() and attached_count()==0:return "Released-beam disassembly is outside this M2 trial."
+		if _installed() and attached_count()==0 and not complete_journey:return "Released-beam disassembly is outside this M2 trial."
+		if complete_journey and station == "receiver":
+			var receiver_error = _receiver_error()
+			if not receiver_error.is_empty():return receiver_error
 		if (station == "source") != (game.model.items[uid].location == "support:"+source_support):return "The beam is at the other work location."
 		for end in endpoints.values():
 			if end.point == point:return "That point is occupied. Aim at the other marked point."
@@ -197,11 +228,14 @@ func action_error(action: String) -> String:
 		if raised:return "The crane is already up."
 		if attached_count()==1:return "Attach both magnetic ends, or detach the remaining end before raising."
 		if attached_count()==2:
-			if hardware_count()>0:return "Undo every flange washer and bolt before lifting the beam."
+			if hardware_count()>0:return "Undo all of this connection’s retaining hardware before lifting the component." if complete_journey else "Undo every flange washer and bolt before lifting the beam."
 			if _installed():return _beam_undo_error()
 			if not game.model.support_occupant(support).is_empty():return "The crane support is occupied."
 		return ""
 	if action == "down":
+		if complete_journey and station == "receiver":
+			var receiver_error = _receiver_error()
+			if not receiver_error.is_empty():return receiver_error
 		if not raised:return "The crane is already down."
 		if station == "park":return "Go to a work location before lowering."
 		if _crane_owned():
@@ -213,6 +247,9 @@ func action_error(action: String) -> String:
 	if action.begins_with("go:"):
 		var destination = action.get_slice(":",1)
 		if destination not in STATIONS:return "Unknown crane location."
+		if complete_journey and destination != "park":
+			var rail_error = _receiver_error()
+			if not rail_error.is_empty():return rail_error
 		if not raised:return "Raise the crane before travelling to another location."
 		if destination == station:return "The crane is already at this location."
 		if _crane_owned():
@@ -225,6 +262,10 @@ func action_error(action: String) -> String:
 func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():return error
+	if complete_journey and action.begins_with("task:"):
+		task = action.get_slice(":",1);config = layout.crane_contract(task)
+		_configure_task(config);_configure_rig_bar()
+		load_body = _stock_body(uid);_refresh();return ""
 	if action == "open_console":return console.open()
 	if action == "close_console":console.shut();return ""
 	if action == "stop":moving = false
@@ -261,6 +302,12 @@ func secured(model: AssemblyModel = null) -> bool:
 	return _installed(m) and m.milestone(load_owner,secured_milestone)
 
 func busy_reason(subject: String) -> String:
+	if complete_journey and subject in ["rail","foot_transfer"]:
+		if attached_count()>0 or not motion.is_empty() and _crane_owned():return "Stow the crane magnets and set the load down before moving the fixture."
+		for key in tasks:
+			var spec: Dictionary = tasks[key]
+			if game.model.items[spec.load_uid].location == "installed" and not game.model.milestone(spec.owner,spec.secured.milestone):return "Secure the "+spec.title+" before moving the fixture."
+		return ""
 	if subject != "rail":return ""
 	if attached_count()>0:return "Detach and stow the crane cables before moving the leg rail."
 	if _installed() and not secured():return "Secure all four beam flange washer/bolt pairs before moving the leg rail."
@@ -276,10 +323,11 @@ func drop() -> Dictionary:
 
 func _beam_undo_error() -> String:
 	if raised or not motion.is_empty() or station != "receiver" or attached_count()!=2:return "Keep both magnets engaged with the crane down before undoing beam seating."
-	if hardware_count()>0:return "Undo every flange washer and bolt before lifting the beam."
+	if hardware_count()>0:return "Undo all of this connection’s retaining hardware before lifting the component." if complete_journey else "Undo every flange washer and bolt before lifting the beam."
 	return ""
 
 func undo(subject: String) -> Dictionary:
+	if complete_journey:return _journey_undo(subject)
 	if subject != load_owner:return {"handled":false,"error":""}
 	var history: Array = game.model.assemblies[load_owner].history
 	if history.is_empty():return {"handled":true,"error":"The supplied construction stays assembled."}
@@ -389,9 +437,18 @@ func _line(mesh: MeshInstance3D, from: Vector3, to: Vector3, width: float) -> vo
 
 func _refresh() -> void:
 	if not is_instance_valid(load_body):return
+	if complete_journey:
+		for spec in tasks.values():
+			if spec.load_uid == uid:continue
+			var body: AnimatableBody3D = stock_bodies[spec.load_uid]
+			var at_source = game.model.items[spec.load_uid].location == "support:"+spec.source_support
+			body.visible = at_source;body.collision_layer = 2 if at_source else 0
+			body.global_transform = preload("res://scripts/leg_bay_layout.gd").authored_pose(spec.source_pose)
+			body.force_update_transform();PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
 	var installed = _installed()
 	load_body.visible = not installed;load_body.collision_layer = 0 if installed else 2
 	load_body.global_transform = load_pose()
+	load_body.force_update_transform();PhysicsServer3D.body_set_state(load_body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,load_body.global_transform)
 	beam.global_transform = _beam_pose()
 	for index in range(2):
 		var id: String = END_IDS[index]
@@ -399,7 +456,7 @@ func _refresh() -> void:
 		# Cable trolleys align over the selected marked point, so either stable
 		# endpoint can use either point without crossing the other load cable.
 		var anchor_index = POINT_IDS.find(end.point) if end.state == "attached" else index
-		var anchor = beam.global_position+Vector3(0,0,points[anchor_index].y)
+		var anchor = beam.global_position+Vector3(points[anchor_index].x,0,points[anchor_index].y)
 		var point = anchor-Vector3(0,.55,0)
 		if end.state == "held":point = game.camera.global_transform*Vector3(0,0,-.65)
 		elif end.state == "attached":point = point_position(end.point)
@@ -407,7 +464,7 @@ func _refresh() -> void:
 		_line(cables[id],anchor,point,1)
 		markers[POINT_IDS[index]].global_position = point_position(POINT_IDS[index])+Vector3(0,.008,0)
 		markers[POINT_IDS[index]].visible = not raised and motion.is_empty() and station != "park" and not hand_payload().is_empty()
-	var eye = beam.global_position+Vector3(0,0,1.7)
+	var eye = beam.global_position+Vector3(0,0,rig_center)
 	if layout.has_method("set_crane_anchor"):layout.set_crane_anchor(Vector3(eye.x,20.6,eye.z))
 	_line(mast_cable,eye,Vector3(eye.x,20.6,eye.z),1)
 	if is_instance_valid(physical_status):physical_status.text = status_text()
@@ -415,18 +472,23 @@ func _refresh() -> void:
 	changed.emit()
 
 func status_text() -> String:
-	var label: String = TITLES[station]+" · "+("Up" if raised else "Down")
+	var label: String = _station_title(station)+" · "+("Up" if raised else "Down")
 	if not motion.is_empty():label += " · "+("Moving" if moving else "Stopped")
 	if attached_count()>0:label += "\nMagnetic ends attached: %d/2"%attached_count()
-	if _installed():label += "\nFlange fasteners: %d/%d"%[hardware_count(),fastener_slots.size()]
+	if _installed():label += ("\nConnection retention: %d/%d" if complete_journey else "\nFlange fasteners: %d/%d")%[hardware_count(),fastener_slots.size()]
 	if not blocked_reason.is_empty():label += "\n"+blocked_reason
 	return label
 
 func capture() -> Dictionary:
-	return {"version":VERSION,"station":station,"raised":raised,"motion":motion,"progress":progress,"moving":moving,"blocked_reason":blocked_reason,"endpoints":endpoints.duplicate(true)}
+	var result = {"version":VERSION,"station":station,"raised":raised,"motion":motion,"progress":progress,"moving":moving,"blocked_reason":blocked_reason,"endpoints":endpoints.duplicate(true)}
+	if complete_journey:result["task"] = task
+	return result
 
 func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary = {}) -> Array[String]:
-	if not data is Dictionary or data.size()!=8:return ["Incomplete crane state."]
+	if not data is Dictionary or data.size()!=(9 if complete_journey else 8):return ["Incomplete crane state."]
+	if complete_journey:
+		if not data.get("task") is String or data.task not in tasks:return ["Unknown saved crane task."]
+		if data.task != task:return _validate_other_task(data,candidate,_world)
 	if not (data.get("version") is int or data.get("version") is float) or data.version!=VERSION:return ["Unsupported crane version."]
 	for field in ["station","motion","blocked_reason"]:
 		if not data.get(field) is String:return ["Invalid crane text field."]
@@ -465,8 +527,65 @@ func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary
 		if count!=2 or data.station=="park":return ["Suspended beam lacks rigging."]
 		if not data.raised and data.motion!="up":return ["Suspended beam has no lifting motion."]
 		if data.station=="source" and data.motion=="up" and data.progress<.1:return ["Crane took source ownership before taking weight."]
+	if complete_journey:
+		for key in tasks:
+			var spec: Dictionary = tasks[key]
+			if key == data.task:continue
+			var other: Dictionary = model.items[spec.load_uid]
+			if other.location == "installed":
+				if other.owner != spec.owner or other.slot != spec.slot or not model.milestone(spec.owner,spec.secured.milestone):return ["Inactive crane task has unsecured work."]
+			elif other.location != "support:"+spec.source_support:return ["Inactive crane load is off its rack."]
+		if count > 0 and installed and _world.has("equipment"):
+			var rail: Dictionary = _world.equipment.leg_rail
+			if rail.path != 0 or rail.moving or not rail.engaged:return ["Attached crane task requires the engaged rail home."]
 	return []
 
 func apply(data: Dictionary) -> void:
+	if complete_journey and data.task != task:
+		task = data.task;config = layout.crane_contract(task);_configure_task(config);_configure_rig_bar();load_body = _stock_body(uid)
 	station = data.station;raised = data.raised;motion = data.motion;progress = float(data.progress);moving = data.moving;blocked_reason = data.blocked_reason;endpoints = data.endpoints.duplicate(true)
 	console.shut();_refresh()
+
+func _station_title(at: String) -> String:
+	if not complete_journey:return TITLES[at]
+	if at == "source":return tasks[task].title+" rack"
+	return "Leg cradle" if at == "receiver" else "Parking bay"
+
+func _receiver_error() -> String:
+	var rail = game.equipment.get_equipment("leg_rail")
+	if rail == null or rail.path > .0001 or rail.moving or not rail.engaged:return "Return the engaged leg holder home before crane delivery or reacquisition."
+	return ""
+
+func _journey_undo(subject: String) -> Dictionary:
+	if subject != load_owner:return {"handled":false,"error":""}
+	var history: Array = game.model.assemblies[subject].history
+	if history.is_empty():return {"handled":false,"error":""}
+	var sid: String = history.back().slot
+	var spec: Dictionary = game.model.slot_definition(subject,sid)
+	if spec.get("undo_requires_support","") != support:return {"handled":false,"error":""}
+	var active_security: Array = game.leg_content.m3.security_slots[task]
+	if sid not in active_security:return {"handled":true,"error":"Select the matching crane task and reacquire both magnets before dismantling this connection."}
+	if attached_count()!=2 or raised or not motion.is_empty() or station != "receiver" or not _receiver_error().is_empty():return {"handled":true,"error":"Lower the matching crane at the home leg cradle and attach both magnets before removing any connection hardware."}
+	if sid == slot:return {"handled":true,"error":"Use Up at the crane console to lift the unfastened component from its seat."}
+	return {"handled":false,"error":""}
+
+func _validate_other_task(data: Dictionary, candidate: AssemblyModel, world: Dictionary) -> Array[String]:
+	# A detached validator uses the candidate task contract; it never changes
+	# live meshes/endpoints/selected task while rejecting a save.
+	var probe = get_script().new()
+	probe.game = game;probe.layout = layout;probe.complete_journey = true;probe.tasks = tasks;probe.task = data.task
+	probe._configure_task(layout.crane_contract(data.task))
+	var errors: Array[String] = probe.validate(data,candidate,world)
+	probe.free()
+	return errors
+
+func _configure_rig_bar() -> void:
+	if not complete_journey or not is_instance_valid(rig_bar):return
+	var min_z = minf(points[0].y,points[1].y)
+	var max_z = maxf(points[0].y,points[1].y)
+	rig_center = (min_z+max_z)/2
+	rig_bar.position = Vector3(0,0,rig_center)
+	# Each selected task has its own supported two-point spread. Fork magnets
+	# span across X; shin/beam magnets span along the load's canonical length.
+	var mesh = BoxMesh.new();mesh.size = Vector3(absf(points[0].x-points[1].x)+.28,.18,max_z-min_z+.34)
+	rig_bar.mesh = mesh

@@ -7,7 +7,7 @@ const FOOT_INTRO = "Prepare the heel pads and pitch actuator, then secure them t
 const RETENTION_INTRO = "M2 Hip retainer: a completed leg starts on its home rail. Dock upward, pocket the hardware, then carry ONE retaining half onto the lift shelf. Ride up and fit it. Use E / click / Q / Z; the holder stays supporting the leg."
 const CRANE_INTRO = "M2 Crane delivery: completed foot and pre-beam leg supplied. Use Go to / Down / Up at the crane console, attach both magnetic ends, deliver the Upper-leg beam, fit four washer/bolt pairs and stow both ends."
 const FOOT_COLLIDER_FAMILIES = ["FA-100","FA-101","FA-102","FA-103","FA-104","FA-105","FA-106","FA-200","FA-201","FA-300","FA-301","FA-302","FA-303","FA-304","FA-400","FA-401","FA-402","FA-403","FA-404"]
-const IDS = ["foot","pads_single","pads_multi","leg_bay_retention","leg_bay_crane"]
+const IDS = ["foot","pads_single","pads_multi","leg_bay_retention","leg_bay_crane","leg_bay_m3"]
 
 static func resolve(user_args: Array, tree: SceneTree, override: String = "") -> Dictionary:
 	var legacy: bool = user_args.has("--legacy-stations")
@@ -18,6 +18,7 @@ static func resolve(user_args: Array, tree: SceneTree, override: String = "") ->
 	for arg in user_args:
 		if str(arg).begins_with("--m2-trial="):trial = str(arg).trim_prefix("--m2-trial=")
 	if trial.is_empty() and tree != null and tree.has_meta("m2_trial"):trial = tree.get_meta("m2_trial")
+	if user_args.has("--m3-workshop"):return profile("leg_bay_m3",legacy)
 	if user_args.has("--m2-workshop") and trial.is_empty():return {"selector":"m2"}
 	if not trial.is_empty():return profile("leg_bay_"+trial,legacy)
 	if user_args.has("--single-pad"):return profile("pads_single",legacy)
@@ -37,6 +38,14 @@ static func profile(id: String, legacy_stations: bool = false) -> Dictionary:
 			p.pads = "single";p.pitch = false;p.equipment = ["legacy_foot_station"];p.prep_stations = ["prep"]
 		"pads_multi":
 			p.pitch = false;p.equipment = ["legacy_foot_station"];p.prep_stations = ["prep","prep2"]
+		"leg_bay_m3":
+			p.parent_locations = {"foot":"support:foot_carrier"}
+			p.leg_content = LEG_CONTENT;p.trial = "m3";p.layout = "leg_bay";p.staging = "leg_bay_m3"
+			p.layout_path = "res://assets/leg-bay-m3-layout.json"
+			p.equipment = ["leg_rail","hip_lift","lift_shelf","service_crane","foot_carrier","joint_restraints"]
+			p.session = {"codec":"trial","path":"user://m3-workshop-save.json"}
+			p.spawn = [8.8,.03,7.1,-PI/2];p.station_rotation = false
+			p.intro = "M3 / Build the structural leg. Advance the guided foot carrier, then use the crane console for shin, knee fork and upper-leg beam. Fit each connection before releasing magnets. Complete the leg, dock upward and carry both retaining halves using the lift shelf. Secure the complete ring before releasing the holder. Advance reacquires support before undo."
 		"leg_bay_retention","leg_bay_crane":
 			var trial: String = id.trim_prefix("leg_bay_")
 			p.parent_locations = {"foot":"support:foot_carrier"}

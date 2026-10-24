@@ -16,7 +16,8 @@ feature modules. The accepted M1 rail/lift layout survives in the M2 trials;
 the standalone M1 trial and upright-hoist expanded workshop are retired.
 The user accepted the revised M2 playtest on 2026-10-23: “m2 plays great.”
 Read the [active plan and feedback](../../design/game/leg-workshop-next-steps.md)
-before continuing development. M3 gameplay requires explicit go-ahead.
+before continuing development. The authorized
+[M3 journey](../../design/game/leg-workshop-m3-plan.md) is ready for forward playtest.
 
 The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
 
@@ -47,6 +48,7 @@ Profiles select content, layout, equipment, staging, spawn and save behavior.
 | Two-pad regression | `./play.command -- --profile=pads_multi` | Session only; alias `--pads-only` |
 | Hip-retainer trial | `./play.command -- --profile=leg_bay_retention` | `user://m2-retention-save.json` |
 | Crane-delivery trial | `./play.command -- --profile=leg_bay_crane` | `user://m2-crane-save.json` |
+| Complete structural leg | `./play.command -- --m3-workshop` or `--profile=leg_bay_m3` | `user://m3-workshop-save.json` |
 
 `./play.command -- --m2-workshop` opens the trial selector. The earlier
 `--m2-workshop --m2-trial=retention` and `--m2-trial=crane` aliases remain.
@@ -117,6 +119,69 @@ holder or load cannot move. Preserve the rail and elevator experience accepted
 in M1. Record feedback in the existing
 [continuation plan](../../design/game/leg-workshop-next-steps.md).
 
+## M3 complete structural leg
+
+M3's fresh forward journey passes 636 checks and 30 real save/reopen checkpoints.
+It is ready for human playtest; evidence and scope are in the
+[M3 ledger](../../design/game/leg-workshop-m3-plan.md). Launch it separately:
+
+```sh
+./play.command -- --m3-workshop
+```
+
+The complete 135-piece foot starts on its dispatch carrier. Build the remaining
+40 structural and hip-retention pieces, mount the leg to the supplied pelvis,
+then recover it with the same equipment. This checkpoint covers structural
+assembly; powered mechanisms, armor and the other robot branches are later work.
+The foot base game and both M2 saves have independent progress.
+
+1. At the **foot carrier**, use **Advance** to raise the foot, then Advance again
+   to turn and seat it on the horizontal holder. The carrier withdraws after the
+   receiving supports take the foot. Stop interrupts motion.
+2. At the **crane console**, select **Structural shin**, **Knee fork** or
+   **Upper-leg beam** as the manual requires. Task changes require the empty
+   crane raised at Parking bay with both magnets stowed. Use **Go to** the task's
+   rack, **Down**, then Q to leave the console. E-pick and aim/click each magnetic
+   end onto a separate marked point. Return to the console: **Up → Go to Leg
+   cradle → Down**. Fit the task's retaining hardware before detaching/stowing
+   the magnets, raising the empty crane and parking it.
+3. Follow the **Structural left leg** manual for ankle fasteners, the main
+   disconnect, bearings, spacers, fork, axle, cap and beam fastening. Small
+   hardware uses pockets; knee components and the harness use ordinary carrying.
+   The axle enters from the side marked as its extraction aisle. Harness and
+   knee work can proceed independently after the ankle flange is secured.
+   Fit the harness from the side away from the crane racks, standing back toward
+   the knee so its upright bundle has room to turn clear of the ankle brace.
+4. With every structural connection complete and the crane parked, open the
+   **Pelvis gantry** manual. Use the local rail **Advance** controls for travel,
+   upright tilt and upward docking. The holder continues supporting the leg.
+5. Carry either **PV-120** half onto the personnel lift, click the component shelf
+   to store it, and ride **Up**. Retrieve and seat it, then fit its two washer/bolt
+   pairs from below. Return to **Ground** and repeat with the other half. The
+   shelf holds one two-hand component, so the halves make separate trips.
+   Move toward the hip-facing end of the working corner to see the far half's
+   washer seats past the beam.
+6. Both halves and all four pairs permit **Advance** to release the holder.
+   The secured leg stays mounted to the pelvis. This completes the M3 forward
+   checkpoint.
+
+Use **Z** to correct mistakes, subject to the existing support and dependency
+guards. Before undoing hip retention, use Advance to reacquire holder support;
+wait for its engaged status. To select a completed build, press **N** and turn
+off **Suggested only**. Existing recovery controls remain available, but full
+disassembly and return-to-stock verification are outside the current M3 gate.
+
+Escape pauses equipment and opens save controls. Reopening M3 restores its own
+slot into the pause menu, including interrupted motion. **New workshop** replaces
+only M3 progress after confirmation. Incompatible saves remain protected until
+that explicit choice. The supplied foot's internal construction stays assembled.
+
+The current forward M3 gate uses the common runner:
+
+```sh
+python3 game/workshop/tools/run_regressions.py --only m3_acceptance_test m3_workshop_launch leg_bay_m3_profile_launch
+```
+
 ## Collecting and building
 
 1. Walk to the **wall cabinets**. Small parts have closed drawers with a **part ID, image, name and stock count**. Larger components remain visible on shelves. Storage has two rows, with the upper row at chest height.
@@ -143,14 +208,14 @@ connection can be built, including on another page or assembly. Aiming and addin
 components refine manual suggestions without silently switching the reader.
 Assemblies retain their chosen recipes and physical identities.
 
-The full horizontal leg-construction and final-bay journey is future M3 work.
-M2 supplies already verified foot/leg construction and exposes the bounded
-retaining-half and crane loops above.
+M3 combines horizontal leg construction and the final-bay journey described above.
+M2 retains its bounded supplied-construction retaining-half and crane loops.
 
 ## Saving and resuming
 
 The default foot game retains **`user://workshop-save.json`** and its original
-content fingerprint. Each M2 trial has its own slot as listed above. Saves occur
+content fingerprint. Each M2 trial and the M3 journey have their own slots as
+listed above. Saves occur
 every **30 seconds of active play**, on pause and on quit. Reopening restores into
 the pause menu. **Save** writes immediately; **Reload save** asks before discarding
 changes. **New workshop** asks before replacing the selected slot. The menu reports
@@ -238,6 +303,12 @@ evidence output and a player driver for ordinary desktop input; setup teleports
 are explicitly staged. Logs and input hashes are retained in a unique
 `verification/regressions-*` directory. Engine errors fail even when Godot exits
 successfully; changed inputs invalidate a run.
+
+Cases normally have a 180-second cap. The M3 walked construction suite has a
+900-second cap for its ordinary inputs and fresh-scene restores. Its default
+route ends at full retention and holder release. `--timeout SECONDS` overrides
+the cap for every selected
+case; the runner still stops immediately on script errors or detected stalls.
 
 Current consolidation evidence and remaining human acceptance are recorded in the
 [active continuation note](../../design/game/leg-workshop-next-steps.md).
@@ -376,11 +447,11 @@ For a focused repair, append `-- --review-pages=pitch-04,foot-06` to the capture
 
 ## Scope and current limits
 
-The base game delivers the supported foot, heel pads and pitch actuator. Separate M2 profiles expose one retaining half and one crane load using supplied construction. The retired upright-hoist workflow remains historical evidence, not a playable default. The combined rail/construction journey, complete-ring security and holder departure remain M3. Detailed powered leg mechanisms, armor, full-foot progression, pelvis construction, second leg, waist/torso and AR remain future work. Single/two-pad regression profiles are session only.
+The base game delivers the supported foot, heel pads and pitch actuator. Separate M2 profiles expose one retaining half and one crane load using supplied construction. The retired upright-hoist workflow remains historical evidence, not a playable default. M3 combines rail construction, complete-ring security and holder release. Detailed powered leg mechanisms, armor, full-foot progression, pelvis construction, second leg, waist/torso and AR remain future work. Single/two-pad regression profiles are session only.
 
 The reusable construction model owns prerequisites, inventory, carrying capacity, milestones and undo. `component_interaction.gd` projects arbitrary authored component slots into desktop collection, grip, placement, and service views. Pad connections retain their established four-opening adapter. The generic model supports the new content without requiring pad-shaped rules.
 
-Carried collision uses structural primitive compounds; authored fixed receiving frames can use exact mesh openings. Internal work uses an explicit assisted service policy, while scenery and carried-part approaches remain solid. It does not simulate threading, torque, load dynamics or every internal insertion. Powered articulation and services beyond the main ankle disconnect remain outside this structural milestone. The user accepted the earlier foot-workshop playtest on 2026-10-22; the revised M2 checkpoint was accepted on 2026-10-23. The combined M3 journey remains held for explicit go-ahead, and the post-consolidation default-foot replay is unconfirmed. No rendered review was requested for the leg milestone. Laptop temperature and on-screen frame time still need measurement during normal play; the detailed foot remains a substantial rendering cost.
+Carried collision uses structural primitive compounds; authored fixed receiving frames can use exact mesh openings. Internal work uses an explicit assisted service policy, while scenery and carried-part approaches remain solid. It does not simulate threading, torque, load dynamics or every internal insertion. Powered articulation and services beyond the main ankle disconnect remain outside this structural milestone. The user accepted the earlier foot-workshop playtest on 2026-10-22 and the revised M2 checkpoint on 2026-10-23. M3 implementation is authorized; human playtest acceptance remains separate, and the post-consolidation default-foot replay is unconfirmed. No rendered review was requested. Laptop temperature and on-screen frame time still need measurement during normal play; the detailed foot remains a substantial rendering cost.
 
 The room and new structural parts are functional blockouts. Layout, lighting, carrying distances and targeting tolerances remain tunable. Completion feedback is a sound and glow.
 

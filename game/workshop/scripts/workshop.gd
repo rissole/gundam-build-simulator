@@ -10,7 +10,7 @@ const Hands = preload("res://scripts/hand_slot.gd")
 const Content = preload("res://scripts/workshop_content.gd")
 const Trial = preload("res://scripts/leg_bay_trial.gd")
 ## Interaction and physics order; earlier equipment answers aggregate queries first.
-const EQUIPMENT_ORDER = ["leg_rail","lift_shelf","service_crane","foot_fixture","hip_lift"]
+const EQUIPMENT_ORDER = ["joint_restraints","foot_carrier","leg_rail","lift_shelf","service_crane","foot_fixture","hip_lift"]
 const FOOT_CENTER = Vector3(0,0.8,-0.7)
 const PREP_POSITION = Vector3(-2.3,1.35,-1.2)
 const FOOT_POSITION = Vector3(2.3,2.0,-1.8)
@@ -108,6 +108,7 @@ func _ready() -> void:
 	if profile.has("selector"):
 		add_child(preload("res://scripts/trial_selector.gd").new())
 		return
+	preload("res://scripts/leg_bay_layout.gd").select(profile.get("layout_path",preload("res://scripts/leg_bay_layout.gd").LAYOUT_PATH))
 	var single = profile.pads == "single"
 	config = Content.scenario(single)
 	var data = Content.definition_data(single)
@@ -137,8 +138,8 @@ func _ready() -> void:
 	_build_equipment(["foot_fixture"].filter(has_equipment))
 	for build in config.builds:components.make_build(build.id)
 	components.setup()
-	if not profile.trial.is_empty():trial = Trial.new(self)
-	if profile.staging == "leg_bay":preload("res://scripts/scenario_staging.gd").prepare(self)
+	if not profile.trial.is_empty():trial = preload("res://scripts/leg_journey_policy.gd").new(self) if profile.trial == "m3" else Trial.new(self)
+	if profile.staging in ["leg_bay","leg_bay_m3"]:preload("res://scripts/scenario_staging.gd").prepare(self)
 	_build_equipment(profile.equipment.filter(func(id):return id != "foot_fixture"))
 	player_controller.spawn(profile.spawn)
 	storage = preload("res://scripts/part_storage.gd").new(self)
@@ -176,12 +177,14 @@ func _load_leg_content(data: Dictionary) -> void:
 	Content.apply_definitions(data,overlay)
 	var trial_id: String = profile.trial
 	if not trial_id.is_empty():
-		var trial_definitions: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+trial_id+"-definitions.json"))
-		var trial_content: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/m2-"+trial_id+"-content.json"))
+		var prefix = "m3" if trial_id == "m3" else "m2-"+trial_id
+		var trial_definitions: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/"+prefix+"-definitions.json"))
+		var trial_content: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/"+prefix+"-content.json"))
 		Content.apply_definitions(data,trial_definitions)
-		for support_id in trial_content.m2.remove_supports:leg_content.supports.erase(support_id)
+		var metadata_key = "m3" if trial_id == "m3" else "m2"
+		for support_id in trial_content[metadata_key].get("remove_supports",[]):leg_content.supports.erase(support_id)
 		leg_content.supports.merge(trial_content.supports,true)
-		for field in ["parts","parents","equipment","m2"]:leg_content[field] = trial_content[field]
+		for field in ["parts","parents","equipment",metadata_key]:leg_content[field] = trial_content[field]
 		if trial_id == "retention" and m2_half_uid != "PV-120__001":
 			assert(m2_half_uid == "PV-120__002")
 			for record in leg_content.parts:
@@ -209,6 +212,10 @@ func _build_equipment(ids: Array) -> void:
 		match id:
 			"foot_fixture":
 				item = preload("res://scripts/supported_fixture.gd").new();add_child(item);item.setup(self,foot);foot_fixture = item
+			"joint_restraints":
+				item = preload("res://scripts/passive_joint_restraints.gd").new();add_child(item);item.setup(self)
+			"foot_carrier":
+				item = preload("res://scripts/foot_carrier.gd").new();add_child(item);item.setup(self,leg_layout)
 			"leg_rail":
 				item = preload("res://scripts/leg_rail.gd").new();add_child(item);item.setup(self,leg_layout)
 			"hip_lift":
@@ -216,7 +223,7 @@ func _build_equipment(ids: Array) -> void:
 				var lift_data: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().lift
 				var levels: Array[float] = []
 				for level in lift_data.levels:levels.append(float(level))
-				item.setup(self,lift_data.name,Vector3(lift_data.origin[0],lift_data.origin[1],lift_data.origin[2]),Vector2(lift_data.size[0],lift_data.size[1]),levels)
+				item.setup(self,lift_data.name,Vector3(lift_data.origin[0],lift_data.origin[1],lift_data.origin[2]),Vector2(lift_data.size[0],lift_data.size[1]),levels,lift_data)
 				item.rotation.y = deg_to_rad(lift_data.yaw_degrees)
 			"lift_shelf":
 				item = preload("res://scripts/lift_shelf.gd").new();add_child(item);item.setup(self,made.hip_lift)

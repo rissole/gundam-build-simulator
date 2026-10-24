@@ -1,0 +1,926 @@
+{
+  "version": 1,
+  "parts": {
+    "lg-knee-axle": {
+      "family": "LG-140",
+      "variant": "structural",
+      "title": "LG-140 · Shouldered knee axle",
+      "short_title": "Shouldered knee axle",
+      "carry_class": "two_hand",
+      "catalogue_image": "res://assets/part-images/lg-knee-axle.svg",
+      "handling": {
+        "rotation_degrees": [
+          90,
+          90,
+          0
+        ]
+      }
+    }
+  },
+  "assembly_patches": {
+    "left_leg": {
+      "set": {
+        "milestones": {
+          "structural_ready": [
+            "foot",
+            "shin",
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004",
+            "main_input",
+            "bearing_1",
+            "bearing_2",
+            "thrust_1",
+            "thrust_2",
+            "fork",
+            "axle",
+            "cap",
+            "cap/washer_1",
+            "cap/screw_1",
+            "cap/washer_2",
+            "cap/screw_2",
+            "spar",
+            "fork/washer_1",
+            "fork/bolt_1",
+            "fork/washer_2",
+            "fork/bolt_2",
+            "fork/washer_3",
+            "fork/bolt_3",
+            "fork/washer_4",
+            "fork/bolt_4"
+          ],
+          "spar_secured": [
+            "spar",
+            "fork/washer_1",
+            "fork/bolt_1",
+            "fork/washer_2",
+            "fork/bolt_2",
+            "fork/washer_3",
+            "fork/bolt_3",
+            "fork/washer_4",
+            "fork/bolt_4"
+          ],
+          "shin_secured": [
+            "shin",
+            "ankle/W-36__021",
+            "ankle/H-36090__001",
+            "ankle/W-36__022",
+            "ankle/H-36090__002",
+            "ankle/W-36__023",
+            "ankle/H-36090__003",
+            "ankle/W-36__024",
+            "ankle/H-36090__004"
+          ],
+          "fork_secured": [
+            "fork",
+            "axle",
+            "cap",
+            "cap/washer_1",
+            "cap/screw_1",
+            "cap/washer_2",
+            "cap/screw_2"
+          ]
+        },
+        "manual": [
+          {
+            "title": "Prepared foot, empty leg rail",
+            "view": "overview",
+            "slots": [],
+            "body": "The complete 135-piece foot is supplied on its carrier. The horizontal leg rail and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
+          },
+          {
+            "title": "Dock the prepared foot",
+            "body": "At the foot carrier, Advance raises the complete foot; Advance again turns and seats it in the horizontal rail holder. The guided carrier keeps support until the holder takes contact and locks ankle motion. Keep the rail at its home construction position.",
+            "slots": [
+              "foot"
+            ],
+            "view": "components",
+            "context_sources": [],
+            "diagram_views": [
+              {
+                "title": "Dock the prepared foot",
+                "sources": [
+                  "FA-201__001"
+                ],
+                "context": [],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Deliver the structural shin",
+            "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Structural shin task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-100 against the already fitted foot adapter. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+            "slots": [
+              "shin"
+            ],
+            "view": "components",
+            "context_sources": [],
+            "diagram_views": [
+              {
+                "title": "Deliver the structural shin",
+                "sources": [
+                  "LG-100__001"
+                ],
+                "context": [],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Secure the ankle flange",
+            "body": "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic ends, raise and park the empty crane before changing task.",
+            "slots": [
+              "ankle/W-36__021",
+              "ankle/H-36090__001",
+              "ankle/W-36__022",
+              "ankle/H-36090__002",
+              "ankle/W-36__023",
+              "ankle/H-36090__003",
+              "ankle/W-36__024",
+              "ankle/H-36090__004"
+            ],
+            "view": "components",
+            "context_sources": [
+              "LG-100__001",
+              "FA-201__001"
+            ],
+            "diagram_views": [
+              {
+                "title": "Secure the ankle flange",
+                "sources": [
+                  "W-36__021",
+                  "H-36090__001",
+                  "W-36__022",
+                  "H-36090__002",
+                  "W-36__023",
+                  "H-36090__003",
+                  "W-36__024",
+                  "H-36090__004"
+                ],
+                "context": [
+                  "LG-100__001",
+                  "FA-201__001"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Connect the shin disconnect",
+            "body": "Carry FA-605 with both attached plugs. Approach from the side away from the crane racks, standing back toward the knee. Leave room for the upright harness to turn clear of the ankle brace before fitting it. Seat its box end in the already fitted FA-604 socket, follow the foot guide clips and seat the upper keyed plug in LG-100's angled socket. The harness and knee-bearing branches can be completed in either order after the ankle bolts. Unplug this harness before separating foot and shin.",
+            "slots": [
+              "main_input"
+            ],
+            "view": "components",
+            "context_sources": [
+              "FA-604__001",
+              "LG-100__001"
+            ],
+            "diagram_views": [
+              {
+                "title": "Connect the shin disconnect",
+                "sources": [
+                  "FA-605__001"
+                ],
+                "context": [
+                  "FA-604__001",
+                  "LG-100__001"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Seat bearings and thrust spacers",
+            "body": "Carry and fit the two LG-130 bearings from opposite sides of the shin knee boss, then one LG-135 thrust spacer against each end. Bearings are interchangeable with bearings; spacers are interchangeable with spacers. Keep the marked knee axle extraction aisle clear.",
+            "slots": [
+              "bearing_1",
+              "bearing_2",
+              "thrust_1",
+              "thrust_2"
+            ],
+            "view": "components",
+            "context_sources": [
+              "LG-100__001"
+            ],
+            "diagram_views": [
+              {
+                "title": "Seat bearings and thrust spacers",
+                "sources": [
+                  "LG-130__001",
+                  "LG-130__002",
+                  "LG-135__001",
+                  "LG-135__002"
+                ],
+                "context": [
+                  "LG-100__001"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Deliver the knee fork",
+            "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Knee fork task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-110 against the already fitted shin knee boss and thrust spacers. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+            "slots": [
+              "fork"
+            ],
+            "view": "components",
+            "context_sources": [],
+            "diagram_views": [
+              {
+                "title": "Deliver the knee fork",
+                "sources": [
+                  "LG-110__001"
+                ],
+                "context": [],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Insert the knee axle",
+            "body": "Carry LG-140 lengthwise with both hands. Stand back at the marked axle extraction aisle so the shaft can align with the bore, then insert through the already seated fork and bearings until its shoulder contacts the fork. The rail brace keeps the knee straight and crane assistance remains attached.",
+            "slots": [
+              "axle"
+            ],
+            "view": "components",
+            "context_sources": [
+              "LG-110__001"
+            ],
+            "diagram_views": [
+              {
+                "title": "Insert the knee axle",
+                "sources": [
+                  "LG-140__001"
+                ],
+                "context": [
+                  "LG-110__001"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Retain the knee axle",
+            "body": "Walk to the opposite side from the marked axle extraction aisle. Fit LG-150 on the exposed axle end, then two LG-W12 washers and two LG-H12050 screws, each washer before its screw. With the axle and both cap pairs complete, detach and stow both magnetic ends, raise and park the empty crane.",
+            "slots": [
+              "cap",
+              "cap/washer_1",
+              "cap/screw_1",
+              "cap/washer_2",
+              "cap/screw_2"
+            ],
+            "view": "components",
+            "context_sources": [
+              "LG-110__001",
+              "LG-140__001"
+            ],
+            "diagram_views": [
+              {
+                "title": "Retain the knee axle",
+                "sources": [
+                  "LG-150__001",
+                  "LG-W12__001",
+                  "LG-H12050__001",
+                  "LG-W12__002",
+                  "LG-H12050__002"
+                ],
+                "context": [
+                  "LG-110__001",
+                  "LG-140__001"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Deliver the Upper-leg beam",
+            "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Upper-leg beam task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-120 against the already fitted fork flange. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+            "slots": [
+              "spar"
+            ],
+            "view": "components",
+            "context_sources": [],
+            "diagram_views": [
+              {
+                "title": "Deliver the Upper-leg beam",
+                "sources": [
+                  "LG-120__001"
+                ],
+                "context": [],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Fasten the Upper-leg beam flange",
+            "body": "Pocket four LG-W24 washers and four LG-H24100 bolts. Fit each washer and then its bolt through the exposed flange corners into the already fitted fork. Approach the bolt heads from the hip side of the flange and insert toward the knee. These M24 x 100 bolts differ from the pelvis M24 x 140 bolts. After every pair is fitted, detach and stow both magnetic ends, then raise and park the empty crane.",
+            "slots": [
+              "fork/washer_1",
+              "fork/bolt_1",
+              "fork/washer_2",
+              "fork/bolt_2",
+              "fork/washer_3",
+              "fork/bolt_3",
+              "fork/washer_4",
+              "fork/bolt_4"
+            ],
+            "view": "components",
+            "context_sources": [
+              "LG-110__001",
+              "LG-120__001"
+            ],
+            "diagram_views": [
+              {
+                "title": "Fasten the Upper-leg beam flange",
+                "sources": [
+                  "LG-W24__001",
+                  "LG-H24100__001",
+                  "LG-W24__002",
+                  "LG-H24100__002",
+                  "LG-W24__003",
+                  "LG-H24100__003",
+                  "LG-W24__004",
+                  "LG-H24100__004"
+                ],
+                "context": [
+                  "LG-110__001",
+                  "LG-120__001"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Structural leg ready",
+            "view": "prepared",
+            "slots": [],
+            "body": "All leg construction is complete. Confirm the empty crane is parked with both magnetic ends stowed, then open the pelvis manual. The rail continues to support the complete leg."
+          },
+          {
+            "title": "Supported construction recovery",
+            "view": "overview",
+            "slots": [],
+            "body": "Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg cradle and attach both magnetic ends to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Up withdraws the supported part through the reverse axial approach; Go to its rack and Down returns it. Detach and stow only after rack contact. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot-carrier Return reacquires the foot and reverses one guided phase per press; Return again lowers it to the dispatch position."
+          }
+        ]
+      },
+      "slots": {
+        "shin": {
+          "set": {
+            "source_supports": [
+              "m2_service_crane"
+            ],
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "ankle/W-36__021": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "ankle/H-36090__001": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "ankle/W-36__022": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "ankle/H-36090__002": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "ankle/W-36__023": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "ankle/H-36090__003": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "ankle/W-36__024": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "ankle/H-36090__004": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "main_input": {
+          "set": {
+            "undo_to": "hands"
+          }
+        },
+        "bearing_1": {
+          "set": {
+            "undo_to": "hands"
+          }
+        },
+        "bearing_2": {
+          "set": {
+            "undo_to": "hands"
+          }
+        },
+        "thrust_1": {
+          "set": {
+            "undo_to": "hands"
+          }
+        },
+        "thrust_2": {
+          "set": {
+            "undo_to": "hands"
+          }
+        },
+        "fork": {
+          "set": {
+            "source_supports": [
+              "m2_service_crane"
+            ],
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "axle": {
+          "set": {
+            "undo_requires_support": "m2_service_crane",
+            "undo_to": "hands"
+          }
+        },
+        "cap": {
+          "set": {
+            "undo_requires_support": "m2_service_crane",
+            "undo_to": "hands"
+          }
+        },
+        "cap/washer_1": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "cap/screw_1": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "cap/washer_2": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "cap/screw_2": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "spar": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "fork/washer_1": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "fork/bolt_1": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "fork/washer_2": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "fork/bolt_2": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "fork/washer_3": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "fork/bolt_3": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "fork/washer_4": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        },
+        "fork/bolt_4": {
+          "set": {
+            "undo_requires_support": "m2_service_crane"
+          }
+        }
+      }
+    },
+    "pelvis": {
+      "set": {
+        "manual": [
+          {
+            "title": "Travel and seat the supported leg",
+            "view": "overview",
+            "slots": [],
+            "body": "The pelvis bridge, both sockets and their bridge bolts are supplied context. Keep the rail engaged throughout travel, tilt and upward docking. Use local rail Advance controls through each supported stage; Stop holds the current stage. Retention is performed from the personnel lift. Retention blocks loaded Return."
+          },
+          {
+            "title": "Seat the leg in the pelvis",
+            "body": "With the completed leg and parked empty crane, operate the rail through travel and tilt, then Advance upward into the open left socket. The rail seats the hip ball and stays engaged. Ball seating alone does not secure the leg.",
+            "slots": [
+              "left_leg"
+            ],
+            "view": "components",
+            "context_sources": [
+              "PV-100__001",
+              "PV-110__001",
+              "PV-C-H24090__001",
+              "PV-C-H24090__002",
+              "PV-110__002",
+              "PV-C-H24090__003",
+              "PV-C-H24090__004"
+            ],
+            "diagram_views": [
+              {
+                "title": "Seat the leg in the pelvis",
+                "sources": [
+                  "PV-V-HIP-BALL"
+                ],
+                "context": [
+                  "PV-100__001",
+                  "PV-110__001",
+                  "PV-C-H24090__001",
+                  "PV-C-H24090__002",
+                  "PV-110__002",
+                  "PV-C-H24090__003",
+                  "PV-C-H24090__004"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Carry retaining half 1",
+            "body": "E picks up either PV-120 half with both hands. Carry it onto the personnel lift and click the shelf to store it. The shelf holds one two-hand component or two one-hand components; take one half per trip. Ride Up, E-pick it from the shelf, then aim and click its underside connection around the already seated hip neck. Either physical half fits either destination.",
+            "slots": [
+              "ring_1"
+            ],
+            "view": "components",
+            "context_sources": [
+              "PV-110__001",
+              "PV-V-HIP-BALL"
+            ],
+            "diagram_views": [
+              {
+                "title": "Carry retaining half 1",
+                "sources": [
+                  "PV-120__001"
+                ],
+                "context": [
+                  "PV-110__001",
+                  "PV-V-HIP-BALL"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Fasten retaining half 1",
+            "body": "Pocket two LG-W24 washers and two PV-H24140 M24 x 140 bolts at ground level. Fit each washer then its bolt upward from the seated half's underside into the existing socket flange. The shared LG-W24 stock also supplies the fork flange. Keep rail assistance engaged; a single fastened half cannot retain the complete hip.",
+            "slots": [
+              "ring/washer_3",
+              "ring/bolt_3",
+              "ring/washer_4",
+              "ring/bolt_4"
+            ],
+            "view": "components",
+            "context_sources": [
+              "PV-110__001",
+              "PV-120__001"
+            ],
+            "diagram_views": [
+              {
+                "title": "Fasten retaining half 1",
+                "sources": [
+                  "LG-W24__007",
+                  "PV-H24140__003",
+                  "LG-W24__008",
+                  "PV-H24140__004"
+                ],
+                "context": [
+                  "PV-110__001",
+                  "PV-120__001"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Carry retaining half 2",
+            "body": "E picks up either PV-120 half with both hands. Carry it onto the personnel lift and click the shelf to store it. The shelf holds one two-hand component or two one-hand components; take one half per trip. Ride Up, E-pick it from the shelf, then aim and click its underside connection around the already seated hip neck. Either physical half fits either destination.",
+            "slots": [
+              "ring_2"
+            ],
+            "view": "components",
+            "context_sources": [
+              "PV-110__001",
+              "PV-V-HIP-BALL"
+            ],
+            "diagram_views": [
+              {
+                "title": "Carry retaining half 2",
+                "sources": [
+                  "PV-120__002"
+                ],
+                "context": [
+                  "PV-110__001",
+                  "PV-V-HIP-BALL"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Fasten retaining half 2",
+            "body": "Pocket two LG-W24 washers and two PV-H24140 M24 x 140 bolts at ground level. Move toward the hip-facing end of the lift's working corner to see the far underside washer seats past the beam. Fit each washer then its bolt upward from the seated half's underside into the existing socket flange. The shared LG-W24 stock also supplies the fork flange. Keep rail assistance engaged; a single fastened half cannot retain the complete hip.",
+            "slots": [
+              "ring/washer_1",
+              "ring/bolt_1",
+              "ring/washer_2",
+              "ring/bolt_2"
+            ],
+            "view": "components",
+            "context_sources": [
+              "PV-110__001",
+              "PV-120__002"
+            ],
+            "diagram_views": [
+              {
+                "title": "Fasten retaining half 2",
+                "sources": [
+                  "LG-W24__005",
+                  "PV-H24140__001",
+                  "LG-W24__006",
+                  "PV-H24140__002"
+                ],
+                "context": [
+                  "PV-110__001",
+                  "PV-120__002"
+                ],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Left leg structurally secured",
+            "view": "prepared",
+            "slots": [],
+            "body": "Both halves and all four washer/bolt pairs are required. With the complete retention set fitted, press rail Advance to release the holder jaws. The pelvis now owns and supports the mounted leg. Return now withdraws the empty holder one phase per press along its reverse docking, tilt and travel route; the mounted leg stays at the pelvis. Powered actuators, services and armor remain deferred."
+          },
+          {
+            "title": "Reacquire support and recover",
+            "view": "overview",
+            "slots": [],
+            "body": "If the empty holder has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the holder jaws and reacquires support. If the released holder is already docked, Advance directly reacquires support. Wait for the holder to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the holder is released."
+          }
+        ]
+      },
+      "slots": {
+        "ring_1": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail",
+            "undo_to": "hands"
+          }
+        },
+        "ring_2": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail",
+            "undo_to": "hands"
+          }
+        },
+        "ring/washer_1": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail"
+          }
+        },
+        "ring/bolt_1": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail"
+          }
+        },
+        "ring/washer_2": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail"
+          }
+        },
+        "ring/bolt_2": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail"
+          }
+        },
+        "ring/washer_3": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail"
+          }
+        },
+        "ring/bolt_3": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail"
+          }
+        },
+        "ring/washer_4": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail"
+          }
+        },
+        "ring/bolt_4": {
+          "set": {
+            "undo_requires_support": "m2_leg_rail"
+          }
+        }
+      }
+    }
+  }
+}

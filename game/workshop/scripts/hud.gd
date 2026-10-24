@@ -706,11 +706,13 @@ func _refresh_manual() -> void:
 		var lines: Array[String] = []
 		for label in quantities:lines.append("%s ×%d"%[label,quantities[label]])
 		page_body.text += "\n\nParts for this step\n"+"\n".join(lines)
+	var progress_slots: Array = step.slots
+	if step.get("view","") == "prepared" and progress_slots.is_empty():progress_slots = a.slots.keys()
 	var filled = 0
-	for sid in step.slots:
+	for sid in progress_slots:
 		if not a.slots[sid].is_empty():filled += 1
 	page_count.text = "%d / %d step components · page %d / %d"%[filled,step.slots.size(),page+1,page_total()]
-	if step.get("view","") == "prepared":page_count.text = "%d / %d assembly components · page %d / %d"%[filled,step.slots.size(),page+1,page_total()]
+	if step.get("view","") == "prepared":page_count.text = "%d / %d assembly components · page %d / %d"%[filled,progress_slots.size(),page+1,page_total()]
 	if step.get("view","") == "overview":
 		var lines: Array[String] = [step.body,""]
 		var secured = 0

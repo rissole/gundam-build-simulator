@@ -1,0 +1,1270 @@
+{
+  "version": 3,
+  "rail": {
+    "support": "m2_leg_rail",
+    "x": 11.9,
+    "reserved_x": 14.1,
+    "home_z": 14.5,
+    "bay_z": 26.0,
+    "base_y": 0.5,
+    "lying_lift": 0.85,
+    "pivot": 5.1,
+    "dock_rise": 0.9,
+    "durations": [
+      12.0,
+      10.0,
+      3.0
+    ],
+    "panels": [
+      [
+        9.2,
+        0,
+        11.4
+      ],
+      [
+        5.1,
+        0,
+        24.2
+      ]
+    ],
+    "holder": {
+      "back": 0.55,
+      "side": -1.9,
+      "side_begin": 0.4,
+      "jaw": 0.5,
+      "duration": 3,
+      "empty_rise": 0.9,
+      "empty_lift": 0.6,
+      "clearance_tilt_span": 0.1,
+      "support": {
+        "base_height": 0.6,
+        "high_height": 1.6,
+        "elbow_offset": -0.86,
+        "low_overhang": 0.12,
+        "upper_overhang": 0.25,
+        "riser_width": 0.12,
+        "riser_cap": 0.2,
+        "depth": 0.35,
+        "bar_height": 0.2,
+        "withdrawal_start": 0.52,
+        "withdrawal_end": 0.8,
+        "withdrawal_width": 0.3,
+        "withdrawal_height": 0.2
+      }
+    },
+    "bogie": {
+      "center_y": 0.24,
+      "height": 0.38,
+      "tail_y": 0.36,
+      "tail_height": 0.14,
+      "post_base": 0.43
+    }
+  },
+  "lift": {
+    "name": "hip",
+    "origin": [
+      9.6,
+      0,
+      24.55
+    ],
+    "size": [
+      2.6,
+      2.6
+    ],
+    "levels": [
+      0.15,
+      8.4
+    ],
+    "yaw_degrees": 180,
+    "guide_positions": [
+      [
+        1.34,
+        0.9
+      ],
+      [
+        1.34,
+        -0.9
+      ]
+    ],
+    "cantilever_beams": {
+      "z_positions": [
+        -0.82,
+        0.82
+      ],
+      "position_x": 0.075,
+      "span_x": 2.75,
+      "position_y": -0.06,
+      "height": 0.12,
+      "depth": 0.2
+    }
+  },
+  "shelf": {
+    "supports": [
+      "m2_lift_shelf_0",
+      "m2_lift_shelf_1"
+    ],
+    "position": [
+      0.91,
+      0.68,
+      0
+    ],
+    "yaw_degrees": -90,
+    "places": [
+      -0.46,
+      0.46
+    ]
+  },
+  "parent_homes": {
+    "left_leg": [
+      2.3,
+      0.75,
+      14.4
+    ],
+    "pelvis": [
+      13.0,
+      10.6,
+      26.0
+    ]
+  },
+  "crane": {
+    "support": "m2_service_crane",
+    "source_support": "leg_shin_rack",
+    "load_uid": "LG-100__001",
+    "owner": "left_leg",
+    "slot": "shin",
+    "secured": {
+      "milestone": "shin_secured"
+    },
+    "up_y": 4.4,
+    "console_position": [
+      4.9,
+      0,
+      21
+    ],
+    "park_position": [
+      6.3,
+      0,
+      19
+    ],
+    "endpoint_ids": [
+      "magnet_a",
+      "magnet_b"
+    ],
+    "magnetic_points": {
+      "load_near": [
+        0,
+        0.7,
+        -0.1
+      ],
+      "load_far": [
+        0,
+        3.705,
+        -0.28
+      ]
+    },
+    "source_pose": {
+      "position": [
+        7.6,
+        1.35,
+        6.2
+      ],
+      "rotation_degrees": [
+        90,
+        0,
+        0
+      ]
+    },
+    "receiver_pose": {
+      "position": [
+        11.9,
+        1.35,
+        10.795
+      ],
+      "rotation_degrees": [
+        90,
+        0,
+        0
+      ]
+    },
+    "approach": {
+      "axis": [
+        0,
+        0,
+        -1
+      ],
+      "distance": 0.2
+    },
+    "route_positions": [
+      [
+        7.6,
+        1.35,
+        6.2
+      ],
+      [
+        7.6,
+        3.52,
+        6.2
+      ],
+      [
+        11.9,
+        3.52,
+        10.995
+      ],
+      [
+        11.9,
+        1.35,
+        10.995
+      ],
+      [
+        11.9,
+        1.35,
+        10.795
+      ]
+    ],
+    "task": "shin",
+    "tasks": {
+      "shin": {
+        "support": "m2_service_crane",
+        "source_support": "leg_shin_rack",
+        "load_uid": "LG-100__001",
+        "owner": "left_leg",
+        "slot": "shin",
+        "secured": {
+          "milestone": "shin_secured"
+        },
+        "up_y": 4.4,
+        "console_position": [
+          4.9,
+          0,
+          21
+        ],
+        "park_position": [
+          6.3,
+          0,
+          19
+        ],
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "load_near": [
+            0,
+            0.7,
+            -0.1
+          ],
+          "load_far": [
+            0,
+            3.705,
+            -0.28
+          ]
+        },
+        "source_pose": {
+          "position": [
+            7.6,
+            1.35,
+            6.2
+          ],
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            11.9,
+            1.35,
+            10.795
+          ],
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        "approach": {
+          "axis": [
+            0,
+            0,
+            -1
+          ],
+          "distance": 0.2
+        },
+        "route_positions": [
+          [
+            7.6,
+            1.35,
+            6.2
+          ],
+          [
+            7.6,
+            3.52,
+            6.2
+          ],
+          [
+            11.9,
+            3.52,
+            10.995
+          ],
+          [
+            11.9,
+            1.35,
+            10.995
+          ],
+          [
+            11.9,
+            1.35,
+            10.795
+          ]
+        ],
+        "rack_contacts": [
+          [
+            0,
+            0.7,
+            0.1
+          ],
+          [
+            0,
+            2.9,
+            0.1
+          ]
+        ],
+        "title": "Structural shin"
+      },
+      "fork": {
+        "support": "m2_service_crane",
+        "source_support": "leg_fork_rack",
+        "load_uid": "LG-110__001",
+        "owner": "left_leg",
+        "slot": "fork",
+        "secured": {
+          "milestone": "fork_secured"
+        },
+        "up_y": 4.4,
+        "console_position": [
+          4.9,
+          0,
+          21
+        ],
+        "park_position": [
+          6.3,
+          0,
+          19
+        ],
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "load_near": [
+            -0.43,
+            0,
+            -0.34
+          ],
+          "load_far": [
+            0.43,
+            0,
+            -0.34
+          ]
+        },
+        "source_pose": {
+          "position": [
+            7.6,
+            1.35,
+            12.4
+          ],
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            11.9,
+            1.35,
+            14.5
+          ],
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        "approach": {
+          "axis": [
+            0,
+            0,
+            -1
+          ],
+          "distance": 0.2
+        },
+        "route_positions": [
+          [
+            7.6,
+            1.35,
+            12.4
+          ],
+          [
+            7.6,
+            3.52,
+            12.4
+          ],
+          [
+            11.9,
+            3.52,
+            14.7
+          ],
+          [
+            11.9,
+            1.35,
+            14.7
+          ],
+          [
+            11.9,
+            1.35,
+            14.5
+          ]
+        ],
+        "rack_contacts": [
+          [
+            -0.43,
+            0.46,
+            0.13
+          ],
+          [
+            0.43,
+            0.46,
+            0.13
+          ]
+        ],
+        "title": "Knee fork"
+      },
+      "spar": {
+        "support": "m2_service_crane",
+        "source_support": "leg_spar_rack",
+        "load_uid": "LG-120__001",
+        "owner": "left_leg",
+        "slot": "spar",
+        "secured": {
+          "milestone": "spar_secured"
+        },
+        "up_y": 4.4,
+        "console_position": [
+          4.9,
+          0,
+          21
+        ],
+        "park_position": [
+          6.3,
+          0,
+          19
+        ],
+        "endpoint_ids": [
+          "magnet_a",
+          "magnet_b"
+        ],
+        "magnetic_points": {
+          "load_near": [
+            0,
+            0.65,
+            -0.1
+          ],
+          "load_far": [
+            0,
+            2.74,
+            -0.15
+          ]
+        },
+        "source_pose": {
+          "position": [
+            7.6,
+            1.35,
+            15.4
+          ],
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        "receiver_pose": {
+          "position": [
+            11.9,
+            1.35,
+            15.34
+          ],
+          "rotation_degrees": [
+            90,
+            0,
+            0
+          ]
+        },
+        "approach": {
+          "axis": [
+            0,
+            0,
+            -1
+          ],
+          "distance": 0.2
+        },
+        "route_positions": [
+          [
+            7.6,
+            1.35,
+            15.4
+          ],
+          [
+            7.6,
+            3.52,
+            15.4
+          ],
+          [
+            11.9,
+            3.52,
+            15.54
+          ],
+          [
+            11.9,
+            1.35,
+            15.54
+          ],
+          [
+            11.9,
+            1.35,
+            15.34
+          ]
+        ],
+        "rack_contacts": [
+          [
+            0,
+            0.6,
+            0.1
+          ],
+          [
+            0,
+            2.2,
+            0.1
+          ]
+        ],
+        "title": "Upper-leg beam"
+      }
+    },
+    "rack_contacts": [
+      [
+        0,
+        0.7,
+        0.1
+      ],
+      [
+        0,
+        2.9,
+        0.1
+      ]
+    ],
+    "title": "Structural shin",
+    "runway": {
+      "center_z": 12.95,
+      "length": 17.5,
+      "columns": [
+        4.6,
+        12.8,
+        19.8
+      ]
+    }
+  },
+  "foot_carrier": {
+    "support": "foot_carrier",
+    "source_pose": {
+      "position": [
+        11.9,
+        1.2,
+        6.0
+      ],
+      "rotation_degrees": [
+        0,
+        0,
+        0
+      ]
+    },
+    "receiver_pose": {
+      "position": [
+        11.9,
+        2.05,
+        10.2
+      ],
+      "rotation_degrees": [
+        90,
+        0,
+        0
+      ]
+    },
+    "route": [
+      {
+        "position": [
+          11.9,
+          1.2,
+          6.0
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "position": [
+          11.9,
+          2.05,
+          6.0
+        ],
+        "rotation_degrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "position": [
+          11.9,
+          2.05,
+          10.2
+        ],
+        "rotation_degrees": [
+          90,
+          0,
+          0
+        ]
+      }
+    ],
+    "panel": [
+      9.3,
+      0,
+      7.3
+    ],
+    "contacts": [
+      [
+        -0.32,
+        -0.8,
+        1.13
+      ],
+      [
+        0.32,
+        -0.8,
+        1.13
+      ]
+    ],
+    "durations": [
+      4.0,
+      8.0
+    ],
+    "sole_pad_size": [
+      0.5,
+      0.07,
+      0.66
+    ],
+    "end_stop": {
+      "centers": [
+        [
+          -0.32,
+          -0.73,
+          1.48
+        ],
+        [
+          0.32,
+          -0.73,
+          1.48
+        ]
+      ],
+      "size": [
+        0.6,
+        0.14,
+        0.04
+      ]
+    },
+    "bearing": [
+      0,
+      -0.94,
+      1.13
+    ]
+  },
+  "restraints": [
+    {
+      "id": "AnkleServiceBrace",
+      "milestone": "shin_secured",
+      "pieces": [
+        {
+          "id": "RigidLockLink",
+          "position": [
+            -0.68,
+            1.1,
+            -0.5
+          ],
+          "size": [
+            0.06,
+            1.64,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            -0.615,
+            0.4,
+            0.5
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.25
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            -0.615,
+            0.4,
+            0.0
+          ],
+          "size": [
+            0.05,
+            0.12,
+            1.06
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            -0.6475,
+            0.4,
+            -0.5
+          ],
+          "size": [
+            0.12500000000000006,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            -0.175,
+            1.8,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.2
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            -0.175,
+            1.8,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            -0.4275,
+            1.8,
+            -0.5
+          ],
+          "size": [
+            0.5650000000000002,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "RigidLockLink",
+          "position": [
+            0.68,
+            1.1,
+            -0.5
+          ],
+          "size": [
+            0.06,
+            1.64,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            0.615,
+            0.4,
+            0.5
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.25
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            0.615,
+            0.4,
+            0.0
+          ],
+          "size": [
+            0.05,
+            0.12,
+            1.06
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            0.6475,
+            0.4,
+            -0.5
+          ],
+          "size": [
+            0.12500000000000006,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            0.175,
+            1.8,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.2
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            0.175,
+            1.8,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            0.4275,
+            1.8,
+            -0.5
+          ],
+          "size": [
+            0.5650000000000002,
+            0.12,
+            0.06
+          ]
+        }
+      ]
+    },
+    {
+      "id": "KneeServiceBrace",
+      "milestone": "fork_secured",
+      "pieces": [
+        {
+          "id": "RigidLockLink",
+          "position": [
+            -0.68,
+            5.029999999999999,
+            -0.5
+          ],
+          "size": [
+            0.06,
+            1.2999999999999996,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            -0.175,
+            4.5,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.2
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            -0.175,
+            4.5,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            -0.4275,
+            4.5,
+            -0.5
+          ],
+          "size": [
+            0.5650000000000002,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            -0.525,
+            5.56,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.26
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            -0.525,
+            5.56,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            -0.6025,
+            5.56,
+            -0.5
+          ],
+          "size": [
+            0.21500000000000002,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "RigidLockLink",
+          "position": [
+            0.68,
+            5.029999999999999,
+            -0.5
+          ],
+          "size": [
+            0.06,
+            1.2999999999999996,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            0.175,
+            4.5,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.2
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            0.175,
+            4.5,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            0.4275,
+            4.5,
+            -0.5
+          ],
+          "size": [
+            0.5650000000000002,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            0.525,
+            5.56,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.26
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            0.525,
+            5.56,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            0.6025,
+            5.56,
+            -0.5
+          ],
+          "size": [
+            0.21500000000000002,
+            0.12,
+            0.06
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BeamServiceBrace",
+      "milestone": "spar_secured",
+      "pieces": [
+        {
+          "id": "RigidLockLink",
+          "position": [
+            -0.68,
+            5.93,
+            -0.5
+          ],
+          "size": [
+            0.06,
+            0.9800000000000002,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            -0.525,
+            5.56,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.26
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            -0.525,
+            5.56,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            -0.6025,
+            5.56,
+            -0.5
+          ],
+          "size": [
+            0.21500000000000002,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            -0.175,
+            6.3,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.2
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            -0.175,
+            6.3,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            -0.4275,
+            6.3,
+            -0.5
+          ],
+          "size": [
+            0.5650000000000002,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "RigidLockLink",
+          "position": [
+            0.68,
+            5.93,
+            -0.5
+          ],
+          "size": [
+            0.06,
+            0.9800000000000002,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            0.525,
+            5.56,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.26
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            0.525,
+            5.56,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            0.6025,
+            5.56,
+            -0.5
+          ],
+          "size": [
+            0.21500000000000002,
+            0.12,
+            0.06
+          ]
+        },
+        {
+          "id": "LocatedContactPad",
+          "position": [
+            0.175,
+            6.3,
+            0
+          ],
+          "size": [
+            0.05,
+            0.24,
+            0.2
+          ],
+          "contact": true
+        },
+        {
+          "id": "BraceElbow",
+          "position": [
+            0.175,
+            6.3,
+            -0.25
+          ],
+          "size": [
+            0.05,
+            0.12,
+            0.56
+          ]
+        },
+        {
+          "id": "BraceCrossarm",
+          "position": [
+            0.4275,
+            6.3,
+            -0.5
+          ],
+          "size": [
+            0.5650000000000002,
+            0.12,
+            0.06
+          ]
+        }
+      ]
+    }
+  ]
+}

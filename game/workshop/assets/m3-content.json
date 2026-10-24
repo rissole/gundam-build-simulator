@@ -1,0 +1,530 @@
+{
+  "version": 1,
+  "parts": [
+    {
+      "instance_id": "LG-100__001",
+      "source_id": "LG-100__001",
+      "part_id": "LG-100",
+      "kind": "lg-shin",
+      "location": "support:leg_shin_rack"
+    },
+    {
+      "instance_id": "FA-605__001",
+      "source_id": "FA-605__001",
+      "part_id": "FA-605",
+      "kind": "lg-main-input",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-110__001",
+      "source_id": "LG-110__001",
+      "part_id": "LG-110",
+      "kind": "lg-knee-fork",
+      "location": "support:leg_fork_rack"
+    },
+    {
+      "instance_id": "LG-120__001",
+      "source_id": "LG-120__001",
+      "part_id": "LG-120",
+      "kind": "lg-thigh-spar",
+      "location": "support:leg_spar_rack"
+    },
+    {
+      "instance_id": "LG-130__001",
+      "source_id": "LG-130__001",
+      "part_id": "LG-130",
+      "kind": "lg-knee-bearing",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-130__002",
+      "source_id": "LG-130__002",
+      "part_id": "LG-130",
+      "kind": "lg-knee-bearing",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-135__001",
+      "source_id": "LG-135__001",
+      "part_id": "LG-135",
+      "kind": "lg-knee-thrust",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-135__002",
+      "source_id": "LG-135__002",
+      "part_id": "LG-135",
+      "kind": "lg-knee-thrust",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-140__001",
+      "source_id": "LG-140__001",
+      "part_id": "LG-140",
+      "kind": "lg-knee-axle",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-150__001",
+      "source_id": "LG-150__001",
+      "part_id": "LG-150",
+      "kind": "lg-knee-cap",
+      "location": "bin"
+    },
+    {
+      "instance_id": "W-36__021",
+      "source_id": "W-36__021",
+      "part_id": "W-36",
+      "kind": "lg-w36",
+      "location": "bin"
+    },
+    {
+      "instance_id": "H-36090__001",
+      "source_id": "H-36090__001",
+      "part_id": "H-36090",
+      "kind": "lg-m36-90",
+      "location": "bin"
+    },
+    {
+      "instance_id": "W-36__022",
+      "source_id": "W-36__022",
+      "part_id": "W-36",
+      "kind": "lg-w36",
+      "location": "bin"
+    },
+    {
+      "instance_id": "H-36090__002",
+      "source_id": "H-36090__002",
+      "part_id": "H-36090",
+      "kind": "lg-m36-90",
+      "location": "bin"
+    },
+    {
+      "instance_id": "W-36__023",
+      "source_id": "W-36__023",
+      "part_id": "W-36",
+      "kind": "lg-w36",
+      "location": "bin"
+    },
+    {
+      "instance_id": "H-36090__003",
+      "source_id": "H-36090__003",
+      "part_id": "H-36090",
+      "kind": "lg-m36-90",
+      "location": "bin"
+    },
+    {
+      "instance_id": "W-36__024",
+      "source_id": "W-36__024",
+      "part_id": "W-36",
+      "kind": "lg-w36",
+      "location": "bin"
+    },
+    {
+      "instance_id": "H-36090__004",
+      "source_id": "H-36090__004",
+      "part_id": "H-36090",
+      "kind": "lg-m36-90",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W12__001",
+      "source_id": "LG-W12__001",
+      "part_id": "LG-W12",
+      "kind": "lg-w12",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H12050__001",
+      "source_id": "LG-H12050__001",
+      "part_id": "LG-H12050",
+      "kind": "lg-m12-50",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W12__002",
+      "source_id": "LG-W12__002",
+      "part_id": "LG-W12",
+      "kind": "lg-w12",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H12050__002",
+      "source_id": "LG-H12050__002",
+      "part_id": "LG-H12050",
+      "kind": "lg-m12-50",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__001",
+      "source_id": "LG-W24__001",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H24100__001",
+      "source_id": "LG-H24100__001",
+      "part_id": "LG-H24100",
+      "kind": "lg-m24-100",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__002",
+      "source_id": "LG-W24__002",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H24100__002",
+      "source_id": "LG-H24100__002",
+      "part_id": "LG-H24100",
+      "kind": "lg-m24-100",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__003",
+      "source_id": "LG-W24__003",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H24100__003",
+      "source_id": "LG-H24100__003",
+      "part_id": "LG-H24100",
+      "kind": "lg-m24-100",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__004",
+      "source_id": "LG-W24__004",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-H24100__004",
+      "source_id": "LG-H24100__004",
+      "part_id": "LG-H24100",
+      "kind": "lg-m24-100",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-120__001",
+      "source_id": "PV-120__001",
+      "part_id": "PV-120",
+      "kind": "pv-ring-half",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-120__002",
+      "source_id": "PV-120__002",
+      "part_id": "PV-120",
+      "kind": "pv-ring-half",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__005",
+      "source_id": "LG-W24__005",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-H24140__001",
+      "source_id": "PV-H24140__001",
+      "part_id": "PV-H24140",
+      "kind": "pv-m24-140",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__006",
+      "source_id": "LG-W24__006",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-H24140__002",
+      "source_id": "PV-H24140__002",
+      "part_id": "PV-H24140",
+      "kind": "pv-m24-140",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__007",
+      "source_id": "LG-W24__007",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-H24140__003",
+      "source_id": "PV-H24140__003",
+      "part_id": "PV-H24140",
+      "kind": "pv-m24-140",
+      "location": "bin"
+    },
+    {
+      "instance_id": "LG-W24__008",
+      "source_id": "LG-W24__008",
+      "part_id": "LG-W24",
+      "kind": "lg-w24",
+      "location": "bin"
+    },
+    {
+      "instance_id": "PV-H24140__004",
+      "source_id": "PV-H24140__004",
+      "part_id": "PV-H24140",
+      "kind": "pv-m24-140",
+      "location": "bin"
+    }
+  ],
+  "parents": [
+    {
+      "id": "left_leg",
+      "definition": "left_leg",
+      "label": "Structural left leg",
+      "location": "support:m2_leg_rail",
+      "home": [
+        2.3,
+        0.75,
+        14.4
+      ]
+    },
+    {
+      "id": "pelvis",
+      "definition": "pelvis",
+      "label": "Pelvis gantry",
+      "location": "fixture",
+      "home": [
+        13.0,
+        10.6,
+        26.0
+      ]
+    }
+  ],
+  "supports": {
+    "m2_leg_rail": {
+      "assemblies": [
+        "left_leg"
+      ],
+      "assembly_ids": [
+        "left_leg"
+      ]
+    },
+    "m2_service_crane": {
+      "parts": [
+        "lg-shin",
+        "lg-knee-fork",
+        "lg-thigh-spar"
+      ],
+      "item_ids": [
+        "LG-100__001",
+        "LG-110__001",
+        "LG-120__001"
+      ]
+    },
+    "m2_lift_shelf_0": {
+      "parts": [
+        "fa-220__001",
+        "fa-220__002",
+        "fa-221-pitch",
+        "fa-510__001",
+        "fa-511__001",
+        "fa-512__001",
+        "fa-513__001",
+        "fa-514__001",
+        "fa-516__001",
+        "fa-517__001",
+        "fa-518__001",
+        "fa-519__001",
+        "fa-521__001",
+        "fa-525__001",
+        "fa-525__002",
+        "fa-526-pitch",
+        "lg-knee-axle",
+        "lg-knee-bearing",
+        "lg-knee-cap",
+        "lg-knee-thrust",
+        "lg-main-input",
+        "pad",
+        "pv-ring-half"
+      ]
+    },
+    "m2_lift_shelf_1": {
+      "parts": [
+        "fa-220__001",
+        "fa-220__002",
+        "fa-221-pitch",
+        "fa-510__001",
+        "fa-511__001",
+        "fa-512__001",
+        "fa-513__001",
+        "fa-514__001",
+        "fa-516__001",
+        "fa-517__001",
+        "fa-518__001",
+        "fa-519__001",
+        "fa-521__001",
+        "fa-525__001",
+        "fa-525__002",
+        "fa-526-pitch",
+        "lg-knee-axle",
+        "lg-knee-bearing",
+        "lg-knee-cap",
+        "lg-knee-thrust",
+        "lg-main-input",
+        "pad",
+        "pv-ring-half"
+      ]
+    }
+  },
+  "equipment": {
+    "foot_mount": {
+      "parent": "left_leg",
+      "slot": "foot",
+      "support": "foot_carrier"
+    },
+    "leg_mount": {
+      "parent": "pelvis",
+      "slot": "left_leg",
+      "support": "m2_leg_rail"
+    },
+    "parts": {
+      "LG-100__001": {
+        "owner": "left_leg",
+        "slot": "shin",
+        "support": "leg_shin_rack",
+        "stock_position": [
+          7.6,
+          1.35,
+          6.2
+        ],
+        "delivery_support": "m2_service_crane"
+      },
+      "LG-110__001": {
+        "owner": "left_leg",
+        "slot": "fork",
+        "support": "leg_fork_rack",
+        "stock_position": [
+          7.6,
+          1.35,
+          12.4
+        ],
+        "delivery_support": "m2_service_crane"
+      },
+      "LG-120__001": {
+        "owner": "left_leg",
+        "slot": "spar",
+        "support": "leg_spar_rack",
+        "stock_position": [
+          7.6,
+          1.35,
+          15.4
+        ],
+        "delivery_support": "m2_service_crane"
+      }
+    }
+  },
+  "m3": {
+    "scenario_id": "leg_bay_m3",
+    "scenario_version": 1,
+    "equipment_version": 1,
+    "route_version": 1,
+    "remove_supports": [],
+    "save_path": "user://m3-workshop-save.json",
+    "prepared_foot": true,
+    "staged_slots": {
+      "left_leg": [],
+      "pelvis": []
+    },
+    "playable_slots": {
+      "left_leg": [
+        "foot",
+        "shin",
+        "ankle/W-36__021",
+        "ankle/H-36090__001",
+        "ankle/W-36__022",
+        "ankle/H-36090__002",
+        "ankle/W-36__023",
+        "ankle/H-36090__003",
+        "ankle/W-36__024",
+        "ankle/H-36090__004",
+        "main_input",
+        "bearing_1",
+        "bearing_2",
+        "thrust_1",
+        "thrust_2",
+        "fork",
+        "axle",
+        "cap",
+        "cap/washer_1",
+        "cap/screw_1",
+        "cap/washer_2",
+        "cap/screw_2",
+        "spar",
+        "fork/washer_1",
+        "fork/bolt_1",
+        "fork/washer_2",
+        "fork/bolt_2",
+        "fork/washer_3",
+        "fork/bolt_3",
+        "fork/washer_4",
+        "fork/bolt_4"
+      ],
+      "pelvis": [
+        "left_leg",
+        "ring_1",
+        "ring_2",
+        "ring/washer_1",
+        "ring/bolt_1",
+        "ring/washer_2",
+        "ring/bolt_2",
+        "ring/washer_3",
+        "ring/bolt_3",
+        "ring/washer_4",
+        "ring/bolt_4"
+      ]
+    },
+    "controlled_mount_slots": [
+      "left_leg.foot",
+      "pelvis.left_leg"
+    ],
+    "security_slots": {
+      "shin": [
+        "shin",
+        "ankle/W-36__021",
+        "ankle/H-36090__001",
+        "ankle/W-36__022",
+        "ankle/H-36090__002",
+        "ankle/W-36__023",
+        "ankle/H-36090__003",
+        "ankle/W-36__024",
+        "ankle/H-36090__004"
+      ],
+      "fork": [
+        "fork",
+        "axle",
+        "cap",
+        "cap/washer_1",
+        "cap/screw_1",
+        "cap/washer_2",
+        "cap/screw_2"
+      ],
+      "spar": [
+        "spar",
+        "fork/washer_1",
+        "fork/bolt_1",
+        "fork/washer_2",
+        "fork/bolt_2",
+        "fork/washer_3",
+        "fork/bolt_3",
+        "fork/washer_4",
+        "fork/bolt_4"
+      ]
+    }
+  }
+}

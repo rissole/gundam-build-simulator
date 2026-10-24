@@ -155,6 +155,9 @@ func load_foot() -> void:
 			stored.position = Vector3(7,2,7.0)
 			node.reparent(stored,false)
 			node.position -= game.FOOT_CENTER
+			# Hide staged armor until supported storage exists; otherwise it floats
+			# distractingly in the base workshop and shared milestone scenes.
+			node.hide()
 			continue
 		if game.profile.get("foot_collider_families",preload("res://scripts/scenario_profile.gd").FOOT_COLLIDER_FAMILIES).has(family):
 			var collision_mode: String = game.config.get("context_collision",{}).get(uid,"bounds")

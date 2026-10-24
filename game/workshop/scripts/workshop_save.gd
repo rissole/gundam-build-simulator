@@ -35,7 +35,7 @@ func setup(workshop: Node, path_override: String = "", use_automatic: bool = tru
 	assert(configuration_errors.is_empty(),str(configuration_errors))
 	var materials: Dictionary = {"world":WORLD_VERSION,"definitions":game.model.definitions,"scenario":game.config,"supported":is_instance_valid(game.foot_fixture),"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb")}
 	if trial:
-		materials = {"m2":TRIAL_VERSION,"trial":game.profile.trial,"definitions":game.model.definitions,"scenario":game.config,"sources":game.leg_content.sources,"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb"),"layout":FileAccess.get_sha256("res://assets/leg-bay-layout.json")}
+		materials = {"m2":TRIAL_VERSION,"trial":game.profile.trial,"definitions":game.model.definitions,"scenario":game.config,"sources":game.leg_content.sources,"geometry":FileAccess.get_sha256("res://assets/foot-fa01.glb"),"layout":FileAccess.get_sha256(game.profile.get("layout_path","res://assets/leg-bay-layout.json"))}
 	fingerprint = JSON.stringify(materials).sha256_text()
 	initial = capture()
 	if enabled:
@@ -50,8 +50,8 @@ func _trial() -> bool:
 
 func status_text() -> String:
 	if _trial():
-		var title = "Hip retainer" if game.profile.trial == "retention" else "Crane delivery"
-		return title+" · separate M2 save slot.\n"+(message if not message.is_empty() else ("Autosaves on pause, quit and every 30 seconds. Restart resets only this trial." if enabled else "Headless/test session; normal saves are untouched."))
+		var title = "M3 Complete leg" if game.profile.trial == "m3" else ("Hip retainer" if game.profile.trial == "retention" else "Crane delivery")
+		return title+" · separate workshop save slot.\n"+(message if not message.is_empty() else ("Autosaves on pause, quit and every 30 seconds. Restart resets only this trial." if enabled else "Headless/test session; normal saves are untouched."))
 	if not enabled:return "This scenario is session-only.\nYour saved workshop is untouched."
 	if not message.is_empty():return message
 	return "Autosaves every 30 seconds, on pause and on quit.\nYour workshop resumes when you reopen the game."

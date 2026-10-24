@@ -19,9 +19,10 @@ var _buttons: Array[Dictionary] = []
 var _gate_mesh: MeshInstance3D
 var _label: Label3D
 var _hardware: Array[RID] = []
+var layout_options: Dictionary = {}
 
-func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels: Array[float]) -> void:
-	game = workshop
+func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels: Array[float], options: Dictionary = {}) -> void:
+	game = workshop;layout_options = options
 	equipment_id = id+"_lift"
 	lift_name = id
 	position = origin
@@ -70,6 +71,11 @@ func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels:
 	ramp_mesh.material_override = steel
 	ramp.add_child(ramp_mesh)
 	_make_guides(steel,yellow)
+	if layout_options.has("cantilever_beams"):
+		var beams: Dictionary = layout_options.cantilever_beams
+		for z in beams.z_positions:
+			var member = _solid(deck,Vector3(beams.position_x,beams.position_y,z),Vector3(beams.span_x,beams.height,beams.depth),steel)
+			member.name = "CantileverDeckBeam"
 	_solid(deck,Vector3(size.x/2-0.07,1.1,0),Vector3(0.12,0.36,0.90),steel)
 	for pair in [["down",-0.25],["up",0.0],["ground",0.25]]:
 		_button(deck,Vector3(size.x/2-0.14,1.1,float(pair[1])),pair[0],yellow)
@@ -94,14 +100,15 @@ func _make_guides(steel: Material, yellow: Material) -> void:
 	add_child(supports)
 	_hardware.append(supports.get_rid())
 	var top = stops[-1]+1.4
-	var z = deck_size.y/2-0.4
-	for side in [-1.0,1.0]:
-		var x = side*(deck_size.x/2+0.04)
+	var placements: Array = layout_options.get("guide_positions",[[-(deck_size.x/2+.04),deck_size.y/2-.4],[deck_size.x/2+.04,deck_size.y/2-.4]])
+	for placement in placements:
+		var x: float = placement[0]
+		var z: float = placement[1]
 		_solid(supports,Vector3(x,0.10,z),Vector3(0.10,0.20,0.55),steel)
 		_solid(supports,Vector3(x,top/2,z),Vector3(0.10,top,0.16),steel)
 		game.box(supports,Vector3(x,top/2,z-0.09),Vector3(0.04,top-0.20,0.02),yellow)
 		var shoe = _solid(deck,Vector3(x,0.20,z-0.08),Vector3(0.22,0.40,0.22),steel)
-		shoe.name = "GuideCarriageLeft" if side < 0 else "GuideCarriageRight"
+		shoe.name = ("GuideCarriage_"+str(x)+"_"+str(z)) if layout_options.has("guide_positions") else ("GuideCarriageLeft" if x < 0 else "GuideCarriageRight")
 		var drive = MeshInstance3D.new()
 		var pinion = CylinderMesh.new()
 		pinion.top_radius = 0.10

@@ -6,6 +6,13 @@ and visible transport issues. The historical checks below establish mechanical
 behavior; they do not establish acceptance of the workshop experience.
 
 Continue from [playtest feedback and next steps](leg-workshop-next-steps.md).
+The authorized [M3 implementation plan](leg-workshop-m3-plan.md) tracks completion
+of the current rail-based construction journey. Full teardown verification was
+stopped by request on 2026-10-24; existing undo remains for mistake correction.
+The user now describes M3 as largely satisfying. The next design discussion works
+backwards from the completed robot in the
+[final gantry and assembly plan](final-assembly-plan.md), addressing measurement,
+access, shared equipment and major-section installation before further detail.
 The upright-hoist workflow described below was retired during the 2026-10-23
 architecture consolidation. Default launch now selects the foot base game;
 M2 uses separate rail/crane trial profiles. This document retains the historical

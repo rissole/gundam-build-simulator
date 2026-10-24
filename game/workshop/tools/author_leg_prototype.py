@@ -704,6 +704,104 @@ def audit_m2(documents):
         assert recipe["pelvis"]["slots"]["ring/washer_3"]["accepts"] == recipe["left_leg"]["slots"]["fork/washer_1"]["accepts"] == "lg-w24"
 
 
+
+def m3_documents():
+    """Complete prepared-foot journey, patching the canonical slot graph."""
+    rail, crane = RAIL["support"], CRANE_SUPPORT
+    m3_layout = json.loads((ASSETS / "leg-bay-m3-layout.json").read_text())
+    trial_leg, trial_pelvis = deepcopy(leg), deepcopy(pelvis)
+    security = {
+        "shin": ["shin"] + flange_slots,
+        "fork": ["fork", "axle"] + cap_slots,
+        "spar": spar_slots,
+    }
+    for task, secured in security.items():
+        trial_leg["slots"][task]["source_supports"] = [crane]
+        trial_leg["milestones"][task + "_secured"] = list(secured)
+        for sid in secured:
+            trial_leg["slots"][sid]["undo_requires_support"] = crane
+    for sid in trial_pelvis["slots"]:
+        if sid != "left_leg":
+            trial_pelvis["slots"][sid]["undo_requires_support"] = rail
+    for sid in ("ring_1", "ring_2"):
+        trial_pelvis["slots"][sid]["undo_to"] = "hands"
+    for sid in ("main_input", "bearing_1", "bearing_2", "thrust_1", "thrust_2", "axle", "cap"):
+        trial_leg["slots"][sid]["undo_to"] = "hands"
+    pages = []
+    pages.append(dict(title="Prepared foot, empty leg rail", view="overview", slots=[], body="The complete 135-piece foot is supplied on its carrier. The horizontal leg rail and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."))
+    page(pages, "Dock the prepared foot", "At the foot carrier, Advance raises the complete foot; Advance again turns and seats it in the horizontal rail holder. The guided carrier keeps support until the holder takes contact and locks ankle motion. Keep the rail at its home construction position.", ["foot"])
+    def delivery(title, task, uid, receiver):
+        task_title = m3_layout["crane"]["tasks"][task]["title"]
+        page(pages, title, "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the " + task_title + " task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat " + uid + " against the already fitted " + receiver + ". The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.", [task])
+    delivery("Deliver the structural shin", "shin", "LG-100", "foot adapter")
+    page(pages, "Secure the ankle flange", "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic ends, raise and park the empty crane before changing task.", flange_slots, ["LG-100__001", "FA-201__001"])
+    page(pages, "Connect the shin disconnect", "Carry FA-605 with both attached plugs. Approach from the side away from the crane racks, standing back toward the knee. Leave room for the upright harness to turn clear of the ankle brace before fitting it. Seat its box end in the already fitted FA-604 socket, follow the foot guide clips and seat the upper keyed plug in LG-100's angled socket. The harness and knee-bearing branches can be completed in either order after the ankle bolts. Unplug this harness before separating foot and shin.", ["main_input"], ["FA-604__001", "LG-100__001"])
+    page(pages, "Seat bearings and thrust spacers", "Carry and fit the two LG-130 bearings from opposite sides of the shin knee boss, then one LG-135 thrust spacer against each end. Bearings are interchangeable with bearings; spacers are interchangeable with spacers. Keep the marked knee axle extraction aisle clear.", bearings + thrust, ["LG-100__001"])
+    delivery("Deliver the knee fork", "fork", "LG-110", "shin knee boss and thrust spacers")
+    page(pages, "Insert the knee axle", "Carry LG-140 lengthwise with both hands. Stand back at the marked axle extraction aisle so the shaft can align with the bore, then insert through the already seated fork and bearings until its shoulder contacts the fork. The rail brace keeps the knee straight and crane assistance remains attached.", ["axle"], ["LG-110__001"])
+    page(pages, "Retain the knee axle", "Walk to the opposite side from the marked axle extraction aisle. Fit LG-150 on the exposed axle end, then two LG-W12 washers and two LG-H12050 screws, each washer before its screw. With the axle and both cap pairs complete, detach and stow both magnetic ends, raise and park the empty crane.", cap_slots, ["LG-110__001", "LG-140__001"])
+    delivery("Deliver the Upper-leg beam", "spar", "LG-120", "fork flange")
+    page(pages, "Fasten the Upper-leg beam flange", "Pocket four LG-W24 washers and four LG-H24100 bolts. Fit each washer and then its bolt through the exposed flange corners into the already fitted fork. Approach the bolt heads from the hip side of the flange and insert toward the knee. These M24 x 100 bolts differ from the pelvis M24 x 140 bolts. After every pair is fitted, detach and stow both magnetic ends, then raise and park the empty crane.", spar_slots[1:], ["LG-110__001", "LG-120__001"])
+    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Confirm the empty crane is parked with both magnetic ends stowed, then open the pelvis manual. The rail continues to support the complete leg."))
+    pages.append(dict(title="Supported construction recovery", view="overview", slots=[], body="Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg cradle and attach both magnetic ends to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Up withdraws the supported part through the reverse axial approach; Go to its rack and Down returns it. Detach and stow only after rack contact. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot-carrier Return reacquires the foot and reverses one guided phase per press; Return again lowers it to the dispatch position."))
+    trial_leg["manual"] = pages
+    pages = [dict(title="Travel and seat the supported leg", view="overview", slots=[], body="The pelvis bridge, both sockets and their bridge bolts are supplied context. Keep the rail engaged throughout travel, tilt and upward docking. Use local rail Advance controls through each supported stage; Stop holds the current stage. Retention is performed from the personnel lift. Retention blocks loaded Return.")]
+    page(pages, "Seat the leg in the pelvis", "With the completed leg and parked empty crane, operate the rail through travel and tilt, then Advance upward into the open left socket. The rail seats the hip ball and stays engaged. Ball seating alone does not secure the leg.", ["left_leg"], context_sources)
+    for half, pairs in ((1, (3, 4)), (2, (1, 2))):
+        page(pages, "Carry retaining half " + str(half), "E picks up either PV-120 half with both hands. Carry it onto the personnel lift and click the shelf to store it. The shelf holds one two-hand component or two one-hand components; take one half per trip. Ride Up, E-pick it from the shelf, then aim and click its underside connection around the already seated hip neck. Either physical half fits either destination.", ["ring_" + str(half)], ["PV-110__001", "PV-V-HIP-BALL"])
+        ids = [sid for n in pairs for sid in ("ring/washer_" + str(n), "ring/bolt_" + str(n))]
+        access_note = "Move toward the hip-facing end of the lift's working corner to see the far underside washer seats past the beam. " if half == 2 else ""
+        page(pages, "Fasten retaining half " + str(half), "Pocket two LG-W24 washers and two PV-H24140 M24 x 140 bolts at ground level. " + access_note + "Fit each washer then its bolt upward from the seated half's underside into the existing socket flange. The shared LG-W24 stock also supplies the fork flange. Keep rail assistance engaged; a single fastened half cannot retain the complete hip.", ids, ["PV-110__001", "PV-120__%03d" % half])
+    pages.append(dict(title="Left leg structurally secured", view="prepared", slots=[], body="Both halves and all four washer/bolt pairs are required. With the complete retention set fitted, press rail Advance to release the holder jaws. The pelvis now owns and supports the mounted leg. Return now withdraws the empty holder one phase per press along its reverse docking, tilt and travel route; the mounted leg stays at the pelvis. Powered actuators, services and armor remain deferred."))
+    pages.append(dict(title="Reacquire support and recover", view="overview", slots=[], body="If the empty holder has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the holder jaws and reacquires support. If the released holder is already docked, Advance directly reacquires support. Wait for the holder to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the holder is released."))
+    trial_pelvis["manual"] = pages
+    for definition in (trial_leg, trial_pelvis):
+        for step in definition["manual"]:
+            if step["view"] == "components":
+                physical = [definition["slots"][sid]["pose_source"] for sid in step["slots"]]
+                step["diagram_views"] = [diagram(step["title"], physical, step.get("context_sources", []))]
+    added_supports = deepcopy(m2_documents()["m2-crane-content.json"]["supports"])
+    added_supports[crane] = dict(parts=["lg-shin", "lg-knee-fork", "lg-thigh-spar"], item_ids=["LG-100__001", "LG-110__001", "LG-120__001"])
+    equipment = deepcopy(content["equipment"])
+    for task in m3_layout["crane"]["tasks"].values():
+        info = equipment["parts"][task["load_uid"]]
+        assert info["slot"] == task["slot"] and info["support"] == task["source_support"]
+        info["delivery_support"] = task["support"]
+        info["stock_position"] = list(task["source_pose"]["position"])
+    trial = dict(version=1, parts=deepcopy(stock), parents=deepcopy(content["parents"]), supports=added_supports, equipment=equipment,
+        m3=dict(scenario_id="leg_bay_m3", scenario_version=1, equipment_version=1, route_version=1, remove_supports=[], save_path="user://m3-workshop-save.json", prepared_foot=True,
+                staged_slots={"left_leg": [], "pelvis": []}, playable_slots={"left_leg": list(leg_slots), "pelvis": list(pelvis_slots)}, controlled_mount_slots=["left_leg.foot", "pelvis.left_leg"], security_slots=security))
+    trial_parts = {"lg-knee-axle": deepcopy(parts["lg-knee-axle"])}
+    trial_parts["lg-knee-axle"]["handling"] = dict(rotation_degrees=[90, 90, 0])
+    return {"m3-definitions.json": dict(version=1, parts=trial_parts, assembly_patches={"left_leg": assembly_patch(leg, trial_leg), "pelvis": assembly_patch(pelvis, trial_pelvis)}), "m3-content.json": trial}
+
+
+def audit_m3(documents):
+    overlay, trial = documents["m3-definitions.json"], documents["m3-content.json"]
+    recipes = materialize_overlay(dict(parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis}), overlay)["assemblies"]
+    assert "assemblies" not in overlay
+    assert len(trial["parts"]) == len({p["instance_id"] for p in trial["parts"]}) == 40
+    assert Counter(p["kind"] for p in trial["parts"])["lg-w24"] == 8
+    assert sum(len(r["slots"]) for r in recipes.values()) == 42
+    for owner, recipe in recipes.items():
+        coverage = Counter(sid for step in recipe["manual"] if step["view"] == "components" for sid in step["slots"])
+        assert coverage == Counter({sid: 1 for sid in recipe["slots"]})
+        assert all(not step["slots"] for step in recipe["manual"] if step["view"] != "components")
+        resolved = set()
+        for step in recipe["manual"]:
+            for sid in step["slots"]:
+                assert set(recipe["slots"][sid]["requires"]) <= resolved
+                resolved.add(sid)
+        for sid, spec in recipe["slots"].items():
+            assert spec["requires"] == ({"left_leg": leg, "pelvis": pelvis}[owner])["slots"][sid]["requires"]
+            assert spec["pose_source"] == ({"left_leg": leg, "pelvis": pelvis}[owner])["slots"][sid]["pose_source"]
+    assert recipes["pelvis"]["milestones"] == pelvis["milestones"]
+    assert trial["m3"]["staged_slots"] == {"left_leg": [], "pelvis": []}
+    for task in ("shin", "fork", "spar"):
+        assert recipes["left_leg"]["slots"][task]["source_supports"] == [CRANE_SUPPORT]
+        assert all(recipes["left_leg"]["slots"][sid]["undo_requires_support"] == CRANE_SUPPORT for sid in trial["m3"]["security_slots"][task])
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="Audit and byte-compare all generated base and trial assets")
@@ -719,8 +817,10 @@ if __name__ == "__main__":
         "leg-prototype-definitions.json": dict(version=1, parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis, "foot": foot}),
         "leg-prototype-content.json": content,
         **m2_documents(),
+        **m3_documents(),
     }
     audit_m2(generated)
+    audit_m3(generated)
     assert LAYOUT["version"] == 1
     secure = LAYOUT["crane"]["secured"]["milestone"]
     assert secure in leg["milestones"] and leg["milestones"][secure] == spar_slots
@@ -732,4 +832,4 @@ if __name__ == "__main__":
             assert (ASSETS / name).read_text() == encoded, f"Regenerate {name} with author_leg_prototype.py"
         else:
             (ASSETS / name).write_text(encoded)
-    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; two slot-patched trials; 35/30 extension identities, 5/9 playable slots; byte equality="+str(checking))
+    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; two M2 trials and complete M3; M3 40 extension identities, 42 playable slots; byte equality="+str(checking))
