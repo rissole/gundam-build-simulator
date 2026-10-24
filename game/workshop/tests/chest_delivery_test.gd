@@ -1,19 +1,9 @@
-extends "res://tests/indexed_leg_rail_test.gd"
+extends "res://tests/kit/m3_section.gd"
 ## Mechanical/model fixture only. The user owns walking and connection access.
-var with_legs=false
 func run() -> void:
-	if with_legs:
-		await super.run()
-		return
-	game=await boot_profile("leg_bay_m3");rail=game.equipment.get_equipment("leg_rail");carrier=game.equipment.get_equipment("foot_carrier")
-	var fixture=game.equipment.get_equipment("module_supports")
-	expect(not fixture.request("template:chest").is_empty(),"occupied pelvis fixture refuses contact exchange")
-	if not await deliver_pelvis():finish();return
-	await after_legs()
+	if not await start("chest"):finish();return
+	expect(await deliver_chest(),"detailed section completes")
 	finish()
-
-func after_legs() -> bool:
-	return await deliver_chest()
 
 func deliver_chest() -> bool:
 	var fixture=game.equipment.get_equipment("module_supports")
@@ -27,16 +17,12 @@ func deliver_chest() -> bool:
 	var pelvis_physics: Transform3D=PhysicsServer3D.body_get_state(pelvis_body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
 	print("PELVIS_AT_CHEST node=",pelvis_body.global_position," physics=",pelvis_physics.origin)
 	expect(fixture.source_release>0 and fixture.source_release<1,"fixture clamps close after chest seat contact")
-	if not await reopen("chest receiving clamp contact"):return false
-	crane=game.equipment.get_equipment("service_crane");fixture=game.equipment.get_equipment("module_supports")
 	if not command(crane,"resume"):return false
 	expect(game.model.assemblies.chest.location=="support:bulky_fixture" and fixture.support_secured("chest"),"same physical chest transfers to closed fixture")
 	supply_rig(crane,false)
 	if not command(crane,"up") or not command(crane,"go:park"):return false
 	expect(not fixture.request("template:pelvis").is_empty(),"occupied chest prevents insert exchange")
 	fixture.request("advance");fixture.physics(1);fixture.request("stop")
-	if not await reopen("chest fixture height"):return false
-	fixture=game.equipment.get_equipment("module_supports");crane=game.equipment.get_equipment("service_crane")
 	if not command(fixture,"return"):return false
 	if not command(crane,"task:chest") or not command(crane,"go:source") or not command(crane,"down"):return false
 	supply_rig(crane,true)
@@ -45,8 +31,6 @@ func deliver_chest() -> bool:
 	expect(traverse_error.is_empty(),"loaded chest traverse accepted: "+traverse_error)
 	if not traverse_error.is_empty():return false
 	crane.physics(2);crane.request("stop")
-	if not await reopen("chest loaded gantry traverse"):return false
-	crane=game.equipment.get_equipment("service_crane")
 	if not command(crane,"resume") or not command(crane,"down"):return false
 	expect(game.model.assemblies.chest.parent=="pelvis","waist seat mounts the existing chest hierarchy")
 	expect(not crane.secured() and crane.action_error("detach:"+crane.END_IDS[0]).contains("retaining"),"seating alone cannot release the four lifting shoes")
@@ -57,20 +41,16 @@ func deliver_chest() -> bool:
 	Staging.fill(game,"pelvis",washers)
 	expect(crane.secured(),"four separate washer and bolt pairs secure the chest")
 	expect(not game.components.placement_error("pelvis","chest/service_1","CH-SERVICE__001").is_empty(),"rigging remains an explicit service-connection interlock")
-	if not await reopen("retained chest with rigging"):return false
-	crane=game.equipment.get_equipment("service_crane")
 	supply_rig(crane,false)
 	if not command(crane,"up") or not command(crane,"go:park"):return false
 	Staging.fill(game,"pelvis",["chest/service_1","chest/service_2"])
 	expect(game.model.milestone("pelvis","chest_connected") and game.model.integrity_errors().is_empty(),"retained and serviced chest preserves unique ownership")
-	if not await reopen("chest connected"):return false
 	# Undo the two service plugs through the normal history, then reacquire the
 	# same four-ended crane before touching any structural retention.
 	for i in range(2):
 		expect(not game.equipment.undo("pelvis").handled,"chest service undo is independent of leg-holder retention")
 		expect(game.model.undo("pelvis").ok,"service plug returns to inventory for local correction")
 	game.components.sync("pelvis")
-	crane=game.equipment.get_equipment("service_crane")
 	if not command(crane,"task:shin"):return false
 	expect(game.equipment.undo("pelvis").handled,"wrong crane task cannot bypass chest retention support")
 	if not command(crane,"task:chest") or not command(crane,"go:receiver") or not command(crane,"down"):return false
@@ -81,8 +61,6 @@ func deliver_chest() -> bool:
 	game.components.sync("pelvis")
 	if not command(crane,"up"):return false
 	expect(game.model.assemblies.chest.location=="support:m2_service_crane" and game.model.assemblies.chest.parent.is_empty(),"supported correction removes only the chest from its parent")
-	if not await reopen("reacquired chest above waist"):return false
-	crane=game.equipment.get_equipment("service_crane")
 	if not command(crane,"down"):return false
 	Staging.fill(game,"pelvis",washers)
 	supply_rig(crane,false)

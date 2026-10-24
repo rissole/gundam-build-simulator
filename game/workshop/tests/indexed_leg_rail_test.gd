@@ -1,54 +1,16 @@
-extends "res://tests/kit/harness.gd"
+extends "res://tests/kit/m3_section.gd"
 ## Supported motion test using the actual scene/stock/solids. Construction is
 ## explicitly supplied via model staging; no walk/aim/reach acceptance is run.
-var game: Node
-var rail: Node
-var carrier: Node
-const Store = preload("res://scripts/save_store.gd")
-
-func _initialize() -> void:call_deferred("run")
-
-func settle(controller: Node, limit: int = 1600) -> bool:
-	for tick in range(limit):
-		if not controller.moving:return controller.blocked_reason.is_empty()
-		game.equipment.get_equipment("workshop_access").physics(.1)
-		game.equipment.get_equipment("rail_gates").physics(.1)
-		controller.physics(.1)
-	return false
-
-func command(controller: Node, action: String) -> bool:
-	var error: String=controller.request(action)
-	expect(error.is_empty(),controller.equipment_id+" accepts "+action+": "+error)
-	if not error.is_empty():return false
-	var okay=settle(controller)
-	if not okay:
-		print("MECHANICAL_STOP ",controller.capture())
-		for id in game.runtime.nodes:print("ASSEMBLY_BODY ",id," ",game.runtime.node(id).name)
-	expect(okay,controller.equipment_id+" completes "+action+": "+controller.blocked_reason)
-	return okay
-
 func finish() -> void:
 	var passed=checks.all(func(check):return check.passed)
 	write_evidence("res://verification/indexed-leg-rail.json",{"scope":"mechanical route; construction supplied through model; no walking/access acceptance","checks":checks})
 	print("INDEXED_LEG_RAIL ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)
 
-func reopen(_label: String) -> bool:
-	# M3 saving is deferred (design/game/handoff/README.md). Call sites keep their
-	# stop/resume structure; no snapshot or fresh scene is created. Two physics
-	# frames let moved bodies reach the physics server, as they would between
-	# player actions.
-	await frames(2)
-	return true
-
 func run() -> void:
-	game=await boot_profile("leg_bay_m3");rail=game.equipment.get_equipment("leg_rail");carrier=game.equipment.get_equipment("foot_carrier")
-	expect(rail.can_construct() and is_equal_approx(game.assembly_node("left_leg").global_position.x,14),"empty cradle starts at shared X14 station")
-	expect(not rail.request("advance").is_empty(),"incomplete structural leg cannot depart")
-	if not await deliver_pelvis():finish();return
+	if not await start("left_leg_build"):finish();return
 	if not await deliver_foot("foot"):finish();return
 	carrier.request("advance");carrier.physics(1);carrier.request("stop")
-	if not await reopen("foot raise"):finish();return
 	for stage in range(3):
 		if not command(carrier,"advance"):finish();return
 	expect(game.model.assemblies.foot.parent=="left_leg" and carrier.withdrawal==1,"foot handoff takes receiver support before carrier withdraws")
@@ -86,7 +48,6 @@ func run() -> void:
 	expect(not crane._receiver_error().is_empty(),"crane cannot deliver into a parked leg")
 	if not command(rail,"park"):finish();return
 	rail.request("roll");rail.physics(1);rail.request("stop")
-	if not await reopen("source roll raise"):finish();return
 	if not command(rail,"advance"):finish();return
 	if not command(rail,"roll"):finish();return
 	expect(is_equal_approx(rail.roll,90) and is_equal_approx(rail.roll_height,1),"supported source roll uses raised axis")
@@ -122,8 +83,6 @@ func run() -> void:
 	expect(locks.undo("pelvis").get("handled",false),"locked cylinder prevents connection undo")
 	rail.request("advance");rail.physics(1);rail.request("stop")
 	expect(rail.undo("pelvis").get("handled",false),"partial contact release rejects retention undo")
-	if not await reopen("holder withdrawal"):finish();return
-	locks=game.equipment.get_equipment("captive_controls")
 	if not command(rail,"advance"):finish();return
 	expect(not rail.engaged and rail.release==5,"holder withdraws/compacts/shifts before empty return")
 	expect(not locks.action_error("left_hip_1").is_empty(),"released holder prevents neutral lock removal")
@@ -139,7 +98,6 @@ func run() -> void:
 		expect(game.assembly_node("left_leg").global_transform.is_equal_approx(mounted),"local reacquisition leaves the retained leg stationary")
 	expect(rail.engaged and rail.path==3 and rail.release==0,"returned empty holder reacquires the mounted leg for local correction")
 	expect(not rail.undo("pelvis").get("handled",false),"retention undo is available only after reacquisition")
-	if not await reopen("reacquired holder"):finish();return
 	if not command(rail,"advance"):finish();return
 	for phase in range(5):
 		if rail.path==0 and rail.index_x==14 and rail.release==0:break
@@ -153,7 +111,6 @@ func run() -> void:
 	for phase in range(3):
 		if not command(carrier,"advance"):finish();return
 	expect(not rail.request("build").is_empty(),"occupied right build cannot be replaced by selecting left")
-	crane=game.equipment.get_equipment("service_crane")
 	for key in ["shin","fork","spar"]:
 		if not command(crane,"task:right_"+key):finish();return
 		if not command(crane,"go:source") or not command(crane,"down"):finish();return
@@ -169,28 +126,17 @@ func run() -> void:
 		expect(game.assembly_node("left_leg").global_transform.is_equal_approx(mounted),"right delivery leaves first fitted leg stationary")
 	expect(game.assembly_node("right_leg").global_position.is_equal_approx(Vector3(14.1,1.4,26)),"right delivery seats at independent mirrored socket")
 	Staging.fill(game,"pelvis")
-	locks=game.equipment.get_equipment("captive_controls")
 	for id in locks.specs:
 		if id.begins_with("right_"):expect(locks.request(id).is_empty(),"right hip locks require its own pins and supported holder")
-	if not await reopen("both retained legs"):finish();return
 	settle(game.equipment.get_equipment("workshop_access"))
 	if not command(rail,"advance"):finish();return
 	for phase in range(5):
 		if rail.path==0 and rail.index_x==14 and rail.release==0:break
 		if not command(rail,"return"):finish();return
-	if not await reopen("second empty return"):finish();return
 	for phase in range(3):
 		if not command(carrier,"return"):finish();return
 	expect(carrier.path==0 and carrier.withdrawal==0 and not carrier.carrying(),"empty carrier returns without moving retained right foot")
-	if not await after_legs():finish();return
 	finish()
-
-func after_legs() -> bool:return true
-
-func supply_rig(crane: Node, attached: bool) -> void:
-	var state: Dictionary=crane.capture()
-	for index in range(crane.END_IDS.size()):state.endpoints[crane.END_IDS[index]]={"state":"attached" if attached else "stowed","point":crane.POINT_IDS[index] if attached else ""}
-	crane.apply(state)
 
 func deliver_foot(owner: String) -> bool:
 	var crane=game.equipment.get_equipment("service_crane")
@@ -203,42 +149,8 @@ func deliver_foot(owner: String) -> bool:
 	supply_rig(crane,true)
 	if not crane.request("up").is_empty():return false
 	crane.physics(1.7);crane.request("stop")
-	if not await reopen(owner+" suspended on crane"):return false
-	crane=game.equipment.get_equipment("service_crane")
 	if not command(crane,"resume") or not command(crane,"go:receiver") or not command(crane,"down"):return false
 	expect(game.model.assemblies[owner].location=="support:foot_carrier","crane transfers prepared assembly onto sole carrier only after contact")
 	expect(carrier.assembly_id==owner,"shared carrier receives the correct physical foot identity")
-	supply_rig(crane,false)
-	return command(crane,"up") and command(crane,"go:park")
-
-func deliver_pelvis() -> bool:
-	var fixture=game.equipment.get_equipment("module_supports")
-	var crane=game.equipment.get_equipment("service_crane")
-	expect(game.model.assemblies.pelvis.location=="support:bulky_fixture","pelvis starts as one prepared assembly on the bulky fixture")
-	for key in ["yaw","lean"]:
-		if not command(fixture,"lock:"+key):return false
-	if not command(crane,"task:pelvis") or not command(crane,"go:source") or not command(crane,"down"):return false
-	supply_rig(crane,true)
-	if not crane.request("up").is_empty():return false
-	crane.physics(.1);settle(game.equipment.get_equipment("workshop_access"));crane.physics(.3);crane.request("stop")
-	expect(fixture.source_release>0 and fixture.source_release<1 and game.model.assemblies.pelvis.location=="support:bulky_fixture","four ends take weight while source clamps open before ownership changes")
-	if not await reopen("pelvis source contact"):return false
-	crane=game.equipment.get_equipment("service_crane");fixture=game.equipment.get_equipment("module_supports")
-	if not command(crane,"resume") or not command(crane,"go:receiver") or not command(crane,"down"):return false
-	var access=game.equipment.get_equipment("workshop_access")
-	expect(settle(access) and access.ready_for("work"),"upper work platforms restore after pelvis seating: "+access.blocked_reason)
-	expect(game.model.assemblies.pelvis.location=="support:pelvis_gantry" and not fixture.support_secured(),"bearing contact seats pelvis without automatic hold-down retention")
-	expect(crane.action_error("detach:"+crane.END_IDS[0]).contains("four"),"unclamped gantry rejects crane release")
-	for index in range(4):
-		if index==0:
-			fixture.request("jaw:0");fixture.physics(.4);fixture.request("stop")
-			if not await reopen("gantry jaw closing"):return false
-			crane=game.equipment.get_equipment("service_crane");fixture=game.equipment.get_equipment("module_supports")
-			if not command(fixture,"jaw:0"):return false
-			continue
-		if not command(fixture,"jaw:"+str(index)):return false
-	expect(fixture.support_secured(),"four closed jaws and both waist pins secure the pelvis")
-	if not await reopen("pelvis retained at gantry"):return false
-	crane=game.equipment.get_equipment("service_crane")
 	supply_rig(crane,false)
 	return command(crane,"up") and command(crane,"go:park")

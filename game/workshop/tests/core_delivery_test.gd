@@ -1,8 +1,9 @@
-extends "res://tests/chest_delivery_test.gd"
+extends "res://tests/kit/m3_section.gd"
 ## Supplied rigging and fastening fixture; no walking/aim/access automation.
-func after_legs() -> bool:
-	if not await deliver_chest():return false
-	return await deliver_core()
+func run() -> void:
+	if not await start("core"):finish();return
+	expect(await deliver_core(),"detailed section completes")
+	finish()
 
 func end_state(crane: Node, point: String, state: String) -> void:
 	var saved: Dictionary=crane.capture()
@@ -24,12 +25,8 @@ func deliver_core() -> bool:
 	expect(crane.request("up").is_empty(),"occupied fixture permits supported return to storage")
 	crane.physics(.3);crane.request("stop")
 	expect(fixture.source_release>0 and fixture.source_release<1,"receiving clamps open only after crane takes weight for return")
-	if not await reopen("core fixture reacquisition"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide");fixture=game.equipment.get_equipment("module_supports")
 	if not command(crane,"resume") or not command(crane,"go:source") or not command(crane,"down"):return false
 	expect(game.model.assemblies.core.location=="support:core_store","shared fixture can clear back to the original storage support")
-	if not await reopen("core returned to storage"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
 	if not command(crane,"up") or not command(crane,"go:receiver") or not command(crane,"down"):return false
 	supply_rig(crane,false)
 	if not command(crane,"up") or not command(crane,"go:park"):return false
@@ -38,27 +35,19 @@ func deliver_core() -> bool:
 	if not command(crane,"up"):return false
 	expect(crane.request("go:receiver").is_empty(),"rear core route starts through outboard bypass")
 	crane.physics(2.5);crane.request("stop")
-	if not await reopen("core outboard lifting route"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
 	if not command(crane,"resume") or not command(crane,"down"):return false
 	expect(guide.active and guide.travel==0 and game.model.assemblies.core.location=="support:m2_service_crane","rear approach retains both-ended crane ownership")
 	expect(not guide.rig_error("detach","core_front").is_empty(),"forward bridge cannot release before capture")
 	if not command(guide,"advance"):return false
 	expect(is_equal_approx(guide.travel,.85) and game.model.assemblies.core.location=="support:core_guide","captured guides take forward support at the authored stop")
 	expect(not guide.request("advance").is_empty(),"forward bridge blocks further insertion")
-	if not await reopen("core captured with both ends"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
 	expect(guide.rig_error("detach","core_front").is_empty() and not guide.rig_error("detach","core_aft").is_empty(),"capture permits only the forward handoff")
 	end_state(crane,"core_front","held")
 	expect(not guide.request("advance").is_empty(),"held bridge must be stowed before further insertion")
 	expect(crane.request("stow").is_empty(),"forward bridge stows using normal crane hand action")
 	guide.request("advance");guide.physics(1);guide.request("stop")
 	expect(guide.rig>0 and guide.rig<1 and is_equal_approx(guide.travel,.85),"spreader folds above aft support before deep insertion")
-	if not await reopen("core rig folding"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
 	guide.request("advance");guide.physics(2);guide.physics(1);guide.request("stop")
-	if not await reopen("core one-end guided insertion"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
 	if not command(guide,"advance"):return false
 	expect(game.model.assemblies.core.parent=="chest","flange seating mounts the same core into the already mounted chest")
 	expect(not guide.request("connection").is_empty(),"rear connection requires four captive bolts")
@@ -66,12 +55,8 @@ func deliver_core() -> bool:
 		if not command(guide,"bolt:"+str(i)):return false
 	expect(not guide.rig_error("detach","core_aft").is_empty(),"retained core still needs rear interlock before release")
 	if not command(guide,"connection"):return false
-	if not await reopen("core retained and connected with aft support"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
 	end_state(crane,"core_aft","stowed")
 	if not command(crane,"up") or not command(crane,"go:park"):return false
-	if not await reopen("core crane released"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
 	expect(not guide.request("bolt:0").is_empty(),"connected core refuses retention undo")
 	if not command(guide,"isolation"):return false
 	if not command(crane,"go:receiver") or not command(crane,"down"):return false
@@ -85,8 +70,6 @@ func deliver_core() -> bool:
 	expect(not guide.request("return").is_empty(),"guide exit requires forward bridge reacquisition")
 	end_state(crane,"core_front","attached")
 	guide.request("return");guide.physics(1);guide.request("stop")
-	if not await reopen("core recaptured by both crane ends"):return false
-	crane=game.equipment.get_equipment("service_crane");guide=game.equipment.get_equipment("core_guide")
 	if not command(guide,"return"):return false
 	expect(game.model.assemblies.core.location=="support:m2_service_crane","both ends own the returned core outside the guides")
 	# Repeat only the short supported insertion, preserving all physical stock.

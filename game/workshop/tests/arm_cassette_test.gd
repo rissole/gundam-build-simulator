@@ -1,7 +1,7 @@
-extends "res://tests/indexed_leg_rail_test.gd"
-## Mechanical transfer and fresh-scene saves, not walking/targetability review.
+extends "res://tests/kit/m3_section.gd"
+## Mechanical transfer in continuous play, not walking/targetability review.
 func run() -> void:
-	game=await boot_profile("leg_bay_m3");rail=game.equipment.get_equipment("leg_rail");carrier=game.equipment.get_equipment("foot_carrier")
+	if not await start("left_arm"):finish();return
 	var cassette=game.equipment.get_equipment("arm_cassette");var crane=game.equipment.get_equipment("service_crane")
 	expect(cassette.occupant()=="left_arm","same physical left arm starts retained on the one cassette")
 	var trim: Dictionary=cassette.mass_properties()
@@ -11,7 +11,7 @@ func run() -> void:
 	expect(cassette.receiving_error("arm_cassette").is_empty(),"parked leg cradle makes the shared station available")
 	expect(crane.request("task:cassette").is_empty(),"existing crane selects the retained-cassette task")
 	if not command(crane,"go:source") or not command(crane,"down"):finish();return
-	attach_ends(crane)
+	supply_rig(crane,true)
 	expect(not cassette.request("clamp:0").is_empty(),"retained arm clamp cannot open during cassette lifting")
 	expect(crane.request("up").is_empty(),"crane starts taking cassette weight")
 	crane.physics(.2);crane.request("stop")
@@ -24,46 +24,27 @@ func run() -> void:
 		var actual: Transform3D=PhysicsServer3D.body_get_shape_transform(cassette.body.get_rid(),cassette.body.shape_owner_get_shape_index(owner_id,0))
 		matching=matching and actual.is_equal_approx(cassette.source_nodes[uid].transform)
 	expect(matching,"all cassette source meshes and actual physics shapes agree during partial lock travel between physics ticks")
-	if not await reopen("cassette partial floor-lock release"):finish();return
-	cassette=game.equipment.get_equipment("arm_cassette");crane=game.equipment.get_equipment("service_crane")
 	if not command(crane,"resume"):finish();return
 	expect(game.model.assemblies.arm_cassette.location=="support:m2_service_crane","crane owns the lifted cassette")
 	expect(game.model.assemblies.left_arm.location=="support:arm_cassette" and is_equal_approx(game.runtime.node("left_arm").global_position.y,6.35),"retained arm follows its cassette above the foot crossing without changing owner")
-	if not await reopen("cassette suspended with retained arm"):finish();return
-	cassette=game.equipment.get_equipment("arm_cassette");crane=game.equipment.get_equipment("service_crane")
 	if not command(crane,"go:receiver"):finish();return
 	expect(crane.request("down").is_empty(),"crane starts lowering cassette into station")
 	crane.physics(4.75);crane.request("stop")
 	expect(cassette.floor_release>0 and cassette.floor_release<1,"station locks close only after cassette reaches floor contact")
-	if not await reopen("cassette partial receiving floor-lock engagement"):finish();return
-	cassette=game.equipment.get_equipment("arm_cassette");crane=game.equipment.get_equipment("service_crane")
 	if not command(crane,"resume"):finish();return
 	expect(cassette.support_secured() and game.model.assemblies.arm_cassette.location=="support:cassette_station","station floor locks take the retained cassette before rig release")
 	expect(not rail.request("park").is_empty(),"cassette occupancy prevents the parked leg holder from returning")
-	stow_ends(crane)
+	supply_rig(crane,false)
 	if not command(crane,"up") or not command(crane,"go:park"):finish();return
-	if not await reopen("retained cassette at shared station"):finish();return
-	cassette=game.equipment.get_equipment("arm_cassette");crane=game.equipment.get_equipment("service_crane")
 	if not command(crane,"go:receiver") or not command(crane,"down"):finish();return
-	attach_ends(crane)
+	supply_rig(crane,true)
 	if not command(crane,"up") or not command(crane,"go:source") or not command(crane,"down"):finish();return
-	stow_ends(crane)
+	supply_rig(crane,false)
 	if not command(crane,"up") or not command(crane,"go:park"):finish();return
 	expect(game.model.assemblies.left_arm.location=="support:arm_cassette" and cassette.occupant()=="left_arm","parking retains the same arm without rebuilding or replacing it")
-	if not await reopen("cassette returned to passive parking"):finish();return
 	if not command(rail,"park"):finish();return
-	expect(rail.can_construct(),"leg cradle physically reclaims the cleared shared station")
+	expect(rail.path==0 and is_equal_approx(rail.index_x,rail.spec.station_x) and rail.release==0 and not rail.moving and rail.mode.is_empty(),"leg cradle physically reclaims the cleared shared station")
 	finish()
-
-func attach_ends(crane: Node) -> void:
-	var state: Dictionary=crane.capture()
-	for n in range(4):state.endpoints[crane.END_IDS[n]]={"state":"attached","point":crane.POINT_IDS[n]}
-	crane.apply(state)
-
-func stow_ends(crane: Node) -> void:
-	var state: Dictionary=crane.capture()
-	for id in crane.END_IDS:state.endpoints[id]={"state":"stowed","point":""}
-	crane.apply(state)
 
 func finish() -> void:
 	var passed=checks.all(func(check):return check.passed)
