@@ -201,8 +201,10 @@ def contract():
     # by the fixture controller, rather than respawning a second workstation.
     group("bulky_fixture",at=[3.25,0,13])
     group("bulky_frame",parent="bulky_fixture")
-    group("bulky_insert_pelvis",parent="bulky_frame")
-    group("bulky_insert_chest",parent="bulky_frame")
+    # Only the initial pelvis inserts are fitted. Other contacts become solid
+    # when module_supports selects them on the empty fixture.
+    group("bulky_insert_pelvis",parent="bulky_frame",enabled=True)
+    group("bulky_insert_chest",parent="bulky_frame",enabled=False)
     for x in [-.65,.65]:
         box(f"bulky_foot_{x}",[x,.12,.65],[.75,.24,1.8],"dark","bulky_fixture")
         box(f"bulky_screw_{x}",[x,.40,.65],[.18,.36,.18],parent="bulky_fixture")
@@ -229,7 +231,7 @@ def contract():
             box(f"chest_store_leg_{x}_{z}",[-7+x,.375,27.5+z],[.18,.75,.18],"dark")
     data["signs"].append(dict(text="PREPARED CHEST / CRANE TO EMPTY BULKY FIXTURE",position=[-7,1.7,25.8],width=3.2))
 
-    group("bulky_insert_core",parent="bulky_frame")
+    group("bulky_insert_core",parent="bulky_frame",enabled=False)
     group("core_store",at=[-7,0,31.3])
     for parent in ["bulky_insert_core","core_store"]:
         for x in [-.35,.35]:
@@ -245,7 +247,7 @@ def contract():
         box(key+"_arm",[-.28,0,0],[.56,.10,.10],parent=key)
         box(key+"_back",[-.55,-.48,0],[.10,.96,.10],parent=key)
 
-    group("bulky_insert_backpack",parent="bulky_frame")
+    group("bulky_insert_backpack",parent="bulky_frame",enabled=False)
     group("backpack_store",at=[-7,0,35])
     for parent in ["bulky_insert_backpack","backpack_store"]:
         for x in [-1.18,1.18]:
@@ -387,6 +389,8 @@ def audit(data):
     assert data["rail"]["lying_lift"]+data["rail"]["base_y"]==1.85
     assert data["rail"]["holder"]["withdrawal"]==1.4
     assert len(data["elevators"])==2
+    assert [key for key in data["bulky_fixture"]["templates"]
+            if data["groups"]["bulky_insert_"+key]["enabled"]] == ["pelvis"]
 
 
 def delivery_inputs(layout, data):

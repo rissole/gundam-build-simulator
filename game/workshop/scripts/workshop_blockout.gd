@@ -25,6 +25,8 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 			shape.shape = box;body.add_child(shape);piece.body = body;piece.shape = shape
 		pieces[entry.id] = piece
 	for entry in spec.signs:game.sign_panel(self,entry.text,AssemblyRuntime.vec(entry.position),Vector2(entry.width,.5),48,.002)
+	for id in spec.groups:
+		if not spec.groups[id].get("enabled",true):enable_group(id,false)
 	publish()
 
 func _group(id: String) -> Node3D:

@@ -99,6 +99,12 @@ func _stock_body(item_uid: String) -> AnimatableBody3D:
 	if stock_bodies.has(item_uid):return stock_bodies[item_uid]
 	if game.model.assemblies.has(item_uid):
 		stock_bodies[item_uid]=game.runtime.node(item_uid)
+		# Supported assemblies follow explicit poses. Kinematic targets only reach
+		# Jolt on the next physics tick, leaving same-tick collision queries stale.
+		for owner in game.runtime.descendants(item_uid):
+			var body=game.runtime.node(owner)
+			if body is AnimatableBody3D:PhysicsServer3D.body_set_mode(body.get_rid(),PhysicsServer3D.BODY_MODE_STATIC)
+			body.force_update_transform();PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
 		return stock_bodies[item_uid]
 	var body = AnimatableBody3D.new();body.name = "CraneLoad_"+item_uid if complete_journey else "CraneUpperLegBeam"
 	body.sync_to_physics = false;body.collision_layer = 2;body.collision_mask = 0;add_child(body)

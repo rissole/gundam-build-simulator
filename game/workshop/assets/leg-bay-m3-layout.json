@@ -4914,7 +4914,8 @@
           0,
           0,
           0
-        ]
+        ],
+        "enabled": true
       },
       "bulky_insert_chest": {
         "parent": "bulky_frame",
@@ -4927,7 +4928,8 @@
           0,
           0,
           0
-        ]
+        ],
+        "enabled": false
       },
       "bulky_jaw_pelvis_-0.65_0.55": {
         "parent": "bulky_insert_pelvis",
@@ -5044,7 +5046,8 @@
           0,
           0,
           0
-        ]
+        ],
+        "enabled": false
       },
       "core_store": {
         "parent": "",
@@ -5200,7 +5203,8 @@
           0,
           0,
           0
-        ]
+        ],
+        "enabled": false
       },
       "backpack_store": {
         "parent": "",
