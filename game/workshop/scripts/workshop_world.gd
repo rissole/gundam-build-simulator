@@ -192,12 +192,14 @@ func register_parent_fixtures() -> void:
 			game.add_child(body)
 			body.position = game.FOOT_POSITION+Vector3.RIGHT*index*4.0
 		if record.has("home"):body.position = AssemblyRuntime.vec(record.home)
+		if game.profile.trial=="m3" and record.id=="foot":body.transform=preload("res://scripts/leg_bay_layout.gd").authored_pose(preload("res://scripts/leg_bay_layout.gd").layout().workshop.foot_storage.foot)
 		if record.has("rotation_degrees"):body.basis = Basis.from_euler(AssemblyRuntime.vec(record.rotation_degrees)*PI/180.0)
 		var d: Dictionary = game.model.definitions.assemblies[record.definition]
 		var source_frame = null
 		if record.has("frame_offset"):source_frame = Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(record.frame_offset))
 		elif not d.has("root_slot") and index == 0:source_frame = Transform3D(Basis.IDENTITY,-game.FOOT_CENTER)
 		game.runtime.register_node(record.id,body,source_frame)
+		if record.has("mirror_context_of"):_mirror_foot_context(body,game.runtime.node(record.mirror_context_of),record.frame_offset)
 		if d.has("root_slot"):
 			var uid: String = game.model.assemblies[record.id].slots[d.root_slot]
 			var visual = game._mesh(d.slots[d.root_slot].get("pose_source",game.source_uid(uid)))
@@ -208,21 +210,48 @@ func register_parent_fixtures() -> void:
 			game.refresh_assembly_collision(record.id)
 		index += 1
 
-func make_leg_context() -> void:
-	var pelvis = game.assembly_node("pelvis")
-	var context = Node3D.new()
-	context.name = "PelvisStructure"
-	pelvis.add_child(context)
-	var steel = game.material(Color("617880"),0.5)
-	for uid in game.leg_content.context_sources:
-		var mesh = game._mesh(uid)
-		context.add_child(mesh)
-		mesh.transform = game.source[uid].transform
-		mesh.material_override = steel
-		var col = CollisionShape3D.new()
-		col.shape = mesh.mesh.create_trimesh_shape()
-		col.shape.backface_collision = true
-		col.transform = mesh.transform
-		col.set_meta("source_uid",uid)
-		pelvis.add_child(col)
+func _mirror_foot_context(body: Node3D, original: Node3D, offset: Array) -> void:
+	var Mirror=preload("res://scripts/mirrored_sources.gd")
+	var context=Node3D.new();context.name="MirroredPreparedFootContext";body.add_child(context)
+	var frame=Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(offset))
+	# Only fixed visible context is copied. Consumed internal parts belong to
+	# separate right-foot assemblies and are fitted through normal model staging.
+	for group in original.get_children():
+		if not group is Node3D or group is MeshInstance3D or group is CollisionShape3D:continue
+		for mesh in group.get_children():
+			if not mesh is MeshInstance3D or not mesh.visible:continue
+			var fields=String(mesh.name).split("__")
+			if fields.size()<2:continue
+			var source_id=fields[0]+"__"+fields[1];var alias="R-"+source_id
+			Mirror.ensure(game.source,alias,source_id)
+			var visual=game._mesh(alias);context.add_child(visual);visual.transform=frame*game.source[alias].transform
+	for shape in original.get_children():
+		if not shape is CollisionShape3D or not shape.has_meta("context_collision"):continue
+		var source_id: String=shape.get_meta("source_uid");var alias="R-"+source_id
+		Mirror.ensure(game.source,alias,source_id)
+		var source: Dictionary=game.source[alias]
+		var collision=CollisionShape3D.new();collision.transform=frame*source.transform
+		if shape.get_meta("context_collision")=="mesh":
+			collision.shape=source.mesh.create_trimesh_shape();collision.shape.backface_collision=true
+		else:
+			var bounds: AABB=source.mesh.get_aabb();var box=BoxShape3D.new();box.size=bounds.size.max(Vector3.ONE*.02)
+			collision.shape=box;collision.position+=collision.basis*bounds.get_center()
+		collision.set_meta("source_uid",alias);collision.set_meta("context_collision",shape.get_meta("context_collision"));body.add_child(collision)
 
+func make_leg_context() -> void:
+	for owner in game.runtime.nodes:
+		var definition=game.runtime.definition(owner)
+		var sources: Array=definition.get("context_sources",[])
+		if sources.is_empty():continue
+		var body=game.runtime.node(owner)
+		var context=Node3D.new();context.name="PreparedStructure";body.add_child(context)
+		var steel=game.material(Color("617880"),.5)
+		for uid in sources:
+			var mesh=game._mesh(uid);context.add_child(mesh)
+			mesh.transform=game.source[uid].transform;mesh.material_override=steel
+			var col=CollisionShape3D.new();col.shape=mesh.mesh.create_trimesh_shape()
+			col.shape.backface_collision=true;col.transform=mesh.transform
+			col.set_meta("source_uid",uid)
+			var descriptor: Dictionary=game.leg_content.sources.get(uid,{})
+			if descriptor.has("motion_shapes"):col.set_meta("motion_shapes",SolidHandling.authored_shapes(descriptor.motion_shapes,AABB()))
+			body.add_child(col)

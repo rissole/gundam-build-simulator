@@ -39,13 +39,13 @@ static func profile(id: String, legacy_stations: bool = false) -> Dictionary:
 		"pads_multi":
 			p.pitch = false;p.equipment = ["legacy_foot_station"];p.prep_stations = ["prep","prep2"]
 		"leg_bay_m3":
-			p.parent_locations = {"foot":"support:foot_carrier"}
+			p.parent_locations = {"foot":"support:foot_store"}
 			p.leg_content = LEG_CONTENT;p.trial = "m3";p.layout = "leg_bay";p.staging = "leg_bay_m3"
 			p.layout_path = "res://assets/leg-bay-m3-layout.json"
-			p.equipment = ["leg_rail","hip_lift","lift_shelf","service_crane","foot_carrier","joint_restraints"]
+			p.equipment = ["module_supports","core_guide","backpack_hinge","arm_cassette","left_shoulder","right_shoulder","leg_rail","left_lift","right_lift","left_shelf","right_shelf","service_crane","foot_carrier","joint_restraints","workshop_access","mobile_platform","captive_controls","rail_gates"]
 			p.session = {"codec":"trial","path":"user://m3-workshop-save.json"}
 			p.spawn = [8.8,.03,7.1,-PI/2];p.station_rotation = false
-			p.intro = "M3 / Build the structural leg. Advance the guided foot carrier, then use the crane console for shin, knee fork and upper-leg beam. Fit each connection before releasing magnets. Complete the leg, dock upward and carry both retaining halves using the lift shelf. Secure the complete ring before releasing the holder. Advance reacquires support before undo."
+			p.intro = "M3 / Begin with the prepared pelvis at the bulky fixture. Engage both waist locks, attach four crane ends and deliver it to the gantry. Close all four hold-down jaws before releasing rigging. Then crane a prepared foot to dispatch and build each structural leg on the shared holder. Manuals describe each connection; shared equipment carries every large load."
 		"leg_bay_retention","leg_bay_crane":
 			var trial: String = id.trim_prefix("leg_bay_")
 			p.parent_locations = {"foot":"support:foot_carrier"}

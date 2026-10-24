@@ -15,6 +15,12 @@ static func authored_shapes(profile: Array, fallback: AABB) -> Array[Dictionary]
 			"sphere":
 				shape = SphereShape3D.new()
 				shape.radius = primitive.radius
+			"cylinder":
+				shape=CylinderShape3D.new();shape.radius=primitive.radius;shape.height=primitive.height
+			"convex":
+				shape=ConvexPolygonShape3D.new();var vertices=PackedVector3Array()
+				for point in primitive.points:vertices.append(AssemblyRuntime.vec(point))
+				shape.points=vertices
 			"capsule":
 				shape = CapsuleShape3D.new()
 				shape.radius = primitive.radius

@@ -36,6 +36,9 @@ static func collect_shapes(node: Node, inverse: Transform3D, output: Array[Dicti
 	if node is CollisionShape3D and not node.disabled:
 		var shape: Shape3D = node.shape
 		var pose = inverse*node.global_transform
+		if node.has_meta("motion_shapes"):
+			for entry in node.get_meta("motion_shapes"):output.append({"shape":entry.shape,"transform":pose*entry.transform})
+			return
 		if shape is ConcavePolygonShape3D:
 			var bounds = shape.get_debug_mesh().get_aabb()
 			shape = BoxShape3D.new();shape.size = bounds.size.max(Vector3.ONE*.004)
@@ -66,7 +69,11 @@ static func sweep(space: PhysicsDirectSpaceState3D, groups: Array, sample_count:
 				var at: Transform3D = entry.world if entry.has("world") else frame*entry.transform
 				var margin: float = entry.get("margin",group.get("margin",0.001))
 				var hit = overlap(space,entry.shape,at,mask,exclude,margin)
-				if not hit.is_empty():return _report(group.error,hit.collider,index,label)
+				if not hit.is_empty():
+					if OS.has_environment(DIAGNOSTIC_ENV):
+						var target=hit.collider.shape_owner_get_owner(hit.collider.shape_find_owner(hit.shape)) if hit.collider is CollisionObject3D else null
+						print("SWEEP_SHAPE ",label," at=",at," moving=",entry.shape," target=",target," source=",target.get_meta("source_uid","") if target!=null else "")
+					return _report(group.error,hit.collider,index,label)
 				if group.get("cast",false) and index > 0:
 					var fractions = cast(space,entry.shape,previous_frame*entry.transform,at,mask,exclude,margin)
 					if fractions.size() == 2 and fractions[0] < 0.999:return _report(group.get("cast_error",group.error),null,index,label)

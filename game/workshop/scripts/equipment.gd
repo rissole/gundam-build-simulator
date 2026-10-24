@@ -19,6 +19,7 @@ func action_error(_action: String) -> String:return "Unknown equipment control."
 func request(action: String) -> String:return action_error(action)
 func status_text() -> String:return ""
 func physics(_delta: float) -> void:pass
+func placement_error(_owner: String, _slot: String) -> String:return ""
 func access_error(_owner: String) -> String:return ""
 func undo(_owner: String) -> Dictionary:return {"handled":false,"error":""}
 func hand_payload() -> String:return ""

@@ -37,6 +37,12 @@ func access_error(owner: String) -> String:
 		if not error.is_empty():return error
 	return ""
 
+func placement_error(owner: String, sid: String) -> String:
+	for equipment in all():
+		var error: String=equipment.placement_error(owner,sid)
+		if not error.is_empty():return error
+	return ""
+
 func undo(owner: String) -> Dictionary:
 	for equipment in all():
 		var result: Dictionary = equipment.undo(owner)

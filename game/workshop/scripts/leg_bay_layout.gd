@@ -41,15 +41,21 @@ var rack_hardware: Array[RID] = []
 var cradle_hardware: Array[RID] = []
 var crane_bridge: Node3D
 var crane_trolley: MeshInstance3D
+var blockout: Node3D
+var cradle: Node3D
 
 func setup(workshop: Node3D) -> void:
 	game = workshop
 	steel = game.material(Color("506971"),.55)
 	dark = game.material(Color("263a43"),.4)
 	yellow = game.material(Color("e8b46b"),.25)
-	_shell()
-	_tracks()
-	_gantry()
+	if layout().has("workshop"):
+		blockout = preload("res://scripts/workshop_blockout.gd").new();add_child(blockout)
+		blockout.setup(game,layout().workshop)
+	else:
+		_shell()
+		_tracks()
+		_gantry()
 	_fixture()
 	_reservations()
 
@@ -118,6 +124,10 @@ func _gantry() -> void:
 		box(gantry,"PelvisBearing",Vector3(x,.21,.65),Vector3(.28,.04,.40),yellow)
 
 func _fixture() -> void:
+	if layout().has("workshop"):
+		cradle=preload("res://scripts/leg_cradle.gd").new();add_child(cradle);cradle.setup(game,layout().workshop.rail)
+		hardware=cradle.hardware
+		return
 	carrier = Node3D.new();carrier.name = "RailBogie";add_child(carrier)
 	var bogie_spec: Dictionary = layout().rail.get("bogie",{"center_y":.30,"height":.50,"tail_y":.50,"tail_height":.20})
 	box(carrier,"Bogie",Vector3(0,bogie_spec.center_y,0),Vector3(1.5,bogie_spec.height,1.65),dark,true,true)
@@ -176,12 +186,21 @@ func crane_contract(task: String = "") -> Dictionary:
 	var receiver = authored_pose(spec.receiver_pose)
 	var route: Array[Transform3D] = []
 	for index in range(spec.route_positions.size()):
-		route.append(Transform3D(source_frame.basis if index < 2 else receiver.basis,AssemblyRuntime.vec(spec.route_positions[index])))
+		var rotation=Basis.from_euler(AssemblyRuntime.vec(spec.route_rotations[index])*PI/180) if spec.has("route_rotations") else (source_frame.basis if index < 2 else receiver.basis)
+		route.append(Transform3D(rotation,AssemblyRuntime.vec(spec.route_positions[index])))
 	# Endpoint poses are the same receiving/source frames as their supports.
 	route[0] = source_frame;route[route.size()-1] = receiver
-	return {"spec":spec,"source_pose":source_frame,"receiver_pose":receiver,"route":route,"excluded":rack_hardware+cradle_hardware+hardware,"console_position":AssemblyRuntime.vec(spec.console_position),"support":spec.support,"source_support":spec.source_support,"uid":spec.load_uid,"route_profile":layout().version}
+	var exclusions: Array[RID]=[];exclusions.assign(rack_hardware+cradle_hardware+hardware)
+	if spec.get("payload","")=="assembly" and is_instance_valid(blockout):
+		for id in blockout.pieces:
+			if id.begins_with(spec.load_uid+"_store_"):exclusions.append(blockout.pieces[id].body.get_rid())
+	return {"spec":spec,"source_pose":source_frame,"receiver_pose":receiver,"route":route,"excluded":exclusions,"console_position":AssemblyRuntime.vec(spec.console_position),"support":spec.support,"source_support":spec.source_support,"uid":spec.load_uid,"route_profile":layout().version}
 
 func _crane_structure() -> void:
+	if is_instance_valid(blockout):
+		crane_bridge = blockout.groups.crane_bridge
+		crane_trolley = blockout.pieces.crane_trolley.visual
+		return
 	var runway: Dictionary = layout().crane.get("runway",{"center_z":16.75,"length":9.5,"columns":[12.8,19.8]})
 	for x in [5.2,14.7]:
 		for z in runway.columns:
@@ -196,7 +215,10 @@ func _crane_structure() -> void:
 func set_crane_anchor(point: Vector3) -> void:
 	if not is_instance_valid(crane_bridge):return
 	crane_bridge.position.z = point.z
-	crane_trolley.position.x = point.x
+	if is_instance_valid(blockout):
+		blockout.groups.crane_trolley.position.x = point.x
+		blockout.publish()
+	else:crane_trolley.position.x = point.x
 
 func set_pose(load_pose: Transform3D, bogie_z: float, mast_x: float) -> void:
 	var bogie_offset = .15
@@ -290,12 +312,14 @@ func motion_geometry(load_pose: Transform3D, bogie_z: float, mast_x: float) -> A
 func _m3_racks() -> void:
 	for task in layout().crane.tasks:
 		var spec: Dictionary = layout().crane.tasks[task]
+		if spec.get("payload","")=="assembly":continue
 		var frame = authored_pose(spec.source_pose)
 		for contact in spec.rack_contacts:
 			var top: Vector3 = frame*AssemblyRuntime.vec(contact)
 			box(self,"M3Rack_"+task,Vector3(top.x,top.y/2,top.z),Vector3(.20,top.y,.22),steel)
 			rack_hardware.append(get_child(get_child_count()-1).get_rid())
-		sign_at(spec.title+" / CRANE\nSelect task · Go to rack · Down · E / click magnets",Vector3(7.6,2.55,frame.origin.z-.55),3.6)
+		sign_at(spec.title+" / CRANE\nSelect task · Go to rack · Down · E / click magnets",Vector3(frame.origin.x,2.55,frame.origin.z-.55),2.8)
+	if is_instance_valid(cradle):return
 	# The sole's two pads remain in contact as the foot is handed to the rail.
 	var foot_frame = authored_pose(layout().foot_carrier.receiver_pose)
 	var leg_frame = Transform3D(Basis(Vector3.RIGHT,PI/2),Vector3(layout().rail.x,1.35,layout().rail.home_z-layout().rail.pivot))

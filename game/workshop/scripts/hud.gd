@@ -732,6 +732,9 @@ func _refresh_manual() -> void:
 					for sid in definition.slots:
 						if sid.begins_with(child.parent_slot+"/"):retention.append(sid)
 				secured_child = not retention.is_empty() and retention.all(func(sid):return not a.slots[sid].is_empty())
+				if mount.has("secured_equipment"):
+					var equipment=game.equipment.get_equipment(mount.secured_equipment)
+					secured_child=equipment!=null and equipment.secured()
 			if secured_child:secured += 1;status = "secured"
 			lines.append(manual_name(id)+": "+status)
 		page_body.text = "\n".join(lines)
@@ -749,7 +752,10 @@ func _refresh_manual() -> void:
 			# supply a connection-scale display source; never assume a part here.
 			if d.has("assembly") and not d.has("pose_source"):continue
 			entries.append({"source":d.pose_source,"highlight":step.slots.has(sid),"installed":not a.slots[sid].is_empty(),"faint":sid == definition.get("root_slot","") and component_view})
-		if not a.parent.is_empty():page_body.text += "\n\nInstalled in "+manual_name(a.parent)+". Undo its mounting there before dismantling."
+		if not a.parent.is_empty() and not step.slots.all(func(sid):return definition.slots[sid].get("access_policy","")=="mounted"):page_body.text += "\n\nInstalled in "+manual_name(a.parent)+". Undo its mounting there before dismantling."
+	if step.has("status_equipment"):
+		var equipment=game.equipment.get_equipment(step.status_equipment)
+		if equipment!=null:page_body.text+="\n\n"+equipment.status_text()
 	var context: Array = step.get("context_sources",definition.get("context_sources",[]))
 	for uid in context:entries.append({"source":uid,"highlight":false,"installed":true,"faint":true})
 	diagram.show_parts(game,entries,step.get("diagram_views",[]))

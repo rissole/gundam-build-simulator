@@ -69,9 +69,11 @@ rigging never become robot parts or additional assembly inventory.
 Prepare bridge, both sockets, rotary bearing and lean mechanism together on the
 bulky fixture. Leave hip retaining halves, cylinders, stop-cage closures and hip
 guards off for upward ball entry and underside work. Engage both waist neutral
-locks. The prepared delivery envelope is X±1.78, Y−.90..+.90,
-Z8.85..11.42; its width comes from the existing socket flanges, not enlarged fixed
-pelvis armor. Supply loose connection items separately. Chest preparation and its
+locks. The prepared delivery envelope is X±2.01, Y−.90..+.90,
+Z8.49..11.42 including the prepared upper cylinder clevises and parking catches.
+The earlier X±1.78/Z8.85 lower bound covered the socket flanges but omitted those
+descending brackets. This is a handling-envelope correction, not wider pelvis
+armor. Supply loose connection items separately. Chest preparation and its
 fitted cockpit remain a distinct later crane load.
 
 ### Bridge, socket housings and gantry contacts
@@ -104,7 +106,9 @@ Two gantry bearing patches on the rear crossbeam underside are centred
 top/rear crossbeam patches, X±.65/Y−.55 and −.75, with clamp contact at
 Z9.83. Bottom seats carry weight; clamps prevent lift, slide and overturning.
 The coordinated workshop portal uses outboard operating handles at world
-X11.95/14.05,Y11.10,Z26.60/26.85, linked to these four jaw contacts. Operate
+X11.60/14.40,Y10.80,Z26.55/26.75, linked to these four jaw contacts. These handles
+remain fixed below the waist deck while the jaw rods and upper links move; the
+earlier handle centres intruded into the bridge. Operate
 from rear hip-deck stances X11.6/14.4,Z27.75, beside rather than beneath the
 bearing beams. The bulky source fixture supports the same bridge pads with hip
 datum(3.25,1.20,13). See the [fixture plan](../game/final-assembly-plan.md#gantry-support-and-rear-service-reservation).
@@ -184,7 +188,29 @@ retention; it is a stop/guard, **not a second structural ball retainer**. Leave
 its seams and bolts visible below the ring until the final guard step. Actual
 flank contact and ball/neck transition clearance need the future solid sweep.
 
+The wider M3 specifies four front-facing seam ears at hip-relative X±.520,
+Z−.650/−.770, with bolt axes along robot Y. The cage body retains radius.460;
+these local ears extend to |X|.545, inside the existing ring footprint. This puts
+an R.040 front tool tube outside the cage body; burying the screws at radius.400
+would leave solid cage material in front of their heads. Each seam has a.028
+clearance ear and a.028 tapped ear plus a.004 washer for the M12×60 joint.
+
 ### Three-cylinder hydraulic hip drive
+
+The wider M3 now represents both stop cages, six complete PV-200 cartridges,
+twelve PV-P60220 eye pins with captive keepers, and six operated captive neutral
+locks. It uses the centres below, prepared upper hooks and lower clevis rests,
+and physical hand-carried stock. Its assisted seating captures both eye rests in
+one placement before the upper/lower pins; independently guiding the lower eye
+and folding the parking catches are deferred mechanism detail. Holder release
+requires all mounting hardware and all three locks. This is mechanical/model
+evidence; shelf carrying, hook visibility and pin/lock access await human play.
+
+The inherited M3 socket's simplified rear gusset moves up0.06 m, preserving the
+ball and ring datums while clearing the final docking approach. The supported
+turn also lowers0.30 m before upright docking to pass below the rear parking hook;
+the [shared route](../game/final-assembly-plan.md#shared-limb-workshop-with-different-departure-routes)
+records that correction. This does not certify the finished housing or actuator.
 
 Three non-coplanar, double-acting cylinders control the three ball rotations.
 One or two cylinders would leave at least one unrestrained degree of freedom;
@@ -464,6 +490,26 @@ open sweep occupies the next leg's route. Local undo first reacquires the releva
 source support and removes only closures/services blocking the connection.
 
 ### Required review before models or gameplay claim completion
+
+The wider-workshop implementation now supplies a movable prepared pelvis/waist
+on the bulky fixture, including the bearing/yoke/cradle, two lean cartridges,
+four lifting eyes and the existing socket/clevis context. These are simplified
+prepared internals, not the completed detailed mechanism model. The bulky fixture
+has braked height travel and four source clamps. The four-end crane takes weight
+while those clamps open, follows the authored gantry route, then seats on the
+two existing bearing patches. Four locally operated gantry jaws and both captive
+waist neutral pins are required before crane release or leg docking.
+
+Actual-solid integration raised the horizontal lifting-eye support bars to
+hip-relative Z+.56 at their underside, above the socket crowns, without moving
+the eyes. The waist-level work fingers end at world X11.50/14.50 rather than
+11.65/14.35, leaving clearance to the real spherical shells. The handles above
+are outside the bridge and their fixed drives stay beside those fingers.
+Height adjustment, source clamp transfer, interrupted jaw closing, gantry
+retention, both leg deliveries and fresh-scene saves are mechanically checked in
+the [active implementation ledger](../game/m3-wide-workshop-plan.md#implementation-ledger--2026-10-24).
+Walking, rigging access, tool approach and visual presentation remain unreviewed.
+The following broader mechanism/articulation checks remain for detailed models.
 
 1. Build source solids for both socket rear seats, ball/neck/ring and stop cage;
    sweep the full combined cone/twist set, especially the .021 neck/ring margin.

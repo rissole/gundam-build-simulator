@@ -236,7 +236,8 @@ Pads remain available after arms/head installation. Later opening starts with
 crane support before lower-latch release; raise to 90°, engage both strut locks,
 then detach the crane for core work. Use ordinary crane assistance and contextual
 pin/lock/connection work. No permanent dedicated core/backpack console is required.
-This specifies mechanical/manual behavior, not implemented controls.
+The wider-M3 implementation below now supplies these external operations on the
+prepared stand-in; detailed internal source engineering remains deferred.
 
 ## Future core withdrawal with the complete robot
 
@@ -367,3 +368,172 @@ Before implementation:
 Strength, materials/ratings, complete inventories, internal power/cooling/thruster
 machinery, and final cosmetic surfaces remain later work. Revise agreed interfaces
 only for a measured conflict and coordinate the affected neighbors.
+
+## Wider-M3 core implementation — 2026-10-24
+
+`game/workshop/tools/author_m3_core.py` now supplies one prepared core, fixed
+chest dock/guides and the external installation manual. Its existing physical
+assembly moves from a passive store at world `(-7,1.30,31.30)` to the shared
+bulky fixture at `(3.25,1.30,13)`. The storage route raises the axis to Y6,
+travels to Z13 and crosses to the fixture. Core saddles contact its lower keys;
+two upper clamps release after both crane ends take weight. Empty-fixture insert
+selection and supported return to the same store preserve independent preparation
+order. Internal power machinery is supplied; no extra loose stock is invented.
+
+The rear task follows the selected X23.7 low bypass, X24 lifting well,
+Y18.47 high crossing, X13 lowering and Z28.2 rear approach. The separate
+`core_guide.gd` controller advances0.85 m to the 0.32 m captured overlap,
+transfers ownership to the guide, and permits release of only the forward bridge.
+Further insertion requires that bridge stowed and retains aft crane support.
+Flange seating mounts the core into the already mounted chest. Four individually
+operated PC-H16 captive bolts and the rear interlock precede aft-end release.
+Isolation remains possible with structural retention intact; bolt release requires
+aft support. Local correction returns to capture, restores both-ended support,
+then returns out of the guides without changing physical identity.
+
+Actual rigging is part of collision verification. At capture, the unloaded
+forward equalizer folds and the crane head shifts aft before deeper insertion.
+Return first reaches capture; a further Return extends the empty forward rig
+before bridge reacquisition. Interrupted folding saves/restores independently of
+insertion travel. In Godot core-local axes (Y up/Z rear), the full head centre is
+`(0,1.75,0.60)` and the compact aft head is `(0,1.39,1.35)`; spreader dimensions
+change from0.28×0.18×1.64 to0.28×0.18×0.34 m. These authored settings leave the
+full beam's front at chest-local Z1.13 at capture, beyond the rear spine at1.10;
+the compact beam front is1.18 when seated. Load contacts remain unchanged.
+The removable bridge stays within the selected forward Y+0.17 limit. Its visible
+adapter stays with the forward cable when held or stowed.
+
+The fixed receiving ring now has reliefs for the two lower guides and permanent
+upper lifting pads; a plain circular bore obstructed those pads. Side webs extend
+to radius0.55 while the upper/lower cardinal bounds remain0.50, inside the
+selected dock envelope. Four cardinal threaded bosses remain. A positive-X nose
+key and matching receiver reject a rolled cartridge. Moving collision compounds
+preserve cylinders, T keys and flange notches; they do not replace the core with
+a bounding box or exclude the receiving chest from guided movement checks.
+
+The original path contract already reserved crane-line clearance. Implementation
+initially omitted complete rigging from sweeps and parked access barriers in that
+reserved bypass. This was an implementation/verification miss, not an unresolved
+route decision. Barriers now stow inboard behind the closed wings. Core route and
+handoff sweeps include the spreader, loaded/stowed bridge, both end lines and the
+mast cable; only the crane's own bridge/trolley contact hardware is exempt.
+
+The wider-workshop ledger records mechanical/source checks and fresh-scene save
+coverage. These do not establish walking, reach, visibility, inspected rendered
+presentation, structural ratings or human approval. Backpack implementation and
+its open-cover interlocks remain next; complete-robot maintenance extraction is
+not represented by the initial-installation/local-correction fixture.
+
+## Wider-M3 backpack source and route preflight — 2026-10-24
+
+`game/workshop/tools/author_m3_backpack.py` supplies the prepared frame, rear
+panel, two nozzles, hinge eyes, lifting pads, three-stage struts and lower latch
+stand-ins. These16 source pieces belong to one prepared assembly and add no loose
+consumable stock. The fixed hinge/strut clevises remain chest-owned. The source
+uses the hinge as its origin, with Godot X right/Y up/Z rear in the90° open pose.
+A+90° rotation about local X produces the closed pose without moving the hinge.
+Internal construction is still supplied rather than another playable branch.
+
+The passive store is at world `(-7,0.85,35)`; the common fixture hinge datum is
+`(3.25,0.85,13)`. Storage transfer raises the hinge toY5.5, travels alongX−7
+toZ13 and crosses to the fixture. It clears the chest while the chest is still
+stored. Four perimeter pads contact the downward-facing frame at localX±1.18,
+Z0.50/2.40, worldY0.96. Four upper clamps contact atY1.63. Fixture crossmembers
+connect these inserts to its lifting frame; the passive store's floor legs are
+not part of the moving insert. One contextual insert-selection button cycles the
+empty fixture's sets. Height adjustment, interrupted contact, crane reacquisition
+and return to the same store preserve the assembly identity.
+
+The complete source and rig have been checked against the existing rear route:
+hingeY5.5 → X23.7 → Z31.8 → X24 → Y18 → X13 → Y15.7 → Z27.2 → Y15.5.
+No route waypoint changed. Actual hinge eyes extend0.065 m below/forward of the
+ideal open-body rectangle. They remain inside the reserved lifting well and
+mechanism margin: the high crossing's lowest material isY17.935,0.435 m above
+the highest guard, and its front at the lowering waypoint isZ31.735,0.335 m
+behind the crosshead. This hardware extension is included in actual-solid checks,
+not silently rounded back to the nominal box. Pack width stays2.40 m, rear
+reach2.80 m, and nozzle tops remain below hinge+1.00 m.
+
+Two pads remain at open-local `(±0.72,0.88,1.40)`. The1.72×0.18×0.34 m spreader
+uses anchorsX±0.72. Its head is at least2.08 m above the hinge throughout
+closure, with cable payout accommodating the changing pad height. Following the
+lowering pads with a fixed short drop would put the bar inside the closing cover;
+the preflight explicitly rejects that configuration. The0.09 m magnetic shoes
+seat on and rotate with the pad normals; cables attach at the shoes' outer faces,
+so they do not graze the rotating pad edges. The mast, both suspension lines,
+both ends and spreader are included in the route check and the separate
+payload-against-own-rig check.
+
+Hinge eyes are0.094 m wide in0.100 m fork openings, withØ0.061 m actual bores.
+The chest root's rear relief and the pack's narrow hinge stems keep that gap open.
+The lower side frame leaves0.01 m in front of the locator roots when closed.
+Strut A/B eyes are0.074 m wide in0.080 m clevis openings, withØ0.041 m bores.
+Three telescoping members fit the selected0.844…1.768 m centre lengths:
+outer/middle/inner lengths0.72/0.70/0.70 m, radii0.040/0.031/0.023 m, with
+positive overlap at both ends. Their articulated source solids are included in
+the preflight closure sweep. This does not establish structural ratings.
+
+`backpack_preflight_test.gd` checks actual source bounds, saddle contacts, hinge
+bores, the entire loaded route and closure sweep against a staged receiving
+chest/core. It rejects the forbidden inward low crossing and the self-colliding
+spreader configuration. `backpack_fixture_test.gd` exercises source exchange and
+fresh-scene interrupted restores. The implementation ledger records the combined
+run. These are geometry and mechanical checks, not walking/access or rendered
+approval. This source increment preceded the installation/closure implementation
+recorded below; preflight articulation alone was not player-operation evidence.
+
+## Wider-M3 backpack installation and closure — 2026-10-24
+
+`backpack_hinge.gd` now owns temporary crane loading, continuous telescope
+deployment, positive open locks, hinge angle, draw latches and service covers.
+The24 prepared source pieces remain one physical backpack. Ten external stock
+instances add twoBP-P60 hinge pins/twoBP-K60 keepers, twoBP-P40 strut-base
+pins/twoBP-K40 keepers and twoBP-SERVICE protected runs. Compatible copies remain
+interchangeable; the60 mm and40 mm variants cannot substitute for each other.
+Pins have actual working shafts, heads and inner keeper grooves. The matching
+forks/eyes retain their actual through bores. Parent chest pages own these11
+mounting slots; captive operations are overview/status work, not invented loose
+inventory. Authoring audits reconcile each slot and its source identity.
+
+Backpack to hinges follows the already checked rear route, then lowers0.20 m
+to the hinge datum. Seating mounts the existing assembly under the chest while
+both ends retain its weight. Both hinge pin/keeper pairs precede telescope
+deployment; both strut pin/keeper pairs precede either positive open lock. Both
+locks are required for crane release. Service plugs require the independently
+locked-open cover and stowed rigging.
+
+For closure, the existing crane console offers Take backpack weight, followed
+by Open/Close and Stop/Resume. Taking weight is an explicit resumable phase,
+raising the head0.06 m without moving the payload. Only then can either open
+lock release. Both serviced struts telescope throughout the controlled90°
+movement. At the closed locator stop, two prepared draw-hooks capture the fixed
+lower strikers; their levers draw the final2 mm into contact. Both latches precede
+crane release, then the two small service covers close. The mesh and collision
+poses of the telescopes, levers and covers follow the mounted assembly together.
+
+Reopening requires opening the covers, refitting both ends and taking weight
+before releasing either lower latch. At the open stop both positive strut locks
+must engage before rig release or service removal. Supported local correction
+disconnects the services, reacquires crane support, releases the locks and permits
+pin/keeper correction. Hinges cannot be undone while either strut is still pinned
+or extended. Full teardown is not a verification gate. Initial core correction
+cannot bypass the fitted backpack; the complete removable maintenance-guide
+workflow remains the separately deferred scope.
+
+The mount projection and save validator derive backpack pose from its chest
+parent and saved hinge angle. They reject displaced mounted poses, open locks
+during closure, pinning an undeployed eye, incomplete connections before movement,
+and a load that loses crane support before its open locks or closed latches secure
+it. Captures include stopped telescope deployment, partial weight transfer,
+partial closure, independent open support and completed closed covers.
+
+The protected service runs use a bounded display/clearance proxy with tangential
+entries into the moving sockets. The selected0.95 m supplied length and0.10 m
+minimum internal bend radius remain source-engineering requirements; the visible
+proxy does not model constant-length wire slack or certify internal bend radii.
+Its external swept volume is checked against the receiving frame and the actual
+rotating backpack, including its front crossmember. This is the M3 representative
+service connection on prepared modules, not a completed detailed harness model.
+
+The implementation ledger records the combined mechanical regression results.
+No automated walking/connection-access sweep or rendered review is claimed.

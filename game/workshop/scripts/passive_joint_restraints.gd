@@ -7,20 +7,24 @@ func setup(workshop: Node) -> void:
 	game = workshop;equipment_id = "joint_restraints"
 	var steel = game.material(Color("506971"),.45)
 	var yellow = game.material(Color("e8b46b"),.3)
-	for spec in preload("res://scripts/leg_bay_layout.gd").layout().restraints:
-		var root = Node3D.new();root.name = spec.id;game.runtime.node("left_leg").add_child(root)
-		var bodies: Array = []
-		for piece in spec.pieces:
-			var visual = game.box(root,AssemblyRuntime.vec(piece.position),AssemblyRuntime.vec(piece.size),yellow if piece.get("contact",false) else steel,true)
-			visual.name = piece.id
-			bodies.append(root.get_child(root.get_child_count()-1))
-		fixtures.append({"id":spec.id,"milestone":spec.milestone,"node":root,"bodies":bodies})
+	for owner in ["left_leg","right_leg"]:
+		if not game.model.assemblies.has(owner):continue
+		for spec in preload("res://scripts/leg_bay_layout.gd").layout().restraints:
+			var root = Node3D.new();root.name = owner+"_"+spec.id;game.runtime.node(owner).add_child(root)
+			var bodies: Array = []
+			for piece in spec.pieces:
+				var position=AssemblyRuntime.vec(piece.position)
+				if owner=="right_leg":position.x=-position.x
+				var visual = game.box(root,position,AssemblyRuntime.vec(piece.size),yellow if piece.get("contact",false) else steel,true)
+				visual.name = piece.id
+				bodies.append(root.get_child(root.get_child_count()-1))
+			fixtures.append({"id":spec.id,"owner":owner,"milestone":spec.milestone,"node":root,"bodies":bodies})
 	game.model.changed.connect(sync)
 	sync()
 
 func sync() -> void:
 	for fixture in fixtures:
-		var engaged = game.model.milestone("left_leg",fixture.milestone)
+		var engaged = game.model.milestone(fixture.owner,fixture.milestone)
 		fixture.node.visible = engaged
 		for body in fixture.bodies:body.collision_layer = 1 if engaged else 0
 	sync_pose()

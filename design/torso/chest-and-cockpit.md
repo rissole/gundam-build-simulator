@@ -138,6 +138,63 @@ Completed in this pass: coordinate/interface agreement, capsule/pilot bounding a
 
 Before implementation, validate **actual solids and sweeps** for the capsule opening/guides/isolators/ties, pilot fit/entry and two hatch doors, waist keys/threads/tools, neutral and articulated abdomen/pelvis clearances, backpack-root pockets, mass/rigging equalization, source support/release, full loaded route through platform openings and access to every retained fastener. Overlay the pelvis owner's ±10° lean/±25° yaw envelopes with fixed gantry/services; the local core/frame clearances remain fixed because both move with the chest, but that does not prove clearance to the stationary pelvis or workshop. Validate the settled shoulder/root and head/spoke mating details against their owning specifications, including root-bolt rear tool lanes and the projecting neck key. For later gameplay, audit unique physical slots/hardware stock and prerequisite ownership, then one ordinary-control collection → supported preparation → crane delivery → fastening → release journey, local correction and interrupted save/restore. Run rendered review only if requested. This design pass runs no gameplay tests, model export or render campaign.
 
+## Wider-M3 prepared implementation — 2026-10-24
+
+`game/workshop/tools/author_m3_chest.py` now authors a supplied chest/cockpit
+assembly and its external waist work. Its fixed context includes the perforated
+flange/key bosses, open lower spine portal, side members, enclosed cockpit,
+refitted front ties, four lifting pads/offset handles, rear roots and neck
+spoke/pilot. Shoulder cups and roots are prepared stand-ins; their drive/support
+details continue with arm implementation. Internal cockpit construction, hatch
+operation, engineering ratings and inspected presentation remain outside this
+prepared blockout's evidence.
+
+The same physical chest starts on four passive pads at world
+`(-7,0.85,27.5)`. The storage-to-fixture route raises its flange to Y6.20,
+travels forward to Z13, traverses to X3.25, then lowers to the selected Y0.85
+fixture datum. Storage occupies X−9.74..−4.26/Z26.30..28.85, beyond the structural
+stock racks. The shared bulky fixture must be empty and lowered before changing
+its pelvis inserts for four chest pads/clamps. Chest contacts at local
+X±0.84/Z±0.45 avoid the key bosses and bolt axes. The common grounded base and
+height mechanism remain; the taller pelvis contacts are removable inserts.
+Four crane ends carry the chest until fixture contact and clamp closure are
+complete. Height adjustment then moves this existing assembly. Loaded-cockpit
+tilt is not offered.
+
+The second crane task uses the selected upright route to world `(13,12.70,26)`.
+The parent pelvis manual owns its keyed seat, four interchangeable CH-W36
+washers, four interchangeable CH-H36160 M36×160 bolts and two CH-SERVICE plugs.
+Each plug represents its flexible service lead as one supplied component.
+Prepared tails stay above the flange during transport; fitting each lead bridges
+to its waist coupling below. The ten stock identities fill ten part slots;
+the prepared chest adds one assembly slot and no duplicate consumable inventory.
+Both waist locks and gantry hold-downs are prerequisites. Leg installation order
+remains independent because the gantry carries the structural load.
+
+All four bolt pairs precede crane release; the services require the lifting shoes
+released and stowed. Local correction removes the service plugs, reacquires all
+four ends, removes retention and lifts/reseats the same chest. A wrong selected
+crane task cannot bypass retention support. The leg holder's undo guard now
+applies specifically to leg connections, leaving chest work independent.
+Connection closures remain to be integrated with the later torso/backpack work.
+
+Source checks measure actual vertices and ray-test the four flange bolt bores,
+four key pockets and lower rear portal. They exposed rear spreader feet covering
+the rear bolt axes; those feet now have matching through-bores. Mechanical
+fixtures cover both crane tasks, interrupted receiving clamps, fixture height,
+loaded travel, retained/connected restores and local correction. These are
+equipment/model and source-interface checks, not walking, reach, visibility,
+rendered inspection or player approval. The wider-workshop ledger records the
+combined regression evidence and remaining full-project work.
+
+The subsequent [arm source preflight](../arms/shoulder-and-upper-arm.md#wider-m3-source-and-full-rig-preflight--2026-10-24)
+adds the fixed shoulder C-bridges/A clevises to this prepared chest. Their actual
+pin bores remain open. The rear cup-root strut now ends at chest Z0.44 rather
+than Z0.25 to preserve the ball cavity, and an inboard/rear tie connects each
+bracket spine to its dogleg. These changes preserve the shoulder centres and
+prepared chest envelope. The shoulder sheet records the separate final-approach
+correction discovered with these receiving solids present.
+
 ## Remaining detail design
 
 - Structural member sections, bolted frame-joint patterns, strength, isolation travel and rig/load ratings.

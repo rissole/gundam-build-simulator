@@ -5,6 +5,7 @@ var model: AssemblyModel
 var sources: Dictionary
 var nodes: Dictionary = {}
 var source_frames: Dictionary = {}
+var mounted_poses: Dictionary = {}
 
 func _init(shared: AssemblyModel, mesh_sources: Dictionary) -> void:
 	model = shared
@@ -34,7 +35,8 @@ func source_to_local(owner: String) -> Transform3D:
 func frame_transform(owner: String) -> Transform3D:
 	return node(owner).global_transform*source_to_local(owner)
 
-func local_slot_pose(owner: String, sid: String) -> Transform3D:
+func local_slot_pose(owner: String, sid: String, use_motion: bool = true) -> Transform3D:
+	if use_motion and mounted_poses.has(owner+"."+sid):return mounted_poses[owner+"."+sid].call()
 	var slot = model.slot_definition(owner,sid)
 	if slot.has("snap_position"):
 		var rotation = vec(slot.get("snap_rotation_degrees",[0,0,0]))*PI/180.0

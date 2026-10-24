@@ -3,24 +3,28 @@ extends "res://scripts/equipment.gd"
 ## The shelf rides its carrier lift and reserves its cargo route on every lift move.
 const SUPPORTS = ["m2_lift_shelf_0","m2_lift_shelf_1"]
 const Sweep = preload("res://scripts/motion_sweep.gd")
+var support_ids: Array = SUPPORTS.duplicate()
+var shelf: Dictionary
 var lift: Node3D
 var surface: MeshInstance3D
 var cargo: Dictionary = {}
 
-func setup(workshop: Node3D, platform: Node3D) -> void:
-	game = workshop;lift = platform;equipment_id = "lift_shelf"
-	var shelf: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().shelf
+func setup(workshop: Node3D, platform: Node3D, options: Dictionary = {}) -> void:
+	game = workshop;lift = platform
+	shelf = preload("res://scripts/leg_bay_layout.gd").layout().shelf if options.is_empty() else options
+	equipment_id = shelf.get("id","lift_shelf");support_ids = shelf.get("supports",SUPPORTS).duplicate()
 	reparent(lift.deck);position = Vector3(shelf.position[0],shelf.position[1],shelf.position[2]);rotation.y = deg_to_rad(shelf.yaw_degrees)
 	var steel = game.material(Color("506971"),.4)
-	surface = game.box(self,Vector3.ZERO,Vector3(1.9,.08,.70),steel,true)
-	for x in [-.83,.83]:game.box(self,Vector3(x,-.34,0),Vector3(.07,.68,.42),steel,true)
-	game.sign_panel(self,"COMPONENT SHELF\n2 × one-hand / 1 × two-hand",Vector3(0,.18,.38),Vector2(1.8,.30),28,.002)
+	var size = AssemblyRuntime.vec(shelf.get("size",[1.9,.08,.70]))
+	surface = game.box(self,Vector3.ZERO,size,steel,true)
+	for x in [-size.x/2+.12,size.x/2-.12]:game.box(self,Vector3(x,-.31,0),Vector3(.07,.58,size.z*.6),steel,true)
+	game.sign_panel(self,"COMPONENT SHELF\n2 × one-hand / 1 × two-hand",Vector3(0,.18,size.z/2+.03),Vector2(size.x-.1,.30),28,.002)
 	sync()
 
 func occupants(model: AssemblyModel = null) -> Array[String]:
 	var m: AssemblyModel = game.model if model == null else model
 	var result: Array[String] = []
-	for support in SUPPORTS:result.append(m.support_occupant(support))
+	for support in support_ids:result.append(m.support_occupant(support))
 	return result
 
 func size_of(uid: String, model: AssemblyModel = null) -> int:
@@ -38,7 +42,7 @@ func capacity_error(uid: String) -> String:
 
 func _pose(uid: String, index: int) -> Transform3D:
 	var bound: AABB = game.source[game.source_uid(uid)].mesh.get_aabb()
-	var places: Array = preload("res://scripts/leg_bay_layout.gd").layout().shelf.places
+	var places: Array = shelf.places
 	return global_transform*Transform3D(Basis.IDENTITY,Vector3(0 if size_of(uid)==2 else places[index],.04,0)-Vector3(bound.get_center().x,bound.position.y,bound.get_center().z))
 
 func controls() -> Array[Dictionary]:
@@ -76,13 +80,13 @@ func request(action: String) -> String:
 		Sweep.collect_rids(self,excluded)
 		error = SolidHandling.sweep_error(body,destination,excluded,game.WORLD_MASK)
 		if not error.is_empty():return error
-		error = game.model.store_carried_item(uid,SUPPORTS[index])
+		error = game.model.store_carried_item(uid,support_ids[index])
 		if not error.is_empty():return error
 		game.components.held_body = null;body.queue_free();sync()
 	else:
 		var index = int(action.get_slice(":",1));var uid = occupants()[index]
 		var previous: Transform3D = cargo[uid].global_transform
-		error = game.model.carry_supported_item(uid,SUPPORTS[index])
+		error = game.model.carry_supported_item(uid,support_ids[index])
 		if not error.is_empty():return error
 		sync();game.components.hold_at(uid,previous)
 	game.hud.refresh();return ""

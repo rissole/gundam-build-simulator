@@ -103,6 +103,8 @@ func access(check_approach: bool = true) -> String:
 ## A legacy child recipe may expose hardware owned by its receiving assembly.
 ## Keep that guidance with presentation, while model ownership/rules stay generic.
 func placement_error(owner: String, sid: String, uid: String) -> String:
+	var equipment_error: String=game.equipment.placement_error(owner,sid)
+	if not equipment_error.is_empty():return equipment_error
 	var a: Dictionary = game.model.assemblies[owner]
 	if a.parent.is_empty() and game.model.items.has(uid) and game.model.items[uid].kind in presentation.get(a.definition,{}).get("parent_hardware",[]):
 		return "Mount the prepared assembly on its receiving carrier first."

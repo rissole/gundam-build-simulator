@@ -101,4 +101,23 @@ The [FA-01-3D-01 model package](../../models/foot-fa01/README.md) preserves all 
 
 ## Later modeling work
 
+### Prepared feet in the wider M3 workshop — 2026-10-24
+
+M3 supplies two internally prepared feet with independent consumed identities.
+The right-foot sources and receiving geometry are reflected through X; the
+canonical left-foot asset and default foot-workshop build remain unchanged. Each
+prepared foot has its own sole support in the foot bay. The shared crane uses
+four exposed FA-100 rail-top contacts, transfers the existing assembly to the
+dispatch carrier, then the carrier raises, advances and turns it onto the shared
+leg holder. Ankle and forefoot stay neutral during this supplied transport stage.
+
+Contacts in the playable foot-root frame are X±0.50/Y−0.36/Z−0.20 and1.20 m;
+their positions are checked against the imported structural rail triangles.
+Both crane deliveries, carrier handoffs, mirrored geometry, support ownership and
+interrupted saves have mechanical coverage in the
+[active implementation ledger](../game/m3-wide-workshop-plan.md#implementation-ledger--2026-10-24).
+That evidence does not establish player reach, rigging usability or rendered
+approval. The complete wider workshop and its later major-section deliveries are
+still in development.
+
 The detail packet records chosen dimensions, stop datums, wiring routes and access provisions. Full CAD must still check solid bracket/stop contours, all simultaneous motion combinations, complete insertion/tool paths and flexible harness movement. Real strength, power, fit tolerances and torques are outside the current fictional-reference scope. See the [review boundaries](foot-and-ankle/assembly-and-review.md#boundaries-for-later-solid-modeling).

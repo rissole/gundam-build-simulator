@@ -178,14 +178,18 @@ static func same_keys(value: Variant, expected: Array) -> bool:return Codec.same
 # receiving connection; saved world poses are only audited against it.
 func _saved_assembly_pose(owner: String, world: Dictionary, candidate: AssemblyModel) -> Transform3D:
 	var a: Dictionary = candidate.assemblies[owner]
-	if not a.parent.is_empty():return _saved_mount_pose(a.parent,a.parent_slot,owner,_saved_assembly_pose(a.parent,world,candidate))
+	if not a.parent.is_empty():return _saved_mount_pose(a.parent,a.parent_slot,owner,_saved_assembly_pose(a.parent,world,candidate),world)
 	return to_pose(world.fixtures[owner] if world.fixtures.has(owner) else world.bodies[owner].pose)
 
-func _saved_mount_pose(parent: String, sid: String, child: String, parent_pose: Transform3D) -> Transform3D:
+func _saved_mount_pose(parent: String, sid: String, child: String, parent_pose: Transform3D, world: Dictionary={}) -> Transform3D:
 	var slot: Dictionary = baseline.slot_definition(parent,sid)
 	var anchor: String = slot.get("child_anchor_slot","")
 	var local_anchor = game.runtime.local_slot_pose(child,anchor) if not anchor.is_empty() else Transform3D.IDENTITY
-	return parent_pose*game.runtime.local_slot_pose(parent,sid)*local_anchor.affine_inverse()
+	var local_pose=game.runtime.local_slot_pose(parent,sid,false)
+	if slot.has("mounted_motion"):
+		var controller=game.equipment.get_equipment(slot.mounted_motion)
+		local_pose=controller.local_mount_pose(world.get("equipment",{}).get(slot.mounted_motion,{}))
+	return parent_pose*local_pose*local_anchor.affine_inverse()
 
 static func body_state(body: RigidBody3D) -> Dictionary:
 	return {"pose":pose(body.global_transform),"linear":vector(body.linear_velocity),"angular":vector(body.angular_velocity)}
@@ -262,7 +266,7 @@ func validate(data: Variant) -> Array[String]:
 			var a: Dictionary = candidate.assemblies[id]
 			if not a.parent.is_empty():
 				var parent_pose = _saved_assembly_pose(a.parent,w,candidate)
-				if not to_pose(w.fixtures[id]).is_equal_approx(_saved_mount_pose(a.parent,a.parent_slot,id,parent_pose)):return ["Mounted fixture pose disagrees with its parent."]
+				if not to_pose(w.fixtures[id]).is_equal_approx(_saved_mount_pose(a.parent,a.parent_slot,id,parent_pose,w)):return ["Mounted fixture pose disagrees with its parent."]
 
 	return _validate_support(w,data.model)
 

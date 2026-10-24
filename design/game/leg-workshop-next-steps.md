@@ -6,7 +6,82 @@ The upright-hoist workshop and isolated M1 trial are retired. The M-series is a
 prototype lane using profiles on reusable equipment, layout, assembly and save
 modules; it is intended to fold back into the base game later.
 
-## Current work: plan the final gantry and assembly sequence
+## Current work: implement the wider M3 workshop
+
+The user requested an **intermediate human review on 2026-10-24** and instructed
+the agent to stop after the regression run. Implementation is paused for that
+review. This overrides the earlier request to wait until the whole milestone
+before review; it does not establish milestone completion or usability approval.
+Resume implementation only when the user asks.
+
+The [final18-case run](../../game/workshop/verification/regressions-20261024T065004.057954Z/results.json)
+passed17 cases with unchanged inputs and no rendering. The full sequence through
+both legs/torso stopped before cassette pickup: `go:source` rejected the foot
+carrier state with “Clear the foot carrier from the common station before
+lowering the cassette.” The sequence had not returned the carrier to the state
+required by the cassette interlock. Do not weaken that guard without checking
+the intended carrier-return step. This failure remains unfixed at the user's
+requested pause. The isolated arm branch previously passed299 mechanical checks;
+that does not replace the failed full-sequence integration check.
+
+The user has now requested implementation of
+[m3-wide-workshop-plan.md](m3-wide-workshop-plan.md). Its implementation ledger
+tracks the active work and evidence. The authored spatial foundation, shared
+moving access platforms, two independent elevators/shelves and movable platform
+are integrated. The revised left-leg route now covers source roll, parking,
+indexing, actual docking, hip cartridges/pins/neutral locks, empty return and
+local support reacquisition with fresh-scene interrupted restores. Both structural
+legs now use independent mirrored stock, hip retention and the shared holder;
+both prepared feet travel from separate bay supports via the four-end crane and
+shared carrier. The second leg docks beside the first and the empty holder returns.
+The pelvis/waist now starts on a height-adjustable bulky fixture and reaches the
+gantry by the same four-end crane. Four physical hold-down jaws and both waist
+neutral locks establish support before crane release or leg docking; interrupted
+source contact and jaw closing survive fresh-scene saves. The prepared chest now
+travels from its passive store through that same fixture onto the waist, with
+exchangeable contact inserts, four bolt/washer pairs and two service leads.
+Interrupted transfers and local supported correction have mechanical coverage.
+The core now has its planned rear route, staged guide capture, folding equalizer,
+four captive retaining bolts and rear interlock. Its full rigging envelope is
+included in movement checks. The prepared backpack now transfers between its
+passive store and the shared fixture, with interrupted restores and supported
+return. Backpack delivery, separate hinge/strut pins and keepers, positive open
+locks, two service connections and crane-assisted closure are now integrated.
+Both lower draw latches precede rig release and service-cover closure. Local
+correction reopens under crane support, with interrupted deployment, weight
+transfer and hinge angles preserved through fresh-scene saves. Its source,
+rigging and service-display geometry have preflight coverage; walking and
+connection access remain the user's playtest. Pauldrons, head and remaining fixture work
+continue before the complete handoff. Other prepared major sections, remaining bulky/arm transfers and playtest checkpoints
+remain in progress. This is not yet a complete playtest
+handoff. Historical evidence below does not establish the adaptation's completion.
+
+Arm source preflight now includes both prepared arms, the connected cassette,
+actual fixed shoulder drive brackets and the complete four-end rig/taglines.
+The retained cassette now travels between passive parking and the shared station
+using the existing four-end crane. Its floor locks take weight before rig release,
+and station occupancy prevents the leg cradle from returning until the cassette
+parks. Partial source/receiver contact and suspended saves restore the same arm
+and cassette identities. Both arms now release from the cassette into the full
+four-end rig, follow the checked upend/yaw/splay/seat route and receive separate
+ring, brace, drive, pin/keeper and service stock through the chest manual. Brake
+confirmation and progressive weight transfer precede crane release. The second
+arm transfers from its passive store onto that same cleared cassette. Local
+keeper correction retains the seated arm under crane support. Empty-cassette
+clamps retract before folding and support interrupted manual adjustment.
+Pauldron closure and restraint removal are still outstanding. The original 0.65 m pre-seat offset crossed
+a fixed front drive clevis during forward approach. A checked 1.13 m offset
+lowers the approach by 0.464 m, moves it 0.124 m farther outboard and then seats
+along the same axis. The measured plan and shoulder specification record this
+correction and the distinct source/model fixes. The user was offered the checked
+lower approach or later bracket installation; the lower approach is the current
+implementation choice, not a claim of explicit user approval.
+
+The user's “wasn't this made clear in the plan—the rigging paths?” feedback
+remains applicable: the earlier rear paths were explicit. Omitting full spreader,
+cable and parked-equipment checks was an implementation/verification miss.
+That must not be reframed as planning ambiguity. New actual-solid conflicts,
+such as the shoulder clevis crossing, must be measured and documented separately.
 
 On 2026-10-24 the user described the implemented M3 leg-to-gantry build as
 “largely satisfying,” but said implementation took too long because agents
@@ -62,7 +137,7 @@ work-level and rear-section views. These checks establish a coherent dimensioned
 blockout contract, **not actual-solid, structural, gameplay or playtest approval**.
 No new M3 scene changes, gameplay milestone or M4 work are implemented by this pass.
 
-The next implementation is the [M3 wider-workshop adaptation](m3-wide-workshop-plan.md),
+The active implementation is the [M3 wider-workshop adaptation](m3-wide-workshop-plan.md),
 before detailed internal component workflows. The user selected replacing M3 in
 place, with no old-save compatibility work, both simplified structural legs,
 representative mounting connections on prepared major-section stand-ins, and
@@ -140,6 +215,7 @@ supplies the complete spatial contract. See the sources in the final assembly pl
 
 | Feedback / positive finding | Current direction and unresolved question |
 | --- | --- |
+| Rigging paths were already clear in the agreed plan; extra discovery iterations undermine its purpose | The core implementation initially swept the load without the full spreader/cable envelope and let parked access gates intrude into the reserved bypass. Treat this as an implementation/verification miss. Before expanding subsequent deliveries, compare source geometry, parked equipment, adapters, spreader and every cable against the existing measured route and handoff contract. Preserve the selected routes; record any actual design discrepancy before changing them. |
 | M3 leg-to-gantry build is largely satisfying, but implementation relied too much on in-game discovery | Preserve its physical handling; define shared coordinates, load routes, work faces, player standing areas and equipment clearances before implementation. Work backwards through the [final assembly plan](final-assembly-plan.md). |
 | Prefer side elevators and walking onto shared front/rear work platforms | Selected for the full gantry; measure loading openings and access levels together. Keep M3's raised datum for planning; eventual lowering remains undecided. |
 | Hip and shoulder connections should remain accessible using shared elevators | Reuse each side elevator across work levels; measure the full travel with arms fitted and reachable landings for both hip/shoulder work. Current M3 lift placement cannot be assumed suitable at upper levels. |

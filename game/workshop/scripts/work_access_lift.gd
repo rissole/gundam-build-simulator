@@ -20,6 +20,7 @@ var _gate_mesh: MeshInstance3D
 var _label: Label3D
 var _hardware: Array[RID] = []
 var layout_options: Dictionary = {}
+var side_gates: Array[CollisionShape3D] = []
 
 func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels: Array[float], options: Dictionary = {}) -> void:
 	game = workshop;layout_options = options
@@ -44,10 +45,43 @@ func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels:
 	for x in [-size.x/2+0.04,size.x/2-0.04]:
 		for z in [-size.y/2+0.04,size.y/2-0.04]:
 			_solid(deck,Vector3(x,0.52,z),Vector3(0.06,1.04,0.06),yellow)
-		_solid(deck,Vector3(x,1.05,0),Vector3(0.06,0.06,size.y),yellow)
+		if layout_options.get("side_doors",false):
+			_solid(deck,Vector3(x,1.05,-.9),Vector3(.06,.06,.8),yellow)
+			_solid(deck,Vector3(x,1.05,1.15),Vector3(.06,.06,.3),yellow)
+			side_gates.append(_solid(deck,Vector3(x,.62,.25),Vector3(.06,1,1.5),yellow))
+		else:_solid(deck,Vector3(x,1.05,0),Vector3(0.06,0.06,size.y),yellow)
 	_solid(deck,Vector3(0,1.05,-size.y/2+0.04),Vector3(size.x,0.06,0.06),yellow)
 	gate = _solid(deck,Vector3(0,0.62,size.y/2-0.04),Vector3(size.x-0.12,1.0,0.06),yellow)
 	_gate_mesh = gate.get_meta("visual")
+	if layout_options.get("side_doors",false):
+		# Solid rear wall; both side doors open at every stopped landing.
+		_make_side_landings(steel,yellow)
+	else:_make_ground_ramp(size,steel)
+	_make_guides(steel,yellow)
+	if layout_options.has("cantilever_beams"):
+		var beams: Dictionary = layout_options.cantilever_beams
+		for z in beams.z_positions:
+			var member = _solid(deck,Vector3(beams.position_x,beams.position_y,z),Vector3(beams.span_x,beams.height,beams.depth),steel)
+			member.name = "CantileverDeckBeam"
+	var panel_at = Vector3(size.x/2-.07,1.1,0) if side_gates.is_empty() else Vector3(1.1,1.1,-1.12)
+	_solid(deck,panel_at,Vector3(0.12,0.36,0.90) if side_gates.is_empty() else Vector3(.36,.36,.12),steel)
+	for pair in [["down",-0.25],["up",0.0],["ground",0.25]]:
+		_button(deck,panel_at+Vector3(-.07,0,float(pair[1])) if side_gates.is_empty() else panel_at+Vector3(float(pair[1]),0,.1),pair[0],yellow)
+	if side_gates.is_empty():
+		var call_post = StaticBody3D.new()
+		add_child(call_post)
+		_hardware.append(call_post.get_rid())
+		_solid(call_post,Vector3(size.x/2+0.25,0.55,size.y/2+0.3),Vector3(0.08,1.1,0.08),steel)
+		_button(self,Vector3(size.x/2+0.25,1.1,size.y/2+0.3),"ground",yellow)
+	_label = Label3D.new()
+	_label.position = panel_at+Vector3(-.11,.3,0) if side_gates.is_empty() else panel_at+Vector3(0,.3,.1)
+	_label.rotation.y = -PI/2 if side_gates.is_empty() else 0
+	_label.font_size = 32
+	_label.pixel_size = 0.002
+	deck.add_child(_label)
+	_pose()
+
+func _make_ground_ramp(size: Vector2, steel: Material) -> void:
 	# Open ground entrance has a shallow solid ramp, usable without jumping.
 	var ramp = StaticBody3D.new()
 	add_child(ramp)
@@ -70,27 +104,23 @@ func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels:
 	ramp_mesh.mesh = surface.commit()
 	ramp_mesh.material_override = steel
 	ramp.add_child(ramp_mesh)
-	_make_guides(steel,yellow)
-	if layout_options.has("cantilever_beams"):
-		var beams: Dictionary = layout_options.cantilever_beams
-		for z in beams.z_positions:
-			var member = _solid(deck,Vector3(beams.position_x,beams.position_y,z),Vector3(beams.span_x,beams.height,beams.depth),steel)
-			member.name = "CantileverDeckBeam"
-	_solid(deck,Vector3(size.x/2-0.07,1.1,0),Vector3(0.12,0.36,0.90),steel)
-	for pair in [["down",-0.25],["up",0.0],["ground",0.25]]:
-		_button(deck,Vector3(size.x/2-0.14,1.1,float(pair[1])),pair[0],yellow)
-	var call_post = StaticBody3D.new()
-	add_child(call_post)
-	_hardware.append(call_post.get_rid())
-	_solid(call_post,Vector3(size.x/2+0.25,0.55,size.y/2+0.3),Vector3(0.08,1.1,0.08),steel)
-	_button(self,Vector3(size.x/2+0.25,1.1,size.y/2+0.3),"ground",yellow)
-	_label = Label3D.new()
-	_label.position = Vector3(size.x/2-0.18,1.4,0)
-	_label.rotation.y = -PI/2
-	_label.font_size = 32
-	_label.pixel_size = 0.002
-	deck.add_child(_label)
-	_pose()
+
+func _make_side_landings(steel: Material, yellow: Material) -> void:
+	for side in [-1,1]:
+		var fixed = StaticBody3D.new();add_child(fixed);_hardware.append(fixed.get_rid())
+		# Wedge entirely in the 1.5 m doorway; no fixed stairs in a shaft.
+		var points = PackedVector3Array()
+		for z in [-.5,1.0]:
+			points.append(Vector3(side*deck_size.x/2,0,z))
+			points.append(Vector3(side*deck_size.x/2,stops[0],z))
+			points.append(Vector3(side*(deck_size.x/2+1.2),0,z))
+		var ramp_shape = ConvexPolygonShape3D.new();ramp_shape.points=points
+		var collision = CollisionShape3D.new();collision.shape=ramp_shape;fixed.add_child(collision)
+		var mesh = MeshInstance3D.new();mesh.mesh=ramp_shape.get_debug_mesh();mesh.material_override=steel;fixed.add_child(mesh)
+		for index in range(stops.size()):
+			var at = Vector3(side*(deck_size.x/2+.22),stops[index]+1.0,-.6)
+			_solid(fixed,at,Vector3(.12,.30,.12),steel)
+			_button(self,at+Vector3(side*.08,0,.08),"stop"+str(index),yellow)
 
 func _make_guides(steel: Material, yellow: Material) -> void:
 	# Twin rack drives carry the platform into floor-anchored guides. Both live
@@ -251,9 +281,12 @@ func _carried_body() -> CollisionObject3D:
 
 func _pose() -> void:
 	deck.position.y = height
-	var closed = moving or height > stops[0]+0.01
+	var closed = not side_gates.is_empty() or moving or height > stops[0]+0.01
 	gate.disabled = not closed
 	_gate_mesh.visible = closed
+	for door in side_gates:
+		door.disabled = not moving
+		door.get_meta("visual").visible = moving
 	_label.text = status_text()
 	var registry = game.get("equipment")
 	if registry != null:registry.carrier_moved(equipment_id)

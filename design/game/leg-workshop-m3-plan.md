@@ -21,6 +21,9 @@ Current continuation: the user selected [replacing M3 with the wider workshop](m
 before detailed component workflows. That plan supersedes this historical
 implementation scope and its automated access gates; the user owns walking and
 connection-access playtesting for the adaptation.
+Implementation is now active in that plan's ledger. The wider spatial/access
+foundation is integrated; the historical leg route below is awaiting adaptation.
+The complete wider-workshop handoff remains outstanding.
 
 ## Starting boundary and completion
 

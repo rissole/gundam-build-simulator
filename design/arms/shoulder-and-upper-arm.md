@@ -89,13 +89,21 @@ Ring heads are approximately right-side `(2.544,+0.286,14.223)`,
 around the neck while the pauldron is absent. Ring-half entry sweeps extend
 0.60 m forward/rearward; do not route services across them beforehand.
 
-Before insertion, the centre is `C+0.65u`: world right
-`(15.368,15.172,26)` or left `(10.632,15.172,26)`. The ball's leading spherical
-surface is t0.31, leaving 0.23 m to the fixed t0.08 mouth. Advance 0.65 m along−u
+Before insertion, the centre is `C+1.13u`: world right
+`(15.492,14.709,26)` or left `(10.508,14.709,26)`. The ball's leading spherical
+surface is t0.79, leaving 0.71 m to the fixed t0.08 mouth. Advance 1.13 m along−u
 without changing the straight restrained arm pose. The cup and both crane pad
 pairs support the load while the ring is installed; seating alone permits no
 crane release. Detailed mouth lead-in and actual partial-contact solids remain
 to be modeled.
+
+The source preflight replaced the earlier **0.65 m** approach offset. That
+offset cleared the socket mouth but put the ball at the fixed C-bridge's t0.64
+station while advancing from the front. The front A eye at e−0.080/f+0.453
+blocked that transverse approach. The 1.13 m offset puts the leading ball
+surface 0.05 m below the lowest fixed root at t0.74 before crossing, then uses
+the existing central opening for axial seating. This is a measured route
+correction, separate from earlier implementation omissions in rigging checks.
 
 The socket/ring allowance is conservatively each side |X|1.74..2.74,
 Y±0.48,Z13.95..14.85, excluding rear root extensions below. This refines the
@@ -248,8 +256,8 @@ The separation checks governing this arrangement are explicit:
   spine's inner radius 0.713 exceeds ring radius 0.48 by 0.233 m and the
   tools' radial outer bound 0.455 by 0.258 m. The upper connection elbow is
   separately above the ring-half band.
-- During the entire 0.65 m insertion/withdrawal, the ball centre translates
-  t0.65..0 with maximum radial radius 0.34. The C-bridge bore radius 0.40 and
+- During the entire 1.13 m insertion/withdrawal, the ball centre translates
+  t1.13..0 with maximum radial radius 0.34. The C-bridge bore radius 0.40 and
   local pin-port root minimum radius 0.40 both leave 0.06 m.
   The Ø0.22 neck passes the same opening. Full beam/armor starts at local
   t1.20, so it never enters the fixed t0.54..0.74 band; its minimum delivered
@@ -390,14 +398,14 @@ the workshop plan; the connected arm's final delivery lifts it off the cassette.
    `u=(0,−1,0)`, `e=(sinψ,0,cosψ)`, `f=(cosψ,0,−sinψ)`.
    Then splay15° to the documented reference axes. Coordinated payout and
    tensioned taglines control every intermediate pose; no free suspended spin.
-4. Raise the shoulder toY15.172, advance toZ19.5, align X10.632/15.368,
-   advance toZ26, then seat0.65 m along−u. Open all four front wing levels
+4. Raise the shoulder toY14.709, advance toZ19.5, align X10.508/15.492,
+   advance toZ26, then seat1.13 m along−u. Open all four front wing levels
    before crossing. Stow the waist service fingers before this delivery.
 
 For the conservative t−0.43..7.45/e±0.55/f±0.75 rotation box, minimum
 upending/splay worldY is2.129; combined side bounds X11.54..16.46 and
 Z8.97..17.371 remain in the shared bay. Reserve1.80 m above the raised datum
-for spreader/hook: pre-seat≤16.972, seated≤17.60. These are body-envelope
+for spreader/hook: pre-seat≤16.509, seated≤17.60. These are body-envelope
 calculations. Actual mass/trim, swivel ends, cable fan-out and tagline anchors
 must be modeled inside the shared route contract. All four attached ends remain
 tensioned through continuous upending, yaw and splay.
@@ -431,9 +439,12 @@ The final **piecewise** reference envelope gives forearm outer
 |X|≤2.2+5.6sin15°+0.55cos15°≈4.181 and complete hand/thumb/caps
 |X|≤2.2+7.45sin15°+0.30cos15°=4.418. Thus both fitted arms occupy world
 X8.582..17.418, leaving 0.382 m to full elevator shaft boxes ending X8.20 and
-starting 17.80. During the 0.65 m pre-seat offset this reduces to 0.214 m;
-reserve a 0.20 m minimum to fixed shaft structure. The revised shaft depth
-Z27.4..30.6 also separates the complete cars/shelves from the arms aroundZ26. The bare fingertip centreline
+starting 17.80. During the corrected 1.13 m pre-seat offset the lateral
+projection gap reduces to approximately 0.090 m. The shaft depth
+Z27.4..30.6 independently leaves at least 0.65 m behind the conservative
+arm/hand depth around Z26; this preserves the 0.20 m minimum to actual fixed
+shaft structure. Actual source/full-rig preflight includes both complete shaft
+boxes. Do not reuse the old 0.214 m lateral-only estimate. The bare fingertip centreline
 span is insufficient for this check. Full elevator cars/guards must travel at
 every height with both arms/hands fitted and restrained in this reference pose.
 
@@ -470,7 +481,7 @@ For local shoulder correction, isolate services, restore straight joint/digit
 restraints and the service brace, remove pauldron panels/carrier, and reattach
 all 4 arm ends from the same reachable decks. Take load before releasing drive
 pins, brace or ring retention. Disconnect the main harness and remove ring
-halves only while crane support is established; withdraw 0.65 m along+u and
+halves only while crane support is established; withdraw 1.13 m along+u and
 reverse the guided route to the source saddles. The cup cannot independently
 retain an unringed arm. Internal elbow/wrist/hand corrections follow their own
 supported child-manual boundaries; a full robot teardown is not required here.
@@ -531,3 +542,169 @@ rear-channel elbow-actuator concept. Forearm tray/cuff/wrist and hand digit
 geometry remain in their owning sheets; their transport allowances above do not
 replace those designs. Strength, materials/ratings and detailed drive technology
 remain later engineering work.
+
+
+## Wider-M3 source and full-rig preflight — 2026-10-24
+
+`author_m3_arms.py` now supplies 22 separate source pieces per prepared arm,
+with distinct mirrored identities, actual B-eye pin bores, neck/beam geometry,
+restrained elbow/wrist, complete hand/thumb/digit cradle, three structural
+support pads and four lifting faces. These are supplied representative sources,
+not playable internal arm construction or a complete engineered arm inventory.
+The left arm starts on the parked shared cassette; the right starts on passive
+rests at shoulder datum (21,1.55,−6.3), clear of the cassette parking berth.
+
+Each source has an explicit blockout mass allocation. The sum is 2033 kg with
+longitudinal centre t3.305, between the t0.75/4.40 lifting pairs; the implied
+horizontal pair reactions are approximately 30% proximal/70% distal. These
+allocations establish reproducible prototype trim, not material strength,
+crane ratings or a dynamic rigging simulation. The paired tensioned taglines,
+four swivelling ends, adjustable spreader/equalizers and main hoist are included
+in `arm_delivery_geometry.gd` and its collision queries. The runtime arm/crane
+controller must consume this same geometry, including its positive outboard
+upper-anchor offset; an inward upper anchor is a tested collision with the cup.
+
+The prepared chest now includes actual fixed C-bridges and A clevises during
+preflight. Relieved end arcs and upper webs preserve all six receiving pin
+bores, including the inboard access port. The rear cup-root strut ends at chest
+Z0.44 instead of Z0.25, so it joins the outside of the cup rather than penetrating
+the ball cavity. A rear/inboard tie connects each descending bracket spine to
+the existing dogleg. The source checks exposed the separate 0.65 m approach
+conflict described above; the corrected 1.13 m stroke is now the authored route.
+
+The single cassette has three saddles, six folding clamps, connected rails/ties,
+four lifting pads and feet on flush floor bearing patches. Armor ports expose
+the structural support pad and clamp faces at t4.05. Actual source rays confirm
+all three saddle contacts; solid queries reject clamp/armor penetration. Folded
+clamps end at Y1.68, below the Y1.70 limit. The retained cassette rises with its
+lowest point at Y4.80 and crosses the actual horizontal prepared foot before
+lowering into the clear shared station. Raised floor patches were rejected by
+the combined right-leg delivery regression and replaced with flush bearings.
+
+`arm_preflight_test.gd` stages real torso/leg geometry and the opposite arm,
+keeps the parked cradle and source cassette as obstacles, and checks both full
+paths plus the rig against its own payload through continuous upend/yaw/splay.
+It also rejects the old 0.65 m approach, inward upper anchors, closed front
+decks and a low cassette crossing. These are source/mechanical checks, not
+walking, reach, presentation or installation-gameplay evidence. Cassette controls,
+shared-station exchange, arm support handoffs, external shoulder stock/manuals,
+pauldrons and interrupted saves remain to implement. The wider-M3 ledger records
+the current verification result; do not mark the whole goal complete here.
+
+
+### Retained cassette transfer — 2026-10-24
+
+The same cassette is now a tracked equipment assembly on `cassette_park`,
+`m2_service_crane` or `cassette_station`. Its supported arm stays on
+`arm_cassette` throughout transfer, rather than becoming a new inventory copy.
+`author_m3_cassette.py` derives 34 source pieces from the blockout and adds four
+captive lock pins and four handles. These 42 prepared tool pieces are separate
+from consumable robot stock. Runtime projects their exact meshes/colliders and
+disables the original duplicate static cassette. The foot columns have actual
+pin bores; the lock shafts/handles follow the crane's contact phase.
+
+The existing crane's **Cassette to station** task handles both forward and
+reverse transfer. Park the leg cradle, lower at cassette parking, fit all four
+ends, then use Up / receiving station / Down. The first tenth of Up takes weight
+and retracts the floor pins; the last tenth of Down engages them at contact.
+Release the ends only after that support transfer. Return the empty crane to
+parking when finished. To park the retained arm, reacquire at the receiving
+station and reverse the same task. An occupied cassette prevents the leg cradle
+from reclaiming the common station; parking the cassette restores leg operation.
+No task switch clears or replaces arm construction.
+
+The tool's nominal hollow-frame allocation is approximately559.86 kg, using
+400 kg/m³ of outer frame-section volume plus steel pin/handle allocations.
+With the supplied2033 kg arm, combined mass is approximately2592.86 kg and
+longitudinal centre t3.438, between the t1.35/6.05 lifting pairs. The sliding hook
+and main line align with that combined centre while the four end anchors retain
+the checked positions. This is prototype trim, not a material/strength rating.
+Both visible rig geometry and collision queries use that same hook position.
+
+`arm_cassette_test.gd` exercises the retained round trip, shared-station
+exclusion, same-arm identity, mesh/physics agreement between ticks and fresh-scene
+restores during source lock release, suspension, receiving lock engagement and
+both supported stops. Saves reject displaced retained arms, missing arm clamps,
+lowered floor pins while airborne and mismatched crane/contact phases. A shared
+save check was also corrected to apply bulky-fixture contact rules only to that
+fixture, rather than every crane receiver. Rig-end attachment is staged in this
+mechanical harness; walking, aim, readability and connection access remain the
+user's playtest. The M3 ledger records the current regression result.
+
+That cassette increment preceded the arm installation work below; it did not
+establish the full arm workflow or overall goal completion.
+
+### Live delivery and shoulder connections — 2026-10-24
+
+`author_m3_shoulders.py` now supplies31 external pieces and32 chest-manual slots
+per arm. The compatible types are the two complementary ring halves, M24 washers,
+M24 ×240 bolts, Ø40 pins/keepers, complete screw-drive cartridges and the isolated
+service harness. The staggered keyed brace is handed and has separate
+left/right types. Physical stock identities stay independent of their receiving
+slot geometry, including compatible copies exchanged across shoulders.
+
+The live crane reads every authored orientation in the measured path. It takes
+weight before the six cassette clamps release, raises horizontally, upends,
+yaws, splays, traverses and seats along the1.13 m insertion axis. Full arm and
+rig geometry remain collision checked. The initial clamp swing hit forearm
+armour between its clear endpoints; each telescopic clamp now retracts0.40 m
+outward through the existing port, then folds its remaining0.11 m reach.
+Empty-cassette clamp adjustment also moves continuously and saves partway.
+The second arm uses **Right arm to cassette**, lifting from its passive store
+toY4.80, moving across toX14, passing forward toZ9.90 and lowering into the
+same floor-locked tool. Receiving clamps close before rig release.
+
+Seating retains full crane load. The chest manual then fits the ring halves and
+four washer/bolt pairs, keyed brace and its two pin/keeper pairs, and three
+drive cartridges with all six pin/keeper pairs. **Check shoulder brakes** and
+**Transfer arm weight to shoulder** establish independent support; the latter
+is a continuous, resumable phase. Connect the isolated harness before releasing
+the four ends. The live rig and collision queries share the40 mm head take-up.
+For local keeper correction, remove the isolated harness, refit all four ends,
+use **Take arm weight**, then undo/refit the keeper. Removing structural hardware
+invalidates brake confirmation. Recheck brakes, transfer weight and reconnect
+services before release. The seated arm and hardware identities persist.
+
+Source detail preserves the selected interfaces while clearing the actual
+assembled parts:
+
+- Ring liners use18 axial source slices approximating the R0.345 spherical
+  clearance andØ0.48 exit. Front seam tongues fit relieved rear seams; recessed
+  fastener faces remain inside t0.26. These are prototype source surfaces.
+- A-ear supporting webs moved to t0.555..0.585, below the eye clearance. A180
+  has paired backing plates outside the central eye, each preserving the R0.04
+  tool port. Cross ties support both clevis ears without filling the throat.
+- B-eye stems connect from t1.62 through narrow central webs, leaving cartridge
+  forks clear. The three cartridge barrels have R0.018 end necks and open B
+  forks; assembled source checks include their neighbouring arm lugs.
+- Fixed brace tabs extend from t0.64 to0.80 at the selected radius/angles. The
+  brace captures their sides/tips, then turns outboard before descending to the
+  staggered keys. Narrow arm-key stems and a lower service-port support avoid
+  the brace. These extra prepared solids pass the full arm approach check;
+  the earlier t0.74 axial bound described the drive-clevis increment alone.
+- The fixed service port follows robot(±2.00,+0.50,14.46). Its protected route
+  crosses the high front channel and descends through |X|2.65..2.76 to the
+  selected arm port. The visible harness is a bounded source proxy, not a
+  constant-length or minimum-bend-radius engineering verification.
+
+`shoulder_content_test.gd` checks actual bolt bores, Ø40 pin fit and assembled
+neutral brace/drive clearance. `arm_delivery_test.gd` exercises both deliveries,
+the second-arm cassette handoff, interrupted fresh-scene saves, compatible-copy
+pose preservation, handed-brace rejection and supported keeper correction.
+`arm_after_legs_test.gd` runs that sequence after both legs, chest, core and
+backpack. These mechanical harnesses stage stock collection and rig attachment;
+they do not establish walking, reach, input readability or rendered approval.
+The wider-M3 ledger records the final retained regression evidence.
+
+At the requested review pause, the final run passed the70-check source preflight
+and32-check assembled shoulder fit audit. Its full sequence after both legs
+stopped before cassette pickup at the foot-carrier clearance interlock; it did
+not reach the new arm branch. The earlier isolated arm run passed299 checks.
+Record that integration failure separately and resolve the carrier-return step
+after human review rather than treating source clearance as a complete workflow
+pass.
+
+Pauldrons and removal of the supplied elbow/wrist/digit restraints remain
+unfinished. The user requested an intermediate human review after the current
+regression run; pause the active goal for that review rather than proceeding to
+pauldrons or head construction.

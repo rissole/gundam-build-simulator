@@ -145,7 +145,7 @@ static func validate_definitions(data: Dictionary) -> Array[String]:
 	for id in data.assemblies:
 		var definition: Dictionary = data.assemblies[id]
 		var slots: Dictionary = definition.get("slots",{})
-		if slots.is_empty(): errors.append("Assembly has no slots: "+id)
+		if slots.is_empty() and definition.get("context_sources",[]).is_empty():errors.append("Assembly has no slots or prepared context: "+id)
 		if definition.has("root_slot"):
 			var root: String = definition.root_slot
 			if not slots.has(root) or slots[root].has("assembly") or not slots[root].get("requires",[]).is_empty():errors.append("Root must be an independent physical part: "+id)
@@ -165,6 +165,8 @@ static func validate_definitions(data: Dictionary) -> Array[String]:
 		for group in definition.get("milestones",{}).values():
 			for sid in group:
 				if not slots.has(sid): errors.append("Unknown milestone slot: "+sid)
+		for supplied in definition.get("supplied_milestones",[]):
+			if definition.get("context_sources",[]).is_empty() or not definition.get("milestones",{}).has(supplied) or not definition.milestones[supplied].is_empty():errors.append("Supplied milestone requires prepared context and no playable slots: "+id)
 		for step in definition.get("manual",[]):
 			for sid in step.get("slots",[]):
 				if not slots.has(sid): errors.append("Unknown manual slot: "+sid)
@@ -193,7 +195,8 @@ func milestone(assembly: String, name: String) -> bool:
 	if not assemblies.has(assembly): return false
 	var a: Dictionary = assemblies[assembly]
 	var required: Array = definitions.assemblies[a.definition].get("milestones",{}).get(name,[])
-	return not required.is_empty() and required.all(func(s):return not a.slots[s].is_empty())
+	if required.is_empty():return definitions.assemblies[a.definition].get("supplied_milestones",[]).has(name)
+	return required.all(func(s):return not a.slots[s].is_empty())
 
 func count_at(kind: String, location: String) -> int:
 	var n = 0
@@ -485,10 +488,10 @@ func undo_supported(assembly: String, support_id: String) -> Dictionary:
 func _undo(assembly: String, child_destination: String, support_id: String) -> Dictionary:
 	if not assemblies.has(assembly):return {"ok":false,"error":"Select a build manual first."}
 	var a: Dictionary = assemblies[assembly]
-	if not a.parent.is_empty():return {"ok":false,"error":"Open the parent manual and undo installation before changing this child."}
 	if a.history.is_empty():return {"ok":false,"error":"No build actions to undo in this manual."}
 	var step: Dictionary = a.history.back()
 	var slot = slot_definition(assembly,step.slot)
+	if not a.parent.is_empty() and slot.get("access_policy","independent")!="mounted":return {"ok":false,"error":"Open the parent manual and undo installation before changing this child."}
 	if slot.get("support_required",false):
 		if support_id.is_empty() or not slot.get("source_supports",[]).has(support_id):return {"ok":false,"error":"Reacquire an authorized support before removing this component."}
 		var error = support_error(step.uid,support_id)

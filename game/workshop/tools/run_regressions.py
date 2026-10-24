@@ -31,6 +31,10 @@ SUMMARY_GRACE = 5.0
 # The complete walked M3 route includes repeated construction and fresh-scene
 # disk restores. Other cases retain the short cap and all fail-fast checks.
 CASE_TIMEOUTS = {"m3_acceptance_test": 900.0}
+# Historical single-leg walking/access evidence is retained on disk. M3's
+# wider-workshop plan explicitly assigns those acceptance checks to the user.
+# Do not silently bring them back through default discovery or --only.
+HUMAN_M3_CHECKS = {"m3_acceptance_test", "m3_hip_access_test", "m3_route_clearance_test"}
 
 
 def is_scene_tree(path: Path, visited: frozenset[Path] = frozenset()) -> bool:
@@ -57,6 +61,8 @@ class Case:
 def cases() -> dict[str, Case]:
     result = {}
     for path in sorted((PROJECT / "tests").glob("*_test.gd")):
+        if path.stem in HUMAN_M3_CHECKS:
+            continue
         if is_scene_tree(path):
             result[path.stem] = Case(["--script", "tests/" + path.name],
                                      timeout=CASE_TIMEOUTS.get(path.stem, 180.0))

@@ -10,7 +10,7 @@ const Hands = preload("res://scripts/hand_slot.gd")
 const Content = preload("res://scripts/workshop_content.gd")
 const Trial = preload("res://scripts/leg_bay_trial.gd")
 ## Interaction and physics order; earlier equipment answers aggregate queries first.
-const EQUIPMENT_ORDER = ["joint_restraints","foot_carrier","leg_rail","lift_shelf","service_crane","foot_fixture","hip_lift"]
+const EQUIPMENT_ORDER = ["workshop_access","rail_gates","mobile_platform","module_supports","core_guide","backpack_hinge","captive_controls","joint_restraints","foot_carrier","leg_rail","arm_cassette","left_shoulder","right_shoulder","lift_shelf","left_shelf","right_shelf","service_crane","foot_fixture","hip_lift","left_lift","right_lift"]
 const FOOT_CENTER = Vector3(0,0.8,-0.7)
 const PREP_POSITION = Vector3(-2.3,1.35,-1.2)
 const FOOT_POSITION = Vector3(2.3,2.0,-1.8)
@@ -131,6 +131,7 @@ func _ready() -> void:
 	world.load_foot()
 	if not profile.leg_content.is_empty():
 		preload("res://scripts/leg_source_geometry.gd").add_sources(source,leg_content)
+		preload("res://scripts/mirrored_sources.gd").add(source,leg_content.get("mirror_sources",{}))
 		for record in leg_content.parts:type_sources[record.kind] = record.get("source_id",record.instance_id)
 	world.register_parent_fixtures()
 	if not profile.leg_content.is_empty():world.make_leg_context()
@@ -161,7 +162,7 @@ func _ready() -> void:
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
-	if not profile.trial.is_empty():hud.open_manual("pelvis" if profile.trial == "retention" else "left_leg")
+	if not profile.trial.is_empty():hud.open_manual("pelvis" if profile.trial in ["retention","m3"] else "left_leg")
 	model.changed.connect(_state_changed)
 	_make_audio()
 	_state_changed()
@@ -181,16 +182,21 @@ func _load_leg_content(data: Dictionary) -> void:
 		var trial_definitions: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/"+prefix+"-definitions.json"))
 		var trial_content: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/"+prefix+"-content.json"))
 		Content.apply_definitions(data,trial_definitions)
+		leg_content.sources.merge(trial_content.get("sources",{}),true)
+		if trial_content.has("context_sources"):leg_content.context_sources=trial_content.context_sources
 		var metadata_key = "m3" if trial_id == "m3" else "m2"
 		for support_id in trial_content[metadata_key].get("remove_supports",[]):leg_content.supports.erase(support_id)
 		leg_content.supports.merge(trial_content.supports,true)
 		for field in ["parts","parents","equipment",metadata_key]:leg_content[field] = trial_content[field]
+		for field in ["builds","mirror_sources","prepared_branches"]:
+			if trial_content.has(field):leg_content[field]=trial_content[field]
 		if trial_id == "retention" and m2_half_uid != "PV-120__001":
 			assert(m2_half_uid == "PV-120__002")
 			for record in leg_content.parts:
 				if record.instance_id == "PV-120__001":record.instance_id = m2_half_uid;record.source_id = m2_half_uid
 			leg_content.m2.retention_uid = m2_half_uid
 	config.parts.append_array(leg_content.parts)
+	config.builds.append_array(leg_content.get("builds",[]))
 	config.parents = leg_content.parents.duplicate(true)
 	config.supports = leg_content.supports.duplicate(true)
 	for parent_id in profile.parent_locations:
@@ -210,6 +216,24 @@ func _build_equipment(ids: Array) -> void:
 	for id in ids:
 		var item: Node3D
 		match id:
+			"module_supports":
+				item=preload("res://scripts/module_supports.gd").new();add_child(item);item.setup(self,leg_layout.blockout)
+			"core_guide":
+				item=preload("res://scripts/core_guide.gd").new();add_child(item);item.setup(self,leg_content.equipment.core_guide)
+			"backpack_hinge":
+				item=preload("res://scripts/backpack_hinge.gd").new();add_child(item);item.setup(self,leg_content.equipment.backpack_hinge)
+			"arm_cassette":
+				item=preload("res://scripts/arm_cassette.gd").new();add_child(item);item.setup(self,leg_layout.blockout,leg_content.equipment.arm_cassette)
+			"left_shoulder","right_shoulder":
+				item=preload("res://scripts/shoulder_support.gd").new();add_child(item);item.setup(self,leg_content.equipment[id])
+			"rail_gates":
+				item = preload("res://scripts/rail_crossing_gates.gd").new();add_child(item);item.setup(self,leg_layout.blockout)
+			"captive_controls":
+				item = preload("res://scripts/captive_controls.gd").new();add_child(item);item.setup(self,leg_content.equipment.captive_controls)
+			"mobile_platform":
+				item = preload("res://scripts/mobile_work_platform.gd").new();add_child(item);item.setup(self,leg_layout.layout().workshop.mobile_platform)
+			"workshop_access":
+				item = preload("res://scripts/workshop_access.gd").new();add_child(item);item.setup(self,leg_layout.blockout)
 			"foot_fixture":
 				item = preload("res://scripts/supported_fixture.gd").new();add_child(item);item.setup(self,foot);foot_fixture = item
 			"joint_restraints":
@@ -217,7 +241,7 @@ func _build_equipment(ids: Array) -> void:
 			"foot_carrier":
 				item = preload("res://scripts/foot_carrier.gd").new();add_child(item);item.setup(self,leg_layout)
 			"leg_rail":
-				item = preload("res://scripts/leg_rail.gd").new();add_child(item);item.setup(self,leg_layout)
+				item = preload("res://scripts/indexed_leg_rail.gd").new() if profile.trial=="m3" else preload("res://scripts/leg_rail.gd").new();add_child(item);item.setup(self,leg_layout)
 			"hip_lift":
 				item = preload("res://scripts/work_access_lift.gd").new();add_child(item)
 				var lift_data: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().lift
@@ -227,6 +251,16 @@ func _build_equipment(ids: Array) -> void:
 				item.rotation.y = deg_to_rad(lift_data.yaw_degrees)
 			"lift_shelf":
 				item = preload("res://scripts/lift_shelf.gd").new();add_child(item);item.setup(self,made.hip_lift)
+			"left_lift","right_lift":
+				var side: String = id.trim_suffix("_lift")
+				var lift_data: Dictionary = leg_layout.layout().workshop.elevators[side]
+				var levels: Array[float] = [];levels.assign(lift_data.levels)
+				item = preload("res://scripts/work_access_lift.gd").new();add_child(item)
+				item.setup(self,side,AssemblyRuntime.vec(lift_data.origin),Vector2(lift_data.size[0],lift_data.size[1]),levels,lift_data)
+			"left_shelf","right_shelf":
+				var side: String = id.trim_suffix("_shelf")
+				item = preload("res://scripts/lift_shelf.gd").new();add_child(item)
+				item.setup(self,made[side+"_lift"],leg_layout.layout().workshop.elevators[side].shelf)
 			"service_crane":
 				item = preload("res://scripts/service_crane.gd").new();add_child(item);item.setup(self,leg_layout,leg_layout.crane_contract())
 		if item != null:made[id] = item

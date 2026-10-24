@@ -57,13 +57,14 @@ func setup() -> void:
 		var spacing = 0.80 if drawers else 1.04
 		if columns == 0:continue
 		var center = origin+(columns-1)*spacing*0.5
-		game.box(game,Vector3(center,0.92,depth),Vector3(columns*spacing,1.84,0.16),cabinet,true)
-		# The header is carried by the cabinet instead of hovering in the aisle.
-		for offset in [-0.78,0.78]:
-			game.box(game,Vector3(center+offset,1.98,depth+0.05),Vector3(0.04,0.30,0.04),cabinet)
-			# Connector starts at the upright's front face instead of sharing its sides.
-			game.box(game,Vector3(center+offset,2.08,depth+0.08),Vector3(0.04,0.06,0.02),cabinet)
-		game.sign_panel(game,"SMALL PARTS / POCKET STOCK" if drawers else "COMPONENTS / SHELF STOCK",Vector3(center,2.10,depth+0.10),Vector2(2.25,0.26),50,0.002)
+		# The wide workshop supplies cabinet supports from its authored stock
+		# grid. Do not leave old cabinet solids behind after relocating the bins.
+		if game.profile.trial!="m3":
+			game.box(game,Vector3(center,0.92,depth),Vector3(columns*spacing,1.84,0.16),cabinet,true)
+			for offset in [-0.78,0.78]:
+				game.box(game,Vector3(center+offset,1.98,depth+0.05),Vector3(0.04,0.30,0.04),cabinet)
+				game.box(game,Vector3(center+offset,2.08,depth+0.08),Vector3(0.04,0.06,0.02),cabinet)
+			game.sign_panel(game,"SMALL PARTS / POCKET STOCK" if drawers else "COMPONENTS / SHELF STOCK",Vector3(center,2.10,depth+0.10),Vector2(2.25,0.26),50,0.002)
 		for i in range(group.size()):
 			var kind: String = group[i]
 			var bin = StaticBody3D.new()

@@ -54,6 +54,19 @@ static func prepare(game: Node) -> void:
 		game.runtime.mount("foot",sid,child)
 	fill(game,"foot")
 	if game.profile.trial == "m3":
+		for owner in game.leg_content.get("prepared_branches",{}):
+			var children: Array=game.leg_content.prepared_branches[owner]
+			for index in range(children.size()):
+				_check(game.automation.suspend_at_station(children[index],["prep","prep2","prep3"][index]),"suspend "+children[index])
+				fill(game,children[index])
+			for index in range(children.size()):
+				if index==2:fill(game,owner)
+				_check(game.model.move_assembly(children[index],"held"),"carry "+children[index])
+				var sid: String=["heel_1","heel_2","pitch"][index]
+				_check_result(game.model.install(owner,sid,children[index]),"mount "+children[index])
+				game.runtime.mount(owner,sid,children[index])
+			fill(game,owner)
+			game.refresh_assembly_collision(owner)
 		game.active_build = "pad_1"
 		return
 	_check_result(game.model.install_supported("left_leg","foot","foot","foot_carrier"),"seat foot on leg")

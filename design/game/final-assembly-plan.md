@@ -5,7 +5,9 @@ canonical full-workshop layout and major-section assembly plan. It selects
 fixture contacts, equipment motions, parking, loaded routes and worker access
 against the component contracts. These are **dimensioned design envelopes**, not
 implemented equipment, structural certification or actual-solid clearance proof.
-The M3 scene, saves and runtime are unchanged by this documentation pass.
+That documentation pass did not change the M3 scene, saves or runtime. Subsequent
+implementation is tracked in the [M3 adaptation ledger](m3-wide-workshop-plan.md#implementation-ledger--2026-10-24);
+its partial equipment checks do not establish full-workshop or human access approval.
 
 [Active workshop state](leg-workshop-next-steps.md) · [Layout drawing](final-assembly-layout.svg)
 · [Robot dimensions](../proportions.md)
@@ -79,8 +81,12 @@ Main ground aisles are X8.9..10.4 and X17.65..19.15; front crosswalk
 Z2.8..4.3 and gantry crosswalk Z20.5..22.0 connect them. Gate the latter during
 rail travel and the left aisle during outboard empty-holder return. The front/right
 alternative stays available. Rail crossings are flush, with moving-table gaps
-covered/locked before pedestrian crossing. Put the shared crane console near
-(8.4,0,21), with the operator near (8.8,0,21), outside the loaded rail corridor.
+covered/locked before pedestrian crossing. The implemented crosswalk gates hinge
+at X8.4/17.6,Z20.5, outside the empty holder's X8.9..17.1 envelope. They swing
+outward to open and close along the crosswalk entrances, with swept collision
+checks. A separate ground occupancy interlock covers X8.9..17.1/Z20.5..30.6;
+entry from another direction stops the rail. The shared crane console is now at
+(7.8,0,22.8), clear of both the gate arc and the movable platform's parking berth.
 
 **Equipment count:** one overhead crane/spreader; one transverse rail table;
 one leg cradle; one removable arm jig; one adjustable bulky fixture with exchangeable
@@ -134,15 +140,23 @@ loaded transition is:
 
 ```
 world.X = lane + a
-world.Y = 0.5 + 1.35 sin(theta) + dock + c cos(theta) + b sin(theta)
+lower = 0.30 clamp((90deg - theta) / 22.5deg, 0, 1)
+world.Y = 0.5 + 1.35 sin(theta) - lower + dock + c cos(theta) + b sin(theta)
 world.Z = kneeZ + (c - 5.1) sin(theta) - b cos(theta)
 ```
 
 First travel knee Z14.5→26 with theta=90° and dock=0; then turn theta90°→0°;
-then raise dock0→0.9. The leg root ends at Y1.4. This preserves M3's supported
+then raise dock0→1.2. The leg root ends at Y1.4. This preserves M3's supported
 travel/turn/rise pattern while increasing horizontal floor clearance. Open the
 hip front wings and stow the rear hip bridge before travel. The conservative
-full leg and cradle sweep reaches Z30.572 and stays ≥0.300 m above the floor.
+full leg and cradle sweep reaches Z30.572. The updated payload floor minimum is
+0.200 m at the upright pre-dock pose; the original 0.300 m estimate below is
+historical. The 0.30 m lowering is an implementation correction from the actual
+rear cylinder parking-hook collision during the final turn. It begins only after
+rotation starts, reaching full lowering at 67.5°; lowering during horizontal travel
+would put the holder bearing into the floor. Source construction height stays1.85.
+The implemented structural leg clears these actual solids in the mechanical test;
+the complete armored leg envelope still needs its later actual-solid check.
 Hold the leg throughout hip retention, cylinders, pins, services and neutral locks.
 
 For rear construction at the station, raise the long rotation axis to **Y3.10**
@@ -197,7 +211,7 @@ future saves. Never release the last load-bearing clamp just to change pose.
 
 | Load | Source support / access setting |
 | --- | --- |
-| Pelvis/waist | Hip datum (3.25,1.20,13); prepared bounds Y0.85..3.42. Support the bridge's existing bearing patches and hold-down faces, leaving sockets and waist work open. Upper work uses the shared platform. |
+| Pelvis/waist | Hip datum (3.25,1.20,13); prepared bounds X±2.01/Y0.49..3.42 including the descending cylinder clevises/catches. Support the bridge's existing bearing patches and hold-down faces, leaving sockets and waist work open. Upper work uses the shared platform. |
 | Chest/cockpit | Seat datum (3.25,0.85,13); mapping `(3.25+X, 0.85+Z-11.30, 13-Y)`. Prepared bounds X0.51..5.99/Z11.80..14.35, top Y5.13. |
 | Bare chest service pose | Before cockpit insertion, shift the supported seat to (3.25,1.30,14.60), then tilt up to 60° forward about world X. Swept bounds X0.51..5.99/Y0.261..5.788/Z10.293..15.95. Return upright and to the normal seat before inserting the capsule. |
 | Cockpit insertion | Supported source dolly/fixture guides, 2.40 m forward approach and 0.05 m final lowering. The front approach reaches Z9.50. No tilting the loaded capsule. |
@@ -245,6 +259,11 @@ Both exits connect to useful work paths; opening a cargo bridge never traps a
 player on an isolated landing. Normal continuous paths are ≥1.2 m clear, primary
 paths 1.5 m. Gates and structure belong outside those widths.
 
+The implemented sliding access barriers stow **inboard**, behind the closed
+wings: their parked spans are X5.1..6.6 /19.4..20.9 at Z24.85. They slide across
+the outer walks before wing unlocking. Outboard parking would intrude into the
+already reserved X23.7 crane-line bypass and is excluded.
+
 **Front bridge motion.** At each elevated level, two 8 m wings run from outer
 roots (X5/Z24 and X21/Z24) to X13, with clear width Z23.4..24.6. Floors and
 side trusses/rails fit Z23.3..24.7; truss/guard height 1.10 m, floor depth 0.20 m.
@@ -280,8 +299,8 @@ The bridge's fold height stays below the gantry bearing arms atY10.65.
 | --- | --- | --- |
 | Hip ring | 8.4 /10.03 | Front fingers X9.6..10.8 /15.2..16.4,Z24.3..25.8. Preserve M3 stance near (10.4,8.4,25.4), mirror for right. Far ring bolt about 2.16 m from eye. |
 | Hip cylinder pins | 8.4 /10.03 | Front standing Z24.30, rear 27.65, X aligned with target. Lower pins Y8.80, eye distances1.71–2.00 m. Two front/one rear insertion, reserve0.34 m plus tool clearance. |
-| Gantry hold-down handles | 8.4 /10.03 | Rear stance X11.6/14.4,Z27.75; handles X11.95/14.05,Y11.10,Z26.60/26.85, outside support beams. Approximately1.6 m reach. |
-| Waist bolts / side services | 11.2 /12.83 | Front/rear pockets X12.16/13.84,Y12.80–12.86,Z25.42/26.58. Side fingers X10.35..11.65 /14.35..15.65,Z24.6..26.6 are used before arms, then stowed before arm delivery. |
+| Gantry hold-down handles | 8.4 /10.03 | Rear stance X11.6/14.4,Z27.75; fixed handles X11.60/14.40,Y10.80,Z26.55/26.75, below the waist deck and outside the bridge. Approximately1.43 m to the farther handle. |
+| Waist bolts / side services | 11.2 /12.83 | Front/rear pockets X12.16/13.84,Y12.80–12.86,Z25.42/26.58. Side fingers X10.35..11.50 /14.50..15.65,Z24.6..26.6 clear the socket crowns; they are used before arms, then stowed before arm delivery. |
 | Distal arm rig release | 11.2 /12.83 | Front patch X9.1..11.0 /15.0..16.9 and rear flanks; standing X10.05/15.95,Z24.3/27.7, reach≈1.69 m. |
 | Shoulder retention / proximal rig | 14.0 /15.63 | Standing X10.6/15.4,Z24.3/27.7; ring heads≤1.48 m, rig≈1.15 m, drive pins≤1.77 m. |
 | Core initial work | 11.2 /12.83 | Rear standing X11.1/14.9,Z27.8; maximum selected flange-bolt reach 2.231 m. |
@@ -344,9 +363,9 @@ beyond M3's two-end crane, not claims about current implementation.
 | --- | --- | --- |
 | Prepared foot | From (−7,1.2,8), lift sole datumY5.0; move toZ7, across toX14, lower to(14,1.2,7). Keep structural carrier and ankle/forefoot locks engaged. | Guided dispatch carrier hands to temporary leg receiving bolster at rootZ9.4/Y1.85; receiver retains before carrier releases. Preserve the existing foot identity and supported turn. |
 | Parked arm cassette | Whole retained cassette lifts with lowest pointY4.8; alongX14 between shoulder Z9.9 and−6.3. | Four lifting ends; parking pedestals/clamps take load before release. This passes ≥0.75 m above the horizontal foot envelope. |
-| Pelvis/waist | Hip datum (3.25,1.2,13)→Y10.8→X13→Z26→Y10.6. Prepared bottom during carry10.45, top 13.02; rig budget≤14.5. | Open front wings11.2/14/16.4. Hip front/rear work decks stay available. Four jaws and waist locks before crane release; restore upper access for rig release. |
+| Pelvis/waist | Hip datum (3.25,1.2,13)→Y10.8→X13→Z26→Y10.6. Prepared bottom during carry10.09, top13.02 including the upper clevises/catches; rig budget≤14.5. | Open front wings11.2/14/16.4. Hip front/rear work decks stay available. Four jaws and waist locks before crane release; restore upper access for rig release. |
 | Chest/cockpit | Seat (3.25,0.85,13)→Y12.88→X13→Z26→Y12.70. Rig budget≤18.23. | Open front 14/16.4; waist11.2 stays closed, guard top 12.3 is0.58 below incoming chest. Four bolts and waist locks before release from upper decks. |
-| Complete arm | Source shoulder(14,1.55,9.9); raise horizontal toY9.6, perform the restrained upend/yaw/splay below, raise toY15.172, advance toZ19.5, align X10.632/15.368, advance toZ26, seat0.65 m up/in. | Open all four front levels before entering. Keep four ends/taglines tensioned. Close clear wings after seating, complete ring/neutral restraint/drives/services, then release proximal/distal rig and fit armor. |
+| Complete arm | Source shoulder(14,1.55,9.9); raise horizontal toY9.6, perform the restrained upend/yaw/splay below, raise toY14.709, advance toZ19.5, align X10.508/15.492, advance toZ26, seat1.13 m up/in. | Open all four front levels before entering. Keep four ends/taglines tensioned. Close clear wings after seating, complete ring/neutral restraint/drives/services, then release proximal/distal rig and fit armor. |
 | Core | From bulky bay, at axisY6.0 cross alongZ13 toX23.7; travel rear to frame-originZ32.4; shift outboard toX24; raise axisY18.47 (lowest point18.0); cross toX13; lower axisY13.35; advance originZ28.2 then insert2.2 m toZ26. | All rear floors stay fixed. Raise outside the outer walks, then cross above their highest guards. At captured-guide engagement0.32 m, transfer forward support before removing its bridge; rear end stays attached through retention. |
 | Open backpack | From bulky bay at hingeY5.5, cross alongZ13 toX23.7, move hingeZ31.8, shift outboard toX24, raise hingeY18.0, cross toX13, lower hingeY15.7, advance hingeZ27.2, lower0.2 m. | All rear floors stay fixed. Body during low travelY5.5..6.5; high crossingY18.0..19.0. Hinge pins, strut pins and positive open locks before release. Crane takes weight again before closure. |
 | Head pieces | Source X3.25/Z13; raise until **lowest loadY19.0**, cross toX13 thenZ26, lower to the component's specified approach/seat. | Front wings remain closed; transit clears head-level guard top 17.5 by 1.5 m. Highest hookY21.58,1.42 below lowest obstruction. |
@@ -372,6 +391,38 @@ Reserve1.80 m above the shoulder datum for the spreader/hook. Final seated
 rigging planes are Z25.32/26.68, clear of front platforms ending24.7 and rear
 platforms starting27.3. Actual cable fan-out must stay inside that clear corridor;
 there are no head-side shortcut decks crossing it.
+
+The 2026-10-24 source preflight corrects the final approach offset from 0.65 m
+to **1.13 m**. At the earlier height, the ball advanced through the fixed front
+drive clevis at t0.64; checking only the axial socket entry missed that transverse
+collision. The corrected ball approach is 0.464 m lower and 0.124 m farther
+outboard, then seats along the same −u axis. Both mirrored complete-body/full-rig
+paths pass against the actual torso, fitted legs, opposite arm, cassette and
+parked equipment. The upper rig anchors also stay outboard of the cup.
+Actual swivel-end cable centres use f±0.72, 0.04 m beyond the nominal pad faces;
+the spreader and cable solids stay within Z25.23..26.77 at the seated pose.
+The main spreader is 1.35 m above the shoulder, with its hook top at +1.67 m,
+inside the existing 1.80 m budget. These are mechanical source checks, not
+walking, reach, rendered review or an implemented arm-installation workflow.
+
+The core's guide handoff also changes the equalizer configuration. At captured
+engagement, stow the forward bridge, then fold its unloaded spreader arm and
+shift the head aft while the core remains stationary. The compact head clears
+the rear spine/cockpit during one-end insertion. Restore the full rig at capture
+before refitting the forward bridge for return. Authored dimensions and actual
+solid checks are recorded in the [core implementation](../torso/backpack-and-power.md#wider-m3-core-implementation--2026-10-24).
+
+The [backpack source preflight](../torso/backpack-and-power.md#wider-m3-backpack-source-and-route-preflight--2026-10-24)
+includes its actual hinge eyes, stowed struts, pad shoes, spreader and all cables.
+Hinge-eye material extends0.065 m below/forward of the nominal open-body rectangle,
+inside the reserved mechanism/lifting-well margin. Actual high-crossing guard
+clearance is0.435 m and lowering-point crosshead clearance0.335 m. The waypoints
+above remain unchanged. During closure, the head stays at least2.08 m above the
+hinge while the cables pay out; following the lowering pads with a short fixed
+drop would put the spreader inside the cover. Player-operated installation and
+closure are now integrated, including take-weight, open locks and lower draw
+latches. Source/rig preflight and mechanical save/restore checks remain distinct
+from the user's walking and connection-access playtest.
 
 **Rear route has a low bypass and an outboard lifting well.** During low
 travel at X23.7, core/backpack cable/spreader projection stays within X±0.90
@@ -433,12 +484,12 @@ hardware allocations belong to the linked component specifications.
 
 | Order | Preparation and handling | Gantry connection / support release |
 | --- | --- | --- |
-| 1 — Pelvis/waist | Bulky bay: build bridge, both socket housings, yaw/lean mechanism and neutral locks. Prepared envelope **3.56 W × 1.80 D × 2.57 H**. Four structural lifting eyes; leave cylinders, rings and guards off. | Seat bridge bearing patches at world Y **10.97** and close four gantry hold-downs. Release crane only with structural support and waist locks confirmed. |
+| 1 — Pelvis/waist | Bulky bay: build bridge, both socket housings, yaw/lean mechanism and neutral locks. Prepared envelope **4.02 W × 1.80 D × 2.93 H**, including the descending cylinder clevises and parking catches. Four structural lifting eyes; leave cylinders, rings and guards off. | Seat bridge bearing patches at world Y **10.97** and close four gantry hold-downs. Release crane only with structural support and waist locks confirmed. |
 | 2 — Both legs | Shared limb bay: prepare each leg on its rail cradle, with integral hip ball, leg-side lugs and service tail. Index to the appropriate lane; travel, tilt and raise. | M3 ring retention, split stop cage, three hydraulic cartridges/six eye pins, positive neutral locks and services. Keep rail support through this work; withdraw empty cradle, then close guards. Repeat on the other side. |
 | 3 — Chest/cockpit | Bulky bay: upright frame with retained cockpit, refitted front ties, sockets and fixed neck. Current width **5.48 m**, depth **2.55 m**; height **4.28 m**, including the keyed neck tip. Four structural crane pads. | Seat at world Y **12.70** through **0.18 m** final lowering. Fit four M36 bolts/washers, verify support/waist locks, detach rigging, connect side services and close connection areas. |
 | 4 — Power core | Shared fixture: horizontal **Ø0.84 m** cartridge, **Ø0.94 m** rear flange, **1.81 m** total axial bounds. Crane supports the initial rear approach at world Y **13.35** axis height. | Advance **2.20 m** towards the front. At 0.32 m captured-guide engagement transfer forward support to the guide, then seat flange, secure four captive bolts and rear interlock before final crane release. |
 | 5 — Backpack | Bulky bay: prepare **2.40 W × 2.80 H × 1.00 D** pack on perimeter supports in its 90° open orientation. Reuse crane and adjustable spreader. | Approach hinge 0.20 m high, lower, fit two hinge pins and two strut-base pins, lock both open struts, release crane and connect services. Reattach crane for controlled closure, seat both locators and latch. |
-| 6 — Both arms | Shared limb bay: connected upper arm, forearm and hand; shoulder armor off. Restrain elbow/wrist/digits. Crane lifts horizontal shoulder datum to world Y **9.60**, then performs the guided upending motion. | Align the ball **0.65 m** down/out from its seat, advance up/in, retain split ring, establish neutral restraint and complete actuation/services. Release crane from accessible pads; fit pauldron. Repeat opposite arm. |
+| 6 — Both arms | Shared limb bay: connected upper arm, forearm and hand; shoulder armor off. Restrain elbow/wrist/digits. Crane lifts horizontal shoulder datum to world Y **9.60**, then performs the guided upending motion. | Align the ball **1.13 m** down/out from its seat, advance up/in, retain split ring, establish neutral restraint and complete actuation/services. Release crane from accessible pads; fit pauldron. Repeat opposite arm. |
 | 7 — Head | Small sensor preparation at bench; reusable supported fixtures and crane for larger shells. Build on the torso's fixed neck, with arms and backpack already fitted. | Baseplate → sides/rear wraps → structural top → sensors/connections → front faceplate → mask → decorative crown. Each lifted piece is retained before rigging release; keep front sensor path open until its work is complete. |
 
 ### First delivery: pelvis and waist
@@ -462,6 +513,17 @@ local clevis catches/resting saddles. Only then execute empty-holder withdrawal
 and close guards. The opened holder leaves0.25 m to the first leg's conservative
 ±0.80 m body bound on the 2.20 m-spaced lanes. Enforce the selected transport
 bounds through later armor design; a wider calf requires revisiting this route.
+
+The wider M3 implementation now exercises both structural legs through this
+route, with distinct mirrored source/receiving geometry and independent retention.
+Both prepared feet begin on separate bay supports, at sole datums(−7,1.2,8)
+and(−7,1.2,13). Four magnetic contacts use the exposed FA-100 rail tops at
+foot-root X±0.50/Y−0.36/Z−0.20 and1.20. The crane takes support, lifts the sole to
+Y5.0, moves toZ7, crosses toX14 and lowers onto the dispatch carrier. The carrier
+returns empty after seating each foot; selecting another leg never moves an
+occupied build. Source-rack right-side frames start0.7 m behind their left partners
+to separate the exposed1.6 m crossmembers. These are mechanically checked blockout
+details; walking, rigging access and connection usability await the user's playtest.
 
 ### Chest delivery: prepared frame and cockpit
 
@@ -494,15 +556,17 @@ The [shoulder/arm specification](../arms/shoulder-and-upper-arm.md) owns the
 angled socket, ring, actuators, rigging points and restrained hand envelope.
 Build one connected arm on the shared cassette. Lock elbow/wrist/digits and
 attach all four ends from visible side faces; take weight before unclamping.
-Follow the continuous upend/yaw/splay route and 0.65 m up/in socket entry.
+Follow the continuous upend/yaw/splay route and 1.13 m up/in socket entry.
 After seating, restore clear front bridges, fit ring and neutral restraint,
 complete drives/services, then release proximal rig at 14.0 and distal rig at 11.2.
 Fit the pauldron afterwards using its high carry route and front/rear tool faces.
 The first arm remains restrained while the second is delivered.
 
 Complete restrained hands occupy worldX8.582..17.418, with0.382 m lateral
-clearance to shaft boundaries; pre-seat offset reduces that to 0.214 m. The new
-shaft depth Z27.4..30.6 also separates them from the arm depth aroundZ26. Keep
+clearance to shaft boundaries; the corrected pre-seat offset reduces the lateral
+projection gap to approximately 0.090 m. Shaft depth Z27.4..30.6 independently
+leaves at least 0.65 m behind the conservative arm depth around Z26, preserving
+the 0.20 m minimum clearance to actual shaft structure. Keep
 shelves, guides and cables inside the shaft reservation through **all** lift levels.
 
 ### Head construction at the gantry
@@ -552,7 +616,7 @@ chest’s separate frame/socket/root bounds rather than fictitious box corners.
 
 | Bounded check | Result / limiting margin |
 | --- | --- |
-| Full leg tilt, including rear spine/yokes | Minimum floor 0.300 m; rear limitZ30.572 within 30.6 reservation |
+| Full leg tilt, including rear spine/yokes | Original minimum floor0.300 m, revised to0.200 m by the supported lowering correction above; rear limitZ30.572 unchanged |
 | Second leg with first fitted | 0.250 m lateral gap to opened holder |
 | Empty fork turn/return | Minimum floor 0.400 m; highestY7.464 below rear hip deck underside8.2;1.40 m withdrawal clears the calf before sideways movement |
 | Supported leg source roll | Minimum floor 0.806 m; X11.706..16.294 inside shared bay |
