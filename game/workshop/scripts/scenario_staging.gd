@@ -15,8 +15,13 @@ static func fill(game: Node, owner: String, permitted: Array = [], limit: int = 
 			if not game.model.assemblies[owner].slots[sid].is_empty():continue
 			var spec: Dictionary = game.model.slot_definition(owner,sid)
 			if spec.has("assembly") or not spec.get("requires",[]).all(func(id):return not game.model.assemblies[owner].slots[id].is_empty()):continue
+			# Prefer the slot's own source identity, so a supplied branch never
+			# consumes stock the player still needs; any free copy otherwise.
 			var uid = ""
+			var own: Dictionary = game.model.items.get(spec.get("pose_source",""),{})
+			if own.get("kind","") == spec.accepts and own.owner.is_empty() and own.location != "installed":uid = spec.pose_source
 			for candidate in game.model.items:
+				if not uid.is_empty():break
 				var item: Dictionary = game.model.items[candidate]
 				if item.kind == spec.accepts and item.owner.is_empty() and item.location != "installed":uid = candidate;break
 			if uid.is_empty():continue
@@ -58,29 +63,21 @@ static func prepare_foot(game: Node, pads_only: bool = false) -> void:
 		game.runtime.mount("foot",sid,child)
 	if not pads_only:fill(game,"foot")
 
-## Completed foot on the leg, with the trial's permitted leg slots fitted.
+## Supplies the prepared branches the player does not build (the right foot).
 static func prepare(game: Node) -> void:
-	if game.profile.get("prepared_foot",true):prepare_foot(game)
-	if game.profile.trial == "m3":
-		for owner in game.leg_content.get("prepared_branches",{}):
-			var children: Array=game.leg_content.prepared_branches[owner]
-			for index in range(children.size()):
-				_check(game.automation.suspend_at_station(children[index],["prep","prep2","prep3"][index]),"suspend "+children[index])
-				fill(game,children[index])
-			for index in range(children.size()):
-				if index==2:fill(game,owner)
-				_check(game.model.move_assembly(children[index],"held"),"carry "+children[index])
-				var sid: String=["heel_1","heel_2","pitch"][index]
-				_check_result(game.model.install(owner,sid,children[index]),"mount "+children[index])
-				game.runtime.mount(owner,sid,children[index])
-			fill(game,owner)
-			game.refresh_assembly_collision(owner)
-		game.active_build = "pad_1"
-		return
-	_check_result(game.model.install_supported("left_leg","foot","foot","foot_carrier"),"seat foot on leg")
-	game.runtime.mount("left_leg","foot","foot")
-	fill(game,"left_leg",game.leg_content.m2.staged_slots.left_leg)
-	game.refresh_assembly_collision("left_leg")
+	for owner in game.leg_content.get("prepared_branches",{}):
+		var children: Array=game.leg_content.prepared_branches[owner]
+		for index in range(children.size()):
+			_check(game.automation.suspend_at_station(children[index],["prep","prep2","prep3"][index]),"suspend "+children[index])
+			fill(game,children[index])
+		for index in range(children.size()):
+			if index==2:fill(game,owner)
+			_check(game.model.move_assembly(children[index],"held"),"carry "+children[index])
+			var sid: String=["heel_1","heel_2","pitch"][index]
+			_check_result(game.model.install(owner,sid,children[index]),"mount "+children[index])
+			game.runtime.mount(owner,sid,children[index])
+		fill(game,owner)
+		game.refresh_assembly_collision(owner)
 	game.active_build = "pad_1"
 
 static func _check(error: String, label: String) -> void:

@@ -1,17 +1,15 @@
 extends Node3D
-## Workshop bootstrap and facade. Scenario choice lives in `profile`; input,
-## player, targeting, world building and primitives live in their own modules.
+## Workshop bootstrap and facade for the one robot workshop. Input, player,
+## targeting, world building and primitives live in their own modules.
 const Part = preload("res://scripts/loose_part.gd")
 const HUD = preload("res://scripts/hud.gd")
-const Profiles = preload("res://scripts/scenario_profile.gd")
 const Automation = preload("res://scripts/workshop_automation.gd")
 const Registry = preload("res://scripts/equipment_registry.gd")
 const Hands = preload("res://scripts/hand_slot.gd")
 const Content = preload("res://scripts/workshop_content.gd")
-const Trial = preload("res://scripts/leg_bay_trial.gd")
-const M3Stages = preload("res://scripts/m3_stages.gd")
+const Stages = preload("res://scripts/build_stages.gd")
 ## Interaction and physics order; earlier equipment answers aggregate queries first.
-const EQUIPMENT_ORDER = ["workshop_access","rail_gates","mobile_platform","module_supports","core_guide","backpack_hinge","captive_controls","joint_restraints","foot_carrier","leg_rail","arm_cassette","left_shoulder","right_shoulder","lift_shelf","left_shelf","right_shelf","service_crane","foot_fixture","hip_lift","left_lift","right_lift"]
+const EQUIPMENT_ORDER = ["workshop_access","rail_gates","mobile_platform","module_supports","core_guide","backpack_hinge","captive_controls","joint_restraints","foot_carrier","leg_rail","arm_cassette","left_shoulder","right_shoulder","left_shelf","right_shelf","service_crane","foot_fixture","left_lift","right_lift"]
 const FOOT_CENTER = Vector3(0,0.8,-0.7)
 const PREP_POSITION = Vector3(-2.3,1.35,-1.2)
 const FOOT_POSITION = Vector3(2.3,2.0,-1.8)
@@ -24,10 +22,15 @@ const SNAP_DISTANT_COLOR = Color(1.0,0.78,0.12,0.55)
 const WORLD_MASK = 7
 const PAD_HOME = Vector3(-1.0,1.09,3.25)
 const JUMP_SPEED = 5.2
+const LEG_CONTENT = "res://assets/leg-prototype-content.json"
+const INTRO = "Build the left foot first: prepare both heel pads and the pitch actuator at the preparation stations, then secure them to the foot in its fixture in the foot bay. Next deliver the prepared pelvis from the bulky fixture to the gantry, crane the finished foot to dispatch and build each structural leg on the shared holder, then the torso, arms and head. Manuals describe each connection; shared equipment carries every large load."
+## Foot, pitch-actuator and pad families that keep their own collision proxies.
+const FOOT_COLLIDER_FAMILIES = ["FA-100","FA-101","FA-102","FA-103","FA-104","FA-105","FA-106","FA-200","FA-201","FA-300","FA-301","FA-302","FA-303","FA-304","FA-400","FA-401","FA-402","FA-403","FA-404"]
+## Equipment created by _build_equipment, in dependency order.
+const EQUIPMENT = ["foot_fixture","module_supports","core_guide","backpack_hinge","arm_cassette","left_shoulder","right_shoulder","leg_rail","left_lift","right_lift","left_shelf","right_shelf","service_crane","foot_carrier","joint_restraints","workshop_access","mobile_platform","captive_controls","rail_gates"]
+## Between the preparation stations and the foot bay, facing the stock wall.
+const SPAWN = [-2.6,.03,4.2,PI/2]
 
-## Set before the node enters the tree to choose a profile without CLI flags.
-var profile_override: String = ""
-var profile: Dictionary = {}
 var primitives: RefCounted
 var targeting: RefCounted
 var desktop_input: RefCounted
@@ -38,14 +41,14 @@ var model = AssemblyModel.new()
 var runtime: AssemblyRuntime
 var components: Node
 var storage: Node
-var m2_half_uid = "PV-120__001"
 var equipment: RefCounted
 var zones: RefCounted
 var hands: RefCounted
-var trial: RefCounted
+## Supplied-branch undo rules and stock placement.
+var journey: RefCounted
 var leg_content: Dictionary = {}
 var leg_layout: Node3D
-## The supported foot fixture, when the profile has one; also in `equipment`.
+## The turning foot fixture; also in `equipment`.
 var foot_fixture: Node3D
 var builds: Dictionary = {}
 var bodies: Dictionary = {}
@@ -54,9 +57,10 @@ var active_build: String = "pad_1"
 var prepared_flags: Dictionary = {}
 var completed_flags: Dictionary = {}
 var automated_test: bool = false
-var m3_stage: String = ""
+## The --stage launch flag, or "" for a fresh workshop.
+var start_stage: String = ""
 ## Pause-menu note describing the last --stage preparation.
-var m3_stage_notice: String = ""
+var stage_notice: String = ""
 var scripted_controls: Dictionary = {}
 var config: Dictionary
 var source: Dictionary = {}
@@ -97,7 +101,6 @@ var rotation_station: String = ""
 var chime: AudioStreamPlayer
 var started: bool = false
 var screenshot_mode: bool = false
-var saves: Node
 
 # Fixture subclasses replace _ready, so the stateless modules exist from construction.
 func _init() -> void:
@@ -111,20 +114,11 @@ func _init() -> void:
 	hands = Hands.new(self)
 
 func _ready() -> void:
-	profile = Profiles.resolve(Array(OS.get_cmdline_user_args()),get_tree(),profile_override)
-	if profile.has("selector"):
-		add_child(preload("res://scripts/trial_selector.gd").new())
-		return
-	preload("res://scripts/leg_bay_layout.gd").select(profile.get("layout_path",preload("res://scripts/leg_bay_layout.gd").LAYOUT_PATH))
-	var single = profile.pads == "single"
-	config = Content.scenario(single)
-	var data = Content.definition_data(single)
-	if profile.pitch:
-		config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
-		var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(config.definitions))
-		Content.apply_definitions(data,overlay)
+	config = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json"))
+	var data = Content.definition_data()
+	Content.apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string(config.definitions)))
 	for definition in config.parts:foot_kinds[definition.kind] = true
-	if not profile.leg_content.is_empty():_load_leg_content(data)
+	_load_leg_content(data)
 	components = preload("res://scripts/component_interaction.gd").new(self)
 	add_child(components)
 	var errors = model.configure(data,config)
@@ -137,24 +131,23 @@ func _ready() -> void:
 		part_defs[definition.instance_id] = definition
 	world.build()
 	world.load_foot()
-	if not profile.leg_content.is_empty():
-		preload("res://scripts/leg_source_geometry.gd").add_sources(source,leg_content)
-		preload("res://scripts/mirrored_sources.gd").add(source,leg_content.get("mirror_sources",{}))
-		for record in leg_content.parts:type_sources[record.kind] = record.get("source_id",record.instance_id)
+	preload("res://scripts/leg_source_geometry.gd").add_sources(source,leg_content)
+	preload("res://scripts/mirrored_sources.gd").add(source,leg_content.get("mirror_sources",{}))
+	for record in leg_content.parts:type_sources[record.kind] = record.get("source_id",record.instance_id)
 	world.register_parent_fixtures()
-	if not profile.leg_content.is_empty():world.make_leg_context()
+	world.make_leg_context()
 	player_controller.make()
-	_build_equipment(["foot_fixture"].filter(has_equipment))
+	_build_equipment(["foot_fixture"])
 	for build in config.builds:components.make_build(build.id)
 	components.setup()
-	if not profile.trial.is_empty():trial = preload("res://scripts/leg_journey_policy.gd").new(self) if profile.trial == "m3" else Trial.new(self)
-	if profile.staging in ["leg_bay","leg_bay_m3"]:preload("res://scripts/scenario_staging.gd").prepare(self)
-	_build_equipment(profile.equipment.filter(func(id):return id != "foot_fixture"))
-	player_controller.spawn(profile.spawn)
+	journey = preload("res://scripts/leg_journey_policy.gd").new(self)
+	preload("res://scripts/scenario_staging.gd").prepare(self)
+	_build_equipment(EQUIPMENT.filter(func(id):return id != "foot_fixture"))
+	player_controller.spawn(SPAWN)
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
 	storage.setup()
-	if trial != null:trial.position_stock()
+	journey.position_stock()
 	ghost_material = primitives.new_material(SNAP_READY_COLOR,0.0)
 	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
 	ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -170,56 +163,40 @@ func _ready() -> void:
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
-	if not profile.trial.is_empty():hud.open_manual("foot" if not profile.prepared_foot else "pelvis" if profile.trial in ["retention","m3"] else "left_leg")
+	hud.open_manual("foot")
 	model.changed.connect(_state_changed)
 	_make_audio()
 	_state_changed()
 	set_paused(true)
 	started = true
-	saves = preload("res://scripts/workshop_save.gd").new()
-	add_child(saves)
-	saves.setup(self)
-	if profile.trial == "m3":
-		m3_stage = Profiles.stage_flag(Array(OS.get_cmdline_user_args()))
-		if not m3_stage.is_empty() and not automated_test:call_deferred("run_m3_stage",m3_stage)
+	start_stage = Stages.stage_flag(Array(OS.get_cmdline_user_args()))
+	if not start_stage.is_empty() and not automated_test:call_deferred("run_stage",start_stage)
 
 func _load_leg_content(data: Dictionary) -> void:
-	leg_content = JSON.parse_string(FileAccess.get_file_as_string(profile.leg_content))
-	var overlay: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-definitions.json"))
-	Content.apply_definitions(data,overlay)
-	var trial_id: String = profile.trial
-	if not trial_id.is_empty():
-		var prefix = "m3" if trial_id == "m3" else "m2-"+trial_id
-		var trial_definitions: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/"+prefix+"-definitions.json"))
-		var trial_content: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/"+prefix+"-content.json"))
-		Content.apply_definitions(data,trial_definitions)
-		leg_content.sources.merge(trial_content.get("sources",{}),true)
-		if trial_content.has("context_sources"):leg_content.context_sources=trial_content.context_sources
-		var metadata_key = "m3" if trial_id == "m3" else "m2"
-		for support_id in trial_content[metadata_key].get("remove_supports",[]):leg_content.supports.erase(support_id)
-		leg_content.supports.merge(trial_content.supports,true)
-		for field in ["parts","parents","equipment",metadata_key]:leg_content[field] = trial_content[field]
-		for field in ["builds","mirror_sources","prepared_branches"]:
-			if trial_content.has(field):leg_content[field]=trial_content[field]
-		if trial_id == "retention" and m2_half_uid != "PV-120__001":
-			assert(m2_half_uid == "PV-120__002")
-			for record in leg_content.parts:
-				if record.instance_id == "PV-120__001":record.instance_id = m2_half_uid;record.source_id = m2_half_uid
-			leg_content.m2.retention_uid = m2_half_uid
+	leg_content = JSON.parse_string(FileAccess.get_file_as_string(LEG_CONTENT))
+	Content.apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-prototype-definitions.json")))
+	Content.apply_definitions(data,JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-definitions.json")))
+	var extension: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-content.json"))
+	leg_content.sources.merge(extension.get("sources",{}),true)
+	if extension.has("context_sources"):leg_content.context_sources = extension.context_sources
+	leg_content.supports.merge(extension.supports,true)
+	for field in ["parts","parents","equipment","robot"]:leg_content[field] = extension[field]
+	for field in ["builds","mirror_sources","prepared_branches"]:
+		if extension.has(field):leg_content[field] = extension[field]
 	config.parts.append_array(leg_content.parts)
 	config.builds.append_array(leg_content.get("builds",[]))
 	config.parents = leg_content.parents.duplicate(true)
 	config.supports = leg_content.supports.duplicate(true)
-	for parent_id in profile.parent_locations:
-		if parent_id == config.parent.id:config.parent.location = profile.parent_locations[parent_id]
-		for parent in config.get("parents",[]):
-			if parent.id == parent_id:parent.location = profile.parent_locations[parent_id]
+	# The turning foot fixture stands in for the left foot's bay store.
+	config.parent.location = "support:foot_store"
+	for parent in config.parents:
+		if parent.id == "foot":parent.location = "support:foot_store"
 	var homes: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().parent_homes
 	for parent in config.parents:
 		if homes.has(parent.id):parent.home = homes[parent.id]
 
 func has_equipment(id: String) -> bool:
-	return id in profile.get("equipment",[])
+	return id in EQUIPMENT
 
 ## One factory: creates `ids` in dependency order, then registers them in EQUIPMENT_ORDER.
 func _build_equipment(ids: Array) -> void:
@@ -249,9 +226,8 @@ func _build_equipment(ids: Array) -> void:
 			"foot_fixture":
 				item = preload("res://scripts/supported_fixture.gd").new();add_child(item)
 				# In the hangar the fixture stands in for the left foot's bay store.
-				var store: Dictionary = {"origin":AssemblyRuntime.vec(leg_layout.layout().workshop.foot_storage.foot.position)} if is_instance_valid(leg_layout) else {}
-				item.setup(self,foot,store);foot_fixture = item
-				if not store.is_empty() and leg_layout.blockout != null:
+				item.setup(self,foot,{"origin":AssemblyRuntime.vec(leg_layout.layout().workshop.foot_storage.foot.position)});foot_fixture = item
+				if leg_layout.blockout != null:
 					for piece_id in leg_layout.blockout.pieces:
 						if not piece_id.begins_with("foot_store_"):continue
 						var piece: Dictionary = leg_layout.blockout.pieces[piece_id]
@@ -262,16 +238,7 @@ func _build_equipment(ids: Array) -> void:
 			"foot_carrier":
 				item = preload("res://scripts/foot_carrier.gd").new();add_child(item);item.setup(self,leg_layout)
 			"leg_rail":
-				item = preload("res://scripts/indexed_leg_rail.gd").new() if profile.trial=="m3" else preload("res://scripts/leg_rail.gd").new();add_child(item);item.setup(self,leg_layout)
-			"hip_lift":
-				item = preload("res://scripts/work_access_lift.gd").new();add_child(item)
-				var lift_data: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().lift
-				var levels: Array[float] = []
-				for level in lift_data.levels:levels.append(float(level))
-				item.setup(self,lift_data.name,Vector3(lift_data.origin[0],lift_data.origin[1],lift_data.origin[2]),Vector2(lift_data.size[0],lift_data.size[1]),levels,lift_data)
-				item.rotation.y = deg_to_rad(lift_data.yaw_degrees)
-			"lift_shelf":
-				item = preload("res://scripts/lift_shelf.gd").new();add_child(item);item.setup(self,made.hip_lift)
+				item = preload("res://scripts/indexed_leg_rail.gd").new();add_child(item);item.setup(self,leg_layout)
 			"left_lift","right_lift":
 				var side: String = id.trim_suffix("_lift")
 				var lift_data: Dictionary = leg_layout.layout().workshop.elevators[side]
@@ -317,7 +284,6 @@ func _make_audio() -> void:
 	chime.volume_db = -8
 
 func set_paused(value: bool) -> void:
-	var was_paused = paused
 	paused = value
 	jump_requested = false
 	if value and is_instance_valid(interaction_outline):interaction_outline.clear()
@@ -330,8 +296,6 @@ func set_paused(value: bool) -> void:
 		hud.crosshair.visible = not value
 		if value: hud.target_panel.visible = false
 		hud.show_pause(value)
-	if value and not was_paused and started and is_instance_valid(saves) and not saves.applying:
-		saves.save_now()
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Verification drives the same adapter explicitly; live desktop events must
@@ -558,8 +522,8 @@ func undo_build() -> void:
 	if assisted.handled:
 		hud.toast(assisted.error if not assisted.error.is_empty() else "Undid the last installation with equipment support.",assisted.error.is_empty())
 		return
-	var trial_error: String = trial.undo_error(owner) if trial != null else ""
-	if not trial_error.is_empty():hud.toast(trial_error);return
+	var journey_error: String = journey.undo_error(owner) if journey != null else ""
+	if not journey_error.is_empty():hud.toast(journey_error);return
 	var equipment_error = equipment_access_error(owner)
 	if not equipment_error.is_empty():hud.toast(equipment_error);return
 	if _undo_to_hands(owner):return
@@ -576,7 +540,6 @@ func undo_build() -> void:
 	if result.step.action == "mount":
 		suspend_build(result.step.uid,destination)
 		refresh_assembly_collision(owner)
-		if profile.get("pads","") == "single":hud.open_manual(result.step.uid,1)
 	else:
 		var uid: String = result.step.uid
 		if model.items[uid].location == "loose":_spawn_loose(uid,true)
@@ -626,21 +589,20 @@ func _milestone(message: String, owner: String) -> void:
 		if is_instance_valid(glowing_mesh) and glowing_mesh.material_overlay == glow:glowing_mesh.material_overlay = null)
 
 func reset_demo() -> void:
-	# M3 has no save slot; reloading also re-runs any --stage launch flag.
-	if is_instance_valid(saves) and (saves.enabled or profile.trial != "m3"):saves.new_workshop()
-	else:get_tree().reload_current_scene()
+	# Nothing is saved; reloading also re-runs any --stage launch flag.
+	get_tree().reload_current_scene()
 
 ## Development shortcut: script the sequence up to `stage`, then hand over
 ## paused. Supplied progress only; never a save or playtest evidence.
-func run_m3_stage(stage: String) -> String:
-	if stage not in M3Stages.stages_for(profile):
-		var unknown = "Unknown stage '"+stage+"'. Use one of: "+", ".join(M3Stages.stages_for(profile))
+func run_stage(stage: String) -> String:
+	if stage not in Stages.ALL:
+		var unknown = "Unknown stage '"+stage+"'. Use one of: "+", ".join(Stages.ALL)
 		if is_instance_valid(hud):hud.toast(unknown)
 		# Headless suites already record the returned message. push_error would
 		# fail the regression runner, which treats every ERROR line as a failure.
 		if not automated_test:push_error(unknown)
 		return unknown
-	var title: String = M3Stages.TITLES[stage]
+	var title: String = Stages.TITLES[stage]
 	var overlay = CanvasLayer.new();overlay.layer = 100;add_child(overlay)
 	var shade = ColorRect.new();shade.color = Color("111d26e6");shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);overlay.add_child(shade)
 	var note = Label.new();note.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -652,12 +614,12 @@ func run_m3_stage(stage: String) -> String:
 	var was_automated = automated_test
 	automated_test = true
 	set_paused(false)
-	var error: String = await M3Stages.new(self).run_to(stage,func(step: String):note.text = "Preparing stage: "+title+"\nNow: "+step)
+	var error: String = await Stages.new(self).run_to(stage,func(step: String):note.text = "Preparing stage: "+title+"\nNow: "+step)
 	automated_test = was_automated
 	overlay.queue_free()
-	m3_stage_notice=("Started at stage: "+title+". Earlier work was supplied by script, not playtested.") if error.is_empty() else ("Stage preparation stopped: "+error)
+	stage_notice=("Started at stage: "+title+". Earlier work was supplied by script, not playtested.") if error.is_empty() else ("Stage preparation stopped: "+error)
 	set_paused(true)
-	if is_instance_valid(hud):hud.toast(m3_stage_notice,error.is_empty());hud.refresh_save_status()
+	if is_instance_valid(hud):hud.toast(stage_notice,error.is_empty());hud.refresh_session_status()
 	if not error.is_empty():push_error("Stage "+stage+": "+error)
 	return error
 

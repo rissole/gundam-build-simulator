@@ -5,8 +5,8 @@ canonical full-workshop layout and major-section assembly plan. It selects
 fixture contacts, equipment motions, parking, loaded routes and worker access
 against the component contracts. These are **dimensioned design envelopes**, not
 implemented equipment, structural certification or actual-solid clearance proof.
-That documentation pass did not change the M3 scene, saves or runtime. Subsequent
-implementation is tracked in the [M3 adaptation ledger](history/m3-wide-evidence-20261024.md#plan-implementation-ledger-through-task-09);
+That documentation pass did not change the workshop scene, saves or runtime. Subsequent
+implementation is tracked in the [implementation ledger](history/m3-wide-evidence-20261024.md#plan-implementation-ledger-through-task-09);
 its partial equipment checks do not establish full-workshop or human access approval.
 
 [Active workshop state](leg-workshop-next-steps.md) · [Layout drawing](final-assembly-layout.svg)
@@ -17,7 +17,7 @@ its partial equipment checks do not establish full-workshop or human access appr
 - Install **pelvis/waist → both legs → chest/cockpit → power core → backpack →
   both arms → head**. Preparation remains independent; gate installation on real
   support and access dependencies.
-- Retain M3's raised pose: soles world Y1.40. Eventual whole-robot lowering is
+- Retain the leg journey's raised pose: soles world Y1.40. Eventual whole-robot lowering is
   undecided and is not included in these equipment motions.
 - Use two side elevators and shared front/rear work platforms. Each elevator
   serves hip, waist, shoulder and head work.
@@ -28,7 +28,7 @@ its partial equipment checks do not establish full-workshop or human access appr
   shoulder armor off during arm connection. Build the head on its fixed neck.
 - Reuse a single crane, an adjustable bulky fixture, one mobile work platform,
   the two elevators and contextual equipment controls. Do not add per-part machines.
-- Preserve the satisfying M3 handling and local mistake correction. Full teardown
+- Preserve the satisfying leg-journey handling and local mistake correction. Full teardown
   and rendered-game review are not acceptance gates for this design pass.
 
 The user approved the assembly direction and asked for this coordinated pass
@@ -61,7 +61,7 @@ coordinates are X right, Y forward, Z up. The raised mapping is:
 
 Keep the existing **40 × 48 m floor**, world X−14..26/Z−9..39. Wall inner
 faces are approximately X−13.85/25.85 and Z−8.85/38.85. Raise the proposed
-full-workshop roof to Y25.0; the current M3 overhead equipment is insufficient.
+full-workshop roof to Y25.0; the original leg journey's overhead equipment is insufficient.
 The floor layout replaces conflicting prototype stock positions in a future
 implementation; it does not claim to preserve every current rack.
 
@@ -97,7 +97,7 @@ different physical jobs and do not create a new permanent console for each part.
 
 ### Shared limb workshop with different departure routes
 
-**Leg support.** Raise the horizontal leg root from M3's Y1.35 to **Y1.85** for
+**Leg support.** Raise the horizontal leg root from the leg journey's Y1.35 to **Y1.85** for
 the complete calf/holder envelope. Home knee is (14,1.85,14.5), root Z9.4.
 Use a rear holder spine at robot Y−1.45, bounded −1.55..−1.35, behind the
 calf's Y−1.15 rear bound. C-shaped yokes reach structural side pads at robot
@@ -146,7 +146,7 @@ world.Z = kneeZ + (c - 5.1) sin(theta) - b cos(theta)
 ```
 
 First travel knee Z14.5→26 with theta=90° and dock=0; then turn theta90°→0°;
-then raise dock0→1.2. The leg root ends at Y1.4. This preserves M3's supported
+then raise dock0→1.2. The leg root ends at Y1.4. This preserves the leg journey's supported
 travel/turn/rise pattern while increasing horizontal floor clearance. Open the
 hip front wings and stow the rear hip bridge before travel. The conservative
 full leg and cradle sweep reaches Z30.572. The updated payload floor minimum is
@@ -188,7 +188,7 @@ The FA-01 foot box X±0.65/Y−0.80..2.20/Z0..1.60 stays within
 worldX13.35..14.65/Z7.20..11.189 during the turn, with minimumY1.05.
 The receiving bolster clamps the frame before the carrier releases/retracts;
 stow that bolster only after the retained shin/frame supplies the next support.
-This is a full-workshop source setting for M3's existing supported handoff pattern,
+This is a full-workshop source setting for the leg journey's existing supported handoff pattern,
 not a claim that today's carrier already reaches the new datum. No platform or
 loose supply occupies the transfer volume during the turn.
 
@@ -298,7 +298,7 @@ The bridge's fold height stays below the gantry bearing arms atY10.65.
 
 | Work patch | Deck / eye height | Access and target |
 | --- | --- | --- |
-| Hip ring | 8.4 /10.03 | Front fingers X9.6..10.8 /15.2..16.4,Z24.3..25.8. Preserve M3 stance near (10.4,8.4,25.4), mirror for right. Far ring bolt about 2.16 m from eye. |
+| Hip ring | 8.4 /10.03 | Front fingers X9.6..10.8 /15.2..16.4,Z24.3..25.8. Preserve the leg journey's stance near (10.4,8.4,25.4), mirror for right. Far ring bolt about 2.16 m from eye. |
 | Hip cylinder pins | 8.4 /10.03 | Front standing Z24.30, rear 27.65, X aligned with target. Lower pins Y8.80, eye distances1.71–2.00 m. Two front/one rear insertion, reserve0.34 m plus tool clearance. |
 | Gantry hold-down handles | 8.4 /10.03 | Rear stance X11.6/14.4,Z27.75; fixed handles X11.60/14.40,Y10.80,Z26.55/26.75, below the waist deck and outside the bridge. Approximately1.43 m to the farther handle. |
 | Waist bolts / side services | 11.2 /12.83 | Front/rear pockets X12.16/13.84,Y12.80–12.86,Z25.42/26.58. Side fingers X10.35..11.50 /14.50..15.65,Z24.6..26.6 clear the socket crowns; they are used before arms, then stowed before arm delivery. |
@@ -358,7 +358,7 @@ walls. RoofY25.0, truss underside24.5, bridge 23.70..24.25 and lowest trolley/
 fitting **Y23.0** define the overhead budget. Put lights/services above that
 limit outside the routes. One configurable two/four-end spreader, lifting shoes,
 equalizing bridges and restrained payout serve all loads. These are new capabilities
-beyond M3's two-end crane, not claims about current implementation.
+beyond the leg journey's two-end crane, not claims about current implementation.
 
 | Load | Source-to-destination path, in world metres | Support handoff / access state |
 | --- | --- | --- |
@@ -411,9 +411,9 @@ engagement, stow the forward bridge, then fold its unloaded spreader arm and
 shift the head aft while the core remains stationary. The compact head clears
 the rear spine/cockpit during one-end insertion. Restore the full rig at capture
 before refitting the forward bridge for return. Authored dimensions and actual
-solid checks are recorded in the [core implementation](../torso/backpack-and-power.md#wider-m3-core-implementation--2026-10-24).
+solid checks are recorded in the [core implementation](../torso/backpack-and-power.md#robot-workshop-core-implementation--2026-10-24).
 
-The [backpack source preflight](../torso/backpack-and-power.md#wider-m3-backpack-source-and-route-preflight--2026-10-24)
+The [backpack source preflight](../torso/backpack-and-power.md#robot-workshop-backpack-source-and-route-preflight--2026-10-24)
 includes its actual hinge eyes, stowed struts, pad shoes, spreader and all cables.
 Hinge-eye material extends0.065 m below/forward of the nominal open-body rectangle,
 inside the reserved mechanism/lifting-well margin. Actual high-crossing guard
@@ -486,7 +486,7 @@ hardware allocations belong to the linked component specifications.
 | Order | Preparation and handling | Gantry connection / support release |
 | --- | --- | --- |
 | 1 — Pelvis/waist | Bulky bay: build bridge, both socket housings, yaw/lean mechanism and neutral locks. Prepared envelope **4.02 W × 1.80 D × 2.93 H**, including the descending cylinder clevises and parking catches. Four structural lifting eyes; leave cylinders, rings and guards off. | Seat bridge bearing patches at world Y **10.97** and close four gantry hold-downs. Release crane only with structural support and waist locks confirmed. |
-| 2 — Both legs | Shared limb bay: prepare each leg on its rail cradle, with integral hip ball, leg-side lugs and service tail. Index to the appropriate lane; travel, tilt and raise. | M3 ring retention, split stop cage, three hydraulic cartridges/six eye pins, positive neutral locks and services. Keep rail support through this work; withdraw empty cradle, then close guards. Repeat on the other side. |
+| 2 — Both legs | Shared limb bay: prepare each leg on its rail cradle, with integral hip ball, leg-side lugs and service tail. Index to the appropriate lane; travel, tilt and raise. | Existing ring retention, split stop cage, three hydraulic cartridges/six eye pins, positive neutral locks and services. Keep rail support through this work; withdraw empty cradle, then close guards. Repeat on the other side. |
 | 3 — Chest/cockpit | Bulky bay: upright frame with retained cockpit, refitted front ties, sockets and fixed neck. Current width **5.48 m**, depth **2.55 m**; height **4.28 m**, including the keyed neck tip. Four structural crane pads. | Seat at world Y **12.70** through **0.18 m** final lowering. Fit four M36 bolts/washers, verify support/waist locks, detach rigging, connect side services and close connection areas. |
 | 4 — Power core | Shared fixture: horizontal **Ø0.84 m** cartridge, **Ø0.94 m** rear flange, **1.81 m** total axial bounds. Crane supports the initial rear approach at world Y **13.35** axis height. | Advance **2.20 m** towards the front. At 0.32 m captured-guide engagement transfer forward support to the guide, then seat flange, secure four captive bolts and rear interlock before final crane release. |
 | 5 — Backpack | Bulky bay: prepare **2.40 W × 2.80 H × 1.00 D** pack on perimeter supports in its 90° open orientation. Reuse crane and adjustable spreader. | Approach hinge 0.20 m high, lower, fit two hinge pins and two strut-base pins, lock both open struts, release crane and connect services. Reattach crane for controlled closure, seat both locators and latch. |
@@ -505,7 +505,7 @@ The robot is then supported independently of the crane.
 
 ### Both legs: rail delivery and hip completion
 
-Retain M3's Ø0.90 ball/Ø0.30 neck, socket, interchangeable ring halves and four
+Retain the leg journey's Ø0.90 ball/Ø0.30 neck, socket, interchangeable ring halves and four
 upward M24×140 bolts/washers per hip. Complete leg-side lugs/services at the
 station. Use the rail route above, then close the hip access bridges while the
 cradle remains engaged. Fit ring, stop cage, three cylinders/six eye pins,
@@ -515,7 +515,7 @@ and close guards. The opened holder leaves0.25 m to the first leg's conservative
 ±0.80 m body bound on the 2.20 m-spaced lanes. Enforce the selected transport
 bounds through later armor design; a wider calf requires revisiting this route.
 
-The wider M3 implementation now exercises both structural legs through this
+The robot workshop implementation now exercises both structural legs through this
 route, with distinct mirrored source/receiving geometry and independent retention.
 Both prepared feet begin on separate bay supports, at sole datums(−7,1.2,8)
 and(−7,1.2,13). Four magnetic contacts use the exposed FA-100 rail tops at
@@ -590,8 +590,8 @@ contacts, source work poses, carrier quantities, parking transfers, both hip lan
 empty return, moving bridges, elevator/shelf volumes and cargo waypoints. The
 selected changes are integrated into existing component documents and drawings.
 
-Next, implement the [M3 wider-workshop blockout](m3-wide-workshop-plan.md)
-before detailed component workflows. Replace M3 in place, build both simplified
+Next, implement the [robot workshop blockout](robot-workshop-plan.md)
+before detailed component workflows. Replace the leg journey in place, build both simplified
 structural legs, and exercise the major-section routes with prepared stand-ins
 and representative mounting work. The user owns walking and connection-access
 playtesting; automated checks cover mechanical movement, support, content and saves.
@@ -631,7 +631,7 @@ chest’s separate frame/socket/root bounds rather than fictitious box corners.
 
 These bounded checks are not continuous mesh collision detection, manufactured
 fits, every connection's occlusion proof, gameplay tests or human playtest approval.
-The retained M3 hip access regression establishes only its existing structural
+The retired leg-journey hip access regression established only its structural
 connection. The user will playtest walking, visibility, reach and connection
 access through ordinary controls. Automated adaptation checks cover content,
 movement, support, interlocks and interrupted saves; they do not run walked
@@ -642,7 +642,7 @@ Keep future intermediate calculations/captures in temporary or ignored verificat
 storage. Record one compact result in the relevant milestone; maintain these
 canonical documents/drawings rather than adding parallel verification narratives.
 
-Sources: [M3 layout](../../game/workshop/assets/leg-bay-m3-layout.json),
+Sources: [Workshop layout](../../game/workshop/assets/workshop-layout.json),
 [layout structure](../../game/workshop/scripts/leg_bay_layout.gd),
 [leg interfaces](leg-prototype-interface.md),
 [player controller](../../game/workshop/scripts/player_controller.gd),

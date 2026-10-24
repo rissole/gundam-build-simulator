@@ -1542,7 +1542,7 @@
           "label": "LG-120 · Upper-leg beam",
           "support_required": true,
           "source_supports": [
-            "m2_service_crane"
+            "crane_rigging"
           ]
         },
         "fork/washer_1": {
@@ -2177,7 +2177,7 @@
           "label": "Structural left leg",
           "support_required": true,
           "source_supports": [
-            "m2_leg_rail"
+            "leg_holder"
           ]
         },
         "ring_1": {

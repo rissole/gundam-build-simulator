@@ -24,8 +24,6 @@ var pause_title: Label
 var pause_intro: Label
 var resume_button: Button
 var restart_button: Button
-var save_button: Button
-var reload_button: Button
 var quit_button: Button
 var session_label: Label
 var crosshair: Label
@@ -46,8 +44,6 @@ var page: int:
 var toast_time: float = 0.0
 var entered: bool = false
 var confirm_restart: bool = false
-var confirm_reload: bool = false
-var discard_offered: bool = false
 var tone = Color("80dfbd")
 var muted = Color("a8b9be")
 
@@ -137,7 +133,7 @@ func _ready() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
-	manual_id = "pad_1" if game.profile.pads == "single" else game.config.parent.id
+	manual_id = game.config.parent.id
 	_make_manual()
 	_make_action_bar()
 	target_panel = panel_at(root,Vector2.ZERO,Rect2(0,0,260,0))
@@ -388,7 +384,7 @@ func _make_pause() -> void:
 	header.add_child(heading)
 	pause_title = label("Your workshop",30)
 	heading.add_child(pause_title)
-	pause_intro = label(game.profile.intro,15,muted)
+	pause_intro = label(game.INTRO,15,muted)
 	pause_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	heading.add_child(pause_intro)
 	resume_button = button("Start building    →",true)
@@ -420,95 +416,41 @@ func _make_pause() -> void:
 	var footer = HBoxContainer.new()
 	footer.add_theme_constant_override("separation",12)
 	col.add_child(footer)
-	save_button = button("Save")
-	save_button.pressed.connect(_save_clicked)
-	footer.add_child(save_button)
-	reload_button = button("Reload save")
-	reload_button.pressed.connect(_reload_clicked)
-	footer.add_child(reload_button)
 	var spacer = Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	footer.add_child(spacer)
 	restart_button = button("Restart build")
 	restart_button.pressed.connect(_restart_clicked)
 	footer.add_child(restart_button)
-	if game.profile.session.codec == "trial" and game.profile.trial != "m3":
-		var choose_trial = button("Choose M2 trial")
-		footer.add_child(choose_trial)
-		choose_trial.pressed.connect(func():
-			if game.saves.save_now():
-				game.get_tree().remove_meta("m2_trial")
-				game.get_tree().reload_current_scene())
 	quit_button = button("Quit")
-	quit_button.pressed.connect(_quit_clicked)
+	quit_button.pressed.connect(func(): game.get_tree().quit())
 	footer.add_child(quit_button)
-	refresh_save_status()
+	refresh_session_status()
 
-func _saves_enabled() -> bool:
-	return game != null and game.saves != null and game.saves.enabled
-
-func refresh_save_status() -> void:
+## Nothing is saved: the pause menu restarts from this launch's starting stage.
+func refresh_session_status() -> void:
 	if session_label == null:return
-	var enabled: bool = _saves_enabled()
-	save_button.visible = enabled
-	reload_button.visible = enabled
-	save_button.disabled = not enabled or (enabled and game.saves.blocked)
-	reload_button.disabled = not enabled or (enabled and (not game.saves.has_save or game.saves.blocked))
-	restart_button.text = ("Confirm new workshop" if enabled else "Confirm restart") if confirm_restart else ("New workshop" if enabled else "Restart build")
-	reload_button.text = "Confirm reload" if confirm_reload else "Reload save"
-	quit_button.text = "Quit without saving" if discard_offered else ("Save & quit" if enabled else "Quit")
-	resume_button.text = "Resume    →" if entered or (enabled and game.saves.restored) else "Start building    →"
-	if confirm_restart or confirm_reload:return
-	session_label.text = game.saves.status_text() if is_instance_valid(game.saves) else "Your workshop is starting."
-
-func _clear_save_confirmations() -> void:
-	confirm_restart = false
-	confirm_reload = false
-	discard_offered = false
-
-func _save_clicked() -> void:
-	_clear_save_confirmations()
-	if _saves_enabled():game.saves.save_now()
-	refresh_save_status()
-
-func _reload_clicked() -> void:
-	if not _saves_enabled() or not game.saves.has_save or game.saves.blocked:return
-	if confirm_reload:
-		_clear_save_confirmations()
-		game.saves.reload_save()
-		refresh_save_status()
-	else:
-		_clear_save_confirmations()
-		confirm_reload = true
-		refresh_save_status()
-		session_label.text = "Reload the saved workshop? Changes since the last save will be lost.\nResume to keep your current progress."
-
-func _quit_clicked() -> void:
-	if _saves_enabled():game.saves.quit_game(discard_offered)
-	else:get_tree().quit()
-
-func offer_discard() -> void:
-	_clear_save_confirmations()
-	discard_offered = true
-	refresh_save_status()
+	restart_button.text = "Confirm restart" if confirm_restart else "Restart build"
+	resume_button.text = "Resume    →" if entered else "Start building    →"
+	if confirm_restart:return
+	session_label.text = "Robot workshop · nothing is saved yet.\nRestart begins again from this launch's starting point."+("\n"+game.stage_notice if not game.stage_notice.is_empty() else "")
 
 func _restart_clicked() -> void:
 	if confirm_restart:
-		_clear_save_confirmations()
+		confirm_restart = false
 		game.reset_demo()
-		refresh_save_status()
+		refresh_session_status()
 	else:
-		_clear_save_confirmations()
 		confirm_restart = true
-		refresh_save_status()
-		session_label.text = "Start a new workshop? This replaces your current saved workshop.\nResume to keep your progress." if _saves_enabled() else "Restart this build from the beginning?\nResume to keep your progress."
+		refresh_session_status()
+		session_label.text = "Restart this build from the beginning?\nResume to keep your progress."
 
 func show_pause(value: bool) -> void:
 	pause_panel.visible = value
 	action_bar.visible = not value
 	carry_panel.visible = not value and not carry_label.text.is_empty()
-	_clear_save_confirmations()
-	refresh_save_status()
+	confirm_restart = false
+	refresh_session_status()
 	pause_title.text = "Paused" if entered else "Your workshop"
 	if value:
 		target_panel.hide()

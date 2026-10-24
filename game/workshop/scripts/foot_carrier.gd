@@ -222,7 +222,10 @@ func busy_reason(subject: String) -> String:
 	return ""
 
 func undo(subject: String) -> Dictionary:
-	if subject == assembly_id or subject in ["pad_1","pad_2","pitch"]:return {"handled":true,"error":"The prepared foot stays assembled in M3."}
+	# The player builds the left foot in its fixture at the store; once it leaves
+	# for the carrier and leg, the prepared foot stays assembled.
+	var in_fixture: bool = game.model.assemblies.foot.location == "support:foot_store" and subject in ["foot","pad_1","pad_2","pitch"]
+	if (subject == assembly_id or subject in ["pad_1","pad_2","pitch"]) and not in_fixture:return {"handled":true,"error":"The prepared foot stays assembled."}
 	if subject == receiving_assembly and not game.model.assemblies[receiving_assembly].history.is_empty() and game.model.assemblies[receiving_assembly].history.back().slot == "foot":return {"handled":true,"error":"Use Return on the guided foot carrier to return the foot to dispatch."}
 	return {"handled":false,"error":""}
 

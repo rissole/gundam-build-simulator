@@ -341,9 +341,9 @@ tool rays. Recheck these comparisons with actual solids, shoulder travel and
 head/backpack fitted. The 16.4 m world deck has foot height robot Z15.0 and
 must notch/retract around the pauldron rather than pass through its upper 0.05 m.
 
-### Wider M3 pauldron implementation — 2026-10-24
+### Robot workshop pauldron implementation — 2026-10-24
 
-Source: `tools/author_m3_pauldrons.py` (within `game/workshop`), with two data-driven receivers.
+Source: `tools/author_pauldrons.py` (within `game/workshop`), with two data-driven receivers.
 Passive upright stores at world X−9/−5, Z1 replace the optional vacant limb fixture;
 carrier bottoms are Y0.75 and tops Y2.15, within the small-stock height limit.
 Both two-end rigs use the specified Y18.0 transit bottom, Z13 distribution and 1.60 m final descent.
@@ -563,9 +563,9 @@ replace those designs. Strength, materials/ratings and detailed drive technology
 remain later engineering work.
 
 
-## Wider-M3 source and full-rig preflight — 2026-10-24
+## Robot workshop source and full-rig preflight — 2026-10-24
 
-`author_m3_arms.py` now supplies 22 separate source pieces per prepared arm,
+`author_arms.py` now supplies 22 separate source pieces per prepared arm,
 with distinct mirrored identities, actual B-eye pin bores, neck/beam geometry,
 restrained elbow/wrist, complete hand/thumb/digit cradle, three structural
 support pads and four lifting faces. These are supplied representative sources,
@@ -607,16 +607,16 @@ It also rejects the old 0.65 m approach, inward upper anchors, closed front
 decks and a low cassette crossing. These are source/mechanical checks, not
 walking, reach, presentation or installation-gameplay evidence. Cassette controls,
 shared-station exchange, arm support handoffs, external shoulder stock/manuals,
-pauldrons and interrupted saves remain to implement. The wider-M3 ledger records
+pauldrons and interrupted saves remain to implement. The workshop implementation ledger records
 the current verification result; do not mark the whole goal complete here.
 
 
 ### Retained cassette transfer — 2026-10-24
 
 The same cassette is now a tracked equipment assembly on `cassette_park`,
-`m2_service_crane` or `cassette_station`. Its supported arm stays on
+`crane_rigging` or `cassette_station`. Its supported arm stays on
 `arm_cassette` throughout transfer, rather than becoming a new inventory copy.
-`author_m3_cassette.py` derives 34 source pieces from the blockout and adds four
+`author_cassette.py` derives 34 source pieces from the blockout and adds four
 captive lock pins and four handles. These 42 prepared tool pieces are separate
 from consumable robot stock. Runtime projects their exact meshes/colliders and
 disables the original duplicate static cassette. The foot columns have actual
@@ -648,14 +648,14 @@ lowered floor pins while airborne and mismatched crane/contact phases. A shared
 save check was also corrected to apply bulky-fixture contact rules only to that
 fixture, rather than every crane receiver. Rig-end attachment is staged in this
 mechanical harness; walking, aim, readability and connection access remain the
-user's playtest. The M3 ledger records the current regression result.
+user's playtest. The implementation ledger records the regression result.
 
 That cassette increment preceded the arm installation work below; it did not
 establish the full arm workflow or overall goal completion.
 
 ### Live delivery and shoulder connections — 2026-10-24
 
-`author_m3_shoulders.py` now supplies31 external pieces and32 chest-manual slots
+`author_shoulders.py` now supplies31 external pieces and32 chest-manual slots
 per arm. The compatible types are the two complementary ring halves, M24 washers,
 M24 ×240 bolts, Ø40 pins/keepers, complete screw-drive cartridges and the isolated
 service harness. The staggered keyed brace is handed and has separate
@@ -713,7 +713,7 @@ pose preservation, handed-brace rejection and supported keeper correction.
 `arm_after_legs_test.gd` runs that sequence after both legs, chest, core and
 backpack. These mechanical harnesses stage stock collection and rig attachment;
 they do not establish walking, reach, input readability or rendered approval.
-The wider-M3 ledger records the final retained regression evidence.
+The workshop implementation ledger records the final retained regression evidence.
 
 At the requested review pause, the final run passed the70-check source preflight
 and32-check assembled shoulder fit audit. Its full sequence after both legs

@@ -1,7 +1,7 @@
 extends "res://tests/kit/harness.gd"
 ## Full authored carriers and complete two-end rigs, before runtime integration.
 const Sweep=preload("res://scripts/motion_sweep.gd")
-const M3Stages=preload("res://scripts/m3_stages.gd")
+const Stages=preload("res://scripts/build_stages.gd")
 var game: Node
 var margins: Dictionary={}
 func _initialize() -> void:call_deferred("run")
@@ -12,8 +12,8 @@ func publish(body: Node3D) -> void:
 			node.force_update_transform();PhysicsServer3D.body_set_state(node.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,node.global_transform)
 
 func run() -> void:
-	game=await boot_profile("leg_bay_m3")
-	var stages=M3Stages.new(game);var error: String=await stages.run_to("pauldrons")
+	game=await boot_workshop()
+	var stages=Stages.new(game);var error: String=await stages.run_to("pauldrons")
 	expect(error.is_empty(),"preflight uses the fitted torso, legs, both retained shoulders and parked equipment: "+error)
 	if not error.is_empty():finish();return
 	game.set_paused(true)

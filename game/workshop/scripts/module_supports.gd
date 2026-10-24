@@ -238,10 +238,10 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 	var occupant=model.support_occupant("bulky_fixture")
 	if not occupant.is_empty() and occupant!=data.template:return ["Occupied bulky fixture has the wrong contact inserts."]
 	var location=_location(model)
-	if location not in ["support:"+spec.source_support,"support:"+spec.receiver_support,"support:m2_service_crane"]:return ["Pelvis has no declared workshop support."]
+	if location not in ["support:"+spec.source_support,"support:"+spec.receiver_support,"support:crane_rigging"]:return ["Pelvis has no declared workshop support."]
 	if location!="support:"+spec.receiver_support and not data.jaws.all(func(value):return is_equal_approx(value,1)):return ["Empty gantry cannot have closed or moving hold-downs."]
 	if model.assemblies.pelvis.slots.values().any(func(uid):return not uid.is_empty()) and not support_secured("pelvis",model,data):return ["Robot construction requires clamped gantry support and waist locks."]
-	if world.has("fixtures") and location!="support:m2_service_crane":
+	if world.has("fixtures") and location!="support:crane_rigging":
 		var expected=Layout.authored_pose(spec.source_pose).translated(Vector3.UP*data.height*spec.height_travel) if location=="support:"+spec.source_support else Layout.authored_pose(spec.receiver_pose)
 		if not Codec.to_pose(world.fixtures.pelvis).is_equal_approx(expected):return ["Pelvis pose disagrees with its current fixture."]
 	if world.has("equipment"):
@@ -255,7 +255,7 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 			if crane.motion=="down":expected_release=1-clampf((crane.progress-.9)/.1,0,1)
 			elif crane.motion=="up":expected_release=clampf(crane.progress/.1,0,1)
 		if not is_equal_approx(data.source_release,expected_release):return ["Source clamp contact disagrees with crane weight transfer."]
-		var suspended=location=="support:m2_service_crane"
+		var suspended=location=="support:crane_rigging"
 		var releasing=location=="support:"+spec.source_support and data.source_release>0
 		var unsecured=location=="support:"+spec.receiver_support and not support_secured("pelvis",model,data)
 		if suspended or releasing or unsecured:

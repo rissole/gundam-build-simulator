@@ -2,25 +2,23 @@
 
 Godot 4.7.2 · GDScript · Jolt Physics · macOS desktop · Shared assembly model and nested manuals
 
-![Current M3 crane controls: movement first, with a separate load chooser](../../docs/images/workshop-crane-controls.png)
+![Crane console with movement controls](../../docs/images/workshop-crane-controls.png)
 
-*Current crane controls in the final-assembly hangar.*
+*Crane controls in the final-assembly hangar.*
 
-`./play.command` opens the one robot game (profile `robot`). It begins with the
+`./play.command` opens the robot workshop, the one game. It begins with the
 base foot build: **two heel pads and the 91-piece pitch actuator**, secured to the
 left foot. That is **135 playable physical identities** from the preserved
 745-piece source inventory. The foot rests in a turning fixture in the hangar's
 foot bay, standing in for the left foot's store. The preparation stations,
 heel-pad table and the foot's own wall cabinets share the hangar's parts and
-preparation zone. Once the upright foot is complete, the wider M3 workshop
-continues in the same session: pelvis → both legs → chest → core → backpack →
-both arms → pauldrons → head → crown. The right foot stays supplied complete.
+preparation zone. Once the upright foot is complete, the build continues in the
+same session: pelvis → both legs → chest → core → backpack → both arms →
+pauldrons → head → crown. The right foot stays supplied complete.
 
-The M-series equipment experiments remain development profiles on shared
-feature modules. The user accepted the revised M2 playtest on 2026-10-23: “m2
-plays great.” Read the [active plan and feedback](../../design/game/leg-workshop-next-steps.md)
-before continuing development. The wider workshop awaits playtest with the
-[checklist](../../design/game/m3-wide-playtest-checklist.md).
+Read the [active plan and feedback](../../design/game/leg-workshop-next-steps.md)
+before continuing development. The workshop awaits playtest with the
+[checklist](../../design/game/robot-workshop-playtest-checklist.md).
 
 The FA-513 motor starts on the floor beside preparation C. Pick it up with E, then click the empty station to suspend it. Build the exposed drive first; page 7 fits the FA-510 housing, followed by exterior fittings and cap closure. Its 14-page manual ends with the eyes and installation handoff. The foot manual owns both clevises and the two retained eye-pin connections.
 
@@ -54,7 +52,7 @@ existing staged movement and Stop/recovery functions remain available.
 These screenshots were captured with Godot's real renderer from supplied camera
 poses, with the manual closed for the physical-panel views. UI presentation was
 inspected; **regressions were not run**, as requested. Follow the
-[focused controls checklist](../../design/game/m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24)
+[focused controls checklist](../../design/game/robot-workshop-playtest-checklist.md#focused-controls-check--2026-10-24)
 for hands-on verification. Reproduce the screenshots with:
 
 ```sh
@@ -70,26 +68,31 @@ illustrate UI states and do not establish successful delivery or reachability.
 
 ## Launch
 
-Double-click [play.command](../../play.command) in Finder. The game opens the robot workshop in **non-exclusive (borderless) fullscreen**, paused; click **Start building**. The robot game does not save yet (see [Saves and checkpoints](../../design/game/m3-wide-workshop-plan.md#saves-and-checkpoints)): Restart and relaunch begin again from the launch's starting stage. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
+Double-click [play.command](../../play.command) in Finder. The game opens the robot workshop in **non-exclusive (borderless) fullscreen**, paused; click **Start building**. Nothing is saved yet (see [Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints)): Restart and relaunch begin again from the launch's starting stage. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
 
-To inspect or edit the project, double-click [edit.command](../../edit.command), or open [project.godot](project.godot) in Godot 4.7.2.
-
-From a terminal at the repository root:
+`play.command` passes its arguments to Godot, so the same command opens the
+editor and runs tests. From a terminal at the repository root:
 
 ```sh
-./play.command
-./edit.command
+./play.command                                  # play from the start
+./play.command -- --stage=pelvis                # play from a later stage
+./play.command --editor                         # open the project in the Godot editor
+./play.command --headless --script tests/stage_flag_test.gd   # run one test
 ```
+
+Godot options go before `--`; game options such as `--stage` go after it. You can
+also open [project.godot](project.godot) in Godot 4.7.2.
 
 The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tools/Godot-4.7.2/Godot.app/Contents/MacOS/Godot`. It also accepts `GODOT_BIN` and can find a `godot` command or `/Applications/Godot.app`. The official macOS download was checked against its published SHA-512 manifest before installation. The launcher imports assets automatically when the import cache is absent.
 
 ## Stages
 
-`./play.command -- --stage=<stage>` starts the robot game later in the build.
-It scripts the earlier work with the same model and equipment commands as the
-mechanical tests, then hands over paused. Fastenings and rigging are supplied,
-so this is not playtest evidence, and nothing is saved. Restart re-runs the
-shortcut. Wait for the preparation overlay to close before using the controls.
+`./play.command -- --stage=<stage>` starts later in the build. It scripts the
+earlier work with the same model and equipment commands as the mechanical tests,
+then hands over paused. Fastenings and rigging are supplied, so this is not
+playtest evidence, and nothing is saved. Restart re-runs the shortcut. Wait for
+the preparation overlay to close before using the controls. Tests start at a
+stage the same way, with `boot_workshop("<stage>")` in [tests/kit](tests/kit).
 
 | Stage | Starts with |
 | --- | --- |
@@ -103,113 +106,19 @@ shortcut. Wait for the preparation overlay to close before using the controls.
 | `head`, `head_sensors` | The head's structure, then its sensors, faceplate, mask and crown |
 | `complete` | The retained and connected whole robot, with the crane parked |
 
-`--m3-stage=<stage>` is the older spelling and still works.
+## Building the left leg
 
-## Development profiles
+The [robot workshop plan](../../design/game/robot-workshop-plan.md) describes
+every stage; the [playtest checklist](../../design/game/robot-workshop-playtest-checklist.md)
+lists what to check in each. Start at the leg with `./play.command -- --stage=pelvis`
+and deliver the pelvis first. The original leg-only journey's evidence is
+[archived](../../design/game/history/leg-workshop-m3-plan.md).
 
-Profiles select content, layout, equipment, staging, spawn and save behavior.
-Development and regression scenarios stay selectable with `--profile=<id>`:
-
-| Profile | Launch | Save behavior |
-| --- | --- | --- |
-| Robot game (default) | `./play.command` | none (saving deferred) |
-| Foot-only workshop | `./play.command -- --profile=foot` | Existing `user://workshop-save.json` |
-| Single-pad regression | `./play.command -- --profile=pads_single` | Session only; alias `--single-pad` |
-| Two-pad regression | `./play.command -- --profile=pads_multi` | Session only; alias `--pads-only` |
-| Hip-retainer trial | `./play.command -- --profile=leg_bay_retention` | `user://m2-retention-save.json` |
-| Crane-delivery trial | `./play.command -- --profile=leg_bay_crane` | `user://m2-crane-save.json` |
-| M3 with a prepared left foot | `./play.command -- --profile=leg_bay_m3` | none (saving deferred) |
-
-`--stage` also works with `--profile=leg_bay_m3`, from `pelvis` onward.
-`./play.command -- --m2-workshop` opens the M2 trial selector. The earlier
-`--m2-workshop --m2-trial=retention` and `--m2-trial=crane` aliases remain.
-The foot-only workshop is the earlier base game; its fixture, dispatch rails and
-save are unchanged. The retired hoist and M1 saves are no longer loaded. The
-historical layout and feedback remain in [the archive](../../design/game/history/leg-workshop-m1-m2-handoffs.md).
-
-## M2 equipment trials
-
-Launch the checkpoint selector from the repository root:
-
-```sh
-./play.command -- --m2-workshop
-```
-
-Choose **Hip retainer** or **Crane delivery**. Each example has its own resume
-and reset controls and save slot: `user://m2-retention-save.json` and
-`user://m2-crane-save.json`. Switching examples keeps the other example's progress.
-The foot base game and the two trials keep independent progress.
-
-**Hip retainer:** Advance the supplied complete leg through travel, tilt and
-hip docking. Collect the two washer/bolt pairs into pockets from ground stock
-near the lift. **E** picks up the ring half with both hands; board the lift and
-**click** its component shelf to store it. The shelf holds **two one-hand or one
-two-hand component**. Ride Up, E-pick the half from the shelf, then aim/click the
-hip connection and fit its hardware. In the pelvis manual, **Z** removes the
-hardware and then returns the half to your hands. Store it on the shelf and ride
-Down to bring it down. **Q** drops a carried component; E picks it up again.
-Rail Return is blocked until all retention is removed. No arm or drawers ride
-the lift; small hardware stays in pockets.
-
-**Crane delivery:** At the central console press E, then choose **Move to Upper-leg
-beam rack** and **Lower crane**. A compact control panel appears in the center of the
-screen, leaving the workshop visible. Mouse look and walking stop while it is
-open; click a command or use **↑/↓ + E/Enter**, and **Q** or **Close** to return to
-play. **Esc** closes the panel and pauses. Long command lists scroll, including
-when navigating with the keyboard. Travel destinations appear
-only while Up. Walk to the rack, E-pick each magnetic end, then aim/click a marked
-point. The held end stays in the centre of the view; Q stows it. Back at the
-console choose **Raise crane**, **Move to Leg cradle**, then **Lower crane**. Close the console and
-fit all four flange washer/bolt pairs. E-detach and Q-stow both ends, then choose
-Raise crane and Move to Parking bay. To recover the beam before fastening: Up, Go to its
-rack, Down. Undo any fitted flange hardware before lifting a loaded beam.
-
-Use **Reset** for these revised M2 trials; older M2 saves have an incompatible
-fingerprint and remain protected until you explicitly reset that trial.
-
-Escape pauses equipment and opens save controls. Reopening a trial restores into
-the pause menu. Save, reload and reset apply to the selected example. Incompatible
-saves are preserved with an explanation rather than silently reset.
-Pause → **Choose M2 trial** saves first and returns to the selector. Its **Reset**
-buttons replace only the named trial's progress.
-
-M2 tests one retaining half and one crane load. A single half does not secure the
-whole hip; complete-ring assembly, holder departure and the combined construction
-journey remain M3. The revised M2 interactions are human-accepted, 2026-10-23.
-Reacquiring and dismantling the beam after releasing the crane is also held for
-M3; reset the crane example to replay from stock.
-
-Focused reproducible checks (headless; no rendered review):
-
-```sh
-python3 game/workshop/tools/run_regressions.py --only m2_content_test m2_retention_controls_test m2_retention_save_test service_crane_test m2_crane_controls_test m2_crane_save_test m2_console_input_test crane_console_panel_test m2_lift_shelf_test m2_acceptance_test m2_workshop_launch m2_retention_launch m2_crane_launch
-```
-
-Assess whether cable pickup and console trips are clear, whether the ring
-pickup/shelf/fit/undo flow feels natural, and whether errors explain why the
-holder or load cannot move. Preserve the rail and elevator experience accepted
-in M1. Record feedback in the existing
-[continuation plan](../../design/game/leg-workshop-next-steps.md).
-
-## M3 complete structural leg
-
-M3 is now the wider whole-robot workshop; see the
-[wider M3 plan](../../design/game/m3-wide-workshop-plan.md). The original leg-only
-journey's evidence is [archived](../../design/game/history/leg-workshop-m3-plan.md).
-It continues after the foot build in `./play.command`; start at its first step
-with `./play.command -- --stage=pelvis`. The left-leg steps below predate the
-wider workshop; the [playtest checklist](../../design/game/m3-wide-playtest-checklist.md)
-describes each current stage.
-
-The complete 135-piece foot starts on its dispatch carrier. Build the remaining
-40 structural and hip-retention pieces, mount the leg to the supplied pelvis,
-then recover it with the same equipment. This checkpoint covers structural
-assembly; powered mechanisms, armor and the other robot branches are later work.
-The foot base game and both M2 saves have independent progress.
-
-1. At the **foot carrier**, use **Advance** to raise the foot, then Advance again
-   to turn and seat it on the horizontal holder. The carrier withdraws after the
-   receiving supports take the foot. Stop interrupts motion.
+1. At the **crane console**, choose **Move to pickup** for the finished foot and
+   crane it onto the dispatch carrier. At the **foot carrier**, use **Advance** to
+   raise the foot, then Advance again to turn and seat it on the horizontal holder.
+   The carrier withdraws after the receiving supports take the foot. Stop
+   interrupts motion.
 2. At the **crane console**, choose **Move to pickup**. The crane brings the
    next leg part in build order (shin, knee fork, upper-leg beam) and says what
    is missing if that part isn't ready yet. **Lower crane**, then Q to leave the console. E-pick and aim/click each magnetic
@@ -226,31 +135,18 @@ The foot base game and both M2 saves have independent progress.
 4. With every structural connection complete and the crane parked, open the
    **Pelvis gantry** manual. Use the local rail **Advance** controls for travel,
    upright tilt and upward docking. The holder continues supporting the leg.
-5. Carry either **PV-120** half onto the personnel lift, click the component shelf
+5. Carry either **PV-120** half onto a personnel lift, click the component shelf
    to store it, and ride **Up**. Retrieve and seat it, then fit its two washer/bolt
    pairs from below. Ride **Down** to ground and repeat with the other half. The
    shelf holds one two-hand component, so the halves make separate trips.
-   Move toward the hip-facing end of the working corner to see the far half's
-   washer seats past the beam.
 6. Both halves and all four pairs permit **Advance** to release the holder.
-   The secured leg stays mounted to the pelvis. This completes the M3 forward
-   checkpoint.
+   The secured leg stays mounted to the pelvis. The right leg follows the same
+   steps with the supplied right foot.
 
 Use **Z** to correct mistakes, subject to the existing support and dependency
 guards. Before undoing hip retention, use Advance to reacquire holder support;
 wait for its engaged status. To select a completed build, press **N** and turn
-off **Suggested only**. Existing recovery controls remain available, but full
-disassembly and return-to-stock verification are outside the current M3 gate.
-
-Escape pauses equipment. M3 saving is deferred; restart or use `--m3-stage=<stage>`
-to supply earlier construction for inspection. The foot game and M2 save slots
-remain independent.
-
-The current forward M3 gate uses the common runner:
-
-```sh
-python3 game/workshop/tools/run_regressions.py --only m3_acceptance_test robot_workshop_test robot_profile_launch leg_bay_m3_profile_launch
-```
+off **Suggested only**.
 
 ## Collecting and building
 
@@ -262,7 +158,7 @@ python3 game/workshop/tools/run_regressions.py --only m3_acceptance_test robot_w
 6. Carry either FA-302 heel pad with E and click an empty preparation station. Stock FA-305, W-24 and H-24120 in separate pockets. Fit four FA-305 sleeves, seat the pad at either heel position, then fit W-24 before H-24120 at each connection.
 7. Pick up FA-513 from the floor beside preparation C and suspend it there to start the FA-500-P pitch build. Assemble the exposed drive using the fixture for support. Fit FA-510 after the rod, fasten the motor through the open rear and the retainer from outside, then add the guide, sensors, seals and caps. The foot manual then covers both FA-220 clevises, seating FA-500-P, and retaining both ends with FA-221, FA-222, W-12 and H-12030.
 8. Use **E on the foot bay controls** to select **Upright**, **Sole left** or **Sole right**. The mechanical cradle turns the supported foot gradually. Walk around it and use the ramp/platform to reach the exposed connections. R rotates the small preparation fixtures; the foot uses its equipment controls.
-9. After securing both pads and the pitch actuator, choose **Upright**, then **Transfer**. The rail carriage moves the foot to dispatch. Clear people and loose components from the movement path; an obstruction stops the equipment until the path is clear. Opening the pause menu also pauses equipment movement.
+9. After securing both pads and the pitch actuator, choose **Upright**. The crane collects the finished foot from the fixture for the leg build. Clear people and loose components from equipment paths; an obstruction stops the equipment until the path is clear. Opening the pause menu also pauses equipment movement.
 
 ## Assembly and undo
 
@@ -271,41 +167,21 @@ the parent history before editing their internals. A detached child returns
 intact to a free preparation station. Small undone parts return to their matching
 or an empty pocket; if neither has space, they return to their drawer. Undo never
 replaces another stack. Larger components normally appear on the output tray;
-the M2 retaining-half slot explicitly returns its unfastened half to hands.
+slots authored to return to hands, such as the hip retaining halves, return the
+unfastened component to your hands.
 
 **Placement follows physical compatibility and access.** Any compatible ready
 connection can be built, including on another page or assembly. Aiming and adding
 components refine manual suggestions without silently switching the reader.
 Assemblies retain their chosen recipes and physical identities.
 
-M3 combines horizontal leg construction and the final-bay journey described above.
-M2 retains its bounded supplied-construction retaining-half and crane loops.
+## Saving
 
-## Saving and resuming
-
-The default foot game retains **`user://workshop-save.json`** and its original
-content fingerprint. Each M2 trial and the M3 journey have their own slots as
-listed above. Saves occur
-every **30 seconds of active play**, on pause and on quit. Reopening restores into
-the pause menu. **Save** writes immediately; **Reload save** asks before discarding
-changes. **New workshop** asks before replacing the selected slot. The menu reports
-save/resume failures.
-
-On macOS files live in
-`~/Library/Application Support/Godot/app_userdata/Gundam Build Simulator/`;
-each adjacent `.bak` is its last good backup. Progress includes physical identities,
-ownership, pockets, undo history, loose/carried objects, stations, player pose,
-manual state and the profile's equipment. Interrupted movement resumes after
-leaving pause. M2 saves from earlier content revisions may require an explicit
-Reset; incompatible files remain protected until that choice.
-
-The unified session codec validates the complete detached snapshot before live
-replacement. A damaged primary can recover from a compatible backup; unsupported
-versions/content are preserved. A failed save keeps the session open and offers
-**Quit without saving**. Migration, cloud sync and multiple slots are outside scope.
-Single/two-pad profiles are session only. Headless tests use isolated storage and
-leave player saves untouched. See the [save/resume contract](../../design/game/save-resume.md)
-for the original foot snapshot and recovery design.
+Nothing is saved yet. Quitting or restarting begins again from the launch's
+starting stage; use `--stage` to skip earlier work. The earlier foot-only save
+system was removed with the separate foot workshop; robot saves are planned in
+[Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints).
+Equipment still captures and restores its own state, which the stage runner uses.
 
 ## Controls
 
@@ -331,20 +207,20 @@ for the original foot snapshot and recovery design.
 | C | Cycle matching build manuals; suggestions use the selected component or aimed assembly |
 | V | Open the inspected build manual |
 | Z | Undo the latest action in the selected manual |
-| Escape | Open grouped controls, Resume, Save, Reload save, New workshop, or Save & quit; reload and replacement ask for confirmation |
+| Escape | Open grouped controls, Resume, Restart build (asks for confirmation) or Quit |
 
 Each of the ten pockets holds one small-part type, with up to 20 copies per stack. Assemblies and shelf components are carried separately using the assisted grip. Attachment reach is initially 2.35 m from the camera/player to the actual connection, and pad connections use a 15 cm targeting radius; actuator component targets use 24 cm. These are tunable prototype values.
 
 ## Implemented behavior
 
-- Metre-scale source geometry: the preserved 745-mesh foot, with 135 active identities in the base game. M2 adds procedural leg/pelvis blockouts and only the stock needed for each trial.
-- The component room hosts the foot base game. M2 uses a separate hangar profile with a pelvis gantry, supported rail, personnel lift, local stock, shelf or crane, and reserved future construction routes. Equipment preserves real support ownership while players fit reachable hardware.
+- Metre-scale source geometry: the preserved 745-mesh foot, with 135 active identities in the foot build, plus procedural leg, pelvis, torso, arm and head blockouts.
+- One final-assembly hangar hosts the whole build: parts and preparation zone, foot bay, pelvis gantry, indexed leg holder, personnel lifts with shelves, mobile platform, service crane and module fixtures. Equipment preserves real support ownership while players fit reachable hardware.
 - Firm two-handed carrying. A collision-aware kinematic grip follows the camera without a spring or angular momentum. Translation is swept against scenery and turning checks intermediate orientations. Dropping restores normal rigid-body physics. Placement still checks the swept approach and destination against scenery and loose obstacles.
-- Small preparation stations retain free rotation and double-tap R to reset. The default foot uses a mechanically supported cradle, controlled work positions, an access platform/ramp and a rail carriage to the handoff area. Rotation and transfer controls face inward from the platform's parallel outer railing. Equipment movement preserves mounted child poses and physical identities; parent construction and undo wait until it is stationary in the assembly bay.
+- Small preparation stations retain free rotation and double-tap R to reset. The foot uses a mechanically supported cradle with controlled work positions and an access platform/ramp; the crane collects it from the fixture. Equipment movement preserves mounted child poses and physical identities; parent construction and undo wait until it is stationary in the assembly bay.
 - Reachable pickup and collection targets under the crosshair get a thin contour; fixed equipment keeps its Operate prompt without a contour. Up to four recently focused objects reuse hidden contours, which inherit their source meshes' motion and visibility. Geometry, material and assembly changes invalidate the relevant cache; stable focus avoids hierarchy scans and renderer transform updates. Compact world prompts follow the object and use keyboard keycaps; obstacles hide both. With no part selected, unfinished builds keep one whole-assembly pickup prompt. With a selected part, nearby connections take priority; E still picks up their containing assembly. Aiming at the whole in-progress workpiece uses its cached bounds to reveal a compatible, ready destination in yellow within 6 m. The prompt asks you to move closer or aim at the highlighted connection; precise, reachable aim turns it green. Yellow guidance alone never permits attachment. Scenery, missing prerequisites and moving equipment suppress distant guidance. A valid green attachment preview stands on its own, while blocked or incompatible actions retain explanatory feedback. Placement never outlines the entire receiving assembly. Prompt and preview share one approach check per update; actual clicks recheck collision, and settled carried parts skip redundant rotation sweeps.
 - Translucent in-game manual, notification and inventory panels; opaque pause/help and manual-browser windows with the workshop visible around them. The compact ten-pocket bar uses square cards with readable IDs, functional variants and counts. Hand and two-hand components are centered by their geometry, with size-aware forward clearance and solid collision.
 - Hold-to-crouch movement with a lower camera/collision capsule and an overhead clearance check before standing.
-- Ten persistent pockets with baked part images, IDs and per-stack counts. The separate hands summary appears only while carrying and replaces pickup popups; selected pocket information stays in the action bar. The grouped Escape menu offers keyboard focus and resume, save/reload and confirmed new-workshop actions.
+- Ten persistent pockets with baked part images, IDs and per-stack counts. The separate hands summary appears only while carrying and replaces pickup popups; selected pocket information stays in the action bar. The grouped Escape menu offers keyboard focus, resume, confirmed restart and quit.
 - Non-exclusive fullscreen at launch, with the HUD scaled to the display.
 - Finite labelled drawers for small parts, open shelves for larger components, a preparation tray, and part-ID tooltips. Small stock has no loose 3D meshes or physics bodies; installed parts and attachment previews still use their source geometry.
 - Interchangeable matching hardware. The chosen socket supplies the destination, while the installed object retains its physical identity.
@@ -367,18 +243,17 @@ python3 game/workshop/tools/run_regressions.py
 
 The runner discovers suites built on `tests/kit/harness.gd`, launches desktop
 adapters through the same test entry path, includes the Python source-asset tests,
-and smoke-tests every profile plus supported launch aliases. `--list` shows case
+and smoke-tests a plain launch and a `--stage` launch. `--list` shows case
 names; `--only NAME ...` selects cases. The kit shares assertions, frame waits,
 evidence output and a player driver for ordinary desktop input; setup teleports
 are explicitly staged. Logs and input hashes are retained in a unique
 `verification/regressions-*` directory. Engine errors fail even when Godot exits
 successfully; changed inputs invalidate a run.
 
-Cases normally have a 180-second cap. The M3 walked construction suite has a
-900-second cap for its ordinary inputs and fresh-scene restores. Its default
-route ends at full retention and holder release. `--timeout SECONDS` overrides
-the cap for every selected
-case; the runner still stops immediately on script errors or detected stalls.
+Cases normally have a 180-second cap; the arm section and the suites that script
+the whole build have longer caps. `--timeout SECONDS` overrides the cap for every
+selected case; the runner still stops immediately on script errors or detected
+stalls.
 
 Current status and remaining human acceptance are recorded in the
 [workshop state](../../design/game/leg-workshop-next-steps.md).
@@ -391,7 +266,7 @@ review results are summarized below, but their captures and exact input hashes
 are no longer kept in Git. Fresh visual approval requires a new local capture
 and inspection of the affected scope.
 
-- [Manual page audit](tests/pockets_workshop_test.gd): 31 runtime page views across the single-pad, two-pad and pitch scenarios, covering step-only lists, quantities, prepared assemblies, instruction references, unique installation coverage and available stock. Overview/readiness pages have no component shopping list.
+- [Manual page audit](tests/pockets_workshop_test.gd): runtime page views across the heel-pad and pitch builds, covering step-only lists, quantities, prepared assemblies, instruction references, unique installation coverage and available stock. Overview/readiness pages have no component shopping list.
 - [Pocket model audit](tests/pockets_model_test.gd): ten stacks of 20, top-up, full-bar replacement, clearing, empty-drawer atomicity, undo overflow and exact physical identities.
 - [Pocket workshop audit](tests/pockets_workshop_test.gd): all ten number keys, immediate hotbar counts, manual independence, drawer/shelf images and IDs, two storage rows, clearing away from storage, separate carrying, scrolling and layout. Hotbar/catalogue images use no live 3D viewports.
 
@@ -399,37 +274,25 @@ and inspection of the affected scope.
 - [Part compatibility audit](tests/part_variants_test.gd): pooled stock, both copies at opposite compatible endpoints, exact identity on undo/reinstall, incompatible variants at ready connections, and actual imported geometry equivalence.
 - [Pitch desktop audit](tests/pitch_build_test.gd): Collects and fits all 90 additions around the starting motor through desktop controls, compares actual installed vertices against the source at every construction page, previews all fitted child meshes and installs the completed actuator with all 18 mounting parts, checks station/foot rotation, and undoes the parent installation while retaining child progress. It also checks the housing-free first step, enclosed-part visibility, complete preview visibility and recovery on reopening the housing.
 
-- [Manual navigation audit](tests/manual_navigation_test.gd): 22 checks of tree navigation, breadcrumbs, per-build page memory, pause/input behavior and unchanged inventory.
 - [Diagram cache audit](tests/manual_diagram_cache_test.gd): 10 checks; authored figures reuse their panels and meshes through progress changes, while changed views and automatic diagrams still refresh.
 
 - [Original state regression](tests/state_test.gd): 57 checks through the new model, including independent order, finite stock, pocket clearing/refilling, identity, completion, and full undo.
 - [Generic model audit](tests/assembly_model_test.gd): 45 checks including invalid references/cycles, duplicate ownership, incompatible variants, shared stock, nested undo, and a separate three-slot recipe with a differently named parent. The alternate recipe is a state-level fixture, not new playable content.
-- [Original interaction regression](tests/demo_test.gd): the single-pad interaction suite, including movement, firm carrying, reach/occlusion, crouch, station rotation, fullscreen, and restart cancellation.
-- [Interaction feedback](tests/interaction_feedback_test.gd): reachable outlines, world prompt anchoring, obstruction/pause handling, green-preview feedback and compact HUD layout.
 - [Pickup outline cache](tests/interaction_outline_test.gd): retained contours, continuous inherited motion, nested part changes, transparency, bounded eviction and source/manager cleanup without a renderer.
-- [Snap discovery](tests/snap_discovery_test.gd): whole-workpiece bounds, distant and nearby yellow guidance, compatible stock, scenery, fixture rotation, exact-aim priority, one approach sweep per update and fresh collision checks on placement.
 - [Centered carrying](tests/centered_carry_test.gd): off-origin geometry, continuous camera rotation, large components and real wall obstruction.
-- [Supported foot fixture](tests/supported_fixture_test.gd): actual equipment controls, work access, obstruction and pause behavior, mounted children during movement, secured transfer and return. Headless results verify behavior; the user accepted the current workshop playtest after the later interaction refinements.
-- [Workshop geometry audit](tests/workshop_geometry_test.gd): compares actual transformed triangles across all visible generated workshop meshes at 13 rotation angles and four transfer positions. Positive-area, same-facing overlaps within 0.25 mm fail with node paths, triangles, normals and overlap measurements. Edge contact and patches fully buried in another opaque box are allowed. A deliberately injected harness defect proves new geometry is collected and rejected automatically. This catches coplanar surface flicker; it does not prove the absence of arbitrary solid intersections, shader/shadow artifacts, duplicate faces inside one mesh or defects in imported robot parts.
 - [Geometry audit regression](tests/geometry_surface_audit_test.gd): known harness failure, near-coplanar faces, valid contacts, transformed meshes, indexed/unindexed triangles and conservative occlusion checks.
-- [Jumping](tests/jump_test.gd): grounded Space takeoff, platform landing, no double jump or held-key repeat, ceiling collisions, pause/browser input and carrying through takeoff and landing.
-- [Save model](tests/save_model_test.gd): physical identities, compatible copies, pockets, mounted ownership and executable parent/child undo histories; malformed snapshots cannot mutate the live model.
-- [Save storage](tests/save_store_test.gd): versioned JSON, checksums, backup rotation, failed writes, unsupported content, truncated files and isolated temporary storage.
-- [Save/resume](tests/save_resume_test.gd): real unfinished builds, held/loose pieces, player and manual state, station rotation, loaded mounted geometry and collisions, powered foot rotation and both rail directions, post-load undo, autosave/menu actions and recovery from failed saves.
-- [Supported model](tests/supported_model_test.gd): named support ownership, authorized transfers, equipment-only handling, mounted undo and snapshot validation.
+- [Supported model](tests/supported_model_test.gd): named support ownership, authorized transfers, equipment-only handling, mounted undo and atomic rejection.
+- [Robot content](tests/robot_content_test.gd): robot stock, playable slots, crane-task sources and the complete leg and hip graph.
+- [Stage sequence](tests/stage_sequence_test.gd) and [stage flag](tests/stage_flag_test.gd): every stage boundary from the foot to the complete structure, and the `--stage` handover.
 - [Leg content](tests/leg_content_test.gd): complete structural recipe, stock identities, compatible swaps, unique manual coverage and actual source geometry at the ankle, knee and hip interfaces.
-- [M2 content](tests/m2_content_test.gd): trial stock, staged/playable slots, shared layout contract and materialized recipe patches.
-- [M2 retention controls](tests/m2_retention_controls_test.gd) and [crane controls](tests/m2_crane_controls_test.gd): ordinary walking, aim, input, supported transfer, fastening and reverse paths.
-- [M2 save acceptance](tests/m2_acceptance_test.gd): invalid snapshot rejection and live-state preservation; dedicated save suites restore interrupted equipment and partial construction.
 - [Access lifts](tests/access_lift_test.gd): occupied travel, carried-part clearance, gates, headroom, blocked movement and pause behavior.
-- [Two-build interaction audit](tests/multi_build_test.gd): 65 checks through the public controls and real targeting/physics, including shared stock, manual navigation, station exchange, swapped heel positions, completed installations, nested undo, and continuous R-drag between physics ticks. Rotation checks compare body, mesh and physics poses for both mounted pads.
 - Earlier pad captures showed independent builds and completed pads. Those images
   are no longer kept in Git; rerun the affected review when visual evidence is
   needed.
 
 ```sh
 python3 game/workshop/tools/run_regressions.py --list
-python3 game/workshop/tools/run_regressions.py --only foot_save_pin_test single_pad_desktop_test multi_build_desktop_test pitch_desktop_test
+python3 game/workshop/tools/run_regressions.py --only robot_workshop_test pitch_desktop_test stage_flag_test
 python3 game/workshop/tools/author_leg_prototype.py --check
 ```
 
@@ -471,7 +334,7 @@ carrier views, including five small camera offsets across a runner/wheel joint.
 To run just the headless geometry checks:
 
 ```sh
-python3 game/workshop/tools/run_regressions.py --only geometry_surface_audit_test workshop_geometry_test
+python3 game/workshop/tools/run_regressions.py --only geometry_surface_audit_test
 ```
 
 For a focused rendered storage/pocket-label review, run `./play.command --disable-render-loop --fixed-fps 60 --script tests/pockets_desktop_test.gd -- --pockets-review`. It prints a unique `LABEL_REVIEW_OUTPUT` directory containing the shared retaining-ring stack and both collar/gasket variants beside their storage labels and manual. The flag rejects the headless dummy renderer.
@@ -517,11 +380,11 @@ For a focused repair, append `-- --review-pages=pitch-04,foot-06` to the capture
 
 ## Scope and current limits
 
-The base game delivers the supported foot, heel pads and pitch actuator. Separate M2 profiles expose one retaining half and one crane load using supplied construction. The retired upright-hoist workflow remains historical evidence, not a playable default. M3 combines rail construction, complete-ring security and holder release. Detailed powered leg mechanisms, armor, full-foot progression, pelvis construction, second leg, waist/torso and AR remain future work. Single/two-pad regression profiles are session only.
+The workshop delivers the foot build and the robot's structural blockout: pelvis, both legs, torso, arms and head. Detailed powered mechanisms, armor, saving and AR remain future work.
 
 The reusable construction model owns prerequisites, inventory, carrying capacity, milestones and undo. `component_interaction.gd` projects arbitrary authored component slots into desktop collection, grip, placement, and service views. Pad connections retain their established four-opening adapter. The generic model supports the new content without requiring pad-shaped rules.
 
-Carried collision uses structural primitive compounds; authored fixed receiving frames can use exact mesh openings. Internal work uses an explicit assisted service policy, while scenery and carried-part approaches remain solid. It does not simulate threading, torque, load dynamics or every internal insertion. Powered articulation and services beyond the main ankle disconnect remain outside this structural milestone. The user accepted the earlier foot-workshop playtest on 2026-10-22 and the revised M2 checkpoint on 2026-10-23. M3 implementation is authorized; human playtest acceptance remains separate, and the post-consolidation default-foot replay is unconfirmed. No rendered review was requested. Laptop temperature and on-screen frame time still need measurement during normal play; the detailed foot remains a substantial rendering cost.
+Carried collision uses structural primitive compounds; authored fixed receiving frames can use exact mesh openings. Internal work uses an explicit assisted service policy, while scenery and carried-part approaches remain solid. It does not simulate threading, torque, load dynamics or every internal insertion. Powered articulation and services beyond the main ankle disconnect remain outside this structural milestone. The user accepted the earlier foot-workshop playtest on 2026-10-22 and the leg-bay equipment trials on 2026-10-23. Human playtest acceptance of the robot workshop remains separate. No rendered review was requested. Laptop temperature and on-screen frame time still need measurement during normal play; the detailed foot remains a substantial rendering cost.
 
 The room and new structural parts are functional blockouts. Layout, lighting, carrying distances and targeting tolerances remain tunable. Completion feedback is a sound and glow.
 
@@ -529,18 +392,17 @@ The room and new structural parts are functional blockouts. Layout, lighting, ca
 
 - [workshop.gd](scripts/workshop.gd): room, imported geometry, player, targeting, carrying, station interaction, and completion presentation.
 - [supported_fixture.gd](scripts/supported_fixture.gd): foot support, guided working poses, platform, rail transfer and movement clearance.
-- [leg_bay_layout.gd](scripts/leg_bay_layout.gd), [leg_rail.gd](scripts/leg_rail.gd), [service_crane.gd](scripts/service_crane.gd), [lift_shelf.gd](scripts/lift_shelf.gd) and [work_access_lift.gd](scripts/work_access_lift.gd): reusable bay layout and equipment used by the M2 profiles.
+- [leg_bay_layout.gd](scripts/leg_bay_layout.gd), [indexed_leg_rail.gd](scripts/indexed_leg_rail.gd), [service_crane.gd](scripts/service_crane.gd), [lift_shelf.gd](scripts/lift_shelf.gd) and [work_access_lift.gd](scripts/work_access_lift.gd): hangar layout and its leg holder, crane, shelves and lifts.
 - [leg_source_geometry.gd](scripts/leg_source_geometry.gd): separate procedural source meshes for the leg and pelvis, including real bores, bearing seats and split retaining rings.
 - [part_storage.gd](scripts/part_storage.gd): low cabinets, shelves, cached catalogue images and stock labels. Images are generated from the source GLB by `python3 game/workshop/tools/render_part_images.py` (Pillow required only for regeneration).
-- [scenario_profile.gd](scripts/scenario_profile.gd): declarative profile selection and legacy launch aliases.
+- [build_stages.gd](scripts/build_stages.gd): stage names, the `--stage` flag, boundary checks and scripted progression.
 - [workshop.gd](scripts/workshop.gd), [player_controller.gd](scripts/player_controller.gd), [desktop_input.gd](scripts/desktop_input.gd), [targeting.gd](scripts/targeting.gd), [workshop_world.gd](scripts/workshop_world.gd) and [primitives.gd](scripts/primitives.gd): bootstrap, movement, modal input, targeting, layout construction and shared material palette.
 - [equipment.gd](scripts/equipment.gd), [equipment_registry.gd](scripts/equipment_registry.gd), [hand_slot.gd](scripts/hand_slot.gd), [motion_sweep.gd](scripts/motion_sweep.gd) and [pose_codec.gd](scripts/pose_codec.gd): shared equipment, interlocks, hand ownership, motion checks and pose serialization.
-- [leg-bay-layout.json](assets/leg-bay-layout.json): authoritative rail, lift, shelf, parent-home and crane placement data read by runtime and Python authoring.
+- [workshop-layout.json](assets/workshop-layout.json): authoritative hangar, rail, lift, shelf, parent-home and crane placement data read by runtime and Python authoring. Regenerate with `python3 game/workshop/tools/author_workshop_blockout.py`.
 - [scenario_staging.gd](scripts/scenario_staging.gd) and [workshop_automation.gd](scripts/workshop_automation.gd): declared setup and public automation seams; test runners live under `tests/`.
 - [tests/kit](tests/kit): common harness, ordinary-control player driver and evidence output.
 - [component_interaction.gd](scripts/component_interaction.gd): authored component targeting, shelf-piece carrying, incremental installed visuals, and service views.
 - [assembly_model.gd](scripts/assembly_model.gd): reusable ownership, transfer, placement validation, milestones, and scoped history.
-- [workshop_save.gd](scripts/workshop_save.gd), [save_model.gd](scripts/save_model.gd) and [save_store.gd](scripts/save_store.gd): unified profile session lifecycle, validated model/world/equipment snapshots and atomic backup storage. The foot fingerprint retains its original formula; trial fingerprints hash declared versions and content/layout data.
 - [assembly_runtime.gd](scripts/assembly_runtime.gd): scene nodes and coordinate frames keyed by assembly identity, parent-slot mounting, descendant visuals and nested previews.
 - [solid_handling.gd](scripts/solid_handling.gd): primitive compound collision, current assembly bounds, size-aware carrying and conservative rotation/placement sweeps.
 - Heel pads, actuator pieces and parent hardware use the generic component targeting and installed-visual path. Historical pad state assertions remain in the test adapter; production has no active pad/state cursor.
@@ -551,8 +413,8 @@ The room and new structural parts are functional blockouts. Layout, lighting, ca
 - [assembly-definitions.json](assets/assembly-definitions.json): part types, child and parent slots, prerequisites, milestone sets, work locations, geometry references, and manual steps.
 - [heel-pads.json](assets/heel-pads.json): 26 source identities, physical build instances, starting positions, and parent destinations.
 - [pitch-workshop.json](assets/pitch-workshop.json) and [pitch-actuator-definitions.json](assets/pitch-actuator-definitions.json): 135-piece scenario and the actuator/parent recipe overlay. Regenerate with `python3 game/workshop/tools/author_pitch_actuator.py`; the authoring script resolves the exact pitch block in the source manifest and explicitly authors prerequisites separately from animation phases.
-- [leg-prototype-content.json](assets/leg-prototype-content.json) and [leg-prototype-definitions.json](assets/leg-prototype-definitions.json): structural leg/pelvis scenario overlay, support permissions, physical source descriptors and manuals. Regenerate and audit with `python3 game/workshop/tools/author_leg_prototype.py`.
-- [heel-pad.json](assets/heel-pad.json): original 13-piece regression scenario metadata.
+- [leg-prototype-content.json](assets/leg-prototype-content.json), [leg-prototype-definitions.json](assets/leg-prototype-definitions.json), [robot-content.json](assets/robot-content.json) and [robot-definitions.json](assets/robot-definitions.json): structural leg/pelvis base and the robot's torso, arm and head extension, with support permissions, physical source descriptors and manuals. Regenerate and audit with `python3 game/workshop/tools/author_leg_prototype.py`.
+- [heel-pad.json](assets/heel-pad.json): original 13-piece model-test scenario metadata.
 - [Original model package](../../models/foot-fa01/README.md), [game design](../../GAME_DESIGN.md), and [prototype plan](../../design/game/foot-prototype-plan.md).
 
 A slot accepts one part-type key (which includes a specific variant) or a child assembly definition with a required milestone. `requires` lists local slot IDs. Slots refer to imported GLB transforms through `pose_source`; accessible targets are authored separately. Manual steps reference the same slot IDs. Root parts begin assigned to their child assembly; logical containers never create extra physical inventory. Child placement transfers that container into a parent slot while retaining all descendant identities.

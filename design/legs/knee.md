@@ -30,7 +30,7 @@ Leave the central rear knee open. Position the calf thruster enclosure below the
 ## Workshop support and axle access — 2026-10-24
 
 The [shared limb/rail plan](../game/final-assembly-plan.md#shared-limb-workshop-with-different-departure-routes)
-uses the existing M3 structural connection as its baseline. Select **outboard
+uses the existing structural connection as its baseline. Select **outboard
 axle insertion**: left from−X, right mirrored from+X, with1.20 m clear extraction
 space. Reserve transport frame pads near robotX±0.80/Z6.10 on the thigh-side
 fork, clear of axleZ5.10 and flangeZ6.30. The cradle's upper extent stops at

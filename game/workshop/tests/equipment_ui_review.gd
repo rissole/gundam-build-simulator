@@ -8,7 +8,7 @@ func run() -> void:
 	output_dir = "res://verification/equipment-ui-%s-%s" % [tag,Time.get_ticks_usec()]
 	DirAccess.make_dir_recursive_absolute(output_dir)
 	var inputs = hashes()
-	game = instantiate_profile(self,"leg_bay_m3")
+	game = instantiate_workshop(self)
 	game.set_paused(false);game.set_physics_process(false)
 	await frames(5,false)
 	game.hud.manual.hide();game.hud.toast_time = 0;game.hud.toast_panel.hide()

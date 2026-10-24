@@ -18,12 +18,12 @@ generation per section that never decreased; and, per section, a bespoke receive
 controller, direct checks against other machines, growing crane-contract flags
 and another layer in a linear test-inheritance chain whose fresh-scene restores
 took about three quarters of its runtime. The user then deferred M3 saving and
-checkpoints (see the [plan](../m3-wide-workshop-plan.md#saves-and-checkpoints)) and
+checkpoints (see the [plan](../robot-workshop-plan.md#saves-and-checkpoints)) and
 requested a `--m3-stage` development launch flag. Work resumes from the task
 files in [handoff/README.md](m3-wide-handoff/README.md); they override older instructions
 in this document where they differ.
 
-The playtest checklist for the complete wider workshop is [m3-wide-playtest-checklist.md](../m3-wide-playtest-checklist.md); record results there and summarize them here.
+The playtest checklist for the complete wider workshop is [robot-workshop-playtest-checklist.md](../robot-workshop-playtest-checklist.md); record results there and summarize them here.
 
 Task 09 resumes from `94d37c2` with the user's 2026-10-24 shelf-enlargement
 choice. Both M3 shelves now accept one 1.45 × 0.35 × 1.20 m panel on a 1.50 m
@@ -31,7 +31,7 @@ surface; the authored mask fits with its hook/bolt interfaces preserved. Sensor
 carrier, faceplate, hooked mask and final crane crown are implemented on the
 shared staged receiver. `--m3-stage=complete` prepares the retained/connected head
 and parks the crane. See the [plan ledger](m3-wide-evidence-20261024.md#plan-implementation-ledger-through-task-09)
-and [head implementation](../../head.md#wider-m3-head-implementation--2026-10-24).
+and [head implementation](../../head.md#robot-workshop-head-implementation--2026-10-24).
 Mechanical checks remain separate from pending user walking, access and
 presentation playtesting; M3 saving and full teardown remain deferred.
 
@@ -41,7 +41,7 @@ carrier; task 01 adds that step. The isolated arm branch's 299 mechanical checks
 do not replace the full-sequence check.
 
 The user has now requested implementation of
-[m3-wide-workshop-plan.md](../m3-wide-workshop-plan.md). Its implementation ledger
+[robot-workshop-plan.md](../robot-workshop-plan.md). Its implementation ledger
 tracks the active work and evidence. The authored spatial foundation, shared
 moving access platforms, two independent elevators/shelves and movable platform
 are integrated. The revised left-leg route now covers source roll, parking,
@@ -152,7 +152,7 @@ work-level and rear-section views. These checks establish a coherent dimensioned
 blockout contract, **not actual-solid, structural, gameplay or playtest approval**.
 No new M3 scene changes, gameplay milestone or M4 work are implemented by this pass.
 
-The active implementation is the [M3 wider-workshop adaptation](../m3-wide-workshop-plan.md),
+The active implementation is the [M3 wider-workshop adaptation](../robot-workshop-plan.md),
 before detailed internal component workflows. The user selected replacing M3 in
 place, with no old-save compatibility work, both simplified structural legs,
 representative mounting connections on prepared major-section stand-ins, and

@@ -1,6 +1,5 @@
 extends "res://tests/kit/harness.gd"
 ## Model fixtures shared by world suites, independent of save-regression bodies.
-const Store = preload("res://scripts/save_store.gd")
 var game: Node
 
 func _initialize() -> void:
@@ -30,17 +29,3 @@ func available_hand() -> String:
 		var item: Dictionary = game.model.items[uid]
 		if item.location == "bin" and game.model.definitions.parts[item.kind].carry_class != "pocket":return uid
 	return ""
-
-func valid(snapshot: Dictionary, label: String) -> void:
-	var errors: Array[String] = game.saves.validate(snapshot)
-	if not errors.is_empty():print("SAVE_VALIDATION_DIAGNOSTIC ",errors)
-	expect(errors.is_empty(),label)
-
-func diagnose_json(value: Variant, path: String = "snapshot") -> void:
-	if value is Dictionary:
-		for key in value:
-			if not key is String:print("INVALID_JSON_KEY ", path, " ", key, " ", typeof(key))
-			diagnose_json(value[key], path + "/" + str(key))
-	elif value is Array:
-		for index in range(value.size()):diagnose_json(value[index], path + "/" + str(index))
-	elif typeof(value) not in [TYPE_NIL, TYPE_BOOL, TYPE_INT, TYPE_STRING, TYPE_FLOAT]:print("INVALID_JSON_VALUE ", path, " ", typeof(value), " ", value)

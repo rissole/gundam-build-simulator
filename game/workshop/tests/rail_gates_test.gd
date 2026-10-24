@@ -16,7 +16,7 @@ func settle(gates: Node) -> void:
 
 func run() -> void:
 	var game=Fixture.new();root.add_child(game)
-	var layout: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-bay-m3-layout.json"))
+	var layout: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json"))
 	var world=Blockout.new();game.add_child(world);world.setup(game,layout.workshop)
 	var gates=Gates.new();game.add_child(gates);gates.setup(game,world)
 	await frames(2)

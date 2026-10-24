@@ -3,7 +3,7 @@ extends "res://tests/kit/harness.gd"
 func _initialize() -> void:call_deferred("run")
 
 func run() -> void:
-	var game=await boot_profile("leg_bay_m3")
+	var game=await boot_workshop("pelvis")
 	var reflection=Basis(Vector3.LEFT,Vector3.UP,Vector3.BACK)
 	for uid in ["LG-100__001","LG-110__001","LG-120__001","LG-140__001","PV-200__001","FA-100__001","FA-525__001"]:
 		var left: Dictionary=game.source[uid];var right: Dictionary=game.source["R-"+uid]

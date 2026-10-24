@@ -12,7 +12,7 @@ var ignored: Array[RID]=[]
 func _initialize() -> void:call_deferred("run")
 
 func run() -> void:
-	game=await boot_profile("leg_bay_m3");crane=game.equipment.get_equipment("service_crane")
+	game=await boot_workshop("pelvis");crane=game.equipment.get_equipment("service_crane")
 	body=game.runtime.node("backpack");descriptor=game.runtime.definition("backpack")
 	expect(crane.request("task:backpack_store").is_empty(),"same shared crane selects backpack source task")
 	var low=Vector3(INF,INF,INF);var high=-low
@@ -34,8 +34,8 @@ func run() -> void:
 	expect(game.model.transfer_supported_assembly("pelvis","bulky_fixture","pelvis_gantry").is_empty(),"stage pelvis on declared receiving bearings")
 	game.runtime.node("pelvis").global_transform=Layout.authored_pose(fixture.spec.receiver_pose)
 	var state: Dictionary=fixture.capture();state.jaws=[0,0,0,0];state.jaw_goals=[0,0,0,0];state.locks={"yaw":true,"lean":true};state.source_release=1;state.template="backpack";fixture.apply(state)
-	expect(game.model.transfer_supported_assembly("chest","chest_store","m2_service_crane").is_empty(),"stage chest through declared crane support")
-	expect(game.model.install_supported("pelvis","chest","chest","m2_service_crane").ok,"stage actual chest on waist")
+	expect(game.model.transfer_supported_assembly("chest","chest_store","crane_rigging").is_empty(),"stage chest through declared crane support")
+	expect(game.model.install_supported("pelvis","chest","chest","crane_rigging").ok,"stage actual chest on waist")
 	game.runtime.mount("pelvis","chest","chest");Staging.fill(game,"pelvis",game.runtime.definition("pelvis").milestones.chest_connected)
 	expect(game.model.transfer_supported_assembly("core","core_store","core_guide").is_empty(),"stage core on captured guide")
 	expect(game.model.install_supported("chest","core","core","core_guide").ok,"stage actual seated core behind the backpack")

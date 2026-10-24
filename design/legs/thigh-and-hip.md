@@ -62,7 +62,7 @@ compatible types; mirrored destination geometry does not create a cylinder type.
 
 ### Ball, neck, spar and retained movement
 
-Preserve the M3 **integral Ø.900 ball and Ø.300 neck**, ball at H; the neck
+Preserve the leg journey's **integral Ø.900 ball and Ø.300 neck**, ball at H; the neck
 continues down into the .300 X ×.200 Y central upper spar. Its current source
 neck occupies approximately H.Z−.865..−.415, overlapping the spar transition.
 The sphere, neck and spar remain one leg-owned manufactured structural item,
@@ -191,7 +191,7 @@ edges at robotY+1.40/−1.35 (worldZ24.60/27.35), standingY+1.70/−1.65. Align 
 front/front/rear eye-to-target distances are about1.83/2.00/1.71 m for a1.63 m
 eye height. The .34 pin tubes remain inside the open inner edge. These bounded
 face/reach calculations require future walked visibility/solid checks with the
-first leg present during second-leg work; historical M3 side-ring access does
+first leg present during second-leg work; historical leg-journey side-ring access does
 not prove the new lower-pin operation.
 
 ### Shared cradle boundary

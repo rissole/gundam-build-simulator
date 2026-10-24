@@ -25,7 +25,7 @@ func run() -> void:
 	if DisplayServer.get_name() != "headless":output += "/run-"+str(int(Time.get_unix_time_from_system()))
 	DirAccess.make_dir_recursive_absolute(output)
 	root.size = Vector2i(1440,900)
-	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
+	game = load("res://scenes/workshop.tscn").instantiate()
 	root.add_child(game)
 	await frames(10)
 	game.automated_test = true

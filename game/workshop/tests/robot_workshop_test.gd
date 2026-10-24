@@ -1,9 +1,8 @@
 extends "res://tests/kit/harness.gd"
-## The single-launch robot game: the left foot is built in its turning fixture in
-## the hangar's foot bay, then M3 continues. Mechanical checks only; walking,
-## reach and visibility in the combined hangar are the user's playtest.
-const Profiles=preload("res://scripts/scenario_profile.gd")
-const M3Stages=preload("res://scripts/m3_stages.gd")
+## The single robot workshop: the left foot is built in its turning fixture in
+## the hangar's foot bay, then the structure continues. Mechanical checks only;
+## walking, reach and visibility in the hangar are the user's playtest.
+const Stages=preload("res://scripts/build_stages.gd")
 
 func _initialize() -> void:call_deferred("run")
 
@@ -13,12 +12,10 @@ func settle_fixture(game: Node) -> void:
 		await frames(1)
 
 func run() -> void:
-	expect(Profiles.resolve([],null).id=="robot","plain launch opens the robot game")
-	expect(Profiles.resolve(["--stage=pelvis"],null).id=="robot" and Profiles.resolve(["--m3-stage=pelvis"],null).id=="robot","stage flags start the robot game")
-	expect(Profiles.stage_flag(["--stage=actuator"])=="actuator" and Profiles.stage_flag(["--m3-stage=chest"])=="chest" and Profiles.stage_flag([]).is_empty(),"--stage and its older --m3-stage spelling choose the start")
-	expect(Profiles.resolve(["--profile=foot"],null).id=="foot" and Profiles.resolve(["--profile=leg_bay_m3"],null).id=="leg_bay_m3","development profiles stay selectable")
+	expect(Stages.stage_flag(["--stage=actuator"])=="actuator" and Stages.stage_flag([]).is_empty(),"--stage chooses a later start")
+	expect(Stages.ALL.front()=="foot" and Stages.ALL.back()=="complete","stages run from the foot build to the complete structure")
 
-	var game=await boot_profile("robot");var stages=M3Stages.new(game)
+	var game=await boot_workshop();var stages=Stages.new(game)
 	var store: Vector3=AssemblyRuntime.vec(game.leg_layout.layout().workshop.foot_storage.foot.position)
 	expect(game.model.assemblies.foot.location=="support:foot_store" and game.foot.global_transform.is_equal_approx(Transform3D(Basis.IDENTITY,store)),"unbuilt left foot rests upright at its bay store pose")
 	expect(game.foot_fixture!=null and game.foot_fixture.work_origin.is_equal_approx(store) and not game.foot_fixture.has_dispatch,"turning fixture stands at the store without dispatch rails")
@@ -30,7 +27,7 @@ func run() -> void:
 	expect(game.model.milestone("right_foot","complete"),"right foot is still supplied complete")
 	expect(game.hud.manual_id=="foot","foot manual opens first")
 	expect(stages.stage_errors("foot").is_empty(),"fresh game starts at the foot stage: "+str(stages.stage_errors("foot")))
-	expect(game.trial.undo_error("pad_1").is_empty() and not game.trial.undo_error("right_pad_1").is_empty(),"player-built foot can be undone; the supplied right foot cannot")
+	expect(game.journey.undo_error("pad_1").is_empty() and not game.journey.undo_error("right_pad_1").is_empty(),"player-built foot can be undone; the supplied right foot cannot")
 
 	var cabinets=game.bins.keys().filter(func(kind):return game.bins[kind].get_meta("cabinet",false))
 	expect(cabinets.size()==game.foot_kinds.keys().filter(func(kind):return game.bins.has(kind)).size() and cabinets.all(func(kind):return game.foot_kinds.has(kind) and game.bins[kind].global_position.z<-7.5),"foot-build stock keeps its wall cabinets on the hangar's rear wall")
@@ -60,12 +57,12 @@ func run() -> void:
 	expect(game.foot_fixture.action_error("sole_left").is_empty(),"unrigged foot can be turned again")
 	game.free();await frames(2)
 
-	game=await boot_profile("robot")
-	expect((await game.run_m3_stage("actuator")).is_empty(),"actuator stage supplies only the heel pads")
+	game=await boot_workshop()
+	expect((await game.run_stage("actuator")).is_empty(),"actuator stage supplies only the heel pads")
 	expect(game.model.assemblies.pad_1.parent=="foot" and game.model.assemblies.pad_2.parent=="foot" and game.model.assemblies.pitch.parent.is_empty(),"actuator stage leaves the pitch actuator to build")
 	game.free();await frames(2)
-	game=await boot_profile("robot")
-	expect((await game.run_m3_stage("left_leg_dock")).is_empty(),"later stages supply the foot and collect it from the fixture")
+	game=await boot_workshop()
+	expect((await game.run_stage("left_leg_dock")).is_empty(),"later stages supply the foot and collect it from the fixture")
 	expect(game.model.assemblies.foot.parent=="left_leg" and not game.foot_fixture.action_error("upright").is_empty(),"collected foot rides the left leg; the empty fixture stays idle")
 	game.free();await frames(2)
 

@@ -40,15 +40,14 @@ The current desktop project is `game/workshop/`:
 | `scripts/workshop_content.gd` | Scenario loading and slot-level recipe patch materialization |
 | `scripts/component_interaction.gd` | Generic targeting, geometry projection and component carrying |
 | `scripts/workshop.gd` | Bootstrap and public interaction facade |
-| `scripts/scenario_profile.gd` | Foot/single-pad/two-pad/M2 profiles, save paths and launch aliases |
+| `scripts/build_stages.gd` | Stage names, the `--stage` flag, boundary checks and scripted progression |
 | `scripts/player_controller.gd`, `scripts/desktop_input.gd` | Player motion and desktop/modal input |
 | `scripts/targeting.gd`, `scripts/workshop_world.gd`, `scripts/primitives.gd` | Target/ghost projection, world construction and cached materials |
 | `scripts/equipment.gd`, `scripts/equipment_registry.gd`, `scripts/hand_slot.gd` | Equipment contract, interlocks and shared hand ownership |
 | `scripts/motion_sweep.gd`, `scripts/pose_codec.gd` | Shared swept-motion checks and pose serialization |
-| `scripts/workshop_save.gd`, `scripts/save_model.gd`, `scripts/save_store.gd` | Unified profile session, model validation and atomic local storage |
-| `assets/leg-bay-layout.json` | Authoritative rail/lift/shelf/parent/crane geometry read by Python and runtime |
-| `assets/leg-prototype-*.json`, `assets/m2-*-*.json`, `tools/author_leg_prototype.py` | Structural bay base content, trial patches and generator/audits |
-| `scripts/leg_bay_layout.gd`, `scripts/leg_rail.gd`, `scripts/service_crane.gd`, `scripts/lift_shelf.gd`, `scripts/work_access_lift.gd` | Shared M2 layout and equipment; retired hoist/M1 paths are historical only |
+| `assets/workshop-layout.json`, `tools/author_workshop_blockout.py` | Authoritative hangar, rail, lift, shelf, parent and crane geometry read by Python and runtime |
+| `assets/leg-prototype-*.json`, `assets/robot-*.json`, `tools/author_leg_prototype.py` | Structural leg base content, the robot extension and generator/audits |
+| `scripts/leg_bay_layout.gd`, `scripts/indexed_leg_rail.gd`, `scripts/service_crane.gd`, `scripts/lift_shelf.gd`, `scripts/work_access_lift.gd` | Hangar layout and its leg holder, crane, shelves and lifts |
 | `scripts/scenario_staging.gd`, `scripts/workshop_automation.gd` | Declared setup and public automation seam |
 | `tests/kit/` | Shared test harness, desktop player driver and JSON evidence output |
 | `scripts/hud.gd`, `scripts/manual_diagram.gd` | Runtime component lists and model-based illustrations |
@@ -67,22 +66,21 @@ Run from the repository root, choosing the suites affected by the change:
 ```sh
 python3 game/workshop/tools/author_leg_prototype.py --check
 python3 game/workshop/tools/run_regressions.py --list
-python3 game/workshop/tools/run_regressions.py --only foot_save_pin_test assembly_model_test pitch_interface_test multi_build_desktop_test
+python3 game/workshop/tools/run_regressions.py --only assembly_model_test pitch_interface_test pitch_desktop_test robot_workshop_test
 python3 game/workshop/tools/run_regressions.py
 ```
 
 The single runner includes the Python source-asset audit, ordinary desktop tests
-and launch smokes for every profile and supported aliases. It retains logs and
-input hashes in an ignored local run directory and rejects changed inputs or
-engine errors. Default `./play.command` is the foot base game; M2 opens through
-`--m2-workshop` or `--profile=leg_bay_retention` / `--profile=leg_bay_crane`.
-Single/two-pad profiles remain regression fixtures. Human replay of the current
-foot default and both M2 trials is tracked separately from automated passes.
+and smokes for a plain and a `--stage` launch. It retains logs and input hashes
+in an ignored local run directory and rejects changed inputs or engine errors.
+`./play.command` opens the one robot workshop, starting with the foot build;
+`--stage=<name>` starts later, and tests reach a stage with `boot_workshop()`.
+Human replay is tracked separately from automated passes.
 
 The README also lists the state and pocket-model suites. Input tests drive the
 normal desktop adapter and actual targeting/physics. `tests/pitch_build_test.gd`
-compares installed mesh vertices with slot source geometry; `tests/multi_build_test.gd`
-reproduces continuous rotation between input and physics ticks. Extend those paths
+compares installed mesh vertices with slot source geometry; `tests/pitch_build_test.gd`
+also checks station and foot rotation. Extend those paths
 or add a focused module runner when introducing new behavior.
 `tests/pitch_interface_test.gd` also checks actual triangles for receiving bores,
 surrounding material and seat/head clearance. Its ray tests use millimetres to
@@ -118,8 +116,9 @@ is not approval. Within a local review, compare recorded hashes with current
 inputs and retain unchanged applicable evidence; report or skill changes alone
 do not invalidate unchanged rendered geometry.
 
-`tests/demo_test.gd` also has a rendered `capture()` helper. A generalized capture
-runner for all default-workshop/pad pages remains to be implemented. Inspect
+`tools/pitch_review.gd` and `tests/workshop_visual_review.gd` have rendered
+capture helpers. A generalized capture runner for all foot/pad pages remains to
+be implemented. Inspect
 current support before invoking any command; no `--review-manuals` flag exists.
 
 Keep generated project evidence under the ignored local

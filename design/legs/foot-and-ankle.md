@@ -101,9 +101,9 @@ The [FA-01-3D-01 model package](../../models/foot-fa01/README.md) preserves all 
 
 ## Later modeling work
 
-### Prepared feet in the wider M3 workshop — 2026-10-24
+### Prepared feet in the robot workshop — 2026-10-24
 
-M3 supplies two internally prepared feet with independent consumed identities.
+The original leg journey supplied two internally prepared feet with independent consumed identities.
 The right-foot sources and receiving geometry are reflected through X; the
 canonical left-foot asset and default foot-workshop build remain unchanged. Each
 prepared foot has its own sole support in the foot bay. The shared crane uses

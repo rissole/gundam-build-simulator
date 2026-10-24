@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## The prepared major-section handoff uses machinery/model staging only.
 func run() -> void:
 	if not await start("pelvis"):finish();return

@@ -104,7 +104,6 @@ func station_in_view() -> String:
 	return "" if best == INF else selected
 
 func rotate_station(relative: Vector2) -> void:
-	if not game.profile.get("station_rotation",true):return
 	var station = game.rotation_station if game.rotate_held else station_in_view()
 	if station.is_empty():return
 	if station == "foot" and game.equipment.get_equipment("foot_fixture") != null:return
@@ -113,10 +112,6 @@ func rotate_station(relative: Vector2) -> void:
 	node.basis = (Basis(game.camera.global_basis.y,-relative.x*0.006)*Basis(game.camera.global_basis.x,-relative.y*0.006)*node.basis).orthonormalized()
 
 func rotation_key(pressed: bool) -> void:
-	if not game.profile.get("station_rotation",true):
-		game.rotate_held = false
-		if pressed:game.hud.toast("The sample stays on its rail fixture. Use its local motion controls.")
-		return
 	if pressed:
 		game.rotate_held = true
 		game.rotate_dragged = false
@@ -140,7 +135,6 @@ func rotation_key(pressed: bool) -> void:
 		game.rotation_station = ""
 
 func reset_station(station: String = "") -> void:
-	if not game.profile.get("station_rotation",true):return
 	if station.is_empty():station = station_in_view()
 	if station.is_empty():return
 	if station == "foot" and game.equipment.get_equipment("foot_fixture") != null:

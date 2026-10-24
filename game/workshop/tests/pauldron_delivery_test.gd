@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Supplied earlier construction and rigging; real receiver/support/stock APIs.
 ## No walking, reach, visibility, saving or rendered review.
 

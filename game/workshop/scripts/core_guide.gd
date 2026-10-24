@@ -139,7 +139,7 @@ func request(action: String) -> String:
 			game.runtime.node(spec.uid).reparent(game);game.runtime.node(spec.uid).global_transform=previous
 			game.refresh_assembly_collision(spec.owner)
 		if action=="return" and travel<=spec.capture+.0001 and rig==0 and _record().location=="support:"+spec.support:
-			error=game.model.transfer_supported_assembly(spec.uid,spec.support,"m2_service_crane")
+			error=game.model.transfer_supported_assembly(spec.uid,spec.support,"crane_rigging")
 			if not error.is_empty():return error
 		goal=(spec.capture if travel<spec.capture-.0001 else spec.travel) if action=="advance" else (spec.capture if travel>spec.capture+.0001 else 0.0)
 		if action=="advance" and travel>=spec.capture-.0001:rig_goal=1
@@ -191,8 +191,8 @@ func physics(delta: float) -> void:
 		blocked_reason=motion_error(travel,next)
 		if not blocked_reason.is_empty():moving=false;_pose();return
 		travel=next
-		if is_equal_approx(travel,spec.capture) and _record().location=="support:m2_service_crane":
-			blocked_reason=game.model.transfer_supported_assembly(spec.uid,"m2_service_crane",spec.support)
+		if is_equal_approx(travel,spec.capture) and _record().location=="support:crane_rigging":
+			blocked_reason=game.model.transfer_supported_assembly(spec.uid,"crane_rigging",spec.support)
 		if is_equal_approx(travel,spec.travel) and _record().parent.is_empty():
 			game.runtime.node(spec.uid).global_transform=load_pose()
 			var result: Dictionary=game.model.install_supported(spec.owner,spec.slot,spec.uid,spec.support)
@@ -244,8 +244,8 @@ func validate_crane(crane: Dictionary, model: AssemblyModel, state: Dictionary={
 	if data.rig>0 and forward:return ["Folded core rig cannot carry the forward bridge on the load."]
 	if data.travel>spec.capture+.0001 and data.rig!=1:return ["Deep core insertion requires the folded aft rig."]
 	if data.moving and crane.endpoints.values().any(func(end):return end.state=="held"):return ["Guided core movement has an unstowed crane end."]
-	var expected="support:m2_service_crane" if data.travel<spec.capture-.0001 else "support:"+spec.support
-	if is_equal_approx(data.travel,spec.capture) and data.goal==0:expected="support:m2_service_crane"
+	var expected="support:crane_rigging" if data.travel<spec.capture-.0001 else "support:"+spec.support
+	if is_equal_approx(data.travel,spec.capture) and data.goal==0:expected="support:crane_rigging"
 	if is_equal_approx(data.travel,spec.travel):expected="parent"
 	if model.assemblies[spec.uid].location!=expected:return ["Core guide ownership disagrees with captured travel."]
 	return []

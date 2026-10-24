@@ -10,7 +10,7 @@ var spec: Dictionary
 var active_assembly = "left_leg"
 var receiver = "pelvis"
 var receiver_slot = "left_leg"
-var support = "m2_leg_rail"
+var support = "leg_holder"
 var lane = "left"
 var index_x = 14.0
 var path = 0.0

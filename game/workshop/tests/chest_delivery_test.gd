@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Mechanical/model fixture only. The user owns walking and connection access.
 func run() -> void:
 	if not await start("chest"):finish();return
@@ -60,7 +60,7 @@ func deliver_chest() -> bool:
 		expect(game.model.undo("pelvis").ok,"same waist hardware returns to inventory")
 	game.components.sync("pelvis")
 	if not command(crane,"up"):return false
-	expect(game.model.assemblies.chest.location=="support:m2_service_crane" and game.model.assemblies.chest.parent.is_empty(),"supported correction removes only the chest from its parent")
+	expect(game.model.assemblies.chest.location=="support:crane_rigging" and game.model.assemblies.chest.parent.is_empty(),"supported correction removes only the chest from its parent")
 	if not command(crane,"down"):return false
 	Staging.fill(game,"pelvis",washers)
 	supply_rig(crane,false)

@@ -326,7 +326,6 @@ func attach_target() -> void:
 			var result: Dictionary = game.model.install(target.owner,target.mount,owner)
 			if not result.ok:game.hud.toast(result.error);return
 			game.mount_build(owner)
-			if game.profile.get("pads","") == "single":game.hud.open_manual(game.model.assemblies[owner].parent,1)
 			game.hud.toast("Assembly seated. Follow the receiving manual to secure its connections.",true)
 		else:game.hud.toast("Select a compatible part and aim at a ready connection.")
 	else:game.hud.toast("Select a compatible part and aim at a ready connection.")

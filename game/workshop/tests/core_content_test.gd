@@ -2,7 +2,7 @@ extends "res://tests/kit/harness.gd"
 const Sweep=preload("res://scripts/motion_sweep.gd")
 func _initialize() -> void:call_deferred("run")
 func run() -> void:
-	var game=await boot_profile("leg_bay_m3")
+	var game=await boot_workshop("pelvis")
 	var guide=game.equipment.get_equipment("core_guide")
 	var body=game.runtime.node("core")
 	var descriptor=game.runtime.definition("core")

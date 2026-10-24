@@ -56,7 +56,7 @@ func accept() -> String:
 	var error=receiving_error()
 	if not error.is_empty():return error
 	active=true;tension=1;goal=1;brakes=false;released=false
-	var result: Dictionary=game.model.install_supported(spec.owner,spec.slot,spec.uid,"m2_service_crane")
+	var result: Dictionary=game.model.install_supported(spec.owner,spec.slot,spec.uid,"crane_rigging")
 	if not result.ok:active=false;tension=0;goal=0;return result.error
 	game.runtime.mount(spec.owner,spec.slot,spec.uid);game.refresh_assembly_collision(spec.owner)
 	game.equipment.get_equipment("workshop_access").arm_services_stowed=true

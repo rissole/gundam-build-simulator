@@ -1,6 +1,6 @@
 extends Node3D
-## Authored equipment frames and actual solids; shared by live M3 and its
-## mechanical harness. No inferred geometry or runtime coordinate overrides.
+## Authored equipment frames and actual solids; shared by the live workshop and
+## its mechanical harness. No inferred geometry or runtime coordinate overrides.
 const Codec = preload("res://scripts/pose_codec.gd")
 var game: Node3D
 var spec: Dictionary

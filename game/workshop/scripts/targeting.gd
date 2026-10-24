@@ -29,14 +29,12 @@ func update_target() -> void:
 	for kind in game.bins:candidates.append({"type":"bin","kind":kind,"point":game.bins[kind].global_transform*Vector3(0,0.13,0.27),"radius":0.35})
 	for uid in game.loose:
 		if is_instance_valid(game.loose[uid]):candidates.append({"type":"loose","uid":uid,"point":game.loose[uid].global_position,"radius":0.12})
-	if game.trial != null:candidates = game.trial.filter_candidates(candidates)
+	if game.journey != null:candidates = game.journey.filter_candidates(candidates)
 	candidates.append_array(game.equipment.controls())
 	if held.is_empty():
-		var allowed_slots: Variant = game.leg_content.get("m2",{}).get("playable_slots")
 		for candidate in game.components.candidates():
 			# Fixed/mounted builds have no competing pickup action; retain their
 			# connection inspection even when no pocket is selected.
-			if allowed_slots != null and (not candidate.owner in allowed_slots or not candidate.sid in allowed_slots[candidate.owner]):continue
 			if fitting_part or not game.builds.has(game.model.top_level(candidate.owner)):candidates.append(candidate)
 	var scored: Array[Dictionary] = []
 	var focused_connections: Dictionary = {}
@@ -182,7 +180,7 @@ func present_target(access_error: String) -> void:
 			usable = detail.is_empty()
 			if usable:
 				action_key = "Click" if game.target.get("input","") == "place" else "E"
-				action_label = "Place" if game.target.get("input","") == "place" else ("Operate" if game.profile.get("trial","").is_empty() else "Use")
+				action_label = "Place" if game.target.get("input","") == "place" else "Use"
 		"bin":
 			pickup_target = true
 			var count: int = game.model.count_at(game.target.kind,"bin")

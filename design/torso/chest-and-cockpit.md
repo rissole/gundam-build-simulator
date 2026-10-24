@@ -138,9 +138,9 @@ Completed in this pass: coordinate/interface agreement, capsule/pilot bounding a
 
 Before implementation, validate **actual solids and sweeps** for the capsule opening/guides/isolators/ties, pilot fit/entry and two hatch doors, waist keys/threads/tools, neutral and articulated abdomen/pelvis clearances, backpack-root pockets, mass/rigging equalization, source support/release, full loaded route through platform openings and access to every retained fastener. Overlay the pelvis owner's ±10° lean/±25° yaw envelopes with fixed gantry/services; the local core/frame clearances remain fixed because both move with the chest, but that does not prove clearance to the stationary pelvis or workshop. Validate the settled shoulder/root and head/spoke mating details against their owning specifications, including root-bolt rear tool lanes and the projecting neck key. For later gameplay, audit unique physical slots/hardware stock and prerequisite ownership, then one ordinary-control collection → supported preparation → crane delivery → fastening → release journey, local correction and interrupted save/restore. Run rendered review only if requested. This design pass runs no gameplay tests, model export or render campaign.
 
-## Wider-M3 prepared implementation — 2026-10-24
+## Robot workshop prepared implementation — 2026-10-24
 
-`game/workshop/tools/author_m3_chest.py` now authors a supplied chest/cockpit
+`game/workshop/tools/author_chest.py` now authors a supplied chest/cockpit
 assembly and its external waist work. Its fixed context includes the perforated
 flange/key bosses, open lower spine portal, side members, enclosed cockpit,
 refitted front ties, four lifting pads/offset handles, rear roots and neck
@@ -187,7 +187,7 @@ equipment/model and source-interface checks, not walking, reach, visibility,
 rendered inspection or player approval. The wider-workshop ledger records the
 combined regression evidence and remaining full-project work.
 
-The subsequent [arm source preflight](../arms/shoulder-and-upper-arm.md#wider-m3-source-and-full-rig-preflight--2026-10-24)
+The subsequent [arm source preflight](../arms/shoulder-and-upper-arm.md#robot-workshop-source-and-full-rig-preflight--2026-10-24)
 adds the fixed shoulder C-bridges/A clevises to this prepared chest. Their actual
 pin bores remain open. The rear cup-root strut now ends at chest Z0.44 rather
 than Z0.25 to preserve the ball cavity, and an inboard/rear tie connects each

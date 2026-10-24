@@ -34,21 +34,31 @@ var slots: Dictionary:
 		return result
 
 # Standalone compatibility for historical state tests; production loads Content.
-static func scenario(single: bool = false) -> Dictionary:
-	return preload("res://scripts/workshop_content.gd").scenario(single)
+static func scenario() -> Dictionary:
+	return preload("res://scripts/workshop_content.gd").scenario()
 
-static func definition_data(single: bool = false) -> Dictionary:
-	return preload("res://scripts/workshop_content.gd").definition_data(single)
+static func definition_data() -> Dictionary:
+	return preload("res://scripts/workshop_content.gd").definition_data()
 
 func bind(shared: AssemblyModel, id: String) -> void:
 	model = shared
 	build_id = id
 
+## Configures a standalone one-pad foot from `config` parts, for model tests.
 func configure(config: Dictionary) -> void:
 	var shared = AssemblyModel.new()
-	var setup = scenario(true)
+	var setup = scenario()
 	setup.parts = config.parts
-	var errors = shared.configure(definition_data(true),setup)
+	setup.builds.resize(1)
+	setup.mounts.resize(1)
+	var data = definition_data()
+	for sid in data.assemblies.foot.slots.keys():
+		if sid.begins_with("heel_2"):data.assemblies.foot.slots.erase(sid)
+	data.assemblies.foot.milestones.complete = data.assemblies.foot.slots.keys()
+	data.assemblies.foot.milestones.erase("heel_2_secured")
+	data.assemblies.foot.manual.resize(2)
+	data.assemblies.foot.manual[0].slots = data.assemblies.foot.slots.keys()
+	var errors = shared.configure(data,setup)
 	assert(errors.is_empty(),str(errors))
 	bind(shared,"pad_1")
 

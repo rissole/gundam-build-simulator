@@ -1,6 +1,6 @@
 # M3 complete leg to robot journey
 
-> **Archived 2026-10-24.** Superseded by the [wider M3 plan](../m3-wide-workshop-plan.md), which replaced M3 in place. Kept for its reverse investigation and delivery retrospective.
+> **Archived 2026-10-24.** Superseded by the [wider M3 plan](../robot-workshop-plan.md), which replaced M3 in place. Kept for its reverse investigation and delivery retrospective.
 
 Implementation authorized on 2026-10-23. The user selected a completed foot at
 dispatch, followed by player construction of the remaining structural left leg.
@@ -19,7 +19,7 @@ leg and return everything to stock. Keep implemented undo/support safeguards;
 finish one fresh forward journey through full retention and holder release.
 Do not reopen full teardown validation as an M3 completion gate.
 
-Current continuation: the user selected [replacing M3 with the wider workshop](../m3-wide-workshop-plan.md)
+Current continuation: the user selected [replacing M3 with the wider workshop](../robot-workshop-plan.md)
 before detailed component workflows. That plan supersedes this historical
 implementation scope and its automated access gates; the user owns walking and
 connection-access playtesting for the adaptation.

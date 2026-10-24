@@ -17,7 +17,7 @@ func inspect_pose(label: String) -> void:
 	expect(findings.is_empty(),label+": no coplanar workshop overlaps (%d meshes, %d findings)" % [meshes.size(),findings.size()])
 	for finding in findings:print(finding.path_a," <> ",finding.path_b," normal ",finding.normal_a," area ",finding.total_overlap_area)
 func run() -> void:
-	game = await boot_profile("leg_bay_m3")
+	game = await boot_workshop("pelvis")
 	game.set_physics_process(false);game.set_process(false)
 	for record in game.source.values():source_meshes[record.mesh] = true
 	inspect_pose("initial")

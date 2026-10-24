@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Mechanical commands and staged rig/stock in continuous play.
 ## No walking, reach, aiming or rendered acceptance is inferred.
 func run() -> void:

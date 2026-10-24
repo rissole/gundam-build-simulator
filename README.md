@@ -14,7 +14,7 @@ The full-game design targets an **18 m piloted mecha**. The current prototype is
 
 ![Compact crane movement controls with a separate Change load button](docs/images/workshop-crane-controls.png)
 
-*Earlier M3 crane controls. The load chooser shown here has since been removed: the
+*Earlier crane controls. The load chooser shown here has since been removed: the
 crane now offers Move to pickup / Move to delivery for the next load in build
 order. The manual and pockets return when you close the console.*
 
@@ -23,7 +23,7 @@ order. The manual and pockets return when you close the console.*
 *Dedicated height controls and a Move menu for choosing a destination. Elevators use only Up/Down
 onboard, with Call buttons at landings. See the [load chooser and elevator
 screenshots](game/workshop/README.md#equipment-controls) and the
-[verification checklist](design/game/m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24).
+[verification checklist](design/game/robot-workshop-playtest-checklist.md#focused-controls-check--2026-10-24).
 These are rendered UI fixtures; hands-on acceptance is pending. Regressions were
 not run for this revision, at the user's request.*
 
@@ -69,7 +69,7 @@ To start later in the build, add a stage. The game supplies the earlier work by 
 | Z | Undo in the selected manual |
 | Escape | Release the mouse and open help |
 
-See the [workshop README](game/workshop/README.md) for every stage name, the build sequence, controls and limitations. The robot game does not save yet: quitting or restarting begins again from the launch's starting stage. The earlier saved foot-only workshop remains a development profile (`./play.command -- --profile=foot`) and keeps its separate save. This is a structural blockout: detailed actuators, armor and finished art remain future work.
+See the [workshop README](game/workshop/README.md) for every stage name, the build sequence, controls and limitations. The game does not save yet: quitting or restarting begins again from the launch's starting stage. This is a structural blockout: detailed actuators, armor and finished art remain future work.
 
 ## Explore the model and design
 
@@ -84,22 +84,20 @@ The foot measures approximately **3.0 m long × 1.3 m wide**. Its inventory cont
 | [FA-01 model](models/foot-fa01/README.md) | Model deliverables, Blender workflow, exports, and audit records |
 | [Modeling notes](models/foot-fa01/MODELING_NOTES.md) | Geometry decisions and visualization scope |
 | [Current workshop state](design/game/leg-workshop-next-steps.md) | Current status, active rules, player feedback, and which design document to read when |
-| [Wider M3 workshop plan](design/game/m3-wide-workshop-plan.md) | Whole-robot workshop stages, equipment and verification scope |
+| [Robot workshop plan](design/game/robot-workshop-plan.md) | Whole-robot workshop stages, equipment and verification scope |
 | [Leg and pelvis interfaces](design/game/leg-prototype-interface.md) | Physical parts, dimensions, ownership and manual dependencies |
 
 ![Foot mechanisms with the armor hidden](models/foot-fa01/output/foot-fa01-skeleton.png)
 
 ## Development
 
-Open the Godot editor with `./edit.command`. Gameplay scripts, the workshop scene, tests, and source-part metadata live in [game/workshop](game/workshop/).
-
-Run the state and interaction checks headlessly from the repository root:
+`play.command` is the one entry point: it passes Godot options through, so it also opens the editor and runs tests. Gameplay scripts, the workshop scene, tests, and source-part metadata live in [game/workshop](game/workshop/).
 
 ```sh
-./play.command --headless --script tests/state_test.gd
-./play.command --headless --script tests/assembly_model_test.gd
-./play.command --headless -- --single-pad --demo-test
-./play.command --headless -- --multi-test
+./play.command --editor                                   # Godot editor
+./play.command --headless --script tests/state_test.gd    # one headless test
+python3 game/workshop/tools/run_regressions.py            # every headless check
+python3 game/workshop/tools/run_regressions.py --only stage_flag_test robot_workshop_test
 ```
 
 The model generator uses Blender's built-in Python API. With **Blender 4.5 or later** available as `blender`, regenerate the scene and exports with:

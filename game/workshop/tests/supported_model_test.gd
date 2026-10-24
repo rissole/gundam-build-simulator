@@ -1,5 +1,4 @@
 extends "res://tests/kit/harness.gd"
-const SaveModel = preload("res://scripts/save_model.gd")
 
 func definitions() -> Dictionary:
 	return {"version":1,"parts":{
@@ -27,18 +26,12 @@ func baseline() -> AssemblyModel:
 	expect(errors.is_empty(),"Equipment scenario configures: "+str(errors))
 	return model
 
-func reject(snapshot: Dictionary, original: AssemblyModel, label: String) -> void:
-	var before = SaveModel.capture(original)
-	expect(not SaveModel.validate(snapshot,original).is_empty(),label)
-	expect(SaveModel.capture(original) == before,"Rejected save leaves model unchanged")
-
 func _initialize() -> void:
 	call_deferred("run")
 
 func run() -> void:
-	var fresh = baseline()
 	var model = baseline()
-	var initial = SaveModel.capture(model)
+	var initial = snapshot(model)
 	expect(not model.move_assembly("foot","held").is_empty(),"Equipment build cannot enter hands")
 	expect(not model.move_assembly("foot","loose").is_empty(),"Equipment build cannot drop support")
 	expect(not model.carry_item("beam").is_empty(),"Equipment part cannot enter hands")
@@ -46,7 +39,7 @@ func run() -> void:
 	expect(not model.transfer_supported_assembly("hip","carrier","hoist").is_empty(),"Fixed hip cannot transfer")
 	expect(not model.transfer_supported_assembly("foot","invented","hoist").is_empty(),"Unknown source cannot forge equipment move")
 	expect(not model.transfer_supported_assembly("foot","carrier","leg_fixture").is_empty(),"Wrong support compatibility rejects transfer")
-	expect(SaveModel.capture(model) == initial,"Rejected handling operations are atomic")
+	expect(snapshot(model) == initial,"Rejected handling operations are atomic")
 	expect(model.transfer_supported_assembly("foot","carrier","hoist").is_empty(),"Transfer keeps exact assembly identity")
 	expect(not model.install("leg","foot","foot").ok,"Ordinary install cannot bypass equipment")
 	expect(not model.install_supported("leg","foot","foot","carrier").ok,"Wrong named source rejects mount")
@@ -72,28 +65,7 @@ func run() -> void:
 	expect(model.install_supported("leg","beam","beam","beam_cradle").ok and model.install("leg","bolt","b2").ok,"Reinstall equipment and retention")
 	expect(model.transfer_supported_assembly("leg","leg_fixture","hoist").is_empty() and model.install_supported("hip","leg","leg","hoist").ok,"Completed nested leg mounts to fixed hip")
 	expect(model.integrity_errors().is_empty(),"Nested equipment transitions conserve physical ownership")
-	var mounted = SaveModel.capture(model)
-	expect(SaveModel.validate(JSON.parse_string(JSON.stringify(mounted)),fresh).is_empty(),"Nested supported snapshot validates through JSON")
-	var restored = baseline()
-	SaveModel.apply(mounted,restored)
-	expect(restored.undo_supported("hip","hoist").ok and restored.undo("leg").ok and restored.undo_supported("leg","beam_cradle").ok,"Restored equipment histories remain executable")
-	expect(SaveModel.validate(SaveModel.capture(restored),fresh).is_empty(),"Supported unmount saves validate")
-	for location in ["held","loose","support:invented","support:beam_stock","support:"]:
-		var invalid = initial.duplicate(true)
-		invalid.assemblies.foot.location = location
-		reject(invalid,fresh,"Reject forged equipment build location "+location)
-	for location in ["held","pocket","bin","loose","support:carrier","support:invented"]:
-		var invalid = initial.duplicate(true)
-		invalid.items.beam.location = location
-		if location == "pocket":invalid.items.beam.pocket = 0;invalid.pockets[0] = "beam"
-		reject(invalid,fresh,"Reject forged equipment part location "+location)
-	var invalid = initial.duplicate(true)
-	invalid.assemblies.leg.location = "support:hoist"
-	invalid.assemblies.foot.location = "support:hoist"
-	reject(invalid,fresh,"Reject duplicate support occupancy across builds")
-	invalid = initial.duplicate(true)
-	invalid.assemblies.hip.location = "support:hoist"
-	reject(invalid,fresh,"Legacy fixed fixture remains immutable")
+	var mounted = snapshot(model)
 	for mutation in ["unknown","occupied","incompatible","metadata","slot_compatibility"]:
 		var bad = scenario()
 		if mutation == "unknown":bad.builds[0].location = "support:missing"
@@ -101,7 +73,7 @@ func run() -> void:
 		if mutation == "incompatible":bad.parts.back().location = "support:carrier"
 		if mutation == "metadata":bad.supports.hoist.assemblies = ["missing"]
 		if mutation == "slot_compatibility":bad.supports.beam_cradle.parts = []
-		expect(not model.configure(definitions(),bad).is_empty() and SaveModel.capture(model) == mounted,"Invalid support authoring rejects atomically: "+mutation)
+		expect(not model.configure(definitions(),bad).is_empty() and snapshot(model) == mounted,"Invalid support authoring rejects atomically: "+mutation)
 	await test_animatable_mount(model)
 	var passed = checks.all(func(check):return check.passed)
 	print("SUPPORTED_MODEL_AUDIT ","PASS" if passed else "FAIL"," ",checks.size()," checks")

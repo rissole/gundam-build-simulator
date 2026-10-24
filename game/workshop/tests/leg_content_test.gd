@@ -1,7 +1,6 @@
 extends "res://tests/kit/harness.gd"
 const Geometry = preload("res://scripts/leg_source_geometry.gd")
 const Content = preload("res://scripts/workshop_content.gd")
-const Save = preload("res://scripts/save_model.gd")
 var sources: Dictionary = {}
 var model = AssemblyModel.new()
 var data: Dictionary
@@ -54,18 +53,13 @@ func run() -> void:
 	expect(model.milestone("left_leg", "structural_ready"), "Manual order produces structural readiness")
 	expect(not model.milestone("left_leg", "operational"), "Prototype does not claim powered operational readiness")
 	expect(model.assemblies.foot.parent == "left_leg" and model.assemblies.pitch.parent == "foot", "Deep child ownership is retained")
-	expect(model.assemblies.left_leg.location == "support:m2_leg_rail", "Complete leg remains on its construction rail")
-	expect(model.install_supported("pelvis", "left_leg", "left_leg", "m2_leg_rail").ok, "Rail seats ball in pelvis before ring retention")
+	expect(model.assemblies.left_leg.location == "support:leg_holder", "Complete leg remains on its construction rail")
+	expect(model.install_supported("pelvis", "left_leg", "left_leg", "leg_holder").ok, "Rail seats ball in pelvis before ring retention")
 	expect(not model.milestone("pelvis", "left_leg_secured"), "Seated ball is distinct from retained leg")
 	complete("pelvis")
 	expect(model.milestone("pelvis", "left_leg_secured"), "Both ring halves and all bolts retain the leg")
 	expect(model.items.values().all(func(item): return item.location == "installed"), "Every one of 175 physical identities is installed exactly once")
 	expect(model.integrity_errors().is_empty(), "Completed ownership tree has no inventory or support leaks")
-	var snapshot = Save.capture(model)
-	var restored = AssemblyModel.new()
-	expect(restored.configure(data, scenario).is_empty() and Save.validate(snapshot, restored).is_empty(), "Completed expanded graph validates for persistence")
-	Save.apply(snapshot, restored)
-	expect(Save.capture(restored) == snapshot, "Persistence restores exact nested IDs, progress and supports")
 	# Reverse real parent history; hardware can return to pockets, large halves
 	# return through ordinary component ownership. Finally the rail receives the same complete leg.
 	while model.assemblies.pelvis.history.size() > 1:
@@ -73,9 +67,9 @@ func run() -> void:
 		var result = model.undo("pelvis")
 		expect(result.ok, "Parent retention reverses: " + sid)
 	expect(not model.undo("pelvis").ok, "Bare ball removal still requires rail support")
-	expect(model.undo_supported("pelvis", "m2_leg_rail").ok, "Rail recovers the same complete leg")
+	expect(model.undo_supported("pelvis", "leg_holder").ok, "Rail recovers the same complete leg")
 	expect(model.milestone("left_leg", "structural_ready") and model.assemblies.foot.parent == "left_leg", "Removal preserves nested structural work")
-	expect(model.install_supported("pelvis", "left_leg", "left_leg", "m2_leg_rail").ok, "Same leg identity reseats")
+	expect(model.install_supported("pelvis", "left_leg", "left_leg", "leg_holder").ok, "Same leg identity reseats")
 	complete("pelvis")
 	expect(model.integrity_errors().is_empty(), "Undo and reinstallation preserve all physical identities")
 	Geometry.add_sources(sources, content)

@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Actual shelf identities, receivers, captive bolts, optical voids and crown rig.
 ## Earlier construction is supplied; no walking/reach/visibility/rendered review.
 const Sweep=preload("res://scripts/motion_sweep.gd")

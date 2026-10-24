@@ -29,7 +29,7 @@ func obstacle(parent: Node3D, at: Vector3, size: Vector3) -> StaticBody3D:
 
 func run() -> void:
 	var game = RiderFixture.new();root.add_child(game)
-	var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-bay-m3-layout.json"))
+	var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json"))
 	var world = Blockout.new();game.add_child(world);world.setup(game,layout.workshop)
 	var platform = Platform.new();game.add_child(platform);platform.setup(game,layout.workshop.mobile_platform);game.equipment.register(platform)
 	await frames(3)

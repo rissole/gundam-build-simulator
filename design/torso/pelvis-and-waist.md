@@ -79,7 +79,7 @@ fitted cockpit remain a distinct later crane load.
 ### Bridge, socket housings and gantry contacts
 
 Retain a rear crossbeam centred `(0,−.65,9.70)`, 2.70 wide × .30 deep × .26 high,
-developing the existing M3 rear bridge rather than putting a solid beam through
+developing the leg journey's rear bridge rather than putting a solid beam through
 the balls. A central box pedestal occupies X±.24, Y−.50..+.25,
 Z9.75..10.35; two separate diagonal braces run from `(±.95,−.65,9.80)`
 to `(±.42,+.25,10.35)`, within .18-wide/.18-deep swept member envelopes.
@@ -95,10 +95,10 @@ M36×160 bolts and two 6 mm washers per housing have axes
 engagement. Keep Ø.16 tool access above these axes while the waist frame is being
 built. Left/right housings with integral cylinder-bracket roots are a **mirrored
 pair**: their three roots are reflected in X while both saddles stay rear. Their ball,
-liner, ring and ring-bolt interfaces are identical. The small M3 contextual rear
+liner, ring and ring-bolt interfaces are identical. The small leg-journey contextual rear
 blocks/four M24×90 representations are historical simplified construction, not a
 validated hardware schedule for the finished pelvis. This new housing attachment
-does **not** alter M3's four M24×140 ring bolts per hip.
+does **not** alter the leg journey's four M24×140 ring bolts per hip.
 
 Two gantry bearing patches on the rear crossbeam underside are centred
 `(±.65,−.65,9.57)`, each .24 X × .26 Y. Their world centres are
@@ -115,7 +115,7 @@ datum(3.25,1.20,13). See the [fixture plan](../game/final-assembly-plan.md#gantr
 
 The jaws contact plain bridge material, not liners, guards, cylinder brackets or
 waist bearings. Keep the jaw/arm envelope below Z9.90 and in the rear band
-Y≤−.45. Existing M3 support arms need new bearing height/details; their present
+Y≤−.45. Existing leg-journey support arms need new bearing height/details; their present
 shape is not proof of contact with this bridge.
 
 Four structural lifting eyes are centred `(±1.15,±.70,9.95)`, each with a clear
@@ -153,7 +153,7 @@ The ball is retained only after both halves and all four washer/bolt pairs.
 
 For the finished joint, structural retention and independent pose support are
 separate conditions. Keep the leg rail engaged through cylinder installation and
-engagement of the three cylinder neutral locks described below. M3's earlier
+engagement of the three cylinder neutral locks described below. The leg journey's earlier
 structural-only holder-release endpoint used prototype mechanical restraints; it
 does not establish that an unpowered freely swivelling ball supports a finished
 leg pose.
@@ -188,7 +188,7 @@ retention; it is a stop/guard, **not a second structural ball retainer**. Leave
 its seams and bolts visible below the ring until the final guard step. Actual
 flank contact and ball/neck transition clearance need the future solid sweep.
 
-The wider M3 specifies four front-facing seam ears at hip-relative X±.520,
+The robot workshop specifies four front-facing seam ears at hip-relative X±.520,
 Z−.650/−.770, with bolt axes along robot Y. The cage body retains radius.460;
 these local ears extend to |X|.545, inside the existing ring footprint. This puts
 an R.040 front tool tube outside the cage body; burying the screws at radius.400
@@ -197,7 +197,7 @@ clearance ear and a.028 tapped ear plus a.004 washer for the M12×60 joint.
 
 ### Three-cylinder hydraulic hip drive
 
-The wider M3 now represents both stop cages, six complete PV-200 cartridges,
+The robot workshop now represents both stop cages, six complete PV-200 cartridges,
 twelve PV-P60220 eye pins with captive keepers, and six operated captive neutral
 locks. It uses the centres below, prepared upper hooks and lower clevis rests,
 and physical hand-carried stock. Its assisted seating captures both eye rests in
@@ -206,7 +206,7 @@ and folding the parking catches are deferred mechanism detail. Holder release
 requires all mounting hardware and all three locks. This is mechanical/model
 evidence; shelf carrying, hook visibility and pin/lock access await human play.
 
-The inherited M3 socket's simplified rear gusset moves up0.06 m, preserving the
+The inherited leg-journey socket's simplified rear gusset moves up0.06 m, preserving the
 ball and ring datums while clearing the final docking approach. The supported
 turn also lowers0.30 m before upright docking to pass below the rear parking hook;
 the [shared route](../game/final-assembly-plan.md#shared-limb-workshop-with-different-departure-routes)
@@ -309,7 +309,7 @@ Use shared **world deck Y8.40**, with front/rear open inner edges at robot
 frontY+1.40 (worldZ24.60) and rearY−1.35 (worldZ27.35),
 and standing lines robotY+1.70/−1.65
 (world Z24.30/27.65). The eye is world Y10.03 using the current 1.63 m eye
-height. Keep the existing M3 side finger for ring underside work; front/rear
+height. Keep the existing leg-journey side finger for ring underside work; front/rear
 strips add pin, hose and guard access. With the right leg at world X14.10, lower
 pin standing X values are **14.439, 13.636, 14.224** for the table's three
 positions. Left equivalents are **11.561, 12.364, 11.776**. The first two

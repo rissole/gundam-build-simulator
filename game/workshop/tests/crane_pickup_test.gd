@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Pickup/deliver crane console: movement only, the next load comes from
 ## crane.order. Mechanical fixture; console clarity is the user's playtest.
 func run() -> void:

@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Mechanical source exchange only; the installation/closure controller follows
 ## the full geometry preflight. No player walking, aim or access automation.
 func run() -> void:

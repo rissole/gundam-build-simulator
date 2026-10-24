@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Supplied rigging and fastening fixture; no walking/aim/access automation.
 func run() -> void:
 	if not await start("core"):finish();return
@@ -36,7 +36,7 @@ func deliver_core() -> bool:
 	expect(crane.request("go:receiver").is_empty(),"rear core route starts through outboard bypass")
 	crane.physics(2.5);crane.request("stop")
 	if not command(crane,"resume") or not command(crane,"down"):return false
-	expect(guide.active and guide.travel==0 and game.model.assemblies.core.location=="support:m2_service_crane","rear approach retains both-ended crane ownership")
+	expect(guide.active and guide.travel==0 and game.model.assemblies.core.location=="support:crane_rigging","rear approach retains both-ended crane ownership")
 	expect(not guide.rig_error("detach","core_front").is_empty(),"forward bridge cannot release before capture")
 	if not command(guide,"advance"):return false
 	expect(is_equal_approx(guide.travel,.85) and game.model.assemblies.core.location=="support:core_guide","captured guides take forward support at the authored stop")
@@ -71,7 +71,7 @@ func deliver_core() -> bool:
 	end_state(crane,"core_front","attached")
 	guide.request("return");guide.physics(1);guide.request("stop")
 	if not command(guide,"return"):return false
-	expect(game.model.assemblies.core.location=="support:m2_service_crane","both ends own the returned core outside the guides")
+	expect(game.model.assemblies.core.location=="support:crane_rigging","both ends own the returned core outside the guides")
 	# Repeat only the short supported insertion, preserving all physical stock.
 	if not command(guide,"advance"):return false
 	end_state(crane,"core_front","stowed")

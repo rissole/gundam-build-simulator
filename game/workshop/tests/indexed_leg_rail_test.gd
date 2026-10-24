@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Supported motion test using the actual scene/stock/solids. Construction is
 ## explicitly supplied via model staging; no walk/aim/reach acceptance is run.
 func finish() -> void:

@@ -1,25 +1,11 @@
 extends RefCounted
 ## Content materialization. Patches replace explicitly named fields, never save data.
 
-static func scenario(single: bool = false) -> Dictionary:
-	var config: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/heel-pads.json"))
-	if single:
-		var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/heel-pad.json"))
-		config.parts = original.parts
-		config.builds.resize(1)
-		config.mounts.resize(1)
-	return config
+static func scenario() -> Dictionary:
+	return JSON.parse_string(FileAccess.get_file_as_string("res://assets/heel-pads.json"))
 
-static func definition_data(single: bool = false) -> Dictionary:
-	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/assembly-definitions.json"))
-	if single:
-		for sid in data.assemblies.foot.slots.keys():
-			if sid.begins_with("heel_2"):data.assemblies.foot.slots.erase(sid)
-		data.assemblies.foot.milestones.complete = data.assemblies.foot.slots.keys()
-		data.assemblies.foot.milestones.erase("heel_2_secured")
-		data.assemblies.foot.manual.resize(2)
-		data.assemblies.foot.manual[0].slots = data.assemblies.foot.slots.keys()
-	return data
+static func definition_data() -> Dictionary:
+	return JSON.parse_string(FileAccess.get_file_as_string("res://assets/assembly-definitions.json"))
 
 static func apply_definitions(data: Dictionary, overlay: Dictionary) -> void:
 	for section in ["parts","assemblies"]:

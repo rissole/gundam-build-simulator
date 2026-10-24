@@ -1,10 +1,10 @@
-"""Author the structural left-leg extension and its leg-bay scenarios without
-regenerating the FA-01 GLB.
+"""Author the structural left-leg extension and the robot workshop content
+without regenerating the FA-01 GLB.
 
 Run with Python 3 from any directory; --check audits and byte-compares every
 generated asset without writing. This script authors parts and interfaces;
-assets/leg-bay-layout.json owns shared placement data. This prototype does not
-claim a powered or armored leg.
+assets/workshop-layout.json owns shared placement data. This prototype does
+not claim a powered or armored leg.
 """
 import json
 import math
@@ -19,13 +19,13 @@ MANIFEST = {p["instance_id"]: p for p in json.loads(
     (ROOT / "models/foot-fa01/output/parts-manifest.json").read_text())["parts"]}
 parts, stock, sources = {}, [], {}
 # Shared layout authority: authoring and runtime read the same declared data.
-LAYOUT = json.loads((ASSETS / "leg-bay-layout.json").read_text())
+LAYOUT = json.loads((ASSETS / "workshop-layout.json").read_text())
 RAIL = LAYOUT["rail"]
 CRANE_SUPPORT = LAYOUT["crane"]["support"]
-
-
-def layout_document():
-    return deepcopy(LAYOUT)
+# The base leg recipe secures the Upper-leg beam; the robot content adds the
+# shin and fork tasks.
+SPAR_SECURED = "spar_secured"
+SPAR_UID = "LG-120__001"
 
 
 def kind(key, family, title, carry="hand", variant="structural"):
@@ -303,7 +303,7 @@ leg_pages.append(dict(title="Structural leg ready", body="The load-bearing proto
 leg = dict(title="Left leg · structural prototype", carry_class="equipment", bounds=[1.4, 9.65, 3.0],
            work_locations=["support"], interaction="components", service_access="assisted",
            slots=leg_slots, milestones={"structural_ready": list(leg_slots),
-                                      LAYOUT["crane"]["secured"]["milestone"]: spar_slots}, manual=leg_pages)
+                                      SPAR_SECURED: spar_slots}, manual=leg_pages)
 
 # Pelvis sources live in a frame whose Y0 plane passes through both hip centers.
 source("PV-100__001", "PV-100", [0, .50, .65], [
@@ -398,7 +398,7 @@ for definition in (leg, pelvis):
 supports = {
     "foot_carrier": {"assemblies": ["foot"]},
     RAIL["support"]: {"assemblies": ["left_leg"], "assembly_ids": ["left_leg"]},
-    CRANE_SUPPORT: {"parts": ["lg-thigh-spar"], "item_ids": [LAYOUT["crane"]["load_uid"]]},
+    CRANE_SUPPORT: {"parts": ["lg-thigh-spar"], "item_ids": [SPAR_UID]},
     "leg_shin_rack": {"parts": ["lg-shin"]},
     "leg_fork_rack": {"parts": ["lg-knee-fork"]},
     "leg_spar_rack": {"parts": ["lg-thigh-spar"]},
@@ -510,15 +510,6 @@ def audit():
     for record in stock:
         if record["location"].startswith("support:"):
             assert record["location"].removeprefix("support:") in supports
-    crane = LAYOUT["crane"]
-    assert crane["load_uid"] in ids and crane["owner"] == "left_leg" and crane["slot"] in leg_slots
-    assert crane["route_positions"][0] == crane["source_pose"]["position"]
-    assert crane["route_positions"][-1] == crane["receiver_pose"]["position"]
-    assert len(crane["endpoint_ids"]) == len(crane["magnetic_points"]) == 2
-    assert len(set(crane["endpoint_ids"])) == 2
-    assert len(crane["route_positions"]) == 5
-    assert all(len(point) == 3 and all(isinstance(v, (float, int)) and math.isfinite(v) for v in point)
-               for point in crane["route_positions"] + list(crane["magnetic_points"].values()))
 
 
 def record_patch(base, changed):
@@ -558,157 +549,10 @@ def materialize_overlay(base, overlay):
     return data
 
 
-def m2_documents():
-    """Small trial overlays on the shared leg-bay recipes.
-
-    Keep full recipes and readiness criteria for safe staging and validation.
-    Only trial installation pages are replaced. `playable_slots` is the manual
-    coverage boundary, not a smaller definition of a structurally secured hip.
-    """
-    layout = layout_document()
-    rail, crane = layout["rail"]["support"], layout["crane"]["support"]
-    hand_kinds = {kind for kind, spec in parts.items() if spec.get("carry_class") in ("hand", "two_hand")} | {"pv-ring-half"}
-    for asset in ("assembly-definitions.json", "pitch-actuator-definitions.json"):
-        for kind, spec in json.loads((ASSETS / asset).read_text())["parts"].items():
-            if spec.get("carry_class") in ("hand", "two_hand"): hand_kinds.add(kind)
-    beam_slots = ["spar"] + [sid for sid in leg_slots if sid.startswith("fork/")]
-    half_slots = ["ring_1", "ring/washer_3", "ring/bolt_3", "ring/washer_4", "ring/bolt_4"]
-    pre_spar = [sid for sid in leg_slots if sid != "spar" and not sid.startswith("fork/")]
-    added_supports = {
-        rail: dict(assemblies=["left_leg"], assembly_ids=["left_leg"]),
-        crane: dict(parts=["lg-thigh-spar"], item_ids=["LG-120__001"]),
-        "m2_lift_shelf_0": dict(parts=sorted(hand_kinds)),
-        "m2_lift_shelf_1": dict(parts=sorted(hand_kinds)),
-    }
-    beam = deepcopy(parts["lg-thigh-spar"])
-    beam.update(title="LG-120 · Upper-leg beam", short_title="Upper-leg beam",
-                catalogue_image="res://assets/part-images/lg-thigh-spar.svg")
-    crane_metadata = {key: deepcopy(layout["crane"][key]) for key in
-                      ("support", "source_support", "load_uid", "source_pose", "receiver_pose",
-                       "magnetic_points", "endpoint_ids", "approach", "route_positions")}
-    crane_metadata.update(destination=dict(owner=layout["crane"]["owner"], slot=layout["crane"]["slot"]),
-                          route_version=2, fastener_slots=beam_slots[1:])
-    documents = {}
-    for example in ("retention", "crane"):
-        trial_leg, trial_pelvis = deepcopy(leg), deepcopy(pelvis)
-        trial_leg["slots"]["spar"].update(label=beam["title"], source_supports=[crane])
-        trial_pelvis["slots"]["left_leg"]["source_supports"] = [rail]
-        for sid in ("ring_1", "ring_2"):
-            trial_pelvis["slots"][sid].pop("source_supports", None)
-            trial_pelvis["slots"][sid].pop("support_required", None)
-        trial_leg["manual"] = [dict(title="Supplied leg construction", view="overview", slots=[],
-            body="The complete existing foot and structural leg are supplied on the home rail for this hip-retainer example. Open the pelvis manual; internal construction is outside this example.")]
-        trial_pelvis["manual"] = [dict(title="Hip work is outside this example", view="overview", slots=[],
-            body="This example ends with the Upper-leg beam fastened and the empty crane parked. The horizontal foot, shin, knee, fork and cap are supplied. Hip mounting and retention belong to the separate Hip retainer example.")]
-        if example == "retention":
-            for sid in ("ring_1", "ring_2"):
-                trial_pelvis["slots"][sid]["undo_to"] = "hands"
-            trial_pelvis["manual"] = [dict(title="Travel, tilt and seat the supported leg", view="overview", slots=[],
-                body="The complete leg starts on its home rail; the pelvis socket and retaining connections are empty. Walk the rail controls through travel, tilt and upward docking. The rail seats the hip ball and remains engaged as assistance. Board the personnel lift and use Up. One retaining half and its two washer/bolt pairs are supplied; this example cannot secure the complete hip.",
-                context_sources=["PV-110__001"])]
-            page(trial_pelvis["manual"], "Seat one hip retaining half",
-                 "Collect the two washer/bolt pairs into your pockets at ground level. E picks up PV-120 with both hands. Carry it onto the lift and click the component shelf to store it. The shelf holds two one-hand components or one two-hand component. Ride Up, E-pick the half from the shelf, then aim and click the underside connection of the already seated socket. Either identical half fits.",
-                 half_slots[:1], ["PV-110__001", "PV-V-HIP-BALL"])
-            page(trial_pelvis["manual"], "Fasten the supported half",
-                 "Fit the pocketed LG-W24 washers and PV-H24140 bolts upward through the seated half into the socket flange, each washer before its bolt. Z reverses these steps. Undoing the half returns that same component to your hands at the connection; store it on the lift shelf to bring it down. Retention blocks rail Return until every fitted retention piece is removed.",
-                 half_slots[1:], ["PV-110__001", "PV-120__001"])
-            trial_pelvis["manual"].append(dict(title="One-half example complete", view="prepared", slots=[],
-                body="One bolted half does not secure the hip. Holder departure is unavailable. Undo with Z, return the half on the lift shelf, then use rail Return to withdraw the supported leg. Both-half completion remains outside M2."))
-        else:
-            trial_leg["manual"] = [dict(title="Supplied horizontal receiving assembly", view="overview", slots=[],
-                body="The complete existing foot and the horizontal shin, bearings, spacers, knee fork, axle and cap are supplied on the home rail. The real LG-120 Upper-leg beam remains on its rack; four LG-W24 washers and four LG-H24100 bolts remain loose stock. No beam or flange hardware is preinstalled.")]
-            page(trial_leg["manual"], "Deliver the Upper-leg beam",
-                 "At the central crane console, choose Go to Upper-leg beam rack, then Down. The console captures the view: click a command or use arrow keys and E; Q closes it. Travel destinations appear only while Up. Walk to its source rack, E-pick a magnetic end and aim/click a free marked point; repeat for the other end. Either end fits either point; Q stows a held end. Return to the console and choose Up, then Go to Leg cradle, then Down. The crane takes the same LG-120 from the rack, reaches the receiving cradle and seats the flange through the final 0.20 m axial approach toward −Z. These horizontal flanges cannot mate by a vertical drop. Keep both cables attached during fastening.",
-                 beam_slots[:1], ["LG-110__001"])
-            page(trial_leg["manual"], "Fasten the Upper-leg beam flange",
-                 "Collect four LG-W24 washers and four LG-H24100 bolts normally. On the already seated Upper-leg beam, fit each washer and then its bolt through the four exposed flange corners into the existing fork. On the horizontal assembly, work from the exposed +Z head faces and insert toward −Z. Keep crane assistance until all four pairs are fitted, then detach and stow both magnetic ends and park the empty crane. For recovery before any flange hardware is fitted, Up at the leg cradle removes the supported beam and reverses the axial approach. Choose Go to Upper-leg beam rack, then Down to return it. Undo all fitted flange hardware with Z before lifting a loaded beam.",
-                 beam_slots[1:], ["LG-110__001", "LG-120__001"])
-            trial_leg["manual"].append(dict(title="Crane-delivery example complete", view="prepared", slots=[],
-                body="The Upper-leg beam is fastened to the supplied horizontal leg and the magnetic ends can be stowed before parking the empty crane. Full released-beam disassembly and the whole leg-to-robot journey remain outside this example."))
-        for definition in (trial_leg, trial_pelvis):
-            for step in definition["manual"]:
-                if step["view"] != "components":
-                    continue
-                physical = [definition["slots"][sid]["pose_source"] for sid in step["slots"]]
-                step["diagram_views"] = [diagram(step["title"], physical, step.get("context_sources", []))]
-        allowed = {s["pose_source"] for s in leg_slots.values() if "accepts" in s}
-        if example == "retention":
-            allowed.update(pelvis_slots[sid]["pose_source"] for sid in half_slots)
-        trial_stock = [deepcopy(p) for p in stock if p["instance_id"] in allowed]
-        for record in trial_stock:
-            if record["kind"] == "pv-ring-half":
-                record["location"] = "bin"
-        parents = deepcopy(content["parents"])
-        parents[0]["location"] = "support:" + rail
-        equipment = dict(leg_mount=dict(parent="pelvis", slot="left_leg", support=rail),
-                         parts={"LG-120__001": dict(owner="left_leg", slot="spar", support="leg_spar_rack", delivery_support=crane,
-                                                  stock_position=list(layout["crane"]["source_pose"]["position"]))})
-        trial = dict(version=1, parts=trial_stock, parents=parents, supports=deepcopy(added_supports), equipment=equipment,
-            m2=dict(scenario_id="m2-" + example, scenario_version=2, equipment_version=2, route_version=2,
-                    remove_supports=[],
-                    save_path="user://m2-" + example + "-save.json",
-                    staged_slots={"left_leg": list(leg_slots) if example == "retention" else pre_spar, "pelvis": []},
-                    playable_slots={"left_leg": [] if example == "retention" else beam_slots,
-                                    "pelvis": half_slots if example == "retention" else []},
-                    controlled_mount_slots=["pelvis.left_leg"] if example == "retention" else [],
-                    representative_half="ring_1", retention_uid="PV-120__001" if example == "retention" else "",
-                    crane=deepcopy(crane_metadata),
-                    supplied_construction=trial_pelvis["manual"][0]["body"] if example == "retention" else trial_leg["manual"][0]["body"]))
-        documents[f"m2-{example}-definitions.json"] = dict(version=2, parts={"lg-thigh-spar": deepcopy(beam), "pv-ring-half": dict(deepcopy(parts["pv-ring-half"]), carry_class="two_hand", catalogue_image="res://assets/part-images/pv-ring-half.svg", handling=dict(distance=.85, rotation_degrees=[90, 0, 0]))},
-            assembly_patches={"left_leg": assembly_patch(leg, trial_leg),
-                              "pelvis": assembly_patch(pelvis, trial_pelvis)})
-        documents[f"m2-{example}-content.json"] = trial
-    return documents
-
-
-def audit_m2(documents):
-    """Inventory, dependencies, slot ownership and step shopping-list boundary."""
-    for example in ("retention", "crane"):
-        overlay = documents[f"m2-{example}-definitions.json"]
-        definitions = materialize_overlay(dict(parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis}), overlay)
-        assert "assemblies" not in overlay and overlay["assembly_patches"], "Trials must patch the base recipes"
-        trial = documents[f"m2-{example}-content.json"]
-        recipe = definitions["assemblies"]
-        ids = [record["instance_id"] for record in trial["parts"]]
-        assert len(ids) == len(set(ids))
-        assert recipe["pelvis"]["milestones"] == pelvis["milestones"]
-        assert recipe["left_leg"]["milestones"] == leg["milestones"]
-        assert recipe["left_leg"]["slots"]["spar"]["source_supports"] == ["m2_service_crane"]
-        assert recipe["pelvis"]["slots"]["left_leg"]["source_supports"] == ["m2_leg_rail"]
-        assert all(not recipe["pelvis"]["slots"][sid].get("support_required", False) for sid in ("ring_1", "ring_2"))
-        assert definitions["parts"]["pv-ring-half"]["carry_class"] == "two_hand"
-        for owner, definition in recipe.items():
-            coverage = Counter(sid for step in definition["manual"] if step["view"] == "components" for sid in step["slots"])
-            assert coverage == Counter({sid: 1 for sid in trial["m2"]["playable_slots"][owner]})
-            assert all(not step["slots"] for step in definition["manual"] if step["view"] != "components")
-            resolved = set(trial["m2"]["staged_slots"][owner])
-            if owner == "pelvis" and example == "retention":
-                resolved.add("left_leg")  # Real rail-controlled mounting precedes manual work.
-            for step in definition["manual"]:
-                if step["view"] != "components":
-                    continue
-                for sid in step["slots"]:
-                    assert set(definition["slots"][sid]["requires"]) <= resolved, (example, owner, sid)
-                    assert definition["slots"][sid]["pose_source"] in ids
-                    resolved.add(sid)
-        if example == "retention":
-            assert len(ids) == 35 and "PV-120__001" in ids and "PV-120__002" not in ids
-            assert [sid for sid in trial["m2"]["playable_slots"]["pelvis"] if sid.startswith("ring/")] == ["ring/washer_3", "ring/bolt_3", "ring/washer_4", "ring/bolt_4"]
-            assert Counter(record["kind"] for record in trial["parts"])["pv-m24-140"] == 2
-        else:
-            assert len(ids) == 30 and len(trial["m2"]["staged_slots"]["left_leg"]) == 22
-            assert not any(record["kind"].startswith("pv-") for record in trial["parts"])
-            assert next(record for record in trial["parts"] if record["instance_id"] == "LG-120__001")["location"] == "support:leg_spar_rack"
-        assert recipe["pelvis"]["slots"]["ring_1"]["accepts"] == recipe["pelvis"]["slots"]["ring_2"]["accepts"] == "pv-ring-half"
-        assert all(recipe["pelvis"]["slots"][sid].get("undo_to") == ("hands" if example == "retention" else None) for sid in ("ring_1", "ring_2"))
-        assert recipe["pelvis"]["slots"]["ring/washer_3"]["accepts"] == recipe["left_leg"]["slots"]["fork/washer_1"]["accepts"] == "lg-w24"
-
-
-
-def m3_documents(check=False):
+def robot_documents(check=False):
     """Complete prepared-foot journey, patching the canonical slot graph."""
     rail, crane = RAIL["support"], CRANE_SUPPORT
-    m3_layout = json.loads((ASSETS / "leg-bay-m3-layout.json").read_text())
+    workshop_layout = json.loads((ASSETS / "workshop-layout.json").read_text())
     trial_leg, trial_pelvis = deepcopy(leg), deepcopy(pelvis)
     security = {
         "shin": ["shin"] + flange_slots,
@@ -731,7 +575,7 @@ def m3_documents(check=False):
     pages.append(dict(title="Prepared foot, empty leg rail", view="overview", slots=[], body="The complete 135-piece foot is supplied on its carrier. The horizontal leg rail and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."))
     page(pages, "Dock the prepared foot", "Keep the holder at the shared limb station with neutral roll. At the foot carrier, Advance raises the complete foot, Advance moves it to the receiving bolster, and Advance turns and seats it horizontally. The holder takes contact before the carrier releases and withdraws. Stop holds any transfer; Advance resumes it.", ["foot"])
     def delivery(title, task, uid, receiver):
-        task_title = m3_layout["crane"]["tasks"][task]["title"]
+        task_title = workshop_layout["crane"]["tasks"][task]["title"]
         page(pages, title, "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the " + task_title + " task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat " + uid + " against the already fitted " + receiver + ". The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.", [task])
     delivery("Deliver the structural shin", "shin", "LG-100", "foot adapter")
     page(pages, "Secure the ankle flange", "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic ends, raise and park the empty crane before changing task.", flange_slots, ["LG-100__001", "FA-201__001"])
@@ -760,23 +604,25 @@ def m3_documents(check=False):
             if step["view"] == "components":
                 physical = [definition["slots"][sid]["pose_source"] for sid in step["slots"]]
                 step["diagram_views"] = [diagram(step["title"], physical, step.get("context_sources", []))]
-    added_supports = deepcopy(m2_documents()["m2-crane-content.json"]["supports"])
-    shelf_support = added_supports.pop("m2_lift_shelf_0")
-    added_supports.pop("m2_lift_shelf_1")
-    for lift in m3_layout["workshop"]["elevators"].values():
+    hand_kinds = {kind for kind, spec in parts.items() if spec.get("carry_class") in ("hand", "two_hand")} | {"pv-ring-half"}
+    for asset in ("assembly-definitions.json", "pitch-actuator-definitions.json"):
+        for kind, spec in json.loads((ASSETS / asset).read_text())["parts"].items():
+            if spec.get("carry_class") in ("hand", "two_hand"): hand_kinds.add(kind)
+    shelf_support = dict(parts=sorted(hand_kinds))
+    added_supports = {rail: dict(assemblies=["left_leg"], assembly_ids=["left_leg"]), crane: {}}
+    for lift in workshop_layout["workshop"]["elevators"].values():
         for support_id in lift["shelf"]["supports"]:
             added_supports[support_id] = deepcopy(shelf_support)
     added_supports[crane] = dict(parts=["lg-shin", "lg-knee-fork", "lg-thigh-spar"], item_ids=["LG-100__001", "LG-110__001", "LG-120__001"])
     equipment = deepcopy(content["equipment"])
-    for task in m3_layout["crane"]["tasks"].values():
+    for task in workshop_layout["crane"]["tasks"].values():
         if task["load_uid"] not in equipment["parts"]:continue
         info = equipment["parts"][task["load_uid"]]
         assert info["slot"] == task["slot"] and info["support"] == task["source_support"]
         info["delivery_support"] = task["support"]
         info["stock_position"] = list(task["source_pose"]["position"])
     trial = dict(version=1, parts=deepcopy(stock), parents=deepcopy(content["parents"]), supports=added_supports, equipment=equipment,
-        m3=dict(scenario_id="leg_bay_m3", scenario_version=1, equipment_version=1, route_version=1, remove_supports=[], save_path="user://m3-workshop-save.json", prepared_foot=True,
-                staged_slots={"left_leg": [], "pelvis": []}, playable_slots={"left_leg": list(leg_slots), "pelvis": list(pelvis_slots)}, controlled_mount_slots=["left_leg.foot", "pelvis.left_leg"], security_slots=security))
+        robot=dict(staged_slots={"left_leg": [], "pelvis": []}, playable_slots={"left_leg": list(leg_slots), "pelvis": list(pelvis_slots)}, controlled_mount_slots=["left_leg.foot", "pelvis.left_leg"], security_slots=security))
     trial_parts = {"lg-knee-axle": deepcopy(parts["lg-knee-axle"])}
     trial_parts["lg-knee-axle"]["handling"] = dict(rotation_degrees=[90, 90, 0])
     # Exposed frame crossmembers provide the measured transport contacts. They
@@ -796,36 +642,36 @@ def m3_documents(check=False):
         trial["sources"][uid] = descriptor
         trial_parts[kind] = deepcopy(parts[kind])
         trial_parts[kind]["collision_shapes"].append(dict(type="box", position=center, size=[1.6,.24,.20]))
-    from author_m3_hip_interfaces import extend
+    from author_hip_interfaces import extend
     extend(trial, trial_parts, trial_leg, trial_pelvis, diagram)
-    from author_m3_right_leg import extend as right_leg_content
+    from author_right_leg import extend as right_leg_content
     mirrored=right_leg_content(ASSETS,trial,trial_parts,trial_leg,trial_pelvis,parts,sources)
-    from author_m3_pelvis import extend as prepared_pelvis
-    prepared_pelvis(trial,trial_pelvis,m3_layout)
-    from author_m3_chest import extend as prepared_chest
-    chest=prepared_chest(trial,trial_parts,trial_pelvis,m3_layout,diagram)
-    from author_m3_core import extend as prepared_core
-    core=prepared_core(trial,chest,m3_layout,diagram)
-    from author_m3_backpack import extend as prepared_backpack
-    backpack=prepared_backpack(trial,chest,m3_layout,trial_parts,diagram)
-    from author_m3_arms import extend as prepared_arms
-    arms=prepared_arms(trial,m3_layout,chest)
-    from author_m3_cassette import extend as prepared_cassette
-    cassette=prepared_cassette(trial,m3_layout)
-    from author_m3_shoulders import extend as shoulder_connections
+    from author_pelvis import extend as prepared_pelvis
+    prepared_pelvis(trial,trial_pelvis,workshop_layout)
+    from author_chest import extend as prepared_chest
+    chest=prepared_chest(trial,trial_parts,trial_pelvis,workshop_layout,diagram)
+    from author_core import extend as prepared_core
+    core=prepared_core(trial,chest,workshop_layout,diagram)
+    from author_backpack import extend as prepared_backpack
+    backpack=prepared_backpack(trial,chest,workshop_layout,trial_parts,diagram)
+    from author_arms import extend as prepared_arms
+    arms=prepared_arms(trial,workshop_layout,chest)
+    from author_cassette import extend as prepared_cassette
+    cassette=prepared_cassette(trial,workshop_layout)
+    from author_shoulders import extend as shoulder_connections
     shoulder_connections(trial,chest,arms,trial_parts,diagram)
-    from author_m3_pauldrons import extend as pauldrons_content
-    pauldrons=pauldrons_content(trial,chest,arms,trial_parts,m3_layout,diagram)
-    from author_m3_head import extend as head_content
-    head=head_content(trial,chest,trial_parts,m3_layout,diagram)
-    for task in m3_layout["crane"]["tasks"].values():
+    from author_pauldrons import extend as pauldrons_content
+    pauldrons=pauldrons_content(trial,chest,arms,trial_parts,workshop_layout,diagram)
+    from author_head import extend as head_content
+    head=head_content(trial,chest,trial_parts,workshop_layout,diagram)
+    for task in workshop_layout["crane"]["tasks"].values():
         if task.get("payload")!="assembly":trial["equipment"]["parts"][task["load_uid"]]["stock_position"]=list(task["source_pose"]["position"])
     catalogue_images(check, {key: value for key,value in trial_parts.items() if key not in parts and "catalogue_image" not in value},trial["parts"],trial["sources"])
-    return {"m3-definitions.json": dict(version=1, parts=trial_parts, assemblies={"pelvis": trial_pelvis,"chest":chest,"core":core,"backpack":backpack,"arm_cassette":cassette,**arms,**pauldrons,**head,**mirrored}, assembly_patches={"left_leg": assembly_patch(leg, trial_leg)}), "m3-content.json": trial}
+    return {"robot-definitions.json": dict(version=1, parts=trial_parts, assemblies={"pelvis": trial_pelvis,"chest":chest,"core":core,"backpack":backpack,"arm_cassette":cassette,**arms,**pauldrons,**head,**mirrored}, assembly_patches={"left_leg": assembly_patch(leg, trial_leg)}), "robot-content.json": trial}
 
 
-def audit_m3(documents):
-    overlay, trial = documents["m3-definitions.json"], documents["m3-content.json"]
+def audit_robot(documents):
+    overlay, trial = documents["robot-definitions.json"], documents["robot-content.json"]
     recipes = materialize_overlay(dict(parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis}), overlay)["assemblies"]
     assert set(overlay["assemblies"]) == {"pelvis","chest","core","backpack","arm_cassette","left_arm","right_arm","left_pauldron","right_pauldron","right_leg","right_foot","right_heel_pad","right_pitch_actuator","head_baseplate","head_left","head_right","head_top","head_crown"}
     for side in ["left","right"]:
@@ -861,19 +707,17 @@ def audit_m3(documents):
     extension_ids={part["instance_id"] for part in stock}|{"R-"+part["instance_id"] for part in stock}
     extension_ids |= {part["instance_id"] for part in trial["parts"] if part["kind"].startswith(("pv-","ch-","bp-","sh-","pd-","hd-")) or part["instance_id"].startswith(("LG-W12__","R-LG-W12__"))}
     assert needed == Counter(part["kind"] for part in trial["parts"] if part["instance_id"] in extension_ids)
-    assert trial["m3"]["staged_slots"] == {"left_leg": [], "right_leg": [], "pelvis": []}
+    assert trial["robot"]["staged_slots"] == {"left_leg": [], "right_leg": [], "pelvis": []}
     for task in ("shin", "fork", "spar"):
         assert recipes["left_leg"]["slots"][task]["source_supports"] == [CRANE_SUPPORT]
-        assert all(recipes["left_leg"]["slots"][sid]["undo_requires_support"] == CRANE_SUPPORT for sid in trial["m3"]["security_slots"][task])
+        assert all(recipes["left_leg"]["slots"][sid]["undo_requires_support"] == CRANE_SUPPORT for sid in trial["robot"]["security_slots"][task])
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Audit and byte-compare all generated base and trial assets")
-    parser.add_argument("--m2", action="store_true", help="Compatibility alias; regenerate shared base and trial assets")
-    parser.add_argument("--check-m2", action="store_true", help="Compatibility alias for --check")
+    parser.add_argument("--check", action="store_true", help="Audit and byte-compare all generated base and robot assets")
     args = parser.parse_args()
-    checking = args.check or args.check_m2
+    checking = args.check
     audit()
     # Catalogue images are stable inputs in this consolidation; a recipe check
     # still verifies their generator bytes and records their authored paths.
@@ -881,14 +725,10 @@ if __name__ == "__main__":
     generated = {
         "leg-prototype-definitions.json": dict(version=1, parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis, "foot": foot}),
         "leg-prototype-content.json": content,
-        **m2_documents(),
-        **m3_documents(checking),
+        **robot_documents(checking),
     }
-    audit_m2(generated)
-    audit_m3(generated)
-    assert LAYOUT["version"] == 1
-    secure = LAYOUT["crane"]["secured"]["milestone"]
-    assert secure in leg["milestones"] and leg["milestones"][secure] == spar_slots
+    audit_robot(generated)
+    assert leg["milestones"][SPAR_SECURED] == spar_slots
     assert not {"leg_hoist", "leg_fixture", "pelvis_ring_rack_1", "pelvis_ring_rack_2"} & supports.keys()
     assert all(record["location"] == "bin" for record in stock if record["kind"] == "pv-ring-half")
     for name, document in generated.items():
@@ -897,4 +737,4 @@ if __name__ == "__main__":
             assert (ASSETS / name).read_text() == encoded, f"Regenerate {name} with author_leg_prototype.py"
         else:
             (ASSETS / name).write_text(encoded)
-    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; preserved M2 trials; M3 380 extension identities, 261 playable leg/hip/torso slots; byte equality="+str(checking))
+    print("LEG_CONTENT_AUDIT PASS: shared layout; 40 base identities; robot workshop 380 extension identities, 261 playable leg/hip/torso slots; byte equality="+str(checking))

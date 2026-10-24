@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Supplied earlier work; actual fixture, crane, receiver and inventory APIs.
 
 func run() -> void:

@@ -13,7 +13,7 @@
 
 ## Edit A — move the evidence narrative out of the plan
 
-File: `design/game/m3-wide-workshop-plan.md`.
+File: `design/game/robot-workshop-plan.md`.
 
 1. Find the passage that **starts** with `Earlier foundation mechanical evidence:` and
    **ends** with the sentence `Preserve subsequent human feedback separately from these mechanical results.`
@@ -109,7 +109,7 @@ File: `design/game/leg-workshop-next-steps.md`.
    controller, direct checks against other machines, growing crane-contract flags
    and another layer in a linear test-inheritance chain whose fresh-scene restores
    took about three quarters of its runtime. The user then deferred M3 saving and
-   checkpoints (see the [plan](m3-wide-workshop-plan.md#saves-and-checkpoints)) and
+   checkpoints (see the [plan](robot-workshop-plan.md#saves-and-checkpoints)) and
    requested a `--m3-stage` development launch flag. Work resumes from the task
    files in [handoff/README.md](handoff/README.md); they override older instructions
    in this document where they differ.

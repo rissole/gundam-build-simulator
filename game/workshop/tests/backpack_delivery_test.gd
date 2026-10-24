@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Supplied rigging/fastening fixture. Actual equipment transitions are
 ## exercised; the user owns walking and connection access.
 func run() -> void:

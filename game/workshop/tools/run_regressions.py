@@ -28,16 +28,12 @@ JOLT_STALL = "Waiting for jobs to become available"
 # A finished suite prints its summary and should exit immediately. Longer than
 # this means quit() never ran; the case's time cap covers a suite still working.
 SUMMARY_GRACE = 5.0
-# The historical walked route and arm section have longer caps. Stage-flag
-# coverage prepares only an early and the furthest stage. Fail-fast engine
-# checks still apply.
-CASE_TIMEOUTS = {"m3_acceptance_test": 900.0, "arm_delivery_test": 600.0}
-# Historical single-leg walking/access evidence is retained on disk. M3's
-# wider-workshop plan explicitly assigns those acceptance checks to the user.
-# Do not silently bring them back through default discovery or --only.
-HUMAN_M3_CHECKS = {"m3_acceptance_test", "m3_hip_access_test", "m3_route_clearance_test"}
-# M3 saving is deferred until the wider structure exists (design/game/m3-wide-workshop-plan.md, "Saves and checkpoints").
-DEFERRED_M3_SAVE_CHECKS = {"m3_save_validation_test"}
+# The arm section, the foot-build desktop journeys in the full hangar and the
+# suites that script the whole build have longer caps.
+# Fail-fast engine checks still apply.
+CASE_TIMEOUTS = {"arm_delivery_test": 600.0, "pitch_desktop_test": 600.0, "pitch_swapped_desktop_test": 600.0,
+                 **{name: 360.0 for name in ("stage_flag_test", "stage_sequence_test", "head_closure_test", "head_crane_test",
+                                             "head_preflight_test", "pauldron_delivery_test", "pauldron_preflight_test")}}
 
 
 def is_scene_tree(path: Path, visited: frozenset[Path] = frozenset()) -> bool:
@@ -64,22 +60,15 @@ class Case:
 def cases() -> dict[str, Case]:
     result = {}
     for path in sorted((PROJECT / "tests").glob("*_test.gd")):
-        if path.stem in HUMAN_M3_CHECKS or path.stem in DEFERRED_M3_SAVE_CHECKS:
-            continue
         if is_scene_tree(path):
             result[path.stem] = Case(["--script", "tests/" + path.name],
                                      timeout=CASE_TIMEOUTS.get(path.stem, 180.0))
-    aliases = {
-        "default_workshop_launch": [],
-        "m2_workshop_launch": ["--m2-workshop"],
-        "m2_retention_launch": ["--m2-workshop", "--m2-trial=retention"],
-        "m2_crane_launch": ["--m2-workshop", "--m2-trial=crane"],
+    launches = {
+        "workshop_launch": [],
+        "stage_launch": ["--stage=pelvis"],
     }
-    for name, arguments in aliases.items():
+    for name, arguments in launches.items():
         result[name] = Case(["--quit-after", "5", "--", *arguments], "launch")
-    for profile in ("robot", "foot", "pads_single", "pads_multi", "leg_bay_retention", "leg_bay_crane", "leg_bay_m3"):
-        result[profile + "_profile_launch"] = Case(
-            ["--quit-after", "5", "--", "--profile=" + profile], "launch")
     result["source_assets"] = Case(
         ["-B", "-m", "unittest", "discover", "-s", str(PROJECT / "tests"),
          "-p", "test_source_assets.py"], "python")
@@ -255,7 +244,7 @@ def main() -> int:
     parser.add_argument("--only", nargs="+", help="Case names from --list")
     parser.add_argument("--jobs", type=int, default=3, help="Independent cases to run at once")
     parser.add_argument("--timeout", type=float,
-                        help="Override every case's timeout in seconds (default 180; full M3 journey 900)")
+                        help="Override every case's timeout in seconds (default 180)")
     args = parser.parse_args()
     if args.jobs < 1:
         parser.error("--jobs must be at least 1")

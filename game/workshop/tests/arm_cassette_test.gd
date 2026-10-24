@@ -1,4 +1,4 @@
-extends "res://tests/kit/m3_section.gd"
+extends "res://tests/kit/stage_section.gd"
 ## Mechanical transfer in continuous play, not walking/targetability review.
 func run() -> void:
 	if not await start("left_arm"):finish();return
@@ -25,7 +25,7 @@ func run() -> void:
 		matching=matching and actual.is_equal_approx(cassette.source_nodes[uid].transform)
 	expect(matching,"all cassette source meshes and actual physics shapes agree during partial lock travel between physics ticks")
 	if not command(crane,"resume"):finish();return
-	expect(game.model.assemblies.arm_cassette.location=="support:m2_service_crane","crane owns the lifted cassette")
+	expect(game.model.assemblies.arm_cassette.location=="support:crane_rigging","crane owns the lifted cassette")
 	expect(game.model.assemblies.left_arm.location=="support:arm_cassette" and is_equal_approx(game.runtime.node("left_arm").global_position.y,6.35),"retained arm follows its cassette above the foot crossing without changing owner")
 	if not command(crane,"go:receiver"):finish();return
 	expect(crane.request("down").is_empty(),"crane starts lowering cassette into station")

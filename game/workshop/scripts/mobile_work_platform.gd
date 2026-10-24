@@ -1,6 +1,6 @@
 extends "res://scripts/equipment.gd"
 ## One ground-transferred, stabilized personnel platform. Dock routes, occupied
-## footprint and heights are authored in the shared M3 layout. The player may ride
+## footprint and heights are authored in the shared workshop layout. The player may ride
 ## height changes and ground transfers with a hand load; ground transfers require
 ## a lowered deck clear of loose loads.
 const Sweep = preload("res://scripts/motion_sweep.gd")

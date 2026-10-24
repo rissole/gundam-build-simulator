@@ -414,9 +414,9 @@ weather seals, full manufactured inventory/part identifiers, source models and
 playable manuals. These selected interfaces supersede the earlier open interface
 questions; they are not additional user-approved dimensions or gameplay evidence.
 
-## Wider M3 head implementation — 2026-10-24
+## Robot workshop head implementation — 2026-10-24
 
-- `game/workshop/tools/author_m3_head.py` authors the baseplate, handed rear-wrap
+- `game/workshop/tools/author_head.py` authors the baseplate, handed rear-wrap
   sides and structural roof from the interface/handling sections above and the
   final-assembly plan's fixture, crane-route and work-patch tables.
 - Four passive upright stores in the bulky bay feed the shared fixture at
@@ -433,8 +433,8 @@ questions; they are not additional user-approved dimensions or gameplay evidence
 - Payload/full-rig preflight includes fitted neighbors/hardware and rejects low
   crossings and reversed plate entry. Mechanical/manual checks are automated;
   walking, reach/visibility, manufactured detail and presentation remain unreviewed.
-- The 2026-10-24 user decision resolves the task-09 shelf blocker: both M3 shelves
-  are 1.50 m wide, accepting one 1.45 × 0.35 × 1.20 m panel; M2 is unchanged.
+- The 2026-10-24 user decision resolves the task-09 shelf blocker: both workshop shelves
+  are 1.50 m wide, accepting one 1.45 × 0.35 × 1.20 m panel; the leg-bay trial shelf was unchanged.
 - Task 09 adds shelf-carried HD-SENSORS, HD-FACE and HD-MASK, followed by the
   upright two-end crown crane load; the chest manual owns all external slots.
 - Bench preparation supplies two identical cameras, one range sensor and six M6

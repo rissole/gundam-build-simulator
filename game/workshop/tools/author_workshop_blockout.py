@@ -1,6 +1,6 @@
-"""Author the M3 workshop's shared spatial contract and derived solid groups.
+"""Author the robot workshop's shared spatial contract and derived solid groups.
 
-Equipment and content consume leg-bay-m3-layout.json. The old leg author remains
+Equipment and content consume workshop-layout.json. The old leg author remains
 responsible for structural recipes; this author owns the wider spatial blockout.
 No player/access simulation or rendered verification is performed here.
 """
@@ -12,7 +12,7 @@ import math
 from pathlib import Path
 
 ASSETS = Path(__file__).resolve().parents[1] / "assets"
-PATH = ASSETS / "leg-bay-m3-layout.json"
+PATH = ASSETS / "workshop-layout.json"
 
 
 def pose(position, rotation=(0, 0, 0)):
@@ -400,9 +400,9 @@ def contract():
             entry["visual_size"]=[sx-.012,sy-.012,sz-.012]
         if entry["id"]=="transverse_table" or entry["id"].startswith("arm_cassette_floor_pad_"):
             entry["visual_offset"]=[0,.004,0]
-    from author_m3_pauldrons import stores
+    from author_pauldrons import stores
     stores(data)
-    from author_m3_head import fixtures
+    from author_head import fixtures
     fixtures(data)
     return data
 
@@ -463,7 +463,7 @@ def delivery_inputs(layout, data):
         task["park_position"]=[8.4,0,18]
     for owner,source in data["foot_storage"].items():
         layout["crane"]["tasks"][owner]=dict(title="Prepared "+("left" if owner=="foot" else "right")+" foot",
-            payload="assembly",load_uid=owner,owner=owner,slot="",source_support=owner+"_store",support="m2_service_crane",
+            payload="assembly",load_uid=owner,owner=owner,slot="",source_support=owner+"_store",support="crane_rigging",
             receiver_support="foot_carrier",receiver_equipment="foot_carrier",follow_owner="left_leg" if owner=="foot" else "right_leg",
             secured=dict(milestone=""),endpoint_ids=["magnet_a","magnet_b","magnet_c","magnet_d"],
             # Four exposed top faces of the fixed FA-100 rails. Sole-local
@@ -475,7 +475,7 @@ def delivery_inputs(layout, data):
             approach=dict(axis=[0,-1,0],distance=.08),rig_clearance=1.5,up_y=6.9,
             rack_contacts=[],console_position=data["crane"]["console"],overhead_y=23.0,park_position=[8.4,0,18])
     layout["crane"]["tasks"]["pelvis"]=dict(title="Pelvis and waist",payload="assembly",load_uid="pelvis",owner="pelvis",slot="",
-        source_support="bulky_fixture",source_equipment="module_supports",support="m2_service_crane",receiver_support="pelvis_gantry",receiver_equipment="module_supports",
+        source_support="bulky_fixture",source_equipment="module_supports",support="crane_rigging",receiver_support="pelvis_gantry",receiver_equipment="module_supports",
         secured=dict(milestone=""),endpoint_ids=["magnet_a","magnet_b","magnet_c","magnet_d"],
         magnetic_points={f"pelvis_eye_{i}":[x,.75,z] for i,(x,z) in enumerate([(x,z) for x in [-1.15,1.15] for z in [-.70,.70]],1)},
         spreader_points=[[x,0,z] for x in [-1.35,1.35] for z in [-.90,.90]],
@@ -483,7 +483,7 @@ def delivery_inputs(layout, data):
         route_positions=[[3.25,1.2,13],[3.25,10.8,13],[13,10.8,13],[13,10.8,26],[13,10.72,26],[13,10.6,26]],
         approach=dict(axis=[0,-1,0],distance=.12),rig_clearance=2.05,up_y=14.0,rack_contacts=[],
         access_mode="pelvis",restore_access=True,console_position=data["crane"]["console"],overhead_y=23.,park_position=[8.4,0,18])
-    chest_common=dict(payload="assembly",load_uid="chest",support="m2_service_crane",
+    chest_common=dict(payload="assembly",load_uid="chest",support="crane_rigging",
         endpoint_ids=["magnet_a","magnet_b","magnet_c","magnet_d"],
         magnetic_points={f"chest_pad_{i}":[x,3.55,z] for i,(x,z) in enumerate([(x,z) for x in [-1.15,1.15] for z in [-.65,.65]],1)},
         handle_points={f"chest_pad_{i}":[x,3.55,-.85 if z<0 else 1.05] for i,(x,z) in enumerate([(x,z) for x in [-1.15,1.15] for z in [-.65,.65]],1)},
@@ -499,7 +499,7 @@ def delivery_inputs(layout, data):
         secured=dict(milestone="chest_secured"),source_pose=pose([3.25,.85,13]),receiver_pose=pose([13,12.7,26]),
         route_positions=[[3.25,.85,13],[3.25,12.88,13],[13,12.88,13],[13,12.88,26],[13,12.88,26],[13,12.7,26]],
         approach=dict(axis=[0,-1,0],distance=.18),access_mode="chest",restore_access=True)
-    core_common=dict(payload="assembly",load_uid="core",rig_adapter="core_guide",support="m2_service_crane",endpoint_ids=["magnet_a","magnet_b"],
+    core_common=dict(payload="assembly",load_uid="core",rig_adapter="core_guide",support="crane_rigging",endpoint_ids=["magnet_a","magnet_b"],
         magnetic_points={"core_front":[0,.58,-.15],"core_aft":[0,.22,1.16]},
         point_ends={"core_front":"magnet_a","core_aft":"magnet_b"},endpoint_labels={"magnet_a":"forward equalizing bridge","magnet_b":"aft magnetic end"},
         handle_points={"core_front":[.42,.32,-.15],"core_aft":[0,.22,1.16]},
@@ -516,7 +516,7 @@ def delivery_inputs(layout, data):
         route_positions=[[3.25,1.3,13],[3.25,6,13],[23.7,6,13],[23.7,6,32.4],[24,6,32.4],[24,18.47,32.4],
                          [13,18.47,32.4],[13,13.35,32.4],[13,13.35,28.2],[13,13.35,28.2]],
         approach=dict(axis=[0,0,-1],distance=0))
-    layout["crane"]["tasks"]["backpack_store"]=dict(payload="assembly",load_uid="backpack",support="m2_service_crane",
+    layout["crane"]["tasks"]["backpack_store"]=dict(payload="assembly",load_uid="backpack",support="crane_rigging",
         title="Backpack to fixture",owner="backpack",slot="",source_support="backpack_store",receiver_support="bulky_fixture",
         receiver_equipment="module_supports",receiver_contact=True,secured=dict(milestone=""),
         endpoint_ids=["magnet_a","magnet_b"],magnetic_points={"backpack_left":[-.72,.88,1.4],"backpack_right":[.72,.88,1.4]},
@@ -533,7 +533,7 @@ def delivery_inputs(layout, data):
         approach=dict(axis=[0,-1,0],distance=.2))
     backpack.pop("receiver_support");backpack.pop("receiver_contact")
     layout["crane"]["tasks"]["backpack"]=backpack
-    layout["crane"]["tasks"]["cassette"]=dict(payload="assembly",load_uid="arm_cassette",support="m2_service_crane",
+    layout["crane"]["tasks"]["cassette"]=dict(payload="assembly",load_uid="arm_cassette",support="crane_rigging",
         title="Cassette to station",owner="arm_cassette",slot="",source_support="cassette_park",source_equipment="arm_cassette",
         receiver_support="cassette_station",receiver_equipment="arm_cassette",receiver_contact=True,rig_adapter="arm_cassette",
         secured=dict(milestone=""),endpoint_ids=["magnet_a","magnet_b","magnet_c","magnet_d"],
@@ -547,7 +547,7 @@ def delivery_inputs(layout, data):
         uid=side+"_arm"; center=data["robot"]["shoulders"][0 if sign<0 else 1]
         offset=data["arm_delivery"]["approach_distance"]
         before=[center[0]+sign*math.sin(math.pi/12)*offset,center[1]-math.cos(math.pi/12)*offset,center[2]]
-        layout["crane"]["tasks"][uid]=dict(payload="assembly",load_uid=uid,support="m2_service_crane",title=side.title()+" arm to shoulder",
+        layout["crane"]["tasks"][uid]=dict(payload="assembly",load_uid=uid,support="crane_rigging",title=side.title()+" arm to shoulder",
             owner="chest",slot=uid,source_support="arm_cassette",source_equipment="arm_cassette",guided_receiver=side+"_shoulder",
             receiver_equipment=side+"_shoulder",rig_adapter=side+"_shoulder",secured=dict(milestone=uid+"_retained"),
             endpoint_ids=["magnet_a","magnet_b","magnet_c","magnet_d"],
@@ -567,10 +567,10 @@ def delivery_inputs(layout, data):
         route_positions=[[21,1.55,-6.3],[21,4.8,-6.3],[14,4.8,-6.3],[14,4.8,9.9],[14,1.55,9.9]],route_rotations=[[0,0,0]]*5)
     layout["crane"]["tasks"]["right_arm_store"]=right
     for key,value in layout["crane"]["tasks"][layout["crane"]["task"]].items():layout["crane"][key]=deepcopy(value)
-    from author_m3_pauldrons import routes
+    from author_pauldrons import routes
     layout["workshop"]=data
     routes(layout)
-    from author_m3_head import routes as head_routes
+    from author_head import routes as head_routes
     head_routes(layout)
     return layout
 

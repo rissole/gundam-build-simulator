@@ -9,7 +9,7 @@ func _initialize() -> void:call_deferred("run")
 
 func run() -> void:
 	var game = Fixture.new();root.add_child(game)
-	var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/leg-bay-m3-layout.json"))
+	var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json"))
 	var world = Blockout.new();game.add_child(world);world.setup(game,layout.workshop)
 	var model_data = {"version":1,"parts":{"panel":{"family":"TEST","carry_class":"two_hand"}},"assemblies":{}}
 	var supports = {};var stock = []

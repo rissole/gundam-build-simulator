@@ -140,14 +140,14 @@ Its "Remaining work" list is complete; the deferred items are tracked in the
   `complete` is the final development boundary. Manual/stock, shelf/elevator,
   optical, supported correction and full-rig route checks are mechanical evidence;
   walking, reach/visibility and rendered presentation remain unreviewed.
-  See [head details](../../head.md#wider-m3-head-implementation--2026-10-24) and
+  See [head details](../../head.md#robot-workshop-head-implementation--2026-10-24) and
   [task 09](m3-wide-handoff/09-head-hand-pieces-and-crown.md) for scope and acceptance.
 
 - Task 08 adds four head crane pieces on staged receivers, upright bulky-fixture
   inserts and store transfers, separate retention/loom stock, and `head_sensors`.
   Full-payload/full-rig preflight and supported-correction/manual checks cover
   this structural subset; hand-carried closures and crown remain task 09.
-  See [head implementation details](../../head.md#wider-m3-head-implementation--2026-10-24)
+  See [head implementation details](../../head.md#robot-workshop-head-implementation--2026-10-24)
   for source locations, contact tolerance and the hub relief deviation. Walking,
   reach/visibility and rendered presentation have not been reviewed.
 
@@ -155,7 +155,7 @@ Its "Remaining work" list is complete; the deferred items are tracked in the
   shared limb station, and both pauldron carriers, M20 bolt units, independent
   shelf-carried panels and local restraint release. The `head` development stage
   starts with closed pauldrons, released restraints and a parked crane. See the
-  [pauldron implementation detail](../../arms/shoulder-and-upper-arm.md#wider-m3-pauldron-implementation--2026-10-24)
+  [pauldron implementation detail](../../arms/shoulder-and-upper-arm.md#robot-workshop-pauldron-implementation--2026-10-24)
   for passive stores, mounting reliefs/shoes, harness clearance and panel sizes.
   Payload/full-rig preflight and mechanical regression evidence are separate from
   the user's pending walking/access playtest; presentation remains unreviewed.
@@ -256,7 +256,7 @@ Integrated foundation:
   waist key/bolt bores and projected neck pilot. Local supported correction lifts
   and reinstalls the same chest; unrelated leg-holder support no longer blocks
   chest undo. Details and source/storage coordinates are in the
-  [chest implementation record](../../torso/chest-and-cockpit.md#wider-m3-prepared-implementation--2026-10-24).
+  [chest implementation record](../../torso/chest-and-cockpit.md#robot-workshop-prepared-implementation--2026-10-24).
 
 - The prepared core uses the same bulky fixture with keyed saddles, a passive
   source store and two crane ends. Rear delivery follows the measured low bypass,
@@ -285,7 +285,7 @@ Integrated foundation:
   Articulated parent poses, telescope deployment and partial weight transfer save
   and restore, and supported keeper correction preserves stock identity.
   Dimensions and the exact playable boundary
-  are in the [backpack source record](../../torso/backpack-and-power.md#wider-m3-backpack-source-and-route-preflight--2026-10-24).
+  are in the [backpack source record](../../torso/backpack-and-power.md#robot-workshop-backpack-source-and-route-preflight--2026-10-24).
 
 - Both prepared arms now have 22 source pieces each, declared passive supports,
   actual structural contact/lifting pads and handed B eyes. The chest contains
@@ -297,7 +297,7 @@ Integrated foundation:
   The source check found the 0.65 m pre-seat approach crossed a fixed front A
   clevis. The authored correction uses 1.13 m along the same seating axis;
   upper rig anchors also stay outboard of the fixed cup. Both corrections have
-  negative counterexample checks. See the [arm source record](../../arms/shoulder-and-upper-arm.md#wider-m3-source-and-full-rig-preflight--2026-10-24).
+  negative counterexample checks. See the [arm source record](../../arms/shoulder-and-upper-arm.md#robot-workshop-source-and-full-rig-preflight--2026-10-24).
   The subsequent retained-cassette and arm-delivery controls are integrated below.
   Pauldrons and release of the supplied joint/digit restraints remain incomplete.
 
@@ -336,7 +336,7 @@ Remaining work, in implementation order. The executable task breakdown is in
 
 1. Baseline commit and the right-foot carrier return in the full-sequence test (task 01).
 2. Turn off M3 saving and remove save/restore checks from M3 tests (tasks 03–04).
-   See [Saves and checkpoints](../m3-wide-workshop-plan.md#saves-and-checkpoints).
+   See [Saves and checkpoints](../robot-workshop-plan.md#saves-and-checkpoints).
 3. Extract the scripted stage sequence shared by tests and the `--m3-stage=<name>`
    development launch flag (tasks 05–06).
 4. Add one generic receiving interface and a shared occupancy register, then the

@@ -236,7 +236,7 @@ Pads remain available after arms/head installation. Later opening starts with
 crane support before lower-latch release; raise to 90°, engage both strut locks,
 then detach the crane for core work. Use ordinary crane assistance and contextual
 pin/lock/connection work. No permanent dedicated core/backpack console is required.
-The wider-M3 implementation below now supplies these external operations on the
+The robot workshop implementation below now supplies these external operations on the
 prepared stand-in; detailed internal source engineering remains deferred.
 
 ## Future core withdrawal with the complete robot
@@ -369,9 +369,9 @@ Strength, materials/ratings, complete inventories, internal power/cooling/thrust
 machinery, and final cosmetic surfaces remain later work. Revise agreed interfaces
 only for a measured conflict and coordinate the affected neighbors.
 
-## Wider-M3 core implementation — 2026-10-24
+## Robot workshop core implementation — 2026-10-24
 
-`game/workshop/tools/author_m3_core.py` now supplies one prepared core, fixed
+`game/workshop/tools/author_core.py` now supplies one prepared core, fixed
 chest dock/guides and the external installation manual. Its existing physical
 assembly moves from a passive store at world `(-7,1.30,31.30)` to the shared
 bulky fixture at `(3.25,1.30,13)`. The storage route raises the axis to Y6,
@@ -424,9 +424,9 @@ presentation, structural ratings or human approval. Backpack implementation and
 its open-cover interlocks remain next; complete-robot maintenance extraction is
 not represented by the initial-installation/local-correction fixture.
 
-## Wider-M3 backpack source and route preflight — 2026-10-24
+## Robot workshop backpack source and route preflight — 2026-10-24
 
-`game/workshop/tools/author_m3_backpack.py` supplies the prepared frame, rear
+`game/workshop/tools/author_backpack.py` supplies the prepared frame, rear
 panel, two nozzles, hinge eyes, lifting pads, three-stage struts and lower latch
 stand-ins. These16 source pieces belong to one prepared assembly and add no loose
 consumable stock. The fixed hinge/strut clevises remain chest-owned. The source
@@ -482,7 +482,7 @@ run. These are geometry and mechanical checks, not walking/access or rendered
 approval. This source increment preceded the installation/closure implementation
 recorded below; preflight articulation alone was not player-operation evidence.
 
-## Wider-M3 backpack installation and closure — 2026-10-24
+## Robot workshop backpack installation and closure — 2026-10-24
 
 `backpack_hinge.gd` now owns temporary crane loading, continuous telescope
 deployment, positive open locks, hinge angle, draw latches and service covers.
@@ -532,7 +532,7 @@ entries into the moving sockets. The selected0.95 m supplied length and0.10 m
 minimum internal bend radius remain source-engineering requirements; the visible
 proxy does not model constant-length wire slack or certify internal bend radii.
 Its external swept volume is checked against the receiving frame and the actual
-rotating backpack, including its front crossmember. This is the M3 representative
+rotating backpack, including its front crossmember. This is the workshop's representative
 service connection on prepared modules, not a completed detailed harness model.
 
 The implementation ledger records the combined mechanical regression results.

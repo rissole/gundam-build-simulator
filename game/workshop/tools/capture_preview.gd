@@ -1,10 +1,10 @@
 extends SceneTree
-## Rendered preview of the launch profile: ./play.command --script tools/capture_preview.gd -- [profile flags]
+## Rendered preview of the workshop: ./play.command --script tools/capture_preview.gd
 func _initialize() -> void:
 	capture.call_deferred()
 
 func capture() -> void:
-	var game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
+	var game = load("res://scenes/workshop.tscn").instantiate()
 	root.add_child(game)
 	game.set_paused(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

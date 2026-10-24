@@ -3,7 +3,7 @@
 > **Archived 2026-10-24.** All tasks are done. The current state, rules and deferred items are in [the workshop state](../../leg-workshop-next-steps.md).
 
 Written 2026-10-24 after reviewing the paused 6h20m Codex run on
-[m3-wide-workshop-plan.md](../../m3-wide-workshop-plan.md). Each numbered file is a
+[robot-workshop-plan.md](../../robot-workshop-plan.md). Each numbered file is a
 self-contained work order for one agent. Where a task file and older plan text
 disagree, the task file wins.
 
@@ -32,7 +32,7 @@ disagree, the task file wins.
 | 07 | [Generic receiver, occupancy register, pauldrons](07-receiver-occupancy-pauldrons.md) | Sol (xhigh) | 05 | Architecture change; optional Opus review afterwards |
 | 08 | [Head: baseplate, sides, top](08-head-crane-pieces.md) | Sol | 07 | Should be mostly data on 07's receiver |
 | 09 | [Head: sensors, faceplate, mask, crown](09-head-hand-pieces-and-crown.md) | Sol (Grok possible) | 08 | See the note in the file |
-| 10 | [Playtest handoff checklist](10-playtest-checklist.md) | Grok | 09 | Done — see ../m3-wide-playtest-checklist.md |
+| 10 | [Playtest handoff checklist](10-playtest-checklist.md) | Grok | 09 | Done — see ../robot-workshop-playtest-checklist.md |
 
 Run them in order. Only 02 is safe to run in parallel with another task (it touches
 docs only). Everything else shares tests and the regression runner.

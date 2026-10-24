@@ -4,7 +4,7 @@ Last updated: 2026-10-24
 
 This records the agreed game design from the workshop-loop discussion. Robot geometry, engineering detail, and part inventories remain in [ROBOT_DESIGN.md](ROBOT_DESIGN.md). Recommendations for reaching a playable foot build are recorded separately in the [foot prototype plan](design/game/foot-prototype-plan.md).
 
-**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) launches one robot game: the supported-foot build in the hangar, followed by the wider M3 workshop. M2 trials and the foot-only workshop remain development profiles. The user finds M3's complete structural leg-to-gantry journey largely satisfying. The current [final assembly plan](design/game/final-assembly-plan.md) develops the full gantry and major-section workflow before further implementation. Historical increments below retain their original scope; use the [active workshop state](design/game/leg-workshop-next-steps.md) for current status.
+**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) launches one robot game: the supported-foot build in the hangar, followed by the robot structure. The user finds the complete structural leg-to-gantry journey largely satisfying. The current [final assembly plan](design/game/final-assembly-plan.md) develops the full gantry and major-section workflow before further implementation. Historical increments below retain their original scope; use the [active workshop state](design/game/leg-workshop-next-steps.md) for current status.
 
 ## Experience and purpose
 
@@ -195,7 +195,7 @@ Increments 1 and 2 introduced the two-pad regression scene, which contains both 
 
 The shared assembly model reads authored types, slots, prerequisites, milestones, and manual references. The parent and child manuals retain independent pages and show model-based illustrations. Looking at another build does not replace the selected manual. Undo acts on the selected manual; installed children must be detached through parent history before their internal preparation can be undone. Mount undo uses a free preparation station and explains when none is available.
 
-The original single-pad loop remains a regression scenario. The construction model is independent of desktop input. The actuator extension is described below; local save/load is implemented as described below, while AR support remains a later increment. See the [workshop README](game/workshop/README.md) for controls and verification.
+The original single-pad loop remained a regression scenario until 2026-10-25. The construction model is independent of desktop input. The actuator extension is described below; local save/load is implemented as described below, while AR support remains a later increment. See the [workshop README](game/workshop/README.md) for controls and verification.
 
 
 ## Pitch actuator milestone
@@ -319,7 +319,7 @@ Before authoring later stages, detail the next component's actual parts and inte
 
 ## Supported foot milestone
 
-The playable project is now `game/workshop`, titled **Gundam Build Simulator**, with `play.command` and `edit.command` launchers. The foot is its first construction area. Single-pad and two-pad scenarios retain the earlier suspension setup for regression checks.
+The playable project is now `game/workshop`, titled **Gundam Build Simulator**, with the `play.command` launcher. The foot is its first construction area.
 
 The default 135-piece workshop keeps its existing child builds and adds a visible foot carrier with end bearings and frame clamps. The foot starts upright, with its sole datum 0.75 m above the floor. Local bay controls select Upright, Sole left or Sole right; powered rotation is constrained to the foot's long axis. A ramp reaches the 0.55 m side platform. Small preparation stations keep R-drag and reset; the foot uses its own physical controls.
 
@@ -338,13 +338,15 @@ Rotation and transfer controls are mounted on the platform's parallel outer rail
 
 ## Accepted workshop playtest and local save/resume
 
+*This save system was removed on 2026-10-25 with the foot-only workshop; see [One robot workshop](#one-robot-workshop-2026-10-25).*
+
 After the pickup-only cached outlines, performance fixes and broad yellow workpiece discovery were delivered, the user accepted the current workshop playtest on 2026-10-22: “ok im happy with the current playtest!” The next authorized increment is saving, rather than more construction content or another presentation revision.
 
 The default supported-foot workshop now has one versioned local slot with autosaves every 30 seconds of active play, on pause and on quit. Startup restores into the pause menu. Save writes immediately; Reload save confirms reverting unsaved changes; New workshop confirms replacing the current save. Failure leaves the running session open and makes quitting without saving an explicit choice.
 
 The snapshot retains physical identities, pockets and ownership, build history, loose/carried object physics, station occupants/rotation, supported-foot current and destination motion, player pose/view and manual session state. Whole-payload validation precedes live replacement; atomic writes, a checksum, content fingerprint and last-good backup protect recovery. Unsupported/newer content is preserved until an explicit new-workshop decision. Legacy scenarios, captures and headless tests do not touch the normal profile.
 
-The [save/resume plan and implementation contract](design/game/save-resume.md) records the scope and verification evidence. All 28 headless regression suites pass, including 430 save-specific checks of model/storage and the real workshop scene. This increment does not claim a new human playtest or rendered review. Migrations, cloud sync and multiple slots remain outside this increment.
+The [save/resume plan and implementation contract](design/game/history/save-resume.md) records the scope and verification evidence. All 28 headless regression suites pass, including 430 save-specific checks of model/storage and the real workshop scene. This increment does not claim a new human playtest or rendered review. Migrations, cloud sync and multiple slots remain outside this increment.
 
 ## Supported left leg and expanded workshop
 
@@ -395,53 +397,33 @@ services, armor, thrusters, waist/torso and the second leg remain deferred. The
 selected geometry, parts and manuals. Headless behavior/geometry evidence does
 not establish a human playtest or rendered approval for this expansion.
 
-## Base game and prototype lane, 2026-10-23
+## One robot workshop, 2026-10-25
 
-**Superseded on 2026-10-24:** the user asked for one launch command, with the base
-foot build combined with M3. `./play.command` now opens the robot game: the
+On 2026-10-24 the user asked for one launch command, with the base foot build
+combined with the leg-to-robot workshop; on 2026-10-25 for everything to be
+consolidated into that one workshop. `./play.command` opens the robot game: the
 pads and pitch actuator are built in the hangar on a turning fixture at the left
-foot's store, and the wider M3 workshop continues in the same session.
-`--stage=<name>` starts later. Like M3, the robot game has no saves yet. The
-foot-only workshop below remains the `--profile=foot` development profile with
-its save. The rest of this section is the 2026-10-23 decision as recorded.
+foot's store, and the robot structure continues in the same session.
+`--stage=<name>` starts later, for players and tests alike. The foot-only
+workshop, the leg-bay layout and equipment trials, the regression scenarios and
+all save code were removed. Nothing is saved yet. The earlier prototype-lane
+decision is [archived](design/game/history/prototype-lane-20261023.md).
 
-The user decided that default `./play.command` launches only the supported-foot
-workshop: the pads, the pitch actuator and its save. The actuator work is the
-base game, and the detailed foot build continues there after the end-to-end
-workflow has been outlined. The upright-hoist expanded workshop and the M1
-layout trial are retired. Their saves (`user://leg-workshop-save.json`, M1
-slots) are no longer read.
-
-The M1–M4 milestones are a prototype lane, not a second game. Each trial runs
-as a scenario profile on shared feature modules: layout data, equipment
-(fixture, rail, lifts, crane, shelf), a single hand arbiter, motion sweeps and
-a profile-parameterised session codec. The learnings and modules from M1–M4
-will later be folded back into the base game and the trial profiles retired.
-Reintegration should mean adding equipment and content to the foot profile, not
-porting milestone-specific classes. The consolidation was intended to be
-behaviour-neutral, and foot saves keep their recorded fingerprint.
-
-The current prototype lane exposes the bounded M2 retaining-half and crane
-examples, with supplied construction and independent saves. The complete
-leg-to-robot M3 journey was authorized on 2026-10-23, with a prepared complete foot
-at dispatch and player construction of the remaining structural leg. Its
+The leg-to-robot journey was authorized on 2026-10-23, with a prepared complete
+foot at dispatch and player construction of the remaining structural leg. Its
 [implementation and acceptance ledger](design/game/history/leg-workshop-m3-plan.md)
 tracks the supported handoff, full construction, retention and holder release.
-On 2026-10-24 the user removed full reverse-sequence verification from M3;
-existing supported undo remains for correcting mistakes.
-Shared assembly projection now handles heel hardware alongside other components;
-the retained single/two-pad profiles verify that earlier loop. Architecture
-checks do not establish player acceptance. On 2026-10-23 the user accepted the
-revised M2 playtest: “m2 plays great. please commit.” This authorizes the
-consolidation commit. The later “Implement the plan” request authorizes M3;
-on 2026-10-24 the user described M3 as largely satisfying and requested better
-measurement planning before expanding the workshop.
+On 2026-10-24 the user removed full reverse-sequence verification; existing
+supported undo remains for correcting mistakes. The user accepted the leg-bay
+equipment trials on 2026-10-23 and described the leg-to-robot journey as largely
+satisfying on 2026-10-24, requesting better measurement planning before
+expanding the workshop.
 
 ## Final assembly workflow
 
 Updated 2026-10-24. The [final gantry and assembly plan](design/game/final-assembly-plan.md)
 is the active design for whole-robot access, major-section installation and shared
-equipment. It records measured M3 constraints, selected choices and unresolved
+equipment. It records measured leg-journey constraints, selected choices and unresolved
 geometry. Develop it backwards from the completed robot, then agree major-section
 connections, then each section's workstation workflow.
 
@@ -472,7 +454,7 @@ and head surroundings are open. The backpack's later opening sweep and core
 withdrawal path must still clear the completed robot. Build the head on its neck
 in the existing sequence, ending with the decorative crown/crest.
 
-The user selected M3's raised pose for access planning: nominal soles 1.4 m above
+The user selected the leg journey's raised pose for access planning: nominal soles 1.4 m above
 the workshop floor. Eventual lowering remains undecided. Two side elevators feed
 shared front/rear work platforms. Preserve the satisfying scale and onboard lift
 operation; selected platform levels and loading openings still require actual
@@ -480,7 +462,7 @@ equipment geometry and swept-route verification.
 The current primitive art is not an accepted final visual target.
 Each side elevator is shared across hip and shoulder work levels. Its shaft must
 clear the installed arms, with landings providing actual connection access;
-extending the current M3 hip lift vertically is not an established solution.
+extending the original single-hip lift vertically is not an established solution.
 The [coordinated fixture/route plan](design/game/final-assembly-plan.md#1-measured-workshop-and-gantry-layout)
 and [updated layout](design/game/final-assembly-layout.svg) now specify an 11×12 m
 bulky bay, a 7×13 m shared limb bay with passive leg/arm parking, supported rail
@@ -489,7 +471,7 @@ a low pelvis gantry. A low outboard crane bypass, outboard lift/high crossing an
 deliver core and backpack; high routes serve head pieces and pauldrons. Four elevated levels
 remain8.4/11.2/14.0/16.4. These are checked design envelopes; actual solids,
 structural capacity and ordinary-control access remain implementation work.
-The documentation pass does not change the current M3 scene.
+The documentation pass did not change the workshop scene.
 
 ### Shared limb construction area
 
@@ -508,7 +490,7 @@ and route contracts while developing each component workflow and actual equipmen
 
 ### Leg construction rail and docking
 
-M3 implements a prepared-foot handoff, horizontal structural leg construction,
+The workshop implements a prepared-foot handoff, horizontal structural leg construction,
 rail travel, tilt and upward docking. Seating the ball does not secure the hip:
 both retaining halves and their fastening hardware are required before holder
 release, with unpowered joint restraints maintained. Local support reacquisition
@@ -525,7 +507,7 @@ crane deliveries, adding variety while retaining one shared handling vocabulary.
 - Retain the central crane console's Up / Down / Go operation and individual
   magnetic-end attachment. Relevant work areas are destinations; each component
   should not add another permanent control. High deliveries need measured rigging,
-  orientation and receiver routes beyond M3's low horizontal transfers.
+  orientation and receiver routes beyond the leg journey's low horizontal transfers.
 - Keep local tactile Advance / Stop / Return for the rail and guided carrier.
   Support changes follow the visible handling sequence; do not reintroduce the
   rejected extra external stabilizer/capture command.
@@ -541,9 +523,9 @@ crane deliveries, adding variety while retaining one shared handling vocabulary.
 
 Before implementation, dimension the robot, equipment, load routes, standing
 areas, insertion paths and fastening/service access in one coordinated layout.
-The next implementation is the [M3 wider-workshop adaptation](design/game/m3-wide-workshop-plan.md),
+The [robot workshop plan](design/game/robot-workshop-plan.md) implements this
 before deeper component internals. The user will check walking and connection
 access; automated checks cover content, equipment movement, support, interlocks
-and save/resume. Supply pause-menu playtest checkpoints for later assembly stages.
+and stage progression. `--stage` replaces the planned pause-menu checkpoints.
 Rendered review remains by explicit request. Keep numerical geometry, automated
 behavior, inspected presentation and player feedback distinct.

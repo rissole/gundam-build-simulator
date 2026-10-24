@@ -2,7 +2,7 @@ extends "res://tests/kit/harness.gd"
 func _initialize() -> void:call_deferred("run")
 
 func run() -> void:
-	var game=await boot_profile("leg_bay_m3")
+	var game=await boot_workshop("pelvis")
 	var chest=game.runtime.node("chest")
 	var definition=game.runtime.definition("chest")
 	var low=Vector3(INF,INF,INF);var high=-low

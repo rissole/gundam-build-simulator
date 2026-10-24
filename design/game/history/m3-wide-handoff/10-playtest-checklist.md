@@ -18,9 +18,9 @@ handoff"). Docs only: don't edit code or tests.
 ## Steps
 
 1. Read `game/workshop/scripts/m3_stages.gd` (STAGES, TITLES), §4 "User playtest
-   handoff" in `design/game/m3-wide-workshop-plan.md`, and the M3 launch section in
+   handoff" in `design/game/robot-workshop-plan.md`, and the M3 launch section in
    `game/workshop/README.md`.
-2. Create `design/game/m3-wide-playtest-checklist.md` with:
+2. Create `design/game/robot-workshop-playtest-checklist.md` with:
    - **How to launch:** `./play.command -- --m3-workshop` for a fresh start, and
      `./play.command -- --m3-stage=<stage>` for each stage. Note that stage
      preparation is supplied progress and nothing is saved.
@@ -36,9 +36,9 @@ handoff"). Docs only: don't edit code or tests.
      results.
 3. In `design/game/leg-workshop-next-steps.md`, below the paragraph that ends
    `they override older instructions in this document where they differ.`, add:
-   `The playtest checklist for the complete wider workshop is [m3-wide-playtest-checklist.md](m3-wide-playtest-checklist.md); record results there and summarize them here.`
+   `The playtest checklist for the complete wider workshop is [robot-workshop-playtest-checklist.md](robot-workshop-playtest-checklist.md); record results there and summarize them here.`
 4. In `design/game/handoff/README.md`, change the row for task 10 so its Notes
-   column reads `Done — see ../m3-wide-playtest-checklist.md`.
+   column reads `Done — see ../robot-workshop-playtest-checklist.md`.
 
 ## Finish
 

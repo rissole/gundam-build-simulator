@@ -287,7 +287,7 @@
       "id": "left_leg",
       "definition": "left_leg",
       "label": "Structural left leg",
-      "location": "support:m2_leg_rail",
+      "location": "support:leg_holder",
       "home": [
         2.3,
         0.75,
@@ -300,9 +300,9 @@
       "label": "Pelvis gantry",
       "location": "fixture",
       "home": [
-        13.0,
-        10.6,
-        26.0
+        3.25,
+        1.2,
+        13
       ]
     }
   ],
@@ -312,7 +312,7 @@
         "foot"
       ]
     },
-    "m2_leg_rail": {
+    "leg_holder": {
       "assemblies": [
         "left_leg"
       ],
@@ -320,7 +320,7 @@
         "left_leg"
       ]
     },
-    "m2_service_crane": {
+    "crane_rigging": {
       "parts": [
         "lg-thigh-spar"
       ],
@@ -2178,7 +2178,7 @@
     "leg_mount": {
       "parent": "pelvis",
       "slot": "left_leg",
-      "support": "m2_leg_rail"
+      "support": "leg_holder"
     },
     "parts": {
       "LG-100__001": {

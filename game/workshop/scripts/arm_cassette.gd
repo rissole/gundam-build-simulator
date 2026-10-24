@@ -62,7 +62,7 @@ func action_error(action: String) -> String:
 	var index=int(action.get_slice(":",1))
 	if index<0 or index>=clamps.size():return "Unknown cassette clamp."
 	if not occupant().is_empty():return "Keep all cassette clamps engaged until the arm is supported by its four crane ends."
-	if _record().location=="support:m2_service_crane":return "Set the cassette down before adjusting its clamps."
+	if _record().location=="support:crane_rigging":return "Set the cassette down before adjusting its clamps."
 	return ""
 
 func request(action: String) -> String:
@@ -233,13 +233,13 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 	if arm_contact:
 		if not data.clamps.all(func(value):return is_equal_approx(value,expected_clamp)) or data.clamp_index>=0:return ["Arm clamps disagree with the four-end weight-transfer phase."]
 	elif not arm.is_empty() and not data.clamps.all(func(value):return value==0):return ["Retained arm lost a cassette clamp."]
-	if data.clamp_index>=0 and (not arm.is_empty() or record.location=="support:m2_service_crane"):return ["Manual clamp movement requires an empty floor-supported cassette."]
+	if data.clamp_index>=0 and (not arm.is_empty() or record.location=="support:crane_rigging"):return ["Manual clamp movement requires an empty floor-supported cassette."]
 	if not arm_contact:
 		for n in range(6):
 			if n!=data.clamp_index and data.clamps[n]!=0 and data.clamps[n]!=1:return ["Partial cassette clamp has no resumable movement."]
 	if not world.is_empty():
 		var frame: Transform3D=Codec.to_pose(world.fixtures.arm_cassette)
-		if record.location=="support:m2_service_crane" and frame.origin.y>.002 and data.floor_release!=1:return ["Suspended cassette floor pins must be fully retracted."]
+		if record.location=="support:crane_rigging" and frame.origin.y>.002 and data.floor_release!=1:return ["Suspended cassette floor pins must be fully retracted."]
 		if record.location in ["support:cassette_park","support:cassette_station"]:
 			var at=AssemblyRuntime.vec(spec.park if record.location=="support:cassette_park" else spec.station)
 			if not frame.is_equal_approx(Transform3D(Basis.IDENTITY,at)):return ["Cassette pose disagrees with its floor support."]
@@ -251,7 +251,7 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 			var crane: Dictionary=world.equipment.service_crane
 			if crane.task!="cassette" or crane.endpoints.values().any(func(end):return end.state!="attached"):return ["Cassette lost floor retention without four-end crane support."]
 		var crane: Dictionary=world.equipment.service_crane
-		var expected=1.0 if record.location=="support:m2_service_crane" else 0.0
+		var expected=1.0 if record.location=="support:crane_rigging" else 0.0
 		if crane.task=="cassette" and crane.endpoints.values().all(func(end):return end.state=="attached"):
 			if crane.motion=="up":expected=clampf(crane.progress/.1,0,1)
 			if crane.motion=="down":expected=1-clampf((crane.progress-.9)/.1,0,1)

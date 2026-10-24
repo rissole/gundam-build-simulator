@@ -1,5 +1,5 @@
 extends "res://tests/kit/harness.gd"
-## Opt-in survey of the live workshop. M3 includes an elevated room overview. Run with:
+## Opt-in survey of the live workshop, including an elevated hangar overview. Run with:
 ## ./play.command --windowed --resolution 1440x900 --disable-render-loop \
 ##   --fixed-fps 60 --script tests/workshop_visual_review.gd -- --review-tag=before
 var game: Node
@@ -52,7 +52,7 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(output_dir)
 	var inputs = hashes()
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
+	game = load("res://scenes/workshop.tscn").instantiate()
 	root.add_child(game)
 	game.automated_test = true
 	game.set_paused(false)
@@ -60,55 +60,15 @@ func run() -> void:
 	# Keep exact, repeatable standing views while rendering the actual live scene.
 	game.set_physics_process(false)
 	for frame in range(5):await process_frame
-	if game.profile.trial == "m3":
-		await capture("01-workshop",Vector3(23,4.2,22),Vector3(3,2.5,10),false)
-		await capture("02-limb-bay",Vector3(18,1.66,20),Vector3(12,1.6,10),false)
-		await capture("03-gantry",Vector3(3,2.5,19),Vector3(13,11,27),false)
-		await capture("04-preparation",Vector3(-1,1.66,17),Vector3(3.25,1.4,13),false)
-		await capture("05-stock",Vector3(-3,1.66,3),Vector3(-3,1.0,-3),false)
-		for index in range(12):
-			await capture("motion-%02d" % index,Vector3(10+index*.06,1.66,12),Vector3(15,0.1,16),false)
-		await capture("static-a",Vector3(10,1.66,12),Vector3(15,0.1,16),false)
-		await capture("static-b",Vector3(10,1.66,12),Vector3(15,0.1,16),false)
-		finish(inputs)
-		return
-	if OS.get_cmdline_user_args().has("--review-harness"):
-		await capture("01-front-west",Vector3(0.7,1.05,1.8),Vector3(1.4,0.17,0),false)
-		await capture("02-front-east",Vector3(3.9,1.05,1.8),Vector3(3.2,0.17,0),false)
-		await capture("03-rear-west",Vector3(0.7,1.05,-5.4),Vector3(1.4,0.17,-3.6),false)
-		await capture("04-rear-east",Vector3(3.9,1.05,-5.4),Vector3(3.2,0.17,-3.6),false)
-		for index in range(5):
-			await capture("05-joint-motion-%02d" % index,Vector3(1.36+index*0.02,0.25,0.75),Vector3(1.4,0.15,0.1),false)
-		finish(inputs)
-		return
-	await capture("01-arrival",Vector3(0,1.66,6.4),Vector3(0,1.6,-1.8))
-	await capture("02-work-bay",Vector3(0,1.66,1.5),Vector3(2.6,1.35,-1.8),false)
-	await capture("03-ramp-approach",Vector3(4.25,1.66,3.5),Vector3(4.25,0.55,-0.3),false)
-	await capture("04-platform",Vector3(4.25,2.21,-0.4),Vector3(2.3,1.45,-1.8),false)
-	var console: Node3D = game.foot_fixture.get_node("FixtureControls")
-	await capture("05-console",console.global_position+Vector3(-1.12,1.63,0),console.global_position+Vector3(0,1.24,0))
-	await capture("06-preparation",Vector3(-4.8,1.66,1.9),Vector3(-4.6,1.65,-1.2),false)
-	await capture("07-small-stock",Vector3(-6.6,1.66,-4.5),Vector3(-6.6,1.35,-6.2))
-	await capture("08-large-stock",Vector3(4.7,1.66,-4.45),Vector3(4.7,1.4,-6.2))
-	await capture("09-carrier-joints",Vector3(0.65,1.2,0.6),Vector3(2.3,1,-0.1),false)
-	await capture("10-carrier-joints-offset",Vector3(0.75,1.2,0.6),Vector3(2.3,1,-0.1),false)
-	await capture("11-dispatch",Vector3(-0.5,1.66,8.1),Vector3(2.3,1.3,5.5),false)
-	await capture("12-armor-storage",Vector3(5.2,1.66,5),Vector3(7,1.7,7),false)
-	# Intermediate and final service poses expose otherwise hidden support joints.
-	game.player.global_position = Vector3(-2,0.03,1)
-	var response: String = game.foot_fixture.request("sole_left")
-	if not response.is_empty():
-		push_error(response)
-		quit(2)
-		return
-	for frame in range(120):
-		await physics_frame
-		game.foot_fixture.physics(1.0/60.0)
-	await capture("13-fixture-turning",Vector3(0,1.66,1.5),Vector3(2.3,1.55,-1.8),false)
-	for frame in range(125):
-		await physics_frame
-		game.foot_fixture.physics(1.0/60.0)
-	await capture("14-sole-access",Vector3(0,1.66,-1.8),Vector3(2.3,1.55,-1.8),false)
+	await capture("01-workshop",Vector3(23,4.2,22),Vector3(3,2.5,10),false)
+	await capture("02-limb-bay",Vector3(18,1.66,20),Vector3(12,1.6,10),false)
+	await capture("03-gantry",Vector3(3,2.5,19),Vector3(13,11,27),false)
+	await capture("04-preparation",Vector3(-1,1.66,17),Vector3(3.25,1.4,13),false)
+	await capture("05-stock",Vector3(-3,1.66,3),Vector3(-3,1.0,-3),false)
+	for index in range(12):
+		await capture("motion-%02d" % index,Vector3(10+index*.06,1.66,12),Vector3(15,0.1,16),false)
+	await capture("static-a",Vector3(10,1.66,12),Vector3(15,0.1,16),false)
+	await capture("static-b",Vector3(10,1.66,12),Vector3(15,0.1,16),false)
 	finish(inputs)
 
 func finish(inputs: Dictionary) -> void:

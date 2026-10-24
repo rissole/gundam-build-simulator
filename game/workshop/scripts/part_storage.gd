@@ -35,30 +35,21 @@ func setup() -> void:
 	var trim = game.material(Color("83bba6"),0.2)
 	# Two rows at waist/chest height; the back wall provides a continuous aisle.
 	var groups: Array[Dictionary] = []
-	# The robot game keeps the foot build's own cabinets, against the hangar's
-	# rear wall; its other stock moves onto the authored grid.
-	var hangar_cabinets: bool = game.profile.trial=="m3" and not game.profile.get("prepared_foot",true)
-	for zone in (["foot","leg","pelvis","stock"] if not game.profile.leg_content.is_empty() else ["foot"]):
+	# The foot build keeps its own cabinets against the hangar's rear wall; the
+	# other stock moves onto the authored grid.
+	for zone in ["foot","stock"]:
 		for drawers in [true,false]:
 			var kinds: Array[String] = []
 			for kind in (drawer_kinds if drawers else shelf_kinds):
-				var part_zone = "leg" if kind.begins_with("lg-") else "pelvis" if kind.begins_with("pv-") else "foot"
-				if hangar_cabinets:part_zone = "foot" if game.foot_kinds.has(kind) else "stock"
-				if part_zone == zone:kinds.append(kind)
+				if ("foot" if game.foot_kinds.has(kind) else "stock") == zone:kinds.append(kind)
 			if not kinds.is_empty():groups.append({"kinds":kinds,"drawers":drawers,"zone":zone})
 	for entry in groups:
 		var group: Array[String] = entry.kinds
 		var drawers: bool = entry.drawers
 		var columns = ceili(group.size()/2.0)
 		var origin = -9.6 if drawers else 1.0
-		var depth = -8.6 if hangar_cabinets else -6.55
-		var cabinet_stock: bool = game.profile.trial!="m3" or hangar_cabinets and entry.zone == "foot"
-		if entry.zone == "leg":
-			origin = -10.0 if drawers else -5.5
-			depth = 10.2
-		elif entry.zone == "pelvis":
-			origin = 17.7 if drawers else 21.0
-			depth = 30.5
+		var depth = -8.6
+		var cabinet_stock: bool = entry.zone == "foot"
 		var spacing = 0.80 if drawers else 1.04
 		if columns == 0:continue
 		var center = origin+(columns-1)*spacing*0.5
@@ -77,7 +68,7 @@ func setup() -> void:
 			bin.position = Vector3(origin+(i%columns)*spacing,0.82+floorf(i/float(columns))*0.70,depth+0.40)
 			bin.set_meta("bin_kind",kind)
 			bin.set_meta("drawer",drawers)
-			bin.set_meta("cabinet",cabinet_stock and hangar_cabinets)
+			bin.set_meta("cabinet",cabinet_stock)
 			game.add_child(bin)
 			game.bins[kind] = bin
 			var collision = CollisionShape3D.new()

@@ -126,7 +126,7 @@ func run() -> void:
 		push_error("Unknown benchmark variant: "+variant)
 		quit(2)
 		return
-	game = load("res://scenes/workshop.tscn").instantiate();game.profile_override = "foot"
+	game = load("res://scenes/workshop.tscn").instantiate()
 	RenderingServer.frame_post_draw.connect(frame_rendered)
 	if windowed:
 		root.mode = Window.MODE_WINDOWED

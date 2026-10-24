@@ -1,7 +1,7 @@
 extends "res://tests/kit/harness.gd"
 ## Authored payloads and full spreader/end/cable rigs; no loaded runtime motion.
 const Sweep=preload("res://scripts/motion_sweep.gd")
-const M3Stages=preload("res://scripts/m3_stages.gd")
+const Stages=preload("res://scripts/build_stages.gd")
 var game: Node
 var margins: Dictionary={}
 var fitted_hardware: Dictionary={}
@@ -42,8 +42,8 @@ func sweep_path(path: Array[Transform3D], groups: Array, ignored: Array[RID], la
 	return {}
 
 func run() -> void:
-	game=await boot_profile("leg_bay_m3")
-	var stages=M3Stages.new(game);var error: String=await stages.run_to("head",func(title):print("PREFLIGHT_SETUP ",title))
+	game=await boot_workshop()
+	var stages=Stages.new(game);var error: String=await stages.run_to("head",func(title):print("PREFLIGHT_SETUP ",title))
 	expect(error.is_empty(),"preflight uses the fitted torso, arms, closed pauldrons/backpack and parked equipment: "+error)
 	if not error.is_empty():finish();return
 	game.set_paused(true)

@@ -14,7 +14,7 @@ func source_body(uid: String,frame: Transform3D) -> StaticBody3D:
 	bodies[uid]=body
 	return body
 func run() -> void:
-	game=await boot_profile("leg_bay_m3");fixture=Node3D.new();game.add_child(fixture)
+	game=await boot_workshop("pelvis");fixture=Node3D.new();game.add_child(fixture)
 	var scene=Transform3D(Basis.IDENTITY,Vector3(70,20,0))
 	for uid in game.runtime.definition("chest").context_sources:source_body(uid,scene)
 	for side in ["left","right"]:

@@ -39,8 +39,10 @@ func run(workshop: Node) -> void:
 	var labels_ok = true
 	var heights: Array = []
 	var no_small_props = true
+	# The foot build's own wall cabinets; robot stock stands on the hangar grid.
 	for kind in game.bins:
 		var bin: Node3D = game.bins[kind]
+		if not bin.get_meta("cabinet",false):continue
 		labels_ok = labels_ok and bin.get_node("PartID").text==game.model.definitions.parts[kind].family and bin.get_node("PartImage").texture is ImageTexture
 		if not heights.has(bin.position.y):heights.append(bin.position.y)
 		if bin.get_meta("drawer"):no_small_props = no_small_props and bin.get_node_or_null("ShelfPart")==null

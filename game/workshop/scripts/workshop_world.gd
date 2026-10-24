@@ -1,5 +1,5 @@
 extends RefCounted
-## Builds the room, preparation stations, foot station and parent fixtures.
+## Builds the hangar, preparation stations and parent fixtures.
 var game: Node
 
 func _init(workshop: Node) -> void:
@@ -32,23 +32,17 @@ func build() -> void:
 	fill.omni_range = 14
 	fill.light_color = Color("edf2f4")
 	game.add_child(fill)
-	var floor_mat = game.material(Color("7c8886"))
-	var wall_mat = game.material(Color("abb9b6"))
 	var dark = game.material(Color("233940"),0.3)
 	var metal = game.material(Color("49626a"),0.35)
 	var warm = game.material(Color("e8b46b"),0.1)
-	if game.profile.layout == "leg_bay":
-		game.leg_layout = preload("res://scripts/leg_bay_layout.gd").new()
-		game.add_child(game.leg_layout)
-		game.leg_layout.setup(game)
-		sun.directional_shadow_max_distance = 65.0
-		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
-		sun.directional_shadow_blend_splits = true
-		if game.leg_layout.blockout != null:
-			_hangar_lighting()
-			_hangar_wayfinding()
-	else:
-		_make_component_room(floor_mat,wall_mat,dark,metal,warm)
+	game.leg_layout = preload("res://scripts/leg_bay_layout.gd").new()
+	game.add_child(game.leg_layout)
+	game.leg_layout.setup(game)
+	sun.directional_shadow_max_distance = 65.0
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	sun.directional_shadow_blend_splits = true
+	_hangar_lighting()
+	_hangar_wayfinding()
 	_make_preparation_area(dark,metal,warm)
 
 func _hangar_lighting() -> void:
@@ -81,21 +75,6 @@ func _hangar_wayfinding() -> void:
 	var rear = game.sign_text(game,"02   /   FINAL ASSEMBLY",Vector3(13,5.0,38.82),90,ink,.006)
 	rear.rotation.y = PI
 
-func _make_component_room(floor_mat: Material, wall_mat: Material, dark: Material, metal: Material, _warm: Material) -> void:
-	game.box(game,Vector3(0,-0.15,0),Vector3(22,0.3,20),floor_mat,true)
-	game.box(game,Vector3(0,4,-7),Vector3(22,8,0.3),wall_mat,true)
-	# Side walls butt against the rear wall instead of sharing its top face.
-	game.box(game,Vector3(-10.8,4,0.075),Vector3(0.3,8,13.85),wall_mat,true)
-	game.box(game,Vector3(10.8,4,0.075),Vector3(0.3,8,13.85),wall_mat,true)
-	game.box(game,Vector3(0,4,9.8),Vector3(22,8,0.3),wall_mat,true)
-	for x in [-8.0,-4.0,0.0,4.0,8.0]:
-		# Pilasters start at the wall face so their tops do not overlap the wall top.
-		game.box(game,Vector3(x,4,-6.75),Vector3(0.22,8,0.20),metal)
-		game.box(game,Vector3(x,6.7,0),Vector3(0.18,0.3,14),dark)
-		game.box(game,Vector3(x,6.5,-1),Vector3(0.10,0.06,5),game.material(Color("fff3d5"),0,true))
-	game.sign_panel(game,"FA / 01",Vector3(0,5.3,-6.55),Vector2(4.5,1.35),160,0.006)
-	game.sign_panel(game,"COMPONENT ASSEMBLY  /  LOWER LIMB DIVISION",Vector3(0,4.35,-6.55),Vector2(5.4,0.36),64,0.0025)
-
 func _make_preparation_area(dark: Material, metal: Material, warm: Material) -> void:
 	# Pad rests on a separate preparation table; the player chooses when to carry it.
 	game.box(game,Vector3(-0.1,0.92,game.PAD_HOME.z),Vector3(3.4,0.12,1.25),dark,true)
@@ -109,31 +88,19 @@ func _make_preparation_area(dark: Material, metal: Material, warm: Material) -> 
 	for x in [-0.94,0.14]: game.box(game,Vector3(x,0.965,0.6),Vector3(0.03,0.11,0.71),warm,true)
 	for z in [0.26,0.94]: game.box(game,Vector3(-0.4,0.965,z),Vector3(1.05,0.11,0.03),warm,true)
 	_station_frame(game.PREP_POSITION,Vector3(1.05,1.1,0.9),"02 / PREPARATION A",dark,warm)
-	if game.has_equipment("legacy_foot_station"):
-		_station_frame(game.FOOT_POSITION,Vector3(2.7,3.7,2.8),"03 / FOOT ASSEMBLY",dark,warm)
 	game.prep = Node3D.new()
 	game.prep.position = game.PREP_POSITION
 	game.prep.basis = game.PREP_BASIS
 	game.add_child(game.prep)
 	game.stations["prep"] = game.prep
 	game.prep.set_meta("work_volume",Vector3(1.05,1.1,0.9))
-	if "prep2" in game.profile.prep_stations:
-		var pos = Vector3(-4.6,1.35,-1.2)
-		_station_frame(pos,Vector3(1.05,1.1,0.9),"04 / PREPARATION B",dark,warm)
+	for station in [["prep2",Vector3(-4.6,1.35,-1.2),"04 / PREPARATION B"],["prep3",Vector3(-6.4,1.5,-1.2),"05 / PREPARATION C"]]:
+		_station_frame(station[1],Vector3(1.05,1.1,0.9),station[2],dark,warm)
 		var other = Node3D.new()
 		game.add_child(other)
-		other.position = pos
+		other.position = station[1]
 		other.basis = game.PREP_BASIS
-		game.stations["prep2"] = other
-		other.set_meta("work_volume",Vector3(1.05,1.1,0.9))
-	if "prep3" in game.profile.prep_stations:
-		var pos = Vector3(-6.4,1.5,-1.2)
-		_station_frame(pos,Vector3(1.05,1.1,0.9),"05 / PREPARATION C",dark,warm)
-		var other = Node3D.new()
-		game.add_child(other)
-		other.position = pos
-		other.basis = game.PREP_BASIS
-		game.stations["prep3"] = other
+		game.stations[station[0]] = other
 		other.set_meta("work_volume",Vector3(1.05,1.1,0.9))
 	# Spatial scale cues and a safe open route to the receiving station.
 	for x in [-0.8,5.0]: game.box(game,Vector3(x,0.008,-1.8),Vector3(0.045,0.01,4.3),warm)
@@ -189,7 +156,7 @@ func load_foot() -> void:
 			# distractingly in the base workshop and shared milestone scenes.
 			node.hide()
 			continue
-		if game.profile.get("foot_collider_families",preload("res://scripts/scenario_profile.gd").FOOT_COLLIDER_FAMILIES).has(family):
+		if game.FOOT_COLLIDER_FAMILIES.has(family):
 			var collision_mode: String = game.config.get("context_collision",{}).get(uid,"bounds")
 			var col = CollisionShape3D.new()
 			col.transform = node.transform
@@ -222,7 +189,7 @@ func register_parent_fixtures() -> void:
 			game.add_child(body)
 			body.position = game.FOOT_POSITION+Vector3.RIGHT*index*4.0
 		if record.has("home"):body.position = AssemblyRuntime.vec(record.home)
-		if game.profile.trial=="m3" and record.id=="foot":body.transform=preload("res://scripts/leg_bay_layout.gd").authored_pose(preload("res://scripts/leg_bay_layout.gd").layout().workshop.foot_storage.foot)
+		if record.id=="foot":body.transform=preload("res://scripts/leg_bay_layout.gd").authored_pose(preload("res://scripts/leg_bay_layout.gd").layout().workshop.foot_storage.foot)
 		if record.has("rotation_degrees"):body.basis = Basis.from_euler(AssemblyRuntime.vec(record.rotation_degrees)*PI/180.0)
 		var d: Dictionary = game.model.definitions.assemblies[record.definition]
 		var source_frame = null

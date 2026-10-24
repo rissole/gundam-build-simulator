@@ -56,7 +56,7 @@ were not redesigned.
 
 ## User verification
 
-Use the [focused controls checklist](../m3-wide-playtest-checklist.md#focused-controls-check--2026-10-24).
+Use the [focused controls checklist](../robot-workshop-playtest-checklist.md#focused-controls-check--2026-10-24).
 Prioritize one full crane delivery, both elevator rides, mobile height versus
 dock selection, recovery after blockage, and keyboard/search/Close behavior.
 Retain the previously praised physical handling, boarding and workshop scale.

@@ -170,8 +170,9 @@ func run(workshop: Node) -> void:
 	await frames(12)
 	game.set_paused(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	expect(game.model.items.size()==135 and game.source.size()==745,"135 active identities from the complete 745-piece source")
-	expect(game.builds.size()==3 and game.stations.size()==3,"Three independent builds and preparation stations")
+	var foot_parts: Array = JSON.parse_string(FileAccess.get_file_as_string("res://assets/pitch-workshop.json")).parts
+	expect(foot_parts.size()==135 and foot_parts.all(func(record):return game.model.items.has(record.instance_id)) and game.source.size()>=745,"135 active foot identities from the complete 745-piece source")
+	expect(["pad_1","pad_2","pitch"].all(func(id):return game.builds.has(id)) and game.stations.size()==3,"Three independent foot builds and preparation stations")
 	expect(game.model.assemblies.pitch.slots.size()==91,"Actuator definition contains all 91 physical pieces")
 	game.hud.open_manual("foot",3)
 	key(KEY_ENTER)

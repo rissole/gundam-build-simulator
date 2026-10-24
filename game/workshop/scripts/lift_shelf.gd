@@ -1,18 +1,16 @@
 extends "res://scripts/equipment.gd"
 ## Two shelf places share a two-hand capacity. Every stored UID remains model-owned.
 ## The shelf rides its carrier lift and reserves its cargo route on every lift move.
-const SUPPORTS = ["m2_lift_shelf_0","m2_lift_shelf_1"]
 const Sweep = preload("res://scripts/motion_sweep.gd")
-var support_ids: Array = SUPPORTS.duplicate()
+var support_ids: Array = []
 var shelf: Dictionary
 var lift: Node3D
 var surface: MeshInstance3D
 var cargo: Dictionary = {}
 
-func setup(workshop: Node3D, platform: Node3D, options: Dictionary = {}) -> void:
-	game = workshop;lift = platform
-	shelf = preload("res://scripts/leg_bay_layout.gd").layout().shelf if options.is_empty() else options
-	equipment_id = shelf.get("id","lift_shelf");support_ids = shelf.get("supports",SUPPORTS).duplicate()
+func setup(workshop: Node3D, platform: Node3D, options: Dictionary) -> void:
+	game = workshop;lift = platform;shelf = options
+	equipment_id = shelf.id;support_ids = shelf.supports.duplicate()
 	reparent(lift.deck);position = Vector3(shelf.position[0],shelf.position[1],shelf.position[2]);rotation.y = deg_to_rad(shelf.yaw_degrees)
 	var steel = game.material(Color("506971"),.4)
 	var size = AssemblyRuntime.vec(shelf.get("size",[1.9,.08,.70]))
@@ -64,7 +62,7 @@ func controls() -> Array[Dictionary]:
 	return result
 
 func action_error(action: String) -> String:
-	if game.paused:return "Resume the trial first."
+	if game.paused:return "Resume the workshop first."
 	if not game.equipment.busy_reason(lift.equipment_id).is_empty():return "Wait for the lift to stop before moving shelf components."
 	if action == "store":return capacity_error(game.model.held_item())
 	if action not in ["take:0","take:1"]:return "Unknown shelf position."
