@@ -18,6 +18,7 @@ var park_position: Vector3
 var approach_offset: Vector3
 const STATIONS = ["source","receiver","park"]
 const TITLES = {"source":"Limb Bay","receiver":"Limb Bay","park":"Parking bay"}
+const MANUAL_COMMANDS = ["pickup","down","up","go:source","go:receiver","go:park","connect","detach"]
 var up_y: float
 var layout: Node3D
 var config: Dictionary
@@ -201,6 +202,36 @@ func _interaction_error(point: Vector3, allowed: Array = []) -> String:
 	if not game._visible(point,allowed,true):return "The magnetic connection is obstructed."
 	return ""
 
+func manual_commands() -> Array:return MANUAL_COMMANDS
+
+## The single player wording for a crane command; the console menu adds arrows and places.
+func command_label(action: String) -> String:
+	match action:
+		"down":return "Lower crane"
+		"up":return "Raise crane"
+		"pickup":return "Move to pickup"
+		"go:receiver":return "Move to delivery"
+		"go:source":return "Put back"
+		"connect":return "Attach magnetic connectors"
+		"detach":return "Detach and stow magnetic connectors"
+	if action.begins_with("go:"):return "Move to "+_station_title(action.get_slice(":",1))
+	return ""
+
+func manual_state() -> Dictionary:
+	return {"task":task,"station":station,"raised":raised,"attached":attached_count(),"held":not hand_payload().is_empty()}
+
+func manual_effect(objective: Dictionary) -> Dictionary:
+	match objective.get("op",""):
+		"connect":return {"attached":required_ends,"held":false}
+		"detach":return {"attached":0,"held":false}
+	var action: String = objective.get("command","")
+	match action:
+		"pickup":return {"task":objective.get("task",""),"station":objective.get("at","source")}
+		"down":return {"raised":false}
+		"up":return {"raised":true}
+	if action.begins_with("go:"):return {"station":action.get_slice(":",1)}
+	return {}
+
 func menu_options() -> Array[Dictionary]:
 	var options: Array[Dictionary] = []
 	if _guided_live() and _guide().has_method("crane_options"):options.append_array(_guide().crane_options())
@@ -208,20 +239,20 @@ func menu_options() -> Array[Dictionary]:
 		options.append({"action":"stop" if moving else "resume","label":"Stop" if moving else "Resume"})
 		if _can_return():options.append({"action":"return","label":"Return to "+_station_title(station)})
 		return options
-	if station != "park":options.append({"action":"down" if raised else "up","label":"↓  Lower crane" if raised else "↑  Raise crane"})
+	if station != "park":options.append({"action":"down" if raised else "up","label":("↓  " if raised else "↑  ")+command_label("down" if raised else "up")})
 	if raised:
 		if _empty():
 			var next: String = next_route()
 			var role: String = _pickup_role(next)
-			if not next.is_empty() and not (next == task and station == role):options.append({"action":"pickup","label":"Move to pickup · "+Layout.place_title(place_of(role,next))})
+			if not next.is_empty() and not (next == task and station == role):options.append({"action":"pickup","label":command_label("pickup")+" · "+Layout.place_title(place_of(role,next))})
 		else:
-			if station != "receiver":options.append({"action":"go:receiver","label":"Move to delivery · "+_station_title("receiver")})
-			if station != "source":options.append({"action":"go:source","label":"Put back · "+_station_title("source")})
-		if station != "park" and _empty():options.append({"action":"go:park","label":"Move to "+_station_title("park")})
+			if station != "receiver":options.append({"action":"go:receiver","label":command_label("go:receiver")+" · "+_station_title("receiver")})
+			if station != "source":options.append({"action":"go:source","label":command_label("go:source")+" · "+_station_title("source")})
+		if station != "park" and _empty():options.append({"action":"go:park","label":command_label("go:park")})
 	elif raised:
 		for destination in STATIONS:
 			var action = "go:"+destination
-			if destination != station:options.append({"action":action,"label":"Move to "+(_station_title(destination))})
+			if destination != station:options.append({"action":action,"label":command_label(action)})
 	return options
 
 ## Reverse a held transport along the same authored route. Vertical phases

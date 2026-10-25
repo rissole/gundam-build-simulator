@@ -19,6 +19,12 @@ func controls() -> Array[Dictionary]:return []
 func action_error(_action: String) -> String:return "Unknown equipment control."
 func request(action: String) -> String:return action_error(action)
 func status_text() -> String:return ""
+## Manual objectives: command names this machine understands, their player label,
+## its live comparable state and the state a completed objective leaves.
+func manual_commands() -> Array:return []
+func command_label(_action: String) -> String:return ""
+func manual_state() -> Dictionary:return {}
+func manual_effect(_objective: Dictionary) -> Dictionary:return {}
 func physics(_delta: float) -> void:pass
 func placement_error(_owner: String, _slot: String) -> String:return ""
 func access_error(_owner: String) -> String:return ""
