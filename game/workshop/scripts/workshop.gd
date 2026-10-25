@@ -163,12 +163,15 @@ func _ready() -> void:
 	# and --stage launches never touch it.
 	if save_path.is_empty() and not automated_test and start_stage.is_empty() and get_tree().get_script() == null:save_path = Save.PATH
 	save = Save.new(self,save_path)
+	# Closing the window is Save & quit (see _notification).
+	if save.enabled():get_tree().set_auto_accept_quit(false)
 	if save.load_saved():
 		# Restored milestones are not new: no toast or chime on load.
 		for id in builds:
 			prepared_flags[id] = build_prepared(id)
 			completed_flags[id] = build_complete(id)
 	player_controller.spawn(SPAWN)
+	save.place_player()
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
 	storage.setup()
@@ -190,7 +193,6 @@ func _ready() -> void:
 	add_child(hud)
 	hud.open_manual("foot")
 	model.changed.connect(_state_changed)
-	model.changed.connect(save.model_changed)
 	_make_audio()
 	_state_changed()
 	world.configure_foot_rendering()
@@ -596,6 +598,19 @@ func _milestone(message: String, owner: String) -> void:
 func reset_demo() -> void:
 	# Reloading restores the saved workshop, if any, or re-runs a --stage launch.
 	get_tree().reload_current_scene()
+
+## Pause menu Save & quit, and closing the window. A refused save keeps the game
+## open on the pause menu with the reason; Quit without saving still leaves.
+func save_and_quit() -> void:
+	var error: String = save.save_now()
+	if error.is_empty():
+		get_tree().quit()
+		return
+	set_paused(true)
+	hud.show_save_error(error)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and started and save.enabled():save_and_quit()
 
 ## Pause menu: forget the saved workshop and start again from a fresh launch.
 func new_workshop() -> void:

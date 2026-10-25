@@ -1,18 +1,20 @@
 extends RefCounted
-## One local save slot, written each time the player sets a component. It holds
-## the assembly model and each machine's last stop; the crane always reloads
-## parked. Anything invalid is deleted: there are no migrations. Hands, pockets,
-## loose parts, the player and the manual are not saved.
+## One local save slot, written only when the player saves (pause menu Save,
+## Save & quit, or closing the window). It holds the assembly model, each
+## machine's last stop (the crane is halted where it is, as its Stop leaves it)
+## and where the player stands and looks. Anything invalid is deleted: there are
+## no migrations. Hands, pockets, loose parts and the manual are not saved.
 const PATH = "user://workshop-save.json"
 ## Bump to discard every existing save after an incompatible change.
 const FORMAT = 1
-const SKIPPED = ["service_crane"]
 ## Survives reload_current_scene, so the pause menu can explain a discarded save.
 static var notice: String = ""
 var game: Node
 var path: String = ""
+## Build and machine state as last saved or loaded; position alone is not a change.
 var _last: int = 0
-var _queued: bool = false
+## Saved [x, y, z, yaw, pitch], placed once the player exists; empty keeps the spawn.
+var _player: Array = []
 
 func _init(workshop: Node, save_path: String) -> void:
 	game = workshop
@@ -36,25 +38,24 @@ func normalised_model() -> Dictionary:
 	return data
 
 func snapshot() -> Dictionary:
-	return {"format":FORMAT,"model":normalised_model(),"equipment":game.equipment.save_capture(SKIPPED)}
+	# Mid-ride, the player goes back to the stop the machine reloads at.
+	var steady: Variant = game.equipment.steady_player
+	var player: Transform3D = steady if steady is Transform3D else game.player.global_transform
+	return {"format":FORMAT,"model":normalised_model(),"equipment":game.equipment.save_capture(),
+		"player":[player.origin.x,player.origin.y,player.origin.z,player.basis.get_euler().y,game.camera.rotation.x]}
 
-## Connected to model.changed: queue at most one write per frame.
-func model_changed() -> void:
-	if not enabled() or _queued:return
-	_queued = true
-	flush.call_deferred()
+func _signature() -> int:
+	return JSON.stringify([normalised_model(),game.equipment.save_capture()]).hash()
 
-func flush() -> void:
-	_queued = false
-	if not enabled():return
-	var signature: int = JSON.stringify(normalised_model()).hash()
-	if signature == _last:return
-	# Save after delivery: a load hanging on the crane is never saved.
-	var crane = game.equipment.get_equipment("service_crane")
-	if crane != null and crane.holds_load():return
+## Whether the build or a machine changed since the last save or load.
+func unsaved() -> bool:return enabled() and _signature() != _last
+
+## Writes the workshop now. Returns why it could not, or empty.
+func save_now() -> String:
+	if not enabled():return "This launch is not saved."
 	var error: String = write(snapshot())
-	if error.is_empty():_last = signature
-	else:push_warning("Workshop save failed: "+error)
+	if error.is_empty():_last = _signature()
+	return error
 
 ## Writes beside the slot, then renames over it, so a crash never leaves half a file.
 func write(data: Dictionary) -> String:
@@ -88,17 +89,31 @@ func load_saved() -> bool:
 		if error.is_empty():error = "; ".join(game.model.restore(data.model))
 		if error.is_empty():
 			_rebuild(data.equipment)
-			notice = "Restored your saved workshop. Loose parts went back to their drawers and the crane is parked."
+			_player = data.get("player",[])
+			notice = "Restored your saved workshop. Loose parts went back to their drawers; a crane that was moving is stopped where it was."
 			restored = true
 		else:discard(error)
-	_last = JSON.stringify(normalised_model()).hash()
+	_last = _signature()
 	return restored
+
+## After the player is spawned: stand them where they saved, if they did.
+func place_player() -> void:
+	if _player.is_empty():return
+	game.player.global_position = Vector3(_player[0],_player[1],_player[2])
+	game.player.rotation.y = _player[3]
+	game.camera.rotation.x = _player[4]
+	_player = []
 
 func _check(data: Variant) -> String:
 	if not data is Dictionary:return "unreadable file"
 	if data.get("format") != FORMAT:return "format "+str(data.get("format"))
 	if not data.get("model") is Dictionary or not data.get("equipment") is Dictionary:return "missing sections"
-	var fresh: Dictionary = game.equipment.save_capture(SKIPPED)
+	# Saves from before position was kept have no player; they start at the spawn.
+	var player: Variant = data.get("player",[])
+	if not player is Array or not (player.is_empty() or (player.size() == 5 and player.all(func(value):return value is float))):return "player position"
+	var fresh: Dictionary = game.equipment.save_capture()
+	# Saves from before the crane was saved reload it parked, as they did then.
+	if not data.equipment.has("service_crane") and fresh.has("service_crane"):data.equipment.service_crane = fresh.service_crane
 	if data.equipment.size() != fresh.size() or not fresh.keys().all(func(id):return data.equipment.has(id)):return "equipment changed"
 	for id in fresh:
 		if not same_shape(data.equipment[id],fresh[id]):return id+" state changed"

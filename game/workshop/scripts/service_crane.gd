@@ -5,6 +5,7 @@ signal changed
 const Console = preload("res://scripts/service_crane_console.gd")
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Layout = preload("res://scripts/leg_bay_layout.gd")
+const Codec = preload("res://scripts/pose_codec.gd")
 const VERSION = 2
 var END_IDS: Array = []
 var POINT_IDS: Array = []
@@ -30,7 +31,7 @@ var excluded: Array[RID] = []
 var station = "park"
 var raised = true
 var motion = ""
-var progress = 0.0
+var progress: float = 0.0
 var moving = false
 var blocked_reason = ""
 # Load path is derived from station, motion and progress; never a saved waypoint.
@@ -463,9 +464,6 @@ func _undo_beam() -> String:
 func _crane_owned(model: AssemblyModel = null) -> bool:
 	return _record(model).location == "support:"+support
 
-## True while the active load hangs on the crane: the workshop save waits for delivery.
-func holds_load() -> bool:return _crane_owned()
-
 func _path(at: String, up: bool, action: String, p: float) -> float:
 	var high=float(route.size()-3);var seat=float(route.size()-1)
 	var start = (1.0 if up else 0.0) if at == "source" else (high if up else seat)
@@ -792,7 +790,13 @@ func _ready_error(key: String) -> String:
 func capture() -> Dictionary:
 	var result = {"version":VERSION,"station":station,"raised":raised,"motion":motion,"progress":progress,"moving":moving,"blocked_reason":blocked_reason,"endpoints":endpoints.duplicate(true)}
 	result["task"] = task
+	result["reacquire"] = reacquire
+	result["travel_from"] = Codec.pose(travel_from) if travel_from != null else []
 	return result
+
+## Pickups and transfers happen partway through a move, so a save keeps the crane
+## where it is, stopped; Resume continues.
+func saves_in_motion() -> bool:return true
 
 func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary = {}) -> Array[String]:
 	if not data is Dictionary or data.size()!=9:return ["Incomplete crane state."]
@@ -894,8 +898,13 @@ func apply(data: Dictionary) -> void:
 	motion_obstruction = {}
 	if data.task != task:_select_route(data.task)
 	station = data.station;raised = data.raised;motion = data.motion;progress = float(data.progress);moving = data.moving;blocked_reason = data.blocked_reason;endpoints = data.endpoints.duplicate(true)
-	travel_from = null
-	console.shut();_refresh()
+	# A reload starts with empty hands: an end being carried goes back to its stow.
+	for id in endpoints:
+		if endpoints[id].state == "held":endpoints[id] = {"state":"stowed","point":""}
+	reacquire = data.get("reacquire","")
+	travel_from = Codec.to_pose(data.travel_from) if not data.get("travel_from",[]).is_empty() else null
+	if console.is_open:console.shut()
+	_refresh()
 
 func _station_title(at: String) -> String:
 	if at == "park":return TITLES[at]

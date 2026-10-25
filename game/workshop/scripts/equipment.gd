@@ -29,6 +29,9 @@ func busy_reason(_subject: String) -> String:return ""
 func travel_error(_carrier_id: String, _from: float, _to: float) -> String:return ""
 func carrier_moved(_carrier_id: String) -> void:pass
 func capture() -> Dictionary:return {}
+## Whether a save takes this machine halted where it is instead of at its last
+## stop: for machines whose motion the model and other machines follow mid-move.
+func saves_in_motion() -> bool:return false
 func validate(_data: Variant, _candidate: AssemblyModel = null, _world: Dictionary = {}) -> Array[String]:return []
 func apply(_data: Dictionary) -> void:pass
 

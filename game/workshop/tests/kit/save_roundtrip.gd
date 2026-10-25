@@ -11,7 +11,7 @@ static func state(game: Node) -> Dictionary:
 		if a.is_empty() or (a.parent.is_empty() and a.location == "loose"):continue
 		var node: Node3D = game.runtime.node(id)
 		if is_instance_valid(node):poses[id] = node.global_transform
-	return {"model":JSON.stringify(game.save.normalised_model()),"equipment":game.equipment.save_capture(Save.SKIPPED),"poses":poses}
+	return {"model":JSON.stringify(game.save.normalised_model()),"equipment":game.equipment.save_capture(),"poses":poses}
 
 ## Differences between a saved workshop's state and its reload, as messages.
 static func differences(saved: Dictionary, loaded: Dictionary) -> Array[String]:

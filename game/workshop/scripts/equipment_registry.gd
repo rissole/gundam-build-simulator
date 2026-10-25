@@ -13,6 +13,9 @@ var _items: Array = []
 ## for a machine that is still moving, so motion is never saved halfway.
 var _rest: Dictionary = {}
 var _was_moving: Dictionary = {}
+## Where the player last stood with nothing under them moving. A save taken mid-ride
+## uses it: that is the deck at the stop the ride left, where the machine reloads.
+var steady_player: Variant = null
 
 ## Pickup targeting shares its contour with the first waiting loose obstacle.
 func obstruction_target() -> Node3D:
@@ -53,9 +56,14 @@ func physics(delta: float) -> void:
 	var before = floor.global_transform if floor != null else Transform3D.IDENTITY
 	for equipment in items:equipment.physics(delta)
 	_remember_rest(items)
-	if floor == null or not is_instance_valid(floor):return
+	if game == null:return
+	if floor == null or not is_instance_valid(floor):
+		steady_player = game.player.global_transform
+		return
 	var moved = floor.global_transform*before.affine_inverse()
-	if moved.is_equal_approx(Transform3D.IDENTITY):return
+	if moved.is_equal_approx(Transform3D.IDENTITY):
+		if not items.any(func(equipment):return equipment.get("moving") == true and equipment.carries(floor)):steady_player = game.player.global_transform
+		return
 	game.player.global_position = moved*game.player.global_position
 	game.player.rotate_y(moved.basis.get_euler().y)
 	var carried = carried_body(game)
@@ -160,8 +168,12 @@ func save_capture(skipped: Array = []) -> Dictionary:
 	for equipment in all():
 		var id: String = equipment.equipment_id
 		if id in skipped:continue
-		var state: Dictionary = _rest[id] if equipment.get("moving") == true and _rest.has(id) else equipment.capture()
-		result[id] = state.duplicate(true)
+		var moving: bool = equipment.get("moving") == true
+		var state: Dictionary = (_rest[id] if moving and _rest.has(id) and not equipment.saves_in_motion() else equipment.capture()).duplicate(true)
+		if moving and equipment.saves_in_motion():
+			state.moving = false
+			state.blocked_reason = ""
+		result[id] = state
 	return result
 
 ## Applies save_capture() output, in interaction order, to the machines it lists.

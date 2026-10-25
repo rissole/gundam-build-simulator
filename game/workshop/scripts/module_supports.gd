@@ -7,11 +7,11 @@ const Layout=preload("res://scripts/leg_bay_layout.gd")
 var blockout: Node3D
 var spec: Dictionary
 var template="pelvis"
-var height=0.0
-var goal=0.0
+var height: float=0.0
+var goal: float=0.0
 var moving=false
 var blocked_reason=""
-var source_release=0.0
+var source_release: float=0.0
 var jaw_groups: Array[String]=[]
 var jaws: Array[float]=[1,1,1,1]
 var jaw_goals: Array[float]=[1,1,1,1]

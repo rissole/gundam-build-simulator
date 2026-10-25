@@ -11,12 +11,17 @@ last version before consolidation.
 
 ## Where things stand
 
-- **Workshop save (2026-10-25):** normal launches save each time a component is
-  set and restore on launch: the model and every machine's last stop, with the
-  crane parked and hands/pockets/loose parts back in drawers. Invalid saves are
+- **Workshop save (2026-10-25):** saving is manual: pause-menu **Save**,
+  **Save & quit**, or closing the window. **Quit without saving** confirms when
+  there are unsaved build changes. A save holds the model, every machine's last
+  stop and the player's position and view. Saved mid-ride, the player reloads on
+  the deck at that machine's last stop. Saves are never refused: a moving crane
+  is saved stopped where it is, load hanging, and Resume continues. A reload
+  puts hands, pockets and loose parts back in drawers. Invalid saves are
   deleted, never migrated. The pause menu offers **New workshop**. Mechanical
-  checks: `save_roundtrip_test` (fresh boot) and the diagnostic
-  `save_roundtrip_stages_test`, which passes at every stage boundary. Its first run
+  checks: `save_roundtrip_test` (fresh boot, mid-ride, mid-lift crane) and the
+  diagnostic `save_roundtrip_stages_test` (145 checks), which passes at every stage
+  boundary and mid-way through each stage's first crane delivery. Its first run
   found that reloads left the pelvis on the bulky fixture. Every build mounted on
   the pelvis moved with it, and the fall-through-floor rescue sent the sunken heel
   pads and pitch actuators home. `module_supports.apply` now seats the pelvis on

@@ -189,20 +189,33 @@ is not a reason to allow remote fastening or disable obstruction handling.
 ### Saves and checkpoints
 
 **Implemented 2026-10-25 as a lightweight snapshot.** One local slot,
-`user://workshop-save.json`, is written each time the normalised assembly model
-changes: a component set, mounted, seated or undone. It holds the model and
-each machine's `capture()` at its last stop, so motion is never saved halfway. The
-service crane is not saved. It reloads parked, and no save is taken while a load
-hangs on it. Loading is synchronous: restore the model, place assembly bodies, let
-each machine `apply()` its at-rest state, re-sync visuals. The player, pockets,
-loose and held parts and the manual reset. An invalid file (unreadable, a different
+`user://workshop-save.json`, is written only when the player saves: the pause
+menu's **Save** or **Save & quit**, or closing the window, which counts as Save &
+quit. **Quit without saving** asks for confirmation when the build or a machine
+changed since the last save. (Saving on every fit was dropped the same day at the
+user's request; a crash loses work since the last save.) The slot holds the model,
+each machine's `capture()` at its last stop, so motion is never saved halfway, and
+the player's position, facing and look pitch. A save taken while the player rides
+a moving machine stores where they last stood with nothing moving under them: the
+deck at the stop that machine reloads at. A save without a player entry starts at
+the spawn. A save is never refused. The service crane is the one machine saved
+mid-move (`saves_in_motion()`): its pickups and transfers happen partway through a
+move and the source/receiver contact follows its progress, so it is saved where it
+is, stopped, as its own Stop leaves it, and Resume continues. Its load hangs where
+it was. A crane end in the player's hand goes back to its stow. Saves from before
+the crane was saved reload it parked. If writing the file fails, Save & quit and
+a window close stay open on the pause menu with the reason. Loading is
+synchronous: restore the model, place assembly bodies, let each machine `apply()`
+its at-rest state, re-sync visuals, then stand the player where they saved.
+Pockets, loose and held parts and the manual reset. An invalid file (unreadable, a different
 `FORMAT`, changed identities, slots or machine fields, or failed integrity) is
 deleted; there are no migrations, checksums or backups. Tests, tools and `--stage`
 launches never touch the slot. The pause menu's **New workshop** deletes it. The one
-ongoing rule: a machine's `capture()`/`apply()` must round-trip its at-rest state,
-including where its supported load sits. `save_roundtrip_test` checks a fresh boot;
-the explicit-request diagnostic `save_roundtrip_stages_test` checks every stage
-boundary. A replayed action log was rejected because late-game loads would be too
+ongoing rule: a machine's `capture()`/`apply()` must round-trip its at-rest state
+(for the crane, any stopped point on a route), including where its supported load
+sits. `save_roundtrip_test` checks a fresh boot, a mid-ride save and a mid-lift
+crane save; the explicit-request diagnostic `save_roundtrip_stages_test` checks
+every stage boundary and two points of each stage's first crane delivery. A replayed action log was rejected because late-game loads would be too
 slow. The removed mid-motion design is [archived](history/save-resume.md).
 Handoff: [design/game/handoff/save/](handoff/save/README.md).
 

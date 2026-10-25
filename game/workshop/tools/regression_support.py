@@ -29,6 +29,7 @@ SUMMARY_GRACE = 5.0
 # suites that script the whole build have longer caps.
 # Fail-fast engine checks still apply.
 CASE_TIMEOUTS = {"arm_delivery_test": 600.0, "pitch_desktop_test": 600.0, "pitch_swapped_desktop_test": 600.0,
+                 "save_roundtrip_stages_test": 420.0,
                  **{name: 360.0 for name in ("stage_sequence_test", "head_closure_test", "head_crane_test",
                                              "head_preflight_test", "pauldron_delivery_test", "pauldron_preflight_test")}}
 

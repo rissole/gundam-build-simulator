@@ -24,6 +24,8 @@ var pause_title: Label
 var pause_intro: Label
 var resume_button: Button
 var restart_button: Button
+var save_button: Button
+var save_quit_button: Button
 var quit_button: Button
 var session_label: Label
 var crosshair: Label
@@ -47,6 +49,9 @@ var page: int:
 var toast_time: float = 0.0
 var entered: bool = false
 var confirm_restart: bool = false
+var confirm_quit: bool = false
+## Result of the last Save press or refused save, shown until the menu closes.
+var save_message: String = ""
 var tone = Color("80dfbd")
 var muted = Color("a8b9be")
 
@@ -436,8 +441,14 @@ func _make_pause() -> void:
 	restart_button = button("Restart build")
 	restart_button.pressed.connect(_restart_clicked)
 	footer.add_child(restart_button)
+	save_button = button("Save")
+	save_button.pressed.connect(_save_clicked)
+	footer.add_child(save_button)
+	save_quit_button = button("Save & quit")
+	save_quit_button.pressed.connect(func(): game.save_and_quit())
+	footer.add_child(save_quit_button)
 	quit_button = button("Quit")
-	quit_button.pressed.connect(func(): game.get_tree().quit())
+	quit_button.pressed.connect(_quit_clicked)
 	footer.add_child(quit_button)
 	refresh_session_status()
 
@@ -446,17 +457,45 @@ func _saving() -> bool:
 	var slot = game.get("save")
 	return slot != null and slot.enabled()
 
-## Normal launches save each set component; --stage launches restart from their start.
+## Normal launches save from this menu or on closing the window; --stage launches
+## restart from their start.
 func refresh_session_status() -> void:
 	if session_label == null:return
 	var saving: bool = _saving()
 	if confirm_restart:restart_button.text = "Confirm new workshop" if saving else "Confirm restart"
 	else:restart_button.text = "New workshop" if saving else "Restart build"
+	save_button.visible = saving
+	save_quit_button.visible = saving
+	quit_button.text = ("Confirm quit" if confirm_quit else "Quit without saving") if saving else "Quit"
 	resume_button.text = "Resume    →" if entered else "Start building    →"
-	if confirm_restart:return
-	var status: String = "Robot workshop · saved each time a component is set." if saving else "Robot workshop · this launch is not saved.\nRestart begins again from this launch's starting point."
+	if confirm_restart or confirm_quit:return
+	var status: String = "Robot workshop · this launch is not saved.\nRestart begins again from this launch's starting point."
+	if saving:status = "Robot workshop · "+("unsaved changes since your last save." if game.save.unsaved() else "no build changes since your last save.")+" Closing the window saves."
 	var notice: String = game.Save.notice if saving else ""
-	session_label.text = status+("\n"+notice if not notice.is_empty() else "")+("\n"+game.stage_notice if not game.stage_notice.is_empty() else "")
+	var lines: Array = [status]
+	for line in [save_message,notice,game.stage_notice]:
+		if not line.is_empty():lines.append(line)
+	session_label.text = "\n".join(lines)
+
+func _save_clicked() -> void:
+	var error: String = game.save.save_now()
+	confirm_quit = false
+	save_message = "Saved, with your position." if error.is_empty() else "Not saved: "+error
+	refresh_session_status()
+
+## A refused Save & quit or window close keeps the game paused here with the reason.
+func show_save_error(error: String) -> void:
+	save_message = "Not saved: "+error+" Quit without saving leaves anyway."
+	refresh_session_status()
+
+func _quit_clicked() -> void:
+	if not _saving() or confirm_quit or not game.save.unsaved():
+		game.get_tree().quit()
+		return
+	confirm_quit = true
+	confirm_restart = false
+	refresh_session_status()
+	session_label.text = "Quit without saving? Build changes since your last save are lost.\nResume to keep playing."
 
 func _restart_clicked() -> void:
 	var saving: bool = _saving()
@@ -467,6 +506,7 @@ func _restart_clicked() -> void:
 		refresh_session_status()
 	else:
 		confirm_restart = true
+		confirm_quit = false
 		refresh_session_status()
 		session_label.text = "Start a new workshop? This deletes your saved build.\nResume to keep it." if saving else "Restart this build from the beginning?\nResume to keep your progress."
 
@@ -475,6 +515,8 @@ func show_pause(value: bool) -> void:
 	action_bar.visible = not value
 	carry_panel.visible = not value and not carry_label.text.is_empty()
 	confirm_restart = false
+	confirm_quit = false
+	if not value:save_message = ""
 	refresh_session_status()
 	pause_title.text = "Paused" if entered else "Your workshop"
 	if value:
