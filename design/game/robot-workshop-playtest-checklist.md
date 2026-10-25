@@ -19,6 +19,49 @@ One stage:
 
 Stage preparation is supplied progress and nothing is saved. Wait for the overlay to close before using the controls. Restart re-runs the shortcut.
 
+## Visual uplift spike — 2026-10-25
+
+User direction: the supplied dream reference's warm industrial lighting, cool
+fill, atmospheric depth, reflective worn floor and detailed hangar. Preserve the
+previous positive approval of the workshop's intermediate brightness and the
+manual's readability. No player response to this spike has been received yet.
+
+Use the **new worktree**, `/Users/blakeyboy/gundam-build-simulator-visual-uplift`,
+branch `spike/hangar-visual-uplift`:
+
+```sh
+cd /Users/blakeyboy/gundam-build-simulator-visual-uplift
+./play.command
+# Later, to inspect the final-assembly lighting with a robot present:
+./play.command -- --stage=complete
+```
+
+The spike has a separate save directory. Its later-stage shortcuts still save
+within that separate directory under the normal stage-save rules. To compare
+renderer support with the same new materials, use
+`./play.command --rendering-method gl_compatibility`; this disables the advanced
+effects, so it is not a reproduction of main's old appearance.
+
+Mechanical evidence: startup smoke passes all 28 checks. No rendered inspection,
+GPU benchmark or player acceptance. [Roadmap assessment and scope](final-assembly-plan.md#visual-uplift-spike--2026-10-25).
+
+- [ ] At the foot preparation bench, can you identify small washers, sockets and magnetic connectors without relying on outlines?
+- [ ] Compare the warm floor pools, dark walls and cool roof with the reference. Is the atmosphere welcome, or too dark/washed out?
+- [ ] Are the ochre railings, equipment buttons, bay signs and manual text clear at normal viewing distance?
+- [ ] Walk and turn while looking at the floor. Check reflection popping at the screen edge, noisy highlights, fog trails and obvious texture repetition.
+- [ ] View the gantry from ground level and its working decks. Are the new shadows helpful, or do they obscure connections?
+- [ ] Record FPS at the preparation bench and facing the completed robot, using the same display/window conditions as main. Note hitches separately; no 60 FPS claim has been made.
+
+Deferred user proposals, retained for the next decision:
+
+- ACES/Filmic versus existing AgX; darker ambient/near-black background versus readable working bays; stronger warm beams and cool perimeter fill. This spike keeps AgX and the approved ambient/key/exposure values as its starting point.
+- Photo-quality oily concrete, worn yellow paint and matte structural metal. Procedural roughness/normal maps are the first material experiment; authored wear and richer texture sources remain open.
+- Decal-projected warning stripes, `02 / FINAL ASSEMBLY` and floor markings. Existing labels/hazard marks remain; route-specific marking and additional decals are deferred.
+- One or two modular industrial/hangar/crane kits from Fab, Unity Asset Store or Sketchfab, with FBX/glTF import and incremental visual swaps that preserve gameplay scripts. Supplier, budget, licence, style, dimensions and performance remain to be evaluated.
+- AI-assisted UI feedback, levers and procedural cable animation. Preserve current movement, riding and support rules; generic Tween crane motion cannot replace them.
+- SubViewport console screens, emissive green/amber buttons, motor hums and mechanical thuds. Trial one screen and spatial audio before a wider UI conversion; camera shake is optional and needs precision-work comfort feedback.
+- Proposed timing: lighting today, materials this week, kit replacement next week. Keep the order, but gate each next phase on actual readability/performance and import effort.
+
 ## Focused controls check — 2026-10-24
 
 The crane/lift UI revision has **no regression run**, at the user's request.

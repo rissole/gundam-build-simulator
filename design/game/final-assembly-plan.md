@@ -649,3 +649,64 @@ Sources: [Workshop layout](../../game/workshop/assets/workshop-layout.json),
 [pelvis](../torso/pelvis-and-waist.md), [chest](../torso/chest-and-cockpit.md),
 [core/backpack](../torso/backpack-and-power.md),
 [shoulder/arm](../arms/shoulder-and-upper-arm.md), [head](../head.md).
+
+## Visual uplift spike — 2026-10-25
+
+Branch `spike/hangar-visual-uplift`, based on `476a69d`, is an isolated visual
+experiment. The user's reference is a tall industrial hangar with warm task
+lamps, cool roof fill, restrained haze, worn concrete, dark structure and ochre
+machinery. It is a direction, not evidence of achievable runtime quality or FPS.
+The accepted workshop remains on main. The spike uses its own user-data directory
+(`Gundam Build Simulator Visual Spike`), so launching it cannot overwrite main's
+workshop save. Do not carry that directory change into a production merge.
+
+### Roadmap assessment
+
+| Proposal | Assessment and next boundary |
+| --- | --- |
+| Lighting and post-processing first | Yes, but make renderer choice the first experiment. The current game uses Compatibility; volumetric fog, SSAO and SSR require Forward+. AgX, a WorldEnvironment, 17 spots, cool fill, haze and room dressing already exist. Preserve a readable working exposure; the user previously rejected a darker workshop. |
+| PBR floor, metal and paint next | High value alongside the lighting. Roughness variation and small normals should make materials distinct without changing collision or assembly. Painted surfaces remain nonmetallic. A near-black background alone gives metal little to reflect; include a room reflection source. |
+| Warning decals and bay lettering | Useful for meaningful wayfinding, not blanket decoration. Bay labels and hazard sleeves already exist. Preserve them; the mobile platform's actual route marking remains separate pending work. Decal nodes require Forward+ or Mobile; flat meshes/labels can retain Compatibility support. |
+| Industrial asset packs | A later step after testing the lighting. Choose one consistent kit, trial one bay, then expand. Prefer glTF/GLB; FBX is supported, but engine-specific shaders, pivots, scale and collision still need adaptation. Keep authored equipment dimensions, attachment frames and moving envelopes. Check the chosen pack's engine-use licence and texture/draw-call costs before purchase. No packs were acquired for this spike. |
+| AI-generated crane motion and control scripts | Treat assistance as an implementation tool, not a roadmap phase. Existing machines already implement riding, stopping, obstruction holds and support interlocks. A generic Tween must not bypass those rules. Cosmetic cable motion can follow the authoritative machinery later. |
+| In-world console screens and tactile feedback | Trial one readable status screen after lighting acceptance; keep detailed manual/checklist text on the HUD. SubViewport screens need resolution, angled viewing and input testing. Positional motor/stop audio is likely a better early addition than camera shake during precision assembly. Godot uses AudioStreamPlayer3D for spatial audio; a generic SoundPool is not needed. |
+
+Godot references: [renderer capabilities](https://docs.godotengine.org/en/stable/tutorials/rendering/renderers.html),
+[environment and SSR limitations](https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html),
+[fog](https://docs.godotengine.org/en/stable/tutorials/3d/volumetric_fog.html),
+[decals](https://docs.godotengine.org/en/stable/tutorials/3d/using_decals.html),
+[import formats](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html),
+[spatial audio](https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer3d.html).
+
+### Implemented scope and evidence
+
+The spike enables Forward+ on desktop, SSAO, 48-step SSR, low-density volumetric
+fog and restrained glow. Two shadowed warm roof spots supplement the existing
+bay lighting; the global key has no fog contribution. Ambient/key/exposure stay
+at the previously approved numeric baseline, though renderer/material changes
+can change perceived brightness. Compatibility disables the advanced effects and
+retains depth fog. HiDPI and the existing 3D render scaling are retained.
+
+Concrete now has shared, deterministic 256 px albedo, roughness and normal maps;
+paint uses local mapping so its texture travels with equipment. Darker cladding,
+ochre equipment paint, cooler upper surfaces and lighter wall lettering establish
+the palette. These are procedural material studies, not photo-quality textures or
+authored edge wear. A single static-room-only reflection probe supplies offscreen
+environment reflections without capturing moving loads. No layout, collider,
+assembly, manual, control, source-model or audio changes are included.
+
+Mechanical verification: `run_regressions.py --only workshop_smoke_test` passed
+28 checks in 4.243 seconds, after importing the new worktree. The first run's
+checks passed but the runner rejected sandbox errors creating the isolated
+user-data folder; the unrestricted rerun passed. Evidence is in
+`game/workshop/verification/regressions-20261025T085646.805542Z/` (paths inside the
+report predate moving the worktree from `/private/tmp`). No diagnostics or
+rendered review ran. GPU effects, appearance and frame rate remain unverified;
+headless startup does not exercise Forward+ rendering.
+
+Next checkpoint: the user's [visual spike playtest](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
+Accept brightness, interaction readability and performance before choosing a kit
+or replacing console presentation. The proposed one-hour/week schedule is a useful
+ordering, not a delivery estimate: renderer migration and import adaptation need
+their own checkpoints. Lighting cannot supply the reference's detailed machinery
+silhouettes, bevels, authored wear and close-up model detail.

@@ -11,6 +11,15 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Visual uplift spike (2026-10-25, isolated branch):**
+  `spike/hangar-visual-uplift` experiments with Forward+, low-density volumetric
+  fog, SSAO/SSR, two warm shadowed assembly lamps, a static room reflection probe
+  and concrete/paint PBR variation. Main and its save are separate. Startup smoke:
+  28 checks pass (4.243 s); no diagnostics, rendered review or FPS measurement.
+  **Awaiting visual/performance playtest**, not an approved replacement for the
+  brightness below. [Scope and roadmap assessment](final-assembly-plan.md#visual-uplift-spike--2026-10-25);
+  [playtest and deferred ideas](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
+
 - **Manual redesign (2026-10-25, pilot implemented):** steps are a one-sentence
   goal plus a self-ticking checklist generated from typed objectives (`fit`,
   `seat`, `operate`, `connect`, `detach`); machines supply labels, state and

@@ -54,7 +54,7 @@ func _hangar_wayfinding() -> void:
 	# Wall-mounted zone lettering establishes scale and orientation without
 	# another layer of objects in the working aisles. The north sign sits beside
 	# the hangar door, above the cable tray.
-	var ink = Color("465153")
+	var ink = Color("b9c5c7")
 	game.sign_text(game,"01   /   PARTS + PREPARATION",Vector3(-3,3.8,-8.82),72,ink,.006)
 	var rear = game.sign_text(game,"02   /   FINAL ASSEMBLY",Vector3(-5.8,6.0,38.82),90,ink,.006)
 	rear.rotation.y = PI
