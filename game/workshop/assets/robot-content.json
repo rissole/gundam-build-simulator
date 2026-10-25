@@ -3258,7 +3258,7 @@
       "left_hip_1": {
         "owner": "pelvis",
         "slot": "cylinder_1",
-        "label": "Hip cylinder 1 neutral lock",
+        "label": "Hip cylinder 1",
         "requires": [
           "cylinder_1/upper_pin",
           "cylinder_1/lower_pin"
@@ -3290,7 +3290,7 @@
       "left_hip_2": {
         "owner": "pelvis",
         "slot": "cylinder_2",
-        "label": "Hip cylinder 2 neutral lock",
+        "label": "Hip cylinder 2",
         "requires": [
           "cylinder_2/upper_pin",
           "cylinder_2/lower_pin"
@@ -3322,7 +3322,7 @@
       "left_hip_3": {
         "owner": "pelvis",
         "slot": "cylinder_3",
-        "label": "Hip cylinder 3 neutral lock",
+        "label": "Hip cylinder 3",
         "requires": [
           "cylinder_3/upper_pin",
           "cylinder_3/lower_pin"
@@ -3354,7 +3354,7 @@
       "right_hip_1": {
         "owner": "pelvis",
         "slot": "right/cylinder_1",
-        "label": "Right Hip cylinder 1 neutral lock",
+        "label": "Right hip cylinder 1",
         "requires": [
           "right/cylinder_1/upper_pin",
           "right/cylinder_1/lower_pin"
@@ -3386,7 +3386,7 @@
       "right_hip_2": {
         "owner": "pelvis",
         "slot": "right/cylinder_2",
-        "label": "Right Hip cylinder 2 neutral lock",
+        "label": "Right hip cylinder 2",
         "requires": [
           "right/cylinder_2/upper_pin",
           "right/cylinder_2/lower_pin"
@@ -3418,7 +3418,7 @@
       "right_hip_3": {
         "owner": "pelvis",
         "slot": "right/cylinder_3",
-        "label": "Right Hip cylinder 3 neutral lock",
+        "label": "Right hip cylinder 3",
         "requires": [
           "right/cylinder_3/upper_pin",
           "right/cylinder_3/lower_pin"

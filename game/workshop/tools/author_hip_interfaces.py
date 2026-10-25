@@ -37,9 +37,12 @@ def extend(trial, kinds, leg, pelvis, diagram):
         stock(uid, key)
         return sid
 
-    def page(title, body, ids):
-        return dict(title=title, body=body, slots=ids, view="components",
-                    diagram_views=[diagram(title, [slots[sid]["pose_source"] for sid in ids])])
+    def page(title, ids, goal, objectives, note=None):
+        record = dict(title=title, goal=goal, slots=list(ids), objectives=objectives, view="components",
+                      diagram_views=[diagram(title, [slots[sid]["pose_source"] for sid in ids])])
+        if note is not None:
+            record["note"] = note
+        return record
 
     part("pv-stop-half", "PV-130", "Hip stop-cage half", "hand")
     part("pv-m12-60", "PV-H12060", "M12 × 60 stop-cage screw", "pocket")
@@ -65,7 +68,9 @@ def extend(trial, kinds, leg, pelvis, diagram):
                 shapes.append(box([math.copysign(.47,x),y,-.014],[.06,.05,.028]))
         source(uid,"PV-130",[hip_x,-.71,0],shapes,[0,0 if half==1 else 180,0])
         cage.append(connection(f"stop_half_{half}","pv-stop-half",uid,ring,undo_to="hands"))
-    pages.append(page("Fit the hip stop cage", "With both ring halves and all four ring bolt pairs fitted, carry the two identical PV-130 stop-cage halves around the already retained neck. Their lower lip surrounds the prepared stop tongues; the cage limits motion and does not replace the ring or the engaged leg rig.",cage.copy()))
+    pages.append(page("Fit the hip stop cage", cage.copy(),
+        "Fit both stop-cage halves around the retained neck.",
+        [dict(op="fit", slots=list(cage))]))
     fasteners = []
     for n,(x,y) in enumerate([(x,y) for x in (-.52,.52) for y in (-.06,.06)],1):
         w=f"LG-W12__{n+2:03}";b=f"PV-H12060__{n:03}"
@@ -73,7 +78,10 @@ def extend(trial, kinds, leg, pelvis, diagram):
         source(b,"PV-H12060",[hip_x+x,-.71+y,-.032],[tube([0,0,.03],.006,0,.06,[0,0,1]),tube([0,0,-.006],.009,0,.012,[0,0,1])])
         ws=connection(f"stop/washer_{n}","lg-w12",w,cage)
         fasteners += [ws,connection(f"stop/bolt_{n}","pv-m12-60",b,[ws],target_offset=[0,0,-.012])]
-    pages.append(page("Secure the cage seams", "Fit four LG-W12 washers and four PV-H12060 M12 × 60 screws through the four front-facing seam ears, each washer before its screw. These screws are longer than the knee-cap screws. Keep the leg rig engaged for the cylinder connections.",fasteners))
+    pages.append(page("Secure the cage seams", fasteners,
+        "Screw the cage seams together.",
+        [dict(op="fit", slots=list(fasteners))],
+        note=dict(at=0, text="These M12 × 60 screws are longer than the knee-cap screws.")))
     cage += fasteners
     # The stock cartridges use their own straight upright local frame. Each
     # destination clocks that frame to the two authored eye centres; installed
@@ -138,10 +146,15 @@ def extend(trial, kinds, leg, pelvis, diagram):
                         axis=[0,1,0] if axis=="y" else axis
                         size=[abs(axis[i])*primitive["length"]+2*primitive["outer"]*math.sqrt(max(0,1-axis[i]**2)) for i in range(3)]
                     kinds["lg-thigh-spar"]["collision_shapes"].append(dict(type="box",position=primitive["center"],size=size))
-        pages.append(page(f"Mount hip cylinder {n}", "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",[sid]+pins))
+        pages.append(page(f"Mount hip cylinder {n}", [sid]+pins,
+            f"Mount hip cylinder {n}, pin both ends and lock it.",
+            [dict(op="fit", slots=[sid]),
+             dict(op="fit", slots=list(pins)),
+             dict(op="operate", machine="captive_controls", command=f"lock:left_hip_{n}")],
+            note=dict(at=1, text="The front two cylinders pin from the front, the rear one from the rear.")))
         lock_id=f"left_hip_{n}"
         lock_ids.append(lock_id)
-        controls[lock_id]=dict(owner="pelvis",slot=sid,label=f"Hip cylinder {n} neutral lock",
+        controls[lock_id]=dict(owner="pelvis",slot=sid,label=f"Hip cylinder {n}",
              requires=pins,group="left_leg_neutral",support_assembly="left_leg",
              position=[.125,-length/2,0],axis=[1,0,0],stroke=.04,
              size=[.06,.025,.025],protected_slots=[sid]+pins)
@@ -149,9 +162,8 @@ def extend(trial, kinds, leg, pelvis, diagram):
     pelvis["milestones"]["structural_ready"]=list(slots)
     trial["context_sources"]=list(pelvis["context_sources"])+contact_sources
     pelvis["context_sources"]=trial["context_sources"]
-    end=next(i for i,p in enumerate(pelvis["manual"]) if p["title"]=="Left leg structurally secured")
+    end=next(i for i,p in enumerate(pelvis["manual"]) if p["title"]=="Release the leg rig")
     pelvis["manual"][end:end]=pages
-    pelvis["manual"][end+len(pages)]["body"]="Both retaining halves, all ring and stop-cage hardware, all three cylinders and their six eye pins are required. Operate each cylinder's captive neutral lock at its exposed index rail. Only then can Advance release the leg rig: open contacts, lower, withdraw 1.4 m rearward, compact and shift 2 m outboard. Return turns and travels the empty leg rig home without moving the installed leg. Stop and Advance hold or resume a phase. Reacquire leg rig support before unlocking a cylinder or undoing retention."
     trial["robot"]["playable_slots"]["pelvis"]=list(slots)
     # Prepared leg-owned collar/tongues share the upper spar's identity.
     spar=sources["LG-120__001"]

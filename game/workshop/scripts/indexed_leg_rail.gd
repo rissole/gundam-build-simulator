@@ -5,6 +5,7 @@ extends "res://scripts/equipment.gd"
 signal changed
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
+const MANUAL_COMMANDS = ["next:bolster","next:index","next:travel","next:upright","next:dock","next:release","back:home","build"]
 var layout: Node3D
 var spec: Dictionary
 var active_assembly = "left_leg"
@@ -46,20 +47,70 @@ func _panel(at: Vector3) -> void:
 
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
+	var other := "right" if active_assembly=="left_leg" else "left"
 	for button in buttons:
 		var entry: Dictionary=button.duplicate();entry.point=entry.node.global_position
-		entry.label={"advance":"Advance / "+next_action(),"return":"Return supported leg rig","stop":"Stop leg rig","lane":"Select hip lane · "+lane,"roll":"Roll supported leg in the Limb Bay","park":"Park / retrieve leg rig","build":"Select "+("right" if active_assembly=="left_leg" else "left")+" leg on the empty leg rig"}[entry.action]
+		match str(entry.action):
+			"advance":entry.label="Leg rig: Next — "+next_action()
+			"return":entry.label="Leg rig: Back — return the leg rig"
+			"stop":entry.label="Leg rig: Stop"
+			"lane":entry.label="Leg rig: Lane — "+lane+" hip"
+			"roll":entry.label="Leg rig: Roll"
+			"park":entry.label="Leg rig: Park / retrieve"
+			"build":entry.label="Leg rig: Build — select the "+other+" leg"
 		result.append(entry)
 	return result
+
+func manual_commands() -> Array:return MANUAL_COMMANDS
+func command_label(action: String, _task: String = "") -> String:
+	if action.begins_with("next:"):return "Next"
+	if action=="back:home":return "Back"
+	if action=="build":return "Build"
+	return ""
+func manual_subject(_objective: Dictionary) -> String:return "Leg rig"
+func manual_hint(objective: Dictionary) -> String:
+	match str(objective.get("command","")):
+		"next:bolster":return "stows the foot bolster"
+		"next:index":return "indexes to the hip lane"
+		"next:travel":return "travels to the Final Assembly Bay"
+		"next:upright":return "turns the leg upright"
+		"next:release":return "releases the leg"
+		"back:home":return "repeat until the rig is home"
+		"build":return "selects the right leg"
+	return ""
+## Arrival values only. A phase that is still moving keeps the previous stop,
+## so the checklist does not tick the destination early. Release completion is
+## `engaged` becoming false: that flip happens when the withdrawal arrives, and
+## the same arrival forces path back to 2, so the path stop cannot represent it.
+func manual_state() -> Dictionary:
+	var stop := int(floorf(path+.0001))
+	var lane_x := float(spec.lanes[lane])
+	var station := float(spec.station_x)
+	var stowed := is_equal_approx(bolster,1.0)
+	if moving and mode=="bolster" and goal<1.0:stowed=true
+	var on_lane := is_equal_approx(index_x,lane_x)
+	if moving and mode=="index" and not is_equal_approx(float(goal),lane_x):on_lane=true
+	return {"bolster":stowed,"indexed":on_lane,"stop":stop,"engaged":engaged,"home":stop==0 and is_equal_approx(index_x,station) and is_equal_approx(release,0.0),"active_assembly":active_assembly}
+func manual_effect(objective: Dictionary) -> Dictionary:
+	match str(objective.get("command","")):
+		"next:bolster":return {"bolster":true}
+		"next:index":return {"indexed":true}
+		"next:travel":return {"stop":1}
+		"next:upright":return {"stop":2}
+		"next:dock":return {"stop":3}
+		"next:release":return {"engaged":false}
+		"back:home":return {"home":true}
+		"build":return {"active_assembly":"right_leg","engaged":true}
+	return {}
 
 func can_construct() -> bool:
 	return engaged and not moving and mode.is_empty() and path==0 and is_equal_approx(index_x,spec.station_x) and roll==0 and roll_height==0
 
 func next_action() -> String:
 	if not mode.is_empty():return "resume "+mode.replace("_"," ")
-	if not engaged:return "reacquire leg support" if path>=2 else "advance empty leg rig toward retained leg"
+	if not engaged:return "reacquire the leg" if path>=2 else "move the empty rig toward the retained leg"
 	if not is_equal_approx(index_x,spec.lanes[lane]):return "index to "+lane+" hip"
-	if path>=3:return "release secured leg rig"
+	if path>=3:return "release the secured leg"
 	return ["travel to Final Assembly Bay","turn upright","dock upward"][clampi(floori(path),0,2)]
 
 func retention_state(model: AssemblyModel = null, controls_state: Dictionary = {}, assembly: String = "") -> String:
@@ -101,10 +152,10 @@ func action_error(action: String) -> String:
 	if action=="return" and engaged and game.model.assemblies[active_assembly].parent==receiver and retention_state()!="none":return "Remove hip retention before returning the loaded leg."
 	if action=="advance" and engaged:
 		var gantry=game.equipment.get_equipment("module_supports")
-		if gantry!=null and not gantry.support_secured():return "Deliver the pelvis, close all four gantry jaws and engage both waist locks before leg delivery."
+		if gantry!=null and not gantry.support_secured():return "Deliver the pelvis, close all four gantry jaws and insert both waist lock pins before leg delivery."
 		if lane!=active_assembly.trim_suffix("_leg"):return "Select the "+active_assembly.trim_suffix("_leg")+" hip lane for this leg."
 		if not game.model.milestone(active_assembly,"structural_ready"):return "Complete the structural leg and every retaining connection before delivery."
-		if path==3 and retention_state()!="complete":return "Complete hip retention and neutral restraint before releasing the leg rig."
+		if path==3 and retention_state()!="complete":return "Complete hip retention and the cylinder lock pins before releasing the leg rig."
 	return ""
 
 func request(action: String) -> String:
@@ -375,7 +426,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary 
 		if load.location!="support:"+support or not data.engaged or data.release!=0:return ["Uninstalled leg has no engaged leg rig."]
 	elif load.parent!=receiver or load.parent_slot!=data.slot:return ["Holder load is mounted elsewhere."]
 	elif data.engaged and (data.path!=3 or data.mode not in ["","release"]):return ["Mounted leg contact is only available at its dock."]
-	if (not data.engaged or data.release>0) and retention_state(model,world.get("equipment",{}).get("captive_controls",{}),data.assembly)!="complete":return ["Holder release requires full hip retention and restraint."]
+	if (not data.engaged or data.release>0) and retention_state(model,world.get("equipment",{}).get("captive_controls",{}),data.assembly)!="complete":return ["Leg rig release requires full hip retention and lock pins."]
 	if (data.path>0 or data.mode=="path") and not model.milestone(data.assembly,"structural_ready"):return ["Incomplete leg cannot leave the construction table."]
 	if data.path>0 and (data.roll!=0 or data.roll_height!=0 or not is_equal_approx(data.index_x,spec.lanes[data.lane])):return ["Longitudinal travel requires neutral roll and a pinned hip lane."]
 	if world.has("equipment") and data.mode=="path" and world.equipment.rail_gates.goal!=1:return ["Rail travel requires a closed ground crossing request."]

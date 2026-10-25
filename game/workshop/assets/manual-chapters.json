@@ -13,9 +13,9 @@
     {"id": "right_leg_build", "title": "Right-leg construction", "after": ["left_leg_dock"],
      "steps": [["right_leg", 1], ["right_leg", 2], ["right_leg", 3], ["right_leg", 4], ["right_leg", 5], ["right_leg", 6], ["right_leg", 7], ["right_leg", 8], ["right_leg", 9], ["right_leg", 10], ["right_leg", 11]]},
     {"id": "right_leg_dock", "title": "Right-leg docking", "after": ["right_leg_build"],
-     "steps": [["pelvis", 14], ["pelvis", 15], ["pelvis", 16], ["pelvis", 17], ["pelvis", 18], ["pelvis", 19], ["pelvis", 20], ["pelvis", 21], ["pelvis", 22], ["pelvis", 23], ["pelvis", 24]]},
+     "steps": [["pelvis", 13], ["pelvis", 14], ["pelvis", 15], ["pelvis", 16], ["pelvis", 17], ["pelvis", 18], ["pelvis", 19], ["pelvis", 20], ["pelvis", 21], ["pelvis", 22], ["pelvis", 23]]},
     {"id": "chest", "title": "Chest delivery", "after": ["right_leg_dock"],
-     "steps": [["pelvis", 27], ["pelvis", 28], ["pelvis", 29]]},
+     "steps": [["pelvis", 25], ["pelvis", 26], ["pelvis", 27]]},
     {"id": "core", "title": "Core delivery", "after": ["chest"],
      "steps": [["chest", 1], ["chest", 2]]},
     {"id": "backpack", "title": "Backpack delivery", "after": ["core"],
@@ -35,6 +35,6 @@
   ],
   "reference": {
     "title": "Recovery and undo",
-    "steps": [["left_leg", 13, "Left leg: supported construction recovery"], ["pelvis", 13, "Left hip: reacquire support and recover"], ["right_leg", 13, "Right leg: supported construction recovery"], ["pelvis", 26, "Right hip: reacquire support and recover"]]
+    "steps": [["left_leg", 13, "Left leg: supported construction recovery"], ["pelvis", 12, "Left hip: reacquire support and recover"], ["right_leg", 13, "Right leg: supported construction recovery"], ["pelvis", 24, "Right hip: reacquire support and recover"]]
   }
 }

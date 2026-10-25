@@ -129,6 +129,20 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
         pelvis["slots"][slot_names[sid]]=record
     for page in mirrored_pelvis["manual"]:
         page["slots"]=[slot_names[sid] for sid in page.get("slots",[])]
+        if "objectives" in page:
+            kept=[]
+            for objective in page["objectives"]:
+                if objective.get("machine")=="leg_rail" and objective.get("command")=="build":
+                    continue
+                if objective.get("slot") in slot_names:
+                    objective["slot"]=slot_names[objective["slot"]]
+                if "slots" in objective:
+                    objective["slots"]=[slot_names[sid] for sid in objective["slots"]]
+                command=objective.get("command","")
+                if isinstance(command,str) and command.startswith("lock:left_"):
+                    objective["command"]="lock:right_"+command[len("lock:left_"):]
+                kept.append(objective)
+            page["objectives"]=kept
         pelvis["manual"].append(page)
     pelvis["title"]="Pelvis · both hip installations"
     pelvis["milestones"]["right_ring_secured"]=[slot_names[sid] for sid in pelvis["milestones"]["left_ring_secured"]]
@@ -144,7 +158,7 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
         new["protected_slots"]=[slot_names[sid] for sid in record["protected_slots"]]
         new["group"]="right_leg_neutral";new["support_assembly"]="right_leg"
         new["position"]=vector(new["position"]);new["axis"]=vector(new["axis"])
-        new["label"]="Right "+new["label"]
+        new["label"]="Right "+new["label"][:1].lower()+new["label"][1:]
         locks[key.replace("left_","right_")]=new
     trial["robot"]["playable_slots"].update(right_leg=list(right_leg["slots"]),pelvis=list(pelvis["slots"]))
     trial["robot"]["staged_slots"]["right_leg"]=[]

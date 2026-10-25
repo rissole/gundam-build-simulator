@@ -4882,16 +4882,40 @@
           }
         },
         {
-          "title": "Travel and seat the supported leg",
-          "view": "overview",
-          "slots": [],
-          "body": "The pelvis bridge, both sockets and their bridge bolts are supplied context. Keep the rail engaged throughout travel, tilt and upward docking. Use local rail Advance controls through each supported stage; Stop holds the current stage. Retention is performed from the personnel lift. Retention blocks loaded Return."
-        },
-        {
           "title": "Seat the leg in the pelvis",
-          "body": "With the completed leg, neutral source roll and parked empty crane, select the left hip lane. Advance first stows the foot bolster, then indexes and pins the transverse table. Further Advance commands travel, turn upright and dock upward. The shared hip platforms open before loaded movement and restore after seating. The leg rig stays engaged: ball seating alone does not secure the leg.",
+          "goal": "Drive the finished leg on its rig to the Final Assembly Bay and dock it into the left hip.",
           "slots": [
             "left_leg"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:bolster"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:index"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:travel"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:upright"
+            },
+            {
+              "op": "seat",
+              "slot": "left_leg",
+              "via": {
+                "machine": "leg_rail",
+                "command": "next:dock"
+              }
+            }
           ],
           "view": "components",
           "context_sources": [
@@ -4903,6 +4927,10 @@
             "PV-C-H24090__003",
             "PV-C-H24090__004"
           ],
+          "note": {
+            "at": 0,
+            "text": "Park the empty crane first. The leg rig stays attached until the hip is pinned."
+          },
           "diagram_views": [
             {
               "title": "Seat the leg in the pelvis",
@@ -4935,15 +4963,27 @@
         },
         {
           "title": "Carry retaining half 1",
-          "body": "E picks up either PV-120 half with both hands. Carry it onto the personnel lift and click the shelf to store it. The shelf holds one two-hand component or two one-hand components; take one half per trip. Ride Up, E-pick it from the shelf, then aim and click its underside connection around the already seated hip neck. Either physical half fits either destination.",
+          "goal": "Fit the first retaining half around the hip neck.",
           "slots": [
             "ring_1"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "ring_1"
+              ]
+            }
           ],
           "view": "components",
           "context_sources": [
             "PV-110__001",
             "PV-V-HIP-BALL"
           ],
+          "note": {
+            "at": 0,
+            "text": "Take it up on the lift shelf, one half per trip. Either half fits either side."
+          },
           "diagram_views": [
             {
               "title": "Carry retaining half 1",
@@ -4971,18 +5011,33 @@
         },
         {
           "title": "Fasten retaining half 1",
-          "body": "Pocket two LG-W24 washers and two PV-H24140 M24 x 140 bolts at ground level. Fit each washer then its bolt upward from the seated half's underside into the existing socket flange. The shared LG-W24 stock also supplies the fork flange. Keep rail assistance engaged; a single fastened half cannot retain the complete hip.",
+          "goal": "Bolt the first half to the socket flange from underneath.",
           "slots": [
             "ring/washer_3",
             "ring/bolt_3",
             "ring/washer_4",
             "ring/bolt_4"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "ring/washer_3",
+                "ring/bolt_3",
+                "ring/washer_4",
+                "ring/bolt_4"
+              ]
+            }
+          ],
           "view": "components",
           "context_sources": [
             "PV-110__001",
             "PV-120__001"
           ],
+          "note": {
+            "at": 0,
+            "text": "Insert each washer and bolt upward from the underside."
+          },
           "diagram_views": [
             {
               "title": "Fasten retaining half 1",
@@ -5013,15 +5068,27 @@
         },
         {
           "title": "Carry retaining half 2",
-          "body": "E picks up either PV-120 half with both hands. Carry it onto the personnel lift and click the shelf to store it. The shelf holds one two-hand component or two one-hand components; take one half per trip. Ride Up, E-pick it from the shelf, then aim and click its underside connection around the already seated hip neck. Either physical half fits either destination.",
+          "goal": "Fit the second retaining half around the hip neck.",
           "slots": [
             "ring_2"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "ring_2"
+              ]
+            }
           ],
           "view": "components",
           "context_sources": [
             "PV-110__001",
             "PV-V-HIP-BALL"
           ],
+          "note": {
+            "at": 0,
+            "text": "Take it up on the lift shelf, one half per trip. Either half fits either side."
+          },
           "diagram_views": [
             {
               "title": "Carry retaining half 2",
@@ -5049,18 +5116,33 @@
         },
         {
           "title": "Fasten retaining half 2",
-          "body": "Pocket two LG-W24 washers and two PV-H24140 M24 x 140 bolts at ground level. Move toward the hip-facing end of the lift's working corner to see the far underside washer seats past the beam. Fit each washer then its bolt upward from the seated half's underside into the existing socket flange. The shared LG-W24 stock also supplies the fork flange. Keep rail assistance engaged; a single fastened half cannot retain the complete hip.",
+          "goal": "Bolt the second half to the socket flange from underneath.",
           "slots": [
             "ring/washer_1",
             "ring/bolt_1",
             "ring/washer_2",
             "ring/bolt_2"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "ring/washer_1",
+                "ring/bolt_1",
+                "ring/washer_2",
+                "ring/bolt_2"
+              ]
+            }
+          ],
           "view": "components",
           "context_sources": [
             "PV-110__001",
             "PV-120__002"
           ],
+          "note": {
+            "at": 0,
+            "text": "Stand at the hip end of the lift's working corner to see the far washer seats."
+          },
           "diagram_views": [
             {
               "title": "Fasten retaining half 2",
@@ -5091,10 +5173,19 @@
         },
         {
           "title": "Fit the hip stop cage",
-          "body": "With both ring halves and all four ring bolt pairs fitted, carry the two identical PV-130 stop-cage halves around the already retained neck. Their lower lip surrounds the prepared stop tongues; the cage limits motion and does not replace the ring or the engaged leg rig.",
+          "goal": "Fit both stop-cage halves around the retained neck.",
           "slots": [
             "stop_half_1",
             "stop_half_2"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "stop_half_1",
+                "stop_half_2"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5122,7 +5213,7 @@
         },
         {
           "title": "Secure the cage seams",
-          "body": "Fit four LG-W12 washers and four PV-H12060 M12 × 60 screws through the four front-facing seam ears, each washer before its screw. These screws are longer than the knee-cap screws. Keep the leg rig engaged for the cylinder connections.",
+          "goal": "Screw the cage seams together.",
           "slots": [
             "stop/washer_1",
             "stop/bolt_1",
@@ -5132,6 +5223,21 @@
             "stop/bolt_3",
             "stop/washer_4",
             "stop/bolt_4"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "stop/washer_1",
+                "stop/bolt_1",
+                "stop/washer_2",
+                "stop/bolt_2",
+                "stop/washer_3",
+                "stop/bolt_3",
+                "stop/washer_4",
+                "stop/bolt_4"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5161,15 +5267,39 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "These M12 × 60 screws are longer than the knee-cap screws."
+          }
         },
         {
           "title": "Mount hip cylinder 1",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "goal": "Mount hip cylinder 1, pin both ends and lock it.",
           "slots": [
             "cylinder_1",
             "cylinder_1/upper_pin",
             "cylinder_1/lower_pin"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "cylinder_1"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "cylinder_1/upper_pin",
+                "cylinder_1/lower_pin"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "captive_controls",
+              "command": "lock:left_hip_1"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5194,15 +5324,39 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 1,
+            "text": "The front two cylinders pin from the front, the rear one from the rear."
+          }
         },
         {
           "title": "Mount hip cylinder 2",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "goal": "Mount hip cylinder 2, pin both ends and lock it.",
           "slots": [
             "cylinder_2",
             "cylinder_2/upper_pin",
             "cylinder_2/lower_pin"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "cylinder_2"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "cylinder_2/upper_pin",
+                "cylinder_2/lower_pin"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "captive_controls",
+              "command": "lock:left_hip_2"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5227,15 +5381,39 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 1,
+            "text": "The front two cylinders pin from the front, the rear one from the rear."
+          }
         },
         {
           "title": "Mount hip cylinder 3",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "goal": "Mount hip cylinder 3, pin both ends and lock it.",
           "slots": [
             "cylinder_3",
             "cylinder_3/upper_pin",
             "cylinder_3/lower_pin"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "cylinder_3"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "cylinder_3/upper_pin",
+                "cylinder_3/lower_pin"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "captive_controls",
+              "command": "lock:left_hip_3"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5260,13 +5438,62 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 1,
+            "text": "The front two cylinders pin from the front, the rear one from the rear."
+          }
         },
         {
-          "title": "Left leg structurally secured",
-          "view": "prepared",
+          "title": "Release the leg rig",
+          "view": "components",
           "slots": [],
-          "body": "Both retaining halves, all ring and stop-cage hardware, all three cylinders and their six eye pins are required. Operate each cylinder's captive neutral lock at its exposed index rail. Only then can Advance release the leg rig: open contacts, lower, withdraw 1.4 m rearward, compact and shift 2 m outboard. Return turns and travels the empty leg rig home without moving the installed leg. Stop and Advance hold or resume a phase. Reacquire leg rig support before unlocking a cylinder or undoing retention."
+          "goal": "Let the hip carry the leg, then send the empty rigs home.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:release"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "back:home"
+            },
+            {
+              "op": "operate",
+              "machine": "foot_carrier",
+              "command": "return:home"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "build"
+            }
+          ],
+          "note": {
+            "at": 0,
+            "text": "The leg rig only lets go once all three cylinder lock pins are in."
+          },
+          "diagram_views": [
+            {
+              "title": "Release the leg rig",
+              "sources": [],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
         },
         {
           "title": "Reacquire support and recover",
@@ -5275,16 +5502,40 @@
           "body": "If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
-          "title": "Travel and seat the supported leg",
-          "view": "overview",
-          "slots": [],
-          "body": "The pelvis bridge, both sockets and their bridge bolts are supplied context. Keep the rail engaged throughout travel, tilt and upward docking. Use local rail Advance controls through each supported stage; Stop holds the current stage. Retention is performed from the personnel lift. Retention blocks loaded Return."
-        },
-        {
           "title": "Seat the leg in the pelvis",
-          "body": "With the completed leg, neutral source roll and parked empty crane, select the right hip lane. Advance first stows the foot bolster, then indexes and pins the transverse table. Further Advance commands travel, turn upright and dock upward. The shared hip platforms open before loaded movement and restore after seating. The leg rig stays engaged: ball seating alone does not secure the leg.",
+          "goal": "Drive the finished leg on its rig to the Final Assembly Bay and dock it into the right hip.",
           "slots": [
             "right_leg"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:bolster"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:index"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:travel"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:upright"
+            },
+            {
+              "op": "seat",
+              "slot": "right_leg",
+              "via": {
+                "machine": "leg_rail",
+                "command": "next:dock"
+              }
+            }
           ],
           "view": "components",
           "context_sources": [
@@ -5296,6 +5547,10 @@
             "R-PV-C-H24090__003",
             "R-PV-C-H24090__004"
           ],
+          "note": {
+            "at": 0,
+            "text": "Park the empty crane first. The leg rig stays attached until the hip is pinned."
+          },
           "diagram_views": [
             {
               "title": "Seat the leg in the pelvis",
@@ -5328,15 +5583,27 @@
         },
         {
           "title": "Carry retaining half 1",
-          "body": "E picks up either PV-120 half with both hands. Carry it onto the personnel lift and click the shelf to store it. The shelf holds one two-hand component or two one-hand components; take one half per trip. Ride Up, E-pick it from the shelf, then aim and click its underside connection around the already seated hip neck. Either physical half fits either destination.",
+          "goal": "Fit the first retaining half around the hip neck.",
           "slots": [
             "right/ring_1"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/ring_1"
+              ]
+            }
           ],
           "view": "components",
           "context_sources": [
             "R-PV-110__001",
             "R-PV-V-HIP-BALL"
           ],
+          "note": {
+            "at": 0,
+            "text": "Take it up on the lift shelf, one half per trip. Either half fits either side."
+          },
           "diagram_views": [
             {
               "title": "Carry retaining half 1",
@@ -5364,18 +5631,33 @@
         },
         {
           "title": "Fasten retaining half 1",
-          "body": "Pocket two LG-W24 washers and two PV-H24140 M24 x 140 bolts at ground level. Fit each washer then its bolt upward from the seated half's underside into the existing socket flange. The shared LG-W24 stock also supplies the fork flange. Keep rail assistance engaged; a single fastened half cannot retain the complete hip.",
+          "goal": "Bolt the first half to the socket flange from underneath.",
           "slots": [
             "right/ring/washer_3",
             "right/ring/bolt_3",
             "right/ring/washer_4",
             "right/ring/bolt_4"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/ring/washer_3",
+                "right/ring/bolt_3",
+                "right/ring/washer_4",
+                "right/ring/bolt_4"
+              ]
+            }
+          ],
           "view": "components",
           "context_sources": [
             "R-PV-110__001",
             "R-PV-120__001"
           ],
+          "note": {
+            "at": 0,
+            "text": "Insert each washer and bolt upward from the underside."
+          },
           "diagram_views": [
             {
               "title": "Fasten retaining half 1",
@@ -5406,15 +5688,27 @@
         },
         {
           "title": "Carry retaining half 2",
-          "body": "E picks up either PV-120 half with both hands. Carry it onto the personnel lift and click the shelf to store it. The shelf holds one two-hand component or two one-hand components; take one half per trip. Ride Up, E-pick it from the shelf, then aim and click its underside connection around the already seated hip neck. Either physical half fits either destination.",
+          "goal": "Fit the second retaining half around the hip neck.",
           "slots": [
             "right/ring_2"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/ring_2"
+              ]
+            }
           ],
           "view": "components",
           "context_sources": [
             "R-PV-110__001",
             "R-PV-V-HIP-BALL"
           ],
+          "note": {
+            "at": 0,
+            "text": "Take it up on the lift shelf, one half per trip. Either half fits either side."
+          },
           "diagram_views": [
             {
               "title": "Carry retaining half 2",
@@ -5442,18 +5736,33 @@
         },
         {
           "title": "Fasten retaining half 2",
-          "body": "Pocket two LG-W24 washers and two PV-H24140 M24 x 140 bolts at ground level. Move toward the hip-facing end of the lift's working corner to see the far underside washer seats past the beam. Fit each washer then its bolt upward from the seated half's underside into the existing socket flange. The shared LG-W24 stock also supplies the fork flange. Keep rail assistance engaged; a single fastened half cannot retain the complete hip.",
+          "goal": "Bolt the second half to the socket flange from underneath.",
           "slots": [
             "right/ring/washer_1",
             "right/ring/bolt_1",
             "right/ring/washer_2",
             "right/ring/bolt_2"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/ring/washer_1",
+                "right/ring/bolt_1",
+                "right/ring/washer_2",
+                "right/ring/bolt_2"
+              ]
+            }
+          ],
           "view": "components",
           "context_sources": [
             "R-PV-110__001",
             "R-PV-120__002"
           ],
+          "note": {
+            "at": 0,
+            "text": "Stand at the hip end of the lift's working corner to see the far washer seats."
+          },
           "diagram_views": [
             {
               "title": "Fasten retaining half 2",
@@ -5484,10 +5793,19 @@
         },
         {
           "title": "Fit the hip stop cage",
-          "body": "With both ring halves and all four ring bolt pairs fitted, carry the two identical PV-130 stop-cage halves around the already retained neck. Their lower lip surrounds the prepared stop tongues; the cage limits motion and does not replace the ring or the engaged leg rig.",
+          "goal": "Fit both stop-cage halves around the retained neck.",
           "slots": [
             "right/stop_half_1",
             "right/stop_half_2"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/stop_half_1",
+                "right/stop_half_2"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5515,7 +5833,7 @@
         },
         {
           "title": "Secure the cage seams",
-          "body": "Fit four LG-W12 washers and four PV-H12060 M12 × 60 screws through the four front-facing seam ears, each washer before its screw. These screws are longer than the knee-cap screws. Keep the leg rig engaged for the cylinder connections.",
+          "goal": "Screw the cage seams together.",
           "slots": [
             "right/stop/washer_1",
             "right/stop/bolt_1",
@@ -5525,6 +5843,21 @@
             "right/stop/bolt_3",
             "right/stop/washer_4",
             "right/stop/bolt_4"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/stop/washer_1",
+                "right/stop/bolt_1",
+                "right/stop/washer_2",
+                "right/stop/bolt_2",
+                "right/stop/washer_3",
+                "right/stop/bolt_3",
+                "right/stop/washer_4",
+                "right/stop/bolt_4"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5554,15 +5887,39 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "These M12 × 60 screws are longer than the knee-cap screws."
+          }
         },
         {
           "title": "Mount hip cylinder 1",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "goal": "Mount hip cylinder 1, pin both ends and lock it.",
           "slots": [
             "right/cylinder_1",
             "right/cylinder_1/upper_pin",
             "right/cylinder_1/lower_pin"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/cylinder_1"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right/cylinder_1/upper_pin",
+                "right/cylinder_1/lower_pin"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "captive_controls",
+              "command": "lock:right_hip_1"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5587,15 +5944,39 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 1,
+            "text": "The front two cylinders pin from the front, the rear one from the rear."
+          }
         },
         {
           "title": "Mount hip cylinder 2",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "goal": "Mount hip cylinder 2, pin both ends and lock it.",
           "slots": [
             "right/cylinder_2",
             "right/cylinder_2/upper_pin",
             "right/cylinder_2/lower_pin"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/cylinder_2"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right/cylinder_2/upper_pin",
+                "right/cylinder_2/lower_pin"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "captive_controls",
+              "command": "lock:right_hip_2"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5620,15 +6001,39 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 1,
+            "text": "The front two cylinders pin from the front, the rear one from the rear."
+          }
         },
         {
           "title": "Mount hip cylinder 3",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "goal": "Mount hip cylinder 3, pin both ends and lock it.",
           "slots": [
             "right/cylinder_3",
             "right/cylinder_3/upper_pin",
             "right/cylinder_3/lower_pin"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right/cylinder_3"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right/cylinder_3/upper_pin",
+                "right/cylinder_3/lower_pin"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "captive_controls",
+              "command": "lock:right_hip_3"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -5653,13 +6058,57 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 1,
+            "text": "The front two cylinders pin from the front, the rear one from the rear."
+          }
         },
         {
-          "title": "Right leg structurally secured",
-          "view": "prepared",
+          "title": "Release the leg rig",
+          "view": "components",
           "slots": [],
-          "body": "Both retaining halves, all ring and stop-cage hardware, all three cylinders and their six eye pins are required. Operate each cylinder's captive neutral lock at its exposed index rail. Only then can Advance release the leg rig: open contacts, lower, withdraw 1.4 m rearward, compact and shift 2 m outboard. Return turns and travels the empty leg rig home without moving the installed leg. Stop and Advance hold or resume a phase. Reacquire leg rig support before unlocking a cylinder or undoing retention."
+          "goal": "Let the hip carry the leg, then send the empty rigs home.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "next:release"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "back:home"
+            },
+            {
+              "op": "operate",
+              "machine": "foot_carrier",
+              "command": "return:home"
+            }
+          ],
+          "note": {
+            "at": 0,
+            "text": "The leg rig only lets go once all three cylinder lock pins are in."
+          },
+          "diagram_views": [
+            {
+              "title": "Release the leg rig",
+              "sources": [],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                -1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
         },
         {
           "title": "Reacquire support and recover",

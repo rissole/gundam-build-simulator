@@ -117,7 +117,9 @@ func run() -> void:
 	expect(mixed == "Fit FA-221, FA-222, W-12, H-12030 · base end","count 1 omits the multiplier, got "+mixed)
 	var repeated := Objectives.fit_text(parts,[washer,washer,screw])
 	expect(repeated == "Fit 2 × W-12, H-12040","counts above 1 keep the multiplier, got "+repeated)
-	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS,"foot_carrier":preload("res://scripts/foot_carrier.gd").MANUAL_COMMANDS,"module_supports":preload("res://scripts/module_supports.gd").MANUAL_COMMANDS}
+	var content = JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-content.json"))
+	var lock_ids: Array = content.equipment.captive_controls.keys()
+	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS,"foot_carrier":preload("res://scripts/foot_carrier.gd").MANUAL_COMMANDS,"module_supports":preload("res://scripts/module_supports.gd").MANUAL_COMMANDS,"leg_rail":preload("res://scripts/indexed_leg_rail.gd").MANUAL_COMMANDS,"captive_controls":preload("res://scripts/captive_controls.gd").lock_commands(lock_ids)}
 	var good = {"title":"Bolt the flange","goal":"Fasten the flange","view":"components","slots":["a","b"],"objectives":[{"op":"fit","slots":["a"]},{"op":"fit","slots":["b"]}]}
 	var good_errors = Objectives.errors(manual_of(good),commands)
 	expect(good_errors.is_empty(),"valid page has no objective errors: "+joined(good_errors))
@@ -210,6 +212,69 @@ func run() -> void:
 	var dock_text: Array[String] = []
 	for objective in dock.objectives:dock_text.append(Objectives.text(game,"left_leg",objective))
 	expect(dock_text == ["Foot rig: Next — raises the foot","Foot rig: Next — moves it to the leg rig","Foot rig: Next to seat the prepared foot"],"dock text, got "+str(dock_text))
+	var pins = preload("res://scripts/captive_controls.gd").new();game.add_child(pins);pins.equipment_id="captive_controls";game.equipment.register(pins)
+	pins.specs=content.equipment.captive_controls
+	for id in pins.specs:pins.locked[id]=false
+	var rail = preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail);rail.equipment_id="leg_rail";game.equipment.register(rail)
+	rail.spec={"station_x":14.0,"lanes":{"left":10.0,"right":18.0}}
+	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.path=0.0;rail.bolster=0.0;rail.release=0.0;rail.index_x=14.0;rail.moving=false;rail.mode=""
+	var seat := page_named(definitions.pelvis.manual,"Seat the leg in the pelvis")
+	var seat_text: Array[String] = []
+	for objective in seat.objectives:seat_text.append(Objectives.text(game,"pelvis",objective))
+	var seat_prefix := true
+	for index in range(seat_text.size()-1):
+		if not seat_text[index].begins_with("Leg rig: Next — "):seat_prefix=false
+	expect(seat_prefix and seat_text[seat_text.size()-1]=="Leg rig: Next to seat the structural left leg","seat text, got "+str(seat_text))
+	var at_home = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(at_home,[false,false,false,false,false]),"leg rig at home ticks nothing, got "+str(at_home.ticked))
+	rail.bolster=1.0
+	var stowed = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(stowed,[true,false,false,false,false]),"stowed bolster ticks the first phase, got "+str(stowed.ticked))
+	rail.index_x=10.0
+	var indexed = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(indexed,[true,true,false,false,false]),"indexed lane ticks two, got "+str(indexed.ticked))
+	rail.path=0.4
+	var traveling = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(traveling,[true,true,false,false,false]),"travel in motion keeps the lane, got "+str(traveling.ticked))
+	rail.path=1.0
+	var at_bay = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(at_bay,[true,true,true,false,false]),"bay arrival ticks travel, got "+str(at_bay.ticked))
+	rail.path=1.6
+	var turning = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(turning,[true,true,true,false,false]),"turning keeps travel, got "+str(turning.ticked))
+	rail.path=2.0
+	var upright = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(upright,[true,true,true,true,false]),"upright ticks four, got "+str(upright.ticked))
+	rail.path=3.0
+	var docked = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(docked,[true,true,true,true,true]) and docked.machine_complete,"dock completes seating, got "+str(docked.ticked)+" complete "+str(docked.machine_complete))
+	var cylinders: Array = []
+	var releases: Array = []
+	for step in definitions.pelvis.manual:
+		if str(step.title)=="Mount hip cylinder 1":cylinders.append(step)
+		if str(step.title)=="Release the leg rig":releases.append(step)
+	var cylinder_text := Objectives.text(game,"pelvis",cylinders[0].objectives[2])
+	expect(cylinder_text=="Hip cylinder 1: Insert lock pin","cylinder lock text, got "+cylinder_text)
+	expect(str(cylinders[1].objectives[2].command)=="lock:right_hip_1","right cylinder lock, got "+str(cylinders[1].objectives[2].command))
+	var has_build := false
+	for objective in releases[1].objectives:
+		if str(objective.get("command",""))=="build":has_build=true
+	expect(not has_build,"right release has no build objective")
+	rail.engaged=false;rail.release=5.0;rail.path=2.0
+	var let_go = Objectives.evaluate(game,"pelvis",releases[0])
+	expect(same_ticks(let_go,[true,false,false,false]),"release arrival ticks only the let-go, got "+str(let_go.ticked))
+	rail.path=1.4
+	var returning = Objectives.evaluate(game,"pelvis",releases[0])
+	expect(same_ticks(returning,[true,false,false,false]),"return in motion keeps the let-go, got "+str(returning.ticked))
+	rail.path=0.0;rail.index_x=14.0;rail.release=0.0
+	var rig_home = Objectives.evaluate(game,"pelvis",releases[0])
+	expect(same_ticks(rig_home,[true,true,false,false]),"empty rig home ticks the return, got "+str(rig_home.ticked))
+	rig.path=0.0
+	var foot_home = Objectives.evaluate(game,"pelvis",releases[0])
+	expect(same_ticks(foot_home,[true,true,true,false]),"foot rig dispatch ticks its return, got "+str(foot_home.ticked))
+	rail.active_assembly="right_leg";rail.engaged=true;rail.lane="right"
+	var selected = Objectives.evaluate(game,"pelvis",releases[0])
+	expect(same_ticks(selected,[true,true,true,true]) and selected.machine_complete,"build selects the right leg, got "+str(selected.ticked)+" complete "+str(selected.machine_complete))
 	var passed = checks.all(func(check):return check.passed)
 	print("MANUAL_OBJECTIVES ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)

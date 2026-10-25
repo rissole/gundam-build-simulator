@@ -5,7 +5,7 @@ signal changed
 const Layout = preload("res://scripts/leg_bay_layout.gd")
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
-const MANUAL_COMMANDS = ["advance:1","advance:2","advance:3"]
+const MANUAL_COMMANDS = ["advance:1","advance:2","advance:3","return:home"]
 var layout: Node3D
 var spec: Dictionary
 var assembly_id = "foot"
@@ -94,16 +94,19 @@ func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String = "") -> String:
 	match action:
 		"advance:1","advance:2","advance:3":return "Next"
+		"return:home":return "Back"
 	return ""
 func manual_subject(_objective: Dictionary) -> String:return "Foot rig"
 func manual_hint(objective: Dictionary) -> String:
 	match str(objective.get("command","")):
 		"advance:1":return "raises the foot"
 		"advance:2":return "moves it to the leg rig"
+		"return:home":return "repeat until it is back at dispatch"
 	return ""
 func manual_state() -> Dictionary:return {"stop":int(floorf(path+.0001))}
 func manual_effect(objective: Dictionary) -> Dictionary:
 	var action: String=objective.get("command","")
+	if action=="return:home":return {"stop":0}
 	return {"stop":action.get_slice(":",1).to_int()} if action in MANUAL_COMMANDS else {}
 
 func mounted(model: AssemblyModel = null) -> bool:

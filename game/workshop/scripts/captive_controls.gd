@@ -33,19 +33,39 @@ func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary]=[]
 	for id in specs:
 		if not available(id):continue
-		var entry=control_entry(nodes[id].handle,id,("Unlock " if locked[id] else "Engage ")+specs[id].label,.08)
+		var spec: Dictionary=specs[id]
+		var entry=control_entry(nodes[id].handle,id,spec.label+": "+("Pull out lock pin" if locked[id] else "Insert lock pin"),.08)
 		entry["point"]=nodes[id].handle.global_position
 		result.append(entry)
 	return result
 
+## Command ids are "lock:" plus each authored captive_controls key. The list is
+## content, so tests build it with lock_commands() from robot-content.json.
+static func lock_commands(ids) -> Array:
+	var result: Array=[]
+	for id in ids:result.append("lock:"+str(id))
+	return result
+func manual_commands() -> Array:return lock_commands(specs.keys())
+func command_label(_action: String, _task: String="") -> String:return "Insert lock pin"
+func manual_subject(objective: Dictionary) -> String:
+	var id := str(objective.get("command","")).trim_prefix("lock:")
+	return str(specs[id].label) if specs.has(id) else ""
+func manual_state() -> Dictionary:
+	var state: Dictionary={}
+	for id in specs:state[id]=locked[id]
+	return state
+func manual_effect(objective: Dictionary) -> Dictionary:
+	var id := str(objective.get("command","")).trim_prefix("lock:")
+	return {id:true} if specs.has(id) else {}
+
 func action_error(action: String) -> String:
 	if not specs.has(action):return "Unknown captive control."
 	if game.paused:return "Resume before operating the lock."
-	if not available(action):return "Fit the cartridge before operating its captive lock."
+	if not available(action):return "Fit the hip cylinder before operating its lock pin."
 	var spec: Dictionary=specs[action]
 	var rail=game.equipment.get_equipment("leg_rail")
-	if rail==null or rail.active_assembly!=spec.support_assembly or not rail.engaged or rail.path!=3 or rail.release!=0 or rail.moving or not rail.mode.is_empty():return "Reacquire and lock the leg rig before changing neutral restraint."
-	if not locked[action] and not spec.requires.all(func(sid):return not game.model.assemblies[spec.owner].slots[sid].is_empty()):return "Fit both eye pins and their captive keepers before engaging this lock."
+	if rail==null or rail.active_assembly!=spec.support_assembly or not rail.engaged or rail.path!=3 or rail.release!=0 or rail.moving or not rail.mode.is_empty():return "Reacquire and lock the leg rig before changing a lock pin."
+	if not locked[action] and not spec.requires.all(func(sid):return not game.model.assemblies[spec.owner].slots[sid].is_empty()):return "Fit both eye pins and their captive keepers before inserting this lock pin."
 	return game.hands.error(equipment_id)
 
 func request(action: String) -> String:
@@ -67,7 +87,7 @@ func undo(owner: String) -> Dictionary:
 	if history.is_empty():return {"handled":false,"error":""}
 	for id in specs:
 		var spec: Dictionary=specs[id]
-		if spec.owner==owner and locked[id] and history.back().slot in spec.protected_slots:return {"handled":true,"error":"Reacquire holder support and unlock the cylinder before removing its connection."}
+		if spec.owner==owner and locked[id] and history.back().slot in spec.protected_slots:return {"handled":true,"error":"Reacquire the leg rig and pull out the lock pin before removing its connection."}
 	return {"handled":false,"error":""}
 
 func capture() -> Dictionary:return {"version":1,"locked":locked.duplicate()}
@@ -78,7 +98,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary
 	for id in specs:
 		if not data.locked[id] is bool:return ["Invalid captive lock state."]
 		var spec: Dictionary=specs[id]
-		if data.locked[id] and (not available(id,model) or not spec.requires.all(func(sid):return not model.assemblies[spec.owner].slots[sid].is_empty())):return ["A neutral lock has no retained cylinder and eye pins."]
+		if data.locked[id] and (not available(id,model) or not spec.requires.all(func(sid):return not model.assemblies[spec.owner].slots[sid].is_empty())):return ["A lock pin has no retained cylinder and eye pins."]
 	return []
 
 func apply(data: Dictionary) -> void:
