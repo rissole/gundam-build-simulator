@@ -66,7 +66,7 @@ func retained(state: Dictionary={},model: AssemblyModel=null) -> bool:
 	return (data.angle==0 and data.locks.all(func(v):return v)) or (data.angle==1 and data.latches.all(func(v):return v))
 func secured(state: Dictionary={},model: AssemblyModel=null) -> bool:return retained(state,model)
 func receiving_error(_uid: String="backpack") -> String:
-	if not game.equipment.get_equipment("module_supports").support_secured("chest"):return "Retain the chest on the secured, neutral-locked waist first."
+	if not game.equipment.get_equipment("module_supports").support_secured("chest"):return "Retain the chest on the gantry with both waist lock pins in first."
 	var core=game.equipment.get_equipment("core_guide")
 	if core.active and not core.secured():return "Finish core retention and connection before covering its rear work area."
 	return "" if motion.is_empty() else "Finish or stop the backpack operation before moving the crane."
@@ -81,7 +81,7 @@ func departure_error() -> String:
 	if not motion.is_empty():return "Finish the backpack operation before moving the crane."
 	if _crane().attached_count()==0 and retained():return ""
 	if rigged() and angle==0 and struts==[0.0,0.0] and not _any(spec.hinge_slots+spec.strut_slots+spec.service_slots):return ""
-	return "Keep this backpack seated: use Take backpack weight and Open/Close, or undo its services, locks, strut connections and hinges for supported local removal."
+	return "Keep this backpack seated: use Take backpack weight and Close backpack at the crane console, or undo its services, locks, strut connections and hinges for supported local removal."
 func depart() -> void:
 	if _crane().attached_count()==2:active=false;tension=0
 func rig_error(action: String,_point: String) -> String:
@@ -93,37 +93,98 @@ func rig_changed() -> void:
 
 func crane_options() -> Array[Dictionary]:
 	if not motion.is_empty():return [{"action":"guide:stop" if moving else "guide:resume","label":"Stop backpack" if moving else "Resume backpack"}]
-	return [{"action":"guide:take_weight","label":"Take backpack weight"},{"action":"guide:close" if angle<1 else "guide:open","label":"Close backpack" if angle<1 else "Open backpack"}]
+	return [{"action":"guide:take_weight","label":command_label("take_weight")},{"action":"guide:close" if angle<1 else "guide:open","label":command_label("close") if angle<1 else "Open backpack"}]
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary]=[]
 	if not active:return result
 	for n in range(2):
 		var uid="BP-STRUT-A__%03d"%(n+1);var handle=source_nodes[uid]
-		result.append(control_entry(handle,"strut:"+str(n),"Retract free strut" if struts[n]==1 else "Extend strut to chest clevis",.07,{"point":handle.global_position}))
-		result.append(control_entry(lock_nodes[n],"lock:"+str(n),("Release" if locks[n] else "Engage")+" positive open lock",.075,{"point":lock_nodes[n].global_position}))
+		result.append(control_entry(handle,"strut:"+str(n),"Backpack strut: "+("Retract" if struts[n]==1 else "Extend"),.07,{"point":handle.global_position}))
+		result.append(control_entry(lock_nodes[n],"lock:"+str(n),"Backpack strut: "+("Release" if locks[n] else "Lock open"),.075,{"point":lock_nodes[n].global_position}))
 		var latch=source_nodes["BP-LATCH-LEVER__%03d"%(n+1)]
-		result.append(control_entry(latch,"latch:"+str(n),("Release" if latches[n] else "Engage")+" lower draw latch",.075,{"point":load_pose()*AssemblyRuntime.vec(spec.latch_positions[n])}))
-		if angle==1:result.append(control_entry(cover_nodes[n],"cover:"+str(n),("Open" if covers[n] else "Close")+" service cover",.10,{"point":cover_nodes[n].global_position}))
+		result.append(control_entry(latch,"latch:"+str(n),"Backpack latch: "+("Release" if latches[n] else "Engage"),.075,{"point":load_pose()*AssemblyRuntime.vec(spec.latch_positions[n])}))
+		if angle==1:result.append(control_entry(cover_nodes[n],"cover:"+str(n),"Service cover: "+("Open" if covers[n] else "Close"),.10,{"point":cover_nodes[n].global_position}))
 	return result
+
+const MANUAL_COMMANDS=["extend_struts","lock_struts","release_struts","take_weight","close","engage_latches","close_covers"]
+func manual_commands() -> Array:return MANUAL_COMMANDS
+func command_label(action: String, _task: String="") -> String:
+	match action:
+		"extend_struts":return "Extend"
+		"lock_struts":return "Lock open"
+		"release_struts":return "Release"
+		"take_weight":return "Take backpack weight"
+		"close":return "Close backpack"
+		"engage_latches":return "Engage"
+		"close_covers":return "Close"
+	return ""
+func manual_subject(objective: Dictionary) -> String:
+	match str(objective.get("command","")):
+		"extend_struts","lock_struts","release_struts":return "Backpack strut"
+		"take_weight","close":return "Crane console"
+		"engage_latches":return "Backpack latch"
+		"close_covers":return "Service cover"
+	return ""
+## Counts and flags report stops already reached. A strut or hinge that is
+## still moving keeps its previous stop.
+func manual_state() -> Dictionary:
+	return {"struts":_extended_count(),"locks":_flag_count(locks),"latches":_flag_count(latches),"covers":_flag_count(covers),"weight":_weight_taken(),"closed":_closed_stop()}
+func manual_effect(objective: Dictionary) -> Dictionary:
+	match str(objective.get("command","")):
+		"extend_struts":return {"struts":2}
+		"lock_struts":return {"locks":2}
+		"release_struts":return {"locks":0}
+		"take_weight":return {"weight":true}
+		"close":return {"closed":true}
+		"engage_latches":return {"latches":2}
+		"close_covers":return {"covers":2}
+	return {}
+func manual_count(objective: Dictionary) -> Vector2i:
+	match str(objective.get("command","")):
+		"extend_struts":return Vector2i(_extended_count(),2)
+		"lock_struts":return Vector2i(_flag_count(locks),2)
+		"release_struts":return Vector2i(2-_flag_count(locks),2)
+		"engage_latches":return Vector2i(_flag_count(latches),2)
+		"close_covers":return Vector2i(_flag_count(covers),2)
+	return Vector2i(-1,-1)
+func _flag_count(values: Array) -> int:
+	var done := 0
+	for value in values:
+		if value:done+=1
+	return done
+func _strut_extended(index: int) -> bool:
+	if moving and motion=="strut:"+str(index) and strut_goals[index]>struts[index]:return false
+	return is_equal_approx(struts[index],1.0)
+func _extended_count() -> int:
+	var done := 0
+	for index in struts.size():
+		if _strut_extended(index):done+=1
+	return done
+func _weight_taken() -> bool:
+	if moving and motion=="tension":return false
+	return is_equal_approx(tension,1.0)
+func _closed_stop() -> bool:
+	if moving and motion=="hinge" and goal>angle:return false
+	return is_equal_approx(angle,1.0)
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the backpack."
 	if not active:return "Seat the open backpack with both magnetic connectors first."
 	if action=="stop":return "" if moving else "The backpack is stopped."
-	if action=="resume":return "" if not motion.is_empty() and not moving and rigged() else "Keep both crane ends fitted to resume the stopped operation."
+	if action=="resume":return "" if not motion.is_empty() and not moving and rigged() else "Keep both magnetic connectors fitted to resume the stopped operation."
 	if not motion.is_empty():return "Stop/Resume the current backpack operation first."
 	var error=game.hands.error(equipment_id)
 	if not error.is_empty():return error
 	if action=="take_weight":
 		if not rigged():return "Refit both magnetic connectors with the matching crane down at the backpack."
-		return "" if tension<1 else "The crane already carries the backpack's weight."
+		return "" if tension<1 else "The crane already carries the backpack."
 	if action.begins_with("cover:"):
 		var i=action.get_slice(":",1).to_int()
 		if i not in [0,1]:return "Unknown service cover."
 		if angle!=1 or not retained() or not _has(spec.service_slots):return "Close and latch the connected backpack before operating service covers."
 		if _crane().uid==spec.uid and (_crane().attached_count()>0 or not _crane().hand_payload().is_empty()):return "Release and stow the magnetic connectors before closing the small service covers."
 		return ""
-	if not rigged() or tension!=1:return "Refit both magnetic connectors and take backpack weight before changing its supports."
+	if not rigged() or tension!=1:return "Refit both magnetic connectors and choose Take backpack weight before changing its supports."
 	if covers.any(func(v):return v):return "Open both service covers before moving the backpack."
 	if action.begins_with("strut:"):
 		var i=action.get_slice(":",1).to_int()
@@ -263,9 +324,9 @@ func placement_error(owner: String,sid: String) -> String:
 	if not active or angle!=0 or not motion.is_empty():return "Keep the backpack stopped fully open for its external connections."
 	if sid in spec.service_slots:
 		if not retained() or not locks.all(func(v):return v):return "Engage both positive open locks before connecting services."
-		return "" if _crane().uid!=spec.uid or (_crane().attached_count()==0 and _crane().hand_payload().is_empty()) else "Release and stow both crane ends before connecting the service runs."
+		return "" if _crane().uid!=spec.uid or (_crane().attached_count()==0 and _crane().hand_payload().is_empty()) else "Release and stow both magnetic connectors before connecting the service runs."
 	if not rigged() or tension!=1:return "Keep both magnetic connectors carrying the backpack during pin and keeper work."
-	if "strut_" in sid and struts[sid.right(1).to_int()-1]!=1:return "Extend this strut eye to its chest clevis first."
+	if "strut_" in sid and struts[sid.right(1).to_int()-1]!=1:return "Extend this strut to its chest clevis first."
 	return ""
 func undo(owner: String) -> Dictionary:
 	if owner!=spec.owner or game.model.assemblies[owner].history.is_empty():return {"handled":false,"error":""}
@@ -273,7 +334,7 @@ func undo(owner: String) -> Dictionary:
 	if sid!=spec.slot and not sid.begins_with("backpack/"):return {"handled":false,"error":""}
 	var error=""
 	if sid in spec.service_slots:error=placement_error(owner,sid)
-	elif sid==spec.slot:error="Use Up at the matching crane to lift the unfastened open backpack."
+	elif sid==spec.slot:error="Raise the crane to lift the unfastened open backpack."
 	else:
 		error=placement_error(owner,sid)
 		if error.is_empty() and (_any(spec.service_slots) or locks.any(func(v):return v)):error="Disconnect both services and release both open locks before undoing retention."
@@ -286,9 +347,9 @@ func capture() -> Dictionary:return {"version":1,"active":active,"angle":angle,"
 func validate_crane(crane: Dictionary,model: AssemblyModel,state: Dictionary={}) -> Array[String]:
 	var data=capture() if state.is_empty() else state
 	if not data.active or _record(model).parent!=spec.owner:return ["Backpack hinge has no mounted assembly."]
-	if not retained(data,model) and not rigged(crane):return ["Unsecured backpack requires both crane ends at its hinge."]
+	if not retained(data,model) and not rigged(crane):return ["Unsecured backpack requires both magnetic connectors at its hinge."]
 	if not retained(data,model) and data.tension!=1:return ["Unsecured backpack requires the crane to carry its weight."]
-	if data.tension>0 and not rigged(crane) and not retained(data,model):return ["Backpack claims crane load without both ends."]
+	if data.tension>0 and not rigged(crane) and not retained(data,model):return ["Backpack claims crane load without both magnetic connectors."]
 	return []
 func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) -> Array[String]:
 	if not Codec.same_keys(data,capture().keys()) or data.version!=1:return ["Invalid backpack hinge state."]
@@ -327,7 +388,7 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 		if not retained(data,model) and not rigged(crane):return ["Backpack lost its shared crane before support was secured."]
 		if not retained(data,model) and data.tension!=1:return ["Unsecured backpack lost crane weight support."]
 		if data.tension>0 and not rigged(crane):return ["Backpack tension has no matching rig."]
-		if not data.motion.is_empty() and not rigged(crane):return ["Interrupted backpack movement requires both crane ends."]
+		if not data.motion.is_empty() and not rigged(crane):return ["Interrupted backpack movement requires both magnetic connectors."]
 		if data.motion in ["hinge","strut:0","strut:1"] and data.tension!=1:return ["Backpack movement started before the crane took weight."]
 	return []
 func apply(data: Dictionary) -> void:

@@ -207,6 +207,7 @@ func manual_commands() -> Array:return MANUAL_COMMANDS
 ## The single player wording for a crane command. Places come from the route:
 ## the console menu shows this text as is; the manual prefixes "Crane console: ".
 func command_label(action: String, route: String = "") -> String:
+	if action.begins_with("detach:"):return "Detach and stow the "+_point_label(action.get_slice(":",1),route)+" magnetic connector"
 	match action:
 		"down":return "Lower crane"
 		"up":return "Raise crane"
@@ -219,16 +220,46 @@ func command_label(action: String, route: String = "") -> String:
 	if action in ["go:receiver","go:source"]:return "Move to "+Layout.place_title(place_of(action.get_slice(":",1),route))
 	return ""
 
+## Endpoint labels win ("forward magnetic connector" → "forward"). Otherwise the
+## point id supplies forward/aft, as core_front → forward.
+func _point_label(point_id: String, route: String) -> String:
+	var spec: Dictionary = {}
+	var key: String = route if not route.is_empty() else str(task)
+	if tasks.has(key) and tasks[key] is Dictionary:spec = tasks[key]
+	elif config is Dictionary and config.get("spec",{}) is Dictionary:spec = config.spec
+	var named := ""
+	var point_labels: Dictionary = spec.get("point_labels",{}) if spec.get("point_labels") is Dictionary else {}
+	if point_labels.has(point_id):named = str(point_labels[point_id])
+	else:
+		var ends: Dictionary = spec.get("point_ends",{}) if spec.get("point_ends") is Dictionary else {}
+		var labels: Dictionary = spec.get("endpoint_labels",{}) if spec.get("endpoint_labels") is Dictionary else {}
+		if ends.has(point_id) and labels.has(str(ends[point_id])):named = str(labels[ends[point_id]])
+	if named.ends_with(" magnetic connector"):named = named.trim_suffix(" magnetic connector")
+	if not named.is_empty():return named
+	var id := point_id.to_lower()
+	if "aft" in id or "rear" in id:return "aft"
+	return "forward"
+
 func manual_subject(objective: Dictionary) -> String:
 	return "Crane" if objective.get("op","") in ["connect","detach"] else "Crane console"
 
 func manual_state() -> Dictionary:
-	return {"task":task,"station":station,"raised":raised,"attached":attached_count(),"held":not hand_payload().is_empty()}
+	var state := {"task":task,"station":station,"raised":raised,"attached":attached_count(),"held":not hand_payload().is_empty()}
+	for id in POINT_IDS:state["point:"+str(id)] = _point_attached(str(id))
+	return state
+
+func _point_attached(id: String) -> bool:
+	for end in endpoints.values():
+		if str(end.get("state","")) == "attached" and str(end.get("point","")) == id:return true
+	return false
 
 func manual_effect(objective: Dictionary) -> Dictionary:
 	match objective.get("op",""):
 		"connect":return {"attached":required_ends,"held":false}
-		"detach":return {"attached":0,"held":false}
+		"detach":
+			# One connector released: the others stay attached.
+			if not str(objective.get("point","")).is_empty():return {"point:"+str(objective.point):false,"attached":required_ends-1,"held":false}
+			return {"attached":0,"held":false}
 	var action: String = objective.get("command","")
 	match action:
 		"pickup":return {"task":objective.get("task",""),"station":objective.get("at","source")}
@@ -760,7 +791,7 @@ func _refresh() -> void:
 func status_text() -> String:
 	var label: String = ("To "+_station_title(motion.get_slice(":",1)) if motion.begins_with("go:") else _station_title(station))+" · "+("Up" if raised else "Down")
 	if not motion.is_empty():label += " · "+("Moving" if moving else "Stopped")
-	if attached_count()>0:label += "\nMagnetic ends attached: %d/%d"%[attached_count(),required_ends]
+	if attached_count()>0:label += "\nMagnetic connectors attached: %d/%d"%[attached_count(),required_ends]
 	if _installed() and not receiver_support.is_empty():label+="\nReceiving support has taken the load."
 	elif _installed():label += ("\nConnection retention: %d/%d")%[hardware_count(),fastener_slots.size()]
 	if not blocked_reason.is_empty():label += "\n"+blocked_reason
@@ -851,7 +882,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary
 	if data.motion=="up" and data.raised or data.motion=="down" and not data.raised:return ["Invalid crane elevation transition."]
 	if data.motion.begins_with("go:") and (not data.raised or data.motion.get_slice(":",1)==data.station):return ["Crane travel requires Up and a different location."]
 	if data.station=="park" and (not data.raised or data.motion in ["up","down"]):return ["Crane must remain raised at parking."]
-	if not data.get("endpoints") is Dictionary or data.endpoints.size()!=required_ends:return ["Invalid cable ends."]
+	if not data.get("endpoints") is Dictionary or data.endpoints.size()!=required_ends:return ["Invalid magnetic connectors."]
 	var count = 0;var held = 0;var occupied: Array = []
 	for id in END_IDS:
 		var end = data.endpoints.get(id)
@@ -930,7 +961,7 @@ func _declared_assembly_support(identity: String, model: AssemblyModel) -> bool:
 
 func placement_error(owner: String, sid: String) -> String:
 	var spec: Dictionary=game.model.slot_definition(owner,sid)
-	if spec.get("requires_crane_clear","")==uid and (attached_count()>0 or not hand_payload().is_empty()):return "Release and stow all crane shoes before connecting the chest services."
+	if spec.get("requires_crane_clear","")==uid and (attached_count()>0 or not hand_payload().is_empty()):return "Release and stow all magnetic connectors before connecting the chest services."
 	return ""
 
 func apply(data: Dictionary) -> void:
@@ -964,8 +995,8 @@ func _receiver_error(route: Dictionary = {}) -> String:
 		return "" if receiver.can_receive(id) else "Return the empty foot rig to dispatch, extend its sole pads and select the matching leg on the leg rig."
 	var rail = game.equipment.get_equipment("leg_rail")
 	if rail == null or rail.path > .0001 or rail.moving or not rail.engaged:return "Return the engaged leg rig home before crane delivery or reacquisition."
-	if rail.has_method("can_construct") and not rail.can_construct():return "Return the leg rig to the Limb Bay and lock neutral roll before crane delivery."
-	if rail.has_method("can_construct") and rail.active_assembly!=spec.owner:return "Select the "+spec.owner.replace("_"," ")+" build on the clear leg rig first."
+	if rail.has_method("can_construct") and not rail.can_construct():return "Return the leg rig to the Limb Bay and restore construction roll before crane delivery."
+	if rail.has_method("can_construct") and rail.active_assembly!=spec.owner:return "Use Build on the leg rig to choose the "+spec.owner.replace("_"," ")+" first."
 	return ""
 
 func _journey_undo(subject: String) -> Dictionary:
@@ -979,8 +1010,8 @@ func _journey_undo(subject: String) -> Dictionary:
 	if subject!=load_owner or sid not in active_security:
 		for key in tasks:
 			if tasks[key].owner==subject and sid in game.leg_content.robot.security_slots.get(key,[]):reacquire = key
-		return {"handled":true,"error":"Move the empty crane to pickup and attach its lifting ends before undoing this connection."}
-	if attached_count()!=required_ends or raised or not motion.is_empty() or station != "receiver" or not _receiver_error().is_empty():return {"handled":true,"error":"Lower the matching crane at this connection and attach all required lifting ends before removing retention hardware."}
+		return {"handled":true,"error":"Move the empty crane to pickup and attach its magnetic connectors before undoing this connection."}
+	if attached_count()!=required_ends or raised or not motion.is_empty() or station != "receiver" or not _receiver_error().is_empty():return {"handled":true,"error":"Lower the matching crane at this connection and attach all required magnetic connectors before removing retention hardware."}
 	if assembly_payload and game.model.assemblies[uid].slots.values().any(func(value):return not value.is_empty()):return {"handled":true,"error":"Remove dependent construction before undoing this module’s structural retention."}
 	if sid == slot:return {"handled":true,"error":"Use Up at the crane console to lift the unfastened component from its seat."}
 	return {"handled":false,"error":""}

@@ -25,7 +25,7 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 	game.box(panel,Vector3.ZERO,Vector3(.26,.34,.12),game.material(Color("263a43")))
 	for i in range(3):
 		var node=game.box(panel,Vector3(0,.11-i*.11,.08),Vector3(.16,.08,.06),game.material(Color("e8b46b")))
-		buttons.append(control_entry(node,["advance","stop","return"][i],["Advance core to next support stop","Stop guided core","Return core to previous support stop"][i],.09))
+		buttons.append(control_entry(node,["advance","stop","return"][i],["Core guide: Next","Core guide: Stop","Core guide: Back"][i],.09))
 	label=game.sign_panel(panel,"",Vector3(0,.43,0),Vector2(2.1,.55),30,.002)
 	for entry in spec.bolts:
 		var node=game._mesh(entry.source);game.runtime.node(spec.uid).add_child(node);node.transform=game.source[entry.source].transform
@@ -55,7 +55,7 @@ func retained(state: Dictionary={},_model: AssemblyModel=null) -> bool:return (b
 func secured(state: Dictionary={},_model: AssemblyModel=null) -> bool:return retained(state) and (connected if state.is_empty() else state.connected)
 func receiving_error(_uid: String="core") -> String:
 	var supports=game.equipment.get_equipment("module_supports")
-	if not supports.support_secured("chest"):return "Retain the chest on the secured, neutral-locked waist before core delivery."
+	if not supports.support_secured("chest"):return "Retain the chest on the gantry with both waist lock pins in before core delivery."
 	var pack=game.equipment.get_equipment("backpack_hinge")
 	if pack!=null and pack.active:return "Initial core insertion and local correction require the backpack removed; the later full maintenance-guide workflow is not fitted."
 	return "" if not moving else "Stop the guide before moving the crane."
@@ -68,7 +68,7 @@ func departure_error() -> String:
 	if moving:return "Stop the guided insertion before moving the crane."
 	if is_zero_approx(travel) and has_point(spec.front_point) and has_point(spec.aft_point):return ""
 	if is_equal_approx(travel,spec.travel) and retained() and _crane().attached_count()==0:return ""
-	return "Use the guide control to return to the rear approach with both magnetic connectors, or retain and connect the seated core and stow the aft magnetic connector."
+	return "Use Back at the core guide to return to the rear approach with both magnetic connectors, or retain and connect the seated core and stow the aft magnetic connector."
 func depart() -> void:
 	if is_zero_approx(travel):active=false
 
@@ -76,15 +76,59 @@ func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary]=[]
 	for entry in buttons:
 		var control=entry.duplicate();control.point=control.node.global_position;result.append(control)
-	for i in range(4):result.append(control_entry(bolt_nodes[i],"bolt:"+str(i),("Release" if bolts[i] else "Secure")+" captive core flange bolt",.065,{"point":bolt_nodes[i].global_position}))
-	for key in connection_nodes:result.append(control_entry(connection_nodes[key],key,"Connect core rear interlock" if key=="connection" else "Isolate core rear interface",.08,{"point":connection_nodes[key].global_position}))
+	for i in range(4):result.append(control_entry(bolt_nodes[i],"bolt:"+str(i),"Core: "+("Release" if bolts[i] else "Secure")+" captive flange bolt",.065,{"point":bolt_nodes[i].global_position}))
+	for key in connection_nodes:result.append(control_entry(connection_nodes[key],key,"Core: Connect rear interlock" if key=="connection" else "Core: Isolate rear interlock",.08,{"point":connection_nodes[key].global_position}))
 	return result
+
+const MANUAL_COMMANDS=["next:capture","next:seat","secure_bolts","connection"]
+func manual_commands() -> Array:return MANUAL_COMMANDS
+func command_label(action: String, _task: String="") -> String:
+	if action.begins_with("next:"):return "Next"
+	match action:
+		"secure_bolts":return "Secure captive flange bolts"
+		"connection":return "Connect rear interlock"
+	return ""
+func manual_subject(objective: Dictionary) -> String:
+	var command := str(objective.get("command",""))
+	return "Core guide" if command.begins_with("next:") else "Core" if command in ["secure_bolts","connection"] else ""
+## Travel keeps the stop already reached while the guide is still moving.
+func manual_state() -> Dictionary:
+	var state := {"stop":_arrived_stop(),"connected":connected}
+	for i in bolts.size():state["bolt:"+str(i)]=bolts[i]
+	return state
+func manual_effect(objective: Dictionary) -> Dictionary:
+	match str(objective.get("command","")):
+		"next:capture":return {"stop":"capture"}
+		"next:seat":return {"stop":"seat"}
+		"secure_bolts":
+			var effect: Dictionary = {}
+			for i in 4:effect["bolt:"+str(i)]=true
+			return effect
+		"connection":return {"connected":true}
+	return {}
+func manual_count(objective: Dictionary) -> Vector2i:
+	if str(objective.get("command",""))!="secure_bolts":return Vector2i(-1,-1)
+	var done := 0
+	for value in bolts:
+		if value:done+=1
+	return Vector2i(done,4)
+func _arrived_stop() -> String:
+	if spec.is_empty():return "approach"
+	var capture := float(spec.capture)
+	var seated := float(spec.travel)
+	if moving:
+		if travel<capture-.0001:return "approach"
+		if travel<seated-.0001:return "capture"
+		return "seat"
+	if is_equal_approx(travel,seated):return "seat"
+	if is_equal_approx(travel,capture):return "capture"
+	return "approach"
 
 func rig_error(action: String, point: String) -> String:
 	if moving:return "Stop the guided core before handling magnetic connectors."
 	if action=="detach":
 		if point==spec.front_point:
-			return "" if is_equal_approx(travel,spec.capture) and has_point(spec.aft_point) else "Keep the forward bridge attached until the guides capture 0.32 m of the core."
+			return "" if is_equal_approx(travel,spec.capture) and has_point(spec.aft_point) else "Keep the forward magnetic connector attached until the guides capture the core."
 		return "" if secured() and is_equal_approx(travel,spec.travel) else "Keep aft crane support through all four captive bolts and the rear interlock."
 	if point==spec.front_point and rig>0:return "Extend the forward magnetic connector at the captured stop before refitting it."
 	if point==spec.front_point and travel>spec.capture+.0001:return "Return to the captured-guide stop before refitting the forward magnetic connector."
@@ -238,7 +282,7 @@ func validate_crane(crane: Dictionary, model: AssemblyModel, state: Dictionary={
 	var data=capture() if state.is_empty() else state
 	var forward=has_point(spec.front_point,crane);var aft=has_point(spec.aft_point,crane)
 	if not data.active:return ["No guided core operation is active."]
-	if data.travel<spec.capture-.0001 and (not forward or not aft):return ["Uncaptured core needs both crane ends."]
+	if data.travel<spec.capture-.0001 and (not forward or not aft):return ["Uncaptured core needs both magnetic connectors."]
 	if data.travel>=spec.capture-.0001 and not aft and not (is_equal_approx(data.travel,spec.travel) and retained(data)):return ["Core needs aft crane support through retention and connection."]
 	if data.travel>spec.capture+.0001 and forward:return ["Forward bridge cannot remain inside the captured guide."]
 	if data.rig>0 and forward:return ["Folded core rig cannot carry the forward bridge on the load."]

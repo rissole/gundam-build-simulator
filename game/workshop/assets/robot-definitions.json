@@ -6117,12 +6117,110 @@
           "body": "If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
+          "title": "Bring the chest to the heavy module rig",
+          "view": "components",
+          "slots": [],
+          "goal": "Fit chest inserts on the heavy module rig and crane the chest onto it.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "template:chest"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "chest_store"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "chest_store"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ]
+        },
+        {
           "title": "Seat the prepared chest",
-          "body": "With the pelvis clamped on the gantry and both waist neutral pins engaged, use Chest to waist. Fit all four lifting shoes, take weight, travel upright and lower the chest onto the four waist keys. The crane stays attached while the chest is unfastened.",
+          "view": "components",
           "slots": [
             "chest"
           ],
-          "view": "components",
+          "goal": "Crane the chest from the heavy module rig onto the waist.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "chest"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "chest"
+            },
+            {
+              "op": "seat",
+              "slot": "chest",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
+          ],
+          "note": {
+            "at": 2,
+            "text": "Keep all four connectors attached until the chest is bolted."
+          },
           "diagram_views": [
             {
               "title": "Prepared chest onto the locked waist",
@@ -6221,7 +6319,7 @@
         },
         {
           "title": "Retain the chest on the waist",
-          "body": "Fit each CH-W36 washer before its CH-H36160 M36 × 160 bolt. All four bolts enter downward into the waist's captive threads. Keep the cockpit fitted and the four front/rear connection windows open. Complete all four pairs before releasing the lifting shoes.",
+          "view": "components",
           "slots": [
             "chest/washer_1",
             "chest/bolt_1",
@@ -6232,7 +6330,40 @@
             "chest/washer_4",
             "chest/bolt_4"
           ],
-          "view": "components",
+          "goal": "Bolt the chest to the waist, then release and park the crane.",
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "chest/washer_1",
+                "chest/bolt_1",
+                "chest/washer_2",
+                "chest/bolt_2",
+                "chest/washer_3",
+                "chest/bolt_3",
+                "chest/washer_4",
+                "chest/bolt_4"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "note": {
+            "at": 0,
+            "text": "The bolts go downward into the waist threads."
+          },
           "diagram_views": [
             {
               "title": "Waist corner 1",
@@ -6354,12 +6485,25 @@
         },
         {
           "title": "Connect chest services",
-          "body": "After all four waist bolt pairs are fitted, release and stow all four crane shoes. Fit the two identical CH-SERVICE plugs at the outward-facing waist couplings. Keep the waist neutral pins engaged.",
+          "view": "components",
           "slots": [
             "chest/service_1",
             "chest/service_2"
           ],
-          "view": "components",
+          "goal": "Plug both chest service lines into the waist.",
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "chest/service_1",
+                "chest/service_2"
+              ]
+            }
+          ],
+          "note": {
+            "at": 0,
+            "text": "Keep both waist lock pins in."
+          },
           "diagram_views": [
             {
               "title": "Chest service coupling",
@@ -10635,12 +10779,125 @@
           "body": "The chest frame, enclosed cockpit, fixed shoulder cups and neck spoke are supplied assembled. Use Chest to Heavy Module Bay at the shared crane to transfer it from the chest rig after selecting chest inserts on the empty heavy module rig. Keep the fitted cockpit upright. After checking the supported unit, lower the heavy module rig to its pickup stop and choose Chest to waist. The pelvis manual owns seating, retention and service connections."
         },
         {
+          "title": "Bring the core to the heavy module rig",
+          "view": "components",
+          "slots": [],
+          "goal": "Fit core inserts on the heavy module rig and crane the core onto it.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "template:core"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "core_store"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "core_store"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ]
+        },
+        {
           "title": "Deliver and guide the core",
           "view": "components",
           "slots": [
             "core"
           ],
-          "body": "Select core saddles on the empty heavy module rig, then use Core to Heavy Module Bay to collect the prepared cartridge. Core to rear dock follows the low right-side bypass, outboard lift and high crossing. Down brings the horizontal load to the rear approach with both magnetic connectors fitted. At the right-side guide control, Advance stops at captured engagement. Release and stow the forward magnetic connector using its side handle; keep the aft magnetic connector fitted. Advance folds the unloaded forward magnetic connector and shifts its head aft before inserting farther. The aft magnetic connector and captured guides stay engaged. Advance again, if stopped, completes flange and keyed-nose seating.",
+          "goal": "Crane the core to the chest's rear dock and guide it in.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "core"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "core"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "operate",
+              "machine": "core_guide",
+              "command": "next:capture"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane",
+              "point": "core_front"
+            },
+            {
+              "op": "seat",
+              "slot": "core",
+              "via": {
+                "machine": "core_guide",
+                "command": "next:seat"
+              }
+            }
+          ],
+          "note": {
+            "at": 7,
+            "text": "Keep the aft connector attached."
+          },
           "diagram_views": [
             {
               "title": "Core and captured guides",
@@ -10699,18 +10956,141 @@
         },
         {
           "title": "Retain and connect the core",
-          "view": "overview",
+          "view": "components",
           "slots": [],
-          "status_equipment": "core_guide",
-          "body": "Operate all four PC-H16 captive flange bolts, then complete the rear interlock connection. The aft magnetic connector remains fitted through both operations. Release and stow it only when all four bolts and the rear connection are secure. For local correction, isolate the connection, refit the aft magnetic connector and release all four bolts. Return stops at guide capture. Return again extends the empty forward magnetic connector; refit it before returning out of the guides."
+          "goal": "Bolt the core in, connect it, then release and park the crane.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "core_guide",
+              "command": "secure_bolts"
+            },
+            {
+              "op": "operate",
+              "machine": "core_guide",
+              "command": "connection"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ]
+        },
+        {
+          "title": "Bring the backpack to the heavy module rig",
+          "view": "components",
+          "slots": [],
+          "goal": "Fit backpack inserts on the heavy module rig and crane the backpack onto it.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "template:backpack"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "backpack_store"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "backpack_store"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ]
         },
         {
           "title": "Seat the open backpack",
-          "body": "Select backpack inserts on the empty heavy module rig and collect the prepared unit with Backpack to Heavy Module Bay. Select Backpack to hinges, attach both magnetic connectors and follow the rear delivery route. Down aligns both open hinge eyes with the fixed chest forks; keep both magnetic connectors attached.",
+          "view": "components",
           "slots": [
             "backpack"
           ],
-          "view": "components",
+          "goal": "Crane the open backpack onto the chest hinges.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "backpack"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "backpack"
+            },
+            {
+              "op": "seat",
+              "slot": "backpack",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
+          ],
+          "note": {
+            "at": 2,
+            "text": "Keep both connectors attached until the struts are locked."
+          },
           "diagram_views": [
             {
               "title": "Open backpack onto fixed hinge forks",
@@ -10882,111 +11262,138 @@
         },
         {
           "title": "Retain both backpack hinges",
-          "body": "Insert each BP-P60 hinge pin from the outboard side, then fit its BP-K60 keeper into the exposed inner groove. Both complete pin/keeper pairs are required before extending the struts.",
+          "view": "components",
           "slots": [
             "backpack/hinge_pin_1",
             "backpack/hinge_keeper_1",
             "backpack/hinge_pin_2",
             "backpack/hinge_keeper_2"
           ],
-          "view": "components",
-          "diagram_views": [
+          "goal": "Pin both hinges.",
+          "objectives": [
             {
-              "title": "Retain both backpack hinges",
-              "sources": [
-                "BP-P60__001",
-                "BP-K60__001",
-                "BP-P60__002",
-                "BP-K60__002"
-              ],
-              "context": [],
-              "offsets": {},
-              "direction": [
-                1,
-                1,
-                1
-              ],
-              "up": [
-                0,
-                1,
-                0
-              ],
-              "context_padding": 0.08
+              "op": "fit",
+              "slots": [
+                "backpack/hinge_pin_1",
+                "backpack/hinge_keeper_1",
+                "backpack/hinge_pin_2",
+                "backpack/hinge_keeper_2"
+              ]
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Insert each pin from the outboard side, then its keeper."
+          }
         },
         {
           "title": "Attach the backpack struts",
-          "body": "At each free strut-end handle, Extend guides the prepared telescope to its fixed chest clevis. Fit the BP-P40 base pin and its BP-K40 keeper. Engage both positive open locks before releasing either magnetic connector.",
+          "view": "components",
           "slots": [
             "backpack/strut_pin_1",
             "backpack/strut_keeper_1",
             "backpack/strut_pin_2",
             "backpack/strut_keeper_2"
           ],
-          "view": "components",
-          "diagram_views": [
+          "goal": "Extend both struts, pin them and lock them open.",
+          "objectives": [
             {
-              "title": "Attach the backpack struts",
-              "sources": [
-                "BP-P40__001",
-                "BP-K40__001",
-                "BP-P40__002",
-                "BP-K40__002"
-              ],
-              "context": [],
-              "offsets": {},
-              "direction": [
-                1,
-                1,
-                1
-              ],
-              "up": [
-                0,
-                1,
-                0
-              ],
-              "context_padding": 0.08
+              "op": "operate",
+              "machine": "backpack_hinge",
+              "command": "extend_struts"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "backpack/strut_pin_1",
+                "backpack/strut_keeper_1",
+                "backpack/strut_pin_2",
+                "backpack/strut_keeper_2"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "backpack_hinge",
+              "command": "lock_struts"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
             }
-          ]
+          ],
+          "note": {
+            "at": 3,
+            "text": "Leave the crane lowered at the backpack: it closes the backpack later."
+          }
         },
         {
           "title": "Connect the supported backpack",
-          "body": "With both struts positively locked open, release and stow both magnetic connectors. Fit both BP-SERVICE protected runs at the fixed rear-facing sockets. The upper retained loops move with the cover; they provide no lifting support.",
+          "view": "components",
           "slots": [
             "backpack/service_1",
             "backpack/service_2"
           ],
-          "view": "components",
-          "diagram_views": [
+          "goal": "Plug in both backpack service runs.",
+          "objectives": [
             {
-              "title": "Connect the supported backpack",
-              "sources": [
-                "BP-SERVICE__001",
-                "BP-SERVICE__002"
-              ],
-              "context": [],
-              "offsets": {},
-              "direction": [
-                1,
-                1,
-                1
-              ],
-              "up": [
-                0,
-                1,
-                0
-              ],
-              "context_padding": 0.08
+              "op": "fit",
+              "slots": [
+                "backpack/service_1",
+                "backpack/service_2"
+              ]
             }
           ]
         },
         {
           "title": "Close and latch the backpack",
-          "view": "overview",
+          "view": "components",
           "slots": [],
-          "status_equipment": "backpack_hinge",
-          "body": "Return the matching crane, refit both magnetic connectors, then choose Take backpack weight. Release both strut locks at their handles. Choose Close backpack at the crane; Stop/Resume preserves partial closure. At the closed stop engage both lower draw latches, release and stow the magnetic connectors, then close the two small service covers. For correction, reopen the covers, refit both magnetic connectors and take weight before releasing either latch. Open fully and engage both strut locks before releasing the crane or changing service connections."
+          "goal": "Close the backpack with the crane, latch it and shut the service covers.",
+          "objectives": [
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "backpack_hinge",
+              "command": "take_weight"
+            },
+            {
+              "op": "operate",
+              "machine": "backpack_hinge",
+              "command": "release_struts"
+            },
+            {
+              "op": "operate",
+              "machine": "backpack_hinge",
+              "command": "close"
+            },
+            {
+              "op": "operate",
+              "machine": "backpack_hinge",
+              "command": "engage_latches"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            },
+            {
+              "op": "operate",
+              "machine": "backpack_hinge",
+              "command": "close_covers"
+            }
+          ]
         },
         {
           "title": "Left shoulder: deliver the retained arm",

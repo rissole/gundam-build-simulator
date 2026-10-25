@@ -119,7 +119,11 @@ func run() -> void:
 	expect(repeated == "Fit 2 × W-12, H-12040","counts above 1 keep the multiplier, got "+repeated)
 	var content = JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-content.json"))
 	var lock_ids: Array = content.equipment.captive_controls.keys()
-	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS,"foot_carrier":preload("res://scripts/foot_carrier.gd").MANUAL_COMMANDS,"module_supports":preload("res://scripts/module_supports.gd").MANUAL_COMMANDS,"leg_rail":preload("res://scripts/indexed_leg_rail.gd").MANUAL_COMMANDS,"captive_controls":preload("res://scripts/captive_controls.gd").lock_commands(lock_ids)}
+	var layout = JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json"))
+	var supports_script = preload("res://scripts/module_supports.gd")
+	var rig_commands: Array = supports_script.MANUAL_COMMANDS.duplicate()
+	rig_commands.append_array(supports_script.template_commands(layout.workshop.bulky_fixture.templates.keys()))
+	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS,"foot_carrier":preload("res://scripts/foot_carrier.gd").MANUAL_COMMANDS,"module_supports":rig_commands,"leg_rail":preload("res://scripts/indexed_leg_rail.gd").MANUAL_COMMANDS,"captive_controls":preload("res://scripts/captive_controls.gd").lock_commands(lock_ids),"core_guide":preload("res://scripts/core_guide.gd").MANUAL_COMMANDS,"backpack_hinge":preload("res://scripts/backpack_hinge.gd").MANUAL_COMMANDS}
 	var good = {"title":"Bolt the flange","goal":"Fasten the flange","view":"components","slots":["a","b"],"objectives":[{"op":"fit","slots":["a"]},{"op":"fit","slots":["b"]}]}
 	var good_errors = Objectives.errors(manual_of(good),commands)
 	expect(good_errors.is_empty(),"valid page has no objective errors: "+joined(good_errors))
@@ -183,6 +187,29 @@ func run() -> void:
 	expect(option_label(receiver_options,"go:source") == "Move to Heavy Module Bay" and plain_menu(receiver_options),"receiver put-back label, got "+str(receiver_options))
 	var pelvis_page := page_named(definitions.pelvis.manual,"Deliver the prepared pelvis and waist")
 	var supports = preload("res://scripts/module_supports.gd").new();game.add_child(supports);supports.equipment_id = "module_supports";game.equipment.register(supports)
+	var bring := page_named(definitions.pelvis.manual,"Bring the chest to the heavy module rig")
+	var bring_fit := Objectives.text(game,"pelvis",bring.objectives[0])
+	var bring_move := Objectives.text(game,"pelvis",bring.objectives[1])
+	expect(bring_fit == "Heavy module rig: Fit chest contact inserts","chest rig objective, got "+bring_fit)
+	expect(bring_move == "Crane console: Move to Chest rig","chest pickup objective, got "+bring_move)
+	var guided := page_named(definitions.chest.manual,"Deliver and guide the core")
+	var forward := ""
+	for objective in guided.objectives:
+		if str(objective.get("op","")) == "detach" and str(objective.get("point","")) == "core_front":
+			forward = Objectives.text(game,"chest",objective)
+	expect(forward == "Crane: Detach and stow the forward magnetic connector","core forward detach, got "+forward)
+	var guide = preload("res://scripts/core_guide.gd").new();game.add_child(guide);guide.equipment_id = "core_guide";game.equipment.register(guide)
+	guide.spec = {"capture":0.85,"travel":2.2}
+	var bolts: Array[bool] = [false,false,false,false]
+	guide.bolts = bolts
+	var bolt_page := {"objectives":[{"op":"operate","machine":"core_guide","command":"secure_bolts"}]}
+	var bolt_text := Objectives.text(game,"chest",bolt_page.objectives[0])
+	var bolt_state := Objectives.evaluate(game,"chest",bolt_page)
+	expect(bolt_text == "Core: Secure captive flange bolts" and bolt_state.counts[0] == "0/4","core bolts, got "+bolt_text+" "+str(bolt_state.counts))
+	var closed := page_named(definitions.chest.manual,"Close and latch the backpack")
+	expect(closed.objectives.size() == 9 and str(closed.objectives[0].op) == "connect","backpack close starts by refitting the connectors on the lowered crane, got "+str(closed.objectives.size()))
+	var struts := page_named(definitions.chest.manual,"Attach the backpack struts")
+	expect(str(struts.objectives.back().op) == "detach" and struts.objectives.size() == 4,"struts page leaves the crane lowered at the backpack")
 	var pelvis_pin := Objectives.text(game,"pelvis",pelvis_page.objectives[0])
 	var pelvis_pickup := Objectives.text(game,"pelvis",pelvis_page.objectives[1])
 	var pelvis_receiver := Objectives.text(game,"pelvis",pelvis_page.objectives[5])

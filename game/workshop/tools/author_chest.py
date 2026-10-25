@@ -117,11 +117,32 @@ def extend(trial, kinds, pelvis, layout, diagram):
         source(receiving,[side*.80,1.95,0],[tube([0,0,0],.065,.046,.08,"x")],False)
         trial["context_sources"].append(receiving);pelvis["context_sources"].append(receiving)
         source(f"CH-TAIL__{n:03}",[0,0,0],[strut([side*.80,.12,.25],[side*.80,.04,.10],.025)])
-    def page(title,body,ids):
-        return dict(title=title,body=body,slots=ids,view="components",diagram_views=[diagram(title,[slots[s]["pose_source"] for s in ids])])
-    pelvis["manual"] += [page("Seat the prepared chest", "With the pelvis clamped on the gantry and both waist neutral pins engaged, use Chest to waist. Fit all four lifting shoes, take weight, travel upright and lower the chest onto the four waist keys. The crane stays attached while the chest is unfastened.",["chest"]),
-        page("Retain the chest on the waist", "Fit each CH-W36 washer before its CH-H36160 M36 × 160 bolt. All four bolts enter downward into the waist's captive threads. Keep the cockpit fitted and the four front/rear connection windows open. Complete all four pairs before releasing the lifting shoes.",hardware),
-        page("Connect chest services", "After all four waist bolt pairs are fitted, release and stow all four crane shoes. Fit the two identical CH-SERVICE plugs at the outward-facing waist couplings. Keep the waist neutral pins engaged.",services)]
+    crane, rig = "service_crane", "module_supports"
+    def operate(machine, command, task=None):
+        record = dict(op="operate", machine=machine, command=command)
+        if task is not None: record["task"] = task
+        return record
+    def crane_to(task, seat=None):
+        steps = [operate(crane, "pickup", task), operate(crane, "down"), dict(op="connect", machine=crane),
+                 operate(crane, "up"), operate(crane, "go:receiver", task)]
+        if seat is None: steps.append(operate(crane, "down"))
+        else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
+        return steps
+    def park():
+        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+    def objective_page(title, goal, ids, objectives, note=None):
+        record = dict(title=title, view="components", slots=list(ids), goal=goal, objectives=objectives)
+        if note is not None: record["note"] = note
+        return record
+    pelvis["manual"] += [
+        objective_page("Bring the chest to the heavy module rig", "Fit chest inserts on the heavy module rig and crane the chest onto it.", [],
+            [operate(rig, "template:chest")] + crane_to("chest_store") + park()),
+        objective_page("Seat the prepared chest", "Crane the chest from the heavy module rig onto the waist.", ["chest"],
+            crane_to("chest", "chest"), dict(at=2, text="Keep all four connectors attached until the chest is bolted.")),
+        objective_page("Retain the chest on the waist", "Bolt the chest to the waist, then release and park the crane.", hardware,
+            [dict(op="fit", slots=list(hardware))] + park(), dict(at=0, text="The bolts go downward into the waist threads.")),
+        objective_page("Connect chest services", "Plug both chest service lines into the waist.", services,
+            [dict(op="fit", slots=list(services))], dict(at=0, text="Keep both waist lock pins in."))]
     pelvis["manual"][-3]["diagram_views"]=[diagram("Prepared chest onto the locked waist",context,["PV-320__001"],
         offsets={uid:[0,2.1,0] for uid in context})]
     pelvis["manual"][-2]["diagram_views"]=[diagram("Waist corner "+str(n),[f"CH-W36__{n:03}",f"CH-H36160__{n:03}"],

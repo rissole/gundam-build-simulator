@@ -129,14 +129,39 @@ def extend(trial, chest, layout, kinds, diagram):
             [tube([0,0,.035],.035,0,.07,"z"),tube([0,0,.070],.045,0,.014,"z")]))
         source(f"CH-BACKPACK-SERVICE__{n:03}",[tube([0,0,-.025],.055,.036,.05,"z")],chest["context_sources"],[side*.57,2.58,1.24])
         source(f"BP-SERVICE-TAIL__{n:03}",[tube([0,0,0],.045,.025,.10,"z")],at=[side*.57,.28,.14])
-    def page(title,body,ids):
-        return dict(title=title,body=body,slots=ids,view="components",diagram_views=[diagram(title,[slots[s]["pose_source"] for s in ids])])
-    chest["manual"] += [page("Seat the open backpack","Select backpack inserts on the empty heavy module rig and collect the prepared unit with Backpack to Heavy Module Bay. Select Backpack to hinges, attach both magnetic connectors and follow the rear delivery route. Down aligns both open hinge eyes with the fixed chest forks; keep both magnetic connectors attached.",["backpack"]),
-        page("Retain both backpack hinges","Insert each BP-P60 hinge pin from the outboard side, then fit its BP-K60 keeper into the exposed inner groove. Both complete pin/keeper pairs are required before extending the struts.",hinge),
-        page("Attach the backpack struts","At each free strut-end handle, Extend guides the prepared telescope to its fixed chest clevis. Fit the BP-P40 base pin and its BP-K40 keeper. Engage both positive open locks before releasing either magnetic connector.",struts),
-        page("Connect the supported backpack","With both struts positively locked open, release and stow both magnetic connectors. Fit both BP-SERVICE protected runs at the fixed rear-facing sockets. The upper retained loops move with the cover; they provide no lifting support.",services),
-        dict(title="Close and latch the backpack",view="overview",slots=[],status_equipment="backpack_hinge",
-            body="Return the matching crane, refit both magnetic connectors, then choose Take backpack weight. Release both strut locks at their handles. Choose Close backpack at the crane; Stop/Resume preserves partial closure. At the closed stop engage both lower draw latches, release and stow the magnetic connectors, then close the two small service covers. For correction, reopen the covers, refit both magnetic connectors and take weight before releasing either latch. Open fully and engage both strut locks before releasing the crane or changing service connections.")]
+    crane, rig, pack = "service_crane", "module_supports", "backpack_hinge"
+    def operate(machine, command, task=None):
+        record = dict(op="operate", machine=machine, command=command)
+        if task is not None: record["task"] = task
+        return record
+    def crane_to(task, seat=None):
+        steps = [operate(crane, "pickup", task), operate(crane, "down"), dict(op="connect", machine=crane),
+                 operate(crane, "up"), operate(crane, "go:receiver", task)]
+        if seat is None: steps.append(operate(crane, "down"))
+        else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
+        return steps
+    def park():
+        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+    def objective_page(title, goal, ids, objectives, note=None):
+        record = dict(title=title, view="components", slots=list(ids), goal=goal, objectives=objectives)
+        if note is not None: record["note"] = note
+        return record
+    chest["manual"] += [
+        objective_page("Bring the backpack to the heavy module rig", "Fit backpack inserts on the heavy module rig and crane the backpack onto it.", [],
+            [operate(rig, "template:backpack")] + crane_to("backpack_store") + park()),
+        objective_page("Seat the open backpack", "Crane the open backpack onto the chest hinges.", ["backpack"],
+            crane_to("backpack", "backpack"), dict(at=2, text="Keep both connectors attached until the struts are locked.")),
+        objective_page("Retain both backpack hinges", "Pin both hinges.", hinge,
+            [dict(op="fit", slots=list(hinge))], dict(at=0, text="Insert each pin from the outboard side, then its keeper.")),
+        objective_page("Attach the backpack struts", "Extend both struts, pin them and lock them open.", struts,
+            [operate(pack, "extend_struts"), dict(op="fit", slots=list(struts)), operate(pack, "lock_struts"), dict(op="detach", machine=crane)],
+            dict(at=3, text="Leave the crane lowered at the backpack: it closes the backpack later.")),
+        objective_page("Connect the supported backpack", "Plug in both backpack service runs.", services,
+            [dict(op="fit", slots=list(services))]),
+        objective_page("Close and latch the backpack", "Close the backpack with the crane, latch it and shut the service covers.", [],
+            [dict(op="connect", machine=crane),
+             operate(pack, "take_weight"), operate(pack, "release_struts"), operate(pack, "close"),
+             operate(pack, "engage_latches")] + park() + [operate(pack, "close_covers")])]
     chest["manual"][-5]["diagram_views"]=[diagram("Open backpack onto fixed hinge forks",context,["CH-BACKPACK-ROOT__001","CH-BACKPACK-ROOT__002"],offsets={uid:[0,2.8,1.2] for uid in context})]
     chest["milestones"]["backpack_retained"]=["backpack"]+hinge+struts
     chest["milestones"]["backpack_connected"]=["backpack"]+hinge+struts+services

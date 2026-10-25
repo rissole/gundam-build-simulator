@@ -74,11 +74,28 @@ def extend(trial, chest, layout, diagram):
     chest["slots"]["core"]=dict(assembly="core",milestone="prepared",requires=[],label=core["title"],pose_source="CH-CORE-DOCK__001",snap_position=[0,.65,0],
         support_required=True,source_supports=["core_guide"],undo_requires_support="core_guide",access_policy="mounted",secured_equipment="core_guide")
     chest["milestones"]["core_seated"]=["core"]
-    chest["manual"] += [dict(title="Deliver and guide the core",view="components",slots=["core"],
-        body="Select core saddles on the empty heavy module rig, then use Core to Heavy Module Bay to collect the prepared cartridge. Core to rear dock follows the low right-side bypass, outboard lift and high crossing. Down brings the horizontal load to the rear approach with both magnetic connectors fitted. At the right-side guide control, Advance stops at captured engagement. Release and stow the forward magnetic connector using its side handle; keep the aft magnetic connector fitted. Advance folds the unloaded forward magnetic connector and shifts its head aft before inserting farther. The aft magnetic connector and captured guides stay engaged. Advance again, if stopped, completes flange and keyed-nose seating.",
-        diagram_views=[diagram("Core and captured guides",context,dock,offsets={uid:[0,.65,0] for uid in context})]),
-        dict(title="Retain and connect the core",view="overview",slots=[],status_equipment="core_guide",
-        body="Operate all four PC-H16 captive flange bolts, then complete the rear interlock connection. The aft magnetic connector remains fitted through both operations. Release and stow it only when all four bolts and the rear connection are secure. For local correction, isolate the connection, refit the aft magnetic connector and release all four bolts. Return stops at guide capture. Return again extends the empty forward magnetic connector; refit it before returning out of the guides.")]
+    crane, rig, guide = "service_crane", "module_supports", "core_guide"
+    def operate(machine, command, task=None):
+        record = dict(op="operate", machine=machine, command=command)
+        if task is not None: record["task"] = task
+        return record
+    def crane_to(task):
+        return [operate(crane, "pickup", task), operate(crane, "down"), dict(op="connect", machine=crane),
+                operate(crane, "up"), operate(crane, "go:receiver", task), operate(crane, "down")]
+    park = [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+    chest["manual"] += [dict(title="Bring the core to the heavy module rig", view="components", slots=[],
+        goal="Fit core inserts on the heavy module rig and crane the core onto it.",
+        objectives=[operate(rig, "template:core")] + crane_to("core_store") + park),
+        dict(title="Deliver and guide the core", view="components", slots=["core"],
+        goal="Crane the core to the chest's rear dock and guide it in.",
+        objectives=crane_to("core") + [operate(guide, "next:capture"),
+            dict(op="detach", machine=crane, point="core_front"),
+            dict(op="seat", slot="core", via=dict(machine=guide, command="next:seat"))],
+        note=dict(at=7, text="Keep the aft connector attached."),
+        diagram_views=[diagram("Core and captured guides", context, dock, offsets={uid: [0, .65, 0] for uid in context})]),
+        dict(title="Retain and connect the core", view="components", slots=[],
+        goal="Bolt the core in, connect it, then release and park the crane.",
+        objectives=[operate(guide, "secure_bolts"), operate(guide, "connection")] + park)]
     trial["robot"]["playable_slots"]["chest"]=["core"]
     trial["robot"]["controlled_mount_slots"].append("chest.core")
     trial["equipment"]["core_guide"]=dict(owner="chest",uid="core",slot="core",support="core_guide",travel=2.20,capture=.85,

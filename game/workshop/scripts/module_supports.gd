@@ -49,7 +49,8 @@ func controls() -> Array[Dictionary]:
 		var current=entry.duplicate();current.point=current.node.global_position
 		if current.get("cycle_templates",false):
 			var next: String=spec.templates.keys()[(spec.templates.keys().find(template)+1)%spec.templates.size()]
-			current.action="template:"+next;current.label="Fit "+next+" contact inserts (current: "+template+")"
+			current.action="template:"+next
+			current.label=manual_subject({"command":current.action})+": "+command_label(current.action)+" (now: "+template+")"
 		result.append(current)
 	for index in range(4):
 		var piece: Dictionary=blockout.pieces[jaw_groups[index]+"_handle"]
@@ -60,20 +61,32 @@ func controls() -> Array[Dictionary]:
 		result.append(control_entry(lock_nodes[key],"lock:"+key,"Waist: "+("Pull out " if locks[key] else "Insert ")+PIN_NAMES[key]+" lock pin",.10,{"point":lock_nodes[key].global_position}))
 	return result
 
-func manual_commands() -> Array:return MANUAL_COMMANDS
+static func template_commands(names) -> Array:
+	var result: Array=[]
+	for name in names:result.append("template:"+str(name))
+	return result
+func manual_commands() -> Array:
+	var result: Array=MANUAL_COMMANDS.duplicate()
+	if spec is Dictionary and spec.has("templates"):result.append_array(template_commands(spec.templates.keys()))
+	return result
 func command_label(action: String, _task: String="") -> String:
+	if action.begins_with("template:"):return "Fit "+action.get_slice(":",1)+" contact inserts"
 	match action:
 		"insert_pins":return "Insert both lock pins"
 		"close_jaws":return "Close the hold-down jaws"
 	return ""
 func manual_subject(objective: Dictionary) -> String:
-	match str(objective.get("command","")):
+	var command := str(objective.get("command",""))
+	if command.begins_with("template:"):return "Heavy module rig"
+	match command:
 		"insert_pins":return "Waist"
 		"close_jaws":return "Gantry"
 	return ""
-func manual_state() -> Dictionary:return {"pins":locks.values().count(true),"jaws_closed":_closed_jaws()}
+func manual_state() -> Dictionary:return {"template":template,"pins":locks.values().count(true),"jaws_closed":_closed_jaws()}
 func manual_effect(objective: Dictionary) -> Dictionary:
-	match objective.get("command",""):
+	var command := str(objective.get("command",""))
+	if command.begins_with("template:"):return {"template":command.get_slice(":",1)}
+	match command:
 		"insert_pins":return {"pins":locks.size()}
 		"close_jaws":return {"jaws_closed":jaws.size()}
 	return {}
@@ -263,7 +276,7 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 		if not Codec.number(data[key],1) or data[key]<0:return ["Invalid heavy module rig progress."]
 	for key in ["jaws","jaw_goals"]:
 		if not data[key] is Array or data[key].size()!=4 or not data[key].all(func(value):return Codec.number(value,1) and value>=0):return ["Invalid gantry jaw progress."]
-	if not Codec.same_keys(data.locks,locks.keys()) or not data.locks.values().all(func(value):return value is bool):return ["Invalid waist neutral locks."]
+	if not Codec.same_keys(data.locks,locks.keys()) or not data.locks.values().all(func(value):return value is bool):return ["Invalid waist lock pins."]
 	if (data.goal!=0 and data.goal!=1) or not data.jaw_goals.all(func(value):return value==0 or value==1):return ["Fixture motion targets must be physical end stops."]
 	var model: AssemblyModel=game.model if candidate==null else candidate
 	var occupant=model.support_occupant("bulky_fixture")

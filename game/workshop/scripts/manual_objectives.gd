@@ -32,7 +32,9 @@ static func text(game, owner: String, objective: Dictionary) -> String:
 		var machine = game.equipment.get_equipment(str(objective.get("machine","")))
 		if machine == null:return ""
 		var command := str(objective.get("command",""))
-		return machine_text(machine,objective,command if op == "operate" else op)
+		if op == "detach" and not str(objective.get("point","")).is_empty():command = "detach:"+str(objective.point)
+		elif op != "operate":command = op
+		return machine_text(machine,objective,command)
 	return ""
 
 ## `kinds` lists accepted part kinds in slot order, including repeats.
@@ -115,13 +117,7 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 		var expected: Dictionary = cumulative.get(machine_id,{}).duplicate()
 		expected.merge(machine.manual_effect(effect_objective),true)
 		cumulative[machine_id] = expected
-		var state: Dictionary = machine.manual_state()
-		var matches := true
-		for key in expected:
-			if state.get(key) != expected[key]:
-				matches = false
-				break
-		if matches:latest = k
+		if _state_matches(expected,machine.manual_state()):latest = k
 	for k in sequence.size():
 		if k > latest:break
 		var index := sequence[k]
@@ -241,6 +237,8 @@ static func _check_page(def_id: String, index: int, page: Dictionary, slots: Dic
 		elif (op == "connect" or op == "detach") and not str(objective.get("machine","")).is_empty():
 			var machine_id := str(objective.machine)
 			if not _command_known(machines,machine_id,op):found.append(prefix+"unknown command %s on %s"%[op,machine_id])
+			# A detach may name one connector. Connect stays whole-rig.
+			if op == "detach" and objective.has("point") and (not objective.point is String or str(objective.point).is_empty()):found.append(prefix+"detach point must name a connector")
 		if op == "seat" and objective.has("via"):
 			var via = objective.via
 			var machine_id := ""
@@ -272,6 +270,11 @@ static func _check_page(def_id: String, index: int, page: Dictionary, slots: Dic
 					found.append(prefix+"%s is before its prerequisite %s"%[sid,str(required)])
 					break
 	if page.has("note") and not _note_ok(page.note,objectives.size()):found.append(prefix+"note is outside its objective or empty")
+
+static func _state_matches(expected: Dictionary, state: Dictionary) -> bool:
+	for key in expected:
+		if state.get(key) != expected[key]:return false
+	return true
 
 static func _objective_slots(objective: Dictionary) -> Array:
 	var op := str(objective.get("op",""))
