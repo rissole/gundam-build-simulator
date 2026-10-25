@@ -67,7 +67,7 @@ geometry, authored content and mechanical checks. Use the exact coordinates and
 motion envelopes in the fixture and route contract, including:
 
 - Existing 40 × 48 m floor, proposed 25 m roof and expanded crane coverage.
-- 11 × 12 m bulky-module bay.
+- 11 × 12 m Heavy Module Bay.
 - 7 × 13 m shared limb bay centred at X14.
 - Passive leg parking at X22 and the front arm-cassette parking berth.
 - Low pelvis-support gantry, with the specified bearing contacts and operating handles.
@@ -120,7 +120,7 @@ service work.
 
 | Stage | Playable work |
 | --- | --- |
-| Pelvis/waist | Rig the prepared unit at the bulky fixture, deliver it, close the gantry hold-downs and establish neutral locks before releasing the crane. |
+| Pelvis/waist | Rig the prepared unit on the heavy module rig, deliver it, close the gantry hold-downs and establish neutral locks before releasing the crane. |
 | Both legs | Perform the simplified structural builds. Retain the existing hip rings/hardware; represent additional hip cartridges as complete parts with mounting pins and neutral locks. |
 | Chest/cockpit | Deliver the prepared frame and fitted cockpit upright. Install four waist bolt/washer pairs, release rigging and connect side services. |
 | Core | Follow the rear crane route, transfer forward support to the captured guide, complete flange retention and connect the rear interface. |

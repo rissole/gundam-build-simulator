@@ -25,7 +25,7 @@ func frames_at(progress: float) -> Dictionary:
 func occupancy_error() -> String:
 	var shape=BoxShape3D.new();shape.size=AssemblyRuntime.vec(spec.occupied_size)
 	var hit=Sweep.overlap(get_world_3d().direct_space_state,shape,Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(spec.occupied_center)),8,[],0)
-	return "Leave the ground rail corridor before moving the holder." if not hit.is_empty() else ""
+	return "Leave the ground rail corridor before moving the leg rig." if not hit.is_empty() else ""
 
 func motion_error(from: float, to: float) -> String:
 	var excluded: Array[RID]=blockout.rids_for_groups(spec.groups)
@@ -68,7 +68,7 @@ func action_error(action: String) -> String:
 	if action=="resume":return "" if value!=goal else "The crossing gates are already locked."
 	if action!="open":return "Unknown crossing control."
 	var rail=game.equipment.get_equipment("leg_rail")
-	if rail!=null and (rail.moving or not rail.mode.is_empty() or rail.path not in [0.0,3.0]):return "The holder must be locked at its station or dock before opening the crossing."
+	if rail!=null and (rail.moving or not rail.mode.is_empty() or rail.path not in [0.0,3.0]):return "The leg rig must be locked in the Limb Bay or at the dock before opening the crossing."
 	return ""
 
 func request(action: String) -> String:

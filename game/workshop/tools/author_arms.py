@@ -121,5 +121,5 @@ def extend(trial, layout, chest):
             bounds=[1.5, 1.1, 7.79], work_locations=["support", "parent"], interaction="components",
             context_sources=context, slots={}, supplied_milestones=["prepared"], milestones={"prepared":[]},
             manual=[dict(title="Prepared "+side+" arm", view="overview", slots=[],
-                body="The upper arm, restrained elbow, forearm, neutral wrist and retained hand are supplied together. The shared cassette supports three structural pads; four structural lifting faces carry the arm. Shoulder retention, drives, services and pauldron work belong to the chest manual.")])
+                body="The upper arm, restrained elbow, forearm, neutral wrist and retained hand are supplied together. The arm rig supports three structural pads; four structural lifting faces carry the arm. Shoulder retention, drives, services and pauldron work belong to the chest manual.")])
     return definitions

@@ -32,7 +32,7 @@ Start with `./play.command -- --stage=pelvis` so the crane and lifts are ready.
 - [ ] Board both side elevators. Up and Down should each travel one level and stop automatically. Try top/bottom limits and call the elevator from a landing. Repeat carrying a component and using the shelf.
 - [ ] On the mobile platform, press **MOVE**, choose a destination from the menu, and ride it. Try mouse and ↑/↓ + E/Enter. Q/Close must cancel without moving; Esc must pause. Up/Down only change height. Down at ground must not send it to parking. To park, choose **Parking bay** from Move. Try Move while raised and check the explanation.
 - [ ] Try a blocked mobile transfer. Clear the obstacle, open **MOVE** and choose **Resume to…**, or choose **Return to…** to reverse along the route. Check the rider and anything carried stay with the deck.
-- [ ] Read and target the labelled rail, foot-carrier and bulky-fixture buttons. Confirm neighbouring buttons are distinct and the smaller signs remain legible. Their Stop/recovery controls remain available.
+- [ ] Read and target the labelled rail, foot-rig and heavy-module-rig buttons. Confirm neighbouring buttons are distinct and the smaller signs remain legible. Their Stop/recovery controls remain available.
 
 Report confusing wording, missed targets, unexpected motion and positive findings
 in the table below. The complete workshop journey remains a separate playtest.

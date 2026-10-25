@@ -48,7 +48,7 @@ func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for button in buttons:
 		var entry: Dictionary=button.duplicate();entry.point=entry.node.global_position
-		entry.label={"advance":"Advance / "+next_action(),"return":"Return supported holder","stop":"Stop holder","lane":"Select hip lane · "+lane,"roll":"Roll supported leg at station","park":"Park / retrieve leg cradle","build":"Select "+("right" if active_assembly=="left_leg" else "left")+" leg at the clear station"}[entry.action]
+		entry.label={"advance":"Advance / "+next_action(),"return":"Return supported leg rig","stop":"Stop leg rig","lane":"Select hip lane · "+lane,"roll":"Roll supported leg in the Limb Bay","park":"Park / retrieve leg rig","build":"Select "+("right" if active_assembly=="left_leg" else "left")+" leg on the empty leg rig"}[entry.action]
 		result.append(entry)
 	return result
 
@@ -57,10 +57,10 @@ func can_construct() -> bool:
 
 func next_action() -> String:
 	if not mode.is_empty():return "resume "+mode.replace("_"," ")
-	if not engaged:return "reacquire leg support" if path>=2 else "advance empty holder toward retained leg"
+	if not engaged:return "reacquire leg support" if path>=2 else "advance empty leg rig toward retained leg"
 	if not is_equal_approx(index_x,spec.lanes[lane]):return "index to "+lane+" hip"
-	if path>=3:return "release secured leg holder"
-	return ["travel to final bay","turn upright","dock upward"][clampi(floori(path),0,2)]
+	if path>=3:return "release secured leg rig"
+	return ["travel to Final Assembly Bay","turn upright","dock upward"][clampi(floori(path),0,2)]
 
 func retention_state(model: AssemblyModel = null, controls_state: Dictionary = {}, assembly: String = "") -> String:
 	var m: AssemblyModel=game.model if model==null else model
@@ -73,30 +73,30 @@ func retention_state(model: AssemblyModel = null, controls_state: Dictionary = {
 	return "none"
 
 func action_error(action: String) -> String:
-	if game.paused:return "Resume the workshop before moving the holder."
-	if action=="stop":return "" if moving else "The holder is stopped."
-	if action not in ["advance","return","lane","roll","park","build"]:return "Unknown holder command."
-	if moving and blocked_reason.is_empty():return "Stop the holder before selecting another command."
+	if game.paused:return "Resume the workshop before moving the leg rig."
+	if action=="stop":return "" if moving else "The leg rig is stopped."
+	if action not in ["advance","return","lane","roll","park","build"]:return "Unknown leg rig command."
+	if moving and blocked_reason.is_empty():return "Stop the leg rig before selecting another command."
 	if not mode.is_empty() and action not in ["advance","return"]:return "Complete or reverse the interrupted motion first."
 	var peer: String=game.equipment.busy_reason("rail",equipment_id)
 	if not peer.is_empty():return peer
 	if action=="build":
-		if path!=0 or not is_equal_approx(index_x,spec.station_x) or roll!=0 or roll_height!=0 or release!=0:return "Return the empty holder to the common station before selecting another leg."
+		if path!=0 or not is_equal_approx(index_x,spec.station_x) or roll!=0 or roll_height!=0 or release!=0:return "Return the empty leg rig to the Limb Bay before selecting another leg."
 		var current: Dictionary=game.model.assemblies[active_assembly]
-		if current.parent.is_empty() and current.slots.values().any(func(uid):return not uid.is_empty()):return "The single cradle is occupied. Finish this leg or park it for arm work; another leg cannot use the occupied cradle."
+		if current.parent.is_empty() and current.slots.values().any(func(uid):return not uid.is_empty()):return "The leg rig is occupied. Finish this leg or park it for arm work; another leg cannot use the occupied leg rig."
 		return ""
 	# Advance resumes the stored phase; it is not a new delivery command.
 	# In particular, an interrupted raised roll must remain resumable.
 	if not mode.is_empty():
 		if mode in ["roll","roll_raise"]:return game.equipment.busy_reason("source_roll",equipment_id)
 		return ""
-	if action in ["lane","roll","park"] and path!=0:return "Return the cradle to the transverse table first."
+	if action in ["lane","roll","park"] and path!=0:return "Return the leg rig to the transverse table first."
 	if action=="lane" and (roll!=0 or roll_height!=0):return "Restore neutral roll and construction height before indexing."
 	if action=="roll":
-		if not can_construct() and mode.is_empty() and (index_x!=spec.station_x or not engaged):return "Roll only at the occupied common limb station."
+		if not can_construct() and mode.is_empty() and (index_x!=spec.station_x or not engaged):return "Roll only with the leg rig occupied in the Limb Bay."
 		var reason: String=game.equipment.busy_reason("source_roll",equipment_id)
 		if not reason.is_empty():return reason
-		if game.model.assemblies[active_assembly].slots.foot.is_empty():return "Transfer the prepared foot onto the holder first."
+		if game.model.assemblies[active_assembly].slots.foot.is_empty():return "Transfer the prepared foot onto the leg rig first."
 	if action in ["advance","park"] and engaged and path==0 and (roll!=0 or roll_height!=0):return "Return the supported source roll to neutral before indexing."
 	if action=="return" and engaged and game.model.assemblies[active_assembly].parent==receiver and retention_state()!="none":return "Remove hip retention before returning the loaded leg."
 	if action=="advance" and engaged:
@@ -104,7 +104,7 @@ func action_error(action: String) -> String:
 		if gantry!=null and not gantry.support_secured():return "Deliver the pelvis, close all four gantry jaws and engage both waist locks before leg delivery."
 		if lane!=active_assembly.trim_suffix("_leg"):return "Select the "+active_assembly.trim_suffix("_leg")+" hip lane for this leg."
 		if not game.model.milestone(active_assembly,"structural_ready"):return "Complete the structural leg and every retaining connection before delivery."
-		if path==3 and retention_state()!="complete":return "Complete hip retention and neutral restraint before releasing the holder."
+		if path==3 and retention_state()!="complete":return "Complete hip retention and neutral restraint before releasing the leg rig."
 	return ""
 
 func request(action: String) -> String:
@@ -148,7 +148,7 @@ func request(action: String) -> String:
 		elif path>0:mode="path";goal=maxf(0,ceilf(path-.0001)-1)
 		elif not is_equal_approx(index_x,spec.station_x):mode="index";goal=spec.station_x
 		elif release>0:mode="release";goal=0
-		else:return "The empty cradle is home. Select the next supported build."
+		else:return "The empty leg rig is home. Select the next supported build."
 	elif action=="advance" and path==3:mode="release";goal=5
 	elif action=="advance" and not is_equal_approx(index_x,spec.lanes[lane]):
 		if bolster<1:mode="bolster";goal=1
@@ -156,7 +156,7 @@ func request(action: String) -> String:
 	elif action=="return" and path==0:
 		if not is_equal_approx(index_x,spec.station_x):mode="index";goal=spec.station_x
 		elif bolster>0:mode="bolster";goal=0
-		else:return "The supported holder is already at the construction station."
+		else:return "The leg rig is already in the Limb Bay."
 	else:
 		mode="path";goal=minf(3,floorf(path+.0001)+1) if action=="advance" else maxf(0,ceilf(path-.0001)-1)
 		if path==3 and goal<3 and game.model.assemblies[active_assembly].parent==receiver:
@@ -321,34 +321,34 @@ func _model_changed() -> void:_refresh()
 
 func status_text() -> String:
 	if not blocked_reason.is_empty():return blocked_reason
-	return "LEG HOLDER / "+active_assembly.replace("_"," ").to_upper()+" · "+lane+" lane\n"+(mode.replace("_"," ") if moving else next_action())
+	return "LEG RIG / "+active_assembly.replace("_"," ").to_upper()+" · "+lane+" lane\n"+(mode.replace("_"," ") if moving else next_action())
 
 func busy_reason(subject: String) -> String:
-	if subject in ["mobile_platform","foot_transfer",active_assembly,"rail","crane"] and (moving or not mode.is_empty()):return "Wait for the leg holder to finish and lock."
+	if subject in ["mobile_platform","foot_transfer",active_assembly,"rail","crane"] and (moving or not mode.is_empty()):return "Wait for the leg rig to finish and lock."
 	return ""
 
 func access_error(owner: String) -> String:
-	if owner in [active_assembly,receiver] and (moving or not mode.is_empty()):return "Wait for the leg holder to lock."
-	if owner==active_assembly and path==0 and not is_equal_approx(index_x,spec.station_x):return "Return the leg to the common station for construction."
+	if owner in [active_assembly,receiver] and (moving or not mode.is_empty()):return "Wait for the leg rig to lock."
+	if owner==active_assembly and path==0 and not is_equal_approx(index_x,spec.station_x):return "Return the leg to the Limb Bay for construction."
 	return ""
 
 func undo(owner: String) -> Dictionary:
 	if owner==receiver and not game.model.assemblies[owner].history.is_empty():
 		var sid: String=game.model.assemblies[owner].history.back().slot
 		for build in ["left_leg","right_leg"]:
-			if sid in game.runtime.definition(receiver).milestones[build+"_secured"] and (active_assembly!=build or not engaged or release>0 or path!=3):return {"handled":true,"error":"Reacquire the matching leg with the holder before removing its retention."}
+			if sid in game.runtime.definition(receiver).milestones[build+"_secured"] and (active_assembly!=build or not engaged or release>0 or path!=3):return {"handled":true,"error":"Reacquire the matching leg with the leg rig before removing its retention."}
 	return {"handled":false,"error":""}
 
 func capture() -> Dictionary:
 	return {"version":1,"assembly":active_assembly,"receiver":receiver,"slot":receiver_slot,"lane":lane,"index_x":index_x,"path":path,"roll":roll,"roll_height":roll_height,"bolster":bolster,"release":release,"engaged":engaged,"mode":mode,"goal":goal,"moving":moving}
 
 func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary = {}) -> Array[String]:
-	if not Codec.same_keys(data,capture().keys()) or data.version!=1:return ["Invalid indexed holder snapshot."]
+	if not Codec.same_keys(data,capture().keys()) or data.version!=1:return ["Invalid leg rig snapshot."]
 	var model: AssemblyModel=game.model if candidate==null else candidate
-	if data.assembly not in ["left_leg","right_leg"] or data.receiver!=receiver or data.slot!=data.assembly or data.lane not in ["left","right"]:return ["Unknown holder destination or load."]
-	if not data.moving is bool or not data.engaged is bool or data.mode not in ["","path","index","release","roll","roll_raise","bolster"]:return ["Invalid indexed holder phase."]
+	if data.assembly not in ["left_leg","right_leg"] or data.receiver!=receiver or data.slot!=data.assembly or data.lane not in ["left","right"]:return ["Unknown leg rig destination or load."]
+	if not data.moving is bool or not data.engaged is bool or data.mode not in ["","path","index","release","roll","roll_raise","bolster"]:return ["Invalid leg rig phase."]
 	for field in ["index_x","path","roll","roll_height","bolster","release","goal"]:
-		if not Codec.number(data[field],360):return ["Invalid holder progress."]
+		if not Codec.number(data[field],360):return ["Invalid leg rig progress."]
 	if data.index_x<float(spec.lanes.values().min()) or data.index_x>float(spec.lanes.values().max()) or data.path<0 or data.path>3 or data.roll<0 or data.roll>360 or data.release<0 or data.release>5:return ["Holder progress exceeds the authored route."]
 	for field in ["roll_height","bolster"]:
 		if data[field]<0 or data[field]>1:return ["Holder construction phase out of range."]
@@ -357,22 +357,22 @@ func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary 
 	if not data.mode.is_empty() and not goals[data.mode].any(func(stop):return is_equal_approx(float(stop),float(data.goal))):return ["Holder goal is not a configured stop."]
 	if data.mode=="path" and absf(data.goal-data.path)>1.001:return ["Holder phase skips an intermediate lock."]
 	if data.mode in ["roll","roll_raise","bolster","index"] and data.path!=0:return ["Construction motion requires the transverse table."]
-	if data.path==0 and (data.roll!=0 or data.roll_height!=0) and not is_equal_approx(data.index_x,spec.station_x):return ["Source roll is only supported at the common station."]
+	if data.path==0 and (data.roll!=0 or data.roll_height!=0) and not is_equal_approx(data.index_x,spec.station_x):return ["Source roll is only supported in the Limb Bay."]
 	if data.roll!=0 and data.roll_height!=1:return ["Raise the supported roll axis before rotation."]
 	if data.mode!="roll" and not spec.roll_stops.any(func(stop):return is_equal_approx(float(stop),float(data.roll))):return ["Source roll has no locked orientation."]
 	for phase in ["path","roll_height","bolster","release"]:
 		var phase_mode: String="roll_raise" if phase=="roll_height" else phase
-		if data.mode!=phase_mode and not is_equal_approx(data[phase],roundf(data[phase])):return ["Interrupted holder motion lost its phase."]
+		if data.mode!=phase_mode and not is_equal_approx(data[phase],roundf(data[phase])):return ["Interrupted leg rig motion lost its phase."]
 	if data.mode!="index" and not goals.index.any(func(stop):return is_equal_approx(float(stop),float(data.index_x))):return ["Transverse table has no locked lane."]
 	var load: Dictionary=model.assemblies[data.assembly]
 	var occupant: String=model.support_occupant(support)
-	if not occupant.is_empty() and occupant!=data.assembly:return ["Shared holder carries a different selected leg."]
+	if not occupant.is_empty() and occupant!=data.assembly:return ["The leg rig carries a different selected leg."]
 	for owner in ["left_leg","right_leg"]:
 		var queued: Dictionary=model.assemblies[owner]
 		if queued.location.begins_with("support:leg_queue_") and queued.slots.values().any(func(value):return not value.is_empty()):return ["A leg with physical construction cannot wait in the empty-build queue."]
 	if (data.path>0 or data.mode=="path") and data.lane!=data.assembly.trim_suffix("_leg"):return ["Leg delivery requires its matching hip lane."]
 	if load.parent.is_empty():
-		if load.location!="support:"+support or not data.engaged or data.release!=0:return ["Uninstalled leg has no engaged cradle."]
+		if load.location!="support:"+support or not data.engaged or data.release!=0:return ["Uninstalled leg has no engaged leg rig."]
 	elif load.parent!=receiver or load.parent_slot!=data.slot:return ["Holder load is mounted elsewhere."]
 	elif data.engaged and (data.path!=3 or data.mode not in ["","release"]):return ["Mounted leg contact is only available at its dock."]
 	if (not data.engaged or data.release>0) and retention_state(model,world.get("equipment",{}).get("captive_controls",{}),data.assembly)!="complete":return ["Holder release requires full hip retention and restraint."]
@@ -380,7 +380,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary 
 	if data.path>0 and (data.roll!=0 or data.roll_height!=0 or not is_equal_approx(data.index_x,spec.lanes[data.lane])):return ["Longitudinal travel requires neutral roll and a pinned hip lane."]
 	if world.has("equipment") and data.mode=="path" and world.equipment.rail_gates.goal!=1:return ["Rail travel requires a closed ground crossing request."]
 	if (data.path>0 or data.mode=="path") and data.engaged and data.bolster!=1:return ["Stow the foot bolster before transport."]
-	if world.has("fixtures") and load.parent.is_empty() and not Codec.to_pose(world.fixtures[data.assembly]).is_equal_approx(snapshot_pose(data).frame):return ["Leg pose disagrees with its supporting holder."]
+	if world.has("fixtures") and load.parent.is_empty() and not Codec.to_pose(world.fixtures[data.assembly]).is_equal_approx(snapshot_pose(data).frame):return ["Leg pose disagrees with its leg rig."]
 	return []
 
 func apply(data: Dictionary) -> void:

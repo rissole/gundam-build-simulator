@@ -124,11 +124,11 @@ def extend(trial, chest, arms, kinds, diagram):
         def page(title,body,ids):
             return dict(title=side.title()+" shoulder: "+title,body=body,slots=ids,view="components",
                 diagram_views=[diagram(side.title()+" shoulder "+title,[slots[s]["pose_source"] for s in ids])])
-        chest["manual"] += [page("deliver the retained arm","Use Cassette to station after parking the leg cradle. Select "+side.title()+" arm to shoulder. Attach all four ends, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",[uid]),
-            page("retain the ball","Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four crane ends attached.",retention),
+        chest["manual"] += [page("deliver the retained arm","Use Arm rig to Limb Bay after parking the leg rig. Select "+side.title()+" arm to shoulder. Attach all four magnetic connectors, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",[uid]),
+            page("retain the ball","Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four magnetic connectors attached.",retention),
             page("fit the neutral brace","Seat SH-BRACE-"+side.upper()+" on the fixed bridge tabs and the arm's two staggered keys. Fit both SH-PIN and SH-KEEPER pairs. The keyed brace locks the straight service pose while the crane carries the arm.",bracing)]
         for n,ids in enumerate(drive_pages,1):chest["manual"].append(page("drive "+str(n),"Fit one SH-DRIVE between the fixed A clevis and moving B eye. Retain both ends with SH-PIN and SH-KEEPER. All three cartridges share the same compatible type.",ids))
-        chest["manual"].append(page("connect services","At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four crane ends. Keep the neutral and joint restraints engaged for pauldron work.",[service]))
+        chest["manual"].append(page("connect services","At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four magnetic connectors. Keep the neutral and joint restraints engaged for pauldron work.",[service]))
         structure=[uid]+retention+bracing+drives
         chest["milestones"][uid+"_retained"]=structure
         chest["milestones"][uid+"_connected"]=structure+[service]

@@ -24,7 +24,7 @@ const WORLD_MASK = 7
 const PAD_HOME = Vector3(-1.0,1.09,3.25)
 const JUMP_SPEED = 5.2
 const LEG_CONTENT = "res://assets/leg-prototype-content.json"
-const INTRO = "Build the left foot first: prepare both heel pads and the pitch actuator at the preparation stations, then secure them to the foot in its fixture in the foot bay. Next deliver the prepared pelvis from the bulky fixture to the gantry, crane the finished foot to dispatch and build each structural leg on the shared holder, then the torso, arms and head. Manuals describe each connection; shared equipment carries every large load."
+const INTRO = "Build the left foot first: prepare both heel pads and the pitch actuator at the preparation stations, then secure them to the foot on the foot rig in the Foot Bay. Next deliver the prepared pelvis from the Heavy Module Bay to the gantry, crane the finished foot to dispatch and build each structural leg on the leg rig, then the torso, arms and head. Manuals describe each connection; shared equipment carries every large load."
 ## Foot, pitch-actuator and pad families that keep their own collision proxies.
 const FOOT_COLLIDER_FAMILIES = ["FA-100","FA-101","FA-102","FA-103","FA-104","FA-105","FA-106","FA-200","FA-201","FA-300","FA-301","FA-302","FA-303","FA-304","FA-400","FA-401","FA-402","FA-403","FA-404"]
 ## Equipment created by _build_equipment, in dependency order.

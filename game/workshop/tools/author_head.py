@@ -103,7 +103,7 @@ def routes(layout):
         layout["crane"]["tasks"][uid]=common
         transfer=deepcopy(common)
         for key in ["source_equipment","guided_receiver","access_mode","exact_receiver"]:transfer.pop(key)
-        transfer.update(title=title+" to fixture",owner=uid,slot="",source_support=uid+"_store",
+        transfer.update(title=title+" to Heavy Module Bay",owner=uid,slot="",source_support=uid+"_store",
             receiver_support="bulky_fixture",receiver_equipment="module_supports",receiver_contact=True,
             secured=dict(milestone=""),source_pose=pose(store),receiver_pose=pose(source),rig_adapter=uid+"_receiver",
             route_positions=[store,[store[0],6,store[2]],[3.25,6,store[2]],[3.25,6,13],source],up_y=9)
@@ -275,7 +275,7 @@ def extend(trial,chest,kinds,layout,diagram):
         if uid=="head_crown":hand_pieces(trial,chest,kinds,diagram,source,page)
         requires=(["left_pauldron/front","left_pauldron/rear","right_pauldron/front","right_pauldron/rear"] if uid=="head_baseplate" else connected if uid in ["head_left","head_right"] else chest["milestones"]["head_mask_retained"] if uid=="head_crown" else retained["head_left"]+retained["head_right"])
         slots[uid]=dict(assembly=uid,milestone="prepared",requires=list(requires),pose_source=seat,label=title,support_required=True,source_supports=["crane_rigging"],undo_requires_support="crane_rigging",secured_by=[],access_policy="mounted")
-        page(title+": deliver", "Fit matching "+title.lower()+" upright inserts on the empty lowered bulky fixture. Use "+title+" to fixture to collect the passive-store piece, retain on the saddles, release and park. Select "+title+"; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers "+str(int((.24 if uid=="head_baseplate" else .18 if uid=="head_crown" else .22)*100))+" cm onto the seat. Keep the rig attached. "+("The underside starts at robot Z15.64: 6 cm to pilot entry, then 18 cm to the flange; the front key rejects reversed yaw." if uid=="head_baseplate" else "After mask retention, the final crown lowers 18 cm: 6 cm clear lead and 12 cm onto the two unequal keyed prongs. Keep both front-facing ends attached." if uid=="head_crown" else "The side pockets/hooks and roof ledges remain open to vertical entry; either handed side may be fitted first."),[uid])
+        page(title+": deliver", "Fit matching "+title.lower()+" upright inserts on the empty lowered heavy module rig. Use "+title+" to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select "+title+"; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers "+str(int((.24 if uid=="head_baseplate" else .18 if uid=="head_crown" else .22)*100))+" cm onto the seat. Keep the magnetic connectors attached. "+("The underside starts at robot Z15.64: 6 cm to pilot entry, then 18 cm to the flange; the front key rejects reversed yaw." if uid=="head_baseplate" else "After mask retention, the final crown lowers 18 cm: 6 cm clear lead and 12 cm onto the two unequal keyed prongs. Keep both front-facing magnetic connectors attached." if uid=="head_crown" else "The side pockets, hooks and roof ledges remain open to vertical entry; either handed side may be fitted first."),[uid])
         hardware=[]
         if uid=="head_baseplate":
             for n,(x,y) in enumerate([(x,y) for x in [-.27,.27] for y in [-.27,.27]],1):
@@ -292,14 +292,14 @@ def extend(trial,chest,kinds,layout,diagram):
         retained[uid]=[uid]+hardware;slots[uid]["secured_by"]=hardware.copy()
         chest["milestones"][uid+"_retained"]=retained[uid]
         retain_body=("Fit four HD-W24 4 mm washers and four HD-M24160 bolts down into the torso's captive flange threads. Work from the open front before shells close access; the rear pair uses the specified deeper tool lane." if uid=="head_baseplate" else
-            "Fit both HD-M12100 M12 × 100 front bolts rearward through the crown feet into the independent keyed root bosses. Only after both bolts are complete may the two front-facing magnetic ends be released and stowed." if uid=="head_crown" else
+            "Fit both HD-M12100 M12 × 100 front bolts rearward through the crown feet into the independent keyed root bosses. Only after both bolts are complete may the two front-facing magnetic connectors be released and stowed." if uid=="head_crown" else
             "Fit four HD-M12160 bolts horizontally through the exposed roof-ear recesses into captive side-frame threads. Rear bolts enter forward from the rear flanks; front bolts enter rearward from the front landing." if uid=="head_top" else
             "Fit both HD-M12100 bolts rearward through the exposed side-shell recesses into captive upright threads.")
         page(title+": retain",retain_body+" Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",hardware)
         if uid=="head_baseplate":
             loom=item("hd-loom","HD-LOOM__001",point(.10,.25,15.69),[box([0,0,0],[.06,.06,.06]),tube([.47,.32,0],.016,0,.64) ],hardware.copy())
             connected=retained[uid]+[loom];chest["milestones"]["head_baseplate_connected"]=connected.copy()
-            page("Head baseplate: connect loom","After all four neck bolt/washer pairs, plug the keyed central power/data loom and bond at the exposed front disconnects. Clip strain relief up the right portal, keeping bolt lanes and the future sensor slide clear. Then release and stow both upward magnetic ends from the open front before either side shell.",[loom])
+            page("Head baseplate: connect loom","After all four neck bolt/washer pairs, plug the keyed central power/data loom and bond at the exposed front disconnects. Clip strain relief up the right portal, keeping bolt lanes and the future sensor slide clear. Then release and stow both upward magnetic connectors from the open front before either side shell.",[loom])
         receiver_requires=(["chest:head_mask_retained"] if uid=="head_crown" else ["chest:left_pauldron_closed","chest:right_pauldron_closed","chest:backpack_connected"] if uid=="head_baseplate" else ["chest:head_baseplate_connected"] if uid!="head_top" else ["chest:head_left_retained","chest:head_right_retained"])
         clear_zones=["head_top_rig"] if uid=="head_crown" else [] if uid=="head_baseplate" else ["head_baseplate_rig"] if uid!="head_top" else ["head_left_rig","head_right_rig"]
         trial["equipment"]["receivers"][uid+"_receiver"]=dict(title=title,uid=uid,owner="chest",slot=uid,seat=pose([0,4.10,0]),crane_task=uid,

@@ -50,19 +50,19 @@ func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary]=[]
 	for n in range(clamp_groups.size()):
 		var uid="CS-"+clamp_groups[n]+"_foot";var mesh: MeshInstance3D=source_nodes[uid]
-		result.append(control_entry(mesh,("stop" if moving else "resume") if clamp_index==n else "clamp:"+str(n),("Stop clamp" if moving else "Resume clamp") if clamp_index==n else ("Fold" if clamps[n]==0 else "Close")+" cassette clamp",.12,{"point":mesh.global_position,"allowed":[body],"allow_body_hit":true}))
+		result.append(control_entry(mesh,("stop" if moving else "resume") if clamp_index==n else "clamp:"+str(n),("Stop clamp" if moving else "Resume clamp") if clamp_index==n else ("Fold" if clamps[n]==0 else "Close")+" arm rig clamp",.12,{"point":mesh.global_position,"allowed":[body],"allow_body_hit":true}))
 	return result
 
 func action_error(action: String) -> String:
-	if game.paused:return "Resume before operating the cassette."
-	if action=="stop":return "" if moving else "The cassette clamp is stopped."
+	if game.paused:return "Resume before operating the arm rig."
+	if action=="stop":return "" if moving else "The arm rig clamp is stopped."
 	if action=="resume":return "" if clamp_index>=0 and not moving else "There is no stopped clamp to resume."
-	if clamp_index>=0:return "Finish the moving cassette clamp first."
-	if not action.begins_with("clamp:") or not action.get_slice(":",1).is_valid_int():return "Unknown cassette command."
+	if clamp_index>=0:return "Finish the moving arm rig clamp first."
+	if not action.begins_with("clamp:") or not action.get_slice(":",1).is_valid_int():return "Unknown arm rig command."
 	var index=int(action.get_slice(":",1))
-	if index<0 or index>=clamps.size():return "Unknown cassette clamp."
-	if not occupant().is_empty():return "Keep all cassette clamps engaged until the arm is supported by its four crane ends."
-	if _record().location=="support:crane_rigging":return "Set the cassette down before adjusting its clamps."
+	if index<0 or index>=clamps.size():return "Unknown arm rig clamp."
+	if not occupant().is_empty():return "Keep all arm rig clamps engaged until the arm is supported by its four magnetic connectors."
+	if _record().location=="support:crane_rigging":return "Set the arm rig down before adjusting its clamps."
 	return ""
 
 func request(action: String) -> String:
@@ -89,7 +89,7 @@ func _clamp_error(next: Array) -> String:
 		if index<0 or next[index]==clamps[index]:continue
 		var shape=BoxShape3D.new();shape.size=AssemblyRuntime.vec(piece.size)
 		var at=func(p: float)->Transform3D:return body.global_transform*_clamp_pose(uid,lerpf(clamps[index],next[index],p))
-		var error=Sweep.sweep(get_world_3d().direct_space_state,[{"shapes":[{"shape":shape,"transform":Transform3D.IDENTITY}],"margin":-.0005,"error":"Clear the cassette clamp sweep ({collider})."}],maxi(1,ceili(absf(next[index]-clamps[index])*PI/2*.6/.015)),at,15,[body.get_rid()]).get("error","")
+		var error=Sweep.sweep(get_world_3d().direct_space_state,[{"shapes":[{"shape":shape,"transform":Transform3D.IDENTITY}],"margin":-.0005,"error":"Clear the arm rig clamp sweep ({collider})."}],maxi(1,ceili(absf(next[index]-clamps[index])*PI/2*.6/.015)),at,15,[body.get_rid()]).get("error","")
 		if not error.is_empty():return error
 	return ""
 
@@ -108,25 +108,25 @@ func support_secured(uid: String="arm_cassette",model: AssemblyModel=null,state:
 
 func receiving_error(uid: String,destination: String="cassette_station") -> String:
 	if uid!="arm_cassette":
-		if _record().location!="support:cassette_station" or not support_secured():return "Lock the cassette at the common station before loading an arm."
-		if occupant() not in ["",uid]:return "Install the first arm before loading the second onto this cassette."
-		return "" if clamp_index<0 else "Finish the cassette clamp movement first."
+		if _record().location!="support:cassette_station" or not support_secured():return "Lock the arm rig in the Limb Bay before loading an arm."
+		if occupant() not in ["",uid]:return "Install the first arm before loading the second onto this arm rig."
+		return "" if clamp_index<0 else "Finish the arm rig clamp movement first."
 	if destination=="cassette_station":
 		var holder: String=game.zones.holder("limb_station")
-		if holder=="leg_rail":return "Park the leg cradle at X22 before bringing the cassette into the common station."
-		if holder=="foot_carrier":return "Clear the foot carrier from the common station before lowering the cassette."
+		if holder=="leg_rail":return "Park the leg rig at X22 before bringing the arm rig into the Limb Bay."
+		if holder=="foot_carrier":return "Clear the foot rig from the Limb Bay before lowering the arm rig."
 	return ""
 
 func source_error(uid: String="arm_cassette") -> String:
 	if uid!="arm_cassette":return receiving_error(uid)
-	if clamp_index>=0:return "Finish the cassette clamp movement before lifting."
-	if not occupant().is_empty() and not clamps.all(func(value):return value==0):return "Close all six cassette clamps before moving the retained arm."
+	if clamp_index>=0:return "Finish the arm rig clamp movement before lifting."
+	if not occupant().is_empty() and not clamps.all(func(value):return value==0):return "Close all six arm rig clamps before moving the retained arm."
 	return ""
 
 func reacquire_error(uid: String="arm_cassette") -> String:return source_error(uid)
 func release_error(uid: String="arm_cassette") -> String:
 	if uid!="arm_cassette" and game.model.assemblies[uid].parent=="chest":return ""
-	return "" if support_secured(uid) else "Wait for the cassette floor locks and all arm clamps before releasing a crane end."
+	return "" if support_secured(uid) else "Wait for the arm rig floor locks and all arm clamps before releasing a magnetic connector."
 
 func source_contact(release: float,uid: String="arm_cassette") -> String:
 	var error=source_error(uid)
@@ -140,7 +140,7 @@ func source_contact(release: float,uid: String="arm_cassette") -> String:
 	_pose();return ""
 
 func busy_reason(subject: String) -> String:
-	if subject in ["rail","foot_transfer","source_roll"] and _record().location!="support:cassette_park":return "Park the retained arm cassette before using the leg station."
+	if subject in ["rail","foot_transfer","source_roll"] and _record().location!="support:cassette_park":return "Park the retained arm rig before using the Limb Bay."
 	return ""
 
 func transport_shapes() -> Array[Dictionary]:
@@ -217,12 +217,12 @@ func _pose() -> void:
 func capture() -> Dictionary:return {"version":1,"floor_release":floor_release,"clamps":clamps.duplicate(),"clamp_index":clamp_index,"clamp_goal":clamp_goal,"moving":moving}
 
 func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) -> Array[String]:
-	if not Codec.same_keys(data,capture().keys()) or data.version!=1:return ["Invalid cassette snapshot."]
-	if not data.floor_release is float and not data.floor_release is int:return ["Invalid cassette floor locks."]
-	if not is_finite(data.floor_release) or data.floor_release<0 or data.floor_release>1:return ["Invalid cassette floor-lock travel."]
-	if not data.clamps is Array or data.clamps.size()!=6 or data.clamps.any(func(value):return not Codec.number(value,1) or value<0):return ["Invalid cassette clamp state."]
-	if not Codec.number(data.clamp_index,5) or int(data.clamp_index)!=data.clamp_index or data.clamp_index< -1 or not Codec.number(data.clamp_goal,1) or (data.clamp_goal!=0 and data.clamp_goal!=1) or not data.moving is bool:return ["Invalid cassette clamp operation."]
-	if data.clamp_index<0 and data.moving:return ["Moving cassette clamp has no selected clamp."]
+	if not Codec.same_keys(data,capture().keys()) or data.version!=1:return ["Invalid arm rig snapshot."]
+	if not data.floor_release is float and not data.floor_release is int:return ["Invalid arm rig floor locks."]
+	if not is_finite(data.floor_release) or data.floor_release<0 or data.floor_release>1:return ["Invalid arm rig floor-lock travel."]
+	if not data.clamps is Array or data.clamps.size()!=6 or data.clamps.any(func(value):return not Codec.number(value,1) or value<0):return ["Invalid arm rig clamp state."]
+	if not Codec.number(data.clamp_index,5) or int(data.clamp_index)!=data.clamp_index or data.clamp_index< -1 or not Codec.number(data.clamp_goal,1) or (data.clamp_goal!=0 and data.clamp_goal!=1) or not data.moving is bool:return ["Invalid arm rig clamp operation."]
+	if data.clamp_index<0 and data.moving:return ["Moving arm rig clamp has no selected clamp."]
 	var m: AssemblyModel=game.model if candidate==null else candidate
 	var record=_record(m);var arm=occupant(m)
 	var arm_contact=false;var expected_clamp=0.0
@@ -232,30 +232,30 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 		if arm_contact:expected_clamp=clampf(crane.progress/.1,0,1) if crane.motion=="up" else 1-clampf((crane.progress-.9)/.1,0,1)
 	if arm_contact:
 		if not data.clamps.all(func(value):return is_equal_approx(value,expected_clamp)) or data.clamp_index>=0:return ["Arm clamps disagree with the four-end weight-transfer phase."]
-	elif not arm.is_empty() and not data.clamps.all(func(value):return value==0):return ["Retained arm lost a cassette clamp."]
-	if data.clamp_index>=0 and (not arm.is_empty() or record.location=="support:crane_rigging"):return ["Manual clamp movement requires an empty floor-supported cassette."]
+	elif not arm.is_empty() and not data.clamps.all(func(value):return value==0):return ["Retained arm lost an arm rig clamp."]
+	if data.clamp_index>=0 and (not arm.is_empty() or record.location=="support:crane_rigging"):return ["Manual clamp movement requires an empty floor-supported arm rig."]
 	if not arm_contact:
 		for n in range(6):
-			if n!=data.clamp_index and data.clamps[n]!=0 and data.clamps[n]!=1:return ["Partial cassette clamp has no resumable movement."]
+			if n!=data.clamp_index and data.clamps[n]!=0 and data.clamps[n]!=1:return ["Partial arm rig clamp has no resumable movement."]
 	if not world.is_empty():
 		var frame: Transform3D=Codec.to_pose(world.fixtures.arm_cassette)
-		if record.location=="support:crane_rigging" and frame.origin.y>.002 and data.floor_release!=1:return ["Suspended cassette floor pins must be fully retracted."]
+		if record.location=="support:crane_rigging" and frame.origin.y>.002 and data.floor_release!=1:return ["Suspended arm rig floor pins must be fully retracted."]
 		if record.location in ["support:cassette_park","support:cassette_station"]:
 			var at=AssemblyRuntime.vec(spec.park if record.location=="support:cassette_park" else spec.station)
-			if not frame.is_equal_approx(Transform3D(Basis.IDENTITY,at)):return ["Cassette pose disagrees with its floor support."]
-		if not arm.is_empty() and not Codec.to_pose(world.fixtures[arm]).is_equal_approx(frame*Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(spec.arm_offset))):return ["Retained arm pose disagrees with its cassette."]
+			if not frame.is_equal_approx(Transform3D(Basis.IDENTITY,at)):return ["Arm rig pose disagrees with its floor support."]
+		if not arm.is_empty() and not Codec.to_pose(world.fixtures[arm]).is_equal_approx(frame*Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(spec.arm_offset))):return ["Retained arm pose disagrees with its arm rig."]
 		if record.location=="support:cassette_station":
 			var rail: Dictionary=world.equipment.leg_rail
-			if rail.path!=0 or not is_equal_approx(rail.index_x,22) or rail.moving:return ["Cassette and leg cradle occupy the shared station together."]
+			if rail.path!=0 or not is_equal_approx(rail.index_x,22) or rail.moving:return ["The arm rig and leg rig occupy the Limb Bay together."]
 		if data.floor_release>0:
 			var crane: Dictionary=world.equipment.service_crane
-			if crane.task!="cassette" or crane.endpoints.values().any(func(end):return end.state!="attached"):return ["Cassette lost floor retention without four-end crane support."]
+			if crane.task!="cassette" or crane.endpoints.values().any(func(end):return end.state!="attached"):return ["The arm rig lost floor retention without four magnetic connectors."]
 		var crane: Dictionary=world.equipment.service_crane
 		var expected=1.0 if record.location=="support:crane_rigging" else 0.0
 		if crane.task=="cassette" and crane.endpoints.values().all(func(end):return end.state=="attached"):
 			if crane.motion=="up":expected=clampf(crane.progress/.1,0,1)
 			if crane.motion=="down":expected=1-clampf((crane.progress-.9)/.1,0,1)
-		if not is_equal_approx(data.floor_release,expected):return ["Cassette floor-lock contact disagrees with crane weight transfer."]
+		if not is_equal_approx(data.floor_release,expected):return ["Arm rig floor-lock contact disagrees with crane weight transfer."]
 	return []
 
 func apply(data: Dictionary) -> void:

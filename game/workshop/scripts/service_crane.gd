@@ -17,7 +17,7 @@ var fastener_slots: Array = []
 var park_position: Vector3
 var approach_offset: Vector3
 const STATIONS = ["source","receiver","park"]
-const TITLES = {"source":"Upper-leg beam rack","receiver":"Leg cradle","park":"Parking bay"}
+const TITLES = {"source":"Limb Bay","receiver":"Limb Bay","park":"Parking bay"}
 var up_y: float
 var layout: Node3D
 var config: Dictionary
@@ -67,8 +67,8 @@ var assisting: bool:
 
 func setup(workshop: Node3D, scene_layout: Node3D, contract: Dictionary = {}) -> void:
 	game = workshop;layout = scene_layout;config = contract;equipment_id = "service_crane"
-	hand_payload_hint = "Attach or Q-stow the held magnetic end first."
-	hands_full_hint = "Stow the component or assembly in your hand before handling a magnetic end."
+	hand_payload_hint = "Attach or Q-stow the held magnetic connector first."
+	hands_full_hint = "Stow the component or assembly in your hand before handling a magnetic connector."
 	support = contract.get("support",support);source_support = contract.get("source_support",source_support);uid = contract.get("uid",uid)
 	var crane_spec: Dictionary = preload("res://scripts/leg_bay_layout.gd").layout().crane
 	tasks = crane_spec.tasks;task = crane_spec.task
@@ -179,10 +179,10 @@ func controls() -> Array[Dictionary]:
 	for id in END_IDS:
 		var state: String = endpoints[id].state
 		if state == "held":continue
-		entries.append(control_entry(end_nodes[id],("detach:" if state == "attached" else "pick:")+id,("Detach" if state == "attached" else "Pick up")+" "+config.spec.get("endpoint_labels",{}).get(id,"magnetic end")+" · E",.16,{"point":end_nodes[id].global_position,"input":"pickup","allowed":[load_body,game.runtime.node(load_owner)],"allow_body_hit":true}))
+		entries.append(control_entry(end_nodes[id],("detach:" if state == "attached" else "pick:")+id,("Detach" if state == "attached" else "Pick up")+" "+config.spec.get("endpoint_labels",{}).get(id,"magnetic connector")+" · E",.16,{"point":end_nodes[id].global_position,"input":"pickup","allowed":[load_body,game.runtime.node(load_owner)],"allow_body_hit":true}))
 	if not hand_payload().is_empty():
 		for id in POINT_IDS:
-			entries.append(control_entry(markers[id],"attach:"+id,"Attach magnetic end · click",.20,{"point":handle_position(id),"input":"place","allowed":[load_body,game.runtime.node(load_owner)],"allow_body_hit":true}))
+			entries.append(control_entry(markers[id],"attach:"+id,"Attach magnetic connector · click",.20,{"point":handle_position(id),"input":"place","allowed":[load_body,game.runtime.node(load_owner)],"allow_body_hit":true}))
 	return entries
 
 func console_access_error() -> String:
@@ -235,41 +235,41 @@ func action_error(action: String) -> String:
 		return _guide().action_error(action.trim_prefix("guide:")) if _guided_live() else "Lower the matching crane at the supported connection first."
 	if action.begins_with("task:"):
 		if action.get_slice(":",1) not in tasks:return "Unknown crane task."
-		if station != "park" or not raised or not motion.is_empty() or attached_count()>0 or not hand_payload().is_empty():return "Park the empty crane and stow its magnets before changing task."
+		if station != "park" or not raised or not motion.is_empty() or attached_count()>0 or not hand_payload().is_empty():return "Park the empty crane and stow its magnetic connectors before changing task."
 		return ""
 	if action == "open_console":return console_access_error()
 	if action == "close_console":return ""
 	if action == "stop":return "" if moving else "The crane is stopped."
 	if action == "return":return "" if _can_return() else "Return is available while a transport is waiting for its route to clear."
 	if action == "resume":return "" if not moving and not motion.is_empty() else "There is no stopped crane movement to resume."
-	if action == "stow":return "" if not hand_payload().is_empty() else "You are not holding a magnetic end."
+	if action == "stow":return "" if not hand_payload().is_empty() else "You are not holding a magnetic connector."
 	if action.begins_with("pick:") or action.begins_with("detach:"):
 		var id = action.get_slice(":",1)
-		if not END_IDS.has(id):return "Unknown magnetic end."
-		if raised or not motion.is_empty() or station == "park":return "Lower the crane at a work location before handling cable ends."
-		if not hand_payload().is_empty():return "Attach or stow the end already in your hand."
+		if not END_IDS.has(id):return "Unknown magnetic connector."
+		if raised or not motion.is_empty() or station == "park":return "Lower the crane at a work location before handling magnetic connectors."
+		if not hand_payload().is_empty():return "Attach or stow the magnetic connector already in your hand."
 		var error = game.hands.error(equipment_id)
 		if not error.is_empty():return error
-		if action.begins_with("pick:") and endpoints[id].state != "stowed":return "That magnetic end is already attached."
+		if action.begins_with("pick:") and endpoints[id].state != "stowed":return "That magnetic connector is already attached."
 		if action.begins_with("detach:"):
-			if endpoints[id].state != "attached":return "That magnetic end is not attached."
+			if endpoints[id].state != "attached":return "That magnetic connector is not attached."
 			if _guided_live():
 				var guide_error: String=_guide().rig_error("detach",endpoints[id].point)
 				if not guide_error.is_empty():return guide_error
 			if config.spec.has("source_equipment"):
 				var support_error: String=game.equipment.get_equipment(config.spec.source_equipment).release_error(uid)
 				if not support_error.is_empty():return support_error
-			if _installed() and not secured():return "Complete this connection’s retaining hardware before detaching a magnetic end."
+			if _installed() and not secured():return "Complete this connection’s retaining hardware before detaching a magnetic connector."
 		return _interaction_error(end_nodes[id].global_position,[load_body,game.runtime.node(load_owner)])
 	if action.begins_with("attach:"):
 		var point = action.get_slice(":",1)
 		if not POINT_IDS.has(point):return "Choose a marked magnetic attachment point."
-		if hand_payload().is_empty():return "Pick up a magnetic end first."
-		if config.spec.get("point_ends",{}).has(point) and config.spec.point_ends[point]!=hand_payload():return "Choose the matching rigging adapter for this point."
+		if hand_payload().is_empty():return "Pick up a magnetic connector first."
+		if config.spec.get("point_ends",{}).has(point) and config.spec.point_ends[point]!=hand_payload():return "Choose the matching magnetic connector for this point."
 		if _guided_live():
 			var guide_error: String=_guide().rig_error("attach",point)
 			if not guide_error.is_empty():return guide_error
-		if raised or not motion.is_empty() or station == "park":return "Lower the crane at the beam before attaching ends."
+		if raised or not motion.is_empty() or station == "park":return "Lower the crane at the beam before attaching magnetic connectors."
 		var held_by: String = game.equipment.busy_reason("rig:"+load_owner,equipment_id)
 		if not held_by.is_empty():return held_by
 		if station == "receiver":
@@ -280,11 +280,11 @@ func action_error(action: String) -> String:
 			if end.point == point:return "That point is occupied. Aim at the other marked point."
 		return _interaction_error(handle_position(point),[load_body,game.runtime.node(load_owner)])
 	if not motion.is_empty():return "Finish or resume the current motion first."
-	if not hand_payload().is_empty():return "Attach or Q-stow the held magnetic end first."
+	if not hand_payload().is_empty():return "Attach or Q-stow the held magnetic connector first."
 	if action == "up":
 		if _guided_live():return _guide().departure_error()
 		if raised:return "The crane is already up."
-		if attached_count()>0 and attached_count()!=required_ends:return "Attach all %d magnetic ends, or detach the remaining ends before raising."%required_ends
+		if attached_count()>0 and attached_count()!=required_ends:return "Attach all %d magnetic connectors, or detach the remaining connectors before raising."%required_ends
 		if attached_count()==required_ends:
 			if station=="source" and config.spec.has("source_equipment"):
 				var source_error: String=game.equipment.get_equipment(config.spec.source_equipment).source_error(uid)
@@ -309,7 +309,7 @@ func action_error(action: String) -> String:
 		if not raised:return "The crane is already down."
 		if station == "park":return "Go to a work location before lowering."
 		if _crane_owned():
-			if station == "source" and not game.model.support_occupant(source_support).is_empty():return "The source rack is occupied."
+			if station == "source" and not game.model.support_occupant(source_support).is_empty():return "The source rig is occupied."
 			if station == "receiver":
 				var error: String = _placement_error()
 				if not error.is_empty():return error
@@ -323,8 +323,8 @@ func action_error(action: String) -> String:
 		if not raised:return "Raise the crane before travelling to another location."
 		if destination == station:return "The crane is already at this location."
 		if _crane_owned():
-			if destination == "park":return "Set the beam on its rack or receiving connection before parking."
-			if destination == "source" and not game.model.support_occupant(source_support).is_empty():return "The source rack is occupied."
+			if destination == "park":return "Set the beam on its rig or receiving connection before parking."
+			if destination == "source" and not game.model.support_occupant(source_support).is_empty():return "The source rig is occupied."
 			if destination == "receiver":
 				var error=_placement_error()
 				if not error.is_empty():return error
@@ -421,12 +421,12 @@ func secured(model: AssemblyModel = null) -> bool:
 	return _installed(m) and m.milestone(load_owner,secured_milestone)
 
 func busy_reason(subject: String) -> String:
-	if subject == "foot_fixture":return "Detach the crane rigging before turning the foot." if attached_count()>0 and load_owner == game.default_parent_id() else ""
+	if subject == "foot_fixture":return "Detach the magnetic connectors before turning the foot." if attached_count()>0 and load_owner == game.default_parent_id() else ""
 	if subject in ["rail","foot_transfer"]:
-		if attached_count()>0 or not motion.is_empty() and _crane_owned():return "Stow the crane magnets and set the load down before moving the fixture."
+		if attached_count()>0 or not motion.is_empty() and _crane_owned():return "Stow the magnetic connectors and set the load down before moving the rig."
 		for key in tasks:
 			var spec: Dictionary = tasks[key]
-			if spec.get("receiver_support","").is_empty() and _record(game.model,spec.load_uid).location == "installed" and not game.model.milestone(spec.owner,spec.secured.milestone):return "Secure the "+spec.title+" before moving the fixture."
+			if spec.get("receiver_support","").is_empty() and _record(game.model,spec.load_uid).location == "installed" and not game.model.milestone(spec.owner,spec.secured.milestone):return "Secure the "+spec.title+" before moving the rig."
 		return ""
 	if subject != "rail":return ""
 	if attached_count()>0:return "Detach and stow the crane cables before moving the leg rail."
@@ -635,7 +635,7 @@ func _sweep(from: Transform3D, to: Transform3D) -> String:
 	return EquipmentRegistry.Motion.sweep(self,groups,Sweep.steps(from,to,float(config.spec.get("sweep_radius",4)),.04),func(weight: float) -> Transform3D:return from.interpolate_with(to,weight),ignored,EquipmentRegistry.Motion.ALL,contacts if mating_body != null else Callable()).get("error","")
 
 func rig_solids(frame: Transform3D,head_offset: Vector3=Vector3.ZERO) -> Array[Dictionary]:
-	# Same authored anchors, beam dimensions, magnetic ends and cable widths as
+	# Same authored anchors, beam dimensions, magnetic connectors and cable widths as
 	# the visible rig. Used for whole-load preflight and loaded transport sweeps.
 	var head=_load_beam(frame).translated(head_offset)
 	var low=Vector3(INF,INF,INF);var high=-low
@@ -816,8 +816,8 @@ func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary
 	var count = 0;var held = 0;var occupied: Array = []
 	for id in END_IDS:
 		var end = data.endpoints.get(id)
-		if not end is Dictionary or end.size()!=2 or not end.get("state") is String or not end.get("point") is String:return ["Invalid magnetic end fields."]
-		if end.state not in ["stowed","held","attached"]:return ["Invalid magnetic end state."]
+		if not end is Dictionary or end.size()!=2 or not end.get("state") is String or not end.get("point") is String:return ["Invalid magnetic connector fields."]
+		if end.state not in ["stowed","held","attached"]:return ["Invalid magnetic connector state."]
 		if end.state == "attached":
 			if end.point not in POINT_IDS or end.point in occupied:return ["Invalid or occupied magnetic point."]
 			if config.spec.get("point_ends",{}).has(end.point) and config.spec.point_ends[end.point]!=id:return ["Crane endpoint has the wrong lifting adapter."]
@@ -832,7 +832,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary
 			var guide_errors: Array[String]=_guide().validate_crane(data,model,guide_state)
 			return guide_errors if not guide_errors.is_empty() else _inactive_errors(model,uid)
 
-	if (data.raised or not data.motion.is_empty()) and (held>0 or count>0 and count!=required_ends):return ["Crane moved with incomplete rigging."]
+	if (data.raised or not data.motion.is_empty()) and (held>0 or count>0 and count!=required_ends):return ["Crane moved with incomplete magnetic connectors."]
 	var item: Dictionary = _record(model)
 	var rack = item.location == "support:"+source_support
 	var carried = _crane_owned(model)
@@ -851,7 +851,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary
 	if count>0 and rack and (data.station!="source" or data.raised or data.motion not in ["","up"] or data.progress>=.1):return ["Rack ownership contradicts crane movement."]
 	if count>0 and installed and (data.station!="receiver" or data.raised or not data.motion.is_empty()) and not (config.spec.get("receiver_contact",false) and data.station=="receiver" and not data.raised and data.motion=="up" and data.progress<.1):return ["Installed beam cannot travel with crane."]
 	if carried:
-		if count!=required_ends or data.station=="park":return ["Suspended load lacks rigging."]
+		if count!=required_ends or data.station=="park":return ["Suspended load lacks magnetic connectors."]
 		if not data.raised and data.motion!="up":return ["Suspended beam has no lifting motion."]
 		if data.station=="source" and data.motion=="up" and data.progress<.1:return ["Crane took source ownership before taking weight."]
 	var inactive=_inactive_errors(model,uid)
@@ -877,7 +877,7 @@ func _inactive_errors(model: AssemblyModel, active_uid: String) -> Array[String]
 			return ["Inactive crane assembly has no declared support."]
 		if other.location == "installed":
 			if other.owner != spec.owner or other.slot != spec.slot or not model.milestone(spec.owner,spec.secured.milestone):return ["Inactive crane task has unsecured work."]
-		elif other.location != "support:"+spec.source_support:return ["Inactive crane load is off its rack."]
+		elif other.location != "support:"+spec.source_support:return ["Inactive crane load is off its rig."]
 	return []
 
 func _declared_assembly_support(identity: String, model: AssemblyModel) -> bool:
@@ -922,11 +922,11 @@ func _receiver_error(route: Dictionary = {}) -> String:
 		var receiver=game.equipment.get_equipment(spec.receiver_equipment)
 		if receiver.has_method("receiving_error"):return receiver.receiving_error(id)
 		if live and _installed():return "" if receiver.path==0 and receiver.withdrawal==0 and not receiver.moving else "Return the receiving carrier to dispatch first."
-		return "" if receiver.can_receive(id) else "Return the empty foot carrier to dispatch, extend its sole pads and select the matching leg on the home holder."
+		return "" if receiver.can_receive(id) else "Return the empty foot rig to dispatch, extend its sole pads and select the matching leg on the leg rig."
 	var rail = game.equipment.get_equipment("leg_rail")
-	if rail == null or rail.path > .0001 or rail.moving or not rail.engaged:return "Return the engaged leg holder home before crane delivery or reacquisition."
-	if rail.has_method("can_construct") and not rail.can_construct():return "Return the holder to the common station and lock neutral roll before crane delivery."
-	if rail.has_method("can_construct") and rail.active_assembly!=spec.owner:return "Select the "+spec.owner.replace("_"," ")+" build on the clear shared holder first."
+	if rail == null or rail.path > .0001 or rail.moving or not rail.engaged:return "Return the engaged leg rig home before crane delivery or reacquisition."
+	if rail.has_method("can_construct") and not rail.can_construct():return "Return the leg rig to the Limb Bay and lock neutral roll before crane delivery."
+	if rail.has_method("can_construct") and rail.active_assembly!=spec.owner:return "Select the "+spec.owner.replace("_"," ")+" build on the clear leg rig first."
 	return ""
 
 func _journey_undo(subject: String) -> Dictionary:

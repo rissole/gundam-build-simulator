@@ -85,8 +85,8 @@ func departure_error() -> String:
 func depart() -> void:
 	if _crane().attached_count()==2:active=false;tension=0
 func rig_error(action: String,_point: String) -> String:
-	if not motion.is_empty():return "Finish or resume the backpack movement before handling rigging."
-	if action=="detach" and not retained():return "Secure both hinge/strut pin pairs and both open locks, or both closed latches, before releasing either end."
+	if not motion.is_empty():return "Finish or resume the backpack movement before handling magnetic connectors."
+	if action=="detach" and not retained():return "Secure both hinge and strut pin pairs and both open locks, or both closed latches, before releasing either magnetic connector."
 	return ""
 func rig_changed() -> void:
 	if _crane().uid!=spec.uid or _crane().attached_count()!=2:tension=0
@@ -108,22 +108,22 @@ func controls() -> Array[Dictionary]:
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the backpack."
-	if not active:return "Seat the open backpack with both crane ends first."
+	if not active:return "Seat the open backpack with both magnetic connectors first."
 	if action=="stop":return "" if moving else "The backpack is stopped."
 	if action=="resume":return "" if not motion.is_empty() and not moving and rigged() else "Keep both crane ends fitted to resume the stopped operation."
 	if not motion.is_empty():return "Stop/Resume the current backpack operation first."
 	var error=game.hands.error(equipment_id)
 	if not error.is_empty():return error
 	if action=="take_weight":
-		if not rigged():return "Refit both ends with the matching crane down at the backpack."
+		if not rigged():return "Refit both magnetic connectors with the matching crane down at the backpack."
 		return "" if tension<1 else "The crane already carries the backpack's weight."
 	if action.begins_with("cover:"):
 		var i=action.get_slice(":",1).to_int()
 		if i not in [0,1]:return "Unknown service cover."
 		if angle!=1 or not retained() or not _has(spec.service_slots):return "Close and latch the connected backpack before operating service covers."
-		if _crane().uid==spec.uid and (_crane().attached_count()>0 or not _crane().hand_payload().is_empty()):return "Release and stow the crane ends before closing the small service covers."
+		if _crane().uid==spec.uid and (_crane().attached_count()>0 or not _crane().hand_payload().is_empty()):return "Release and stow the magnetic connectors before closing the small service covers."
 		return ""
-	if not rigged() or tension!=1:return "Refit both crane ends and take backpack weight before changing its supports."
+	if not rigged() or tension!=1:return "Refit both magnetic connectors and take backpack weight before changing its supports."
 	if covers.any(func(v):return v):return "Open both service covers before moving the backpack."
 	if action.begins_with("strut:"):
 		var i=action.get_slice(":",1).to_int()
@@ -264,7 +264,7 @@ func placement_error(owner: String,sid: String) -> String:
 	if sid in spec.service_slots:
 		if not retained() or not locks.all(func(v):return v):return "Engage both positive open locks before connecting services."
 		return "" if _crane().uid!=spec.uid or (_crane().attached_count()==0 and _crane().hand_payload().is_empty()) else "Release and stow both crane ends before connecting the service runs."
-	if not rigged() or tension!=1:return "Keep both crane ends carrying the backpack during pin and keeper work."
+	if not rigged() or tension!=1:return "Keep both magnetic connectors carrying the backpack during pin and keeper work."
 	if "strut_" in sid and struts[sid.right(1).to_int()-1]!=1:return "Extend this strut eye to its chest clevis first."
 	return ""
 func undo(owner: String) -> Dictionary:

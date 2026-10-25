@@ -15,7 +15,7 @@ func retained(_state: Dictionary = {}, _model: AssemblyModel = null) -> bool:ret
 ## Reject lowering/travel before receiver prerequisites are satisfied.
 func receiving_error(_uid: String = "") -> String:return "This receiver is unavailable."
 ## Reject attaching/detaching one crane end when support would be unsafe.
-func rig_error(_action: String, _point: String) -> String:return "This receiver cannot release rigging."
+func rig_error(_action: String, _point: String) -> String:return "This receiver cannot release the magnetic connectors."
 ## Reject raising the crane at this connection.
 func departure_error() -> String:return "This receiver cannot release the crane."
 ## Called before an allowed receiver departure.

@@ -94,24 +94,24 @@ func mounted(model: AssemblyModel = null) -> bool:
 
 func status_text() -> String:
 	if not blocked_reason.is_empty():return "FOOT CARRIER / "+blocked_reason
-	if moving:return "GUIDED TRANSFER / "+("Retracting empty cradle from the receiving pads" if handoff == "withdraw" else ("Reacquiring foot support before reverse" if handoff == "capture" else "Located cradle supports the foot"))
+	if moving:return "GUIDED TRANSFER / "+("Retracting the empty foot rig from the receiving pads" if handoff == "withdraw" else ("Reacquiring foot support before reverse" if handoff == "capture" else "The foot rig supports the foot"))
 	if not carrying() and path==0:return "FOOT CARRIER / Empty at dispatch · crane a prepared foot onto its sole pads."
 	if mounted():return "FOOT SEATED / Receiving sole pads support the foot.\nUse crane task Structural shin. Return reverses the empty leg's foot handoff."
-	return "FOOT DISPATCH / "+("Advance raises the prepared foot" if path < .999 else "Advance moves to the holder" if path < 1.999 else "Advance turns and seats the foot")
+	return "FOOT DISPATCH / "+("Advance raises the prepared foot" if path < .999 else "Advance moves to the leg rig" if path < 1.999 else "Advance turns and seats the foot")
 
 func action_error(action: String) -> String:
-	if game.paused:return "Resume before operating the foot carrier."
-	if action not in ["advance","stop","return"]:return "Unknown foot carrier command."
-	if action == "stop":return "" if moving else "The foot carrier is stopped."
-	if moving:return "Stop the carrier before changing direction."
+	if game.paused:return "Resume before operating the foot rig."
+	if action not in ["advance","stop","return"]:return "Unknown foot rig command."
+	if action == "stop":return "" if moving else "The foot rig is stopped."
+	if moving:return "Stop the foot rig before changing direction."
 	if not handoff.is_empty():return "" if action == "advance" else "Advance resumes the interrupted support transfer."
 	var rail = game.equipment.get_equipment("leg_rail")
 	if carrying() or action=="advance":
-		if rail != null and (not rail.can_construct() or rail.active_assembly!=receiving_assembly):return "Select the matching leg and return its engaged holder home before transferring this foot."
-		if action=="advance" and not carrying() and not mounted():return "Crane the prepared foot onto the empty carrier first."
-	if action == "advance" and path >= last_phase-.0001:return "The foot is already seated on the leg fixture."
+		if rail != null and (not rail.can_construct() or rail.active_assembly!=receiving_assembly):return "Select the matching leg and return its engaged leg rig home before transferring this foot."
+		if action=="advance" and not carrying() and not mounted():return "Crane the prepared foot onto the empty foot rig first."
+	if action == "advance" and path >= last_phase-.0001:return "The foot is already seated on the leg rig."
 	if action == "return":
-		if path <= .0001 and withdrawal==0:return "The foot carrier is already at dispatch."
+		if path <= .0001 and withdrawal==0:return "The foot rig is already at dispatch."
 	return game.equipment.busy_reason("foot_transfer",equipment_id)
 
 func request(action: String) -> String:
@@ -212,13 +212,13 @@ func motion_error(from: float, to: float, pullback: float = -1) -> String:
 	if carrying():Sweep.collect_shapes(game.runtime.node(assembly_id),game.runtime.node(assembly_id).global_transform.affine_inverse(),solids)
 	var rig = func(_pose: Transform3D, weight: float) -> Array:
 		return motion_geometry(lerpf(from,to,weight),withdrawal if pullback < 0 else lerpf(withdrawal,pullback,weight))
-	var groups = [{"shapes":solids,"margin":.001,"error":"Clear the guided foot route ({collider})."},{"shapes_at":rig,"margin":.001,"error":"Clear the foot carrier route ({collider})."}]
+	var groups = [{"shapes":solids,"margin":.001,"error":"Clear the guided foot route ({collider})."},{"shapes_at":rig,"margin":.001,"error":"Clear the foot rig route ({collider})."}]
 	return Sweep.sweep(get_world_3d().direct_space_state,groups,Sweep.steps(pose_at(from),pose_at(to),3,.025),func(weight: float) -> Transform3D:return pose_at(lerpf(from,to,weight)),15,ignored,equipment_id).get("error","")
 
 func busy_reason(subject: String) -> String:
-	if subject=="rail" and carrying():return "Seat the prepared foot on its matching holder before changing the holder configuration."
+	if subject=="rail" and carrying():return "Seat the prepared foot on its matching leg rig before changing the leg rig."
 	if subject in ["rail",receiving_assembly] and moving:return "Wait for the guided foot transfer to stop."
-	if subject == "rail" and mounted() and (not handoff.is_empty() or path==last_phase and withdrawal != 1):return "Advance the foot carrier to finish withdrawing its empty cradle before moving the leg holder."
+	if subject == "rail" and mounted() and (not handoff.is_empty() or path==last_phase and withdrawal != 1):return "Advance the foot rig to finish withdrawing it before moving the leg rig."
 	return ""
 
 func undo(subject: String) -> Dictionary:
@@ -226,7 +226,7 @@ func undo(subject: String) -> Dictionary:
 	# for the carrier and leg, the prepared foot stays assembled.
 	var in_fixture: bool = game.model.assemblies.foot.location == "support:foot_store" and subject in ["foot","pad_1","pad_2","pitch"]
 	if (subject == assembly_id or subject in ["pad_1","pad_2","pitch"]) and not in_fixture:return {"handled":true,"error":"The prepared foot stays assembled."}
-	if subject == receiving_assembly and not game.model.assemblies[receiving_assembly].history.is_empty() and game.model.assemblies[receiving_assembly].history.back().slot == "foot":return {"handled":true,"error":"Use Return on the guided foot carrier to return the foot to dispatch."}
+	if subject == receiving_assembly and not game.model.assemblies[receiving_assembly].history.is_empty() and game.model.assemblies[receiving_assembly].history.back().slot == "foot":return {"handled":true,"error":"Use Return on the foot rig to return the foot to dispatch."}
 	return {"handled":false,"error":""}
 
 func capture() -> Dictionary:
@@ -251,13 +251,13 @@ func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary 
 	if data.handoff=="extend" and (payload or data.path!=0):return ["Only the empty dispatch carrier can reset its sole pads."]
 	if world.has("equipment") and (payload or data.handoff in ["withdraw","capture"]):
 		var peer = world.equipment.get("leg_rail")
-		if not peer is Dictionary or not Codec.number(peer.get("path"),3) or not peer.get("moving") is bool or not peer.get("engaged") is bool:return ["Invalid peer holder state."]
+		if not peer is Dictionary or not Codec.number(peer.get("path"),3) or not peer.get("moving") is bool or not peer.get("engaged") is bool:return ["Invalid peer leg rig state."]
 		var rail: Dictionary = peer
-		if rail.path != 0 or rail.moving or not rail.engaged or rail.assembly!=data.receiver or rail.index_x!=layout.layout().workshop.rail.station_x or rail.roll!=0 or rail.roll_height!=0:return ["Foot carrier transfer requires the matching engaged holder stopped home."]
+		if rail.path != 0 or rail.moving or not rail.engaged or rail.assembly!=data.receiver or rail.index_x!=layout.layout().workshop.rail.station_x or rail.roll!=0 or rail.roll_height!=0:return ["Foot rig transfer requires the matching engaged leg rig stopped in the Limb Bay."]
 		if data.handoff == "capture":
 			var history: Array = model.assemblies[data.receiver].history
 			if history.is_empty() or history.back().slot != "foot":return ["Foot reacquisition requires all structural work removed."]
-	if payload and world.has("fixtures") and not Codec.to_pose(world.fixtures[data.assembly]).is_equal_approx(pose_at(data.path)):return ["Foot transform disagrees with its carrier."]
+	if payload and world.has("fixtures") and not Codec.to_pose(world.fixtures[data.assembly]).is_equal_approx(pose_at(data.path)):return ["Foot transform disagrees with its foot rig."]
 	return []
 
 func apply(data: Dictionary) -> void:

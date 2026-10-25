@@ -2641,7 +2641,7 @@
     {
       "id": "arm_cassette",
       "definition": "arm_cassette",
-      "label": "Shared arm cassette",
+      "label": "Arm rig",
       "location": "support:cassette_park",
       "home": [
         14,

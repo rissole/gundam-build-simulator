@@ -2,7 +2,7 @@
 
 A first-person mecha workshop prototype: organise parts, follow illustrated manuals, and assemble a giant robot one component at a time.
 
-The full-game design targets an **18 m piloted mecha**. The current prototype is one continuous build in a Godot hangar. Build the left foot's heel pads and pitch actuator, then assemble the robot's structure: pelvis, both legs, torso, arms and head. The hangar includes component stations, a turning foot fixture, a service crane, lifting equipment, personnel platforms and linked manuals. Its FA-01 foot retains **745 separate source parts** and a reproducible Blender generation pipeline.
+The full-game design targets an **18 m piloted mecha**. The current prototype is one continuous build in a Godot hangar. Build the left foot's heel pads and pitch actuator, then assemble the robot's structure: pelvis, both legs, torso, arms and head. The hangar includes preparation stations, a turning foot rig, a service crane, lifting equipment, personnel platforms and linked manuals. Its FA-01 foot retains **745 separate source parts** and a reproducible Blender generation pipeline.
 
 ![FA-01 assembled foot, with separate armor, frame, ankle mechanisms, and sole pads](models/foot-fa01/output/foot-fa01-assembled.png)
 
@@ -43,7 +43,7 @@ On other platforms, open [game/workshop/project.godot](game/workshop/project.god
 
 The game starts in the final-assembly hangar. Prepare two independent heel pads and the pitch actuator at the preparation stations, then secure them to the left foot, which waits in a turning fixture in the foot bay. Use **E** at the fixture controls to turn the foot to a working position. Labelled wall drawers supply small hardware; shelves hold larger components. The foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
 
-With the foot upright, the wider workshop continues. Deliver the pelvis to the gantry, then crane the foot to dispatch and build the structural leg on the shared holder. The right leg, chest, core, backpack, arms, pauldrons and head follow, using the crane console, personnel lifts and local equipment controls.
+With the foot upright, the wider workshop continues. Deliver the pelvis to the gantry, then crane the foot to dispatch and build the structural leg on the leg rig. The right leg, chest, core, backpack, arms, pauldrons and head follow, using the crane console, personnel lifts and local equipment controls.
 
 To start later in the build, add a stage. The game supplies the earlier work by script:
 

@@ -4818,7 +4818,7 @@
           "title": "Deliver the prepared pelvis and waist",
           "view": "overview",
           "slots": [],
-          "body": "The bulky fixture supplies the bridge, both socket housings and the waist. Insert both waist neutral pins on the pelvis before the crane will lift it. The yaw pin is on the front of the waist and the lean pin is on the right side; both start pulled out. Aim at each pin and press E. At the crane console, choose Move to pickup. Lower the crane, attach all four lifting adapters, then Raise crane. Choose Move to delivery and Lower crane to seat the bridge on the gantry bearings. Close all four gantry jaws with their handles, check that both pins are still in, then detach and stow the crane ends. The legs can dock only after this support is secure."
+          "body": "The heavy module rig supplies the bridge, both socket housings and the waist. Insert both waist neutral pins on the pelvis before the crane will lift it. The yaw pin is on the front of the waist and the lean pin is on the right side; both start pulled out. Aim at each pin and press E. At the crane console, choose Move to pickup. Lower the crane, attach all four magnetic connectors, then Raise crane. Choose Move to delivery and Lower crane to seat the bridge on the gantry bearings. Close all four gantry jaws with their handles, check that both pins are still in, then detach and stow the magnetic connectors. The legs can dock only after this support is secure."
         },
         {
           "title": "Travel and seat the supported leg",
@@ -4828,7 +4828,7 @@
         },
         {
           "title": "Seat the leg in the pelvis",
-          "body": "With the completed leg, neutral source roll and parked empty crane, select the left hip lane. Advance first stows the foot bolster, then indexes and pins the transverse table. Further Advance commands travel, turn upright and dock upward. The shared hip platforms open before loaded movement and restore after seating. The holder stays engaged: ball seating alone does not secure the leg.",
+          "body": "With the completed leg, neutral source roll and parked empty crane, select the left hip lane. Advance first stows the foot bolster, then indexes and pins the transverse table. Further Advance commands travel, turn upright and dock upward. The shared hip platforms open before loaded movement and restore after seating. The leg rig stays engaged: ball seating alone does not secure the leg.",
           "slots": [
             "left_leg"
           ],
@@ -5030,7 +5030,7 @@
         },
         {
           "title": "Fit the hip stop cage",
-          "body": "With both ring halves and all four ring bolt pairs fitted, carry the two identical PV-130 stop-cage halves around the already retained neck. Their lower lip surrounds the prepared stop tongues; the cage limits motion and does not replace the ring or the engaged holder.",
+          "body": "With both ring halves and all four ring bolt pairs fitted, carry the two identical PV-130 stop-cage halves around the already retained neck. Their lower lip surrounds the prepared stop tongues; the cage limits motion and does not replace the ring or the engaged leg rig.",
           "slots": [
             "stop_half_1",
             "stop_half_2"
@@ -5061,7 +5061,7 @@
         },
         {
           "title": "Secure the cage seams",
-          "body": "Fit four LG-W12 washers and four PV-H12060 M12 × 60 screws through the four front-facing seam ears, each washer before its screw. These screws are longer than the knee-cap screws. Keep the holder engaged for the cylinder connections.",
+          "body": "Fit four LG-W12 washers and four PV-H12060 M12 × 60 screws through the four front-facing seam ears, each washer before its screw. These screws are longer than the knee-cap screws. Keep the leg rig engaged for the cylinder connections.",
           "slots": [
             "stop/washer_1",
             "stop/bolt_1",
@@ -5104,7 +5104,7 @@
         },
         {
           "title": "Mount hip cylinder 1",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg holder engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
           "slots": [
             "cylinder_1",
             "cylinder_1/upper_pin",
@@ -5137,7 +5137,7 @@
         },
         {
           "title": "Mount hip cylinder 2",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg holder engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
           "slots": [
             "cylinder_2",
             "cylinder_2/upper_pin",
@@ -5170,7 +5170,7 @@
         },
         {
           "title": "Mount hip cylinder 3",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg holder engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
           "slots": [
             "cylinder_3",
             "cylinder_3/upper_pin",
@@ -5205,13 +5205,13 @@
           "title": "Left leg structurally secured",
           "view": "prepared",
           "slots": [],
-          "body": "Both retaining halves, all ring and stop-cage hardware, all three cylinders and their six eye pins are required. Operate each cylinder's captive neutral lock at its exposed index rail. Only then can Advance release the holder: open contacts, lower, withdraw 1.4 m rearward, compact and shift 2 m outboard. Return turns and travels the empty holder home without moving the installed leg. Stop and Advance hold/resume a phase. Reacquire holder support before unlocking a cylinder or undoing retention."
+          "body": "Both retaining halves, all ring and stop-cage hardware, all three cylinders and their six eye pins are required. Operate each cylinder's captive neutral lock at its exposed index rail. Only then can Advance release the leg rig: open contacts, lower, withdraw 1.4 m rearward, compact and shift 2 m outboard. Return turns and travels the empty leg rig home without moving the installed leg. Stop and Advance hold or resume a phase. Reacquire leg rig support before unlocking a cylinder or undoing retention."
         },
         {
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty holder has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the holder jaws and reacquires support. If the released holder is already docked, Advance directly reacquires support. Wait for the holder to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the holder is released."
+          "body": "If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Travel and seat the supported leg",
@@ -5221,7 +5221,7 @@
         },
         {
           "title": "Seat the leg in the pelvis",
-          "body": "With the completed leg, neutral source roll and parked empty crane, select the right hip lane. Advance first stows the foot bolster, then indexes and pins the transverse table. Further Advance commands travel, turn upright and dock upward. The shared hip platforms open before loaded movement and restore after seating. The holder stays engaged: ball seating alone does not secure the leg.",
+          "body": "With the completed leg, neutral source roll and parked empty crane, select the right hip lane. Advance first stows the foot bolster, then indexes and pins the transverse table. Further Advance commands travel, turn upright and dock upward. The shared hip platforms open before loaded movement and restore after seating. The leg rig stays engaged: ball seating alone does not secure the leg.",
           "slots": [
             "right_leg"
           ],
@@ -5423,7 +5423,7 @@
         },
         {
           "title": "Fit the hip stop cage",
-          "body": "With both ring halves and all four ring bolt pairs fitted, carry the two identical PV-130 stop-cage halves around the already retained neck. Their lower lip surrounds the prepared stop tongues; the cage limits motion and does not replace the ring or the engaged holder.",
+          "body": "With both ring halves and all four ring bolt pairs fitted, carry the two identical PV-130 stop-cage halves around the already retained neck. Their lower lip surrounds the prepared stop tongues; the cage limits motion and does not replace the ring or the engaged leg rig.",
           "slots": [
             "right/stop_half_1",
             "right/stop_half_2"
@@ -5454,7 +5454,7 @@
         },
         {
           "title": "Secure the cage seams",
-          "body": "Fit four LG-W12 washers and four PV-H12060 M12 × 60 screws through the four front-facing seam ears, each washer before its screw. These screws are longer than the knee-cap screws. Keep the holder engaged for the cylinder connections.",
+          "body": "Fit four LG-W12 washers and four PV-H12060 M12 × 60 screws through the four front-facing seam ears, each washer before its screw. These screws are longer than the knee-cap screws. Keep the leg rig engaged for the cylinder connections.",
           "slots": [
             "right/stop/washer_1",
             "right/stop/bolt_1",
@@ -5497,7 +5497,7 @@
         },
         {
           "title": "Mount hip cylinder 1",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg holder engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
           "slots": [
             "right/cylinder_1",
             "right/cylinder_1/upper_pin",
@@ -5530,7 +5530,7 @@
         },
         {
           "title": "Mount hip cylinder 2",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg holder engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
           "slots": [
             "right/cylinder_2",
             "right/cylinder_2/upper_pin",
@@ -5563,7 +5563,7 @@
         },
         {
           "title": "Mount hip cylinder 3",
-          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg holder engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
+          "body": "Carry any PV-200 complete cartridge using one elevator shelf trip. With the leg rig engaged, lower its upper parking lugs into the clevis hooks and guide the lower eye onto its prepared rest. Assisted seating captures both rests at neutral length. Fit one PV-P60220 pin through the upper eye, then a second through the lower eye; each pin includes its captive keeper. The front two cartridges use front pin entry; the rear cartridge uses rear entry. Operate this cartridge's captive neutral lock after both pins are fitted.",
           "slots": [
             "right/cylinder_3",
             "right/cylinder_3/upper_pin",
@@ -5598,13 +5598,13 @@
           "title": "Right leg structurally secured",
           "view": "prepared",
           "slots": [],
-          "body": "Both retaining halves, all ring and stop-cage hardware, all three cylinders and their six eye pins are required. Operate each cylinder's captive neutral lock at its exposed index rail. Only then can Advance release the holder: open contacts, lower, withdraw 1.4 m rearward, compact and shift 2 m outboard. Return turns and travels the empty holder home without moving the installed leg. Stop and Advance hold/resume a phase. Reacquire holder support before unlocking a cylinder or undoing retention."
+          "body": "Both retaining halves, all ring and stop-cage hardware, all three cylinders and their six eye pins are required. Operate each cylinder's captive neutral lock at its exposed index rail. Only then can Advance release the leg rig: open contacts, lower, withdraw 1.4 m rearward, compact and shift 2 m outboard. Return turns and travels the empty leg rig home without moving the installed leg. Stop and Advance hold or resume a phase. Reacquire leg rig support before unlocking a cylinder or undoing retention."
         },
         {
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty holder has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the holder jaws and reacquires support. If the released holder is already docked, Advance directly reacquires support. Wait for the holder to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the holder is released."
+          "body": "If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Seat the prepared chest",
@@ -10122,7 +10122,7 @@
           "title": "Prepared chest and cockpit",
           "view": "overview",
           "slots": [],
-          "body": "The chest frame, enclosed cockpit, fixed shoulder cups and neck spoke are supplied assembled. Use Chest to fixture at the shared crane to transfer it from storage after selecting chest inserts on the empty bulky fixture. Keep the fitted cockpit upright. After checking the supported unit, lower the fixture to its pickup stop and choose Chest to waist. The pelvis manual owns seating, retention and service connections."
+          "body": "The chest frame, enclosed cockpit, fixed shoulder cups and neck spoke are supplied assembled. Use Chest to Heavy Module Bay at the shared crane to transfer it from the chest rig after selecting chest inserts on the empty heavy module rig. Keep the fitted cockpit upright. After checking the supported unit, lower the heavy module rig to its pickup stop and choose Chest to waist. The pelvis manual owns seating, retention and service connections."
         },
         {
           "title": "Deliver and guide the core",
@@ -10130,7 +10130,7 @@
           "slots": [
             "core"
           ],
-          "body": "Select core saddles on the empty bulky fixture, then use Core to fixture to collect the prepared cartridge. Core to rear dock follows the low right-side bypass, outboard lift and high crossing. Down brings the horizontal load to the rear approach with both ends fitted. At the right-side guide control, Advance stops at captured engagement. Release and stow the forward equalizing bridge using its side handle; keep the aft end fitted. Advance folds the unloaded forward equalizer and shifts its head aft before inserting farther. The aft end and captured guides stay engaged. Advance again, if stopped, completes flange and keyed-nose seating.",
+          "body": "Select core saddles on the empty heavy module rig, then use Core to Heavy Module Bay to collect the prepared cartridge. Core to rear dock follows the low right-side bypass, outboard lift and high crossing. Down brings the horizontal load to the rear approach with both magnetic connectors fitted. At the right-side guide control, Advance stops at captured engagement. Release and stow the forward magnetic connector using its side handle; keep the aft magnetic connector fitted. Advance folds the unloaded forward magnetic connector and shifts its head aft before inserting farther. The aft magnetic connector and captured guides stay engaged. Advance again, if stopped, completes flange and keyed-nose seating.",
           "diagram_views": [
             {
               "title": "Core and captured guides",
@@ -10192,11 +10192,11 @@
           "view": "overview",
           "slots": [],
           "status_equipment": "core_guide",
-          "body": "Operate all four PC-H16 captive flange bolts, then complete the rear interlock connection. The aft crane end remains fitted through both operations. Release and stow that end only when all four bolts and the rear connection are secure. For local correction, isolate the connection, refit the aft end and release all four bolts. Return stops at guide capture. Return again extends the empty forward rig; refit its bridge before returning out of the guides."
+          "body": "Operate all four PC-H16 captive flange bolts, then complete the rear interlock connection. The aft magnetic connector remains fitted through both operations. Release and stow it only when all four bolts and the rear connection are secure. For local correction, isolate the connection, refit the aft magnetic connector and release all four bolts. Return stops at guide capture. Return again extends the empty forward magnetic connector; refit it before returning out of the guides."
         },
         {
           "title": "Seat the open backpack",
-          "body": "Select backpack inserts on the empty bulky fixture and collect the prepared unit with Backpack to fixture. Select Backpack to hinges, attach both ends and follow the rear delivery route. Down aligns both open hinge eyes with the fixed chest forks; keep both crane ends attached.",
+          "body": "Select backpack inserts on the empty heavy module rig and collect the prepared unit with Backpack to Heavy Module Bay. Select Backpack to hinges, attach both magnetic connectors and follow the rear delivery route. Down aligns both open hinge eyes with the fixed chest forks; keep both magnetic connectors attached.",
           "slots": [
             "backpack"
           ],
@@ -10407,7 +10407,7 @@
         },
         {
           "title": "Attach the backpack struts",
-          "body": "At each free strut-end handle, Extend guides the prepared telescope to its fixed chest clevis. Fit the BP-P40 base pin and its BP-K40 keeper. Engage both positive open locks before releasing either crane end.",
+          "body": "At each free strut-end handle, Extend guides the prepared telescope to its fixed chest clevis. Fit the BP-P40 base pin and its BP-K40 keeper. Engage both positive open locks before releasing either magnetic connector.",
           "slots": [
             "backpack/strut_pin_1",
             "backpack/strut_keeper_1",
@@ -10442,7 +10442,7 @@
         },
         {
           "title": "Connect the supported backpack",
-          "body": "With both struts positively locked open, release and stow both crane ends. Fit both BP-SERVICE protected runs at the fixed rear-facing sockets. The upper retained loops move with the cover; they provide no lifting support.",
+          "body": "With both struts positively locked open, release and stow both magnetic connectors. Fit both BP-SERVICE protected runs at the fixed rear-facing sockets. The upper retained loops move with the cover; they provide no lifting support.",
           "slots": [
             "backpack/service_1",
             "backpack/service_2"
@@ -10476,11 +10476,11 @@
           "view": "overview",
           "slots": [],
           "status_equipment": "backpack_hinge",
-          "body": "Return the matching crane, refit both ends, then choose Take backpack weight. Release both strut locks at their handles. Choose Close backpack at the crane; Stop/Resume preserves partial closure. At the closed stop engage both lower draw latches, release and stow the crane ends, then close the two small service covers. For correction, reopen the covers, refit both ends and take weight before releasing either latch. Open fully and engage both strut locks before releasing the crane or changing service connections."
+          "body": "Return the matching crane, refit both magnetic connectors, then choose Take backpack weight. Release both strut locks at their handles. Choose Close backpack at the crane; Stop/Resume preserves partial closure. At the closed stop engage both lower draw latches, release and stow the magnetic connectors, then close the two small service covers. For correction, reopen the covers, refit both magnetic connectors and take weight before releasing either latch. Open fully and engage both strut locks before releasing the crane or changing service connections."
         },
         {
           "title": "Left shoulder: deliver the retained arm",
-          "body": "Use Cassette to station after parking the leg cradle. Select Left arm to shoulder. Attach all four ends, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",
+          "body": "Use Arm rig to Limb Bay after parking the leg rig. Select Left arm to shoulder. Attach all four magnetic connectors, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",
           "slots": [
             "left_arm"
           ],
@@ -10509,7 +10509,7 @@
         },
         {
           "title": "Left shoulder: retain the ball",
-          "body": "Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four crane ends attached.",
+          "body": "Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four magnetic connectors attached.",
           "slots": [
             "left_arm/ring_front",
             "left_arm/ring_rear",
@@ -10704,7 +10704,7 @@
         },
         {
           "title": "Left shoulder: connect services",
-          "body": "At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four crane ends. Keep the neutral and joint restraints engaged for pauldron work.",
+          "body": "At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four magnetic connectors. Keep the neutral and joint restraints engaged for pauldron work.",
           "slots": [
             "left_arm/service"
           ],
@@ -10733,7 +10733,7 @@
         },
         {
           "title": "Right shoulder: deliver the retained arm",
-          "body": "Use Cassette to station after parking the leg cradle. Select Right arm to shoulder. Attach all four ends, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",
+          "body": "Use Arm rig to Limb Bay after parking the leg rig. Select Right arm to shoulder. Attach all four magnetic connectors, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",
           "slots": [
             "right_arm"
           ],
@@ -10762,7 +10762,7 @@
         },
         {
           "title": "Right shoulder: retain the ball",
-          "body": "Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four crane ends attached.",
+          "body": "Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four magnetic connectors attached.",
           "slots": [
             "right_arm/ring_front",
             "right_arm/ring_rear",
@@ -10957,7 +10957,7 @@
         },
         {
           "title": "Right shoulder: connect services",
-          "body": "At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four crane ends. Keep the neutral and joint restraints engaged for pauldron work.",
+          "body": "At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four magnetic connectors. Keep the neutral and joint restraints engaged for pauldron work.",
           "slots": [
             "right_arm/service"
           ],
@@ -10986,7 +10986,7 @@
         },
         {
           "title": "Left pauldron: deliver carrier",
-          "body": "With the shoulder retained, brakes checked, weight transferred and services connected, stow all arm crane ends. Select Left pauldron at the central crane console. Its upright passive store is in small stock at X-9.0, Z1. Fit both front/rear ends and lift above the guards; travel via front Z13, then lower through the open deck notch. Keep both ends attached.",
+          "body": "With the shoulder retained, brakes checked, weight transferred and services connected, stow all arm magnetic connectors. Select Left pauldron at the central crane console. Its upright rig is in small stock at X-9.0, Z1. Fit both front and rear magnetic connectors and lift above the guards; travel via front Z13, then lower through the open deck notch. Keep both magnetic connectors attached.",
           "slots": [
             "left_pauldron"
           ],
@@ -11015,7 +11015,7 @@
         },
         {
           "title": "Left pauldron: retain carrier",
-          "body": "Pocket two PD-M20-LONG bolt units and two PD-M20-SHORT bolt units. The long captive shoes span the proximal bosses; the short shoes fit the distal pair. Fit from front/rear into the arm-owned bosses, clamping the carrier ledges after seating. Keep both crane ends attached. Reacquire both ends before any local bolt correction.",
+          "body": "Pocket two PD-M20-LONG bolt units and two PD-M20-SHORT bolt units. The long captive shoes span the proximal bosses; the short shoes fit the distal pair. Fit from front and rear into the arm-owned bosses, clamping the ledges after seating. Keep both magnetic connectors attached. Reacquire both magnetic connectors before any local bolt correction.",
           "slots": [
             "left_pauldron/bolt_1",
             "left_pauldron/bolt_2",
@@ -11050,7 +11050,7 @@
         },
         {
           "title": "Left pauldron: front closure",
-          "body": "Release and stow both crane ends. Carry PD-FRONT with two hands on an elevator shelf. Fit the upper panel and fasten its four captive M12 screws. The permanent lower mechanical window stays open.",
+          "body": "Release and stow both magnetic connectors. Carry PD-FRONT with two hands on an elevator shelf. Fit the upper panel and fasten its four captive M12 screws. The permanent lower mechanical window stays open.",
           "slots": [
             "left_pauldron/front"
           ],
@@ -11108,7 +11108,7 @@
         },
         {
           "title": "Right pauldron: deliver carrier",
-          "body": "With the shoulder retained, brakes checked, weight transferred and services connected, stow all arm crane ends. Select Right pauldron at the central crane console. Its upright passive store is in small stock at X-5.0, Z1. Fit both front/rear ends and lift above the guards; travel via front Z13, then lower through the open deck notch. Keep both ends attached.",
+          "body": "With the shoulder retained, brakes checked, weight transferred and services connected, stow all arm magnetic connectors. Select Right pauldron at the central crane console. Its upright rig is in small stock at X-5.0, Z1. Fit both front and rear magnetic connectors and lift above the guards; travel via front Z13, then lower through the open deck notch. Keep both magnetic connectors attached.",
           "slots": [
             "right_pauldron"
           ],
@@ -11137,7 +11137,7 @@
         },
         {
           "title": "Right pauldron: retain carrier",
-          "body": "Pocket two PD-M20-LONG bolt units and two PD-M20-SHORT bolt units. The long captive shoes span the proximal bosses; the short shoes fit the distal pair. Fit from front/rear into the arm-owned bosses, clamping the carrier ledges after seating. Keep both crane ends attached. Reacquire both ends before any local bolt correction.",
+          "body": "Pocket two PD-M20-LONG bolt units and two PD-M20-SHORT bolt units. The long captive shoes span the proximal bosses; the short shoes fit the distal pair. Fit from front and rear into the arm-owned bosses, clamping the ledges after seating. Keep both magnetic connectors attached. Reacquire both magnetic connectors before any local bolt correction.",
           "slots": [
             "right_pauldron/bolt_1",
             "right_pauldron/bolt_2",
@@ -11172,7 +11172,7 @@
         },
         {
           "title": "Right pauldron: front closure",
-          "body": "Release and stow both crane ends. Carry PD-FRONT with two hands on an elevator shelf. Fit the upper panel and fasten its four captive M12 screws. The permanent lower mechanical window stays open.",
+          "body": "Release and stow both magnetic connectors. Carry PD-FRONT with two hands on an elevator shelf. Fit the upper panel and fasten its four captive M12 screws. The permanent lower mechanical window stays open.",
           "slots": [
             "right_pauldron/front"
           ],
@@ -11230,7 +11230,7 @@
         },
         {
           "title": "Head baseplate: deliver",
-          "body": "Fit matching head baseplate upright inserts on the empty lowered bulky fixture. Use Head baseplate to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Head baseplate; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 24 cm onto the seat. Keep the rig attached. The underside starts at robot Z15.64: 6 cm to pilot entry, then 18 cm to the flange; the front key rejects reversed yaw.",
+          "body": "Fit matching head baseplate upright inserts on the empty lowered heavy module rig. Use Head baseplate to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Head baseplate; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 24 cm onto the seat. Keep the magnetic connectors attached. The underside starts at robot Z15.64: 6 cm to pilot entry, then 18 cm to the flange; the front key rejects reversed yaw.",
           "slots": [
             "head_baseplate"
           ],
@@ -11302,7 +11302,7 @@
         },
         {
           "title": "Head baseplate: connect loom",
-          "body": "After all four neck bolt/washer pairs, plug the keyed central power/data loom and bond at the exposed front disconnects. Clip strain relief up the right portal, keeping bolt lanes and the future sensor slide clear. Then release and stow both upward magnetic ends from the open front before either side shell.",
+          "body": "After all four neck bolt/washer pairs, plug the keyed central power/data loom and bond at the exposed front disconnects. Clip strain relief up the right portal, keeping bolt lanes and the future sensor slide clear. Then release and stow both upward magnetic connectors from the open front before either side shell.",
           "slots": [
             "hd-loom/001"
           ],
@@ -11331,7 +11331,7 @@
         },
         {
           "title": "Left wraparound side: deliver",
-          "body": "Fit matching left wraparound side upright inserts on the empty lowered bulky fixture. Use Left wraparound side to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Left wraparound side; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the rig attached. The side pockets/hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "body": "Fit matching left wraparound side upright inserts on the empty lowered heavy module rig. Use Left wraparound side to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Left wraparound side; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the magnetic connectors attached. The side pockets, hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
           "slots": [
             "head_left"
           ],
@@ -11391,7 +11391,7 @@
         },
         {
           "title": "Right wraparound side: deliver",
-          "body": "Fit matching right wraparound side upright inserts on the empty lowered bulky fixture. Use Right wraparound side to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Right wraparound side; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the rig attached. The side pockets/hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "body": "Fit matching right wraparound side upright inserts on the empty lowered heavy module rig. Use Right wraparound side to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Right wraparound side; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the magnetic connectors attached. The side pockets, hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
           "slots": [
             "head_right"
           ],
@@ -11451,7 +11451,7 @@
         },
         {
           "title": "Structural head top: deliver",
-          "body": "Fit matching structural head top upright inserts on the empty lowered bulky fixture. Use Structural head top to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Structural head top; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the rig attached. The side pockets/hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "body": "Fit matching structural head top upright inserts on the empty lowered heavy module rig. Use Structural head top to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Structural head top; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the magnetic connectors attached. The side pockets, hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
           "slots": [
             "head_top"
           ],
@@ -11732,7 +11732,7 @@
         },
         {
           "title": "Decorative head crown: deliver",
-          "body": "Fit matching decorative head crown upright inserts on the empty lowered bulky fixture. Use Decorative head crown to fixture to collect the passive-store piece, retain on the saddles, release and park. Select Decorative head crown; attach every magnetic end individually. Up tensions the rig before clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 18 cm onto the seat. Keep the rig attached. After mask retention, the final crown lowers 18 cm: 6 cm clear lead and 12 cm onto the two unequal keyed prongs. Keep both front-facing ends attached.",
+          "body": "Fit matching decorative head crown upright inserts on the empty lowered heavy module rig. Use Decorative head crown to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Decorative head crown; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 18 cm onto the seat. Keep the magnetic connectors attached. After mask retention, the final crown lowers 18 cm: 6 cm clear lead and 12 cm onto the two unequal keyed prongs. Keep both front-facing magnetic connectors attached.",
           "slots": [
             "head_crown"
           ],
@@ -11761,7 +11761,7 @@
         },
         {
           "title": "Decorative head crown: retain",
-          "body": "Fit both HD-M12100 M12 × 100 front bolts rearward through the crown feet into the independent keyed root bosses. Only after both bolts are complete may the two front-facing magnetic ends be released and stowed. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "body": "Fit both HD-M12100 M12 × 100 front bolts rearward through the crown feet into the independent keyed root bosses. Only after both bolts are complete may the two front-facing magnetic connectors be released and stowed. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
           "slots": [
             "hd-m12100/005",
             "hd-m12100/006"
@@ -11824,7 +11824,7 @@
           "title": "Prepared core cartridge",
           "view": "overview",
           "slots": [],
-          "body": "The core cartridge, keyed rails and four captive retaining bolts are supplied. Keep it horizontal on the bulky fixture's core saddles. Its forward equalizing bridge captures two side pads; the aft end attaches to the rear pad. The chest manual owns guide insertion, retention and rear connection."
+          "body": "The core cartridge, keyed rails and four captive retaining bolts are supplied. Keep it horizontal on the heavy module rig's core saddles. Its forward magnetic connector captures two side pads; the aft magnetic connector attaches to the rear pad. The chest manual owns guide insertion, retention and rear connection."
         }
       ]
     },
@@ -11879,12 +11879,12 @@
           "title": "Prepared open backpack",
           "view": "overview",
           "slots": [],
-          "body": "The backpack frame, rear cover, nozzles, hinge eyes, telescopic struts and lower latches are supplied together. Fit backpack perimeter inserts on the empty bulky fixture, then use Backpack to fixture to collect this same unit from its storage saddles. Its front face rests downward, in the fully open installation orientation. Two structural lifting pads carry it with the shared spreader."
+          "body": "The backpack frame, rear cover, nozzles, hinge eyes, telescopic struts and lower latches are supplied together. Fit backpack perimeter inserts on the empty heavy module rig, then use Backpack to Heavy Module Bay to collect this same unit from its rig. Its front face rests downward, in the fully open installation orientation. Two structural lifting pads carry it with the shared spreader."
         }
       ]
     },
     "arm_cassette": {
-      "title": "Shared arm cassette",
+      "title": "Arm rig",
       "carry_class": "equipment",
       "bounds": [
         2,
@@ -11948,10 +11948,10 @@
       },
       "manual": [
         {
-          "title": "Shared arm cassette",
+          "title": "Arm rig",
           "view": "overview",
           "slots": [],
-          "body": "Park the leg cradle before bringing the cassette into the common limb station. The cassette holds the prepared arm on three saddles and six clamps. Use the shared crane's Cassette to station task, fit all four ends, then raise and transfer the retained cassette. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction."
+          "body": "Park the leg rig before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction."
         }
       ]
     },
@@ -12004,7 +12004,7 @@
           "title": "Prepared left arm",
           "view": "overview",
           "slots": [],
-          "body": "The upper arm, restrained elbow, forearm, neutral wrist and retained hand are supplied together. The shared cassette supports three structural pads; four structural lifting faces carry the arm. Shoulder retention, drives, services and pauldron work belong to the chest manual."
+          "body": "The upper arm, restrained elbow, forearm, neutral wrist and retained hand are supplied together. The arm rig supports three structural pads; four structural lifting faces carry the arm. Shoulder retention, drives, services and pauldron work belong to the chest manual."
         }
       ]
     },
@@ -12057,7 +12057,7 @@
           "title": "Prepared right arm",
           "view": "overview",
           "slots": [],
-          "body": "The upper arm, restrained elbow, forearm, neutral wrist and retained hand are supplied together. The shared cassette supports three structural pads; four structural lifting faces carry the arm. Shoulder retention, drives, services and pauldron work belong to the chest manual."
+          "body": "The upper arm, restrained elbow, forearm, neutral wrist and retained hand are supplied together. The arm rig supports three structural pads; four structural lifting faces carry the arm. Shoulder retention, drives, services and pauldron work belong to the chest manual."
         }
       ]
     },
@@ -14098,11 +14098,11 @@
           "title": "Prepared foot, empty leg rail",
           "view": "overview",
           "slots": [],
-          "body": "The complete 135-piece foot is supplied on its carrier. The horizontal leg rail and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
+          "body": "The complete 135-piece foot is supplied on its rig. The leg rig and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
         },
         {
           "title": "Dock the prepared foot",
-          "body": "Keep the holder at the shared limb station with neutral roll. At the foot carrier, Advance raises the complete foot, Advance moves it to the receiving bolster, and Advance turns and seats it horizontally. The holder takes contact before the carrier releases and withdraws. Stop holds any transfer; Advance resumes it.",
+          "body": "Keep the leg rig in the Limb Bay with neutral roll. At the foot rig, Advance raises the complete foot, Advance moves it to the receiving bolster, and Advance turns and seats it horizontally. The leg rig takes contact before the foot rig releases and withdraws. Stop holds any transfer; Advance resumes it.",
           "slots": [
             "foot"
           ],
@@ -14132,7 +14132,7 @@
         },
         {
           "title": "Deliver the structural shin",
-          "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Structural shin task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-100 against the already fitted foot adapter. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+          "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Structural shin task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-100 against the already fitted foot adapter. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
           "slots": [
             "shin"
           ],
@@ -14162,7 +14162,7 @@
         },
         {
           "title": "Secure the ankle flange",
-          "body": "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic ends, raise and park the empty crane before changing task.",
+          "body": "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic connectors, raise and park the empty crane before changing task.",
           "slots": [
             "ankle/W-36__021",
             "ankle/H-36090__001",
@@ -14212,7 +14212,7 @@
         },
         {
           "title": "Connect the shin disconnect",
-          "body": "Carry FA-605 with both attached plugs. Approach from the side away from the crane racks, standing back toward the knee. Leave room for the upright harness to turn clear of the ankle brace before fitting it. Seat its box end in the already fitted FA-604 socket, follow the foot guide clips and seat the upper keyed plug in LG-100's angled socket. The harness and knee-bearing branches can be completed in either order after the ankle bolts. Unplug this harness before separating foot and shin.",
+          "body": "Carry FA-605 with both attached plugs. Approach from the side away from the part rigs, standing back toward the knee. Leave room for the upright harness to turn clear of the ankle brace before fitting it. Seat its box end in the already fitted FA-604 socket, follow the foot guide clips and seat the upper keyed plug in LG-100's angled socket. The harness and knee-bearing branches can be completed in either order after the ankle bolts. Unplug this harness before separating foot and shin.",
           "slots": [
             "main_input"
           ],
@@ -14288,7 +14288,7 @@
         },
         {
           "title": "Deliver the knee fork",
-          "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Knee fork task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-110 against the already fitted shin knee boss and thrust spacers. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+          "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Knee fork task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-110 against the already fitted shin knee boss and thrust spacers. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
           "slots": [
             "fork"
           ],
@@ -14352,7 +14352,7 @@
         },
         {
           "title": "Retain the knee axle",
-          "body": "Walk to the opposite side from the marked axle extraction aisle. Fit LG-150 on the exposed axle end, then two LG-W12 washers and two LG-H12050 screws, each washer before its screw. With the axle and both cap pairs complete, detach and stow both magnetic ends, raise and park the empty crane.",
+          "body": "Walk to the opposite side from the marked axle extraction aisle. Fit LG-150 on the exposed axle end, then two LG-W12 washers and two LG-H12050 screws, each washer before its screw. With the axle and both cap pairs complete, detach and stow both magnetic connectors, raise and park the empty crane.",
           "slots": [
             "cap",
             "cap/washer_1",
@@ -14396,7 +14396,7 @@
         },
         {
           "title": "Deliver the Upper-leg beam",
-          "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Upper-leg beam task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-120 against the already fitted fork flange. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+          "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Upper-leg beam task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-120 against the already fitted fork flange. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
           "slots": [
             "spar"
           ],
@@ -14426,7 +14426,7 @@
         },
         {
           "title": "Fasten the Upper-leg beam flange",
-          "body": "Pocket four LG-W24 washers and four LG-H24100 bolts. Fit each washer and then its bolt through the exposed flange corners into the already fitted fork. Approach the bolt heads from the hip side of the flange and insert toward the knee. These M24 x 100 bolts differ from the pelvis M24 x 140 bolts. After every pair is fitted, detach and stow both magnetic ends, then raise and park the empty crane.",
+          "body": "Pocket four LG-W24 washers and four LG-H24100 bolts. Fit each washer and then its bolt through the exposed flange corners into the already fitted fork. Approach the bolt heads from the hip side of the flange and insert toward the knee. These M24 x 100 bolts differ from the pelvis M24 x 140 bolts. After every pair is fitted, detach and stow both magnetic connectors, then raise and park the empty crane.",
           "slots": [
             "fork/washer_1",
             "fork/bolt_1",
@@ -14478,13 +14478,13 @@
           "title": "Structural leg ready",
           "view": "prepared",
           "slots": [],
-          "body": "All leg construction is complete. Park the empty crane with both magnetic ends stowed. The shared holder can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the pelvis manual for delivery."
+          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the pelvis manual for delivery."
         },
         {
           "title": "Supported construction recovery",
           "view": "overview",
           "slots": [],
-          "body": "Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg cradle and attach both magnetic ends to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Up withdraws the supported part through the reverse axial approach; Go to its rack and Down returns it. Detach and stow only after rack contact. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot-carrier Return reacquires the foot and reverses one guided phase per press; Return again lowers it to the dispatch position."
+          "body": "Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot rig Return reacquires the foot and reverses one guided phase per press; Return again lowers it to dispatch."
         }
       ]
     },
@@ -18046,11 +18046,11 @@
             "title": "Prepared foot, empty leg rail",
             "view": "overview",
             "slots": [],
-            "body": "The complete 135-piece foot is supplied on its carrier. The horizontal leg rail and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
+            "body": "The complete 135-piece foot is supplied on its rig. The leg rig and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
           },
           {
             "title": "Dock the prepared foot",
-            "body": "Keep the holder at the shared limb station with neutral roll. At the foot carrier, Advance raises the complete foot, Advance moves it to the receiving bolster, and Advance turns and seats it horizontally. The holder takes contact before the carrier releases and withdraws. Stop holds any transfer; Advance resumes it.",
+            "body": "Keep the leg rig in the Limb Bay with neutral roll. At the foot rig, Advance raises the complete foot, Advance moves it to the receiving bolster, and Advance turns and seats it horizontally. The leg rig takes contact before the foot rig releases and withdraws. Stop holds any transfer; Advance resumes it.",
             "slots": [
               "foot"
             ],
@@ -18080,7 +18080,7 @@
           },
           {
             "title": "Deliver the structural shin",
-            "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Structural shin task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-100 against the already fitted foot adapter. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+            "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Structural shin task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-100 against the already fitted foot adapter. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
             "slots": [
               "shin"
             ],
@@ -18110,7 +18110,7 @@
           },
           {
             "title": "Secure the ankle flange",
-            "body": "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic ends, raise and park the empty crane before changing task.",
+            "body": "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic connectors, raise and park the empty crane before changing task.",
             "slots": [
               "ankle/W-36__021",
               "ankle/H-36090__001",
@@ -18160,7 +18160,7 @@
           },
           {
             "title": "Connect the shin disconnect",
-            "body": "Carry FA-605 with both attached plugs. Approach from the side away from the crane racks, standing back toward the knee. Leave room for the upright harness to turn clear of the ankle brace before fitting it. Seat its box end in the already fitted FA-604 socket, follow the foot guide clips and seat the upper keyed plug in LG-100's angled socket. The harness and knee-bearing branches can be completed in either order after the ankle bolts. Unplug this harness before separating foot and shin.",
+            "body": "Carry FA-605 with both attached plugs. Approach from the side away from the part rigs, standing back toward the knee. Leave room for the upright harness to turn clear of the ankle brace before fitting it. Seat its box end in the already fitted FA-604 socket, follow the foot guide clips and seat the upper keyed plug in LG-100's angled socket. The harness and knee-bearing branches can be completed in either order after the ankle bolts. Unplug this harness before separating foot and shin.",
             "slots": [
               "main_input"
             ],
@@ -18236,7 +18236,7 @@
           },
           {
             "title": "Deliver the knee fork",
-            "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Knee fork task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-110 against the already fitted shin knee boss and thrust spacers. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+            "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Knee fork task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-110 against the already fitted shin knee boss and thrust spacers. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
             "slots": [
               "fork"
             ],
@@ -18300,7 +18300,7 @@
           },
           {
             "title": "Retain the knee axle",
-            "body": "Walk to the opposite side from the marked axle extraction aisle. Fit LG-150 on the exposed axle end, then two LG-W12 washers and two LG-H12050 screws, each washer before its screw. With the axle and both cap pairs complete, detach and stow both magnetic ends, raise and park the empty crane.",
+            "body": "Walk to the opposite side from the marked axle extraction aisle. Fit LG-150 on the exposed axle end, then two LG-W12 washers and two LG-H12050 screws, each washer before its screw. With the axle and both cap pairs complete, detach and stow both magnetic connectors, raise and park the empty crane.",
             "slots": [
               "cap",
               "cap/washer_1",
@@ -18344,7 +18344,7 @@
           },
           {
             "title": "Deliver the Upper-leg beam",
-            "body": "At the central crane console, with the empty crane parked and both magnetic ends stowed, select the Upper-leg beam task. Choose Go to its rack, then Down. Q closes the console; click commands or use arrow keys and E. At the rack E picks up a magnetic end; aim and click either free marked point, then attach the other end. Either end fits either point. Q stows a held end. Choose Up to take weight, Go to Leg cradle, then Down to seat LG-120 against the already fitted fork flange. The crane lowers the component, then approaches along the leg to mate the connection. Keep both ends attached until this task's retaining hardware is complete.",
+            "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Upper-leg beam task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-120 against the already fitted fork flange. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
             "slots": [
               "spar"
             ],
@@ -18374,7 +18374,7 @@
           },
           {
             "title": "Fasten the Upper-leg beam flange",
-            "body": "Pocket four LG-W24 washers and four LG-H24100 bolts. Fit each washer and then its bolt through the exposed flange corners into the already fitted fork. Approach the bolt heads from the hip side of the flange and insert toward the knee. These M24 x 100 bolts differ from the pelvis M24 x 140 bolts. After every pair is fitted, detach and stow both magnetic ends, then raise and park the empty crane.",
+            "body": "Pocket four LG-W24 washers and four LG-H24100 bolts. Fit each washer and then its bolt through the exposed flange corners into the already fitted fork. Approach the bolt heads from the hip side of the flange and insert toward the knee. These M24 x 100 bolts differ from the pelvis M24 x 140 bolts. After every pair is fitted, detach and stow both magnetic connectors, then raise and park the empty crane.",
             "slots": [
               "fork/washer_1",
               "fork/bolt_1",
@@ -18426,13 +18426,13 @@
             "title": "Structural leg ready",
             "view": "prepared",
             "slots": [],
-            "body": "All leg construction is complete. Park the empty crane with both magnetic ends stowed. The shared holder can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the pelvis manual for delivery."
+            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the pelvis manual for delivery."
           },
           {
             "title": "Supported construction recovery",
             "view": "overview",
             "slots": [],
-            "body": "Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg cradle and attach both magnetic ends to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Up withdraws the supported part through the reverse axial approach; Go to its rack and Down returns it. Detach and stow only after rack contact. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot-carrier Return reacquires the foot and reverses one guided phase per press; Return again lowers it to the dispatch position."
+            "body": "Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot rig Return reacquires the foot and reverses one guided phase per press; Return again lowers it to dispatch."
           }
         ]
       },

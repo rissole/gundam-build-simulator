@@ -54,7 +54,7 @@ support-transfer interlocks. The platform's marked floor lane is still pending.
 
 ![Move menu lists destinations directly](../../docs/images/workshop-mobile-destinations.png)
 
-Rail, foot-carrier and bulky-fixture buttons also carry face labels. Their
+Rail, foot-rig and heavy-module-rig buttons also carry face labels. Their
 existing staged movement and Stop/recovery functions remain available.
 
 These screenshots were captured with Godot's real renderer from supplied camera

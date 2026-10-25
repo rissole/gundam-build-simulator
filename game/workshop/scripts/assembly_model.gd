@@ -330,7 +330,7 @@ func release_item(destination: String = "loose") -> String:
 func move_assembly(id: String, location: String) -> String:
 	if not assemblies.has(id):return "Unknown build."
 	if location not in ["held","loose"] and not location.begins_with("station:"):return "Invalid assembly destination."
-	if assemblies[id].location == "fixture":return "This fixture stays at its work station."
+	if assemblies[id].location == "fixture":return "This rig stays in its bay."
 	if assemblies[id].location.begins_with("support:") or definitions.assemblies[assemblies[id].definition].get("carry_class","") == "equipment":return "Use handling equipment to move this build."
 	if not assemblies[id].parent.is_empty():return "This assembly is mounted. Undo its parent installation first."
 	if location == "held":
@@ -420,7 +420,7 @@ func placement_error(assembly: String, slot: String, uid: String, support_id: St
 		if not assemblies.has(uid) or assemblies[uid].definition != s.assembly:return "Requires a compatible completed subassembly."
 		if uid == assembly or top_level(assembly) == uid:return "An assembly cannot be mounted inside itself."
 		if not assemblies[uid].parent.is_empty():return "That assembly already has a parent."
-		if assemblies[uid].location == "fixture":return "A fixed fixture cannot be mounted."
+		if assemblies[uid].location == "fixture":return "A fixed rig cannot be mounted."
 		if support_id.is_empty():
 			if definitions.assemblies[assemblies[uid].definition].get("carry_class","") == "equipment":return "Use handling equipment for this build."
 			if assemblies[uid].location != "held":return "Pick up the prepared assembly before mounting it."

@@ -74,28 +74,28 @@ func controls() -> Array[Dictionary]:
 
 func action_error(action: String) -> String:
 	if moving:
-		return blocked_reason if not blocked_reason.is_empty() else "Wait for the fixture to stop."
+		return blocked_reason if not blocked_reason.is_empty() else "Wait for the foot rig to stop."
 	if game.model.assemblies[game.default_parent_id()].location != holding_location:
-		return "The foot has left its fixture."
+		return "The foot has left its rig."
 	var held_by: String = game.equipment.busy_reason("foot_fixture", equipment_id)
 	if not held_by.is_empty():
 		return held_by
 	if action == "return":
-		return "The carrier is already in the work bay." if not at_dispatch else ""
+		return "The foot rig is already in the Foot Bay." if not at_dispatch else ""
 	if at_dispatch:
-		return "Return the carrier to the work bay first."
+		return "Return the foot rig to the Foot Bay first."
 	if action == "transfer":
 		if not has_dispatch:
-			return "Unknown fixture control."
+			return "Unknown foot rig control."
 		if not game.model.milestone(game.default_parent_id(), "complete"):
 			return "Secure both heel pads and the pitch actuator before transferring the foot."
 		if work_pose != "upright":
 			return "Set the foot upright before transferring it."
 		return ""
 	if not POSE_ANGLES.has(action):
-		return "Unknown fixture control."
+		return "Unknown foot rig control."
 	if action == work_pose:
-		return "The fixture is already in this working pose."
+		return "The foot rig is already in this working pose."
 	return ""
 
 func request(action: String) -> String:
@@ -120,28 +120,28 @@ func request(action: String) -> String:
 func status_text() -> String:
 	if moving:
 		if not blocked_reason.is_empty():
-			return "FIXTURE PAUSED — " + blocked_reason
+			return "FOOT RIG PAUSED — " + blocked_reason
 		if foot.global_position.distance_to(_destination.origin) > 0.01:
-			return "CARRIER MOVING — " + ("dispatch bay" if _destination_dispatch else "work bay")
-		return "FIXTURE TURNING — " + _pose_title(_destination_pose)
+			return "FOOT RIG MOVING — " + ("dispatch" if _destination_dispatch else "Foot Bay")
+		return "FOOT RIG TURNING — " + _pose_title(_destination_pose)
 	if at_dispatch:
-		return "DISPATCH BAY — foot secured on its carrier"
-	return "FOOT FIXTURE — " + _pose_title(work_pose)
+		return "DISPATCH — foot secured on the foot rig"
+	return "FOOT RIG — " + _pose_title(work_pose)
 
 ## Rigging the foot needs it upright and still: the crane collects the store pose.
 func busy_reason(subject: String) -> String:
 	if subject == "rig:" + game.default_parent_id() and game.model.assemblies[game.default_parent_id()].location == holding_location:
 		if moving:
-			return "Wait for the foot fixture to stop."
+			return "Wait for the foot rig to stop."
 		if work_pose != "upright":
-			return "Turn the foot fixture to Upright before rigging the foot."
+			return "Turn the foot rig upright before attaching the magnetic connectors."
 	return ""
 
 func access_error(owner: String) -> String:
 	if not game.model.assemblies.has(owner) or game.model.top_level(owner) != game.default_parent_id():
 		return ""
 	if moving:
-		return "Wait for the foot fixture to stop before working on its connections."
+		return "Wait for the foot rig to stop before working on its connections."
 	if at_dispatch:
 		return "Return the foot to the assembly bay before changing its connections."
 	return ""
@@ -248,7 +248,7 @@ func _sweep_error(from: Transform3D, to: Transform3D) -> String:
 	var margin = 0.003 + (from.origin.distance_to(to.origin) + from.basis.get_rotation_quaternion().angle_to(to.basis.get_rotation_quaternion()) * radius) / steps * 0.5
 	var groups = [
 		{"shapes": [{"shape": envelope, "transform": Transform3D(Basis.IDENTITY, bounds.get_center())}], "margin": margin, "error": "Clear the foot's movement area and stand beside the controls."},
-		{"shapes": Sweep.body_shapes(carriage), "frame": func(pose: Transform3D) -> Transform3D: return Transform3D(Basis.IDENTITY, Vector3(pose.origin.x, 0, pose.origin.z)), "margin": margin, "error": "Clear the carrier's rail route, including loose parts."},
+		{"shapes": Sweep.body_shapes(carriage), "frame": func(pose: Transform3D) -> Transform3D: return Transform3D(Basis.IDENTITY, Vector3(pose.origin.x, 0, pose.origin.z)), "margin": margin, "error": "Clear the foot rig route, including loose parts."},
 		{"shapes": Sweep.body_shapes(rotator), "margin": margin, "error": "Clear the turning clamps and stand beside the controls."}]
 	return Sweep.sweep(foot.get_world_3d().direct_space_state, groups, steps, func(weight: float) -> Transform3D: return _guided_pose(from, to, weight), OBSTACLE_MASK, excluded, "foot_fixture").get("error", "")
 
@@ -420,6 +420,6 @@ func _pose_title(pose: String) -> String:
 
 func _refresh_labels() -> void:
 	if is_instance_valid(_work_label):
-		_work_label.text = "FOOT FIXTURE\n" + ("CLEAR MOVEMENT AREA" if not blocked_reason.is_empty() else ("MOVING" if moving else _pose_title(work_pose)))
+		_work_label.text = "FOOT RIG\n" + ("CLEAR MOVEMENT AREA" if not blocked_reason.is_empty() else ("MOVING" if moving else _pose_title(work_pose)))
 	if is_instance_valid(_dispatch_label):
 		_dispatch_label.text = "DISPATCH\n" + ("CARRIER DOCKED" if at_dispatch else "RETURN CONTROL")

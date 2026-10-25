@@ -124,7 +124,7 @@ func receiving_error(_uid: String = "") -> String:
 		if not game.model.milestone(requirement.get_slice(":",0),requirement.get_slice(":",1)):
 			return "Complete "+requirement.replace(":"," · ").replace("_"," ")+" before delivery."
 	for zone in spec.get("clear_zones",[]):
-		if not game.zones.holder(zone).is_empty():return "Stow every crane end at "+zone.trim_suffix("_rig").replace("_"," ")+" before delivery."
+		if not game.zones.holder(zone).is_empty():return "Stow every magnetic connector at "+zone.trim_suffix("_rig").replace("_"," ")+" before delivery."
 	return ""
 
 func load_pose() -> Transform3D:
@@ -161,14 +161,14 @@ func accept() -> String:
 	_sync();return ""
 
 func rig_error(action: String, _point: String) -> String:
-	if action=="detach" and not retained():return "Fit all receiver retention before releasing a crane end."
+	if action=="detach" and not retained():return "Fit all receiver retention before releasing a magnetic connector."
 	if action=="attach" and spec.closure_slots.any(func(sid):return _has([sid])):return "Remove the closures of "+_title()+" before refitting the crane ends."
 	return ""
 
 func departure_error() -> String:
 	if not _attached() and retained():return ""
 	if rigged() and not spec.retention_slots.any(func(sid):return _has([sid])) and not spec.closure_slots.any(func(sid):return _has([sid])):return ""
-	return "Release the retained load's crane ends, or remove its closures and retention under full crane support before lifting."
+	return "Release the retained load's magnetic connectors, or remove its closures and retention under full crane support before lifting."
 
 func placement_error(owner: String, sid: String) -> String:
 	if owner!=spec.owner:return ""
@@ -177,7 +177,7 @@ func placement_error(owner: String, sid: String) -> String:
 		return "Retain "+_title()+" and release every crane end before fitting its closures." if not retained() or _attached() else ""
 	if sid in spec.retention_slots:
 		if spec.get("item",false):return "Seat "+_title()+" on its local supports before fastening." if not active else ""
-		return "Keep the matching crane down with all ends attached while fitting retention." if not active or not rigged() else ""
+		return "Keep the matching crane down with all magnetic connectors attached while fitting retention." if not active or not rigged() else ""
 	return ""
 
 func access_error(owner: String) -> String:

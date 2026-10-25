@@ -40,10 +40,10 @@ def extend(trial, layout):
             volume=math.pi*.02**2*.20 if key=="LOCK-PIN" else math.prod(primitive["size"])
             trial["sources"][uid]=dict(family="CS-"+key,position=position,rotation_degrees=[0,0,0],primitives=[primitive],motion_shapes=[motion],mass_kg=volume*7800,mass_center=position)
             context.append(uid);pieces[uid]=dict(group="",position=position)
-    descriptor=dict(title="Shared arm cassette",carry_class="equipment",bounds=[2,1.68,9],
+    descriptor=dict(title="Arm rig",carry_class="equipment",bounds=[2,1.68,9],
         work_locations=["support"],interaction="components",context_sources=context,slots={},
-        supplied_milestones=["prepared"],milestones={"prepared":[]},manual=[dict(title="Shared arm cassette",view="overview",slots=[],
-        body="Park the leg cradle before bringing the cassette into the common limb station. The cassette holds the prepared arm on three saddles and six clamps. Use the shared crane's Cassette to station task, fit all four ends, then raise and transfer the retained cassette. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction.")])
+        supplied_milestones=["prepared"],milestones={"prepared":[]},manual=[dict(title="Arm rig",view="overview",slots=[],
+        body="Park the leg rig before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction.")])
     trial["parents"].append(dict(id="arm_cassette",definition="arm_cassette",label=descriptor["title"],location="support:cassette_park",home=[14,0,-6.3]))
     for name in ["cassette_park","cassette_station"]:
         trial["supports"][name]=dict(assemblies=["arm_cassette"],assembly_ids=["arm_cassette"])

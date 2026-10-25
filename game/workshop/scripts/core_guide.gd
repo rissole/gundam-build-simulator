@@ -68,7 +68,7 @@ func departure_error() -> String:
 	if moving:return "Stop the guided insertion before moving the crane."
 	if is_zero_approx(travel) and has_point(spec.front_point) and has_point(spec.aft_point):return ""
 	if is_equal_approx(travel,spec.travel) and retained() and _crane().attached_count()==0:return ""
-	return "Use the guide control to return to the rear approach with both ends, or retain/connect the seated core and stow the aft end."
+	return "Use the guide control to return to the rear approach with both magnetic connectors, or retain and connect the seated core and stow the aft magnetic connector."
 func depart() -> void:
 	if is_zero_approx(travel):active=false
 
@@ -81,19 +81,19 @@ func controls() -> Array[Dictionary]:
 	return result
 
 func rig_error(action: String, point: String) -> String:
-	if moving:return "Stop the guided core before handling rigging."
+	if moving:return "Stop the guided core before handling magnetic connectors."
 	if action=="detach":
 		if point==spec.front_point:
 			return "" if is_equal_approx(travel,spec.capture) and has_point(spec.aft_point) else "Keep the forward bridge attached until the guides capture 0.32 m of the core."
 		return "" if secured() and is_equal_approx(travel,spec.travel) else "Keep aft crane support through all four captive bolts and the rear interlock."
-	if point==spec.front_point and rig>0:return "Extend the forward rig at the captured stop before refitting its bridge."
-	if point==spec.front_point and travel>spec.capture+.0001:return "Return to the captured-guide stop before refitting the forward bridge."
+	if point==spec.front_point and rig>0:return "Extend the forward magnetic connector at the captured stop before refitting it."
+	if point==spec.front_point and travel>spec.capture+.0001:return "Return to the captured-guide stop before refitting the forward magnetic connector."
 	return ""
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the core guide."
 	if action=="stop":return "" if moving else "The core guide is stopped."
-	if not active:return "Deliver the core to its rear approach with both crane ends first."
+	if not active:return "Deliver the core to its rear approach with both magnetic connectors first."
 	var receiving=receiving_error()
 	if not receiving.is_empty():return receiving
 	if moving:return "Stop the guide before changing its operation."
@@ -104,24 +104,24 @@ func action_error(action: String) -> String:
 		if index<0 or index>=4:return "Unknown captive bolt."
 		if _record().parent!=spec.owner:return "Seat the core flange before operating its bolts."
 		if bolts[index] and connected:return "Isolate the rear interface before releasing any captive bolt."
-		if not has_point(spec.aft_point):return "Refit the aft crane end before changing core retention."
+		if not has_point(spec.aft_point):return "Refit the aft magnetic connector before changing core retention."
 		return ""
 	if action in ["connection","isolation"]:
 		if _record().parent!=spec.owner or not bolts.all(func(value):return value):return "Seat the core and secure all four captive bolts first."
-		if action=="connection" and not has_point(spec.aft_point):return "Keep the aft end attached through rear connection."
+		if action=="connection" and not has_point(spec.aft_point):return "Keep the aft magnetic connector attached through rear connection."
 		return ""
 	if action not in ["advance","return"]:return "Unknown core guide command."
 	if connected or bolts.any(func(value):return value):return "Isolate the core and release all four captive bolts before guided movement."
 	var crane=_crane()
 	if crane.uid!=spec.uid or crane.task!="core" or crane.station!="receiver" or crane.raised or not crane.motion.is_empty():return "Lower the matching crane at the rear guide before operating insertion."
-	if not has_point(spec.aft_point):return "Keep the aft crane end attached during guided movement."
+	if not has_point(spec.aft_point):return "Keep the aft magnetic connector attached during guided movement."
 	if action=="advance":
 		if is_equal_approx(travel,spec.travel):return "The core is seated."
-		if travel<spec.capture-.0001 and not has_point(spec.front_point):return "Both crane ends are required before guide capture."
-		if travel>=spec.capture-.0001 and (has_point(spec.front_point) or not crane.hand_payload().is_empty()):return "Release and stow the forward bridge before advancing beyond guide capture."
+		if travel<spec.capture-.0001 and not has_point(spec.front_point):return "Both magnetic connectors are required before guide capture."
+		if travel>=spec.capture-.0001 and (has_point(spec.front_point) or not crane.hand_payload().is_empty()):return "Release and stow the forward magnetic connector before advancing beyond guide capture."
 	else:
 		if is_zero_approx(travel):return "The core is at its rear approach."
-		if travel<=spec.capture+.0001 and rig==0 and not has_point(spec.front_point):return "Refit the forward bridge before returning out of the captured guides."
+		if travel<=spec.capture+.0001 and rig==0 and not has_point(spec.front_point):return "Refit the forward magnetic connector before returning out of the captured guides."
 	return receiving_error()
 
 func request(action: String) -> String:

@@ -550,7 +550,7 @@ func refresh() -> void:
 	var carrying: String = ""
 	if not held.is_empty():carrying = "Carrying "+game.components.title(game.model.items[held].kind)
 	elif not build.is_empty():carrying = "Carrying "+game.build_label(build)
-	if game.hands.payload_holder() != null:carrying = "Holding magnetic end · aim at a marked point and click · Q stow"
+	if game.hands.payload_holder() != null:carrying = "Holding magnetic connector · aim at a marked point and click · Q stow"
 	carry_label.text = carrying
 	carry_panel.visible = not carrying.is_empty() and not game.paused
 	_refresh_manual()

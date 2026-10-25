@@ -64,10 +64,10 @@ pins, waist mechanisms, service disconnects and pelvis guards. The legs own thei
 integral balls/necks/spars, cylinder lug carriers, stop tongues and leg service
 tails. The chest owns its lower flange and connecting bolts/washers; the waist
 owns the receiving seats, keys and captive threads. Equipment supports and
-rigging never become robot parts or additional assembly inventory.
+crane cables never become robot parts or additional assembly inventory.
 
 Prepare bridge, both sockets, rotary bearing and lean mechanism together on the
-bulky fixture. Leave hip retaining halves, cylinders, stop-cage closures and hip
+heavy module rig. Leave hip retaining halves, cylinders, stop-cage closures and hip
 guards off for upward ball entry and underside work. Engage both waist neutral
 locks. The prepared delivery envelope is X±2.01, Y−.90..+.90,
 Z8.49..11.42 including the prepared upper cylinder clevises and parking catches.
@@ -112,7 +112,7 @@ forward grip is an outboard bar and the rear grip reaches back toward the hip
 deck, both below the bridge and clear of the hip socket. The jaw rods and
 upper links still move; the grips and posts stay fixed. Operate from rear
 hip-deck stances X11.6/14.4, Z27.75, beside rather than beneath the bearing
-beams. The bulky source fixture supports the same bridge pads with hip
+beams. The heavy module rig supports the same bridge pads with hip
 datum(3.25,1.20,13). See the [fixture plan](../game/final-assembly-plan.md#gantry-support-and-rear-service-reservation).
 
 The jaws contact plain bridge material, not liners, guards, cylinder brackets or
@@ -494,9 +494,9 @@ source support and removes only closures/services blocking the connection.
 ### Required review before models or gameplay claim completion
 
 The wider-workshop implementation now supplies a movable prepared pelvis/waist
-on the bulky fixture, including the bearing/yoke/cradle, two lean cartridges,
+on the heavy module rig, including the bearing/yoke/cradle, two lean cartridges,
 four lifting eyes and the existing socket/clevis context. These are simplified
-prepared internals, not the completed detailed mechanism model. The bulky fixture
+prepared internals, not the completed detailed mechanism model. The heavy module rig
 has braked height travel and four source clamps. The four-end crane takes weight
 while those clamps open, follows the authored gantry route, then seats on the
 two existing bearing patches. Four locally operated gantry jaws and both captive

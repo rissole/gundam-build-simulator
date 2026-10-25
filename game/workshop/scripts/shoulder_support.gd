@@ -71,19 +71,19 @@ func depart() -> void:
 func rig_changed() -> void:
 	if active and _crane().uid==spec.uid and _crane().attached_count()<4 and secured():released=true
 func rig_error(action: String,_point: String) -> String:
-	if not motion.is_empty():return "Finish or resume the shoulder load transfer before handling a crane end."
-	if action=="detach" and not secured():return "Retain the ring, brace and all drives, check brakes, transfer weight and connect services before releasing an arm end."
+	if not motion.is_empty():return "Finish or resume the shoulder load transfer before handling a magnetic connector."
+	if action=="detach" and not secured():return "Retain the ring, brace and all drives, check brakes, transfer weight and connect services before releasing a magnetic connector."
 	return ""
 func crane_options() -> Array[Dictionary]:
 	if not motion.is_empty():return [{"action":"guide:stop" if moving else "guide:resume","label":"Stop load transfer" if moving else "Resume load transfer"}]
 	return [{"action":"guide:check_brakes","label":"Check shoulder brakes"},{"action":"guide:transfer_weight","label":"Transfer arm weight to shoulder"},{"action":"guide:take_weight","label":"Take arm weight"}]
 func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the shoulder support."
-	if not active:return "Seat the arm with its four crane ends first."
+	if not active:return "Seat the arm with its four magnetic connectors first."
 	if action=="stop":return "" if moving else "The shoulder load transfer is stopped."
 	if action=="resume":return "" if not motion.is_empty() and not moving and rigged() else "Refit all four ends to resume this load transfer."
 	if not motion.is_empty():return "Finish or resume the current shoulder load transfer."
-	if not rigged():return "Lower the matching crane and attach all four arm ends."
+	if not rigged():return "Lower the matching crane and attach all four magnetic connectors."
 	if action=="check_brakes":return "" if _has(spec.structural_slots) else "Complete the ring, keyed brace and all three pinned drive cartridges before checking brakes."
 	if action=="transfer_weight":return "" if retained() and tension>0 else "Check the fully retained shoulder brakes before transferring weight."
 	if action=="take_weight":return "" if tension<1 and not _any(spec.service_slots) else "Isolate and remove the service harness before taking arm weight."

@@ -22,7 +22,7 @@ last version before consolidation.
   checks: `save_roundtrip_test` (fresh boot, mid-ride, mid-lift crane) and the
   diagnostic `save_roundtrip_stages_test` (145 checks), which passes at every stage
   boundary and mid-way through each stage's first crane delivery. Its first run
-  found that reloads left the pelvis on the bulky fixture. Every build mounted on
+  found that reloads left the pelvis on the heavy module rig. Every build mounted on
   the pelvis moved with it, and the fall-through-floor rescue sent the sunken heel
   pads and pitch actuators home. `module_supports.apply` now seats the pelvis on
   the gantry. Reload feel awaits the user's playtest. Design:
@@ -75,7 +75,7 @@ last version before consolidation.
   pitch actuator) happens in the final-assembly hangar, then the build continues
   in the same session: pelvis → both legs → chest → core → backpack → both arms
   → pauldrons → head → crown. `--stage=complete` is the final boundary. The left
-  foot rests in the turning foot fixture, which stands in for its bay store
+  foot rests on the turning foot rig, which stands in for its bay store
   (store masts and soles removed, no dispatch rails). The crane collects it from
   the same pose once it is upright. The foot's 35 cabinets sit on the hangar's
   rear wall, and the grid skips the preparation stations, tray and actuator
@@ -149,6 +149,7 @@ last version before consolidation.
 
 ## Active rules
 
+- **Player language:** a bay is a crane destination (Heavy Module Bay, Limb Bay, Foot Bay, Final Assembly Bay, Parking bay). Every holder except the gantry is a rig. The gantry is the only named machine. Crane lines are crane cables; the ends are magnetic connectors. Internal ids stay as they are.
 - **The user owns playtesting** of walking, visibility, reach and connection access.
   Automated checks cover content, equipment movement, support ownership and
   interlocks. Don't run automated walked acceptance, reach/visibility sweeps or

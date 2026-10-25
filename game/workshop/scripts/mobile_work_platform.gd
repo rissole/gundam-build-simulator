@@ -98,7 +98,7 @@ func controls() -> Array[Dictionary]:
 
 func dock_title(id: String) -> String:
 	if id == "park":return "Parking bay"
-	return ("Module bay · " if id.begins_with("bulky_") else "Limb station · ")+id.get_slice("_",1).capitalize()
+	return ("Heavy Module Bay · " if id.begins_with("bulky_") else "Limb Bay · ")+id.get_slice("_",1).capitalize()
 
 func menu_access_error() -> String:
 	if game.camera.global_position.distance_to(move_button.global_position)>game.REACH:return "Move within reach of the platform controls."

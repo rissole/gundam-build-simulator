@@ -120,7 +120,7 @@ func rotation_key(pressed: bool) -> void:
 		if game.rotation_station == "foot" and game.equipment.get_equipment("foot_fixture") != null:
 			game.rotate_held = false
 			game.rotation_station = ""
-			game.hud.toast("Use the foot bay controls to choose a supported work position.")
+			game.hud.toast("Use the Foot Bay controls to choose a supported work position.")
 	else:
 		var now = Time.get_ticks_msec()
 		if game.rotate_held and not game.rotate_dragged and now-game.rotate_press_time <= 250 and not game.rotation_station.is_empty():
@@ -138,7 +138,7 @@ func reset_station(station: String = "") -> void:
 	if station.is_empty():station = station_in_view()
 	if station.is_empty():return
 	if station == "foot" and game.equipment.get_equipment("foot_fixture") != null:
-		game.hud.toast("Choose Upright at the foot bay controls.")
+		game.hud.toast("Choose Upright at the Foot Bay controls.")
 		return
 	var node: Node3D = game.stations.get(station,game.foot)
 	if game.camera.global_position.distance_to(node.global_position)>5.0:return

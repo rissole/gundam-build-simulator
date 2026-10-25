@@ -44,7 +44,7 @@ func action_error(action: String) -> String:
 	if not available(action):return "Fit the cartridge before operating its captive lock."
 	var spec: Dictionary=specs[action]
 	var rail=game.equipment.get_equipment("leg_rail")
-	if rail==null or rail.active_assembly!=spec.support_assembly or not rail.engaged or rail.path!=3 or rail.release!=0 or rail.moving or not rail.mode.is_empty():return "Reacquire and lock the leg holder before changing neutral restraint."
+	if rail==null or rail.active_assembly!=spec.support_assembly or not rail.engaged or rail.path!=3 or rail.release!=0 or rail.moving or not rail.mode.is_empty():return "Reacquire and lock the leg rig before changing neutral restraint."
 	if not locked[action] and not spec.requires.all(func(sid):return not game.model.assemblies[spec.owner].slots[sid].is_empty()):return "Fit both eye pins and their captive keepers before engaging this lock."
 	return game.hands.error(equipment_id)
 

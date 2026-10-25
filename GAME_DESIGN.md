@@ -465,7 +465,7 @@ clear the installed arms, with landings providing actual connection access;
 extending the original single-hip lift vertically is not an established solution.
 The [coordinated fixture/route plan](design/game/final-assembly-plan.md#1-measured-workshop-and-gantry-layout)
 and [updated layout](design/game/final-assembly-layout.svg) now specify an 11×12 m
-bulky bay, a 7×13 m shared limb bay with passive leg/arm parking, supported rail
+Heavy Module Bay, a 7×13 m Limb Bay with passive leg/arm parking, supported rail
 indexing and empty return, rear-positioned elevators, moving access bridges and
 a low pelvis gantry. A low outboard crane bypass, outboard lift/high crossing and central rear opening
 deliver core and backpack; high routes serve head pieces and pauldrons. Four elevated levels

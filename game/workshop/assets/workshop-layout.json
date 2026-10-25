@@ -203,7 +203,7 @@
     ],
     "places": {
       "limb_station": {
-        "title": "Limb station",
+        "title": "Limb Bay",
         "supports": [
           "left_leg",
           "right_leg",
@@ -213,7 +213,7 @@
         ]
       },
       "final_bay": {
-        "title": "Final assembly bay",
+        "title": "Final Assembly Bay",
         "supports": [
           "pelvis_gantry",
           "pelvis",
@@ -231,127 +231,127 @@
         ]
       },
       "bulky_fixture": {
-        "title": "Bulky fixture",
+        "title": "Heavy Module Bay",
         "supports": [
           "bulky_fixture"
         ]
       },
       "left_shin_rack": {
-        "title": "Left shin rack",
+        "title": "Left shin rig",
         "supports": [
           "leg_shin_rack"
         ]
       },
       "left_fork_rack": {
-        "title": "Left knee-fork rack",
+        "title": "Left knee-fork rig",
         "supports": [
           "leg_fork_rack"
         ]
       },
       "left_spar_rack": {
-        "title": "Left upper-leg rack",
+        "title": "Left upper-leg rig",
         "supports": [
           "leg_spar_rack"
         ]
       },
       "right_shin_rack": {
-        "title": "Right shin rack",
+        "title": "Right shin rig",
         "supports": [
           "leg_shin_rack_right"
         ]
       },
       "right_fork_rack": {
-        "title": "Right knee-fork rack",
+        "title": "Right knee-fork rig",
         "supports": [
           "leg_fork_rack_right"
         ]
       },
       "right_spar_rack": {
-        "title": "Right upper-leg rack",
+        "title": "Right upper-leg rig",
         "supports": [
           "leg_spar_rack_right"
         ]
       },
       "left_foot_store": {
-        "title": "Left foot store",
+        "title": "Foot Bay",
         "supports": [
           "foot_store"
         ]
       },
       "right_foot_store": {
-        "title": "Right foot store",
+        "title": "Right foot rig",
         "supports": [
           "right_foot_store"
         ]
       },
       "chest_store": {
-        "title": "Chest store",
+        "title": "Chest rig",
         "supports": [
           "chest_store"
         ]
       },
       "core_store": {
-        "title": "Core store",
+        "title": "Core rig",
         "supports": [
           "core_store"
         ]
       },
       "backpack_store": {
-        "title": "Backpack store",
+        "title": "Backpack rig",
         "supports": [
           "backpack_store"
         ]
       },
       "cassette_parking": {
-        "title": "Cassette parking",
+        "title": "Arm rig",
         "supports": [
           "cassette_park"
         ]
       },
       "right_arm_store": {
-        "title": "Right arm store",
+        "title": "Right arm rig",
         "supports": [
           "right_arm_store"
         ]
       },
       "left_pauldron_store": {
-        "title": "Left pauldron store",
+        "title": "Left pauldron rig",
         "supports": [
           "left_pauldron_store"
         ]
       },
       "right_pauldron_store": {
-        "title": "Right pauldron store",
+        "title": "Right pauldron rig",
         "supports": [
           "right_pauldron_store"
         ]
       },
       "head_baseplate_store": {
-        "title": "Head baseplate store",
+        "title": "Head baseplate rig",
         "supports": [
           "head_baseplate_store"
         ]
       },
       "head_left_store": {
-        "title": "Left head-side store",
+        "title": "Left head-side rig",
         "supports": [
           "head_left_store"
         ]
       },
       "head_right_store": {
-        "title": "Right head-side store",
+        "title": "Right head-side rig",
         "supports": [
           "head_right_store"
         ]
       },
       "head_top_store": {
-        "title": "Head top store",
+        "title": "Head top rig",
         "supports": [
           "head_top_store"
         ]
       },
       "head_crown_store": {
-        "title": "Head crown store",
+        "title": "Head crown rig",
         "supports": [
           "head_crown_store"
         ]
@@ -1495,7 +1495,7 @@
           0,
           18
         ],
-        "title": "Chest to fixture",
+        "title": "Chest to Heavy Module Bay",
         "owner": "chest",
         "slot": "",
         "source_support": "chest_store",
@@ -1762,8 +1762,8 @@
           "core_aft": "magnet_b"
         },
         "endpoint_labels": {
-          "magnet_a": "forward equalizing bridge",
-          "magnet_b": "aft magnetic end"
+          "magnet_a": "forward magnetic connector",
+          "magnet_b": "aft magnetic connector"
         },
         "handle_points": {
           "core_front": [
@@ -1808,7 +1808,7 @@
           0,
           18
         ],
-        "title": "Core to fixture",
+        "title": "Core to Heavy Module Bay",
         "owner": "core",
         "slot": "",
         "source_support": "core_store",
@@ -1909,8 +1909,8 @@
           "core_aft": "magnet_b"
         },
         "endpoint_labels": {
-          "magnet_a": "forward equalizing bridge",
-          "magnet_b": "aft magnetic end"
+          "magnet_a": "forward magnetic connector",
+          "magnet_b": "aft magnetic connector"
         },
         "handle_points": {
           "core_front": [
@@ -2054,7 +2054,7 @@
         "payload": "assembly",
         "load_uid": "backpack",
         "support": "crane_rigging",
-        "title": "Backpack to fixture",
+        "title": "Backpack to Heavy Module Bay",
         "owner": "backpack",
         "slot": "",
         "source_support": "backpack_store",
@@ -2332,7 +2332,7 @@
         "payload": "assembly",
         "load_uid": "arm_cassette",
         "support": "crane_rigging",
-        "title": "Cassette to station",
+        "title": "Arm rig to Limb Bay",
         "owner": "arm_cassette",
         "slot": "",
         "source_support": "cassette_park",
@@ -2912,7 +2912,7 @@
         "payload": "assembly",
         "load_uid": "right_arm",
         "support": "crane_rigging",
-        "title": "Right arm to cassette",
+        "title": "Right arm to arm rig",
         "owner": "right_arm",
         "slot": "",
         "source_support": "right_arm_store",
@@ -3501,7 +3501,7 @@
         "rack_contacts": []
       },
       "head_baseplate_to_fixture": {
-        "title": "Head baseplate to fixture",
+        "title": "Head baseplate to Heavy Module Bay",
         "payload": "assembly",
         "load_uid": "head_baseplate",
         "owner": "head_baseplate",
@@ -3779,7 +3779,7 @@
         "rack_contacts": []
       },
       "head_left_to_fixture": {
-        "title": "Left wraparound side to fixture",
+        "title": "Left wraparound side to Heavy Module Bay",
         "payload": "assembly",
         "load_uid": "head_left",
         "owner": "head_left",
@@ -4057,7 +4057,7 @@
         "rack_contacts": []
       },
       "head_right_to_fixture": {
-        "title": "Right wraparound side to fixture",
+        "title": "Right wraparound side to Heavy Module Bay",
         "payload": "assembly",
         "load_uid": "head_right",
         "owner": "head_right",
@@ -4367,7 +4367,7 @@
         "rack_contacts": []
       },
       "head_top_to_fixture": {
-        "title": "Structural head top to fixture",
+        "title": "Structural head top to Heavy Module Bay",
         "payload": "assembly",
         "load_uid": "head_top",
         "owner": "head_top",
@@ -4682,7 +4682,7 @@
         ]
       },
       "head_crown_to_fixture": {
-        "title": "Decorative head crown to fixture",
+        "title": "Decorative head crown to Heavy Module Bay",
         "payload": "assembly",
         "load_uid": "head_crown",
         "owner": "head_crown",
@@ -18680,7 +18680,7 @@
     ],
     "signs": [
       {
-        "text": "BULKY",
+        "text": "HEAVY MODULE",
         "position": [
           -1.35,
           1.12,
@@ -18761,7 +18761,7 @@
         "width": 2.6
       },
       {
-        "text": "PREPARED CHEST / CRANE TO EMPTY BULKY FIXTURE",
+        "text": "PREPARED CHEST / CRANE TO EMPTY HEAVY MODULE RIG",
         "position": [
           -7,
           1.7,
@@ -18770,7 +18770,7 @@
         "width": 3.2
       },
       {
-        "text": "PREPARED BACKPACK / TWO-END CRANE TO BULKY FIXTURE",
+        "text": "PREPARED BACKPACK / TWO-END CRANE TO HEAVY MODULE RIG",
         "position": [
           -7,
           1.65,

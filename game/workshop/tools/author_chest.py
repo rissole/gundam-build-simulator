@@ -80,7 +80,7 @@ def extend(trial, kinds, pelvis, layout, diagram):
     chest=dict(title="Prepared chest and cockpit",carry_class="equipment",bounds=[5.48,4.28,2.55],
                work_locations=["support","parent"],interaction="components",context_sources=context,
                slots={},supplied_milestones=["prepared"],milestones={"prepared":[]},manual=[dict(title="Prepared chest and cockpit",view="overview",slots=[],
-               body="The chest frame, enclosed cockpit, fixed shoulder cups and neck spoke are supplied assembled. Use Chest to fixture at the shared crane to transfer it from storage after selecting chest inserts on the empty bulky fixture. Keep the fitted cockpit upright. After checking the supported unit, lower the fixture to its pickup stop and choose Chest to waist. The pelvis manual owns seating, retention and service connections.")])
+               body="The chest frame, enclosed cockpit, fixed shoulder cups and neck spoke are supplied assembled. Use Chest to Heavy Module Bay at the shared crane to transfer it from the chest rig after selecting chest inserts on the empty heavy module rig. Keep the fitted cockpit upright. After checking the supported unit, lower the heavy module rig to its pickup stop and choose Chest to waist. The pelvis manual owns seating, retention and service connections.")])
     trial["parents"].append(dict(id="chest",definition="chest",label=chest["title"],location="support:chest_store",home=layout["workshop"]["chest_storage"]["position"]))
     trial["supports"]["chest_store"]=dict(assemblies=["chest"],assembly_ids=["chest"])
     for name in ["bulky_fixture","crane_rigging"]:

@@ -252,18 +252,18 @@ tips at X±1.30/Z18.00. Two high **front-facing** structural magnetic pads at
 centre of mass. Shape the upper blade sweep outboard of their rigging lines;
 short stand-offs put those lines at Y≥+0.95. The pad load line is a source-balance
 target, subject to actual mass and trim. With both keyed feet fully seated and
-both M12 bolts complete, release/stow the two visible ends from the front landing.
-No fastener or magnetic end is hidden behind the fitted crown. Reacquire both ends
+both M12 bolts complete, release and stow the two visible magnetic connectors from the front landing.
+No fastener or magnetic connector is hidden behind the fitted crown. Reacquire both magnetic connectors
 before releasing crown retention for a local mistake correction.
 
 ### Supported source-to-head handling and overhead envelope
 
-Use the **shared bulky bay and reusable adjustable fixtures**, sequentially, for
+Use the **Heavy Module Bay and its adjustable rig**, sequentially, for
 baseplate, each side, top and crown. Keep each piece upright in its installed yaw
-and pitch. Map its lowest installed Z to fixture world height **0.60 m for the
+and pitch. Map its lowest installed Z to rig world height **0.60 m for the
 baseplate, 0.85 m for the sides, top and crown**;
-the shared fixture centre `(3.25,*,13.00)` lies in the selected11×12 m
-bulky bay. Thus a point maps as
+the heavy module rig centre `(3.25,*,13.00)` lies in the selected 11×12 m
+Heavy Module Bay. Thus a point maps as
 `(3.25+X, Hsource+Z−Zmin, 13.00−Y)` for the current piece, using that selected
 source height. Contact structural feet or
 roof ledges in padded adjustable saddles, not flared armor edges, optics or crest
@@ -419,7 +419,7 @@ questions; they are not additional user-approved dimensions or gameplay evidence
 - `game/workshop/tools/author_head.py` authors the baseplate, handed rear-wrap
   sides and structural roof from the interface/handling sections above and the
   final-assembly plan's fixture, crane-route and work-patch tables.
-- Four passive upright stores in the bulky bay feed the shared fixture at
+- Four passive upright rigs in the Heavy Module Bay feed the heavy module rig at
   X3.25/Z13; exchangeable saddles/jaws use 0.60 m baseplate and 0.85 m shell seats.
   The fixture's common upper members now end at Y0.58 to clear the low plate.
 - Separate M24×160 bolts/4 mm washers, M12×100 side bolts, M12×160 roof bolts

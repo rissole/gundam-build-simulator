@@ -88,9 +88,9 @@ retention; detailed contact technology and core circuitry remain outside this pa
 
 ### Initial source-to-dock handoff
 
-The prepared core rests horizontally on adjustable saddles of the shared bulky
-fixture. Structural forward contacts, expressed installed, are two side-upper
-pads (±0.30,+0.15,12.27). A removable equalizing bridge from the shared crane's
+The prepared core rests horizontally on adjustable saddles of the heavy module
+rig. Structural forward contacts, expressed installed, are two side-upper
+pads (±0.30,+0.15,12.27). A forward magnetic connector from the shared crane's
 rigging set captures both pads and presents a centred magnetic-end attachment
 (0,+0.15,12.53). Its right-side attachment/release handle is
 (+0.42,+0.15,12.27). Use that visible handle from the robot-right flank; the
@@ -211,7 +211,7 @@ Both rotate with the backpack and are included in the rectangular sweep.
 
 ## Backpack crane installation and closure
 
-Prepare on the shared bulky fixture, front face down on adjustable perimeter
+Prepare on the heavy module rig, front face down on adjustable perimeter
 saddles, in the orientation corresponding to 90° installed opening. This exposes
 rear construction faces without a dedicated backpack machine.
 Structural crane pads (±0.72,−2.08,12.70) closed become
@@ -373,9 +373,9 @@ only for a measured conflict and coordinate the affected neighbors.
 
 `game/workshop/tools/author_core.py` now supplies one prepared core, fixed
 chest dock/guides and the external installation manual. Its existing physical
-assembly moves from a passive store at world `(-7,1.30,31.30)` to the shared
-bulky fixture at `(3.25,1.30,13)`. The storage route raises the axis to Y6,
-travels to Z13 and crosses to the fixture. Core saddles contact its lower keys;
+assembly moves from its rig at world `(-7,1.30,31.30)` to the heavy module
+rig at `(3.25,1.30,13)`. The storage route raises the axis to Y6,
+travels to Z13 and crosses to the rig. Core saddles contact its lower keys;
 two upper clamps release after both crane ends take weight. Empty-fixture insert
 selection and supported return to the same store preserve independent preparation
 order. Internal power machinery is supplied; no extra loose stock is invented.

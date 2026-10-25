@@ -33,7 +33,7 @@ func stage_errors(stage: String) -> Array[String]:
 	if stage in FOOT_STAGES:
 		var turning=_equipment("foot_fixture")
 		_location(errors,"foot","support:foot_store")
-		_need(errors,turning!=null and turning.work_pose=="upright" and not turning.moving,"Set the foot fixture upright.")
+		_need(errors,turning!=null and turning.work_pose=="upright" and not turning.moving,"Set the foot rig upright.")
 		var fitted=["pad_1","pad_2"] if stage=="actuator" else []
 		for child in ["pad_1","pad_2","pitch"]:
 			_need(errors,(model.assemblies[child].parent=="foot")==(child in fitted),child+(" must be fitted to the foot." if child in fitted else " must not be fitted yet."))
@@ -47,11 +47,11 @@ func stage_errors(stage: String) -> Array[String]:
 			for owner in ["left_leg","right_leg","pelvis"]:
 				var root: String=game.runtime.definition(owner).get("root_slot","")
 				_need(errors,model.assemblies[owner].slots.keys().all(func(sid):return sid==root or model.assemblies[owner].slots[sid].is_empty()),"Fresh "+owner+" must have no construction supplied.")
-			_need(errors,rail.active_assembly=="left_leg" and rail.lane=="left" and rail.can_construct() and rail.release==0 and rail.bolster==0,"Fresh holder must support the left build at home.")
+			_need(errors,rail.active_assembly=="left_leg" and rail.lane=="left" and rail.can_construct() and rail.release==0 and rail.bolster==0,"Fresh leg rig must support the left build at home.")
 			_carrier_home(errors)
-			_need(errors,fixture.template=="pelvis" and fixture.height==0 and not fixture.moving and fixture.source_release==0 and not fixture.locks.values().any(func(v):return v) and fixture.jaws.all(func(v):return v==1),"Fresh pelvis fixture must be lowered with open jaws and unset waist pins.")
-			_need(errors,crane.endpoints.values().all(func(end):return end.state=="stowed"),"Stow every fresh crane end.")
-			_need(errors,_equipment("arm_cassette").support_secured("left_arm"),"Retain the left arm on its parked cassette.")
+			_need(errors,fixture.template=="pelvis" and fixture.height==0 and not fixture.moving and fixture.source_release==0 and not fixture.locks.values().any(func(v):return v) and fixture.jaws.all(func(v):return v==1),"Fresh heavy module rig must be lowered with open jaws and unset waist pins.")
+			_need(errors,crane.endpoints.values().all(func(end):return end.state=="stowed"),"Stow every fresh magnetic connector.")
+			_need(errors,_equipment("arm_cassette").support_secured("left_arm"),"Retain the left arm on its parked arm rig.")
 			for owner in ["foot","right_foot"]:_need(errors,model.milestone(owner,"complete"),"Keep the supplied "+owner+" complete on its bay support.")
 			_need(errors,model.items.keys().all(func(uid):return not model.items[uid].owner.is_empty() or model.items[uid].location==game.part_defs[uid].get("location","bin")),"Fresh workshop stock must remain at its authored source.")
 		"left_leg_build":
@@ -64,33 +64,33 @@ func stage_errors(stage: String) -> Array[String]:
 			var foot="foot" if stage=="left_leg_dock" else "right_foot"
 			_need(errors,model.milestone(owner,"structural_ready"),"Complete "+owner+" structural construction.")
 			_need(errors,model.assemblies[foot].parent==owner,"Mount the prepared foot on "+owner+".")
-			_need(errors,rail.active_assembly==owner and rail.can_construct(),"Return the active "+owner+" holder to its construction pose.")
+			_need(errors,rail.active_assembly==owner and rail.can_construct(),"Return the active "+owner+" leg rig to its construction pose.")
 		"right_leg_build":
 			_leg_secured(errors,"left")
 			_holder_home(errors)
 			_carrier_home(errors)
-			_need(errors,rail.active_assembly=="right_leg" and rail.can_construct(),"Select the right build on the returned holder.")
+			_need(errors,rail.active_assembly=="right_leg" and rail.can_construct(),"Select the right build on the returned leg rig.")
 			_location(errors,"right_foot","support:right_foot_store")
 		"chest":
 			for side in ["left","right"]:_leg_secured(errors,side)
 			_holder_home(errors)
-			_need(errors,not rail.engaged,"Release the holder from the retained legs.")
+			_need(errors,not rail.engaged,"Release the leg rig from the retained legs.")
 			_carrier_home(errors)
 			_location(errors,"chest","support:chest_store")
 		"core":
 			_need(errors,model.milestone("pelvis","chest_connected"),"Retain and connect the chest.")
-			_need(errors,model.support_occupant("bulky_fixture").is_empty(),"Clear the bulky fixture.")
+			_need(errors,model.support_occupant("bulky_fixture").is_empty(),"Clear the heavy module rig.")
 			_location(errors,"core","support:core_store")
 		"backpack":
 			var guide=_equipment("core_guide")
 			_need(errors,guide.active and guide.secured() and is_equal_approx(guide.travel,guide.spec.travel) and model.assemblies.core.parent=="chest" and not guide.moving,"Retain and connect the seated core before releasing its crane.")
-			_need(errors,model.support_occupant("bulky_fixture").is_empty(),"Clear the bulky fixture.")
+			_need(errors,model.support_occupant("bulky_fixture").is_empty(),"Clear the heavy module rig.")
 			_location(errors,"backpack","support:backpack_store")
 		"left_arm":
 			var pack=_equipment("backpack_hinge")
 			_need(errors,model.milestone("chest","backpack_connected") and pack.active and pack.angle==1 and pack.retained() and pack.covers.all(func(v):return v) and not pack.moving and pack.motion.is_empty(),"Close, latch and cover the connected backpack.")
 			_location(errors,"arm_cassette","support:cassette_park")
-			_need(errors,_equipment("arm_cassette").support_secured("left_arm"),"Retain the left arm on its parked cassette.")
+			_need(errors,_equipment("arm_cassette").support_secured("left_arm"),"Retain the left arm on its parked arm rig.")
 		"right_arm":
 			_need(errors,_equipment("left_shoulder").secured(),"Secure the left shoulder.")
 			_location(errors,"right_arm","support:right_arm_store")
@@ -102,17 +102,17 @@ func stage_errors(stage: String) -> Array[String]:
 				_need(errors,_equipment(side+"_pauldron_receiver").operations_released(),"Release the "+side+" arm's joint and digit restraints.")
 		"head_sensors","complete":
 			for uid in ["head_baseplate","head_left","head_right","head_top"]:
-				_need(errors,model.milestone("chest",uid+"_retained") and _equipment(uid+"_receiver").state=="released","Retain "+uid+" and release its rig.")
-				_need(errors,game.zones.holder(uid+"_rig").is_empty(),"Stow every end of "+uid+".")
+				_need(errors,model.milestone("chest",uid+"_retained") and _equipment(uid+"_receiver").state=="released","Retain "+uid+" and release its magnetic connectors.")
+				_need(errors,game.zones.holder(uid+"_rig").is_empty(),"Stow every magnetic connector of "+uid+".")
 			_need(errors,model.milestone("chest","head_baseplate_connected"),"Connect and clip the central head loom.")
-			_need(errors,model.support_occupant("bulky_fixture").is_empty(),"Clear the bulky fixture.")
+			_need(errors,model.support_occupant("bulky_fixture").is_empty(),"Clear the heavy module rig.")
 	if stage=="complete":
 		for uid in ["head_sensors","head_faceplate","head_mask","head_crown"]:
 			_need(errors,model.milestone("chest",uid+"_retained"),"Retain "+uid+".")
 		_need(errors,model.milestone("chest","head_sensors_connected"),"Connect the sensor carrier power/data.")
-		_need(errors,_equipment("head_crown_receiver").state=="released" and game.zones.holder("head_crown_rig").is_empty(),"Release and stow the final crown rig.")
+		_need(errors,_equipment("head_crown_receiver").state=="released" and game.zones.holder("head_crown_rig").is_empty(),"Release and stow the final crown magnetic connectors.")
 	if stage in ["right_arm","pauldrons","head","head_sensors","complete"]:
-		_need(errors,crane.endpoints.values().all(func(end):return end.state=="stowed"),"Stow every arm crane end.")
+		_need(errors,crane.endpoints.values().all(func(end):return end.state=="stowed"),"Stow every arm magnetic connector.")
 	return errors
 
 ## Runs only this stage's forward work, up to the next stage's boundary.
@@ -181,7 +181,7 @@ func _location(errors: Array[String], owner: String, location: String) -> void:
 	_need(errors,game.model.assemblies[owner].location==location,owner+" must be at "+location+".")
 func _holder_home(errors: Array[String]) -> void:
 	var rail=_equipment("leg_rail")
-	_need(errors,rail.path==0 and is_equal_approx(rail.index_x,rail.spec.station_x) and rail.release==0 and not rail.moving and rail.mode.is_empty(),"Return the holder home and finish its release motion.")
+	_need(errors,rail.path==0 and is_equal_approx(rail.index_x,rail.spec.station_x) and rail.release==0 and not rail.moving and rail.mode.is_empty(),"Return the leg rig home and finish its release motion.")
 func _carrier_home(errors: Array[String]) -> void:
 	var carrier=_equipment("foot_carrier")
 	_need(errors,carrier.path==0 and carrier.withdrawal==0 and not carrier.carrying() and not carrier.moving and carrier.handoff.is_empty(),"Return the empty foot carrier home.")
