@@ -8,6 +8,7 @@ ROUTINE = (
     'crane_policy_test',
     'equipment_motion_test',
     'eye_bearing_access_test',
+    'gantry_dressing_test',
     'geometry_surface_audit_test',
     'interaction_outline_test',
     'leg_content_test',

@@ -321,7 +321,7 @@ local clevis parking catches free the hands for fastening, without another lift 
 
 Replace the old tall gantry crown with a **low, rear-braced pelvis portal**.
 An overhead bar across the rear would intersect the core/backpack crane cables.
-Columns centred X8.8/17.2,Z31.1 are0.60 m square, topY11.10. Crosshead bounds
+Columns centred X8.8/17.2,Z31.1 are0.60 m square, body topY10.50. Crosshead bounds
 X8.5..17.5/Y10.5..11.1/Z30.8..31.4. Feet occupy
 X8.1..9.5 /16.5..17.9,Z30.9..32.5; rear braces stay Z31.4..33.0 near their
 columns, outside the work flanks and beyond the elevator shafts.
@@ -722,7 +722,8 @@ silhouettes, bevels, authored wear and close-up model detail.
 
 ### Gantry column detail study — 2026-10-25
 
-**Design only.** Candidate: the left fixed gantry column at X8.8/Z31.1, especially
+**Initial concept; expanded into the full-gantry implementation below.**
+Candidate: the left fixed gantry column at X8.8/Z31.1, especially
 its foundation and lower 3.1 m. It has quiet surfaces large enough to carry useful
 construction detail, and can establish a repeatable treatment without changing
 the moving crane or the robot's retention hardware. Keep the accepted lighting.
@@ -784,5 +785,102 @@ Review plan before expanding the treatment:
    performance diagnostic can be run if explicitly requested. Do not infer those
    results from headless checks.
 
-No game geometry or materials were changed for this study. The accompanying
+No game geometry or materials were changed in the original study commit. The accompanying
 startup-menu change is independent and is recorded in the workshop state.
+
+### Full gantry detail — 2026-10-25
+
+**Designed and implemented in `spike/hangar-visual-uplift`.** The user expanded
+the column study to the whole final mech gantry and asked for implementation,
+with existing measurements and blockouts as the governing constraint. The
+[measured whole-system layout](final-assembly-layout.svg) remains the spatial
+drawing; the column illustration above establishes the close-up finish. This
+pass covers the low support portal, foundations, cantilevers, bearing caps,
+jaws, four levels of access platforms, folding wings/bridges, telescoping
+fingers, guards and the two side lifts' solid structure. It adds no sound or
+console screens and stays in the visual worktree.
+
+#### Design and measured contract
+
+The visual hierarchy is a dark coated-steel load path inside a lighter ochre
+access system. Chamfers catch the existing task lighting. Solid anti-slip steel
+decks and narrow amber edges distinguish walking surfaces; machined bearing
+caps and rods distinguish mechanisms. Pale bay and level stencils orient the
+player without adding glowing targets. Keep paint largely intact, with sparse
+corner chips, restrained seams and roughness variation. Real controls retain
+their existing nodes and interaction outlines.
+
+The authoritative sources are `assets/workshop-layout.json`, its blockout
+authoring script and the actual runtime visuals after equipment setup. Coordinates
+below are world metres: X right, Y up, −Z forward; robot origin (13, 1.4, 26).
+
+| System | Preserved measured envelope / behavior |
+| --- | --- |
+| Columns | Centres X8.8/17.2, Z31.1; 0.60 m square, Y0..10.50. Earlier prose incorrectly used 11.10 for the body top; corrected above to match the blockout. |
+| Crosshead | X8.5..17.5, Y10.50..11.10, Z30.8..31.4. No tall crown across the upper service opening. |
+| Foundations | Each 1.40 × 0.30 × 1.60 m (X/Y/Z), centres (8.8/17.2, 0.15, 31.7). Preserve the column's existing 100 mm front overhang and the 640 mm hazard sleeves. |
+| Rear braces | Preserve the four authored 0.35 × 0.65 × 0.35 m step blocks behind each column; no replacement diagonal extending beyond them. |
+| Cantilevers and seats | X12.35/13.65 ±0.18, Y10.65..10.95, Z26.5..31.1. Bearing caps top Y10.97; complete jaws at most Y11.30. Keep all four moving jaw groups and handle references. |
+| Access levels | Deck tops Y8.4, 11.2, 14.0, 16.4. Outer paths X3.5..5.0 / 21.0..22.5; rear crossing Z35.8..37.3. Preserve the authored nominal 200 mm decks and their runtime visual insets. |
+| Folding access | Front wings swing forward through 90° after fingers retract. Rear hip bridge retains its two 1.45 m leaves and folding/collapsing guards. Detail follows each original moving parent. |
+| Service clearance | Upper centre X11.4..14.6 / Z27.2..35.3 remains open; aft lifting well Z31.7..35.3 remains open to the crane. No decorative braces, pipes or platforms cross these spaces. |
+| Side elevators | Origins (6.6, 0, 29) and (19.4, 0, 29), 3.20 m square shafts, 2.60 m square cars; stops 0.15, 8.4, 11.2, 14.0, 16.4. Retain controller-owned doors, visibility, shelves, buttons and travel. |
+
+#### Implemented treatment
+
+`scripts/gantry_dressing.gd` runs once after equipment construction, before save
+restoration. It replaces mesh resources on the original visual nodes. The mesh
+builder reads each live BoxMesh size; it does not recreate geometry from nominal
+dimensions. This preserves the blockout's 8/16 mm finger insets and offsets,
+12 mm wing/guard insets, and the lift's shortened rail/post visuals. The new
+vertices stay inside those bounds, including through intermediate platform poses.
+No authored layout, collider, support, assembly recipe, manual or stock identity
+changes. No new per-frame processing, lights or reflection captures.
+
+- Foundations: 8 mm chamfers; four real 140 mm square, 30 mm deep anchor pockets
+  per foot. Washers, hex nuts and stud ends sit below the original top surface,
+  combined into one hardware mesh per foundation.
+- Columns: chamfered coating and a real 420 × 450 mm inspection recess, 3 mm
+  deep at Y1.68..2.13. Four captive screw heads per cover stay inside the original
+  face. Existing hazard sleeves remain intact.
+- Frames, rails, cantilevers and mechanisms: shared coated-steel, safety-paint
+  and machined-metal finishes, small chamfers, fine fabrication seams and sparse
+  exposed-metal flecks on bevels.
+- Access floors and lift cars: opaque closed tread plates, metric anti-slip
+  pattern and 35 mm amber edges. There is no false see-through grating over
+  solid collision. Fine shader detail fades with screen footprint to limit shimmer.
+- Stencils: two column identities, one crosshead `02 / FINAL ASSEMBLY`, and eight
+  level labels. These are lit, depth-tested Label3D surfaces 1 mm off the existing
+  faces, without shadows or interaction targets.
+
+The single-column proposal's floor dirt fringe, bottom contact band and bespoke
+screw streaks are deferred; this pass uses shared procedural variation. The
+mech itself, crane, preparation rigs, console screens and audio are outside this
+gantry treatment. Asset-kit selection remains a separate decision.
+
+The implemented budget is **353 treated members, 50 cached mesh resources,
+six shared materials, 17,660 total triangles across treated geometry and added
+hardware**, four added combined hardware meshes and eleven stencils. The audit
+ceiling is 30,000 triangles. These are geometry/resource counts, not measured
+GPU submissions or FPS; the player's earlier performance approval predates this
+detail pass.
+
+#### Verification and remaining review
+
+The isolated `gantry_dressing_test` covers actual runtime blockout/lift geometry:
+unchanged collision identities/shapes/transforms/masks, unchanged authored data,
+retained visual nodes/parents/visibility, exact original mesh bounds, contained
+hardware, outward face normals/winding, real pocket depths and the unchanged
+foundation top. It checks jaw-handle outline integration, seven supplied
+intermediate folding poses and all four raised lift stops. These are geometry
+and controller-integration checks, not walked acceptance or full delivery tests.
+Part/manual audit: no stock, recipe, placement or manual sources changed;
+decorative hardware has no physical identity, pickup metadata or new targets.
+
+Routine verification: `run_regressions.py --only gantry_dressing_test
+workshop_smoke_test` passes **52 + 29 checks**. Evidence:
+`game/workshop/verification/regressions-20261025T094117.663075Z/` and
+`game/workshop/verification/gantry-dressing.json`. No diagnostics, rendered review
+or GPU benchmark ran. Headless checks do not establish shader appearance or
+control readability. The user's [focused gantry playtest](robot-workshop-playtest-checklist.md#full-gantry-detail--2026-10-25)
+remains open, including walking, folding, visual contrast and performance.

@@ -11,6 +11,14 @@ performance. Exact FPS and the remaining detailed checks are not yet recorded.
 See the [roadmap assessment](../../design/game/final-assembly-plan.md#visual-uplift-spike--2026-10-25)
 and [focused playtest](../../design/game/robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
 
+The [full gantry detail pass](../../design/game/final-assembly-plan.md#full-gantry-detail--2026-10-25)
+adds chamfered steel, recessed anchors, tread plates and level stencils across
+the portal, access platforms and side lifts, preserving the measured blockout and
+moving clearances. Geometry/control checks and startup smoke pass (52 + 29);
+appearance and performance await playtest. From this worktree, use
+`./play.command -- --stage=complete` to inspect it around the completed robot.
+Sound and console screens remain deferred.
+
 ![Crane console with movement controls](../../docs/images/workshop-crane-controls.png)
 
 *Crane controls in the final-assembly hangar.*

@@ -18,10 +18,14 @@ last version before consolidation.
   28 checks pass (4.243 s); no diagnostics, rendered review or FPS measurement.
   **Player reports substantially better appearance and performance** (2026-10-25).
   No FPS figure or completion of individual readability checks was supplied.
-  Keep this direction. User asks to remain in this worktree, design one area,
-  and defer sound/console screens. The [left gantry column study](final-assembly-plan.md#gantry-column-detail-study--2026-10-25)
-  specifies recessed anchors, a flush cover, stencil and localized wear within
-  existing dimensions; design only, with a verification plan and SVG drawing.
+  Keep this direction. User expanded the column study to the
+  [full gantry](final-assembly-plan.md#full-gantry-detail--2026-10-25), now implemented:
+  recessed hardware, chamfered members, tread plates and stencils across the portal,
+  four access levels and side lifts. All 353 treated members preserve their live
+  visual bounds and moving parents; colliders/layout/supports are unchanged.
+  Focused geometry/control audit + startup smoke: 52 + 29 checks pass. Appearance
+  and FPS for this new detail await the [gantry playtest](robot-workshop-playtest-checklist.md#full-gantry-detail--2026-10-25).
+  Stay in this worktree; sound, console screens and integration remain deferred.
   [Scope and roadmap assessment](final-assembly-plan.md#visual-uplift-spike--2026-10-25);
   [playtest and deferred ideas](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
 

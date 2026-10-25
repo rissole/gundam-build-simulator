@@ -49,6 +49,7 @@ var hands: RefCounted
 var journey: RefCounted
 var leg_content: Dictionary = {}
 var leg_layout: Node3D
+var gantry_dressing: RefCounted
 ## The turning foot fixture; also in `equipment`.
 var foot_fixture: Node3D
 var builds: Dictionary = {}
@@ -161,6 +162,8 @@ func _ready() -> void:
 	journey = preload("res://scripts/leg_journey_policy.gd").new(self)
 	preload("res://scripts/scenario_staging.gd").prepare(self)
 	_build_equipment(EQUIPMENT.filter(func(id):return id != "foot_fixture"))
+	gantry_dressing = preload("res://scripts/gantry_dressing.gd").new()
+	gantry_dressing.build(leg_layout.blockout,[equipment.get_equipment("left_lift"),equipment.get_equipment("right_lift")])
 	start_stage = Stages.stage_flag(Array(OS.get_cmdline_user_args()))
 	# Player launches keep a save; tests and tools (custom SceneTree scripts) never
 	# touch it. A --stage launch starts from its stage, never the save, but Save

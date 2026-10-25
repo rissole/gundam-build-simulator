@@ -58,10 +58,11 @@ inspection or GPU benchmark ran. [Roadmap assessment and scope](final-assembly-p
 
 Deferred user proposals, retained for the next decision:
 
-- Latest scope decision: remain on the visual worktree; design one candidate area.
-  No sound or console screens yet. The [gantry column design](final-assembly-plan.md#gantry-column-detail-study--2026-10-25)
-  is documented and illustrated, not implemented in the game. Review whether the
-  recessed hardware, inspection cover, stencil and sparse wear fit the desired style.
+- Latest scope decision: remain on the visual worktree; expand the column study
+  into the whole final mech gantry, preserving accurate measurements and blockouts,
+  then implement. The [full gantry design](final-assembly-plan.md#full-gantry-detail--2026-10-25)
+  is now implemented. No sound or console screens yet. The focused checks below
+  remain open; the earlier positive player feedback predates this detail pass.
 
 - ACES/Filmic versus existing AgX; darker ambient/near-black background versus readable working bays; stronger warm beams and cool perimeter fill. This spike keeps AgX and the approved ambient/key/exposure values as its starting point.
 - Photo-quality oily concrete, worn yellow paint and matte structural metal. Procedural roughness/normal maps are the first material experiment; authored wear and richer texture sources remain open.
@@ -88,6 +89,22 @@ Start with `./play.command -- --stage=pelvis` so the crane and lifts are ready.
 
 Report confusing wording, missed targets, unexpected motion and positive findings
 in the table below. The complete workshop journey remains a separate playtest.
+
+## Full gantry detail — 2026-10-25
+
+Implemented in the visual worktree. Mechanical evidence: 52 geometry/control
+checks and 29 startup checks pass in 4.626 s. The actual replacement bounds,
+collision identities, moving parents, intermediate folding poses, raised lift
+poses and jaw outlines are checked. No rendered inspection or FPS benchmark ran.
+Use `./play.command -- --stage=complete` for the complete structure; use normal
+progress or a relevant earlier stage to operate the gantry during assembly.
+
+- [ ] From ground level, inspect both foundations and columns. Do recessed anchors, covers, bevels and restrained wear read as fixed machinery? Does the crosshead lettering sit naturally on the face?
+- [ ] Ride both elevators and walk the 8.4, 11.2, 14.0 and 16.4 m levels. Check tread contrast, edge strips and level labels; note texture repetition or shimmer.
+- [ ] Open/fold access wings, fingers and rear bridge as the build requires. Watch joints and guards for visible clipping, seams or drifting detail through motion.
+- [ ] Aim at and operate the four gantry jaw handles. Their shapes, outlines and prompts should remain easy to distinguish from decorative fasteners.
+- [ ] Inspect the rear core/backpack opening and aft lifting well. Check that existing approach, connection sight lines and cable routes remain visually understandable.
+- [ ] Compare FPS and hitches with the previous visual spike under the same display/window and build conditions. The earlier reported improvement is a constraint, not evidence for this new shader/geometry pass.
 
 ## Manual redesign check — 2026-10-25
 
