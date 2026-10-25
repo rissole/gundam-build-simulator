@@ -35,20 +35,16 @@ last version before consolidation.
   checks pass (29 + 12 checks, 4.493 s). The stage fixture now supplies the session
   stub required by `save.settle()`. No rendered review; startup feel awaits playtest.
 
-- **Progress films (2026-10-25, refreshed):** crown, hip assembly and leg films now
-  use the accepted visual uplift. The rejected foot-rotation preset stays removed.
-  A historical leg film retains the flat lighting/materials of `cebf6b7`
-  (2026-10-24), the oldest matching gantry/rail layout, with the current endpoint
-  rounding fix backported in an isolated checkout. Before/after leg cameras and
-  timing match on every frame. Each source MP4 is 10 seconds at 1080p/30;
-  a labelled side-by-side comparison is also supplied. Saves remain disabled.
-  The exporter retains the known Forward+ light-unpairing diagnostic only after
-  capture completion; other errors still fail. Six focused recorder tests pass.
-  Finished clips are local in `game/workshop/verification/progress-videos-20261025/`;
-  provenance, adapters, traces and capture evidence are in the adjacent
-  `film-captures-20261025/`. **Awaiting the user's review**, tracked in
-  [video feedback](robot-workshop-playtest-checklist.md#progress-video-feedback--2026-10-25).
-  [Usage and shot editing](../../game/workshop/README.md#progress-videos).
+- **Progress films (2026-10-25, approved):** the user approved the three films
+  as specified in the workshop README: crown, pelvis and leg, each 10 seconds at
+  1080p/30, on the accepted visual uplift. The rejected foot-rotation preset stays
+  removed. Local captures, including the refreshed clips and the historical
+  `cebf6b7` leg comparison, were deleted and are not retained evidence. Saves
+  remain disabled. The exporter retains the known Forward+ light-unpairing
+  diagnostic only after capture completion; other errors still fail. Six focused
+  recorder tests pass.
+  [Feedback](robot-workshop-playtest-checklist.md#progress-video-feedback--2026-10-25);
+  [usage and shot editing](../../game/workshop/README.md#progress-videos).
 
 - **Manual redesign (2026-10-25, whole robot converted):** every action step is a
   one-sentence goal plus a self-ticking checklist generated from typed objectives;

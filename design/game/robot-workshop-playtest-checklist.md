@@ -9,15 +9,13 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
   preset and its generated captures were removed; earlier mechanical checks did
   not establish that the film was appealing.
 - Replacement: final head-crown installation followed by a pullback revealing
-  the assembled robot. **Awaiting the user's review of the new video.**
-- Hip assembly and leg films remain available; this request did not grant them new
-  presentation approval. This feedback concerns progress films, not gameplay.
-- User subsequently requested fresh crown, hip assembly and leg films with the current
-  visuals, plus the oldest compatible leg insertion film for a before/after
-  comparison, preferring the earlier flat lighting. The matching gantry/rail edit
-  first fits `cebf6b7` (2026-10-24); its original lighting and materials are retained,
-  with only the current rail endpoint rounding fix backported for capture.
-  **Review of these refreshed films and the comparison remains pending.**
+  the assembled robot. On 2026-10-25 the user approved the progress films as
+  specified in the workshop README: the crown, pelvis and leg edits. That is
+  approval of those shot recipes, not a separate notes pass on saved frames and
+  not gameplay approval.
+- The refreshed local clips and the historical `cebf6b7` before/after leg
+  comparison were deleted with the rest of `game/workshop/verification`. They are
+  not retained evidence. Re-record from the README when a new copy is needed.
 
 ## How to launch
 
