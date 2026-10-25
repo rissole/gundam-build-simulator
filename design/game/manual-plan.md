@@ -99,6 +99,14 @@ while `fit` and `connect` use the existing staging shortcuts (`Staging.fill`,
 tests. This proves the machine sequence, not reach, visibility or feel, which
 stay the user's playtest.
 
+### When the manual recomputes
+
+Only on change: the build model's `changed` signal, or the equipment registry's
+`manual_state_changed`, which it emits after a physics tick in which any machine's
+`manual_state()` differs from the previous tick. Several changes in one frame
+recompute once at the end of that frame; tracking a step recomputes at once. No
+timer polling.
+
 ## Data shape
 
 New fields on existing manual pages; `body` is dropped once a page migrates.

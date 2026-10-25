@@ -142,6 +142,20 @@ func run() -> void:
 	var found: Dictionary = progress.step_for_part(kind)
 	expect(str(found.get("owner","")) == "pad_2" and int(found.get("page",-1)) == 0,"sleeve kind finds pad 2, got "+str(found.get("owner",""))+" "+str(found.get("title","")))
 	expect(progress.step_for_part("not-a-part").is_empty(),"unknown kind has no step")
+	# Change-driven updates: no refresh() calls from here on. Earlier fits queued
+	# one update; let it run before counting.
+	await process_frame
+	var updates := [0]
+	progress.updated.connect(func():updates[0] += 1)
+	await process_frame
+	await process_frame
+	expect(updates[0] == 0,"quiet frames do not recompute the manual, got "+str(updates[0]))
+	fit_slots(game.model,"pad_2",["sleeve_1","sleeve_2","sleeve_3"])
+	await process_frame
+	expect(updates[0] == 1 and progress.status("pad_2",0) == "done","fitting parts updates the manual once by the next frame, got "+str(updates[0])+" "+progress.status("pad_2",0))
+	game.equipment.manual_state_changed.emit()
+	await process_frame
+	expect(updates[0] == 2,"a machine state change updates the manual, got "+str(updates[0]))
 	var passed = checks.all(func(check):return check.passed)
 	print("MANUAL_PROGRESS ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)

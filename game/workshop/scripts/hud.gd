@@ -18,7 +18,6 @@ var diagram_rule: ColorRect
 var ready_label: Label
 var diagram: Control
 var _panel_signature: String = ""
-var _progress_timer: float = 0.0
 var target_label: Label
 var target_panel: PanelContainer
 var target_action: HBoxContainer
@@ -184,6 +183,7 @@ func _ready() -> void:
 	_make_fps_counter()
 	browser = ManualBrowser.new(self)
 	root.add_child(browser)
+	if game.manual_progress != null:game.manual_progress.updated.connect(_on_progress_updated)
 
 func _make_fps_counter() -> void:
 	fps_label = label("— FPS",10,Color.WHITE)
@@ -567,9 +567,7 @@ func show_pause(value: bool) -> void:
 
 func refresh() -> void:
 	if game == null:return
-	if game.manual_progress != null:
-		game.manual_progress.refresh()
-		_follow_tracked_step()
+	if game.manual_progress != null:_follow_tracked_step()
 	for i in range(action_slots.size()):
 		var slot = action_slots[i]
 		var kind: String = game.model.pockets[i]
@@ -634,6 +632,11 @@ func open_manual(id: String, at_page: int = -1) -> void:
 	page = clampi(page,0,page_total()-1)
 	manual.visible = true
 	refresh()
+
+func _on_progress_updated() -> void:
+	_follow_tracked_step()
+	_refresh_step_panel()
+	if browser.visible:browser._rebuild_keep_scroll()
 
 func _tracked_step() -> Dictionary:
 	if game == null or game.manual_progress == null:return {}
@@ -875,12 +878,5 @@ func _process(delta: float) -> void:
 			fps_refresh = 0.0
 			fps_label.text = "%.1f FPS" % fps_estimate
 	if game.paused:return
-	_progress_timer += delta
-	if _progress_timer >= 0.25:
-		_progress_timer = 0.0
-		if game.manual_progress != null:
-			game.manual_progress.refresh()
-			_follow_tracked_step()
-			_refresh_step_panel()
 	toast_time = maxf(0.0,toast_time-delta)
 	toast_panel.visible = toast_time > 0.0

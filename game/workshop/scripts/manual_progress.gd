@@ -1,5 +1,7 @@
 extends RefCounted
-## Chapter order, live step status and the tracked step.
+## Chapter order, live step status and the tracked step. Recomputes only when
+## the build or a machine's manual state changes, then emits `updated`.
+signal updated
 const Objectives = preload("res://scripts/manual_objectives.gd")
 
 var game: Node
@@ -8,12 +10,26 @@ var _data: Dictionary = {}
 var _status: Dictionary = {}
 var _evaluation: Dictionary = {}
 var _order: Array[Dictionary] = []
+var _queued: bool = false
 
 func _init(workshop: Node) -> void:
 	game = workshop
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string("res://assets/manual-chapters.json"))
 	if parsed is Dictionary:_data = parsed
 	refresh()
+	game.model.changed.connect(mark_dirty)
+	if game.equipment.has_signal("manual_state_changed"):game.equipment.manual_state_changed.connect(mark_dirty)
+
+## Several changes in one frame recompute once, at the end of that frame.
+func mark_dirty() -> void:
+	if _queued:return
+	_queued = true
+	_update.call_deferred()
+
+func _update() -> void:
+	_queued = false
+	refresh()
+	updated.emit()
 
 func chapters() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -98,9 +114,11 @@ func tracked() -> Dictionary:
 
 func pin(owner: String, page: int) -> void:
 	pinned = {"owner":owner,"page":page}
+	_update()
 
 func unpin() -> void:
 	pinned = {}
+	_update()
 
 func ready_count(except: Dictionary) -> int:
 	var n := 0

@@ -16,6 +16,10 @@ var _was_moving: Dictionary = {}
 ## Where the player last stood with nothing under them moving. A save taken mid-ride
 ## uses it: that is the deck at the stop the ride left, where the machine reloads.
 var steady_player: Variant = null
+## Each machine's manual state after the last tick; a difference means an arrival,
+## a pin or a connector changed, so the manual recomputes once instead of polling.
+signal manual_state_changed
+var _manual_states: Dictionary = {}
 
 ## Pickup targeting shares its contour with the first waiting loose obstacle.
 func obstruction_target() -> Node3D:
@@ -44,6 +48,15 @@ func all() -> Array:
 func ids() -> Array:
 	return all().map(func(equipment):return equipment.equipment_id)
 
+func _detect_manual_changes(items: Array) -> void:
+	var changed := false
+	for equipment in items:
+		var state: Dictionary = equipment.manual_state()
+		if state.is_empty() or _manual_states.get(equipment.equipment_id) == state:continue
+		_manual_states[equipment.equipment_id] = state
+		changed = true
+	if changed:manual_state_changed.emit()
+
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for equipment in all():result.append_array(equipment.controls())
@@ -56,6 +69,7 @@ func physics(delta: float) -> void:
 	var before = floor.global_transform if floor != null else Transform3D.IDENTITY
 	for equipment in items:equipment.physics(delta)
 	_remember_rest(items)
+	_detect_manual_changes(items)
 	if game == null:return
 	if floor == null or not is_instance_valid(floor):
 		steady_player = game.player.global_transform
