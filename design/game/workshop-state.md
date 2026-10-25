@@ -11,12 +11,16 @@ last version before consolidation.
 
 ## Where things stand
 
-- **Manual redesign (2026-10-25, agreed, not started):** each step becomes a
-  one-sentence goal and a self-ticking checklist generated from typed objectives
-  (`fit`, `seat`, `operate`, `connect`, `detach`, `set`). The stage progression
-  executes the same objectives. A current-step panel and a chapter-based manual
-  replace the browser and suggestions. Never "quest" in game. Layouts go
-  through diffui first. [Manual plan](manual-plan.md).
+- **Manual redesign (2026-10-25, pilot implemented):** steps are a one-sentence
+  goal plus a self-ticking checklist generated from typed objectives (`fit`,
+  `seat`, `operate`, `connect`, `detach`); machines supply labels, state and
+  counts. Pilot: foot, actuator, pelvis delivery, leg crane/fastening steps and
+  a new **Deliver the foot** crane step. A current-step panel and a chapter-based
+  manual (N) replaced the browser and suggestions; Z undoes in the aimed build,
+  else the current step's. Never "quest" in game. 35 routine cases: 34 pass,
+  `stage_contract_test` fails before and after this work (its fixture lacks the
+  `save` that commit 0721744 started calling). No diagnostics or rendered review
+  ran. **Awaiting the user's playtest.** [Manual plan](manual-plan.md).
 
 - **Workshop save (2026-10-25):** saving is manual: pause-menu **Save**,
   **Save & quit**, or closing the window. **Quit without saving** confirms when

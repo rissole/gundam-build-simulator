@@ -37,6 +37,22 @@ Start with `./play.command -- --stage=pelvis` so the crane and lifts are ready.
 Report confusing wording, missed targets, unexpected motion and positive findings
 in the table below. The complete workshop journey remains a separate playtest.
 
+## Manual redesign check — 2026-10-25
+
+Mechanical checks only: no rendered review. Start with `./play.command` (fresh
+workshop) and later `./play.command -- --stage=pelvis`.
+
+- [ ] The top-right panel reads like a short task: chapter · step, one-sentence goal, checklist. Is it brain-off scannable? Is anything missing that the old prose told you?
+- [ ] Items tick themselves as you work (fit counts like 2/4, crane steps as the crane arrives). Nothing should flicker while a machine is moving; raising a load back up should un-tick cleanly.
+- [ ] The note appears only for the current item. Do the notes carry the safety details you need (bolt direction, keep connectors attached)?
+- [ ] V hides/shows the diagram; Tab/M hides the panel. Is the diagram size right for tall parts?
+- [ ] N opens the manual. Can you tell at a glance where you are? Do Done / In progress / Ready to start / Locked match reality? Enter on another step tracks it.
+- [ ] Holding a part shows "For: <step> · <chapter>". Useful or noise?
+- [ ] Pelvis delivery (`--stage=pelvis` is past it; start fresh or after the foot): pins, crane trip and gantry jaws are each a checklist item.
+- [ ] Left leg: **Deliver the foot** is a new crane step before docking. Then docking, shin, flange (release and park), fork, axle, beam.
+- [ ] Z undoes in the build you aim at, otherwise in the current step's build.
+- [ ] Steps not yet converted still show prose. Note the worst ones to convert next.
+
 ## Stages
 
 | Command | What to try | What to watch for |

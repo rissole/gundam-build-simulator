@@ -144,12 +144,29 @@ is its own chapter, placed before the step that seats it.
 
 ## Migration
 
-1. **Engine:** the objective schema, text generation, effect data and
-   validation, with an isolated routine test. Pages without `objectives` keep
-   rendering `body`.
-2. **Pilot content:** the foot, the pitch actuator, and the left leg's shin
-   delivery and ankle flange. The current step panel and manual are built from
-   the chosen diffui layouts. `build_stages` walks the pilot's objectives.
-3. **User playtest of the pilot.** Record the results in the checklist.
-4. **Remaining content,** chapter by chapter in the author scripts
-   (`tools/author_*.py`), then remove `body`, the browser tree and suggestions.
+1. **Engine — done 2026-10-25:** objective schema, generated text, machine
+   labels/state/effects/counts (crane, foot rig, heavy module rig) and load-time
+   validation (`scripts/manual_objectives.gd`, `manual_objectives_test`).
+2. **Pilot content — done 2026-10-25:** heel pads, pitch actuator and foot
+   installation; pelvis delivery (waist pins, crane trip, gantry jaws); the left
+   and right leg's new **Deliver the foot** crane step (no page covered that
+   trip before), foot docking, crane deliveries and fastening steps. Other pages
+   still render `body`.
+3. **Interface — done 2026-10-25:** chapters are data (`assets/manual-chapters.json`,
+   `scripts/manual_progress.gd`, `manual_progress_test` checks every action page is
+   in exactly one chapter). Current step panel (diffui option A) and manual view
+   (option C) replace the browser, suggestions, build cycling and parent/child
+   navigation (`manual_panel_test`). Z undoes in the aimed build, else the current
+   step's. No rendered review has run.
+4. **Next:** `build_stages` walks the pilot's objectives (machine `manual_actions`
+   for real requests, staging shortcuts for player actions) so stage runs prove
+   the manual sequence. Proving it needs the named stage diagnostics, which run
+   only on the user's request.
+5. **User playtest of the pilot.** Record results in the
+   [checklist](robot-workshop-playtest-checklist.md).
+6. **Remaining content,** chapter by chapter in the author scripts
+   (`tools/author_*.py`), then remove `body`. Machines still without manual
+   functions: leg rail, captive controls, guided receivers, lifts, arm rig and
+   the other section fixtures; `set`-style counted controls use `manual_count`.
+   Objective-specific diagram views are not implemented yet (each step shows its
+   page diagram).
