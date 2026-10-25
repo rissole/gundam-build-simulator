@@ -11,6 +11,13 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Manual redesign (2026-10-25, agreed, not started):** each step becomes a
+  one-sentence goal and a self-ticking checklist generated from typed objectives
+  (`fit`, `seat`, `operate`, `connect`, `detach`, `set`). The stage progression
+  executes the same objectives. A current-step panel and a chapter-based manual
+  replace the browser and suggestions. Never "quest" in game. Layouts go
+  through diffui first. [Manual plan](manual-plan.md).
+
 - **Workshop save (2026-10-25):** saving is manual: pause-menu **Save**,
   **Save & quit**, or closing the window. **Quit without saving** confirms when
   there are unsaved build changes. A save holds the model, every machine's last
@@ -237,6 +244,7 @@ Read only what the task needs. Specific sections are linked from the rules above
 | Document | Read it when |
 | --- | --- |
 | [robot-workshop-playtest-checklist.md](robot-workshop-playtest-checklist.md) | Playtesting, or recording findings |
+| [manual-plan.md](manual-plan.md) | Changing manual steps, the current-step panel or the manual view |
 | [robot-workshop-plan.md](robot-workshop-plan.md) | Changing the robot workshop's stages, equipment or verification scope |
 | [final-assembly-plan.md](final-assembly-plan.md) and [layout](final-assembly-layout.svg) | You need coordinates, routes, equipment dimensions or the assembly order |
 | Component documents (`design/torso/`, `design/arms/`, `design/head.md`, `design/legs/`) | You need mounting interfaces. Each one's “Robot workshop … — 2026-10-24” section records what was built |
