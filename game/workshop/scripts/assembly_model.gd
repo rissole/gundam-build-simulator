@@ -523,6 +523,55 @@ func _undo(assembly: String, child_destination: String, support_id: String) -> D
 	changed.emit()
 	return {"ok":true,"step":step}
 
+## JSON-safe mutable state for the workshop save; definitions stay authored.
+func capture() -> Dictionary:
+	return {"items":items.duplicate(true),"assemblies":assemblies.duplicate(true),"pockets":Array(pockets),"selected_pocket":selected_pocket}
+
+## Replaces mutable state only when `data` has this content's exact identities,
+## item fields and slot names and passes integrity. Otherwise nothing changes.
+## No migration: a snapshot from different content is simply rejected.
+func restore(data: Variant) -> Array[String]:
+	if not data is Dictionary or not data.get("items") is Dictionary or not data.get("assemblies") is Dictionary or not data.get("pockets") is Array:return ["Invalid model snapshot."]
+	if data.items.size() != items.size() or not items.keys().all(func(uid):return data.items.has(uid)):return ["Item identities changed."]
+	if data.assemblies.size() != assemblies.size() or not assemblies.keys().all(func(id):return data.assemblies.has(id)):return ["Assembly identities changed."]
+	if data.pockets.size() != POCKET_SLOTS or not data.pockets.all(func(kind):return kind is String):return ["Invalid pockets."]
+	var candidate = AssemblyModel.new()
+	candidate.definitions = definitions
+	candidate.support_definitions = support_definitions
+	candidate.expected_ids = expected_ids
+	# Rebuild in today's key order; integrity compares item order with expected_ids.
+	for uid in items:
+		var saved: Variant = data.items[uid]
+		if not saved is Dictionary or saved.size() != items[uid].size() or not items[uid].keys().all(func(key):return saved.has(key)):return ["Item fields changed: "+uid]
+		if saved.kind != items[uid].kind or saved.source_id != items[uid].source_id:return ["Item kind changed: "+uid]
+		var item: Dictionary = {}
+		for key in items[uid]:item[key] = saved[key]
+		if not (item.pocket is int or item.pocket is float) or not item.location is String or not item.owner is String or not item.slot is String:return ["Invalid item fields: "+uid]
+		item.pocket = int(item.pocket)
+		candidate.items[uid] = item
+	for id in assemblies:
+		var saved: Variant = data.assemblies[id]
+		if not saved is Dictionary or saved.size() != assemblies[id].size() or not assemblies[id].keys().all(func(key):return saved.has(key)):return ["Assembly fields changed: "+id]
+		if saved.definition != assemblies[id].definition or not saved.slots is Dictionary or not saved.history is Array:return ["Assembly definition changed: "+id]
+		if saved.slots.size() != assemblies[id].slots.size() or not assemblies[id].slots.keys().all(func(sid):return saved.slots.has(sid) and saved.slots[sid] is String):return ["Assembly slots changed: "+id]
+		if not saved.location is String or not saved.parent is String or not saved.parent_slot is String or not saved.history.all(func(step):return step is Dictionary):return ["Invalid assembly fields: "+id]
+		var slots: Dictionary = {}
+		for sid in assemblies[id].slots:slots[sid] = saved.slots[sid]
+		candidate.assemblies[id] = {"definition":saved.definition,"slots":slots,"location":saved.location,"parent":saved.parent,"parent_slot":saved.parent_slot,"history":saved.history.duplicate(true)}
+	candidate.pockets.assign(data.pockets)
+	candidate.selected_pocket = clampi(int(data.get("selected_pocket",0)),0,POCKET_SLOTS-1)
+	var errors: Array[String] = candidate.integrity_errors()
+	if not errors.is_empty():return errors
+	# Mutate in place: other objects may hold these dictionaries.
+	items.clear()
+	for uid in candidate.items:items[uid] = candidate.items[uid]
+	assemblies.clear()
+	for id in candidate.assemblies:assemblies[id] = candidate.assemblies[id]
+	pockets.assign(candidate.pockets)
+	selected_pocket = candidate.selected_pocket
+	changed.emit()
+	return []
+
 func integrity_errors() -> Array[String]:
 	var errors: Array[String] = []
 	if items.keys() != expected_ids and not expected_ids.is_empty():errors.append("Source identities changed.")
