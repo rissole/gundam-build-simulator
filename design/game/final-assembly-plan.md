@@ -300,7 +300,7 @@ The bridge's fold height stays below the gantry bearing arms atY10.65.
 | --- | --- | --- |
 | Hip ring | 8.4 /10.03 | Front fingers X9.6..10.8 /15.2..16.4,Z24.3..25.8. Preserve the leg journey's stance near (10.4,8.4,25.4), mirror for right. Far ring bolt about 2.16 m from eye. |
 | Hip cylinder pins | 8.4 /10.03 | Front standing Z24.30, rear 27.65, X aligned with target. Lower pins Y8.80, eye distances1.71–2.00 m. Two front/one rear insertion, reserve0.34 m plus tool clearance. |
-| Gantry hold-down handles | 8.4 /10.03 | Rear stance X11.6/14.4,Z27.75; fixed handles X11.60/14.40,Y10.80,Z26.55/26.75, below the waist deck and outside the bridge. Approximately1.43 m to the farther handle. |
+| Gantry hold-down handles | 8.4 /10.03 | Rear stance X11.6/14.4,Z27.75. Posts stay at X11.60/14.40,Y10.80,Z26.55/26.75. Forward grips stick outboard of the posts; rear grips reach back toward the deck. Both stay below the bridge and clear of the socket, so neither grip is hidden inside its post or behind the other. |
 | Waist bolts / side services | 11.2 /12.83 | Front/rear pockets X12.16/13.84,Y12.80–12.86,Z25.42/26.58. Side fingers X10.35..11.50 /14.50..15.65,Z24.6..26.6 clear the socket crowns; they are used before arms, then stowed before arm delivery. |
 | Distal arm rig release | 11.2 /12.83 | Front patch X9.1..11.0 /15.0..16.9 and rear flanks; standing X10.05/15.95,Z24.3/27.7, reach≈1.69 m. |
 | Shoulder retention / proximal rig | 14.0 /15.63 | Standing X10.6/15.4,Z24.3/27.7; ring heads≤1.48 m, rig≈1.15 m, drive pins≤1.77 m. |

@@ -105,12 +105,14 @@ Two gantry bearing patches on the rear crossbeam underside are centred
 `(12.35/13.65,10.97,26.65)`. Use four workshop hold-down jaws on the matching
 top/rear crossbeam patches, X±.65/Y−.55 and −.75, with clamp contact at
 Z9.83. Bottom seats carry weight; clamps prevent lift, slide and overturning.
-The coordinated workshop portal uses outboard operating handles at world
-X11.60/14.40,Y10.80,Z26.55/26.75, linked to these four jaw contacts. These handles
-remain fixed below the waist deck while the jaw rods and upper links move; the
-earlier handle centres intruded into the bridge. Operate
-from rear hip-deck stances X11.6/14.4,Z27.75, beside rather than beneath the
-bearing beams. The bulky source fixture supports the same bridge pads with hip
+The jaw posts stay at world X11.60/14.40, Y10.80, Z26.55/26.75. The grips are
+not centred on those posts: a centred grip sits inside the post, and the two
+grips on one side then hide each other from the rear deck. On each side the
+forward grip is an outboard bar and the rear grip reaches back toward the hip
+deck, both below the bridge and clear of the hip socket. The jaw rods and
+upper links still move; the grips and posts stay fixed. Operate from rear
+hip-deck stances X11.6/14.4, Z27.75, beside rather than beneath the bearing
+beams. The bulky source fixture supports the same bridge pads with hip
 datum(3.25,1.20,13). See the [fixture plan](../game/final-assembly-plan.md#gantry-support-and-rear-service-reservation).
 
 The jaws contact plain bridge material, not liners, guards, cylinder brackets or

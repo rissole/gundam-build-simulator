@@ -313,10 +313,17 @@ def contract():
         bounds(f"gantry_arm_{x}",x-.18,x+.18,10.65,10.95,26.5,31.1)
         bounds(f"gantry_bearing_{x}",x-.18,x+.18,10.95,10.97,26.52,26.78,"yellow")
     for x in [11.60,14.40]:
+        out=-1 if x<13 else 1
         for z in [26.55,26.75]:
             key=f"gantry_jaw_{x}_{z}"
             group(key,at=[x,11.1,z],joint="clamp")
-            box(key+"_handle",[x,10.8,z],[.12,.12,.18],"yellow")
+            # Posts stay on the jaw axis. A grip centred there is inside the
+            # post, and the two grips then stack on the rear-deck sight line.
+            # The forward grip sticks outboard; the rear grip reaches back
+            # toward the deck. Both stay clear of the bridge, socket and rod.
+            if z<26.6:handle_at,handle_size=[x+out*.26,10.78,z],[.42,.16,.14]
+            else:handle_at,handle_size=[x+out*.18,10.96,z+.28],[.24,.16,.48]
+            box(key+"_handle",handle_at,handle_size,"yellow")
             box(key+"_drive",[x,10.975,z],[.06,.35,.06])
             # Link between the outboard operating handle and bearing-side jaw.
             dx=.75 if x<13 else -.75

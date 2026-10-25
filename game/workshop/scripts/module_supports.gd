@@ -50,9 +50,10 @@ func controls() -> Array[Dictionary]:
 			current.action="template:"+next;current.label="Fit "+next+" contact inserts (current: "+template+")"
 		result.append(current)
 	for index in range(4):
-		var handle=blockout.pieces[jaw_groups[index]+"_handle"].visual
+		var piece: Dictionary=blockout.pieces[jaw_groups[index]+"_handle"]
+		var handle: MeshInstance3D=piece.visual
 		var pending=not is_equal_approx(jaws[index],jaw_goals[index])
-		result.append(control_entry(handle,"stop" if moving and pending else "jaw:"+str(index),("Stop" if moving and pending else "Resume" if pending else "Close" if jaws[index]>.5 else "Open")+" gantry hold-down jaw",.12,{"point":handle.global_position}))
+		result.append(control_entry(handle,"stop" if moving and pending else "jaw:"+str(index),("Stop" if moving and pending else "Resume" if pending else "Close" if jaws[index]>.5 else "Open")+" gantry hold-down jaw",.28,{"point":handle.global_position,"allowed":[piece.body],"allow_body_hit":true}))
 	for key in locks:
 		result.append(control_entry(lock_nodes[key],"lock:"+key,("Unlock " if locks[key] else "Engage ")+"waist "+key+" neutral pin",.10,{"point":lock_nodes[key].global_position}))
 	return result
