@@ -441,23 +441,34 @@ func _make_pause() -> void:
 	footer.add_child(quit_button)
 	refresh_session_status()
 
-## Nothing is saved: the pause menu restarts from this launch's starting stage.
+## Whether this launch keeps the workshop save (never in tests or --stage launches).
+func _saving() -> bool:
+	var slot = game.get("save")
+	return slot != null and slot.enabled()
+
+## Normal launches save each set component; --stage launches restart from their start.
 func refresh_session_status() -> void:
 	if session_label == null:return
-	restart_button.text = "Confirm restart" if confirm_restart else "Restart build"
+	var saving: bool = _saving()
+	if confirm_restart:restart_button.text = "Confirm new workshop" if saving else "Confirm restart"
+	else:restart_button.text = "New workshop" if saving else "Restart build"
 	resume_button.text = "Resume    →" if entered else "Start building    →"
 	if confirm_restart:return
-	session_label.text = "Robot workshop · nothing is saved yet.\nRestart begins again from this launch's starting point."+("\n"+game.stage_notice if not game.stage_notice.is_empty() else "")
+	var status: String = "Robot workshop · saved each time a component is set." if saving else "Robot workshop · this launch is not saved.\nRestart begins again from this launch's starting point."
+	var notice: String = game.Save.notice if saving else ""
+	session_label.text = status+("\n"+notice if not notice.is_empty() else "")+("\n"+game.stage_notice if not game.stage_notice.is_empty() else "")
 
 func _restart_clicked() -> void:
+	var saving: bool = _saving()
 	if confirm_restart:
 		confirm_restart = false
-		game.reset_demo()
+		if saving:game.new_workshop()
+		else:game.reset_demo()
 		refresh_session_status()
 	else:
 		confirm_restart = true
 		refresh_session_status()
-		session_label.text = "Restart this build from the beginning?\nResume to keep your progress."
+		session_label.text = "Start a new workshop? This deletes your saved build.\nResume to keep it." if saving else "Restart this build from the beginning?\nResume to keep your progress."
 
 func show_pause(value: bool) -> void:
 	pause_panel.visible = value
