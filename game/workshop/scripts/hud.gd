@@ -27,6 +27,9 @@ var restart_button: Button
 var quit_button: Button
 var session_label: Label
 var crosshair: Label
+var fps_label: Label
+var fps_estimate: float = 0.0
+var fps_refresh: float = 0.0
 var action_bar: HBoxContainer
 var action_slots: Array[Dictionary] = []
 var carry_label: Label
@@ -166,8 +169,19 @@ func _ready() -> void:
 	toast_panel.add_child(toast_label)
 	toast_panel.hide()
 	_make_pause()
+	_make_fps_counter()
 	browser = ManualBrowser.new(self)
 	root.add_child(browser)
+
+func _make_fps_counter() -> void:
+	fps_label = label("— FPS",10,Color.WHITE)
+	fps_label.add_theme_color_override("font_shadow_color",Color.TRANSPARENT)
+	fps_label.add_theme_constant_override("shadow_offset_y",0)
+	fps_label.add_theme_color_override("font_outline_color",Color.BLACK)
+	fps_label.add_theme_constant_override("outline_size",4)
+	fps_label.position = Vector2(4,1)
+	fps_label.z_index = 10
+	root.add_child(fps_label)
 
 func _make_manual() -> void:
 	manual = panel_at(root,Vector2(1,0),Rect2(-366,24,342,0))
@@ -723,6 +737,16 @@ func toast(text: String, success: bool = false) -> void:
 	toast_time = 5.0
 
 func _process(delta: float) -> void:
+	# Frame-time average with a short memory, redrawn ten times a second.
+	# Engine.get_frames_per_second() only publishes once per second.
+	if delta > 0.0:
+		var instant: float = 1.0/delta
+		var weight: float = clampf(delta/0.12,0.0,1.0)
+		fps_estimate = instant if fps_estimate <= 0.0 else lerpf(fps_estimate,instant,weight)
+		fps_refresh += delta
+		if fps_refresh >= 0.1:
+			fps_refresh = 0.0
+			fps_label.text = "%.1f FPS" % fps_estimate
 	if game.paused:return
 	toast_time = maxf(0.0,toast_time-delta)
 	toast_panel.visible = toast_time > 0.0
