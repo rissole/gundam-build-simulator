@@ -11,6 +11,15 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Workshop save (2026-10-25):** normal launches save each time a component is
+  set and restore on launch: the model and every machine's last stop, with the
+  crane parked and hands/pockets/loose parts back in drawers. Invalid saves are
+  deleted, never migrated. The pause menu offers **New workshop**. Mechanical
+  checks: `save_roundtrip_test` (fresh boot). The later-stage diagnostic
+  `save_roundtrip_stages_test` has **not** been run. Reload feel and correctness in
+  later stages await the user's playtest. Design:
+  [Saves and checkpoints](robot-workshop-plan.md#saves-and-checkpoints).
+
 - **Retina rendering (2026-10-25):** disabling HiDPI made UI text blurry in the
   user's playtest. HiDPI is restored; on macOS only the 3D render scale is now
   divided by the display scale (0.5 on a 2× Retina screen), keeping the HUD at

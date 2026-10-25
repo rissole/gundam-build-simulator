@@ -61,6 +61,7 @@ DIAGNOSTIC = (
     'pitch_swapped_desktop_test',
     'pockets_desktop_test',
     'robot_workshop_test',
+    'save_roundtrip_stages_test',  # Every stage boundary; explicit request only.
     'stage_launch',
     'stage_sequence_test',
     'stock_test',

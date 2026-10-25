@@ -188,20 +188,25 @@ is not a reason to allow remote fastening or disable obstruction handling.
 
 ### Saves and checkpoints
 
-**Deferred on 2026-10-24.** The user removed saving and the pause-menu
-checkpoints from this workshop until the broad structure exists. Maintaining
-interrupted-motion saves for every new machine added large amounts of work and
-was repeatedly wrong. The workshop launches without a save slot, and Restart
-starts again from the launch point. To inspect later stages, the flag
-`--stage=<name>` runs the same scripted equipment sequence as the mechanical
-tests and then starts paused. That is supplied progress, not playtest evidence,
-and not a save. When saves return, save only at rest (no equipment moving, every
-load on a support), which removes mid-motion validation. On 2026-10-25 all save
-code was removed, including the earlier foot workshop's; its design is
-[archived](history/save-resume.md). The original requirements below are
-preserved for that later work.
+**Implemented 2026-10-25 as a lightweight snapshot.** One local slot,
+`user://workshop-save.json`, is written each time the normalised assembly model
+changes: a component set, mounted, seated or undone. It holds the model and
+each machine's `capture()` at its last stop, so motion is never saved halfway. The
+service crane is not saved. It reloads parked, and no save is taken while a load
+hangs on it. Loading is synchronous: restore the model, place assembly bodies, let
+each machine `apply()` its at-rest state, re-sync visuals. The player, pockets,
+loose and held parts and the manual reset. An invalid file (unreadable, a different
+`FORMAT`, changed identities, slots or machine fields, or failed integrity) is
+deleted; there are no migrations, checksums or backups. Tests, tools and `--stage`
+launches never touch the slot. The pause menu's **New workshop** deletes it. The one
+ongoing rule: a machine's `capture()`/`apply()` must round-trip its at-rest state,
+including where its supported load sits. `save_roundtrip_test` checks a fresh boot;
+the explicit-request diagnostic `save_roundtrip_stages_test` checks every stage
+boundary. A replayed action log was rejected because late-game loads would be too
+slow. The removed mid-motion design is [archived](history/save-resume.md).
+Handoff: [design/game/handoff/save/](handoff/save/README.md).
 
-*Preserved requirements (not active):*
+*Original requirements (superseded by the design above; pause-menu checkpoints remain unimplemented):*
 
 Use one workshop save slot. Start fresh; no migration support is required. Retain normal validation and atomic saving for
 the new workshop, including active loads, fixture occupancy, lane selection,

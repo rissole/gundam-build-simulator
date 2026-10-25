@@ -76,7 +76,7 @@ illustrate UI states and do not establish successful delivery or reachability.
 
 ## Launch
 
-Double-click [play.command](../../play.command) in Finder. The game opens the robot workshop in **non-exclusive (borderless) fullscreen**, paused; click **Start building**. Nothing is saved yet (see [Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints)): Restart and relaunch begin again from the launch's starting stage. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
+Double-click [play.command](../../play.command) in Finder. The game opens the robot workshop in **non-exclusive (borderless) fullscreen**, paused; click **Start building**. Your build is saved each time you set a component and restored when you relaunch (see [Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints)); **New workshop** in the pause menu starts over. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
 
 `play.command` passes its arguments to Godot, so the same command opens the
 editor and runs tests. From a terminal at the repository root:
@@ -98,7 +98,7 @@ The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tool
 `./play.command -- --stage=<stage>` starts later in the build. It scripts the
 earlier work with the same model and equipment commands as the mechanical tests,
 then hands over paused. Fastenings and rigging are supplied, so this is not
-playtest evidence, and nothing is saved. Restart re-runs the shortcut. Wait for
+playtest evidence, and stage launches are never saved. Restart re-runs the shortcut. Wait for
 the preparation overlay to close before using the controls. Tests start at a
 stage the same way, with `boot_workshop("<stage>")` in [tests/kit](tests/kit).
 
@@ -185,10 +185,14 @@ Assemblies retain their chosen recipes and physical identities.
 
 ## Saving
 
-Nothing is saved yet. Quitting or restarting begins again from the launch's
-starting stage; use `--stage` to skip earlier work. The earlier foot-only save
-system was removed with the separate foot workshop; robot saves are planned in
-[Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints).
+A normal launch saves to `user://workshop-save.json` (on macOS,
+`~/Library/Application Support/Godot/app_userdata/<project name>/`) each time a
+component is set, and restores it on the next launch. The crane reloads parked;
+hands, pockets and loose parts return to their drawers; a machine moving at save
+time reloads at its last stop. An invalid save is deleted, never migrated. **New
+workshop** deletes it. Tests, tools and `--stage` launches never touch it. A
+machine's `capture()`/`apply()` must round-trip its at-rest state, including its
+supported load; see [Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints).
 Equipment still captures and restores its own state, which the stage runner uses.
 
 ## Controls
@@ -215,7 +219,7 @@ Equipment still captures and restores its own state, which the stage runner uses
 | C | Cycle matching build manuals; suggestions use the selected component or aimed assembly |
 | V | Open the inspected build manual |
 | Z | Undo the latest action in the selected manual |
-| Escape | Open grouped controls, Resume, Restart build (asks for confirmation) or Quit |
+| Escape | Open grouped controls, Resume, New workshop (Restart build in --stage launches; asks for confirmation) or Quit |
 
 Each of the ten pockets holds one small-part type, with up to 20 copies per stack. Assemblies and shelf components are carried separately using the assisted grip. Attachment reach is initially 2.35 m from the camera/player to the actual connection, and pad connections use a 15 cm targeting radius; actuator component targets use 24 cm. These are tunable prototype values.
 
