@@ -180,9 +180,24 @@ is its own chapter, placed before the step that seats it.
      joint restraints.
    - **Pitch actuator:** "Put FA-513 in the preparation C fixture" is in the goal
      but not checkable; a station objective could cover it.
-7. **Remaining content,** chapter by chapter in the author scripts
-   (`tools/author_*.py`), then remove `body`. Machines still without manual
-   functions: leg rail, captive controls, guided receivers, lifts, arm rig and
-   the other section fixtures; `set`-style counted controls use `manual_count`.
-   Objective-specific diagram views are not implemented yet (each step shows its
-   page diagram).
+7. **Whole robot converted — done 2026-10-25.** Leg docking, chest, core,
+   backpack, arms, pauldrons, head and face are objectives; no action step keeps
+   prose (`manual_objectives_test` asserts it). New steps cover crane trips that
+   had no page: each section to the heavy module rig, the arm rig to the Limb Bay,
+   the right arm onto the arm rig, and releasing the leg rig. Machines with the
+   manual API: crane, foot rig, heavy module rig, leg rig, hip cylinder lock pins,
+   core guide, backpack, shoulders, guided receivers.
+   - Rules learnt: commands a guided machine adds to the crane console are
+     "Crane console: <verb phrase>" (e.g. "Take backpack weight"); a parked, empty
+     crane cannot return to an installed load, so a step that needs the crane again
+     ends with `detach` and a note instead of parking; a single connector can be
+     released with `detach` + `point`; an `operate` objective may list the slots its
+     control fills (captive bolts) instead of a duplicate `fit`.
+   - Old prose dropped on purpose: crane routes and coordinates (the console flies
+     them), task selection, and fine approach distances that the guided motion now
+     handles. Kept as notes where the player must act (insertion side, keep
+     connectors attached, lift shelf trips).
+8. **Next:** `build_stages` executes the objectives (it still differs for the
+   backpack: it parks and sends the crane back with a command the menu never
+   offers). Objective-specific diagram views. User playtest of the converted
+   chapters.
