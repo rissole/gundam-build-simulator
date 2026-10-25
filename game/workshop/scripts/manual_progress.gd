@@ -192,7 +192,7 @@ func _tracked_slots(page: Dictionary) -> Array:
 		for objective in objectives:
 			if not objective is Dictionary:continue
 			var op := str(objective.get("op",""))
-			if op == "fit":
+			if op in ["fit","operate"]:
 				var listed: Array = objective.get("slots",[]) if objective.get("slots") is Array else []
 				for sid in listed:result.append(str(sid))
 			elif op == "seat" and not str(objective.get("slot","")).is_empty():result.append(str(objective.get("slot","")))

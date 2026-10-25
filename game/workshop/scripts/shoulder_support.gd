@@ -76,12 +76,36 @@ func rig_error(action: String,_point: String) -> String:
 	return ""
 func crane_options() -> Array[Dictionary]:
 	if not motion.is_empty():return [{"action":"guide:stop" if moving else "guide:resume","label":"Stop load transfer" if moving else "Resume load transfer"}]
-	return [{"action":"guide:check_brakes","label":"Check shoulder brakes"},{"action":"guide:transfer_weight","label":"Transfer arm weight to shoulder"},{"action":"guide:take_weight","label":"Take arm weight"}]
+	return [{"action":"guide:check_brakes","label":command_label("check_brakes")},{"action":"guide:transfer_weight","label":command_label("transfer_weight")},{"action":"guide:take_weight","label":command_label("take_weight")}]
+const MANUAL_COMMANDS=["check_brakes","transfer_weight"]
+func manual_commands() -> Array:return MANUAL_COMMANDS
+func _side_name() -> String:return "right" if str(equipment_id).begins_with("right") else "left"
+func command_label(action: String, _task: String="") -> String:
+	match action:
+		"check_brakes":return "Check "+_side_name()+" shoulder brakes"
+		"transfer_weight":return "Transfer arm weight to the shoulder"
+		"take_weight":return "Take arm weight"
+	return ""
+func manual_subject(objective: Dictionary) -> String:
+	return "Crane console" if str(objective.get("command","")) in ["check_brakes","transfer_weight","take_weight"] else ""
+## Brake confirmation is immediate. Weight is on the shoulder only once the
+## transfer has stopped at zero tension; a transfer still moving has not arrived.
+func manual_state() -> Dictionary:
+	return {"brakes":brakes,"transferred":_weight_on_shoulder()}
+func manual_effect(objective: Dictionary) -> Dictionary:
+	match str(objective.get("command","")):
+		"check_brakes":return {"brakes":true}
+		"transfer_weight":return {"transferred":true}
+	return {}
+func manual_count(_objective: Dictionary) -> Vector2i:return Vector2i(-1,-1)
+func _weight_on_shoulder() -> bool:
+	if moving and motion=="tension":return false
+	return brakes and is_equal_approx(tension,0.0)
 func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the shoulder support."
 	if not active:return "Seat the arm with its four magnetic connectors first."
 	if action=="stop":return "" if moving else "The shoulder load transfer is stopped."
-	if action=="resume":return "" if not motion.is_empty() and not moving and rigged() else "Refit all four ends to resume this load transfer."
+	if action=="resume":return "" if not motion.is_empty() and not moving and rigged() else "Refit all four magnetic connectors to resume this load transfer."
 	if not motion.is_empty():return "Finish or resume the current shoulder load transfer."
 	if not rigged():return "Lower the matching crane and attach all four magnetic connectors."
 	if action=="check_brakes":return "" if _has(spec.structural_slots) else "Complete the ring, keyed brace and all three pinned drive cartridges before checking brakes."
@@ -116,14 +140,14 @@ func placement_error(owner: String,sid: String) -> String:
 	if not active:return "Seat the arm before shoulder handwork."
 	if not motion.is_empty():return "Finish the shoulder load transfer before handwork."
 	if sid in spec.service_slots:return "" if retained() and tension==0 else "Check the brakes and transfer weight to the retained shoulder before connecting isolated services."
-	return "" if rigged() and tension==1 else "Keep all four ends carrying the arm while fitting shoulder retention."
+	return "" if rigged() and tension==1 else "Keep all four magnetic connectors carrying the arm while fitting shoulder retention."
 func undo(owner: String) -> Dictionary:
 	if owner!=spec.owner or game.model.assemblies[owner].history.is_empty():return {"handled":false,"error":""}
 	var sid: String=game.model.assemblies[owner].history.back().slot
 	if sid not in spec.structural_slots+spec.service_slots:return {"handled":false,"error":""}
 	if not motion.is_empty():return {"handled":true,"error":"Finish shoulder load transfer before removing hardware."}
 	if sid in spec.service_slots:return {"handled":false,"error":""}
-	if not rigged() or tension!=1:return {"handled":true,"error":"Refit all four ends and take arm weight before removing shoulder retention."}
+	if not rigged() or tension!=1:return {"handled":true,"error":"Refit all four magnetic connectors and take arm weight before removing shoulder retention."}
 	return {"handled":false,"error":""}
 func transport_shapes() -> Array[Dictionary]:return []
 func sweep_exclusions(from: Transform3D,to: Transform3D) -> Array[RID]:
@@ -168,7 +192,7 @@ func refresh_rig() -> void:
 func capture() -> Dictionary:return {"version":1,"active":active,"brakes":brakes,"released":released,"tension":tension,"goal":goal,"motion":motion,"moving":moving}
 func validate_crane(crane: Dictionary,model: AssemblyModel,state: Dictionary={}) -> Array[String]:
 	var data=capture() if state.is_empty() else state
-	if not secured(data,model) and not (data.released and retained(data,model) and data.tension==0) and not rigged(crane):return ["Unreleased shoulder requires all four crane ends."]
+	if not secured(data,model) and not (data.released and retained(data,model) and data.tension==0) and not rigged(crane):return ["Unreleased shoulder requires all four magnetic connectors."]
 	if not retained(data,model) and data.tension!=1:return ["Unretained arm must remain fully crane-supported."]
 	return []
 func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) -> Array[String]:

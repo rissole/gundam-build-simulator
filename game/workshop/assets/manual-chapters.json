@@ -21,17 +21,17 @@
     {"id": "backpack", "title": "Backpack delivery", "after": ["core"],
      "steps": [["chest", 4], ["chest", 5], ["chest", 6], ["chest", 7], ["chest", 8], ["chest", 9]]},
     {"id": "left_arm", "title": "Left-arm delivery", "after": ["backpack"],
-     "steps": [["chest", 10], ["chest", 11], ["chest", 12], ["chest", 13], ["chest", 14], ["chest", 15], ["chest", 16]]},
+     "steps": [["chest", 10], ["chest", 11], ["chest", 12], ["chest", 13], ["chest", 14], ["chest", 15], ["chest", 16], ["chest", 17]]},
     {"id": "right_arm", "title": "Right-arm delivery", "after": ["left_arm"],
-     "steps": [["chest", 17], ["chest", 18], ["chest", 19], ["chest", 20], ["chest", 21], ["chest", 22], ["chest", 23]]},
+     "steps": [["chest", 18], ["chest", 19], ["chest", 20], ["chest", 21], ["chest", 22], ["chest", 23], ["chest", 24], ["chest", 25]]},
     {"id": "pauldrons", "title": "Pauldron fitting", "after": ["right_arm"],
-     "steps": [["chest", 24], ["chest", 25], ["chest", 26], ["chest", 27], ["chest", 28], ["chest", 29], ["chest", 30], ["chest", 31]]},
+     "steps": [["chest", 26], ["chest", 27], ["chest", 28], ["chest", 29], ["chest", 30], ["chest", 31], ["chest", 32], ["chest", 33]]},
     {"id": "head", "title": "Head fitting", "after": ["pauldrons"],
-     "steps": [["chest", 32], ["chest", 33], ["chest", 34], ["chest", 35], ["chest", 36], ["chest", 37], ["chest", 38], ["chest", 39], ["chest", 40]]},
+     "steps": [["chest", 34], ["chest", 35], ["chest", 36], ["chest", 37], ["chest", 38], ["chest", 39], ["chest", 40], ["chest", 41], ["chest", 42], ["chest", 43], ["chest", 44], ["chest", 45], ["chest", 46]]},
     {"id": "head_sensors", "title": "Head sensor fitting", "after": ["head"],
-     "steps": [["chest", 41], ["chest", 42], ["chest", 43]]},
+     "steps": [["chest", 47], ["chest", 48], ["chest", 49]]},
     {"id": "face", "title": "Face and crown", "after": ["head_sensors"],
-     "steps": [["chest", 44], ["chest", 45], ["chest", 46], ["chest", 47], ["chest", 48], ["chest", 49]]}
+     "steps": [["chest", 50], ["chest", 51], ["chest", 52], ["chest", 53], ["chest", 54], ["chest", 55], ["chest", 56]]}
   ],
   "reference": {
     "title": "Recovery and undo",

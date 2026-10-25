@@ -124,6 +124,17 @@ func run() -> void:
 	var rig_commands: Array = supports_script.MANUAL_COMMANDS.duplicate()
 	rig_commands.append_array(supports_script.template_commands(layout.workshop.bulky_fixture.templates.keys()))
 	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS,"foot_carrier":preload("res://scripts/foot_carrier.gd").MANUAL_COMMANDS,"module_supports":rig_commands,"leg_rail":preload("res://scripts/indexed_leg_rail.gd").MANUAL_COMMANDS,"captive_controls":preload("res://scripts/captive_controls.gd").lock_commands(lock_ids),"core_guide":preload("res://scripts/core_guide.gd").MANUAL_COMMANDS,"backpack_hinge":preload("res://scripts/backpack_hinge.gd").MANUAL_COMMANDS}
+	var shoulder_commands = preload("res://scripts/shoulder_support.gd").MANUAL_COMMANDS
+	commands["left_shoulder"] = shoulder_commands
+	commands["right_shoulder"] = shoulder_commands
+	for receiver_id in content.equipment.receivers:
+		var receiver_spec: Dictionary = content.equipment.receivers[receiver_id]
+		var receiver_commands: Array = []
+		var captive = receiver_spec.get("captive_slots", [])
+		if captive is Array and not captive.is_empty():receiver_commands.append("fasten")
+		for operation in receiver_spec.get("operations", []):
+			receiver_commands.append("release:"+str(operation.id))
+		if not receiver_commands.is_empty():commands[receiver_id] = receiver_commands
 	var good = {"title":"Bolt the flange","goal":"Fasten the flange","view":"components","slots":["a","b"],"objectives":[{"op":"fit","slots":["a"]},{"op":"fit","slots":["b"]}]}
 	var good_errors = Objectives.errors(manual_of(good),commands)
 	expect(good_errors.is_empty(),"valid page has no objective errors: "+joined(good_errors))
@@ -302,6 +313,39 @@ func run() -> void:
 	rail.active_assembly="right_leg";rail.engaged=true;rail.lane="right"
 	var selected = Objectives.evaluate(game,"pelvis",releases[0])
 	expect(same_ticks(selected,[true,true,true,true]) and selected.machine_complete,"build selects the right leg, got "+str(selected.ticked)+" complete "+str(selected.machine_complete))
+	var shoulder = preload("res://scripts/shoulder_support.gd").new();game.add_child(shoulder);shoulder.equipment_id="left_shoulder";game.equipment.register(shoulder)
+	var pauldron = preload("res://scripts/staged_receiver.gd").new();game.add_child(pauldron);pauldron.equipment_id="left_pauldron_receiver"
+	pauldron.spec={"title":"Prepared left pauldron carrier","operations":[{"id":"joint_restraints","label":"elbow / wrist restraints"},{"id":"digit_cradle","label":"digit cradle"}]}
+	game.equipment.register(pauldron)
+	var arm_rig := page_named(definitions.chest.manual,"Bring the arm rig to the Limb Bay")
+	var arm_park := Objectives.text(game,"chest",arm_rig.objectives[0])
+	expect(arm_park=="Leg rig: Park","left arm rig starts by parking the leg rig, got "+arm_park)
+	var brakes := page_named(definitions.chest.manual,"Left shoulder: connect services")
+	var brake_line := Objectives.text(game,"chest",brakes.objectives[0])
+	expect(brake_line=="Crane console: Check left shoulder brakes","shoulder brake check, got "+brake_line)
+	var rear := page_named(definitions.chest.manual,"Left pauldron: rear closure")
+	var release_line := ""
+	for objective in rear.objectives:
+		if str(objective.get("command",""))=="release:joint_restraints":release_line=Objectives.text(game,"chest",objective)
+	expect(release_line=="Left pauldron: Release elbow / wrist restraints","pauldron release, got "+release_line)
+	var head_rig := page_named(definitions.chest.manual,"Bring the head baseplate to the heavy module rig")
+	var insert_line := Objectives.text(game,"chest",head_rig.objectives[0])
+	expect(insert_line=="Heavy module rig: Fit head baseplate contact inserts","head inserts, got "+insert_line)
+	var crown := page_named(definitions.chest.manual,"Decorative head crown: retain")
+	var crown_last := Objectives.text(game,"chest",crown.objectives.back())
+	expect(crown_last=="Crane console: Move to Parking bay","crown parks last, got "+crown_last)
+	var prose: Array[String] = []
+	var chapters = JSON.parse_string(FileAccess.get_file_as_string("res://assets/manual-chapters.json"))
+	for chapter in chapters.chapters:
+		for step in chapter.steps:
+			var owner := str(step[0])
+			var index := int(step[1])
+			var recipe: Dictionary = definitions[str(game.model.assemblies[owner].definition)]
+			var step_page: Dictionary = recipe.manual[index]
+			var view := str(step_page.get("view",""))
+			if step_page.has("body") and view != "overview" and view != "prepared" and view != "summary":
+				prose.append(str(step_page.get("title", owner+":"+str(index))))
+	expect(prose.is_empty(),"action pages still have body: "+joined(prose))
 	var passed = checks.all(func(check):return check.passed)
 	print("MANUAL_OBJECTIVES ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)

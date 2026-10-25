@@ -40,11 +40,50 @@ func controls() -> Array[Dictionary]:
 		for sid in captive_nodes:
 			if _has([sid]):continue
 			var visual: MeshInstance3D=captive_nodes[sid]
-			result.append(control_entry(visual,"fasten:"+sid,"Tighten "+game.model.slot_definition(spec.owner,sid).label,.07,{"point":visual.global_position,"allowed":[game.runtime.node(spec.owner)],"allow_body_hit":true}))
+			var fasten := "fasten:"+str(sid)
+			result.append(control_entry(visual,fasten,manual_subject({"command":fasten})+": "+command_label(fasten),.07,{"point":visual.global_position,"allowed":[game.runtime.node(spec.owner)],"allow_body_hit":true}))
 	for operation in spec.get("operations",[]):
 		var nodes: Dictionary=operation_nodes[operation.id]
-		result.append(control_entry(nodes.handle,("engage:" if released_operations[operation.id] else "release:")+operation.id,("Re-engage " if released_operations[operation.id] else "Release ")+operation.label,.12,{"point":nodes.handle.global_position,"allowed":[nodes.owner],"allow_body_hit":true}))
+		var action := ("engage:" if released_operations[operation.id] else "release:")+str(operation.id)
+		result.append(control_entry(nodes.handle,action,manual_subject({"command":action})+": "+command_label(action),.12,{"point":nodes.handle.global_position,"allowed":[nodes.owner],"allow_body_hit":true}))
 	return result
+
+func manual_commands() -> Array:
+	var result: Array=[]
+	if not spec.get("captive_slots",[]).is_empty():result.append("fasten")
+	for operation in spec.get("operations",[]):result.append("release:"+str(operation.id))
+	return result
+func command_label(action: String, _task: String="") -> String:
+	if action=="fasten" or action.begins_with("fasten:"):return "Fasten captive bolts"
+	var verb := "Re-engage " if action.begins_with("engage:") else "Release " if action.begins_with("release:") else ""
+	if verb.is_empty():return ""
+	var id := action.get_slice(":",1)
+	for operation in spec.get("operations",[]):
+		if str(operation.id)==id:return verb+str(operation.label)
+	return verb+"restraint"
+func manual_subject(_objective: Dictionary) -> String:
+	if str(equipment_id).ends_with("_pauldron_receiver"):return "Left pauldron" if str(equipment_id).begins_with("left") else "Right pauldron"
+	return _title()
+## Captive bolts count filled slots. A restraint counts only after its release
+## request, which is immediate. Nothing here moves through a later arrival.
+func manual_state() -> Dictionary:
+	var state := {"fastened":_fastened_count()}
+	for operation in released_operations:state["released:"+str(operation)]=bool(released_operations[operation])
+	return state
+func manual_effect(objective: Dictionary) -> Dictionary:
+	var command := str(objective.get("command",""))
+	if command=="fasten" or command.begins_with("fasten:"):return {"fastened":spec.get("captive_slots",[]).size()}
+	if command.begins_with("release:"):return {"released:"+command.get_slice(":",1):true}
+	return {}
+func manual_count(objective: Dictionary) -> Vector2i:
+	var command := str(objective.get("command",""))
+	if command!="fasten" and not command.begins_with("fasten:"):return Vector2i(-1,-1)
+	return Vector2i(_fastened_count(),spec.get("captive_slots",[]).size())
+func _fastened_count() -> int:
+	var done := 0
+	for sid in spec.get("captive_slots",[]):
+		if _has([sid]):done+=1
+	return done
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the local restraint."
@@ -162,7 +201,7 @@ func accept() -> String:
 
 func rig_error(action: String, _point: String) -> String:
 	if action=="detach" and not retained():return "Fit all receiver retention before releasing a magnetic connector."
-	if action=="attach" and spec.closure_slots.any(func(sid):return _has([sid])):return "Remove the closures of "+_title()+" before refitting the crane ends."
+	if action=="attach" and spec.closure_slots.any(func(sid):return _has([sid])):return "Remove the closures of "+_title()+" before refitting the magnetic connectors."
 	return ""
 
 func departure_error() -> String:

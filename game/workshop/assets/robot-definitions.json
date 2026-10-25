@@ -11396,10 +11396,104 @@
           ]
         },
         {
+          "title": "Bring the arm rig to the Limb Bay",
+          "goal": "Park the leg rig and crane the arm rig into the Limb Bay.",
+          "slots": [],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "park"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "cassette"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "cassette"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "view": "components"
+        },
+        {
           "title": "Left shoulder: deliver the retained arm",
-          "body": "Use Arm rig to Limb Bay after parking the leg rig. Select Left arm to shoulder. Attach all four magnetic connectors, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",
+          "goal": "Crane the left arm from the arm rig and seat its shoulder ball.",
           "slots": [
             "left_arm"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "left_arm"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "left_arm"
+            },
+            {
+              "op": "seat",
+              "slot": "left_arm",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11422,11 +11516,15 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 2,
+            "text": "Keep all four connectors attached until the arm's services are connected."
+          }
         },
         {
           "title": "Left shoulder: retain the ball",
-          "body": "Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four magnetic connectors attached.",
+          "goal": "Clamp both ring halves around the shoulder ball.",
           "slots": [
             "left_arm/ring_front",
             "left_arm/ring_rear",
@@ -11438,6 +11536,28 @@
             "left_arm/bolt_3",
             "left_arm/washer_4",
             "left_arm/bolt_4"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/ring_front",
+                "left_arm/ring_rear"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/washer_1",
+                "left_arm/bolt_1",
+                "left_arm/washer_2",
+                "left_arm/bolt_2",
+                "left_arm/washer_3",
+                "left_arm/bolt_3",
+                "left_arm/washer_4",
+                "left_arm/bolt_4"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11469,17 +11589,38 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "The seam keys only fit one way round."
+          }
         },
         {
           "title": "Left shoulder: fit the neutral brace",
-          "body": "Seat SH-BRACE-LEFT on the fixed bridge tabs and the arm's two staggered keys. Fit both SH-PIN and SH-KEEPER pairs. The keyed brace locks the straight service pose while the crane carries the arm.",
+          "goal": "Fit the shoulder brace that holds the arm straight.",
           "slots": [
             "left_arm/brace",
             "left_arm/brace_1_pin",
             "left_arm/brace_1_keeper",
             "left_arm/brace_2_pin",
             "left_arm/brace_2_keeper"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/brace"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/brace_1_pin",
+                "left_arm/brace_1_keeper",
+                "left_arm/brace_2_pin",
+                "left_arm/brace_2_keeper"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11510,13 +11651,30 @@
         },
         {
           "title": "Left shoulder: drive 1",
-          "body": "Fit one SH-DRIVE between the fixed A clevis and moving B eye. Retain both ends with SH-PIN and SH-KEEPER. All three cartridges share the same compatible type.",
+          "goal": "Fit drive 1 between its clevis and eye, pinned at both ends.",
           "slots": [
             "left_arm/drive_1",
             "left_arm/drive_1_a_pin",
             "left_arm/drive_1_a_keeper",
             "left_arm/drive_1_b_pin",
             "left_arm/drive_1_b_keeper"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/drive_1"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/drive_1_a_pin",
+                "left_arm/drive_1_a_keeper",
+                "left_arm/drive_1_b_pin",
+                "left_arm/drive_1_b_keeper"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11547,13 +11705,30 @@
         },
         {
           "title": "Left shoulder: drive 2",
-          "body": "Fit one SH-DRIVE between the fixed A clevis and moving B eye. Retain both ends with SH-PIN and SH-KEEPER. All three cartridges share the same compatible type.",
+          "goal": "Fit drive 2 between its clevis and eye, pinned at both ends.",
           "slots": [
             "left_arm/drive_2",
             "left_arm/drive_2_a_pin",
             "left_arm/drive_2_a_keeper",
             "left_arm/drive_2_b_pin",
             "left_arm/drive_2_b_keeper"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/drive_2"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/drive_2_a_pin",
+                "left_arm/drive_2_a_keeper",
+                "left_arm/drive_2_b_pin",
+                "left_arm/drive_2_b_keeper"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11584,13 +11759,30 @@
         },
         {
           "title": "Left shoulder: drive 3",
-          "body": "Fit one SH-DRIVE between the fixed A clevis and moving B eye. Retain both ends with SH-PIN and SH-KEEPER. All three cartridges share the same compatible type.",
+          "goal": "Fit drive 3 between its clevis and eye, pinned at both ends.",
           "slots": [
             "left_arm/drive_3",
             "left_arm/drive_3_a_pin",
             "left_arm/drive_3_a_keeper",
             "left_arm/drive_3_b_pin",
             "left_arm/drive_3_b_keeper"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/drive_3"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/drive_3_a_pin",
+                "left_arm/drive_3_a_keeper",
+                "left_arm/drive_3_b_pin",
+                "left_arm/drive_3_b_keeper"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11621,9 +11813,41 @@
         },
         {
           "title": "Left shoulder: connect services",
-          "body": "At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four magnetic connectors. Keep the neutral and joint restraints engaged for pauldron work.",
+          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane.",
           "slots": [
             "left_arm/service"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "left_shoulder",
+              "command": "check_brakes"
+            },
+            {
+              "op": "operate",
+              "machine": "left_shoulder",
+              "command": "transfer_weight"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "left_arm/service"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11646,13 +11870,106 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 3,
+            "text": "Leave the shoulder brace and the arm's joint restraints engaged."
+          }
+        },
+        {
+          "title": "Bring the right arm onto the arm rig",
+          "goal": "Crane the right arm onto the arm rig.",
+          "slots": [],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "right_arm_store"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "right_arm_store"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "view": "components"
         },
         {
           "title": "Right shoulder: deliver the retained arm",
-          "body": "Use Arm rig to Limb Bay after parking the leg rig. Select Right arm to shoulder. Attach all four magnetic connectors, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",
+          "goal": "Crane the right arm from the arm rig and seat its shoulder ball.",
           "slots": [
             "right_arm"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "right_arm"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "right_arm"
+            },
+            {
+              "op": "seat",
+              "slot": "right_arm",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11675,11 +11992,15 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 2,
+            "text": "Keep all four connectors attached until the arm's services are connected."
+          }
         },
         {
           "title": "Right shoulder: retain the ball",
-          "body": "Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four magnetic connectors attached.",
+          "goal": "Clamp both ring halves around the shoulder ball.",
           "slots": [
             "right_arm/ring_front",
             "right_arm/ring_rear",
@@ -11691,6 +12012,28 @@
             "right_arm/bolt_3",
             "right_arm/washer_4",
             "right_arm/bolt_4"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/ring_front",
+                "right_arm/ring_rear"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/washer_1",
+                "right_arm/bolt_1",
+                "right_arm/washer_2",
+                "right_arm/bolt_2",
+                "right_arm/washer_3",
+                "right_arm/bolt_3",
+                "right_arm/washer_4",
+                "right_arm/bolt_4"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11722,17 +12065,38 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "The seam keys only fit one way round."
+          }
         },
         {
           "title": "Right shoulder: fit the neutral brace",
-          "body": "Seat SH-BRACE-RIGHT on the fixed bridge tabs and the arm's two staggered keys. Fit both SH-PIN and SH-KEEPER pairs. The keyed brace locks the straight service pose while the crane carries the arm.",
+          "goal": "Fit the shoulder brace that holds the arm straight.",
           "slots": [
             "right_arm/brace",
             "right_arm/brace_1_pin",
             "right_arm/brace_1_keeper",
             "right_arm/brace_2_pin",
             "right_arm/brace_2_keeper"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/brace"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/brace_1_pin",
+                "right_arm/brace_1_keeper",
+                "right_arm/brace_2_pin",
+                "right_arm/brace_2_keeper"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11763,13 +12127,30 @@
         },
         {
           "title": "Right shoulder: drive 1",
-          "body": "Fit one SH-DRIVE between the fixed A clevis and moving B eye. Retain both ends with SH-PIN and SH-KEEPER. All three cartridges share the same compatible type.",
+          "goal": "Fit drive 1 between its clevis and eye, pinned at both ends.",
           "slots": [
             "right_arm/drive_1",
             "right_arm/drive_1_a_pin",
             "right_arm/drive_1_a_keeper",
             "right_arm/drive_1_b_pin",
             "right_arm/drive_1_b_keeper"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/drive_1"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/drive_1_a_pin",
+                "right_arm/drive_1_a_keeper",
+                "right_arm/drive_1_b_pin",
+                "right_arm/drive_1_b_keeper"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11800,13 +12181,30 @@
         },
         {
           "title": "Right shoulder: drive 2",
-          "body": "Fit one SH-DRIVE between the fixed A clevis and moving B eye. Retain both ends with SH-PIN and SH-KEEPER. All three cartridges share the same compatible type.",
+          "goal": "Fit drive 2 between its clevis and eye, pinned at both ends.",
           "slots": [
             "right_arm/drive_2",
             "right_arm/drive_2_a_pin",
             "right_arm/drive_2_a_keeper",
             "right_arm/drive_2_b_pin",
             "right_arm/drive_2_b_keeper"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/drive_2"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/drive_2_a_pin",
+                "right_arm/drive_2_a_keeper",
+                "right_arm/drive_2_b_pin",
+                "right_arm/drive_2_b_keeper"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11837,13 +12235,30 @@
         },
         {
           "title": "Right shoulder: drive 3",
-          "body": "Fit one SH-DRIVE between the fixed A clevis and moving B eye. Retain both ends with SH-PIN and SH-KEEPER. All three cartridges share the same compatible type.",
+          "goal": "Fit drive 3 between its clevis and eye, pinned at both ends.",
           "slots": [
             "right_arm/drive_3",
             "right_arm/drive_3_a_pin",
             "right_arm/drive_3_a_keeper",
             "right_arm/drive_3_b_pin",
             "right_arm/drive_3_b_keeper"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/drive_3"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/drive_3_a_pin",
+                "right_arm/drive_3_a_keeper",
+                "right_arm/drive_3_b_pin",
+                "right_arm/drive_3_b_keeper"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11874,9 +12289,41 @@
         },
         {
           "title": "Right shoulder: connect services",
-          "body": "At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four magnetic connectors. Keep the neutral and joint restraints engaged for pauldron work.",
+          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane.",
           "slots": [
             "right_arm/service"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "right_shoulder",
+              "command": "check_brakes"
+            },
+            {
+              "op": "operate",
+              "machine": "right_shoulder",
+              "command": "transfer_weight"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "right_arm/service"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11899,13 +12346,53 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 3,
+            "text": "Leave the shoulder brace and the arm's joint restraints engaged."
+          }
         },
         {
           "title": "Left pauldron: deliver carrier",
-          "body": "With the shoulder retained, brakes checked, weight transferred and services connected, stow all arm magnetic connectors. Select Left pauldron at the central crane console. Its upright rig is in small stock at X-9.0, Z1. Fit both front and rear magnetic connectors and lift above the guards; travel via front Z13, then lower through the open deck notch. Keep both magnetic connectors attached.",
+          "goal": "Crane the left pauldron carrier onto the shoulder.",
           "slots": [
             "left_pauldron"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "left_pauldron"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "left_pauldron"
+            },
+            {
+              "op": "seat",
+              "slot": "left_pauldron",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11928,16 +12415,45 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 2,
+            "text": "Keep both connectors attached until the carrier is bolted."
+          }
         },
         {
           "title": "Left pauldron: retain carrier",
-          "body": "Pocket two PD-M20-LONG bolt units and two PD-M20-SHORT bolt units. The long captive shoes span the proximal bosses; the short shoes fit the distal pair. Fit from front and rear into the arm-owned bosses, clamping the ledges after seating. Keep both magnetic connectors attached. Reacquire both magnetic connectors before any local bolt correction.",
+          "goal": "Bolt the carrier to the arm, then release and park the crane.",
           "slots": [
             "left_pauldron/bolt_1",
             "left_pauldron/bolt_2",
             "left_pauldron/bolt_3",
             "left_pauldron/bolt_4"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "left_pauldron/bolt_1",
+                "left_pauldron/bolt_2",
+                "left_pauldron/bolt_3",
+                "left_pauldron/bolt_4"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11963,13 +12479,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "The long bolts go in the bosses nearest the shoulder, the short ones farther along the arm."
+          }
         },
         {
           "title": "Left pauldron: front closure",
-          "body": "Release and stow both magnetic connectors. Carry PD-FRONT with two hands on an elevator shelf. Fit the upper panel and fasten its four captive M12 screws. The permanent lower mechanical window stays open.",
+          "goal": "Fit the front panel.",
           "slots": [
             "left_pauldron/front"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "left_pauldron/front"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -11992,13 +12520,35 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Carry it up on the lift shelf with two hands."
+          }
         },
         {
           "title": "Left pauldron: rear closure",
-          "body": "Carry PD-REAR with two hands on an elevator shelf. Fit the upper strip and fasten its four captive M12 screws; leave the lower mechanical window open. Once both panels close, release the elbow/wrist restraints and digit cradle at their local handles. Re-engage them before reopening panels for correction.",
+          "goal": "Fit the rear strip, then release the arm's joint restraints.",
           "slots": [
             "left_pauldron/rear"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "left_pauldron/rear"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "left_pauldron_receiver",
+              "command": "release:joint_restraints"
+            },
+            {
+              "op": "operate",
+              "machine": "left_pauldron_receiver",
+              "command": "release:digit_cradle"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12021,13 +12571,53 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 1,
+            "text": "Re-engage the restraints before reopening a panel."
+          }
         },
         {
           "title": "Right pauldron: deliver carrier",
-          "body": "With the shoulder retained, brakes checked, weight transferred and services connected, stow all arm magnetic connectors. Select Right pauldron at the central crane console. Its upright rig is in small stock at X-5.0, Z1. Fit both front and rear magnetic connectors and lift above the guards; travel via front Z13, then lower through the open deck notch. Keep both magnetic connectors attached.",
+          "goal": "Crane the right pauldron carrier onto the shoulder.",
           "slots": [
             "right_pauldron"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "right_pauldron"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "right_pauldron"
+            },
+            {
+              "op": "seat",
+              "slot": "right_pauldron",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12050,16 +12640,45 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 2,
+            "text": "Keep both connectors attached until the carrier is bolted."
+          }
         },
         {
           "title": "Right pauldron: retain carrier",
-          "body": "Pocket two PD-M20-LONG bolt units and two PD-M20-SHORT bolt units. The long captive shoes span the proximal bosses; the short shoes fit the distal pair. Fit from front and rear into the arm-owned bosses, clamping the ledges after seating. Keep both magnetic connectors attached. Reacquire both magnetic connectors before any local bolt correction.",
+          "goal": "Bolt the carrier to the arm, then release and park the crane.",
           "slots": [
             "right_pauldron/bolt_1",
             "right_pauldron/bolt_2",
             "right_pauldron/bolt_3",
             "right_pauldron/bolt_4"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right_pauldron/bolt_1",
+                "right_pauldron/bolt_2",
+                "right_pauldron/bolt_3",
+                "right_pauldron/bolt_4"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12085,13 +12704,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "The long bolts go in the bosses nearest the shoulder, the short ones farther along the arm."
+          }
         },
         {
           "title": "Right pauldron: front closure",
-          "body": "Release and stow both magnetic connectors. Carry PD-FRONT with two hands on an elevator shelf. Fit the upper panel and fasten its four captive M12 screws. The permanent lower mechanical window stays open.",
+          "goal": "Fit the front panel.",
           "slots": [
             "right_pauldron/front"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right_pauldron/front"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12114,13 +12745,35 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Carry it up on the lift shelf with two hands."
+          }
         },
         {
           "title": "Right pauldron: rear closure",
-          "body": "Carry PD-REAR with two hands on an elevator shelf. Fit the upper strip and fasten its four captive M12 screws; leave the lower mechanical window open. Once both panels close, release the elbow/wrist restraints and digit cradle at their local handles. Re-engage them before reopening panels for correction.",
+          "goal": "Fit the rear strip, then release the arm's joint restraints.",
           "slots": [
             "right_pauldron/rear"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "right_pauldron/rear"
+              ]
+            },
+            {
+              "op": "operate",
+              "machine": "right_pauldron_receiver",
+              "command": "release:joint_restraints"
+            },
+            {
+              "op": "operate",
+              "machine": "right_pauldron_receiver",
+              "command": "release:digit_cradle"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12143,13 +12796,111 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 1,
+            "text": "Re-engage the restraints before reopening a panel."
+          }
+        },
+        {
+          "title": "Bring the head baseplate to the heavy module rig",
+          "goal": "Fit head baseplate inserts on the heavy module rig and crane the head baseplate onto it.",
+          "slots": [],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "template:head_baseplate"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_baseplate_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_baseplate_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "view": "components"
         },
         {
           "title": "Head baseplate: deliver",
-          "body": "Fit matching head baseplate upright inserts on the empty lowered heavy module rig. Use Head baseplate to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Head baseplate; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 24 cm onto the seat. Keep the magnetic connectors attached. The underside starts at robot Z15.64: 6 cm to pilot entry, then 18 cm to the flange; the front key rejects reversed yaw.",
+          "goal": "Crane the head baseplate onto the head.",
           "slots": [
             "head_baseplate"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_baseplate"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_baseplate"
+            },
+            {
+              "op": "seat",
+              "slot": "head_baseplate",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12172,11 +12923,15 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 5,
+            "text": "Lower 24 cm; the front key rejects a reversed piece."
+          }
         },
         {
           "title": "Head baseplate: retain",
-          "body": "Fit four HD-W24 4 mm washers and four HD-M24160 bolts down into the torso's captive flange threads. Work from the open front before shells close access; the rear pair uses the specified deeper tool lane. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "goal": "Bolt the head baseplate down.",
           "slots": [
             "hd-w24/001",
             "hd-m24160/001",
@@ -12186,6 +12941,21 @@
             "hd-m24160/003",
             "hd-w24/004",
             "hd-m24160/004"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-w24/001",
+                "hd-m24160/001",
+                "hd-w24/002",
+                "hd-m24160/002",
+                "hd-w24/003",
+                "hd-m24160/003",
+                "hd-w24/004",
+                "hd-m24160/004"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12215,13 +12985,39 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Work from the open front: the rear pair uses the deeper tool lane."
+          }
         },
         {
           "title": "Head baseplate: connect loom",
-          "body": "After all four neck bolt/washer pairs, plug the keyed central power/data loom and bond at the exposed front disconnects. Clip strain relief up the right portal, keeping bolt lanes and the future sensor slide clear. Then release and stow both upward magnetic connectors from the open front before either side shell.",
+          "goal": "Plug in the head loom, then release and park the crane.",
           "slots": [
             "hd-loom/001"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-loom/001"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12244,13 +13040,111 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Clip the strain relief up the right portal."
+          }
+        },
+        {
+          "title": "Bring the left wraparound side to the heavy module rig",
+          "goal": "Fit left wraparound side inserts on the heavy module rig and crane the left wraparound side onto it.",
+          "slots": [],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "template:head_left"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_left_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_left_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "view": "components"
         },
         {
           "title": "Left wraparound side: deliver",
-          "body": "Fit matching left wraparound side upright inserts on the empty lowered heavy module rig. Use Left wraparound side to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Left wraparound side; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the magnetic connectors attached. The side pockets, hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "goal": "Crane the left wraparound side onto the head.",
           "slots": [
             "head_left"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_left"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_left"
+            },
+            {
+              "op": "seat",
+              "slot": "head_left",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12273,14 +13167,41 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 5,
+            "text": "Lower 22 cm into the open side pockets."
+          }
         },
         {
           "title": "Left wraparound side: retain",
-          "body": "Fit both HD-M12100 bolts rearward through the exposed side-shell recesses into captive upright threads. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "goal": "Bolt the left wraparound side down, then release and park the crane.",
           "slots": [
             "hd-m12100/001",
             "hd-m12100/002"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-m12100/001",
+                "hd-m12100/002"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12304,13 +13225,111 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Insert both bolts from the open side, rearward."
+          }
+        },
+        {
+          "title": "Bring the right wraparound side to the heavy module rig",
+          "goal": "Fit right wraparound side inserts on the heavy module rig and crane the right wraparound side onto it.",
+          "slots": [],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "template:head_right"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_right_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_right_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "view": "components"
         },
         {
           "title": "Right wraparound side: deliver",
-          "body": "Fit matching right wraparound side upright inserts on the empty lowered heavy module rig. Use Right wraparound side to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Right wraparound side; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the magnetic connectors attached. The side pockets, hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "goal": "Crane the right wraparound side onto the head.",
           "slots": [
             "head_right"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_right"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_right"
+            },
+            {
+              "op": "seat",
+              "slot": "head_right",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12333,14 +13352,41 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 5,
+            "text": "Lower 22 cm into the open side pockets."
+          }
         },
         {
           "title": "Right wraparound side: retain",
-          "body": "Fit both HD-M12100 bolts rearward through the exposed side-shell recesses into captive upright threads. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "goal": "Bolt the right wraparound side down, then release and park the crane.",
           "slots": [
             "hd-m12100/003",
             "hd-m12100/004"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-m12100/003",
+                "hd-m12100/004"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12364,13 +13410,111 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Insert both bolts from the open side, rearward."
+          }
+        },
+        {
+          "title": "Bring the structural head top to the heavy module rig",
+          "goal": "Fit structural head top inserts on the heavy module rig and crane the structural head top onto it.",
+          "slots": [],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "template:head_top"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_top_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_top_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "view": "components"
         },
         {
           "title": "Structural head top: deliver",
-          "body": "Fit matching structural head top upright inserts on the empty lowered heavy module rig. Use Structural head top to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Structural head top; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 22 cm onto the seat. Keep the magnetic connectors attached. The side pockets, hooks and roof ledges remain open to vertical entry; either handed side may be fitted first.",
+          "goal": "Crane the structural head top onto the head.",
           "slots": [
             "head_top"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_top"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_top"
+            },
+            {
+              "op": "seat",
+              "slot": "head_top",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12393,16 +13537,45 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 5,
+            "text": "Lower 22 cm onto the roof ledges."
+          }
         },
         {
           "title": "Structural head top: retain",
-          "body": "Fit four HD-M12160 bolts horizontally through the exposed roof-ear recesses into captive side-frame threads. Rear bolts enter forward from the rear flanks; front bolts enter rearward from the front landing. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "goal": "Bolt the structural head top down, then release and park the crane.",
           "slots": [
             "hd-m12160/001",
             "hd-m12160/002",
             "hd-m12160/003",
             "hd-m12160/004"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-m12160/001",
+                "hd-m12160/002",
+                "hd-m12160/003",
+                "hd-m12160/004"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12428,13 +13601,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Rear bolts enter from the rear flanks; front bolts from the front landing."
+          }
         },
         {
           "title": "Sensor carrier: slide onto guides",
-          "body": "Bench preparation is supplied: two interchangeable cameras and one distinct range sensor, two M6 screws each, wired on HD-SENSORS. Carry with two hands; use one elevator shelf trip with the padded grips. With structural top retained and every end stowed, approach 1 m forward, then slide straight rearward through the open front. The unequal guide shoes reject reversed orientation; captured rails and the rear stop support the seated carrier.",
+          "goal": "Fit the sensor carrier in the head.",
           "slots": [
             "head_sensors"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "head_sensors"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12457,16 +13642,33 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Carry it up on the lift shelf. From 1 m forward, slide straight back."
+          }
         },
         {
           "title": "Sensor carrier: retain",
-          "body": "Tighten the four captive M8 carrier bolts at their front heads after the rails capture the carrier. The two-camera and range-sensor preparation screws are already supplied; no loose module stock is required.",
+          "goal": "Fasten the sensor carrier's captive bolts.",
           "slots": [
             "hd-m8/001",
             "hd-m8/002",
             "hd-m8/003",
             "hd-m8/004"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "head_sensors_receiver",
+              "command": "fasten",
+              "slots": [
+                "hd-m8/001",
+                "hd-m8/002",
+                "hd-m8/003",
+                "hd-m8/004"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12492,13 +13694,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "The bolt heads face the open front."
+          }
         },
         {
           "title": "Sensor carrier: connect and check",
-          "body": "Plug the single keyed power/data connection near the lower right front. Clip the prepared short service loop inside the right portal, clear of the guides and all three optical apertures. Check all three modules before closing the faceplate.",
+          "goal": "Plug in the sensor carrier.",
           "slots": [
             "hd-service/001"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-service/001"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12521,13 +13735,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "The plug is at the lower right front, clear of the guides."
+          }
         },
         {
           "title": "Front faceplate: seat",
-          "body": "Carry HD-FACE with both hands on the elevator shelf. After all four carrier bolts and its keyed power/data check, approach 18 cm forward and translate rearward onto the two lower support ledges and side-frame locators. The ledges support fastening; the camera and range openings remain clear.",
+          "goal": "Fit the front faceplate.",
           "slots": [
             "head_faceplate"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "head_faceplate"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12550,16 +13776,31 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Carry it up on the lift shelf. From 18 cm forward, slide straight back."
+          }
         },
         {
           "title": "Front faceplate: retain",
-          "body": "Fit all four HD-M10080 M10 × 80 front bolts rearward into the independent frame bosses. All four are required before fitting the mask; support ledges alone do not retain the faceplate.",
+          "goal": "Bolt the front faceplate down.",
           "slots": [
             "hd-m10080/001",
             "hd-m10080/002",
             "hd-m10080/003",
             "hd-m10080/004"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-m10080/001",
+                "hd-m10080/002",
+                "hd-m10080/003",
+                "hd-m10080/004"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12589,9 +13830,17 @@
         },
         {
           "title": "Samurai mask: hook",
-          "body": "Carry HD-MASK on the enlarged shared shelf with two hands. With the faceplate fully retained, approach 16 cm forward and 10 cm high. Translate rearward, then lower 10 cm onto the two independent hooks outside the faceplate edges. Once hooked the mask is hands-free, ready for its uplift bolts.",
+          "goal": "Fit the samurai mask.",
           "slots": [
             "head_mask"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "head_mask"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12614,14 +13863,27 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Carry it up on the lift shelf, then lower it onto the two hooks."
+          }
         },
         {
           "title": "Samurai mask: retain",
-          "body": "Fit both HD-M10160 M10 × 160 front bolts rearward into the lower portal bosses. These prevent uplift; hooks alone are temporary support. For a local correction before the crown, undo both bolts, lift the mask clear into free hands, then refit that same mask and both bolts.",
+          "goal": "Bolt the samurai mask down.",
           "slots": [
             "hd-m10160/001",
             "hd-m10160/002"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-m10160/001",
+                "hd-m10160/002"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12648,10 +13910,104 @@
           ]
         },
         {
+          "title": "Bring the decorative head crown to the heavy module rig",
+          "goal": "Fit decorative head crown inserts on the heavy module rig and crane the decorative head crown onto it.",
+          "slots": [],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "template:head_crown"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_crown_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_crown_to_fixture"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "view": "components"
+        },
+        {
           "title": "Decorative head crown: deliver",
-          "body": "Fit matching decorative head crown upright inserts on the empty lowered heavy module rig. Use Decorative head crown to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select Decorative head crown; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers 18 cm onto the seat. Keep the magnetic connectors attached. After mask retention, the final crown lowers 18 cm: 6 cm clear lead and 12 cm onto the two unequal keyed prongs. Keep both front-facing magnetic connectors attached.",
+          "goal": "Crane the decorative head crown onto the head.",
           "slots": [
             "head_crown"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "head_crown"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver",
+              "task": "head_crown"
+            },
+            {
+              "op": "seat",
+              "slot": "head_crown",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12674,14 +14030,41 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 5,
+            "text": "Lower 18 cm onto the two unequal keyed prongs."
+          }
         },
         {
           "title": "Decorative head crown: retain",
-          "body": "Fit both HD-M12100 M12 × 100 front bolts rearward through the crown feet into the independent keyed root bosses. Only after both bolts are complete may the two front-facing magnetic connectors be released and stowed. Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",
+          "goal": "Bolt the decorative head crown down, then release and park the crane.",
           "slots": [
             "hd-m12100/005",
             "hd-m12100/006"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "hd-m12100/005",
+                "hd-m12100/006"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -12705,7 +14088,11 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "note": {
+            "at": 0,
+            "text": "Insert both bolts from the front."
+          }
         }
       ]
     },

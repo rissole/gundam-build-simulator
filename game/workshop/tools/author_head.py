@@ -176,8 +176,24 @@ def extend(trial,chest,kinds,layout,diagram):
         sid=uid.lower().replace("__","/")
         slots[sid]=dict(accepts=kind,pose_source=uid,requires=requires,label=kinds[kind]["title"],access_policy="mounted",undo_requires_support="crane_rigging")
         return sid
-    def page(title,body,ids):
-        chest["manual"].append(dict(title=title,body=body,slots=ids,view="components",diagram_views=[diagram(title,[slots[s]["pose_source"] for s in ids])]))
+    crane, fixture = "service_crane", "module_supports"
+    def operate(machine, command, task=None):
+        record = dict(op="operate", machine=machine, command=command)
+        if task is not None: record["task"] = task
+        return record
+    def crane_to(task, seat=None):
+        steps = [operate(crane, "pickup", task), operate(crane, "down"), dict(op="connect", machine=crane),
+                 operate(crane, "up"), operate(crane, "go:receiver", task)]
+        if seat is None: steps.append(operate(crane, "down"))
+        else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
+        return steps
+    def park():
+        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+    def page(title, goal, ids, objectives, note=None):
+        record = dict(title=title, goal=goal, slots=list(ids), objectives=objectives, view="components")
+        if ids: record["diagram_views"]=[diagram(title,[slots[s]["pose_source"] for s in ids])]
+        if note is not None: record["note"]=note
+        chest["manual"].append(record)
     retained={};connected=[]
     for uid,title,zmin,height,store in PIECES:
         shapes=[]
@@ -275,7 +291,13 @@ def extend(trial,chest,kinds,layout,diagram):
         if uid=="head_crown":hand_pieces(trial,chest,kinds,diagram,source,page)
         requires=(["left_pauldron/front","left_pauldron/rear","right_pauldron/front","right_pauldron/rear"] if uid=="head_baseplate" else connected if uid in ["head_left","head_right"] else chest["milestones"]["head_mask_retained"] if uid=="head_crown" else retained["head_left"]+retained["head_right"])
         slots[uid]=dict(assembly=uid,milestone="prepared",requires=list(requires),pose_source=seat,label=title,support_required=True,source_supports=["crane_rigging"],undo_requires_support="crane_rigging",secured_by=[],access_policy="mounted")
-        page(title+": deliver", "Fit matching "+title.lower()+" upright inserts on the empty lowered heavy module rig. Use "+title+" to Heavy Module Bay to collect the piece from its rig, retain it on the saddles, release and park. Select "+title+"; attach every magnetic connector individually. Up tensions the crane cables before the rig clamps open. Lift until the lowest load is Y19, cross to X13 at Z13, then to Z26 with front wings closed. Down aligns the keyed front and lowers "+str(int((.24 if uid=="head_baseplate" else .18 if uid=="head_crown" else .22)*100))+" cm onto the seat. Keep the magnetic connectors attached. "+("The underside starts at robot Z15.64: 6 cm to pilot entry, then 18 cm to the flange; the front key rejects reversed yaw." if uid=="head_baseplate" else "After mask retention, the final crown lowers 18 cm: 6 cm clear lead and 12 cm onto the two unequal keyed prongs. Keep both front-facing magnetic connectors attached." if uid=="head_crown" else "The side pockets, hooks and roof ledges remain open to vertical entry; either handed side may be fitted first."),[uid])
+        name=title.lower()
+        deliver_note=("Lower 24 cm; the front key rejects a reversed piece." if uid=="head_baseplate" else
+            "Lower 18 cm onto the two unequal keyed prongs." if uid=="head_crown" else
+            "Lower 22 cm onto the roof ledges." if uid=="head_top" else "Lower 22 cm into the open side pockets.")
+        page("Bring the "+name+" to the heavy module rig", "Fit "+name+" inserts on the heavy module rig and crane the "+name+" onto it.",
+            [], [operate(fixture, "template:"+uid)]+crane_to(uid+"_to_fixture")+park())
+        page(title+": deliver", "Crane the "+name+" onto the head.", [uid], crane_to(uid, uid), dict(at=5, text=deliver_note))
         hardware=[]
         if uid=="head_baseplate":
             for n,(x,y) in enumerate([(x,y) for x in [-.27,.27] for y in [-.27,.27]],1):
@@ -291,15 +313,22 @@ def extend(trial,chest,kinds,layout,diagram):
                     [tube([0,0,direction*length/2],.006,0,length,[0,0,1]),tube([0,0,-direction*.006],.010,0,.012,[0,0,1])],[uid]))
         retained[uid]=[uid]+hardware;slots[uid]["secured_by"]=hardware.copy()
         chest["milestones"][uid+"_retained"]=retained[uid]
-        retain_body=("Fit four HD-W24 4 mm washers and four HD-M24160 bolts down into the torso's captive flange threads. Work from the open front before shells close access; the rear pair uses the specified deeper tool lane." if uid=="head_baseplate" else
-            "Fit both HD-M12100 M12 × 100 front bolts rearward through the crown feet into the independent keyed root bosses. Only after both bolts are complete may the two front-facing magnetic connectors be released and stowed." if uid=="head_crown" else
-            "Fit four HD-M12160 bolts horizontally through the exposed roof-ear recesses into captive side-frame threads. Rear bolts enter forward from the rear flanks; front bolts enter rearward from the front landing." if uid=="head_top" else
-            "Fit both HD-M12100 bolts rearward through the exposed side-shell recesses into captive upright threads.")
-        page(title+": retain",retain_body+" Keep all ends attached until retention is complete; reacquire every end before a local bolt correction.",hardware)
+        retain_note=("Work from the open front: the rear pair uses the deeper tool lane." if uid=="head_baseplate" else
+            "Insert both bolts from the front." if uid=="head_crown" else
+            "Rear bolts enter from the rear flanks; front bolts from the front landing." if uid=="head_top" else
+            "Insert both bolts from the open side, rearward.")
+        # The baseplate loom is part of receiver retention, so the crane cannot
+        # release until that page. Every other piece parks on its retain page.
+        retain_steps=[dict(op="fit", slots=list(hardware))]
+        retain_goal="Bolt the "+name+" down, then release and park the crane."
+        if uid!="head_baseplate": retain_steps+=park()
+        else: retain_goal="Bolt the head baseplate down."
+        page(title+": retain", retain_goal, hardware, retain_steps, dict(at=0, text=retain_note))
         if uid=="head_baseplate":
             loom=item("hd-loom","HD-LOOM__001",point(.10,.25,15.69),[box([0,0,0],[.06,.06,.06]),tube([.47,.32,0],.016,0,.64) ],hardware.copy())
             connected=retained[uid]+[loom];chest["milestones"]["head_baseplate_connected"]=connected.copy()
-            page("Head baseplate: connect loom","After all four neck bolt/washer pairs, plug the keyed central power/data loom and bond at the exposed front disconnects. Clip strain relief up the right portal, keeping bolt lanes and the future sensor slide clear. Then release and stow both upward magnetic connectors from the open front before either side shell.",[loom])
+            page("Head baseplate: connect loom", "Plug in the head loom, then release and park the crane.", [loom],
+                [dict(op="fit", slots=[loom])]+park(), dict(at=0, text="Clip the strain relief up the right portal."))
         receiver_requires=(["chest:head_mask_retained"] if uid=="head_crown" else ["chest:left_pauldron_closed","chest:right_pauldron_closed","chest:backpack_connected"] if uid=="head_baseplate" else ["chest:head_baseplate_connected"] if uid!="head_top" else ["chest:head_left_retained","chest:head_right_retained"])
         clear_zones=["head_top_rig"] if uid=="head_crown" else [] if uid=="head_baseplate" else ["head_baseplate_rig"] if uid!="head_top" else ["head_left_rig","head_right_rig"]
         trial["equipment"]["receivers"][uid+"_receiver"]=dict(title=title,uid=uid,owner="chest",slot=uid,seat=pose([0,4.10,0]),crane_task=uid,
@@ -356,13 +385,17 @@ def hand_pieces(trial,chest,kinds,diagram,source,page):
             sensor += [tube(point(x,.49,z),.018,.0045,.02,[0,0,1]),box(point(x,.35,z+.05),[.03,.015,.30]),box(point(x,.49,z+.034),[.03,.035,.02])]
     ready=chest["milestones"]["head_top_retained"]
     sid=add("hd-sensors","HD-SENSORS__001",[0,0,0],sensor,ready,"head_sensors")
-    page("Sensor carrier: slide onto guides","Bench preparation is supplied: two interchangeable cameras and one distinct range sensor, two M6 screws each, wired on HD-SENSORS. Carry with two hands; use one elevator shelf trip with the padded grips. With structural top retained and every end stowed, approach 1 m forward, then slide straight rearward through the open front. The unequal guide shoes reject reversed orientation; captured rails and the rear stop support the seated carrier.",[sid])
+    def fasten(slots):return dict(op="operate", machine="head_sensors_receiver", command="fasten", slots=list(slots))
+    page("Sensor carrier: slide onto guides", "Fit the sensor carrier in the head.", [sid],
+        [dict(op="fit", slots=[sid])], dict(at=0, text="Carry it up on the lift shelf. From 1 m forward, slide straight back."))
     screws=[bolt("hd-m8",f"HD-M8__{n:03}",(x,.50,z),.04,[sid],True)
         for n,(x,z) in enumerate([(x,z) for x in [-.49,.49] for z in [16.52,17.08]],1)]
-    page("Sensor carrier: retain","Tighten the four captive M8 carrier bolts at their front heads after the rails capture the carrier. The two-camera and range-sensor preparation screws are already supplied; no loose module stock is required.",screws)
+    page("Sensor carrier: retain", "Fasten the sensor carrier's captive bolts.", screws,
+        [fasten(screws)], dict(at=0, text="The bolt heads face the open front."))
     service=add("hd-sensor-loom","HD-SERVICE__001",point(.43,.57,16.46),
         [box([0,0,0],[.05,.06,.04]),box([.05,0,.07],[.025,.10,.12])],screws)
-    page("Sensor carrier: connect and check","Plug the single keyed power/data connection near the lower right front. Clip the prepared short service loop inside the right portal, clear of the guides and all three optical apertures. Check all three modules before closing the faceplate.",[service])
+    page("Sensor carrier: connect and check", "Plug in the sensor carrier.", [service],
+        [dict(op="fit", slots=[service])], dict(at=0, text="The plug is at the lower right front, clear of the guides."))
     chest["milestones"]["head_sensors_retained"]=[sid]+screws
     chest["milestones"]["head_sensors_connected"]=[sid]+screws+[service]
     trial["equipment"]["receivers"]["head_sensors_receiver"]=dict(title="Sensor carrier",uid="HD-SENSORS__001",item=True,
@@ -392,9 +425,10 @@ def hand_pieces(trial,chest,kinds,diagram,source,page):
     holes += [[x,17.02-16.655,.10,.16] for x in [-.65,.65]]
     face=perforated(point(0,.68,16.655),[1.30,1.05,.08],holes)
     face_sid=add("hd-faceplate","HD-FACE__001",[0,0,0],face,chest["milestones"]["head_sensors_connected"],"head_faceplate")
-    page("Front faceplate: seat","Carry HD-FACE with both hands on the elevator shelf. After all four carrier bolts and its keyed power/data check, approach 18 cm forward and translate rearward onto the two lower support ledges and side-frame locators. The ledges support fastening; the camera and range openings remain clear.",[face_sid])
+    page("Front faceplate: seat", "Fit the front faceplate.", [face_sid],
+        [dict(op="fit", slots=[face_sid])], dict(at=0, text="Carry it up on the lift shelf. From 18 cm forward, slide straight back."))
     face_bolts=[bolt("hd-m10-80",f"HD-M10080__{n:03}",(x,.73,z),.08,[face_sid]) for n,(x,z) in enumerate([(x,z) for x in [-.55,.55] for z in [16.20,17.12]],1)]
-    page("Front faceplate: retain","Fit all four HD-M10080 M10 × 80 front bolts rearward into the independent frame bosses. All four are required before fitting the mask; support ledges alone do not retain the faceplate.",face_bolts)
+    page("Front faceplate: retain", "Bolt the front faceplate down.", face_bolts, [dict(op="fit", slots=list(face_bolts))])
     chest["milestones"]["head_faceplate_retained"]=[face_sid]+face_bolts
     trial["equipment"]["receivers"]["head_faceplate_receiver"]=dict(title="Front faceplate",uid="HD-FACE__001",item=True,owner="chest",slot=face_sid,seat=pose([0,4.10,0]),
         requires=["chest:head_sensors_connected"],retention_slots=face_bolts,closure_slots=["head_mask"],approach_offsets=[[0,0,-.18],[0,0,0]])
@@ -406,9 +440,10 @@ def hand_pieces(trial,chest,kinds,diagram,source,page):
     for x in [-.68,.68]:
         mask += [box(point(x-.017,.74,16.53),[.006,.06,.08]),box(point(x+.017,.74,16.53),[.006,.06,.08]),box(point(x,.75,16.545),[.04,.01,.10])]
     mask_sid=add("hd-mask","HD-MASK__001",[0,0,0],mask,chest["milestones"]["head_faceplate_retained"],"head_mask")
-    page("Samurai mask: hook","Carry HD-MASK on the enlarged shared shelf with two hands. With the faceplate fully retained, approach 16 cm forward and 10 cm high. Translate rearward, then lower 10 cm onto the two independent hooks outside the faceplate edges. Once hooked the mask is hands-free, ready for its uplift bolts.",[mask_sid])
+    page("Samurai mask: hook", "Fit the samurai mask.", [mask_sid],
+        [dict(op="fit", slots=[mask_sid])], dict(at=0, text="Carry it up on the lift shelf, then lower it onto the two hooks."))
     mask_bolts=[bolt("hd-m10-160",f"HD-M10160__{n:03}",(x,.88,15.98),.16,[mask_sid]) for n,x in enumerate([-.56,.56],1)]
-    page("Samurai mask: retain","Fit both HD-M10160 M10 × 160 front bolts rearward into the lower portal bosses. These prevent uplift; hooks alone are temporary support. For a local correction before the crown, undo both bolts, lift the mask clear into free hands, then refit that same mask and both bolts.",mask_bolts)
+    page("Samurai mask: retain", "Bolt the samurai mask down.", mask_bolts, [dict(op="fit", slots=list(mask_bolts))])
     chest["milestones"]["head_mask_retained"]=[mask_sid]+mask_bolts
     trial["equipment"]["receivers"]["head_mask_receiver"]=dict(title="Samurai mask",uid="HD-MASK__001",item=True,owner="chest",slot=mask_sid,seat=pose([0,4.10,0]),
         requires=["chest:head_faceplate_retained"],retention_slots=mask_bolts,closure_slots=["head_crown"],seated_state="hooked",

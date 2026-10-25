@@ -76,7 +76,8 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 		if not objectives[i] is Dictionary:continue
 		var objective: Dictionary = objectives[i]
 		var op := str(objective.get("op",""))
-		if op == "fit":
+		# An operate objective may name the slots its control fills (captive bolts).
+		if op == "fit" or (op == "operate" and objective.get("slots") is Array):
 			var slots: Array = objective.get("slots",[]) if objective.get("slots") is Array else []
 			var filled := 0
 			for sid in slots:
@@ -137,7 +138,7 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 		elif current < 0:current = i
 		if objectives[i] is Dictionary:
 			var op := str(objectives[i].get("op",""))
-			if (op == "fit" or op == "seat") and not ticked[i]:fits_complete = false
+			if (op == "fit" or op == "seat" or (op == "operate" and objectives[i].get("slots") is Array)) and not ticked[i]:fits_complete = false
 	return {"ticked":ticked,"counts":counts,"current":current,"fits_complete":fits_complete,"machine_complete":sequence.is_empty() or latest == sequence.size()-1,"started":started}
 
 ## `evals` may carry evaluate() results already computed for `steps`.
@@ -278,7 +279,7 @@ static func _state_matches(expected: Dictionary, state: Dictionary) -> bool:
 
 static func _objective_slots(objective: Dictionary) -> Array:
 	var op := str(objective.get("op",""))
-	if op == "fit" and objective.get("slots") is Array:return objective.slots
+	if op in ["fit","operate"] and objective.get("slots") is Array:return objective.slots
 	if op == "seat" and not str(objective.get("slot","")).is_empty():return [str(objective.slot)]
 	return []
 

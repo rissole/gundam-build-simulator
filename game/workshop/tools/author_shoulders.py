@@ -8,6 +8,19 @@ import math
 
 def extend(trial, chest, arms, kinds, diagram):
     slots = chest["slots"]
+    crane, rail = "service_crane", "leg_rail"
+    def operate(machine, command, task=None):
+        record = dict(op="operate", machine=machine, command=command)
+        if task is not None: record["task"] = task
+        return record
+    def crane_to(task, seat=None):
+        steps = [operate(crane, "pickup", task), operate(crane, "down"), dict(op="connect", machine=crane),
+                 operate(crane, "up"), operate(crane, "go:receiver", task)]
+        if seat is None: steps.append(operate(crane, "down"))
+        else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
+        return steps
+    def park():
+        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
     def box(at, size): return dict(shape="box", center=at, size=size)
     def tube(at, outer, inner, length, axis="x"):
         return dict(shape="tube", center=at, outer=outer, inner=inner, length=length, axis=axis)
@@ -121,14 +134,30 @@ def extend(trial, chest, arms, kinds, diagram):
         chest["context_sources"].append(fixed)
         path=[bulk,[sign*.56,bulk[1],bulk[2]],channel(2.65,14.46),channel(2.72,13.45),[sign*.56,.26,1.10],tail]
         service=part("service","service",[link(a,b,.017) for a,b in zip(path,path[1:])]+[tube(p,.022,0,.08) for p in [bulk,tail]],retention+bracing+drives,tuple(path[1]),False)
-        def page(title,body,ids):
-            return dict(title=side.title()+" shoulder: "+title,body=body,slots=ids,view="components",
+        def page(title, goal, ids, objectives, note=None):
+            record = dict(title=side.title()+" shoulder: "+title, goal=goal, slots=list(ids), objectives=objectives, view="components",
                 diagram_views=[diagram(side.title()+" shoulder "+title,[slots[s]["pose_source"] for s in ids])])
-        chest["manual"] += [page("deliver the retained arm","Use Arm rig to Limb Bay after parking the leg rig. Select "+side.title()+" arm to shoulder. Attach all four magnetic connectors, then Up takes weight and folds the six source clamps. Travel upends, yaws and splays the restrained arm; Down approaches and seats the ball. The crane keeps carrying it.",[uid]),
-            page("retain the ball","Fit SH-RING-FRONT and SH-RING-REAR radially around the seated neck. Their complementary seam keys locate the halves. Fit each SH-WASHER before its SH-BOLT. Keep all four magnetic connectors attached.",retention),
-            page("fit the neutral brace","Seat SH-BRACE-"+side.upper()+" on the fixed bridge tabs and the arm's two staggered keys. Fit both SH-PIN and SH-KEEPER pairs. The keyed brace locks the straight service pose while the crane carries the arm.",bracing)]
-        for n,ids in enumerate(drive_pages,1):chest["manual"].append(page("drive "+str(n),"Fit one SH-DRIVE between the fixed A clevis and moving B eye. Retain both ends with SH-PIN and SH-KEEPER. All three cartridges share the same compatible type.",ids))
-        chest["manual"].append(page("connect services","At the crane console, check all three drive brakes and transfer weight onto the retained cup, drives and keyed brace. Fit SH-SERVICE between the isolated ports, then detach and stow all four magnetic connectors. Keep the neutral and joint restraints engaged for pauldron work.",[service]))
+            if note is not None: record["note"] = note
+            return record
+        if side=="left":
+            chest["manual"].append(dict(title="Bring the arm rig to the Limb Bay", goal="Park the leg rig and crane the arm rig into the Limb Bay.",
+                slots=[], objectives=[operate(rail,"park")]+crane_to("cassette")+park(), view="components"))
+        else:
+            chest["manual"].append(dict(title="Bring the right arm onto the arm rig", goal="Crane the right arm onto the arm rig.",
+                slots=[], objectives=crane_to("right_arm_store")+park(), view="components"))
+        chest["manual"] += [page("deliver the retained arm","Crane the "+side+" arm from the arm rig and seat its shoulder ball.",[uid],
+                crane_to(uid, uid), dict(at=2, text="Keep all four connectors attached until the arm's services are connected.")),
+            page("retain the ball","Clamp both ring halves around the shoulder ball.",retention,
+                [dict(op="fit", slots=list(rings)), dict(op="fit", slots=list(retention[len(rings):]))],
+                dict(at=0, text="The seam keys only fit one way round.")),
+            page("fit the neutral brace","Fit the shoulder brace that holds the arm straight.",bracing,
+                [dict(op="fit", slots=[bracing[0]]), dict(op="fit", slots=list(bracing[1:]))])]
+        for n,ids in enumerate(drive_pages,1):
+            chest["manual"].append(page("drive "+str(n),"Fit drive "+str(n)+" between its clevis and eye, pinned at both ends.",ids,
+                [dict(op="fit", slots=[ids[0]]), dict(op="fit", slots=list(ids[1:]))]))
+        chest["manual"].append(page("connect services","Hand the arm's weight to the shoulder, plug in its services and release the crane.",[service],
+            [operate(side+"_shoulder","check_brakes"), operate(side+"_shoulder","transfer_weight"), dict(op="fit", slots=[service])]+park(),
+            dict(at=3, text="Leave the shoulder brace and the arm's joint restraints engaged.")))
         structure=[uid]+retention+bracing+drives
         chest["milestones"][uid+"_retained"]=structure
         chest["milestones"][uid+"_connected"]=structure+[service]

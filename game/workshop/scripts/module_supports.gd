@@ -70,7 +70,7 @@ func manual_commands() -> Array:
 	if spec is Dictionary and spec.has("templates"):result.append_array(template_commands(spec.templates.keys()))
 	return result
 func command_label(action: String, _task: String="") -> String:
-	if action.begins_with("template:"):return "Fit "+action.get_slice(":",1)+" contact inserts"
+	if action.begins_with("template:"):return "Fit "+action.get_slice(":",1).replace("_"," ")+" contact inserts"
 	match action:
 		"insert_pins":return "Insert both lock pins"
 		"close_jaws":return "Close the hold-down jaws"

@@ -5,7 +5,7 @@ extends "res://scripts/equipment.gd"
 signal changed
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
-const MANUAL_COMMANDS = ["next:bolster","next:index","next:travel","next:upright","next:dock","next:release","back:home","build"]
+const MANUAL_COMMANDS = ["next:bolster","next:index","next:travel","next:upright","next:dock","next:release","back:home","build","park"]
 var layout: Node3D
 var spec: Dictionary
 var active_assembly = "left_leg"
@@ -66,6 +66,7 @@ func command_label(action: String, _task: String = "") -> String:
 	if action.begins_with("next:"):return "Next"
 	if action=="back:home":return "Back"
 	if action=="build":return "Build"
+	if action=="park":return "Park"
 	return ""
 func manual_subject(_objective: Dictionary) -> String:return "Leg rig"
 func manual_hint(objective: Dictionary) -> String:
@@ -90,7 +91,14 @@ func manual_state() -> Dictionary:
 	if moving and mode=="bolster" and goal<1.0:stowed=true
 	var on_lane := is_equal_approx(index_x,lane_x)
 	if moving and mode=="index" and not is_equal_approx(float(goal),lane_x):on_lane=true
-	return {"bolster":stowed,"indexed":on_lane,"stop":stop,"engaged":engaged,"home":stop==0 and is_equal_approx(index_x,station) and is_equal_approx(release,0.0),"active_assembly":active_assembly}
+	var parking := _parking_x()
+	var parked := is_equal_approx(index_x,parking)
+	# Still rolling toward the parking index has not arrived.
+	if moving and mode=="index" and is_equal_approx(float(goal),parking):parked=false
+	return {"bolster":stowed,"indexed":on_lane,"stop":stop,"engaged":engaged,"home":stop==0 and is_equal_approx(index_x,station) and is_equal_approx(release,0.0),"active_assembly":active_assembly,"parked":parked}
+func _parking_x() -> float:
+	var lanes = spec.get("lanes",{})
+	return float(lanes.get("parking",spec.get("station_x",index_x))) if lanes is Dictionary else float(spec.get("station_x",index_x))
 func manual_effect(objective: Dictionary) -> Dictionary:
 	match str(objective.get("command","")):
 		"next:bolster":return {"bolster":true}
@@ -101,6 +109,7 @@ func manual_effect(objective: Dictionary) -> Dictionary:
 		"next:release":return {"engaged":false}
 		"back:home":return {"home":true}
 		"build":return {"active_assembly":"right_leg","engaged":true}
+		"park":return {"parked":true}
 	return {}
 
 func can_construct() -> bool:

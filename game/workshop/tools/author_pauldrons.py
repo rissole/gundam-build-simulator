@@ -44,6 +44,19 @@ def stores(data):
 
 def extend(trial, chest, arms, kinds, layout, diagram):
     definitions = {}
+    crane = "service_crane"
+    def operate(machine, command, task=None):
+        record = dict(op="operate", machine=machine, command=command)
+        if task is not None: record["task"] = task
+        return record
+    def crane_to(task, seat=None):
+        steps = [operate(crane, "pickup", task), operate(crane, "down"), dict(op="connect", machine=crane),
+                 operate(crane, "up"), operate(crane, "go:receiver", task)]
+        if seat is None: steps.append(operate(crane, "down"))
+        else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
+        return steps
+    def park():
+        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
     sources = trial["sources"]
     for key,title in [("long","Long"),("short","Short")]:
         family="PD-M20-"+key.upper()
@@ -160,12 +173,22 @@ def extend(trial, chest, arms, kinds, layout, diagram):
             rig=dict(normals=[[0,0,-1],[0,0,1]]),
             operations=[dict(id="joint_restraints",owner=side+"_arm",source=prefix+"-JOINT-RESTRAINTS__001",point=[sign*.46,0,3],label="elbow / wrist restraints"),
                         dict(id="digit_cradle",owner=side+"_arm",source=prefix+"-DIGIT-CRADLE__001",point=[0,-.30,6.82],label="digit cradle")])
-        def page(title,body,ids):return dict(title=side.title()+" pauldron: "+title,body=body,slots=ids,view="components",
-            diagram_views=[diagram(title,[slots[s]["pose_source"] for s in ids])])
-        chest["manual"] += [page("deliver carrier","With the shoulder retained, brakes checked, weight transferred and services connected, stow all arm magnetic connectors. Select "+side.title()+" pauldron at the central crane console. Its upright rig is in small stock at X"+str(task["source_pose"]["position"][0])+", Z1. Fit both front and rear magnetic connectors and lift above the guards; travel via front Z13, then lower through the open deck notch. Keep both magnetic connectors attached.",[uid]),
-            page("retain carrier","Pocket two PD-M20-LONG bolt units and two PD-M20-SHORT bolt units. The long captive shoes span the proximal bosses; the short shoes fit the distal pair. Fit from front and rear into the arm-owned bosses, clamping the ledges after seating. Keep both magnetic connectors attached. Reacquire both magnetic connectors before any local bolt correction.",bolts),
-            page("front closure","Release and stow both magnetic connectors. Carry PD-FRONT with two hands on an elevator shelf. Fit the upper panel and fasten its four captive M12 screws. The permanent lower mechanical window stays open.",[panels[0]]),
-            page("rear closure","Carry PD-REAR with two hands on an elevator shelf. Fit the upper strip and fasten its four captive M12 screws; leave the lower mechanical window open. Once both panels close, release the elbow/wrist restraints and digit cradle at their local handles. Re-engage them before reopening panels for correction.",[panels[1]])]
+        releases=[operate(uid+"_receiver","release:"+operation["id"]) for operation in trial["equipment"]["receivers"][uid+"_receiver"]["operations"]]
+        def page(title, goal, ids, objectives, note=None):
+            record = dict(title=side.title()+" pauldron: "+title, goal=goal, slots=list(ids), objectives=objectives, view="components",
+                diagram_views=[diagram(title,[slots[s]["pose_source"] for s in ids])])
+            if note is not None: record["note"] = note
+            return record
+        chest["manual"] += [page("deliver carrier","Crane the "+side+" pauldron carrier onto the shoulder.",[uid],
+                crane_to(uid, uid), dict(at=2, text="Keep both connectors attached until the carrier is bolted.")),
+            page("retain carrier","Bolt the carrier to the arm, then release and park the crane.",bolts,
+                [dict(op="fit", slots=list(bolts))]+park(),
+                dict(at=0, text="The long bolts go in the bosses nearest the shoulder, the short ones farther along the arm.")),
+            page("front closure","Fit the front panel.",[panels[0]],
+                [dict(op="fit", slots=[panels[0]])], dict(at=0, text="Carry it up on the lift shelf with two hands.")),
+            page("rear closure","Fit the rear strip, then release the arm's joint restraints.",[panels[1]],
+                [dict(op="fit", slots=[panels[1]])]+releases,
+                dict(at=1, text="Re-engage the restraints before reopening a panel."))]
     for support in trial["supports"]:
         if support.startswith(("left_shelf_", "right_shelf_")):
             trial["supports"][support]["parts"] += ["pd-front", "pd-rear"]
