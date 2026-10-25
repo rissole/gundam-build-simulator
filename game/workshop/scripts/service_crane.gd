@@ -205,6 +205,7 @@ func menu_options() -> Array[Dictionary]:
 	if _guided_live() and _guide().has_method("crane_options"):options.append_array(_guide().crane_options())
 	if not motion.is_empty():
 		options.append({"action":"stop" if moving else "resume","label":"Stop" if moving else "Resume"})
+		if _can_return():options.append({"action":"return","label":"Return to "+_station_title(station)})
 		return options
 	if station != "park":options.append({"action":"down" if raised else "up","label":"↓  Lower crane" if raised else "↑  Raise crane"})
 	if raised:
@@ -222,6 +223,11 @@ func menu_options() -> Array[Dictionary]:
 			if destination != station:options.append({"action":action,"label":"Move to "+(_station_title(destination))})
 	return options
 
+## Reverse a held transport along the same authored route. Vertical phases
+## keep their support-transfer interlocks and can still be stopped explicitly.
+func _can_return() -> bool:
+	return not blocked_reason.is_empty() and motion in ["go:source","go:receiver"] and station != "park" and travel_from == null
+
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the crane."
 	if action.begins_with("guide:"):
@@ -233,6 +239,7 @@ func action_error(action: String) -> String:
 	if action == "open_console":return console_access_error()
 	if action == "close_console":return ""
 	if action == "stop":return "" if moving else "The crane is stopped."
+	if action == "return":return "" if _can_return() else "Return is available while a transport is waiting for its route to clear."
 	if action == "resume":return "" if not moving and not motion.is_empty() else "There is no stopped crane movement to resume."
 	if action == "stow":return "" if not hand_payload().is_empty() else "You are not holding a magnetic end."
 	if action.begins_with("pick:") or action.begins_with("detach:"):
@@ -338,6 +345,10 @@ func request(action: String) -> String:
 		action = "go:"+_pickup_role(next)
 	if action == "open_console":return console.open()
 	if action == "close_console":console.shut();return ""
+	if action == "return":
+		var origin = station
+		station = motion.get_slice(":",1);motion = "go:"+origin;progress = 1.0-progress
+		moving = true;blocked_reason = "";motion_obstruction = {};_refresh();return ""
 	if action == "stop":moving = false
 	elif action == "resume":moving = true;blocked_reason = ""
 	elif action == "stow":endpoints[hand_payload()] = {"state":"stowed","point":""}
@@ -533,6 +544,7 @@ func physics(delta: float) -> void:
 	console.physics()
 	if game.paused:return
 	if moving:
+		motion_obstruction = {}
 		var next = minf(1,progress+delta/5.0)
 		if attached_count()==required_ends:
 			if config.spec.has("access_mode"):
@@ -550,7 +562,8 @@ func physics(delta: float) -> void:
 				var value=clampf(next/.1,0,1) if motion=="up" else 1-clampf((next-.9)/.1,0,1)
 				var contact_error: String=game.equipment.get_equipment(config.spec.receiver_equipment).source_contact(value,uid)
 				if not contact_error.is_empty():blocked_reason=contact_error;moving=false;return
-			var error = _route_error(_path(station,raised,motion,progress),_path(station,raised,motion,next))
+			var ahead = EquipmentRegistry.Motion.path_ahead(route,path,_path(station,raised,motion,1.0),_path(station,raised,motion,next),float(config.spec.get("sweep_radius",4)))
+			var error = _route_error(path,ahead)
 			if not error.is_empty():blocked_reason = error;_refresh();return
 			if motion=="up" and station=="receiver" and config.spec.get("receiver_contact",false) and next>=.1 and not _crane_owned():
 				error=_undo_beam()
@@ -586,12 +599,13 @@ func _route_error(from_path: float, destination: float) -> String:
 
 func _sweep(from: Transform3D, to: Transform3D) -> String:
 	var ignored: Array[RID] = excluded.duplicate();ignored.append(load_body.get_rid())
+	var mating_body: CollisionObject3D
 	# Receiver contact shapes and its prepared geometry are authored mating surfaces.
 	# Other scenery and people remain swept obstacles throughout the route.
 	Sweep.collect_rids(load_body,ignored)
 	if receiver_support.is_empty():
 		if assembly_payload:
-			if not config.spec.get("exact_receiver",false) and maxf(from.origin.distance_to(receiver_pose.origin),to.origin.distance_to(receiver_pose.origin))<.30:ignored.append(game.runtime.node(load_owner).get_rid())
+			if not config.spec.get("exact_receiver",false):mating_body = game.runtime.node(load_owner)
 		else:Sweep.collect_rids(game.runtime.node(load_owner),ignored)
 	else:
 		var receiver=game.equipment.get_equipment(config.spec.receiver_equipment)
@@ -601,17 +615,23 @@ func _sweep(from: Transform3D, to: Transform3D) -> String:
 	if assembly_payload:Sweep.collect_shapes(load_body,load_body.global_transform.affine_inverse(),solids)
 	else:solids=Sweep.body_shapes(load_body)
 	if config.spec.has("rig_adapter"):solids.append_array(game.equipment.get_equipment(config.spec.rig_adapter).transport_shapes())
-	var group = {"shapes":solids,"margin":.001,"error":"Clear the crane load's route ({collider}), including people and loose parts."}
+	var group = {"shapes":solids,"margin":.001}
 	var groups=[group]
 	if config.spec.has("rig_adapter"):
 		var adapter=game.equipment.get_equipment(config.spec.rig_adapter)
 		if adapter.has_method("sweep_exclusions"):ignored.append_array(adapter.sweep_exclusions(from,to))
 		ignored.append_array(game.leg_layout.blockout.rids_for_groups(["crane_bridge"]))
-		groups.append({"shapes_at":func(frame: Transform3D,_p: float)->Array:return adapter.rig_solids(frame,0),"margin":.001,"error":"Clear the crane rigging route ({collider})."})
+		groups.append({"shapes_at":func(frame: Transform3D,_p: float)->Array:return adapter.rig_solids(frame,0),"margin":.001})
 	elif config.spec.get("sweep_rig",false):
 		ignored.append_array(game.leg_layout.blockout.rids_for_groups(["crane_bridge"]))
-		groups.append({"shapes_at":func(frame: Transform3D,_p: float)->Array:return rig_solids(frame),"margin":.001,"error":"Clear the crane rigging route ({collider})."})
-	return Sweep.sweep(get_world_3d().direct_space_state,groups,Sweep.steps(from,to,float(config.spec.get("sweep_radius",4)),.04),func(weight: float) -> Transform3D:return from.interpolate_with(to,weight),15,ignored,equipment_id).get("error","")
+		groups.append({"shapes_at":func(frame: Transform3D,_p: float)->Array:return rig_solids(frame),"margin":.001})
+	# Evaluate intentional receiver contact at each sampled pose. A look-ahead
+	# starting outside the mating zone must not reject permitted contact inside it.
+	var contacts = func(frame: Transform3D) -> Array[RID]:
+		var result: Array[RID] = ignored.duplicate()
+		if mating_body != null and frame.origin.distance_to(receiver_pose.origin)<.30:result.append(mating_body.get_rid())
+		return result
+	return EquipmentRegistry.Motion.sweep(self,groups,Sweep.steps(from,to,float(config.spec.get("sweep_radius",4)),.04),func(weight: float) -> Transform3D:return from.interpolate_with(to,weight),ignored,EquipmentRegistry.Motion.ALL,contacts if mating_body != null else Callable()).get("error","")
 
 func rig_solids(frame: Transform3D,head_offset: Vector3=Vector3.ZERO) -> Array[Dictionary]:
 	# Same authored anchors, beam dimensions, magnetic ends and cable widths as
@@ -868,6 +888,7 @@ func placement_error(owner: String, sid: String) -> String:
 	return ""
 
 func apply(data: Dictionary) -> void:
+	motion_obstruction = {}
 	if data.task != task:_select_route(data.task)
 	station = data.station;raised = data.raised;motion = data.motion;progress = float(data.progress);moving = data.moving;blocked_reason = data.blocked_reason;endpoints = data.endpoints.duplicate(true)
 	travel_from = null

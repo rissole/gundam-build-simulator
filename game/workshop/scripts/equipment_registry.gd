@@ -5,9 +5,19 @@ extends RefCounted
 ## load in their hands, with whatever moving body they stand on.
 const Codec = preload("res://scripts/pose_codec.gd")
 const Sweep = preload("res://scripts/motion_sweep.gd")
+const Motion = preload("res://scripts/equipment_motion.gd")
 ## How far above a deck a hopping player still counts as riding it.
 const RIDE_HOP = 0.6
 var _items: Array = []
+
+## Pickup targeting shares its contour with the first waiting loose obstacle.
+func obstruction_target() -> Node3D:
+	for equipment in all():
+		var hit: Dictionary = equipment.motion_obstruction
+		if equipment.get("moving") != true or hit.get("kind","") != "part":continue
+		var body = hit.get("collider")
+		if is_instance_valid(body):return body as Node3D
+	return null
 
 func register(equipment: Node) -> void:
 	if get_equipment(equipment.equipment_id) != null:

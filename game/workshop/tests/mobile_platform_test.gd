@@ -14,12 +14,13 @@ func settle(platform: Node) -> void:
 	for tick in range(1000):
 		if not platform.moving:return
 		platform.physics(.25)
+		if not platform.blocked_reason.is_empty():return
 
 ## Ridden motion runs one registry tick per frame, as in play: the rider moves,
 ## then the registry carries them; Jolt applies kinematic poses at the next step.
 func ride(platform: Node) -> void:
 	for tick in range(1000):
-		if not platform.moving:return
+		if not platform.moving or not platform.blocked_reason.is_empty():return
 		# The rider moves first, as in play, against the deck pose of the last step.
 		if is_instance_valid(platform.game.player):platform.game.player.velocity = Vector3(0,-.1,0);platform.game.player.move_and_slide()
 		platform.game.equipment.physics(.1);await frames(1)
@@ -64,6 +65,23 @@ func run() -> void:
 	var cargo = obstacle(game,platform.global_position+Vector3(0,.5,0),Vector3(.3,.3,.3));await frames(2)
 	expect(not platform.request("dock:bulky_right").is_empty(),"occupied deck rejects repositioning")
 	cargo.free();await frames(2)
+	var path_blocker = obstacle(game,Vector3(4.4,.5,19.3),Vector3(.2,1,.5));path_blocker.collision_layer = 2
+	await frames(2)
+	expect(platform.request("dock:bulky_rear").is_empty(),"ground trip accepts a distant part in its lane")
+	platform.physics(.1)
+	expect(platform.position.x<6.7 and platform.blocked_reason.is_empty(),"ground trip starts through the clear part of the lane")
+	settle(platform)
+	expect(platform.moving and platform.motion_obstruction.get("collider") == path_blocker and platform.position.x>5.1,"platform waits short of a named ground obstruction: "+platform.blocked_reason)
+	var waiting_at: Vector3 = platform.position
+	expect(platform.request("return").is_empty() and platform.position.is_equal_approx(waiting_at),"waiting platform reverses without jumping")
+	settle(platform)
+	expect(platform.dock=="park","waiting ground transfer can return to its starting dock")
+	platform.request("dock:bulky_rear");settle(platform)
+	platform.request("stop");path_blocker.free();await frames(2);platform.physics(.2)
+	expect(not platform.moving and platform.mode=="travel","manual Stop stays stopped after the obstruction clears")
+	platform.request("go");settle(platform)
+	expect(platform.dock=="bulky_rear","explicit Resume finishes a manually stopped trip: "+platform.blocked_reason)
+	platform.request("dock:park");settle(platform)
 	platform.request("dock:bulky_rear");platform.physics(1);platform.request("stop")
 	var before: Vector3 = platform.position
 	expect(platform.request("return").is_empty(),"interrupted transfer can reverse")
@@ -72,10 +90,10 @@ func run() -> void:
 	expect(platform.dock=="park","reversed partial route reaches its original dock")
 	var obstruction = obstacle(game,platform.global_position+Vector3(0,2,0),Vector3(.5,.2,.5));await frames(2)
 	platform.request("advance");settle(platform)
-	expect(not platform.blocked_reason.is_empty() and platform.height<1.6,"overhead solid stops raising without penetration")
+	expect(platform.moving and not platform.blocked_reason.is_empty() and platform.height<1.6,"overhead solid stops raising without penetration")
 	obstruction.free();await frames(2)
-	platform.request("advance");settle(platform)
-	expect(is_equal_approx(platform.height,1.6),"cleared overhead route resumes raising")
+	settle(platform)
+	expect(is_equal_approx(platform.height,1.6),"cleared overhead route resumes raising without another request")
 	platform.request("return");settle(platform)
 	game.player = CharacterBody3D.new();game.player.collision_layer = 8;game.add_child(game.player)
 	preload("res://scripts/player_controller.gd").ignore_platform_motion(game.player)

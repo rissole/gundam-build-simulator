@@ -155,17 +155,24 @@ func target_object() -> Node3D:
 		"component", "mount":return game.assembly_node(game.target.owner)
 	return null
 
+func _present_outline(pickup: Node3D = null) -> void:
+	if not is_instance_valid(game.interaction_outline):return
+	var obstacle: Node3D = game.equipment.obstruction_target() if not game.paused else null
+	if pickup != null and not game.paused:game.interaction_outline.focus(pickup)
+	elif obstacle != null:game.interaction_outline.focus(obstacle)
+	else:game.interaction_outline.clear()
+
 func present_target(access_error: String) -> void:
 	if game.target.is_empty() or game.paused:
 		game.hud.present_target("")
-		if is_instance_valid(game.interaction_outline):game.interaction_outline.clear()
+		_present_outline()
 		return
 	var receivers = target_receivers()
 	# A prompt should not disclose a connection through unrelated scenery. Keep
 	# the target itself so attempting the action can still explain an obstruction.
 	if game.camera.is_position_behind(game.target.point) or not can_see(game.target.point,receivers,target_allows_body_hit()):
 		game.hud.present_target("")
-		if is_instance_valid(game.interaction_outline):game.interaction_outline.clear()
+		_present_outline()
 		return
 	var caption = ""
 	var detail = ""
@@ -231,8 +238,7 @@ func present_target(access_error: String) -> void:
 		action_label = ""
 	if is_instance_valid(game.interaction_outline):
 		# Contours advertise collection, not every available keyboard action.
-		if usable and pickup_target:game.interaction_outline.focus(target_object())
-		else:game.interaction_outline.clear()
+		_present_outline(target_object() if usable and pickup_target else null)
 	# The green geometry is the successful attachment affordance. Only explain
 	# failures here; collection still needs its small keyboard action prompt.
 	if usable and action_key.is_empty():

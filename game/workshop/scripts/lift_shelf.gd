@@ -112,7 +112,9 @@ func travel_error(carrier_id: String, from: float, to: float) -> String:
 	var excluded: Array[RID] = lift.without_passengers(lift.hardware())
 	for body in cargo.values():
 		var destination: Transform3D = body.global_transform;destination.origin.y += to-from
-		if not SolidHandling.sweep_error(body,destination,excluded,15).is_empty():return "Clear the stored component's lift route."
+		var current: Transform3D = body.global_transform
+		var hit = EquipmentRegistry.Motion.sweep(lift,[{"shapes":Sweep.body_shapes(body),"cast":true,"margin":.001,"error":""}],Sweep.steps(current,destination,0),func(p):return current.interpolate_with(destination,p),excluded)
+		if not hit.is_empty():return hit.error
 	return ""
 
 func carrier_moved(carrier_id: String) -> void:

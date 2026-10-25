@@ -56,28 +56,38 @@ static func collect_rids(node: Node, output: Array[RID]) -> void:
 ## "shapes_at":Callable(pose, fraction) -> [{shape,world,margin}], "margin",
 ## "error", "cast", "cast_error"}. "{collider}" in an error names the hit body.
 ## Returns {} when clear, else {"error","index","collider"}.
-static func sweep(space: PhysicsDirectSpaceState3D, groups: Array, sample_count: int, pose_at: Callable, mask: int, exclude: Array[RID], label: String = "") -> Dictionary:
-	var previous = Transform3D.IDENTITY
+static func sweep(space: PhysicsDirectSpaceState3D, groups: Array, sample_count: int, pose_at: Callable, mask: int, exclude: Array[RID], label: String = "", exclusions_at: Callable = Callable()) -> Dictionary:
+	var previous_shapes: Dictionary = {}
 	for index in range(sample_count+1):
 		var fraction = float(index)/sample_count
 		var pose: Transform3D = pose_at.call(fraction)
-		for group in groups:
+		var ignored: Array[RID] = exclusions_at.call(pose) if exclusions_at.is_valid() else exclude
+		for group_index in groups.size():
+			var group: Dictionary = groups[group_index]
 			var frame: Transform3D = group.frame.call(pose) if group.has("frame") else pose
-			var previous_frame: Transform3D = group.frame.call(previous) if group.has("frame") else previous
 			var shapes: Array = group.shapes_at.call(pose,fraction) if group.has("shapes_at") else group.shapes
-			for entry in shapes:
+			for shape_index in shapes.size():
+				var entry: Dictionary = shapes[shape_index]
 				var at: Transform3D = entry.world if entry.has("world") else frame*entry.transform
 				var margin: float = entry.get("margin",group.get("margin",0.001))
-				var hit = overlap(space,entry.shape,at,mask,exclude,margin)
+				var hit = overlap(space,entry.shape,at,mask,ignored,margin)
 				if not hit.is_empty():
 					if OS.has_environment(DIAGNOSTIC_ENV):
 						var target=hit.collider.shape_owner_get_owner(hit.collider.shape_find_owner(hit.shape)) if hit.collider is CollisionObject3D else null
 						print("SWEEP_SHAPE ",label," at=",at," moving=",entry.shape," target=",target," source=",target.get_meta("source_uid","") if target!=null else "")
 					return _report(group.error,hit.collider,index,label)
-				if group.get("cast",false) and index > 0:
-					var fractions = cast(space,entry.shape,previous_frame*entry.transform,at,mask,exclude,margin)
-					if fractions.size() == 2 and fractions[0] < 0.999:return _report(group.get("cast_error",group.error),null,index,label)
-		previous = pose
+				var key = Vector2i(group_index,shape_index)
+				if group.get("cast",false) and previous_shapes.has(key):
+					var previous: Transform3D = previous_shapes[key]
+					var fractions = cast(space,entry.shape,previous,at,mask,ignored,margin)
+					if fractions.size() == 2 and fractions[0] < 0.999:
+						# cast_motion returns fractions only. Query at contact so thin
+						# obstacles between samples still have an identity for feedback.
+						var contact = previous
+						contact.origin = contact.origin.lerp(at.origin,fractions[1])
+						var blocker = overlap(space,entry.shape,contact,mask,ignored,margin+.001)
+						return _report(group.get("cast_error",group.error),blocker.get("collider"),index,label)
+				if group.get("cast",false):previous_shapes[key] = at
 	return {}
 
 static func _report(error: String, collider: Object, index: int, label: String) -> Dictionary:

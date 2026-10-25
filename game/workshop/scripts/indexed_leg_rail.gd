@@ -76,7 +76,7 @@ func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before moving the holder."
 	if action=="stop":return "" if moving else "The holder is stopped."
 	if action not in ["advance","return","lane","roll","park","build"]:return "Unknown holder command."
-	if moving:return "Stop the holder before selecting another command."
+	if moving and blocked_reason.is_empty():return "Stop the holder before selecting another command."
 	if not mode.is_empty() and action not in ["advance","return"]:return "Complete or reverse the interrupted motion first."
 	var peer: String=game.equipment.busy_reason("rail",equipment_id)
 	if not peer.is_empty():return peer
@@ -109,8 +109,9 @@ func action_error(action: String) -> String:
 
 func request(action: String) -> String:
 	var error=action_error(action)
-	if not error.is_empty():blocked_reason=error;_refresh();return error
+	if not error.is_empty():return error
 	blocked_reason=""
+	motion_obstruction = {}
 	if action=="stop":moving=false;_refresh();return ""
 	if action=="build":
 		var current: Dictionary=game.model.assemblies[active_assembly]
@@ -129,7 +130,8 @@ func request(action: String) -> String:
 		if action=="return":goal=_reverse_goal()
 		if mode=="path":
 			var gate_error: String=_request_route_access()
-			if not gate_error.is_empty():return gate_error
+			if not gate_error.is_empty():blocked_reason=gate_error
+			moving=true;_refresh();return ""
 		moving=true;return ""
 	if action=="roll":
 		if roll_height<1:mode="roll_raise";goal=1
@@ -165,7 +167,7 @@ func request(action: String) -> String:
 			game.refresh_assembly_collision(receiver);game.refresh_assembly_collision(active_assembly)
 	if mode=="path":
 		error=_request_route_access()
-		if not error.is_empty():moving=false;blocked_reason=error;return error
+		if not error.is_empty():moving=true;blocked_reason=error;_refresh();return ""
 	moving=true;_refresh();return ""
 
 func _request_route_access() -> String:
@@ -210,24 +212,33 @@ func _motion_value(state: Dictionary) -> float:
 
 func physics(delta: float) -> void:
 	if not moving or game.paused:return
+	motion_obstruction = {}
 	if mode=="path":
 		var gates=game.equipment.get_equipment("rail_gates")
 		blocked_reason=gates.occupancy_error()
-		if not blocked_reason.is_empty():moving=false;_refresh();return
+		if not blocked_reason.is_empty():_refresh();return
 		if not gates.closed():
-			if not gates.moving:blocked_reason=gates.status_text();moving=false;_refresh()
+			if not gates.moving:
+				blocked_reason=gates.request_closed(true);_refresh()
 			return
 	if mode=="path" and engaged and goal>path:
 		var access=game.equipment.get_equipment("workshop_access")
 		if not access.ready_for("leg"):
-			if not access.moving:blocked_reason=access.status_text();moving=false
+			if not access.moving:blocked_reason=access.request_mode("leg")
 			return
 	var before=capture();var next=before.duplicate(true)
 	var field: String={"path":"path","index":"index_x","release":"release","roll":"roll","roll_raise":"roll_height","bolster":"bolster"}[mode]
 	var speed: float={"path":.12,"index":.8,"release":.6,"roll":20.0,"roll_raise":.3,"bolster":.3}[mode]
-	next[field]=move_toward(before[field],goal,speed*delta)
-	blocked_reason=motion_error(before,next)
-	if not blocked_reason.is_empty():moving=false;_refresh();return
+	# Contact withdrawal and path turns change rules at integer boundaries.
+	# Reach the boundary before reserving the next phase under its own exclusions.
+	var phase_goal = goal
+	if mode in ["path","release"]:
+		phase_goal = minf(goal,floorf(before[field]+.00001)+1) if goal>before[field] else maxf(goal,ceilf(before[field]-.00001)-1)
+	next[field]=move_toward(before[field],phase_goal,speed*delta)
+	var ahead=before.duplicate(true)
+	ahead[field]=EquipmentRegistry.Motion.ahead(before[field],phase_goal,next[field]-before[field],_travel_scale())
+	blocked_reason=motion_error(before,ahead)
+	if not blocked_reason.is_empty():_refresh();return
 	set(field,next[field]);_pose()
 	if is_equal_approx(next[field],goal):
 		moving=false;var completed=mode;mode=""
@@ -248,6 +259,21 @@ func physics(delta: float) -> void:
 		_pose()
 	_refresh();changed.emit()
 
+## Conservative surface metres per phase unit, including the long leg's rotation
+## and the holder's articulated pieces. No whole-route occupancy reservation.
+func _travel_scale() -> float:
+	match mode:
+		"index":return 1.0
+		"roll":return deg_to_rad(1.0)*10.0
+		"roll_raise":return absf(spec.roll_axis_y-spec.base_y-spec.lying_lift)
+		"path":
+			var segment=clampi(floori(path+.00001) if goal>path else ceili(path-.00001)-1,0,2)
+			if segment==0:return absf(spec.home_z-spec.bay_z)
+			if segment==2:return spec.dock_rise
+			return PI/2*(10.0+spec.lying_lift+spec.pivot)+spec.delivery_lower/spec.lower_during_turn
+		"release":return maxf(2.0,maxf(spec.holder.withdrawal,maxf(spec.holder.lower,spec.holder.outboard)))
+	return maxf(absf(spec.holder.bolster.x[1]-spec.holder.bolster.x[0])/spec.holder.bolster.spread_fraction,spec.holder.bolster.lift/(1-spec.holder.bolster.spread_fraction))
+
 func motion_error(from: Dictionary, to: Dictionary) -> String:
 	var a=snapshot_pose(from);var b=snapshot_pose(to)
 	var excluded: Array[RID]=layout.cradle.hardware.duplicate()
@@ -262,16 +288,18 @@ func motion_error(from: Dictionary, to: Dictionary) -> String:
 	if carrier!=null and path==0:excluded.append_array(carrier.hardware)
 	var samples=Sweep.steps(a.frame,b.frame,10,.025)
 	samples=maxi(samples,ceili(absf(to.release-from.release)*2/.025))
-	var rig=func(_frame: Transform3D,t: float) -> Array:
+	var state_at=func(t: float) -> Dictionary:
 		var state=from.duplicate(true)
 		for field in ["path","index_x","release","roll","roll_height","bolster"]:state[field]=lerpf(from[field],to[field],t)
-		var at=snapshot_pose(state);var result: Array=[]
+		return snapshot_pose(state)
+	var rig=func(_frame: Transform3D,t: float) -> Array:
+		var at: Dictionary=state_at.call(t);var result: Array=[]
 		for record in layout.cradle.geometry(at.frame,at.bogie_x,at.bogie_z,at.opening,at.compact,at.bolster):
 			var shape=BoxShape3D.new();shape.size=record.size
 			result.append({"shape":shape,"world":record.pose,"margin":-.003})
 		return result
-	var groups=[{"shapes":shapes,"margin":.001,"error":"Clear the supported leg route ({collider})."},{"shapes_at":rig,"error":"Clear the holder route ({collider})."}]
-	return Sweep.sweep(get_world_3d().direct_space_state,groups,samples,func(t):return a.frame.interpolate_with(b.frame,t),15,excluded,equipment_id).get("error","")
+	var groups=[{"shapes":shapes,"margin":.001},{"shapes_at":rig}]
+	return EquipmentRegistry.Motion.sweep(self,groups,samples,func(t):return state_at.call(t).frame,excluded).get("error","")
 
 func _pose() -> void:
 	var at=snapshot_pose(capture())
@@ -356,6 +384,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary 
 	return []
 
 func apply(data: Dictionary) -> void:
+	motion_obstruction = {}
 	active_assembly=data.assembly;receiver=data.receiver;receiver_slot=data.slot;lane=data.lane
 	for field in ["index_x","path","roll","roll_height","bolster","release","engaged","mode","goal","moving"]:set(field,data[field])
 	blocked_reason="";_pose()

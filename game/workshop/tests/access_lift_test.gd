@@ -136,7 +136,7 @@ func run() -> void:
 	await frames(4)
 	expect(lift.request("stop2").is_empty() and lift.blocked_reason.is_empty(),"A loose solid far up the shaft never refuses the call")
 	await until_held()
-	expect(lift.moving and lift.blocked_reason.begins_with("Clear the lift shaft:") and lift.height > 1.2 and lift.height+1.2 < 3.0,"Car holds short of the loose solid and names it: "+lift.blocked_reason)
+	expect(lift.moving and lift.motion_obstruction.get("collider") == loose and lift.blocked_reason.contains(str(loose.name)) and lift.height > 1.2 and lift.height+1.2 < 3.0,"Car holds short of the loose solid and names it: "+lift.blocked_reason)
 	expect(lift.request("ground").is_empty(),"A held car accepts a new destination")
 	await until_held()
 	expect(not lift.moving and is_equal_approx(lift.height,0.15),"Held car returns to the ground on request")
@@ -198,7 +198,7 @@ func run() -> void:
 	await frames(4)
 	expect(lift.request("stop2").is_empty(),"Carried overhang never refuses the call")
 	await until_held()
-	expect(lift.moving and lift.blocked_reason == "Clear the carried component's lift route, including overhead." and lift.height < 3.8,"Carried overhang separately checks external head clearance beyond deck")
+	expect(lift.moving and lift.motion_obstruction.get("collider") == overhang and lift.height < 3.8,"Carried overhang separately checks external head clearance beyond deck")
 	overhang.queue_free()
 	await frames(3)
 	await until_held()
@@ -208,7 +208,7 @@ func run() -> void:
 	game.player.position.x = 4
 	held.position.x = 0.6
 	await frames(4)
-	expect(lift.request("up").is_empty() and lift.blocked_reason == "Keep the component in your hands out of the lift shaft.","A held body is still an obstacle when its operator is off the lift")
+	expect(lift.request("up").is_empty() and lift.motion_obstruction.get("kind") == "hand_load" and lift.motion_obstruction.get("collider") == held,"A held body is still an obstacle when its operator is off the lift")
 	game.components.held_body = null
 	held.queue_free()
 	for lean in [[0.08,""],[0.18,""],[0.26,"Step back out of the lift doorway."]]:

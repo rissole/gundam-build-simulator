@@ -133,12 +133,12 @@ func hardware() -> Array[RID]:
 
 func _deck_occupied() -> bool:
 	var shape = BoxShape3D.new();shape.size = Vector3(spec.deck_size[0],2.0,spec.deck_size[1])
-	return not Sweep.overlap(get_world_3d().direct_space_state,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,height+1.01,0)),15,without_passengers(hardware()),0).is_empty()
+	return not EquipmentRegistry.Motion.overlap(self,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,height+1.01,0)),without_passengers(hardware()),0).is_empty()
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the work platform."
 	if action=="stop":return "" if moving else "The work platform is stopped."
-	if moving:return "Wait for the platform to arrive."
+	if moving and blocked_reason.is_empty():return "Wait for the platform to arrive."
 	if action == "open_move":return menu_access_error()
 	if action in ["up","down"]:
 		if mode == "travel":return "Finish the ground transfer before changing height."
@@ -170,6 +170,7 @@ func request(action: String) -> String:
 	if not error.is_empty():return error
 	if action == "open_move":return move_menu.open()
 	blocked_reason = ""
+	motion_obstruction = {}
 	if action == "go":
 		if mode == "travel":moving = true;_pose();return ""
 		return request("dock:"+selected)
@@ -203,19 +204,21 @@ func _request_height(up: bool) -> String:
 
 func physics(delta: float) -> void:
 	if not moving or game.paused:return
+	motion_obstruction = {}
 	if mode=="travel":
-		if _deck_occupied():blocked_reason = "Remove loose loads from the deck before ground transfer.";moving = false;_pose();return
+		if _deck_occupied():blocked_reason = motion_obstruction.error;_pose();return
 		var path = _route();var index = mini(path.size()-2,floori(travel+.00001))
 		var next = minf(index+1,travel+spec.speed*delta/maxf(.01,path[index].distance_to(path[index+1])))
-		var destination = Transform3D(Basis.IDENTITY,position_at(next,path))
+		var ahead = EquipmentRegistry.Motion.ahead(travel,float(index+1),next-travel,path[index].distance_to(path[index+1]))
+		var destination = Transform3D(Basis.IDENTITY,position_at(ahead,path))
 		blocked_reason = _travel_error(destination)
-		if not blocked_reason.is_empty():moving = false;_pose();return
+		if not blocked_reason.is_empty():_pose();return
 		travel = next;_pose()
 		if travel>=path.size()-1-.00001:dock = to_dock;from_dock = dock;travel = 0;mode = "";moving = false;_pose()
 	else:
 		var next = move_toward(height,goal_height,spec.lift_speed*delta)
-		blocked_reason = _height_error(next)
-		if not blocked_reason.is_empty():moving = false;_pose();return
+		blocked_reason = _height_error(EquipmentRegistry.Motion.ahead(height,goal_height,next-height))
+		if not blocked_reason.is_empty():_pose();return
 		height = next;_pose()
 		if is_equal_approx(height,goal_height):mode = "";moving = false;_pose()
 
@@ -224,7 +227,7 @@ func _travel_error(destination: Transform3D) -> String:
 	Sweep.collect_shapes(self,inverse,shapes)
 	for body in passengers():Sweep.collect_shapes(body,inverse,shapes)
 	var count = Sweep.steps(global_transform,destination,2,.025)
-	var hit = Sweep.sweep(get_world_3d().direct_space_state,[{"shapes":shapes,"margin":-.002,"error":"Clear the work platform ground route ({collider}).","cast":true}],count,func(p):return global_transform.interpolate_with(destination,p),15,without_passengers(hardware()),equipment_id)
+	var hit = EquipmentRegistry.Motion.sweep(self,[{"shapes":shapes,"margin":-.002}],count,func(p):return global_transform.interpolate_with(destination,p),without_passengers(hardware()))
 	return hit.get("error","")
 
 func _height_error(next: float) -> String:
@@ -232,13 +235,13 @@ func _height_error(next: float) -> String:
 	var clearance = 1.12 if riders.is_empty() else 1.76
 	var low = minf(height,next)-.115;var high = maxf(height,next)+clearance
 	var shape = BoxShape3D.new();shape.size = Vector3(spec.deck_size[0],high-low,spec.deck_size[1])
-	var hit = Sweep.overlap(get_world_3d().direct_space_state,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0)),15,excluded,0)
-	if not hit.is_empty():return "Clear the work platform height adjustment."
+	var hit = EquipmentRegistry.Motion.overlap(self,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0)),excluded,0)
+	if not hit.is_empty():return hit.error
 	# A hand load can overhang the deck; reserve its own vertical route.
 	var shapes: Array[Dictionary] = []
 	for body in riders.slice(1):Sweep.collect_shapes(body,global_transform.affine_inverse(),shapes)
 	if shapes.is_empty():return ""
-	return Sweep.sweep(get_world_3d().direct_space_state,[{"shapes":shapes,"margin":.001,"error":"Clear the carried component's platform route ({collider})."}],Sweep.steps(global_transform,global_transform.translated(Vector3.UP*(next-height)),0,.025),func(p):return global_transform.translated(Vector3.UP*(next-height)*p),15,excluded,equipment_id).get("error","")
+	return EquipmentRegistry.Motion.sweep(self,[{"shapes":shapes,"margin":.001}],Sweep.steps(global_transform,global_transform.translated(Vector3.UP*(next-height)),0,.025),func(p):return global_transform.translated(Vector3.UP*(next-height)*p),excluded).get("error","")
 
 func _pose() -> void:
 	position = position_at(travel,_route()) if mode=="travel" else AssemblyRuntime.vec(spec.docks[dock])
@@ -252,7 +255,7 @@ func _pose() -> void:
 	label.text = status_text()
 
 func status_text() -> String:
-	if not blocked_reason.is_empty():return "Platform blocked\nClear the route, then retry"
+	if not blocked_reason.is_empty():return "Platform waiting\n"+blocked_reason
 	if moving:return ("Travelling to "+to_dock.replace("_"," ") if mode == "travel" else "Moving to %.2f m"%goal_height)+"\nStops automatically"
 	if mode == "travel":return "Platform stopped\nMOVE to resume or return"
 	if mode == "height":return "Platform stopped · %.2f m"%height+"\nUP or DOWN to continue"
@@ -282,6 +285,7 @@ func validate(data: Variant, _candidate: AssemblyModel = null, _world: Dictionar
 	return []
 
 func apply(data: Dictionary) -> void:
+	motion_obstruction = {}
 	if not validate(data).is_empty():return
 	dock = data.dock;selected = data.selected;from_dock = data.from;to_dock = data.to;travel = data.travel
 	height = data.height;goal_height = data.goal_height;mode = data.mode;moving = data.moving;blocked_reason = "";_pose()

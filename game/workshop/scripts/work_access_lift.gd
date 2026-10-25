@@ -3,10 +3,8 @@ extends "res://scripts/equipment.gd"
 ## Powered personnel platform. Heights describe the top of the walking deck.
 const SPEED = 0.75
 const THICKNESS = 0.12
-const MASK = 15
 ## Each tick reserves only the next stretch of travel. Anything further along
 ## the route holds the car when it gets there, not when it is called.
-const LOOKAHEAD = 0.25
 ## A player standing at a landing may lean this far into the shaft; the arriving
 ## car nudges them back instead of refusing the call they just made.
 const PLAYER_TOLERANCE = 0.2
@@ -220,6 +218,7 @@ func action_error(action: String) -> String:
 func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():return error
+	motion_obstruction = {}
 	destination = _target(action)
 	moving = not is_equal_approx(destination,height)
 	blocked_reason = _sweep_error(height,_ahead(0.0)) if moving else ""
@@ -232,6 +231,7 @@ func status_text() -> String:
 
 func physics(delta: float) -> void:
 	if not moving or game.paused:return
+	motion_obstruction = {}
 	blocked_reason = _sweep_error(height,_ahead(SPEED*delta))
 	if not blocked_reason.is_empty():
 		_label.text = status_text()
@@ -242,7 +242,7 @@ func physics(delta: float) -> void:
 
 ## The end of the stretch reserved this tick, covering at least one step.
 func _ahead(step: float) -> float:
-	return move_toward(height,destination,maxf(LOOKAHEAD,step))
+	return EquipmentRegistry.Motion.ahead(height,destination,step)
 
 ## Only the deck rides; landings and ramps stay put.
 func carries(body: CollisionObject3D) -> bool:return body == deck
@@ -258,7 +258,7 @@ func busy_reason(subject: String) -> String:
 	return "Wait for the lift to stop." if subject == equipment_id and moving else ""
 
 func _sweep_error(from: float, to: float) -> String:
-	# Reserve the entire carriage route; thin obstacles cannot fall between samples.
+	# Reserve this short stretch continuously; thin obstacles cannot fall between samples.
 	var current_rider = rider()
 	var clearance = 1.12
 	if current_rider != null:
@@ -272,7 +272,6 @@ func _sweep_error(from: float, to: float) -> String:
 	var excluded: Array[RID] = without_passengers(hardware())
 	var riders = passengers()
 	var carried: CollisionObject3D = riders[1] if riders.size() > 1 else null
-	var space = get_world_3d().direct_space_state
 	var route = global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0))
 	var player = game.get("player") as CollisionObject3D
 	var others = excluded.duplicate()
@@ -280,9 +279,9 @@ func _sweep_error(from: float, to: float) -> String:
 		others.append(player.get_rid())
 		var inset = BoxShape3D.new()
 		inset.size = box.size-Vector3(2*PLAYER_TOLERANCE,0,2*PLAYER_TOLERANCE)
-		if not Sweep.overlap(space,inset,route,player.collision_layer,excluded,0.002).is_empty():return "Step back out of the lift doorway."
-	var hit = Sweep.overlap(space,box,route,MASK,others,0.002)
-	if not hit.is_empty():return _obstruction(hit.collider)
+		if not EquipmentRegistry.Motion.overlap(self,inset,route,excluded,0.002,EquipmentRegistry.Motion.PLAYER).is_empty():return "Step back out of the lift doorway."
+	var hit = EquipmentRegistry.Motion.overlap(self,box,route,others,0.002)
+	if not hit.is_empty():return hit.error
 	if carried != null:
 		# An actual rider's hand load travels with the platform. Reserve its own
 		# complete envelope, including overhang outside the platform footprint.
@@ -291,16 +290,11 @@ func _sweep_error(from: float, to: float) -> String:
 		var swept = load_bounds.merge(destination_bounds)
 		var load_shape = BoxShape3D.new()
 		load_shape.size = swept.size.max(Vector3.ONE*0.004)
-		if not Sweep.overlap(space,load_shape,Transform3D(Basis.IDENTITY,swept.get_center()),MASK,excluded,0.002).is_empty():return "Clear the carried component's lift route, including overhead."
+		hit = EquipmentRegistry.Motion.overlap(self,load_shape,Transform3D(Basis.IDENTITY,swept.get_center()),excluded,0.002)
+		if not hit.is_empty():return hit.error
 	# Equipment riding the deck reserves its own cargo route.
 	var registry = game.get("equipment")
 	return registry.travel_error(equipment_id,from,to) if registry != null else ""
-
-func _obstruction(body: Object) -> String:
-	if body == carried_body():return "Keep the component in your hands out of the lift shaft."
-	var components = game.get("components")
-	if body is WorkshopPart and components != null and components.has_method("title"):return "Move the loose %s out of the lift shaft." % components.title(body.kind)
-	return "Clear the lift shaft: %s is in the way." % (str(body.name) if body is Node else "something")
 
 func _pose() -> void:
 	deck.position.y = height
@@ -333,6 +327,7 @@ func validate(snapshot: Variant, _candidate: AssemblyModel = null, _world: Dicti
 	return errors
 
 func apply(snapshot: Dictionary) -> void:
+	motion_obstruction = {}
 	if not validate(snapshot).is_empty():return
 	height = float(snapshot.height)
 	destination = float(snapshot.destination)

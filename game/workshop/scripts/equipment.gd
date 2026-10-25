@@ -6,6 +6,7 @@ extends Node3D
 const SAVE_VERSION = 1
 var game: Node
 var equipment_id: String = ""
+var motion_obstruction: Dictionary = {}
 ## Reason given to other requesters while this equipment's payload is in hand.
 var hand_payload_hint: String = ""
 ## Reason given when this equipment needs free hands and they are occupied.

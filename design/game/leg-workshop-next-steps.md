@@ -84,13 +84,18 @@ last version before consolidation.
   user's ride. The named diagnostics `pauldron_delivery_test` and
   `wide_foundation_test` drive lifts and were not run.
 
+  **Shared policy implemented (2026-10-25):** elevators, mobile platform,
+  shelf cargo, loaded crane/rig and rail now use `EquipmentRegistry.Motion` for
+  short look-ahead, obstacle masks and named feedback. Platform and rail
+  obstructions wait and resume automatically; loose blockers use the existing
+  outline. Manual Stop remains explicit. All 29 routine cases passed in 9.353 s;
+  mechanical evidence only. [Scope, constraints and evidence](history/shared-equipment-motion-20261025.md).
+
   **Remaining:**
-  - The mobile platform's route lane needs visible floor marking, plus the same
-    look-ahead and named, highlighted obstruction.
-  - Move the policy into one shared registry helper with a collision mask for
-    each kind of obstacle. Every sweep uses mask 15 today, and about 28 call
-    sites each run their own version.
-  - Apply the helper to the shelf, crane and rail.
+  - The mobile platform's route lane still needs visible floor marking (the
+    user's condition for pointing at parts instead of pushing them).
+  - User playtest of waiting/resuming, held-trip return controls, obstruction
+    wording/outline visibility and the elevator nudge. No rendered review ran.
 
 ## Next
 
@@ -98,8 +103,8 @@ last version before consolidation.
    [playtest checklist](robot-workshop-playtest-checklist.md), from the foot build in the
    hangar onward. Record results there and summarize them in the feedback table
    below.
-2. Finish guarded equipment motion (see “Where things stand”): the mobile
-   platform's visible route lane and named obstruction, then the shared helper.
+2. Finish guarded equipment motion (see “Where things stand”): mark the mobile
+   platform's route lane, then playtest the shared waiting/resuming behavior.
 3. Pick from the deferred items below only after a decision.
 
 ## Active rules
@@ -175,7 +180,7 @@ last version before consolidation.
 
 | Feedback / positive finding | Current direction and open question |
 | --- | --- |
-| Elevators can't be called because the game always thinks the player is in the way. With thousands of loose parts coming, movement must not need completely clear routes (2026-10-25) | Guarded motion as described under “Where things stand”. The user chose to point at loose parts rather than push them, provided the platform's path is very visibly marked, and chose the simplest elevator form: queued calls, no landing gates. The elevator part is done and mechanically checked; awaiting the user's ride. Next is the mobile platform. |
+| Elevators can't be called because the game always thinks the player is in the way. With thousands of loose parts coming, movement must not need completely clear routes (2026-10-25) | Guarded motion as described under “Where things stand”. The user chose to point at loose parts rather than push them, provided the platform's path is very visibly marked, and chose the simplest elevator form: queued calls, no landing gates. The elevator, mobile platform, shelf cargo, loaded crane/rig and rail now share guarded-motion policy, mechanically checked. The mobile platform's visible lane and the user's ride/feedback checks remain. |
 | Regression verification took 10–15 minutes per change; agents kept running full suites despite documentation. Wants unit-style tests around one minute, separate named diagnostics, and a warning rather than a 60-second timeout (2026-10-25) | Default runner structurally selects routine tests only. Shared content, local crane/receiver/staging contracts and isolated chest/shoulder geometry replace routine journeys. Unique full-scene checks remain named-only diagnostics; never automatically selected. Warn and improve tests above 60 seconds; do not raise the budget. Existing fast model/physics tests were a positive baseline. See the coverage migration linked above. |
 | Wanted everything consolidated into a single play command (the full workshop) with flags such as `--stage=` to skip stages or support tests, and no milestone references outside history (2026-10-25) | Implemented as described under “Where things stand”. The user chose to remove the foot workshop with its save code, and to delete the leg-bay trials with their tests. Removed with them: the single/two-pad, trial and save suites, the broken walked-journey suites, the stale single-leg geometry review, and (at the user's request, who will verify the foot build by hand) the foot-room suites that depended on the old room's coordinates: jump, snap discovery, manual navigation, free-build targeting, interaction feedback, workshop geometry, supported fixture and crane console panel. Porting the foot suites found and fixed three robot-game bugs: the journey filter removed carry, station and mount targets (the pads and actuator could not be picked up, suspended or mounted); staging the supplied right foot consumed the left foot's own identities; and the foot carrier refused undo of the left foot while it was still in its fixture. The stock grid now also keeps a 1.6 m aisle clear in front of the preparation stations, tray and actuator start. Preparation-station rotation (hold R) is enabled, as it was in the foot workshop; the hangar had disabled it. Mechanically checked only; awaiting the user's check of the foot build. |
 | Workshop was ugly/crowded, lighting needed improvement, and overlapping surfaces flickered prolifically (2026-10-24) | Minimal practical engineering style implemented for the workshop only; robot models remain for later detail. 142 initial surface overlaps repaired, with moving equipment/alternate fixtures checked too. [Screenshots and evidence](history/workshop-visual-refresh-20261024.md); awaiting user judgment. |

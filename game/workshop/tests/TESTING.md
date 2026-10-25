@@ -64,6 +64,17 @@ frame to let Jolt workers drain; its physics ticks and assertions are unchanged.
 A benchmark exposed worker-pool exhaustion without pacing; this is not retried
 or ignored by the runner.
 
+New equipment_motion exercises the shared registry policy with isolated real
+physics: thin obstacles between samples (including articulated rig shapes),
+category masks, held-load identification, outline targeting and cleanup, route
+corners, shelf cargo overhang, and production loaded-crane/rail waiting, return
+and automatic resume. Crane projection alone is substituted; the rail uses its
+real articulated holder geometry with a small supplied payload. Receiver contact
+exclusions are checked independently from unrelated loose obstacles. These are
+controller contracts, not full authored load-route diagnostics. The existing
+mobile_platform case also covers ground obstruction/return and explicit Stop;
+access_lift checks obstacle identities alongside its established rider behavior.
+
 New runner_contracts uses tiny Python subprocesses for classification, named-only
 diagnostics, error/exit/stall gates, changed input rejection and warning behavior.
 It does not recursively execute Godot suites.

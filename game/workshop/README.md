@@ -40,6 +40,14 @@ The menu closes when travel starts. Down at ground does nothing. To return to
 parking, open Move and choose **Parking bay**. Interrupted travel offers **Resume
 to… / Return to…** in the same menu. Q/Close cancels without moving; Esc pauses.
 
+Elevators, the mobile platform, shelf cargo, loaded crane and leg holder check
+only nearby travel for obstacles. They wait, name the obstruction and resume
+when it clears. Loose blockers are outlined when you are not aiming at another
+pickup. **STOP** cancels automatic resumption until you explicitly resume.
+A waiting platform or holder can return; a waiting crane transport offers
+**Return to…** along its existing route. Crane lifting/lowering retains its
+support-transfer interlocks. The platform's marked floor lane is still pending.
+
 ![Elevator panel with two labelled vertical-travel buttons](../../docs/images/workshop-lift-controls.png)
 
 ![Mobile platform with Up, Down and Move](../../docs/images/workshop-mobile-controls.png)
