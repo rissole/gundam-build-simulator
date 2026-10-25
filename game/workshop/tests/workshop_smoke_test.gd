@@ -5,6 +5,8 @@ func run() -> void:
 	var game=instantiate_workshop(self)
 	await frames(2)
 	expect(game.started and game.paused,"fresh workshop initializes paused")
+	expect(game.get_window().dpi_changed.is_connected(game._update_render_scale),"startup connects the native window DPI signal, including in headless checks")
+	game.get_window().dpi_changed.emit()
 	expect(game.equipment.ids().size()==game.equipment.ids().reduce(func(ids,id):ids[id]=true;return ids,{}).size(),"registered equipment identities are unique")
 	for id in game.EQUIPMENT:expect(game.equipment.get_equipment(id)!=null,"startup registers "+id)
 	expect(game.model.assemblies.foot.location=="support:foot_store" and game.model.milestone("right_foot","complete"),"initial supports and supplied right foot are correct")

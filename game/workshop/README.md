@@ -525,6 +525,11 @@ for a requested performance investigation, separately from routine regressions:
 ./play.command --script tools/benchmark_mouse_look.gd -- --tag=baseline --seconds=4
 ```
 
+For foot-specific slowdowns, add `--feet`. This aims stationary and mouse-look
+views at the live mesh bounds of each foot from the side, records the 3D render
+scale, and checks that the foot center stays in the camera frustum. The generic
+arrival/work-bay views do not establish performance when inspecting the feet.
+
 Keep the window visible and focused. The report rejects skipped rendering and
 blocked camera input. Do not use fixed FPS or disable the render loop. Each phase
 warms for two seconds; raw samples, percentiles, draw counts, actual reported
@@ -545,3 +550,35 @@ model changes invalidate the geometry cache. Articulated and forwarded child
 connections are evaluated live, as are prerequisites, ownership, variant feedback,
 reach and obstruction. `targeting_candidates_test` compares discovery with an
 exhaustive reference, including motion, mounting, installation and undo.
+
+The current feet use `scripts/assembly_render_group.gd` for derived rendering.
+Fixed context and installed foot parts are grouped within their own rigid frame,
+in local 1 m cells of at most 16 pieces. Detailed source geometry, physical IDs,
+slot metadata, collision and outline geometry remain available. Material groups
+reduce draw submissions; generated mesh LODs reduce distant geometry. Root pieces
+stay separate for completion feedback, and child assemblies keep independent frames.
+The existing authored enclosure rules also remove enclosed pieces from batches.
+
+Changes invalidate only affected groups. Original pieces render while CPU-only
+merge/LOD work runs on worker threads; finished resources are installed on the main
+thread only if their installed-piece signature is still current. Undo cannot apply
+a stale completed representation. Derived caches retain only current group inputs,
+not every historical partial assembly. Mirrored meshes retain their LOD thresholds
+and regenerate welded shadow geometry with matching surface topology.
+
+The rendering decision is part of the
+[component design process](../../.agents/skills/gundam-component-pipeline/SKILL.md#rendering-contract-for-construction-games).
+The foot check is intentionally **outside standard regressions**. It is a cheap,
+opt-in fixture (no workshop boot), covering grouping, closure/undo, transforms,
+outlines and mirror LOD/shadow preservation:
+
+```sh
+python3 game/workshop/tools/run_diagnostics.py --only foot_render_test
+```
+
+Use the explicitly requested `--feet` benchmark for performance evidence; it waits
+for derived groups to finish. A short local sample improved foot views from about
+43–46 FPS to 56–58 FPS and reduced draw calls from about 3,200–3,800 to 600–910.
+This is not a sustained 60 FPS guarantee. The user confirmed that the optimized
+foot still looks great in game (2026-10-25). No new case was added to standard
+regressions.

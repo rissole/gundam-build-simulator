@@ -112,6 +112,34 @@ needed deliverables, preserve unrelated geometry during scoped repairs, and
 record which manifests, scenes, exports and illustrations match the new revision.
 Do not overwrite a repaired gameplay asset with a stale whole-model export.
 
+### Rendering contract for construction games
+
+Preserve every physical instance and authored source mesh. Runtime rendering is
+a derived representation of assembly state, never the inventory or undo record.
+Completion permits batching; screen size and interaction determine detail. A
+completed component must remain inspectable up close, and an unfinished distant
+one need not render every feature at maximum detail.
+
+Author rigid/moving boundaries, reusable mesh/material families, and explicit
+enclosure conditions alongside parts. Batch only within a rigid group and local
+lighting/culling region. Retain individual slot targeting, collision openings,
+manual geometry, highlights and consumed identities independently. Hide internals
+only behind authored opaque closures; reopening restores them. Never substitute
+a finished proxy for an incomplete build or merge across an articulating joint.
+
+Use detailed batched geometry nearby and mesh LOD/combined representations farther
+away. Preserve LODs, normals, winding and shadow meshes when deriving mirrored
+assets. Cache derived groups, update only affected groups on install/undo, and
+prepare expensive geometry outside the interactive frame. Keep the original
+representation visible until a valid replacement is ready. Bound caches and avoid
+enumerating every possible partial assembly. UI remains at native resolution.
+
+Verify representation changes with small fixtures for geometry, closure, motion,
+identity and undo. Performance/whole-scene checks are opt-in and stay outside
+standard regressions; standard additions must be unit-style and explicitly scoped.
+For the current foot implementation, see
+`game/workshop/scripts/assembly_render_group.gd` and the workshop README.
+
 ## 4. Author a playable branch and its manual together
 
 Use the existing shared assembly model. Define compatible types, physical stock,

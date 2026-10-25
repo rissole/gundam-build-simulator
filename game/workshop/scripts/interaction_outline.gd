@@ -106,7 +106,7 @@ func _rebuild(key: int, entry: Dictionary) -> void:
 	entry.dirty = false
 
 func _collect(node: Node3D, result: Array[MeshInstance3D], key: int, entry: Dictionary) -> void:
-	if node.has_meta(OUTLINE_META):return
+	if node.has_meta(OUTLINE_META) or node.has_meta("assembly_render_proxy"):return
 	_watch(node,"child_entered_tree",_tree_changed.bind(key),entry)
 	_watch(node,"child_exiting_tree",_tree_changed.bind(key),entry)
 	# Keep hidden physical meshes in the cache. Their child contours inherit

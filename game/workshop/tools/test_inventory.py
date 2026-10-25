@@ -34,6 +34,7 @@ ROUTINE = (
 )
 
 DIAGNOSTIC = (
+    'foot_render_test',  # Cheap isolated fixture; explicitly opt-in, never routine.
     'arm_cassette_test',
     'arm_delivery_test',
     'arm_preflight_test',

@@ -52,6 +52,17 @@ are byte-identical. Its audit compares retained geometry, materials and transfor
 independently of GLB resource indices. See the [workshop source-update procedure](../../game/workshop/README.md#data-model-and-project-structure)
 for scoped exports, checks and current generated-artifact boundaries.
 
+### Runtime rendering derivatives
+
+The separate source meshes remain authoritative. The workshop now builds local
+material batches and distance-based detail levels from the currently installed
+pieces, preserving inventory, slot identity, individual source geometry and undo.
+Completion is not permission to permanently reduce close-up detail. Opaque closure
+may omit authored enclosed internals; opening it restores them. Moving children
+remain separate rigid groups. See the
+[workshop rendering implementation](../../game/workshop/README.md#performance-measurements)
+and the [component rendering contract](../../.agents/skills/gundam-component-pipeline/SKILL.md#rendering-contract-for-construction-games).
+
 ## Reproduce the build
 
 The generator uses Blender's built-in Python API, without third-party Python packages. Blender 4.5.14 LTS was downloaded from the [official release directory](https://download.blender.org/release/Blender4.5/) and checked against its official SHA-256 manifest. The installed task-local executable is:

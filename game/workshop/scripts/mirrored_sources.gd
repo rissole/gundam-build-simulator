@@ -5,9 +5,21 @@ static func ensure(sources: Dictionary, alias: String, original: String) -> void
 	if sources.has(alias):return
 	assert(sources.has(original),"Missing mirror source: "+original)
 	var entry: Dictionary=sources[original]
+	var reflection=Basis(Vector3.LEFT,Vector3.UP,Vector3.BACK)
+	var at: Transform3D=entry.transform
+	sources[alias]={"mesh":reflect_mesh(entry.mesh),"family":entry.family,"transform":Transform3D(reflection*at.basis*reflection,reflection*at.origin)}
+
+static func reverse_faces(indices: PackedInt32Array) -> PackedInt32Array:
+	var result=indices.duplicate()
+	for i in range(0,result.size(),3):
+		var swap=result[i+1];result[i+1]=result[i+2];result[i+2]=swap
+	return result
+
+static func reflect_mesh(original: Mesh) -> ArrayMesh:
 	var mesh=ArrayMesh.new()
-	for surface in range(entry.mesh.get_surface_count()):
-		var arrays: Array=entry.mesh.surface_get_arrays(surface).duplicate(true)
+	var imported=ImporterMesh.from_mesh(original)
+	for surface in range(original.get_surface_count()):
+		var arrays: Array=original.surface_get_arrays(surface).duplicate(true)
 		var vertices: PackedVector3Array=arrays[Mesh.ARRAY_VERTEX]
 		for i in range(vertices.size()):vertices[i].x=-vertices[i].x
 		arrays[Mesh.ARRAY_VERTEX]=vertices
@@ -22,14 +34,45 @@ static func ensure(sources: Dictionary, alias: String, original: String) -> void
 		var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX]!=null else PackedInt32Array()
 		if indices.is_empty():
 			for i in range(vertices.size()):indices.append(i)
-		for i in range(0,indices.size(),3):
-			var swap=indices[i+1];indices[i+1]=indices[i+2];indices[i+2]=swap
-		arrays[Mesh.ARRAY_INDEX]=indices
-		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
-		mesh.surface_set_material(surface,entry.mesh.surface_get_material(surface))
-	var reflection=Basis(Vector3.LEFT,Vector3.UP,Vector3.BACK)
-	var at: Transform3D=entry.transform
-	sources[alias]={"mesh":mesh,"family":entry.family,"transform":Transform3D(reflection*at.basis*reflection,reflection*at.origin)}
+		arrays[Mesh.ARRAY_INDEX]=reverse_faces(indices)
+		var lods: Dictionary={}
+		for level in imported.get_surface_lod_count(surface):
+			lods[imported.get_surface_lod_size(surface,level)]=reverse_faces(imported.get_surface_lod_indices(surface,level))
+		mesh.add_surface_from_arrays(imported.get_surface_primitive_type(surface),arrays,[],lods)
+		mesh.surface_set_material(surface,original.surface_get_material(surface))
+	mesh.shadow_mesh=make_shadow(mesh)
+	return mesh
+
+static func make_shadow(mesh: ArrayMesh) -> ArrayMesh:
+	# Imported compressed position-only shadow surfaces cannot reliably be
+	# decoded by surface_get_arrays. Rebuild welded positions from the readable
+	# detailed mesh and remap the preserved LOD indices onto that topology.
+	return shadow_from_importer(ImporterMesh.from_mesh(mesh)).get_mesh()
+
+static func shadow_from_importer(imported: ImporterMesh) -> ImporterMesh:
+	var shadow=ImporterMesh.new()
+	# Shadow surfaces must match the main mesh one-for-one, even when their
+	# materials are omitted. Merging these surfaces can crash Compatibility.
+	for surface in imported.get_surface_count():
+		var arrays: Array=imported.get_surface_arrays(surface)
+		var vertices: PackedVector3Array=arrays[Mesh.ARRAY_VERTEX]
+		var unique: Dictionary={};var positions=PackedVector3Array();var remap=PackedInt32Array()
+		for vertex in vertices:
+			if not unique.has(vertex):unique[vertex]=positions.size();positions.append(vertex)
+			remap.append(unique[vertex])
+		var output: Array=[];output.resize(Mesh.ARRAY_MAX)
+		output[Mesh.ARRAY_VERTEX]=positions
+		output[Mesh.ARRAY_INDEX]=remap_indices(arrays[Mesh.ARRAY_INDEX],remap)
+		var lods: Dictionary={}
+		for level in imported.get_surface_lod_count(surface):
+			lods[imported.get_surface_lod_size(surface,level)]=remap_indices(imported.get_surface_lod_indices(surface,level),remap)
+		shadow.add_surface(imported.get_surface_primitive_type(surface),output,[],lods)
+	return shadow
+
+static func remap_indices(indices: PackedInt32Array, remap: PackedInt32Array) -> PackedInt32Array:
+	var result=PackedInt32Array();result.resize(indices.size())
+	for i in indices.size():result[i]=remap[indices[i]]
+	return result
 
 static func add(sources: Dictionary, aliases: Dictionary) -> void:
 	for alias in aliases:ensure(sources,alias,aliases[alias])

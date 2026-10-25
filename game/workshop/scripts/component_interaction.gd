@@ -271,6 +271,8 @@ func update_service_view() -> void:
 			if not mesh is MeshInstance3D or not mesh.has_meta("slot_id"):continue
 			var slot: Dictionary = d.slots[mesh.get_meta("slot_id")]
 			mesh.visible = not (closed and slot.get("enclosed",false))
+		if body.has_meta("assembly_render_group"):
+			body.get_meta("assembly_render_group").refresh()
 
 
 func make_build(owner: String) -> void:

@@ -113,7 +113,18 @@ func _init() -> void:
 	equipment = Registry.new()
 	hands = Hands.new(self)
 
+func _update_render_scale() -> void:
+	# Keep HUD/text at native resolution, but render the world at logical pixels.
+	# Re-evaluate when moving between Retina and standard-density Mac displays.
+	if not OS.has_feature("macos") or DisplayServer.get_name() == "headless":
+		return
+	var window := get_window()
+	var display_scale := DisplayServer.screen_get_scale(window.current_screen)
+	window.scaling_3d_scale = 1.0 / maxf(display_scale, 1.0)
+
 func _ready() -> void:
+	_update_render_scale()
+	get_window().dpi_changed.connect(_update_render_scale)
 	var loaded = Content.load_workshop()
 	config = loaded.scenario
 	var data: Dictionary = loaded.data
@@ -167,6 +178,7 @@ func _ready() -> void:
 	model.changed.connect(_state_changed)
 	_make_audio()
 	_state_changed()
+	world.configure_foot_rendering()
 	set_paused(true)
 	started = true
 	start_stage = Stages.stage_flag(Array(OS.get_cmdline_user_args()))

@@ -10,6 +10,16 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Retina rendering (2026-10-25):** disabling HiDPI made UI text blurry in the
+  user's playtest. HiDPI is restored; on macOS only the 3D render scale is now
+  divided by the display scale (0.5 on a 2× Retina screen), keeping the HUD at
+  native resolution. Moving between screens updates the scale. In-world labels
+  remain part of the lower-resolution 3D scene. Restart to apply; sharpness and
+  FPS await the user's playtest. Earlier performance measurements predate this change.
+  The first scaling implementation caused a blank blue screen: a nonexistent
+  `Window.screen_changed` signal aborted startup. Replaced it with `dpi_changed`;
+  the startup smoke now covers the signal connection even in headless mode.
+
 - **Performance (2026-10-25):** shadows stay enabled with the same 4096 atlas,
   65 m coverage, split blending and approved lighting. Two cascades replace four;
   distant shadows trade detail for fewer caster draws. Targeting now counts stock

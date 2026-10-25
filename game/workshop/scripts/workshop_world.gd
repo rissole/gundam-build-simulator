@@ -236,3 +236,20 @@ func make_leg_context() -> void:
 			var descriptor: Dictionary=game.leg_content.sources.get(uid,{})
 			if descriptor.has("motion_shapes"):col.set_meta("motion_shapes",SolidHandling.authored_shapes(descriptor.motion_shapes,AABB()))
 			body.add_child(col)
+
+func configure_foot_rendering() -> void:
+	var RenderGroup = preload("res://scripts/assembly_render_group.gd")
+	for owner in game.model.assemblies:
+		var definition: Dictionary = game.runtime.definition(owner)
+		var root_slot: String = definition.get("root_slot","")
+		var source_id: String = definition.slots.get(root_slot,{}).get("pose_source","")
+		if owner not in ["foot","right_foot"] and not source_id.trim_prefix("R-").begins_with("FA-"):continue
+		var body: Node3D = game.runtime.node(owner)
+		var separate: Array[MeshInstance3D] = []
+		for child in body.get_children():
+			# Keep the root independent for the existing completion glow. Each
+			# child assembly owns its own group, so joints/mounts stay independent.
+			if child is MeshInstance3D and child.get_meta("slot_id","") == root_slot:separate.append(child)
+			if owner in ["foot","right_foot"] and child is Node3D and not child is MeshInstance3D and not child is CollisionObject3D:
+				if child.get_children().any(func(node):return node is MeshInstance3D):RenderGroup.new().setup(child)
+		RenderGroup.new().setup(body,separate)
