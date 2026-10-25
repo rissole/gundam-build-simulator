@@ -11,6 +11,30 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Visual uplift (2026-10-25, merged into main):**
+  The accepted visual uplift uses Forward+, low-density volumetric
+  fog, SSAO/SSR, two warm shadowed assembly lamps, a static room reflection probe
+  and concrete/paint PBR variation. Main retains its normal save location. Original spike startup smoke:
+  28 checks pass (4.243 s); no diagnostics, rendered review or FPS measurement.
+  **Player reports substantially better appearance and performance** (2026-10-25).
+  No FPS figure or completion of individual readability checks was supplied.
+  Keep this direction. User expanded the column study to the
+  [full gantry](final-assembly-plan.md#full-gantry-detail--2026-10-25), now implemented:
+  recessed hardware, chamfered members, tread plates and stencils across the portal,
+  four access levels and side lifts. All 353 treated members preserve their live
+  visual bounds and moving parents; colliders/layout/supports are unchanged.
+  Focused geometry/control audit + startup smoke: 52 + 29 checks pass. Player says the gantry “looks great” and requests integration. Detailed checks
+  and measured FPS remain open in the [gantry playtest](robot-workshop-playtest-checklist.md#full-gantry-detail--2026-10-25).
+  The spike worktree is retired; sound and console screens remain deferred.
+  [Scope and roadmap assessment](final-assembly-plan.md#visual-uplift-spike--2026-10-25);
+  [playtest and deferred ideas](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
+
+- **Direct startup (2026-10-25, merged into main):** fresh/restored launches and
+  successful stage preparation enter play without the pause menu. Escape still
+  toggles pause; stage errors stop at the menu. Routine startup and stage-contract
+  checks pass (29 + 12 checks, 4.493 s). The stage fixture now supplies the session
+  stub required by `save.settle()`. No rendered review; startup feel awaits playtest.
+
 - **Manual redesign (2026-10-25, whole robot converted):** every action step is a
   one-sentence goal plus a self-ticking checklist generated from typed objectives;
   every machine line reads "<Where>: <exact control text>" from one label function

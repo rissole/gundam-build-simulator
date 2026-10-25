@@ -19,6 +19,58 @@ One stage:
 
 Stage preparation is supplied progress and nothing is saved. Wait for the overlay to close before using the controls. Restart re-runs the shortcut.
 
+## Visual uplift spike — 2026-10-25
+
+User direction: the supplied dream reference's warm industrial lighting, cool
+fill, atmospheric depth, reflective worn floor and detailed hangar. Preserve the
+previous positive approval of the workshop's intermediate brightness and the
+manual's readability. Player response on 2026-10-25: "wow, it looks so much
+better and runs much more performantly too." This is positive visual and
+performance feedback from actual play, without a measured FPS figure or
+confirmation of every detailed check below.
+
+The user approved the gantry ("looks great") and requested merging into main.
+Use the **main worktree**, `/Users/blakeyboy/gundam-build-simulator`:
+
+```sh
+cd /Users/blakeyboy/gundam-build-simulator
+./play.command
+# Later, to inspect the final-assembly lighting with a robot present:
+./play.command -- --stage=complete
+```
+
+Main retains its normal save directory. The old spike save remains separately
+on disk; the spike worktree is retired. To compare renderer support with the
+same materials, use `./play.command --rendering-method gl_compatibility`;
+this disables the advanced effects.
+
+Mechanical evidence: startup smoke passes all 28 checks. Player evidence: the
+user reports substantially better appearance and performance. No agent rendered
+inspection or GPU benchmark ran. [Roadmap assessment and scope](final-assembly-plan.md#visual-uplift-spike--2026-10-25).
+
+- [ ] At the foot preparation bench, can you identify small washers, sockets and magnetic connectors without relying on outlines?
+- [ ] Compare the warm floor pools, dark walls and cool roof with the reference. Is the atmosphere welcome, or too dark/washed out?
+- [ ] Are the ochre railings, equipment buttons, bay signs and manual text clear at normal viewing distance?
+- [ ] Walk and turn while looking at the floor. Check reflection popping at the screen edge, noisy highlights, fog trails and obvious texture repetition.
+- [ ] View the gantry from ground level and its working decks. Are the new shadows helpful, or do they obscure connections?
+- [ ] Record FPS at the preparation bench and facing the completed robot, using the same display/window conditions as main. Note hitches separately; no 60 FPS claim has been made.
+
+Deferred user proposals, retained for the next decision:
+
+- Previous scope decision: remain on the visual worktree; expand the column study
+  into the whole final mech gantry, preserving accurate measurements and blockouts,
+  then implement. The [full gantry design](final-assembly-plan.md#full-gantry-detail--2026-10-25)
+  is now implemented. No sound or console screens yet. The focused checks below
+  remain open; the earlier positive player feedback predates this detail pass.
+
+- ACES/Filmic versus existing AgX; darker ambient/near-black background versus readable working bays; stronger warm beams and cool perimeter fill. This spike keeps AgX and the approved ambient/key/exposure values as its starting point.
+- Photo-quality oily concrete, worn yellow paint and matte structural metal. Procedural roughness/normal maps are the first material experiment; authored wear and richer texture sources remain open.
+- Decal-projected warning stripes, `02 / FINAL ASSEMBLY` and floor markings. Existing labels/hazard marks remain; route-specific marking and additional decals are deferred.
+- One or two modular industrial/hangar/crane kits from Fab, Unity Asset Store or Sketchfab, with FBX/glTF import and incremental visual swaps that preserve gameplay scripts. Supplier, budget, licence, style, dimensions and performance remain to be evaluated.
+- AI-assisted UI feedback, levers and procedural cable animation. Preserve current movement, riding and support rules; generic Tween crane motion cannot replace them.
+- SubViewport console screens, emissive green/amber buttons, motor hums and mechanical thuds. Trial one screen and spatial audio before a wider UI conversion; camera shake is optional and needs precision-work comfort feedback.
+- Proposed timing: lighting today, materials this week, kit replacement next week. Keep the order, but gate each next phase on actual readability/performance and import effort.
+
 ## Focused controls check — 2026-10-24
 
 The crane/lift UI revision has **no regression run**, at the user's request.
@@ -36,6 +88,23 @@ Start with `./play.command -- --stage=pelvis` so the crane and lifts are ready.
 
 Report confusing wording, missed targets, unexpected motion and positive findings
 in the table below. The complete workshop journey remains a separate playtest.
+
+## Full gantry detail — 2026-10-25
+
+Implemented and accepted visually by the user ("looks great"); merged into main.
+Individual checks below remain open. Mechanical evidence: 52 geometry/control
+checks and 29 startup checks pass in 4.626 s. The actual replacement bounds,
+collision identities, moving parents, intermediate folding poses, raised lift
+poses and jaw outlines are checked. No rendered inspection or FPS benchmark ran.
+Use `./play.command -- --stage=complete` for the complete structure; use normal
+progress or a relevant earlier stage to operate the gantry during assembly.
+
+- [ ] From ground level, inspect both foundations and columns. Do recessed anchors, covers, bevels and restrained wear read as fixed machinery? Does the crosshead lettering sit naturally on the face?
+- [ ] Ride both elevators and walk the 8.4, 11.2, 14.0 and 16.4 m levels. Check tread contrast, edge strips and level labels; note texture repetition or shimmer.
+- [ ] Open/fold access wings, fingers and rear bridge as the build requires. Watch joints and guards for visible clipping, seams or drifting detail through motion.
+- [ ] Aim at and operate the four gantry jaw handles. Their shapes, outlines and prompts should remain easy to distinguish from decorative fasteners.
+- [ ] Inspect the rear core/backpack opening and aft lifting well. Check that existing approach, connection sight lines and cable routes remain visually understandable.
+- [ ] Compare FPS and hitches with the previous visual spike under the same display/window and build conditions. The earlier reported improvement is a constraint, not evidence for this new shader/geometry pass.
 
 ## Manual redesign check — 2026-10-25
 
@@ -91,6 +160,8 @@ The pauldron route's tightest clearance is about 1 mm at seating.
 
 | Date | Stage | Issue or positive finding | Severity |
 | --- | --- | --- | --- |
+| 2026-10-25 | Launch (visual worktree) | User asks to stop the pause menu appearing at startup. Implemented direct entry for fresh/restored launches and successful stage handover; Escape still opens/closes pause. Mechanical startup and stage checks pass; player should check a normal launch, a stage launch and Escape. | Fixed, re-check |
+| 2026-10-25 | Visual uplift spike | "wow, it looks so much better and runs much more performantly too." Preserve this lighting/material direction. Reported improvement is player evidence; FPS, tested stage and individual readability checks were not specified. User asks what comes next; proposed next work is integration of this baseline followed by one bay's surface and equipment detail, then sound and a single console screen trial. | Positive |
 | 2026-10-25 | Any (workshop save) | Asked for Save & quit, Quit without saving, and the player position kept. Implemented: saving is manual (pause-menu Save, Save & quit, or closing the window), Quit without saving confirms unsaved build changes, and position and view are restored. The user disliked refused saves: a mid-ride save now reloads the player on the deck at the machine's last stop; a crane caught mid-move is saved stopped where it is with its load hanging, and Resume continues. Re-check: walk somewhere, Save & quit, relaunch; save mid-lift; save with a load on the moving crane and press Resume after reloading; then fit a part and Quit without saving. | Request |
 | 2026-10-25 | Any (manual) | Positive: "I love this new manual — no notes, perfection." Requested: M opens the manual (was N), Tab hides the panel, the diagram is always shown, translucent panel. Done. | Positive |
 | 2026-10-25 | Pelvis delivery | "Insert both pins" appeared in the world as "Engage/Unlock waist yaw neutral pin", which made no sense to the player. From the pelvis design: the waist has a twist (yaw) joint and a tilt (lean) joint, both unpowered during assembly; each captive pin holds its joint straight so the waist cannot twist or tilt while the pelvis hangs from the crane and while the chest seats. Now "Waist: Insert twist lock pin" / "tilt lock pin" in the world and "Waist: Insert both lock pins" with a note in the manual. | Fixed, re-check |

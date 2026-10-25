@@ -42,7 +42,8 @@ func run() -> void:
 	expect(not (await game.run_stage("unknown")).is_empty() and game.runner.calls.is_empty(),"handover rejects unknown stages before runner")
 	for automated in [false,true]:
 		game.automated_test=automated
-		expect((await game.run_stage("pelvis")).is_empty() and game.paused and game.automated_test==automated,"handover restores input mode and pauses after supplied progress")
+		expect((await game.run_stage("pelvis")).is_empty() and not game.paused and not game.staging and game.automated_test==automated,"handover restores input mode and enters play after supplied progress")
+	expect(game.save.settled==2,"each prepared stage establishes the session baseline")
 	expect(game.runner.calls==["pelvis","pelvis"] and game.stage_notice.contains("not playtested"),"handover reports supplied progress honestly")
 	var passed=checks.all(func(c):return c.passed)
 	print("STAGE_CONTRACT ","PASS " if passed else "FAIL ",checks.size()," checks")

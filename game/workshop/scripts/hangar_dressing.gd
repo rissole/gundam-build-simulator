@@ -1,15 +1,19 @@
 extends RefCounted
-## Hangar lighting and room finish, previewed in Blender before implementation.
+## Hangar visual spike: industrial surfaces and restrained Forward+ atmosphere.
 ## A dim cool ambient and one shadowed key leave contrast to narrow roof beams
 ## pooled on each work bay. Everything here is visual: the blockout floor and
 ## wall solids keep their collision, and nothing enters a bay, route or the
 ## crane envelope (fittings sit at walls, on the floor surface or above 23.8 m).
 ## Compatibility draws unshadowed lights in one pass but limits them to 32 per
-## frame and 8 spots per mesh, so the rig uses 17 spots, the floor is split
-## into 4 m slabs (at most 8 cones reach any one) and the walls into panels.
+## frame and 8 spots per mesh, so the floor is split into 4 m slabs and the
+## walls into panels. This spike has 19 spots, two with Forward+ shadows.
 ## General high-bay fixtures only glow.
 const AMBIENT = 0.24
 const KEY = 0.35
+const Surfaces = preload("res://scripts/hangar_surfaces.gd")
+# Extra render layer for the static room's reflection capture. Keep layer 1
+# as well so normal cameras, shadows and SSR continue to see these surfaces.
+const ROOM_REFLECTION_LAYER = 1 << 19
 # Blender preview watts -> Godot energy with physical (squared) falloff.
 const WATTS_TO_ENERGY = 1.0/(4.0*PI*PI)
 # Inner faces: axis, plane, inward sign.
@@ -19,19 +23,24 @@ const GANTRY_PAD = [3.5,22.5,24.0,37.5]
 var game: Node
 var root: Node3D
 var mats: Dictionary = {}
+var forward_plus: bool
 
 func _init(workshop: Node) -> void:
 	game = workshop
 
 func build(env: Environment, key: DirectionalLight3D) -> void:
 	root = Node3D.new();root.name = "HangarDressing";game.add_child(root)
+	forward_plus = RenderingServer.get_current_rendering_method() == "forward_plus"
 	_environment(env,key)
 	_materials()
 	var blockout: Node3D = game.leg_layout.blockout
 	for id in ["floor","wall_x-14","wall_x26","wall_z-9","wall_z39"]:blockout.pieces[id].visual.visible = false
 	blockout.pieces.roof.visual.material_override = mats.deck
+	blockout.pieces.roof.visual.layers |= ROOM_REFLECTION_LAYER
 	for id in blockout.pieces:
-		if id.begins_with("truss"):blockout.pieces[id].visual.material_override = mats.truss
+		if id.begins_with("truss"):
+			blockout.pieces[id].visual.material_override = mats.truss
+			blockout.pieces[id].visual.layers |= ROOM_REFLECTION_LAYER
 	var bays: Array = []
 	for id in game.leg_layout.layout().workshop.bays:bays.append([id]+Array(game.leg_layout.layout().workshop.bays[id].bounds))
 	_floor(bays)
@@ -40,45 +49,68 @@ func build(env: Environment, key: DirectionalLight3D) -> void:
 	_services()
 	_door()
 	_lights(bays)
+	_reflections()
 
 func _environment(env: Environment, key: DirectionalLight3D) -> void:
 	# Background only shows in metal reflections inside the closed hall.
-	env.background_color = Color("4a5154")
+	env.background_color = Color("10181e")
 	env.ambient_light_color = Color("9fb0bc")
 	env.ambient_light_energy = AMBIENT
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX
 	env.tonemap_exposure = 1.1
 	env.adjustment_enabled = true
-	env.adjustment_contrast = 1.08
+	env.adjustment_contrast = 1.04
 	# Light depth haze lets the far end of the 48 m hall recede.
-	env.fog_enabled = true
-	env.fog_light_color = Color("484f52")
+	env.fog_enabled = not forward_plus
+	env.fog_light_color = Color("303c46")
 	env.fog_density = 0.003
 	env.fog_sky_affect = 0.0
+	# Feature gates retain a usable Compatibility fallback. A headless smoke
+	# checks initialization, not the GPU cost or appearance of these effects.
+	env.ssao_enabled = forward_plus
+	env.ssao_radius = .7
+	env.ssao_intensity = 1.35
+	env.ssao_light_affect = .2
+	env.ssr_enabled = forward_plus
+	env.ssr_max_steps = 48
+	env.volumetric_fog_enabled = forward_plus
+	env.volumetric_fog_density = .0025
+	env.volumetric_fog_albedo = Color("7b8b97")
+	env.volumetric_fog_emission = Color.BLACK
+	env.volumetric_fog_length = 64.0
+	env.volumetric_fog_anisotropy = .35
+	env.volumetric_fog_ambient_inject = .25
+	env.volumetric_fog_gi_inject = 0.0
+	env.glow_enabled = forward_plus
+	env.glow_intensity = .18
+	env.glow_hdr_threshold = 2.0
+	env.glow_bloom = 0.0
 	key.rotation_degrees = Vector3(-72,-25,0)
 	key.light_energy = KEY
 	key.light_color = Color("ffe9cf")
 	key.shadow_opacity = 0.9
+	key.light_volumetric_fog_energy = 0.0
 
 func _materials() -> void:
 	var concrete = _noise_texture()
 	for i in 4:
-		var slab = _mat(["6d716e","6a6e6b","707370","676b68"][i],.78)
-		_triplanar(slab,concrete,null,.25);mats["slab%d" % i] = slab
+		var slab = _mat(["70736e","6c706c","747671","696e6b"][i],.78)
+		mats["slab%d" % i] = Surfaces.concrete(slab)
 	mats.joint = _mat("3f4241",.95)
-	mats.epoxy = _mat("5a605e",.32)
+	mats.epoxy = Surfaces.concrete(_mat("4d5756",.42),5.0)
+	mats.epoxy.roughness = .8
 	mats.dado = _triplanar(_mat("8a8d88",.88),concrete,null,.3)
-	mats.cladding = _triplanar(_mat("a2a7a2",.7),null,_rib_texture(false),1.0/.6)
-	mats.upper = _mat("70777a",.85)
-	mats.glazing = _mat("9fb3c2",.3,0,"cfdeea",2.4)
+	mats.cladding = _triplanar(_mat("59666b",.7,.15),null,_rib_texture(false),1.0/.6)
+	mats.upper = _mat("333f47",.85)
+	mats.glazing = _mat("6d879a",.3,0,"a7c9e1",1.2)
 	mats.mullion = _mat("2d3335",.6,.3)
-	mats.truss = _mat("4f585a",.6,.25)
+	mats.truss = Surfaces.coating(_mat("3d4a50",.6,.25))
 	# Faint emission stands in for light bounced off the floor: no GI here.
-	mats.deck = _triplanar(_mat("7a8184",.6,0,"b9c2c6",.14),null,_rib_texture(false),1.0/.8)
+	mats.deck = _triplanar(_mat("414e56",.6,0,"b9c2c6",.06),null,_rib_texture(false),1.0/.8)
 	mats.fixture = _mat("2a2f31",.5,.4)
-	mats.lens = _mat("fff4e2",.3,0,"fff1dc",10.0)
-	mats.led = _mat("e9f2ff",.3,0,"e3eeff",6.0)
-	mats.door = _triplanar(_mat("7e8789",.55),null,_rib_texture(true),1.0)
+	mats.lens = _mat("ffe3b5",.3,0,"ffda9b",5.0)
+	mats.led = _mat("c4dcf0",.3,0,"bedbf2",3.0)
+	mats.door = _triplanar(_mat("4c5c62",.55,.25),null,_rib_texture(true),1.0)
 	mats.frame = _mat("2d3335",.6,.3)
 	mats.hazard = _triplanar(_mat("ffffff",.6),_hazard_texture(),null,1.0/.4)
 	mats.panel = _mat("8e9694",.5,.2)
@@ -134,6 +166,7 @@ func _hazard_texture() -> ImageTexture:
 
 func _box(at: Vector3, size: Vector3, mat: Material, shadow: bool = false) -> MeshInstance3D:
 	var mesh: MeshInstance3D = game.box(root,at,size,mat)
+	mesh.layers |= ROOM_REFLECTION_LAYER
 	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if shadow else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mesh
 
@@ -143,6 +176,7 @@ func _multi(mesh: Mesh, transforms: Array, mat: Material) -> void:
 	multimesh.mesh = mesh;multimesh.instance_count = transforms.size()
 	for i in transforms.size():multimesh.set_instance_transform(i,transforms[i])
 	var node = MultiMeshInstance3D.new();node.multimesh = multimesh;node.material_override = mat
+	node.layers |= ROOM_REFLECTION_LAYER
 	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF;root.add_child(node)
 
 static func _scaled(at: Vector3, size: Vector3, basis: Basis = Basis.IDENTITY) -> Transform3D:
@@ -264,7 +298,7 @@ func _lights(bays: Array) -> void:
 			var f = (i+.5)/n
 			var at = Vector3(bay[1]+lx*f if lx >= lz else (bay[1]+bay[2])/2,24.35,bay[3]+lz*f if lz > lx else (bay[3]+bay[4])/2)
 			var r = maxf(lx/(n if lx >= lz else 1),lz/(n if lz > lx else 1))/2
-			_spot(at,Vector3.DOWN,rad_to_deg(atan((r+.5)/24.3)),26000,Color("fff0dc"),40,2.0,24.35)
+			_spot(at,Vector3.DOWN,rad_to_deg(atan((r+.5)/24.3)),26000,Color("ffdcaa"),40,2.0,24.35)
 			lamps.append(_scaled(at+Vector3(0,.25,0),Vector3(.56,.4,.56)))
 			lenses.append(_scaled(at+Vector3(0,.04,0),Vector3(.48,.02,.48)))
 	var cylinder = CylinderMesh.new();cylinder.top_radius = .5;cylinder.bottom_radius = .5;cylinder.height = 1;cylinder.radial_segments = 16
@@ -286,10 +320,42 @@ func _lights(bays: Array) -> void:
 		for x in [4.25,21.75]:strips.append(_scaled(Vector3(x,y-.11,31),Vector3(.08,.02,12)))
 		if y < 13:_spot(Vector3(13,y-.15,31),Vector3.DOWN,75,5500,Color("e3eeff"),16,1.0,8)
 	_multi(BoxMesh.new(),strips,mats.led)
+	# Two shadowed roof lamps give the final assembly a warm silhouette and
+	# occluded shafts. Keep the other lamps shadowless to bound caster work.
+	for x in [10.0,16.0]:
+		var at = Vector3(x,24.2,30.0)
+		var hero = _spot(at,Vector3(13,9,31)-at,24,12000,Color("ffd29a"),32,1.8,15.5)
+		hero.name = "AssemblyTaskLight"
+		hero.shadow_enabled = forward_plus
+		hero.shadow_bias = .04
+		hero.shadow_normal_bias = .5
+		hero.light_volumetric_fog_energy = .65 if forward_plus else 0.0
+		_box(at+Vector3(0,.16,0),Vector3(.7,.28,.7),mats.fixture)
+		_box(at,Vector3(.6,.025,.6),mats.lens)
+
+func _reflections() -> void:
+	if not forward_plus:return
+	# SSR loses anything outside the camera view. A single box-projected probe
+	# supplies the stationary room; capture once, never a cubemap every frame.
+	# Only room dressing is captured; movable loads never leave ghost reflections.
+	var probe = ReflectionProbe.new()
+	probe.name = "HangarReflection"
+	probe.position = Vector3(6,12.5,15)
+	probe.size = Vector3(40,25,48)
+	probe.origin_offset = Vector3(0,-8,0)
+	probe.max_distance = 70.0
+	probe.interior = true
+	probe.box_projection = true
+	probe.ambient_mode = ReflectionProbe.AMBIENT_DISABLED
+	probe.intensity = .65
+	probe.enable_shadows = false
+	probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	probe.cull_mask = ROOM_REFLECTION_LAYER
+	root.add_child(probe)
 
 ## Spot sized from the Blender preview's watts, compensating Godot's range
 ## window at the distance the beam is meant to land.
-func _spot(at: Vector3, direction: Vector3, half_angle: float, watts: float, color: Color, reach: float, edge: float, landing: float) -> void:
+func _spot(at: Vector3, direction: Vector3, half_angle: float, watts: float, color: Color, reach: float, edge: float, landing: float) -> SpotLight3D:
 	var light = SpotLight3D.new()
 	var up = Vector3.FORWARD if absf(direction.normalized().y) > .9 else Vector3.UP
 	light.transform = Transform3D(Basis.looking_at(direction,up),at)
@@ -299,5 +365,9 @@ func _spot(at: Vector3, direction: Vector3, half_angle: float, watts: float, col
 	light.spot_range = reach;light.spot_attenuation = 2.0
 	light.spot_angle = half_angle;light.spot_angle_attenuation = edge
 	light.shadow_enabled = false
+	# The existing high-energy rig was calibrated for surfaces. Injecting every
+	# lamp at full strength into fog would wash out the working bays.
+	light.light_volumetric_fog_energy = .08 if forward_plus else 0.0
 	light.distance_fade_enabled = false
 	root.add_child(light)
+	return light

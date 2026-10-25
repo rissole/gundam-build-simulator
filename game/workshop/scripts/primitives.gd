@@ -5,20 +5,25 @@ extends RefCounted
 # Hallmark · practical engineering: neutral structure, restrained safety accents.
 # Palette aliases keep existing equipment's semantic colour roles consistent.
 const FINISHES = {
-	"7c8886":"929894", "abb9b6":"d6d8d2", "506971":"727c7d",
-	"485f68":"727c7d", "edbd59":"c7a55d", "49626a":"727c7d", "657b80":"969d99",
-	"263a43":"343d40", "233940":"343d40", "253b45":"343d40",
-	"e8b46b":"c7a55d", "83bba6":"8daba3", "e0e6dd":"d6d8d2",
+	"7c8886":"929894", "abb9b6":"d6d8d2", "506971":"58666b",
+	"485f68":"58666b", "edbd59":"bb893b", "49626a":"58666b", "657b80":"798582",
+	"263a43":"303c43", "233940":"303c43", "253b45":"303c43",
+	"e8b46b":"bb893b", "83bba6":"8daba3", "e0e6dd":"d6d8d2",
 }
+const Surfaces = preload("res://scripts/hangar_surfaces.gd")
 var _palette: Dictionary = {}
 var _sign_backing: StandardMaterial3D
 
 func material(color: Color, metal: float = 0.0, emissive: bool = false) -> StandardMaterial3D:
-	if not emissive and FINISHES.has(color.to_html(false)):
+	var coated = not emissive and FINISHES.has(color.to_html(false))
+	if coated:
 		color = Color(FINISHES[color.to_html(false)])
-		metal = minf(metal,0.18) # Powder-coated structure, with broad matte highlights.
-	var key = [color.r,color.g,color.b,color.a,metal,emissive]
-	if not _palette.has(key):_palette[key] = new_material(color,metal,emissive)
+		metal = 0.0 # Intact paint is a dielectric; exposed hardware keeps its metal.
+	var key = [color.r,color.g,color.b,color.a,metal,emissive,coated]
+	if not _palette.has(key):
+		var mat = new_material(color,metal,emissive)
+		if coated:Surfaces.coating(mat)
+		_palette[key] = mat
 	return _palette[key]
 
 func new_material(color: Color, metal: float = 0.0, emissive: bool = false) -> StandardMaterial3D:

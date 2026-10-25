@@ -2,6 +2,23 @@
 
 Godot 4.7.2 · GDScript · Jolt Physics · macOS desktop · Shared assembly model and nested manuals
 
+The accepted **visual uplift is integrated into main**.
+`./play.command` uses Forward+ with atmospheric lighting and procedural concrete/
+paint materials and retains the normal `Gundam Build Simulator` save location.
+For the renderer fallback, run `./play.command --rendering-method gl_compatibility`.
+The startup smoke passes; the user reports substantially better appearance and
+performance. Exact FPS and the remaining detailed checks are not yet recorded.
+See the [roadmap assessment](../../design/game/final-assembly-plan.md#visual-uplift-spike--2026-10-25)
+and [focused playtest](../../design/game/robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
+
+The [full gantry detail pass](../../design/game/final-assembly-plan.md#full-gantry-detail--2026-10-25)
+adds chamfered steel, recessed anchors, tread plates and level stencils across
+the portal, access platforms and side lifts, preserving the measured blockout and
+moving clearances. Geometry/control checks and startup smoke pass (52 + 29);
+the user approves its appearance; detailed checks and measured FPS remain open. Use
+`./play.command -- --stage=complete` to inspect it around the completed robot.
+Sound and console screens remain deferred.
+
 ![Crane console with movement controls](../../docs/images/workshop-crane-controls.png)
 
 *Crane controls in the final-assembly hangar.*
@@ -76,7 +93,7 @@ illustrate UI states and do not establish successful delivery or reachability.
 
 ## Launch
 
-Double-click [play.command](../../play.command) in Finder. The game opens the robot workshop in **non-exclusive (borderless) fullscreen**, paused; click **Start building**. Your build is saved each time you set a component and restored when you relaunch (see [Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints)); **New workshop** in the pause menu starts over. Escape releases the mouse and opens the grouped controls menu; **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
+Double-click [play.command](../../play.command) in Finder. The game opens the robot workshop in **non-exclusive (borderless) fullscreen** and enters play directly, with the mouse captured. Your saved build is restored when you relaunch; saving is manual through the pause menu or closing the window (see [Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints)). **New workshop** in the pause menu starts over. Escape releases the mouse and opens the grouped controls menu; Escape or **Resume** returns to the build. Godot uses a fullscreen desktop on macOS.
 
 `play.command` passes its arguments to Godot, so the same command opens the
 editor and runs tests. From a terminal at the repository root:
@@ -97,7 +114,8 @@ The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tool
 
 `./play.command -- --stage=<stage>` starts later in the build. It scripts the
 earlier work with the same model and equipment commands as the mechanical tests,
-then hands over paused. Fastenings and rigging are supplied, so this is not
+then enters play once preparation succeeds. A preparation error leaves the game
+paused with its explanation. Fastenings and rigging are supplied, so this is not
 playtest evidence. A stage launch never loads the save, but Save overwrites it
 with the stage plus your progress since; closing the window saves only if you
 changed the build after the stage. Restart re-runs the shortcut and keeps the save. Wait for

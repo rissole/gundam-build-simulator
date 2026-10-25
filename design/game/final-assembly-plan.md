@@ -321,7 +321,7 @@ local clevis parking catches free the hands for fastening, without another lift 
 
 Replace the old tall gantry crown with a **low, rear-braced pelvis portal**.
 An overhead bar across the rear would intersect the core/backpack crane cables.
-Columns centred X8.8/17.2,Z31.1 are0.60 m square, topY11.10. Crosshead bounds
+Columns centred X8.8/17.2,Z31.1 are0.60 m square, body topY10.50. Crosshead bounds
 X8.5..17.5/Y10.5..11.1/Z30.8..31.4. Feet occupy
 X8.1..9.5 /16.5..17.9,Z30.9..32.5; rear braces stay Z31.4..33.0 near their
 columns, outside the work flanks and beyond the elevator shafts.
@@ -649,3 +649,252 @@ Sources: [Workshop layout](../../game/workshop/assets/workshop-layout.json),
 [pelvis](../torso/pelvis-and-waist.md), [chest](../torso/chest-and-cockpit.md),
 [core/backpack](../torso/backpack-and-power.md),
 [shoulder/arm](../arms/shoulder-and-upper-arm.md), [head](../head.md).
+
+## Visual uplift spike — 2026-10-25
+
+Branch `spike/hangar-visual-uplift`, based on `476a69d`, is an isolated visual
+experiment. The user's reference is a tall industrial hangar with warm task
+lamps, cool roof fill, restrained haze, worn concrete, dark structure and ochre
+machinery. It is a direction, not evidence of achievable runtime quality or FPS.
+The accepted workshop remains on main. The spike uses its own user-data directory
+(`Gundam Build Simulator Visual Spike`), so launching it cannot overwrite main's
+workshop save. Do not carry that directory change into a production merge.
+
+### Roadmap assessment
+
+| Proposal | Assessment and next boundary |
+| --- | --- |
+| Lighting and post-processing first | Yes, but make renderer choice the first experiment. The current game uses Compatibility; volumetric fog, SSAO and SSR require Forward+. AgX, a WorldEnvironment, 17 spots, cool fill, haze and room dressing already exist. Preserve a readable working exposure; the user previously rejected a darker workshop. |
+| PBR floor, metal and paint next | High value alongside the lighting. Roughness variation and small normals should make materials distinct without changing collision or assembly. Painted surfaces remain nonmetallic. A near-black background alone gives metal little to reflect; include a room reflection source. |
+| Warning decals and bay lettering | Useful for meaningful wayfinding, not blanket decoration. Bay labels and hazard sleeves already exist. Preserve them; the mobile platform's actual route marking remains separate pending work. Decal nodes require Forward+ or Mobile; flat meshes/labels can retain Compatibility support. |
+| Industrial asset packs | A later step after testing the lighting. Choose one consistent kit, trial one bay, then expand. Prefer glTF/GLB; FBX is supported, but engine-specific shaders, pivots, scale and collision still need adaptation. Keep authored equipment dimensions, attachment frames and moving envelopes. Check the chosen pack's engine-use licence and texture/draw-call costs before purchase. No packs were acquired for this spike. |
+| AI-generated crane motion and control scripts | Treat assistance as an implementation tool, not a roadmap phase. Existing machines already implement riding, stopping, obstruction holds and support interlocks. A generic Tween must not bypass those rules. Cosmetic cable motion can follow the authoritative machinery later. |
+| In-world console screens and tactile feedback | Trial one readable status screen after lighting acceptance; keep detailed manual/checklist text on the HUD. SubViewport screens need resolution, angled viewing and input testing. Positional motor/stop audio is likely a better early addition than camera shake during precision assembly. Godot uses AudioStreamPlayer3D for spatial audio; a generic SoundPool is not needed. |
+
+Godot references: [renderer capabilities](https://docs.godotengine.org/en/stable/tutorials/rendering/renderers.html),
+[environment and SSR limitations](https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html),
+[fog](https://docs.godotengine.org/en/stable/tutorials/3d/volumetric_fog.html),
+[decals](https://docs.godotengine.org/en/stable/tutorials/3d/using_decals.html),
+[import formats](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html),
+[spatial audio](https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer3d.html).
+
+### Implemented scope and evidence
+
+The spike enables Forward+ on desktop, SSAO, 48-step SSR, low-density volumetric
+fog and restrained glow. Two shadowed warm roof spots supplement the existing
+bay lighting; the global key has no fog contribution. Ambient/key/exposure stay
+at the previously approved numeric baseline, though renderer/material changes
+can change perceived brightness. Compatibility disables the advanced effects and
+retains depth fog. HiDPI and the existing 3D render scaling are retained.
+
+Concrete now has shared, deterministic 256 px albedo, roughness and normal maps;
+paint uses local mapping so its texture travels with equipment. Darker cladding,
+ochre equipment paint, cooler upper surfaces and lighter wall lettering establish
+the palette. These are procedural material studies, not photo-quality textures or
+authored edge wear. A single static-room-only reflection probe supplies offscreen
+environment reflections without capturing moving loads. No layout, collider,
+assembly, manual, control, source-model or audio changes are included.
+
+Mechanical verification: `run_regressions.py --only workshop_smoke_test` passed
+28 checks in 4.243 seconds, after importing the new worktree. The first run's
+checks passed but the runner rejected sandbox errors creating the isolated
+user-data folder; the unrestricted rerun passed. Evidence is in
+`game/workshop/verification/regressions-20261025T085646.805542Z/` (paths inside the
+report predate moving the worktree from `/private/tmp`). No diagnostics or
+rendered review ran; headless startup does not exercise Forward+ rendering.
+Subsequent player feedback on 2026-10-25: "wow, it looks so much better and runs
+much more performantly too." Appearance and perceived performance now have
+positive player evidence; exact FPS and the individual readability checks remain
+unreported.
+
+Proposed next work, following that feedback: integrate the accepted visual
+direction while preserving main's latest gameplay work and normal save path;
+then detail one assembly bay's floor and equipment surfaces as a repeatable
+example. Keep small-part readability and the reported performance gain as
+constraints. Follow with machine audio and a single console-screen trial.
+The user subsequently chose to stay in the worktree and design one area's detail;
+integration, audio and console screens are deferred. Remaining checks are in the
+[visual spike playtest](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
+The proposed one-hour/week schedule is a useful
+ordering, not a delivery estimate: renderer migration and import adaptation need
+their own checkpoints. Lighting cannot supply the reference's detailed machinery
+silhouettes, bevels, authored wear and close-up model detail.
+
+### Gantry column detail study — 2026-10-25
+
+**Initial concept; expanded into the full-gantry implementation below.**
+Candidate: the left fixed gantry column at X8.8/Z31.1, especially
+its foundation and lower 3.1 m. It has quiet surfaces large enough to carry useful
+construction detail, and can establish a repeatable treatment without changing
+the moving crane or the robot's retention hardware. Keep the accepted lighting.
+The right column at X17.2 is the eventual repeat, after the first one reads well.
+No sound, console screens or main-branch integration in this work.
+
+![Gantry foundation and lower-column concept](gantry-detail-study.svg)
+
+The intent is a maintained load-bearing machine: dark coated steel, existing
+ochre hazard sleeves, shallow seams, recessed fixings and restrained contact wear.
+Avoid general rust, dense decorative bolts and luminous accents that compete with
+real interaction targets. This drawing is a design illustration, not a game render
+or a structural engineering approval.
+
+| Element | Proposed visual detail | Envelope and implementation constraint |
+| --- | --- | --- |
+| Foundation | Preserve the existing 1.40 × 1.60 × 0.30 m foot. Add an 8 mm edge chamfer and a dark 10 mm contact band at its bottom. | Replace the visual mesh inside the existing bounds; preserve the authored collider, origin and upper walking surface. No separate pedestal or wider skirt. |
+| Anchor fixings | Four square 140 mm pockets, 30 mm deep, with approximately 80 mm hex heads, washers and a short stud end. Centres X8.3/9.3, Z31.10/32.25. | Nut/stud tops at or below Y0.30; pocket floors Y0.27. Model recesses in the replacement foot, rather than overlaying coplanar faces. These are fixed scenery, without pickup metadata or targets. |
+| Column | Retain its 600 mm square section, top Y10.50. Add a subtle longitudinal fabrication seam on an outward face and small edge bevels. | All detail inside the existing X8.5..9.1/Z30.8..31.4 envelope. No ribs, pipes or brackets extending into passage space. The existing 640 mm hazard sleeve remains the outer visual envelope below Y1.50. |
+| Inspection cover | A 420 × 450 mm flush cover, Y1.68..2.13, on the forward face; four small captive fixings, a 2 mm dark perimeter seam. | Maximum inset 3 mm. No handle, hinge swing, status lamp or implied player action. Match the panel's colour closely to the column. |
+| Identity | A modest pale `02 / GANTRY` stencil above the cover, centred around Y2.4. | No invented capacity ratings, maintenance dates or controls. Surface colour, no emission; keep the existing bay signs as primary wayfinding. |
+| Wear | A few exposed-metal flecks on vulnerable corners; small streaks below the cover screws; dusty material where the base meets the floor. | No continuous silver outline. Keep most coating intact and wear concentrated below eye level. Use normals/roughness for fine marks, not additional geometry. |
+| Floor contact | A low-contrast dirt/roughness fringe, at most 80 mm outside the foot, fading into the existing epoxy. | No raised lip, new slab or collider. This is contact staining, not a safety or travel boundary. Mobile-platform route marking remains a separate task. |
+
+Authored geometry check: the foot covers X8.1..9.5/Z30.9..32.5, while the column
+starts at Z30.8. Its existing 100 mm front overhang is shown explicitly. This
+study preserves it; do not move or enlarge the foot as an incidental art change.
+The current hazard wrap extends another 20 mm beyond each column face. Keep the
+rear braces, crosshead, bearing caps, cantilever arms and jaws as authored. No
+new detail belongs in the rear lifting well or the assembly access openings.
+
+Material targets build on the spike: coated steel `#58666b`, safety paint
+`#bb893b`, recesses `#303c43`, pale stencil `#b9c5c7`. Paint stays nonmetallic;
+only exposed anchor hardware and small chips receive a metal response. The
+diagram uses shaded colours for form and does not predict in-game brightness.
+
+Implementation plan: create one replacement base/column visual assembly attached
+to the existing fixed blockout pieces, with shared materials and instanced fixings.
+Hide only the replaced visuals, leaving solids and equipment references intact.
+Keep tiny wear in textures; no additional lights, reflection captures or per-frame
+scripts. Initial budget for the two eventual copies: at most 8,000 added triangles,
+four shared material resources and eight additional draw submissions in the main
+view. These are review budgets, not measured performance claims.
+
+Review plan before expanding the treatment:
+
+1. Check the actual replacement mesh bounds against the named source solids;
+   check recess faces for coplanar overlap and the unchanged upper foot surface.
+   Fingerprint layout/recipes to prove that only visual resources changed.
+2. Audit that fixed anchor hardware introduces no stock identities, manual steps,
+   interaction targets, collisions or support/attachment changes. Relevant manual
+   pages and part allocations are unchanged; no new assembly workflow is proposed.
+3. Run the startup smoke and a focused mesh/envelope audit through the routine
+   runner. Classify any new runnable fixture in the test inventory. A generic
+   geometry-audit self-test alone does not verify the replacement meshes.
+4. The user inspects the base from normal walking height and the nearby deck:
+   do the anchors and cover look like fixed scenery, does the contact read, and
+   are the interactive parts still visually dominant? A rendered comparison and
+   performance diagnostic can be run if explicitly requested. Do not infer those
+   results from headless checks.
+
+No game geometry or materials were changed in the original study commit. The accompanying
+startup-menu change is independent and is recorded in the workshop state.
+
+### Full gantry detail — 2026-10-25
+
+**Designed and implemented in `spike/hangar-visual-uplift`.** The user expanded
+the column study to the whole final mech gantry and asked for implementation,
+with existing measurements and blockouts as the governing constraint. The
+[measured whole-system layout](final-assembly-layout.svg) remains the spatial
+drawing; the column illustration above establishes the close-up finish. This
+pass covers the low support portal, foundations, cantilevers, bearing caps,
+jaws, four levels of access platforms, folding wings/bridges, telescoping
+fingers, guards and the two side lifts' solid structure. It adds no sound or
+console screens and stays in the visual worktree.
+
+#### Design and measured contract
+
+The visual hierarchy is a dark coated-steel load path inside a lighter ochre
+access system. Chamfers catch the existing task lighting. Solid anti-slip steel
+decks and narrow amber edges distinguish walking surfaces; machined bearing
+caps and rods distinguish mechanisms. Pale bay and level stencils orient the
+player without adding glowing targets. Keep paint largely intact, with sparse
+corner chips, restrained seams and roughness variation. Real controls retain
+their existing nodes and interaction outlines.
+
+The authoritative sources are `assets/workshop-layout.json`, its blockout
+authoring script and the actual runtime visuals after equipment setup. Coordinates
+below are world metres: X right, Y up, −Z forward; robot origin (13, 1.4, 26).
+
+| System | Preserved measured envelope / behavior |
+| --- | --- |
+| Columns | Centres X8.8/17.2, Z31.1; 0.60 m square, Y0..10.50. Earlier prose incorrectly used 11.10 for the body top; corrected above to match the blockout. |
+| Crosshead | X8.5..17.5, Y10.50..11.10, Z30.8..31.4. No tall crown across the upper service opening. |
+| Foundations | Each 1.40 × 0.30 × 1.60 m (X/Y/Z), centres (8.8/17.2, 0.15, 31.7). Preserve the column's existing 100 mm front overhang and the 640 mm hazard sleeves. |
+| Rear braces | Preserve the four authored 0.35 × 0.65 × 0.35 m step blocks behind each column; no replacement diagonal extending beyond them. |
+| Cantilevers and seats | X12.35/13.65 ±0.18, Y10.65..10.95, Z26.5..31.1. Bearing caps top Y10.97; complete jaws at most Y11.30. Keep all four moving jaw groups and handle references. |
+| Access levels | Deck tops Y8.4, 11.2, 14.0, 16.4. Outer paths X3.5..5.0 / 21.0..22.5; rear crossing Z35.8..37.3. Preserve the authored nominal 200 mm decks and their runtime visual insets. |
+| Folding access | Front wings swing forward through 90° after fingers retract. Rear hip bridge retains its two 1.45 m leaves and folding/collapsing guards. Detail follows each original moving parent. |
+| Service clearance | Upper centre X11.4..14.6 / Z27.2..35.3 remains open; aft lifting well Z31.7..35.3 remains open to the crane. No decorative braces, pipes or platforms cross these spaces. |
+| Side elevators | Origins (6.6, 0, 29) and (19.4, 0, 29), 3.20 m square shafts, 2.60 m square cars; stops 0.15, 8.4, 11.2, 14.0, 16.4. Retain controller-owned doors, visibility, shelves, buttons and travel. |
+
+#### Implemented treatment
+
+`scripts/gantry_dressing.gd` runs once after equipment construction, before save
+restoration. It replaces mesh resources on the original visual nodes. The mesh
+builder reads each live BoxMesh size; it does not recreate geometry from nominal
+dimensions. This preserves the blockout's 8/16 mm finger insets and offsets,
+12 mm wing/guard insets, and the lift's shortened rail/post visuals. The new
+vertices stay inside those bounds, including through intermediate platform poses.
+No authored layout, collider, support, assembly recipe, manual or stock identity
+changes. No new per-frame processing, lights or reflection captures.
+
+- Foundations: 8 mm chamfers; four real 140 mm square, 30 mm deep anchor pockets
+  per foot. Washers, hex nuts and stud ends sit below the original top surface,
+  combined into one hardware mesh per foundation.
+- Columns: chamfered coating and a real 420 × 450 mm inspection recess, 3 mm
+  deep at Y1.68..2.13. Four captive screw heads per cover stay inside the original
+  face. Existing hazard sleeves remain intact.
+- Frames, rails, cantilevers and mechanisms: shared coated-steel, safety-paint
+  and machined-metal finishes, small chamfers, fine fabrication seams and sparse
+  exposed-metal flecks on bevels.
+- Access floors and lift cars: opaque closed tread plates, metric anti-slip
+  pattern and 35 mm amber edges. There is no false see-through grating over
+  solid collision. Fine shader detail fades with screen footprint to limit shimmer.
+- Stencils: two column identities, one crosshead `02 / FINAL ASSEMBLY`, and eight
+  level labels. These are lit, depth-tested Label3D surfaces 1 mm off the existing
+  faces, without shadows or interaction targets.
+
+The single-column proposal's floor dirt fringe, bottom contact band and bespoke
+screw streaks are deferred; this pass uses shared procedural variation. The
+mech itself, crane, preparation rigs, console screens and audio are outside this
+gantry treatment. Asset-kit selection remains a separate decision.
+
+The implemented budget is **353 treated members, 50 cached mesh resources,
+six shared materials, 17,660 total triangles across treated geometry and added
+hardware**, four added combined hardware meshes and eleven stencils. The audit
+ceiling is 30,000 triangles. These are geometry/resource counts, not measured
+GPU submissions or FPS; the player's earlier performance approval predates this
+detail pass.
+
+#### Verification and remaining review
+
+The isolated `gantry_dressing_test` covers actual runtime blockout/lift geometry:
+unchanged collision identities/shapes/transforms/masks, unchanged authored data,
+retained visual nodes/parents/visibility, exact original mesh bounds, contained
+hardware, outward face normals/winding, real pocket depths and the unchanged
+foundation top. It checks jaw-handle outline integration, seven supplied
+intermediate folding poses and all four raised lift stops. These are geometry
+and controller-integration checks, not walked acceptance or full delivery tests.
+Part/manual audit: no stock, recipe, placement or manual sources changed;
+decorative hardware has no physical identity, pickup metadata or new targets.
+
+Routine verification: `run_regressions.py --only gantry_dressing_test
+workshop_smoke_test` passes **52 + 29 checks**. Evidence:
+`game/workshop/verification/regressions-20261025T094117.663075Z/` and
+`game/workshop/verification/gantry-dressing.json`. No diagnostics, rendered review
+or GPU benchmark ran. Headless checks do not establish shader appearance or
+control readability. The user's [focused gantry playtest](robot-workshop-playtest-checklist.md#full-gantry-detail--2026-10-25)
+remains open, including walking, folding, visual contrast and performance.
+
+### Visual uplift integration — 2026-10-25
+
+The user approved the full gantry ("looks great") and requested merging the
+visual uplift into main and deleting its worktree. Integrated alongside main's
+newer manual conversions and manual-refresh optimization. Main keeps its normal
+`Gundam Build Simulator` save location; the isolated spike save remains on disk
+without migration. The spike worktree and branch are retired. Earlier worktree
+restrictions above describe the spike's development history. Sound and console
+screens remain deferred; individual playtest checks and measured FPS remain open.
+
+Integration verification: all 36 routine cases pass in 29.141 s, including the
+merged stage fixture, manual tests, gantry audit, startup and save round-trip.
+Evidence: `game/workshop/verification/regressions-20261025T101102.018689Z/`.
