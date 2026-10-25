@@ -12,6 +12,12 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
   the assembled robot. **Awaiting the user's review of the new video.**
 - Pelvis and leg films remain available; this request did not grant them new
   presentation approval. This feedback concerns progress films, not gameplay.
+- User subsequently requested fresh crown, pelvis and leg films with the current
+  visuals, plus the oldest compatible leg insertion film for a before/after
+  comparison, preferring the earlier flat lighting. The matching gantry/rail edit
+  first fits `cebf6b7` (2026-10-24); its original lighting and materials are retained,
+  with only the current rail endpoint rounding fix backported for capture.
+  **Review of these refreshed films and the comparison remains pending.**
 
 ## How to launch
 

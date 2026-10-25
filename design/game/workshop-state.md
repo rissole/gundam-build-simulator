@@ -35,24 +35,20 @@ last version before consolidation.
   checks pass (29 + 12 checks, 4.493 s). The stage fixture now supplies the session
   stub required by `save.settle()`. No rendered review; startup feel awaits playtest.
 
-- **Progress films (2026-10-25, revised):** the user rejected the foot-rotation
-  film; its preset and generated captures were deleted. Its replacement is the
-  final crown installation: tracked approach, seating close-up, crane release,
-  then a pullback as the gantry platforms open around the completed robot.
-  Pelvis and leg edits/MP4s remain unchanged. Four moving-camera shots, ten
-  seconds each; fixed simulation timing and player-save isolation remain.
-  Crown setup uses the existing shelf and retention paths and must finish at
-  the normal `complete` stage. Five recorder tests passed; rendered storyboards
-  inspected. The replacement decodes to 300 frames at 1080p/30 (10 seconds);
-  repeat traces, final state and all 12 sampled PNGs match exactly.
-  **Awaiting the user's review**, tracked in
+- **Progress films (2026-10-25, refreshed):** crown, pelvis and leg films now
+  use the accepted visual uplift. The rejected foot-rotation preset stays removed.
+  A historical leg film retains the flat lighting/materials of `cebf6b7`
+  (2026-10-24), the oldest matching gantry/rail layout, with the current endpoint
+  rounding fix backported in an isolated checkout. Before/after leg cameras and
+  timing match on every frame. Each source MP4 is 10 seconds at 1080p/30;
+  a labelled side-by-side comparison is also supplied. Saves remain disabled.
+  The exporter retains the known Forward+ light-unpairing diagnostic only after
+  capture completion; other errors still fail. Six focused recorder tests pass.
+  Finished clips are local in `game/workshop/verification/progress-videos-20261025/`;
+  provenance, adapters, traces and capture evidence are in the adjacent
+  `film-captures-20261025/`. **Awaiting the user's review**, tracked in
   [video feedback](robot-workshop-playtest-checklist.md#progress-video-feedback--2026-10-25).
-  Finished MP4s are retained locally in `verification/progress-videos/`;
-  temporary capture evidence was discarded when retiring the worktree. These
-  exports predate the visual uplift now on main; they have not been re-rendered.
   [Usage and shot editing](../../game/workshop/README.md#progress-videos).
-  The earlier 60 Hz rail-stop snap fix remains; its seven relevant routine
-  suites passed before this video-only revision. No player acceptance inferred.
 
 - **Manual redesign (2026-10-25, whole robot converted):** every action step is a
   one-sentence goal plus a self-ticking checklist generated from typed objectives;

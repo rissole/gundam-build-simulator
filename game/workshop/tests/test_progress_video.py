@@ -60,6 +60,18 @@ class ProgressVideoTests(unittest.TestCase):
                          video.json_hash({"frame": 4, "eye": [1, 2, 3]}))
         self.assertNotEqual(video.json_hash({"eye": [1, 2, 3]}), video.json_hash({"eye": [2, 2, 3]}))
 
+    def test_renderer_teardown_warning_requires_completed_capture(self):
+        warning = "ERROR: BUG, indexing did not unpair geometries from light."
+        with tempfile.TemporaryDirectory() as folder, redirect_stdout(io.StringIO()):
+            log = Path(folder) / "log"
+            with self.assertRaises(RuntimeError):
+                video.run_engine([sys.executable, "-c", f"print({warning!r}); print('CAPTURE_OK 300 frames')"], log)
+            completed = f"print('CAPTURE_OK 300 frames'); print({warning!r})"
+            self.assertEqual(video.run_engine([sys.executable, "-c", completed], log), [warning])
+            for failure in ("raise SystemExit(1)", "print('SCRIPT ERROR: broken')", "print('ERROR: other renderer failure')"):
+                with self.assertRaises(RuntimeError):
+                    video.run_engine([sys.executable, "-c", completed + "; " + failure], log)
+
 
 if __name__ == "__main__":
     unittest.main()

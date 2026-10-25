@@ -593,6 +593,10 @@ fastener work is omitted by the cut. Its final state must satisfy the normal
 `complete` stage contract.
 Equipment always advances in 1/60-second steps. A blocked machine or incorrect
 end state aborts capture rather than silently producing a stalled film.
+Godot's known Forward+ "indexing did not unpair geometries from light" message
+is retained in the log and manifest if it occurs during teardown after a completed
+capture. The same message before completion, other errors and a failed engine exit
+still reject the export.
 
 The manifest records source hashes, engine/GPU, the shot list, every rendered
 frame's hash and a hash of the camera/equipment trace. `--compare` reports whether

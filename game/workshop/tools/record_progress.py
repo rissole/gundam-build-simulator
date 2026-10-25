@@ -76,7 +76,7 @@ def frame_plan(sequence: dict, fps: int) -> list[dict]:
     return result
 
 
-def run_engine(command: list[str], log: Path, timeout: float = 600) -> None:
+def run_engine(command: list[str], log: Path, timeout: float = 600) -> list[str]:
     """Fail on script errors even when Godot remains open or exits successfully."""
     with log.open("w") as stream:
         process = subprocess.Popen(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT)
@@ -97,10 +97,12 @@ def run_engine(command: list[str], log: Path, timeout: float = 600) -> None:
                     raise RuntimeError(f"Capture timed out; see {log}")
                 time.sleep(0.1)
             text = log.read_text(errors="replace")
-            errors = [line for line in text.splitlines() if "ERROR:" in line
-                      and 'Condition "ret != noErr"' not in line]
+            errors, teardown_warnings = capture_errors(text)
             if process.returncode or errors or "CAPTURE_OK " not in text:
                 raise RuntimeError(f"Capture failed; see {log}")
+            if teardown_warnings:
+                print(f"Capture complete; {len(teardown_warnings)} Godot renderer teardown warnings retained in {log}", flush=True)
+            return teardown_warnings
         finally:
             if process.poll() is None:
                 process.terminate()
@@ -109,6 +111,22 @@ def run_engine(command: list[str], log: Path, timeout: float = 600) -> None:
                 except subprocess.TimeoutExpired:
                     process.kill()
                     process.wait()
+
+
+def capture_errors(log: str) -> tuple[list[str], list[str]]:
+    """Keep the known Forward+ teardown bug distinct from capture failures."""
+    errors, teardown = [], []
+    complete = False
+    for line in log.splitlines():
+        if line.startswith("CAPTURE_OK "):
+            complete = True
+        if "ERROR:" not in line or 'Condition "ret != noErr"' in line:
+            continue
+        if complete and line == "ERROR: BUG, indexing did not unpair geometries from light.":
+            teardown.append(line)
+        else:
+            errors.append(line)
+    return errors, teardown
 
 
 def encode(ffmpeg: str, folder: Path, fps: int, frames: int) -> Path:
@@ -148,7 +166,7 @@ def capture(args, name: str, sequence: dict, base: Path, ffmpeg: str | None) -> 
     command += ["--headless"] if args.check else ["--windowed", "--resolution", "960x540"]
     command += ["--script", "tools/record_progress.gd", "--", f"--capture-job={job_path}"]
     print(f"Recording {name}: {sequence['title']}", flush=True)
-    run_engine(command, folder / "capture.log")
+    teardown_warnings = run_engine(command, folder / "capture.log")
     report = json.loads((folder / "capture.json").read_text())
     if before != inputs():
         raise RuntimeError("Source changed during capture. Retry from a stable checkout.")
@@ -168,6 +186,8 @@ def capture(args, name: str, sequence: dict, base: Path, ffmpeg: str | None) -> 
                 "frame_hashes": {p.name: digest(p) for p in sorted(folder.glob("frame-*.png"))},
                 "command": command,
                 "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()}
+    if teardown_warnings:
+        manifest["teardown_warnings"] = teardown_warnings
     if not args.check:
         contact_sheet(ffmpeg, folder, plan)
         if not args.storyboard:
