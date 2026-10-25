@@ -9,6 +9,10 @@ const Motion = preload("res://scripts/equipment_motion.gd")
 ## How far above a deck a hopping player still counts as riding it.
 const RIDE_HOP = 0.6
 var _items: Array = []
+## Each machine's capture at its most recent stop (or first tick). A save uses it
+## for a machine that is still moving, so motion is never saved halfway.
+var _rest: Dictionary = {}
+var _was_moving: Dictionary = {}
 
 ## Pickup targeting shares its contour with the first waiting loose obstacle.
 func obstruction_target() -> Node3D:
@@ -48,6 +52,7 @@ func physics(delta: float) -> void:
 	var floor = rider_floor(game)
 	var before = floor.global_transform if floor != null else Transform3D.IDENTITY
 	for equipment in items:equipment.physics(delta)
+	_remember_rest(items)
 	if floor == null or not is_instance_valid(floor):return
 	var moved = floor.global_transform*before.affine_inverse()
 	if moved.is_equal_approx(Transform3D.IDENTITY):return
@@ -139,6 +144,32 @@ func capture() -> Dictionary:
 	var result = {}
 	for equipment in all():result[equipment.equipment_id] = equipment.capture()
 	return result
+
+## Captures a machine only when it comes to rest (and on its first tick), never every frame.
+func _remember_rest(items: Array) -> void:
+	for equipment in items:
+		var id: String = equipment.equipment_id
+		var moving: bool = equipment.get("moving") == true
+		if not moving and _was_moving.get(id,true):_rest[id] = equipment.capture()
+		_was_moving[id] = moving
+
+## Save state for every machine except `skipped`: live when at rest, otherwise
+## its last stop.
+func save_capture(skipped: Array = []) -> Dictionary:
+	var result = {}
+	for equipment in all():
+		var id: String = equipment.equipment_id
+		if id in skipped:continue
+		var state: Dictionary = _rest[id] if equipment.get("moving") == true and _rest.has(id) else equipment.capture()
+		result[id] = state.duplicate(true)
+	return result
+
+## Applies save_capture() output, in interaction order, to the machines it lists.
+func apply_saved(data: Dictionary) -> void:
+	for equipment in all():
+		if data.has(equipment.equipment_id):equipment.apply(data[equipment.equipment_id])
+	_rest.clear()
+	_was_moving.clear()
 
 func validate(data: Variant, candidate: AssemblyModel, world: Dictionary) -> Array[String]:
 	if not Codec.same_keys(data,ids()):return ["Equipment identities changed."]
