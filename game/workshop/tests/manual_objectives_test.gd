@@ -30,6 +30,17 @@ func joined(lines: Array) -> String:
 	for line in lines:text += str(line)+" | "
 	return text
 
+func option_label(options: Array, action: String) -> String:
+	for option in options:
+		if str(option.action) == action:return str(option.label)
+	return ""
+
+func plain_menu(options: Array) -> bool:
+	for option in options:
+		var label := str(option.label)
+		if label.contains("pickup") or label.contains("delivery") or label.contains("Put back"):return false
+	return true
+
 func run() -> void:
 	var game = preload("res://tests/kit/model_workshop.gd").new();root.add_child(game)
 	expect(game.setup().is_empty(),"authored stock configures")
@@ -42,15 +53,15 @@ func run() -> void:
 	crane.station = "park";crane.raised = true;crane.motion = "";crane.moving = false
 	expect(crane.command_label("down") == "Lower crane","down label")
 	expect(crane.command_label("up") == "Raise crane","up label")
-	expect(crane.command_label("pickup") == "Move to pickup","pickup label")
-	expect(crane.command_label("go:receiver") == "Move to delivery","delivery label")
+	expect(crane.command_label("pickup","shin") == "Move to Left shin rig","pickup label")
+	expect(crane.command_label("go:receiver","shin") == "Move to Limb Bay","receiver label")
 	expect(crane.command_label("connect") == "Attach magnetic connectors","connect label")
 	var page = {"goal":"g","slots":["shin"],"objectives":[
 		{"op":"operate","machine":"service_crane","command":"pickup","task":"shin"},
 		{"op":"operate","machine":"service_crane","command":"down"},
 		{"op":"connect","machine":"service_crane"},
 		{"op":"operate","machine":"service_crane","command":"up"},
-		{"op":"operate","machine":"service_crane","command":"go:receiver"},
+		{"op":"operate","machine":"service_crane","command":"go:receiver","task":"shin"},
 		{"op":"seat","slot":"shin","via":{"machine":"service_crane","command":"down"}}]}
 	var parked = Objectives.evaluate(game,"left_leg",page)
 	expect(same_ticks(parked,[false,false,false,false,false,false]) and parked.current == 0,"parked crane ticks nothing, got "+str(parked.ticked)+" current "+str(parked.current))
@@ -83,7 +94,7 @@ func run() -> void:
 	expect(same_ticks(lifted_off,[true,true,true,true,true,false]),"lifting off the seat steps the checklist back, got "+str(lifted_off.ticked))
 	var texts: Array[String] = []
 	for objective in page.objectives:texts.append(Objectives.text(game,"left_leg",objective))
-	expect(texts == ["Move to pickup","Lower crane","Attach magnetic connectors","Raise crane","Move to delivery","Lower crane to seat LG-100"],"shin objective text, got "+str(texts))
+	expect(texts == ["Crane console: Move to Left shin rig","Crane console: Lower crane","Crane: Attach magnetic connectors","Crane console: Raise crane","Crane console: Move to Limb Bay","Crane console: Lower crane to seat LG-100"],"shin objective text, got "+str(texts))
 	expect(Objectives.text(game,"foot",{"op":"seat","slot":"pitch"}) == "Seat the prepared FA-500-P","pitch seat names the prepared actuator, got "+Objectives.text(game,"foot",{"op":"seat","slot":"pitch"}))
 	var parts: Dictionary = game.model.definitions.parts
 	var washer := part_kind(parts,"W-12")
@@ -116,6 +127,9 @@ func run() -> void:
 	expect(not Objectives.errors(manual_of(mismatch),commands).is_empty(),"slot mismatch is rejected")
 	var unknown = {"title":"Move","goal":"g","view":"components","slots":[],"objectives":[{"op":"operate","machine":"service_crane","command":"fly"}]}
 	expect(not Objectives.errors(manual_of(unknown),commands).is_empty(),"unknown command is rejected")
+	var untasked = {"title":"Deliver","goal":"g","view":"components","slots":[],"objectives":[{"op":"operate","machine":"service_crane","command":"go:receiver"}]}
+	var untasked_errors = Objectives.errors(manual_of(untasked),commands)
+	expect(not untasked_errors.is_empty() and joined(untasked_errors).contains("go:receiver needs a task"),"go:receiver without a task is rejected: "+joined(untasked_errors))
 	var goalless = {"title":"Bolt","view":"components","slots":["a"],"objectives":[{"op":"fit","slots":["a"]}]}
 	expect(not Objectives.errors(manual_of(goalless),commands).is_empty(),"missing goal is rejected")
 	var prepared = {"title":"Done","goal":"g","view":"prepared","slots":["a"],"objectives":[{"op":"fit","slots":["a"]}]}
@@ -140,7 +154,7 @@ func run() -> void:
 	var shin_page := page_named(definitions[left_definition].manual,"Deliver the structural shin")
 	var shin_text: Array[String] = []
 	for objective in shin_page.objectives:shin_text.append(Objectives.text(game,"left_leg",objective))
-	expect(shin_text == ["Move to pickup","Lower crane","Attach magnetic connectors","Raise crane","Move to delivery","Lower crane to seat LG-100"],"shin delivery text, got "+str(shin_text))
+	expect(shin_text == ["Crane console: Move to Left shin rig","Crane console: Lower crane","Crane: Attach magnetic connectors","Crane console: Raise crane","Crane console: Move to Limb Bay","Crane console: Lower crane to seat LG-100"],"shin delivery text, got "+str(shin_text))
 	var right_shin := page_named(definitions.right_leg.manual,"Deliver the structural shin")
 	expect(str(right_shin.objectives[0].task) == "right_shin","right shin pickup task, got "+str(right_shin.objectives[0].task))
 	var cartridge := page_named(definitions.pitch_actuator.manual,"Drive cartridge")
@@ -149,26 +163,32 @@ func run() -> void:
 	var ankle := page_named(definitions[left_definition].manual,"Secure the ankle flange")
 	var ankle_text: Array[String] = []
 	for index in [1,2,3]:ankle_text.append(Objectives.text(game,"left_leg",ankle.objectives[index]))
-	var park_text := "Move to Parking bay"
-	if crane.command_label("go:park") != "Move to Parking bay":park_text = crane.command_label("go:park")
-	expect(ankle_text == ["Detach and stow magnetic connectors","Raise crane",park_text],"ankle release text, got "+str(ankle_text))
+	expect(ankle_text == ["Crane: Detach and stow magnetic connectors","Crane console: Raise crane","Crane console: Move to Parking bay"],"ankle release text, got "+str(ankle_text))
+	crane.task = "pelvis";crane.uid = "pelvis";crane.config = {"spec":crane.tasks.pelvis};crane.reacquire = ""
 	crane.station = "park";crane.raised = true;crane.motion = "";crane.moving = false
 	crane.endpoints.a.state = "stowed";crane.endpoints.b.state = "stowed"
-	var parked_labels: Array = crane.menu_options().map(func(option):return option.label)
-	expect(not crane.next_route().is_empty() and not parked_labels.is_empty() and str(parked_labels[0]).begins_with("Move to pickup · "),"parked menu starts with pickup, got "+str(parked_labels)+" route "+crane.next_route())
+	var parked_options: Array = crane.menu_options()
+	expect(crane.next_route() == "pelvis" and option_label(parked_options,"pickup") == "Move to Heavy Module Bay" and plain_menu(parked_options),"pelvis pickup label, got "+str(parked_options)+" route "+crane.next_route())
 	crane.station = "source";crane.raised = true
 	crane.endpoints.a.state = "attached";crane.endpoints.b.state = "attached"
-	var source_labels: Array = crane.menu_options().map(func(option):return option.label)
-	var has_delivery := false
+	var source_options: Array = crane.menu_options()
 	var has_lower := false
-	for label in source_labels:
-		if str(label).begins_with("Move to delivery · "):has_delivery = true
-		if str(label) == "↓  Lower crane":has_lower = true
-	expect(has_delivery and has_lower,"source menu keeps delivery and lower, got "+str(source_labels))
+	for option in source_options:
+		if str(option.label) == "↓  Lower crane":has_lower = true
+	expect(option_label(source_options,"go:receiver") == "Move to Final Assembly Bay" and has_lower and plain_menu(source_options),"source delivery label, got "+str(source_options))
+	crane.station = "receiver"
+	var receiver_options: Array = crane.menu_options()
+	expect(option_label(receiver_options,"go:source") == "Move to Heavy Module Bay" and plain_menu(receiver_options),"receiver put-back label, got "+str(receiver_options))
 	var pelvis_page := page_named(definitions.pelvis.manual,"Deliver the prepared pelvis and waist")
 	var supports = preload("res://scripts/module_supports.gd").new();game.add_child(supports);supports.equipment_id = "module_supports";game.equipment.register(supports)
-	var pelvis_first := Objectives.text(game,"pelvis",pelvis_page.objectives[0])
-	expect(pelvis_page.objectives.size() == 11 and pelvis_first == "Insert both waist neutral pins" and pelvis_first == supports.command_label("insert_pins"),"pelvis delivery checklist, got "+str(pelvis_page.objectives.size())+" "+pelvis_first)
+	var pelvis_pin := Objectives.text(game,"pelvis",pelvis_page.objectives[0])
+	var pelvis_pickup := Objectives.text(game,"pelvis",pelvis_page.objectives[1])
+	var pelvis_receiver := Objectives.text(game,"pelvis",pelvis_page.objectives[5])
+	var pelvis_jaws := Objectives.text(game,"pelvis",pelvis_page.objectives[7])
+	expect(pelvis_page.objectives.size() == 11 and pelvis_pin == "Waist: Insert both lock pins" and pelvis_pin == "Waist: "+supports.command_label("insert_pins"),"pelvis pin objective, got "+pelvis_pin)
+	expect(pelvis_pickup == "Crane console: Move to Heavy Module Bay","pelvis pickup objective, got "+pelvis_pickup)
+	expect(pelvis_receiver == "Crane console: Move to Final Assembly Bay","pelvis receiver objective, got "+pelvis_receiver)
+	expect(pelvis_jaws == "Gantry: Close the hold-down jaws" and pelvis_jaws == "Gantry: "+supports.command_label("close_jaws"),"pelvis jaw objective, got "+pelvis_jaws)
 	var deliver: Dictionary = definitions[left_definition].manual[1]
 	expect(str(deliver.title) == "Deliver the foot" and str(deliver.objectives[0].task) == "foot","left foot delivery, got "+str(deliver.title)+" "+str(deliver.objectives[0].get("task","")))
 	var right_deliver: Dictionary = definitions.right_leg.manual[1]
@@ -187,8 +207,9 @@ func run() -> void:
 	rig.path = 3.0
 	var at_seat = Objectives.evaluate(game,"left_leg",dock)
 	expect(same_ticks(at_seat,[true,true,true]) and at_seat.machine_complete,"foot rig at 3 completes docking, got "+str(at_seat.ticked)+" complete "+str(at_seat.machine_complete))
-	var seat_text := Objectives.text(game,"left_leg",dock.objectives[2])
-	expect(seat_text == "Advance the foot rig to seat the prepared foot","dock seat text, got "+seat_text)
+	var dock_text: Array[String] = []
+	for objective in dock.objectives:dock_text.append(Objectives.text(game,"left_leg",objective))
+	expect(dock_text == ["Foot rig: Next — raises the foot","Foot rig: Next — moves it to the leg rig","Foot rig: Next to seat the prepared foot"],"dock text, got "+str(dock_text))
 	var passed = checks.all(func(check):return check.passed)
 	print("MANUAL_OBJECTIVES ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)

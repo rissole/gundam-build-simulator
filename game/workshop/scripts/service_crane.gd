@@ -204,18 +204,23 @@ func _interaction_error(point: Vector3, allowed: Array = []) -> String:
 
 func manual_commands() -> Array:return MANUAL_COMMANDS
 
-## The single player wording for a crane command; the console menu adds arrows and places.
-func command_label(action: String) -> String:
+## The single player wording for a crane command. Places come from the route:
+## the console menu shows this text as is; the manual prefixes "Crane console: ".
+func command_label(action: String, route: String = "") -> String:
 	match action:
 		"down":return "Lower crane"
 		"up":return "Raise crane"
-		"pickup":return "Move to pickup"
-		"go:receiver":return "Move to delivery"
-		"go:source":return "Put back"
 		"connect":return "Attach magnetic connectors"
 		"detach":return "Detach and stow magnetic connectors"
-	if action.begins_with("go:"):return "Move to "+_station_title(action.get_slice(":",1))
+		"go:park":return "Move to "+TITLES.park
+		"pickup":
+			var key: String = route if not route.is_empty() else next_route()
+			return "Move to "+Layout.place_title(place_of(_pickup_role(key),key)) if not key.is_empty() else ""
+	if action in ["go:receiver","go:source"]:return "Move to "+Layout.place_title(place_of(action.get_slice(":",1),route))
 	return ""
+
+func manual_subject(objective: Dictionary) -> String:
+	return "Crane" if objective.get("op","") in ["connect","detach"] else "Crane console"
 
 func manual_state() -> Dictionary:
 	return {"task":task,"station":station,"raised":raised,"attached":attached_count(),"held":not hand_payload().is_empty()}
@@ -247,10 +252,10 @@ func menu_options() -> Array[Dictionary]:
 		if _empty():
 			var next: String = next_route()
 			var role: String = _pickup_role(next)
-			if not next.is_empty() and not (next == task and station == role):options.append({"action":"pickup","label":command_label("pickup")+" · "+Layout.place_title(place_of(role,next))})
+			if not next.is_empty() and not (next == task and station == role):options.append({"action":"pickup","label":command_label("pickup",next)})
 		else:
-			if station != "receiver":options.append({"action":"go:receiver","label":command_label("go:receiver")+" · "+_station_title("receiver")})
-			if station != "source":options.append({"action":"go:source","label":command_label("go:source")+" · "+_station_title("source")})
+			if station != "receiver":options.append({"action":"go:receiver","label":command_label("go:receiver")})
+			if station != "source":options.append({"action":"go:source","label":command_label("go:source")})
 		if station != "park" and _empty():options.append({"action":"go:park","label":command_label("go:park")})
 	elif raised:
 		for destination in STATIONS:

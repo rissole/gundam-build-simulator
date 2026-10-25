@@ -22,7 +22,9 @@ func status_text() -> String:return ""
 ## Manual objectives: command names this machine understands, their player label,
 ## its live comparable state and the state a completed objective leaves.
 func manual_commands() -> Array:return []
-func command_label(_action: String) -> String:return ""
+func command_label(_action: String, _task: String = "") -> String:return ""
+func manual_subject(_objective: Dictionary) -> String:return ""
+func manual_hint(_objective: Dictionary) -> String:return ""
 func manual_state() -> Dictionary:return {}
 func manual_effect(_objective: Dictionary) -> Dictionary:return {}
 func manual_count(_objective: Dictionary) -> Vector2i:return Vector2i(-1,-1)

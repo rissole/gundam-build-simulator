@@ -13,7 +13,7 @@ func pickup_and_deliver() -> bool:
 	var crane=game.equipment.get_equipment("service_crane")
 	expect(crane.station=="park" and crane.next_route()=="foot" and crane.load_text()=="Next pickup: "+crane._load_title("foot"),"parked crane names the next pickup: "+crane.load_text())
 	expect(actions(crane)==["pickup"],"parked console offers only the pickup move: "+str(actions(crane)))
-	expect(not crane.menu_options()[0].label.is_empty() and crane.menu_options()[0].label.ends_with("Left foot store"),"pickup names its place: "+crane.menu_options()[0].label)
+	expect(crane.menu_options()[0].label.begins_with("Move to ") and not crane.menu_options()[0].label.contains("pickup"),"pickup names its place: "+crane.menu_options()[0].label)
 	if not command(crane,"pickup"):return false
 	expect(crane.task=="foot" and crane.station=="source","pickup moves over the foot")
 	expect(actions(crane)==["down","go:park"],"empty crane at pickup offers Lower and Park: "+str(actions(crane)))

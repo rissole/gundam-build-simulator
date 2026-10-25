@@ -4818,7 +4818,7 @@
           "title": "Deliver the prepared pelvis and waist",
           "view": "components",
           "slots": [],
-          "goal": "Pin the waist, crane the pelvis onto the gantry and close its jaws.",
+          "goal": "Lock the waist straight, crane the pelvis onto the gantry and close its jaws.",
           "objectives": [
             {
               "op": "operate",
@@ -4848,7 +4848,8 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:receiver"
+              "command": "go:receiver",
+              "task": "pelvis"
             },
             {
               "op": "operate",
@@ -4877,7 +4878,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "The yaw pin is on the front of the waist; the lean pin is on its right side."
+            "text": "The pins stop the waist twisting or tilting while it hangs from the crane. Twist pin: front of the waist. Tilt pin: its right side."
           }
         },
         {
@@ -14188,7 +14189,8 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:receiver"
+              "command": "go:receiver",
+              "task": "right_foot"
             },
             {
               "op": "operate",
@@ -14316,7 +14318,8 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:receiver"
+              "command": "go:receiver",
+              "task": "right_shin"
             },
             {
               "op": "seat",
@@ -14576,7 +14579,8 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:receiver"
+              "command": "go:receiver",
+              "task": "right_fork"
             },
             {
               "op": "seat",
@@ -14770,7 +14774,8 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:receiver"
+              "command": "go:receiver",
+              "task": "right_spar"
             },
             {
               "op": "seat",
@@ -18927,7 +18932,8 @@
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "go:receiver"
+                "command": "go:receiver",
+                "task": "foot"
               },
               {
                 "op": "operate",
@@ -19055,7 +19061,8 @@
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "go:receiver"
+                "command": "go:receiver",
+                "task": "shin"
               },
               {
                 "op": "seat",
@@ -19315,7 +19322,8 @@
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "go:receiver"
+                "command": "go:receiver",
+                "task": "fork"
               },
               {
                 "op": "seat",
@@ -19509,7 +19517,8 @@
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "go:receiver"
+                "command": "go:receiver",
+                "task": "spar"
               },
               {
                 "op": "seat",

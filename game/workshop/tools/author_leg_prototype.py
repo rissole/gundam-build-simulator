@@ -585,7 +585,7 @@ def robot_documents(check=False):
         dict(op="operate", machine=CRANE, command="down"),
         dict(op="connect", machine=CRANE),
         dict(op="operate", machine=CRANE, command="up"),
-        dict(op="operate", machine=CRANE, command="go:receiver"),
+        dict(op="operate", machine=CRANE, command="go:receiver", task="foot"),
         dict(op="operate", machine=CRANE, command="down"),
         dict(op="detach", machine=CRANE),
         dict(op="operate", machine=CRANE, command="up"),
@@ -601,7 +601,7 @@ def robot_documents(check=False):
             dict(op="operate", machine=CRANE, command="down"),
             dict(op="connect", machine=CRANE),
             dict(op="operate", machine=CRANE, command="up"),
-            dict(op="operate", machine=CRANE, command="go:receiver"),
+            dict(op="operate", machine=CRANE, command="go:receiver", task=task),
             dict(op="seat", slot=task, via=dict(machine=CRANE, command="down")),
         ], note=dict(at=2, text="Keep both connectors attached until this connection is bolted."))
     delivery("Deliver the structural shin", "shin", "LG-100", "foot adapter")

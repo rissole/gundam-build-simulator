@@ -5,6 +5,7 @@ const Codec=preload("res://scripts/pose_codec.gd")
 const Sweep=preload("res://scripts/motion_sweep.gd")
 const Layout=preload("res://scripts/leg_bay_layout.gd")
 const MANUAL_COMMANDS=["insert_pins","close_jaws"]
+const PIN_NAMES={"yaw":"twist","lean":"tilt"}
 var blockout: Node3D
 var spec: Dictionary
 var template="pelvis"
@@ -54,16 +55,21 @@ func controls() -> Array[Dictionary]:
 		var piece: Dictionary=blockout.pieces[jaw_groups[index]+"_handle"]
 		var handle: MeshInstance3D=piece.visual
 		var pending=not is_equal_approx(jaws[index],jaw_goals[index])
-		result.append(control_entry(handle,"stop" if moving and pending else "jaw:"+str(index),("Stop" if moving and pending else "Resume" if pending else "Close" if jaws[index]>.5 else "Open")+" gantry hold-down jaw",.28,{"point":handle.global_position,"allowed":[piece.body],"allow_body_hit":true}))
+		result.append(control_entry(handle,"stop" if moving and pending else "jaw:"+str(index),"Gantry: "+("Stop" if moving and pending else "Resume" if pending else "Close" if jaws[index]>.5 else "Open")+" hold-down jaw",.28,{"point":handle.global_position,"allowed":[piece.body],"allow_body_hit":true}))
 	for key in locks:
-		result.append(control_entry(lock_nodes[key],"lock:"+key,("Unlock " if locks[key] else "Engage ")+"waist "+key+" neutral pin",.10,{"point":lock_nodes[key].global_position}))
+		result.append(control_entry(lock_nodes[key],"lock:"+key,"Waist: "+("Pull out " if locks[key] else "Insert ")+PIN_NAMES[key]+" lock pin",.10,{"point":lock_nodes[key].global_position}))
 	return result
 
 func manual_commands() -> Array:return MANUAL_COMMANDS
-func command_label(action: String) -> String:
+func command_label(action: String, _task: String="") -> String:
 	match action:
-		"insert_pins":return "Insert both waist neutral pins"
-		"close_jaws":return "Close the gantry hold-down jaws"
+		"insert_pins":return "Insert both lock pins"
+		"close_jaws":return "Close the hold-down jaws"
+	return ""
+func manual_subject(objective: Dictionary) -> String:
+	match str(objective.get("command","")):
+		"insert_pins":return "Waist"
+		"close_jaws":return "Gantry"
 	return ""
 func manual_state() -> Dictionary:return {"pins":locks.values().count(true),"jaws_closed":_closed_jaws()}
 func manual_effect(objective: Dictionary) -> Dictionary:
@@ -102,7 +108,7 @@ func receiving_error(assembly: String, destination: String="pelvis_gantry") -> S
 		if not occupant.is_empty() and occupant!=assembly:return "The heavy module rig is occupied."
 		return ""
 	if assembly=="chest":
-		return "" if support_secured() else "Secure the pelvis gantry and engage both waist neutral pins before chest delivery."
+		return "" if support_secured() else "Secure the pelvis on the gantry and insert both waist lock pins before chest delivery."
 	if assembly!="pelvis":return "These gantry bearings receive the pelvis bridge."
 	if _location()=="support:"+spec.receiver_support:return ""
 	if not game.model.support_occupant(spec.receiver_support).is_empty():return "The gantry bearings are occupied."
@@ -112,14 +118,14 @@ func receiving_error(assembly: String, destination: String="pelvis_gantry") -> S
 func source_error(assembly: String="pelvis") -> String:
 	if template!=assembly:return "Fit the matching inserts before using this rig."
 	if moving or height!=0:return "Lower and stop the heavy module rig at its pickup stop."
-	if assembly=="pelvis" and not waist_ready():return "Engage both waist neutral pins before lifting the prepared pelvis."
+	if assembly=="pelvis" and not waist_ready():return "Insert both waist lock pins (twist and tilt) before lifting the pelvis."
 	return ""
 
 func release_error(assembly: String="pelvis") -> String:
 	if assembly!="pelvis":
 		if game.model.assemblies[assembly].location=="support:bulky_fixture" and source_release!=0:return "Wait for the rig clamps to close."
 		return ""
-	if not waist_ready():return "Confirm both waist neutral pins before releasing the magnetic connectors."
+	if not waist_ready():return "Check both waist lock pins are in before releasing the magnetic connectors."
 	if _location()=="support:"+spec.receiver_support and not support_secured():return "Close all four gantry hold-down jaws before releasing a magnetic connector."
 	if _location()=="support:"+spec.source_support and source_release!=0:return "Wait for the rig clamps to close before releasing the magnetic connectors."
 	return ""
@@ -128,10 +134,10 @@ func reacquire_error(assembly: String="pelvis") -> String:
 	if assembly!="pelvis" and game.model.assemblies[assembly].location=="support:bulky_fixture":return source_error(assembly)
 	if assembly=="chest":
 		if game.model.assemblies.chest.slots.values().any(func(value):return not value.is_empty()):return "Remove dependent chest construction before lifting the chest."
-		return "" if support_secured() else "Keep the gantry secured and both waist neutral pins engaged."
+		return "" if support_secured() else "Keep the gantry jaws closed and both waist lock pins in."
 	if game.model.assemblies.pelvis.slots.values().any(func(uid):return not uid.is_empty()):return "Remove dependent gantry construction before lifting the pelvis."
 	if not jaws.all(func(value):return is_equal_approx(value,1)):return "Attach all four magnetic connectors, then open the four gantry jaws before lifting."
-	return "" if waist_ready() else "Engage the waist neutral locks before lifting."
+	return "" if waist_ready() else "Insert both waist lock pins before lifting."
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the support."
@@ -148,7 +154,7 @@ func action_error(action: String) -> String:
 		if not locks.has(key):return "Unknown waist lock."
 		if moving or _location() not in ["support:"+spec.source_support,"support:"+spec.receiver_support]:return "Seat the pelvis on a stationary rig before operating its locks."
 		if locks[key] and game.model.assemblies.pelvis.slots.values().any(func(uid):return not uid.is_empty()):return "Keep the waist locked while dependent gantry construction is fitted."
-		if locks[key] and _location()=="support:"+spec.receiver_support:return "Keep both waist neutral pins engaged while the pelvis is on the gantry."
+		if locks[key] and _location()=="support:"+spec.receiver_support:return "Keep both waist lock pins in while the pelvis is on the gantry."
 		var crane=game.equipment.get_equipment("service_crane")
 		if crane!=null and crane.uid=="pelvis" and not crane.motion.is_empty():return "Finish the supported crane movement before changing a waist lock."
 		return game.hands.error(equipment_id)

@@ -50,20 +50,20 @@ def extend(trial, pelvis, layout):
     pelvis["context_sources"]=list(trial["context_sources"])
     pelvis.update(carry_class="equipment",work_locations=["support"],bounds=[4.02,4.1,2.0])
     pelvis["manual"].insert(0,dict(title="Deliver the prepared pelvis and waist",view="components",slots=[],
-        goal="Pin the waist, crane the pelvis onto the gantry and close its jaws.",
+        goal="Lock the waist straight, crane the pelvis onto the gantry and close its jaws.",
         objectives=[
             dict(op="operate",machine="module_supports",command="insert_pins"),
             dict(op="operate",machine="service_crane",command="pickup",task="pelvis"),
             dict(op="operate",machine="service_crane",command="down"),
             dict(op="connect",machine="service_crane"),
             dict(op="operate",machine="service_crane",command="up"),
-            dict(op="operate",machine="service_crane",command="go:receiver"),
+            dict(op="operate",machine="service_crane",command="go:receiver",task="pelvis"),
             dict(op="operate",machine="service_crane",command="down"),
             dict(op="operate",machine="module_supports",command="close_jaws"),
             dict(op="detach",machine="service_crane"),
             dict(op="operate",machine="service_crane",command="up"),
             dict(op="operate",machine="service_crane",command="go:park")],
-        note=dict(at=0,text="The yaw pin is on the front of the waist; the lean pin is on its right side.")))
+        note=dict(at=0,text="The pins stop the waist twisting or tilting while it hangs from the crane. Twist pin: front of the waist. Tilt pin: its right side.")))
     for parent in trial["parents"]:
         if parent["id"]=="pelvis":parent.update(label="Prepared pelvis and waist",location="support:bulky_fixture",home=[3.25,1.2,13])
     for name in ["bulky_fixture","pelvis_gantry"]:trial["supports"][name]=dict(assemblies=["pelvis"],assembly_ids=["pelvis"])

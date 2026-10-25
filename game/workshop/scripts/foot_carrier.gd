@@ -48,7 +48,7 @@ func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 		var action: String = ["advance","stop","return"][index]
 		var at = Vector3(-.02,1.2,-.52+index*.52)
 		var button = preload("res://scripts/equipment_button.gd").make(game,panel,at,["NEXT","STOP","BACK"][index],-PI/2,index == 0)
-		buttons.append(control_entry(button,action,["Advance foot carrier","Stop carrier","Return foot to dispatch"][index],.11))
+		buttons.append(control_entry(button,action,["Foot rig: Next","Foot rig: Stop","Foot rig: Back"][index],.11))
 	label = game.sign_panel(panel,"",Vector3(-.04,2,0),Vector2(1.6,.5),28,.0015,-PI/2)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;label.width = 1000
 	game.model.changed.connect(_load_changed)
@@ -91,11 +91,15 @@ func controls() -> Array[Dictionary]:
 	return result
 
 func manual_commands() -> Array:return MANUAL_COMMANDS
-func command_label(action: String) -> String:
+func command_label(action: String, _task: String = "") -> String:
 	match action:
-		"advance:1":return "Advance the foot rig to raise the foot"
-		"advance:2":return "Advance the foot rig to the leg rig"
-		"advance:3":return "Advance the foot rig"
+		"advance:1","advance:2","advance:3":return "Next"
+	return ""
+func manual_subject(_objective: Dictionary) -> String:return "Foot rig"
+func manual_hint(objective: Dictionary) -> String:
+	match str(objective.get("command","")):
+		"advance:1":return "raises the foot"
+		"advance:2":return "moves it to the leg rig"
 	return ""
 func manual_state() -> Dictionary:return {"stop":int(floorf(path+.0001))}
 func manual_effect(objective: Dictionary) -> Dictionary:
@@ -106,18 +110,18 @@ func mounted(model: AssemblyModel = null) -> bool:
 	return (game.model if model == null else model).assemblies[assembly_id].parent == receiving_assembly
 
 func status_text() -> String:
-	if not blocked_reason.is_empty():return "FOOT CARRIER / "+blocked_reason
+	if not blocked_reason.is_empty():return "FOOT RIG / "+blocked_reason
 	if moving:return "GUIDED TRANSFER / "+("Retracting the empty foot rig from the receiving pads" if handoff == "withdraw" else ("Reacquiring foot support before reverse" if handoff == "capture" else "The foot rig supports the foot"))
-	if not carrying() and path==0:return "FOOT CARRIER / Empty at dispatch · crane a prepared foot onto its sole pads."
-	if mounted():return "FOOT SEATED / Receiving sole pads support the foot.\nUse crane task Structural shin. Return reverses the empty leg's foot handoff."
-	return "FOOT DISPATCH / "+("Advance raises the prepared foot" if path < .999 else "Advance moves to the leg rig" if path < 1.999 else "Advance turns and seats the foot")
+	if not carrying() and path==0:return "FOOT RIG / Empty at dispatch · crane a prepared foot onto its sole pads."
+	if mounted():return "FOOT SEATED / The leg rig holds the foot.\nBack reverses the empty leg's foot handoff."
+	return "FOOT DISPATCH / "+("Next raises the foot" if path < .999 else "Next moves it to the leg rig" if path < 1.999 else "Next turns and seats the foot")
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume before operating the foot rig."
 	if action not in ["advance","stop","return"]:return "Unknown foot rig command."
 	if action == "stop":return "" if moving else "The foot rig is stopped."
 	if moving:return "Stop the foot rig before changing direction."
-	if not handoff.is_empty():return "" if action == "advance" else "Advance resumes the interrupted support transfer."
+	if not handoff.is_empty():return "" if action == "advance" else "Next resumes the interrupted support transfer."
 	var rail = game.equipment.get_equipment("leg_rail")
 	if carrying() or action=="advance":
 		if rail != null and (not rail.can_construct() or rail.active_assembly!=receiving_assembly):return "Select the matching leg and return its engaged leg rig home before transferring this foot."
@@ -231,7 +235,7 @@ func motion_error(from: float, to: float, pullback: float = -1) -> String:
 func busy_reason(subject: String) -> String:
 	if subject=="rail" and carrying():return "Seat the prepared foot on its matching leg rig before changing the leg rig."
 	if subject in ["rail",receiving_assembly] and moving:return "Wait for the guided foot transfer to stop."
-	if subject == "rail" and mounted() and (not handoff.is_empty() or path==last_phase and withdrawal != 1):return "Advance the foot rig to finish withdrawing it before moving the leg rig."
+	if subject == "rail" and mounted() and (not handoff.is_empty() or path==last_phase and withdrawal != 1):return "Press Next on the foot rig to finish withdrawing it before moving the leg rig."
 	return ""
 
 func undo(subject: String) -> Dictionary:

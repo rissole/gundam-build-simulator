@@ -3,6 +3,11 @@ extends RefCounted
 const OPS = ["fit","seat","operate","connect","detach"]
 const MACHINE_OPS = ["operate","connect","detach"]
 
+static func machine_text(machine, objective: Dictionary, action: String) -> String:
+	var subject: String = machine.manual_subject(objective)
+	var hint: String = machine.manual_hint(objective)
+	return (subject+": " if not subject.is_empty() else "")+machine.command_label(action,str(objective.get("task","")))+(" — "+hint if not hint.is_empty() else "")
+
 static func text(game, owner: String, objective: Dictionary) -> String:
 	var op := str(objective.get("op",""))
 	if op == "fit":
@@ -18,14 +23,16 @@ static func text(game, owner: String, objective: Dictionary) -> String:
 			var via: Dictionary = objective.via if objective.via is Dictionary else {}
 			var machine = game.equipment.get_equipment(str(via.get("machine","")))
 			if machine == null:return ""
-			return machine.command_label(str(via.get("command","")))+(" to seat the " if from_slot else " to seat ")+label
+			var via_objective := {"op":"operate","command":via.command,"task":objective.get("task","")}
+			return machine_text(machine,via_objective,via.command)+(" to seat the " if from_slot else " to seat ")+label
 		if from_slot:return "Seat the "+label
 		if game.model.slot_definition(owner,str(objective.get("slot",""))).has("assembly"):return "Seat the prepared "+label
 		return "Seat "+label
 	if op == "operate" or op == "connect" or op == "detach":
 		var machine = game.equipment.get_equipment(str(objective.get("machine","")))
 		if machine == null:return ""
-		return machine.command_label(str(objective.get("command","")) if op == "operate" else op)
+		var command := str(objective.get("command",""))
+		return machine_text(machine,objective,command if op == "operate" else op)
 	return ""
 
 ## `kinds` lists accepted part kinds in slot order, including repeats.
@@ -230,7 +237,7 @@ static func _check_page(def_id: String, index: int, page: Dictionary, slots: Dic
 			var machine_id := str(objective.machine)
 			var command := str(objective.command)
 			if not _command_known(machines,machine_id,command):found.append(prefix+"unknown command %s on %s"%[command,machine_id])
-			elif command == "pickup" and str(objective.get("task","")).is_empty():found.append(prefix+"pickup needs a task")
+			elif command in ["pickup","go:receiver","go:source"] and str(objective.get("task","")).is_empty():found.append(prefix+command+" needs a task")
 		elif (op == "connect" or op == "detach") and not str(objective.get("machine","")).is_empty():
 			var machine_id := str(objective.machine)
 			if not _command_known(machines,machine_id,op):found.append(prefix+"unknown command %s on %s"%[op,machine_id])
