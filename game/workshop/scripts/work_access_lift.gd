@@ -4,6 +4,12 @@ extends "res://scripts/equipment.gd"
 const SPEED = 0.75
 const THICKNESS = 0.12
 const MASK = 15
+## Each tick reserves only the next stretch of travel. Anything further along
+## the route holds the car when it gets there, not when it is called.
+const LOOKAHEAD = 0.25
+## A player standing at a landing may lean this far into the shaft; the arriving
+## car nudges them back instead of refusing the call they just made.
+const PLAYER_TOLERANCE = 0.2
 const Sweep = preload("res://scripts/motion_sweep.gd")
 ## Short name used on controls and labels; the registry id is "<name>_lift".
 var lift_name = ""
@@ -201,36 +207,42 @@ func _target(action: String) -> float:
 		if index >= 0 and index < stops.size():return stops[index]
 	return height
 
+## A held trip accepts a new destination, so a rider is never trapped by an
+## obstruction they cannot reach. Calling it to where it waits cancels the trip.
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the lift."
-	if moving:return blocked_reason if not blocked_reason.is_empty() else "Wait for the lift to stop."
+	if moving:return "Wait for the lift to stop." if blocked_reason.is_empty() else ""
 	if is_equal_approx(_target(action),height):return "The lift is already at this level."
 	return ""
 
+## Obstructions never refuse a request: the trip waits until they clear, and
+## the confirmation names what it is waiting for.
 func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():return error
-	var next = _target(action)
-	error = _sweep_error(height,next)
-	if not error.is_empty():return error
-	destination = next
-	moving = true
-	blocked_reason = ""
+	destination = _target(action)
+	moving = not is_equal_approx(destination,height)
+	blocked_reason = _sweep_error(height,_ahead(0.0)) if moving else ""
 	_pose()
 	return ""
 
 func status_text() -> String:
-	if not blocked_reason.is_empty():return "LIFT BLOCKED — clear the travel area"
+	if not blocked_reason.is_empty():return "%s LIFT WAITING\n%s" % [lift_name.to_upper(),blocked_reason]
 	return "%s LIFT — %.2f m%s" % [lift_name.to_upper(),height," / moving" if moving else ""]
 
 func physics(delta: float) -> void:
 	if not moving or game.paused:return
-	var next = move_toward(height,destination,SPEED*delta)
-	blocked_reason = _sweep_error(height,destination)
-	if not blocked_reason.is_empty():return
-	height = next
+	blocked_reason = _sweep_error(height,_ahead(SPEED*delta))
+	if not blocked_reason.is_empty():
+		_label.text = status_text()
+		return
+	height = move_toward(height,destination,SPEED*delta)
 	if is_equal_approx(height,destination):moving = false
 	_pose()
+
+## The end of the stretch reserved this tick, covering at least one step.
+func _ahead(step: float) -> float:
+	return move_toward(height,destination,maxf(LOOKAHEAD,step))
 
 ## Only the deck rides; landings and ramps stay put.
 func carries(body: CollisionObject3D) -> bool:return body == deck
@@ -261,8 +273,16 @@ func _sweep_error(from: float, to: float) -> String:
 	var riders = passengers()
 	var carried: CollisionObject3D = riders[1] if riders.size() > 1 else null
 	var space = get_world_3d().direct_space_state
-	if not Sweep.overlap(space,box,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0)),MASK,excluded,0.002).is_empty():
-		return "Clear the lift travel area, including overhead and loose parts."
+	var route = global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0))
+	var player = game.get("player") as CollisionObject3D
+	var others = excluded.duplicate()
+	if is_instance_valid(player) and not others.has(player.get_rid()):
+		others.append(player.get_rid())
+		var inset = BoxShape3D.new()
+		inset.size = box.size-Vector3(2*PLAYER_TOLERANCE,0,2*PLAYER_TOLERANCE)
+		if not Sweep.overlap(space,inset,route,player.collision_layer,excluded,0.002).is_empty():return "Step back out of the lift doorway."
+	var hit = Sweep.overlap(space,box,route,MASK,others,0.002)
+	if not hit.is_empty():return _obstruction(hit.collider)
 	if carried != null:
 		# An actual rider's hand load travels with the platform. Reserve its own
 		# complete envelope, including overhang outside the platform footprint.
@@ -275,6 +295,12 @@ func _sweep_error(from: float, to: float) -> String:
 	# Equipment riding the deck reserves its own cargo route.
 	var registry = game.get("equipment")
 	return registry.travel_error(equipment_id,from,to) if registry != null else ""
+
+func _obstruction(body: Object) -> String:
+	if body == carried_body():return "Keep the component in your hands out of the lift shaft."
+	var components = game.get("components")
+	if body is WorkshopPart and components != null and components.has_method("title"):return "Move the loose %s out of the lift shaft." % components.title(body.kind)
+	return "Clear the lift shaft: %s is in the way." % (str(body.name) if body is Node else "something")
 
 func _pose() -> void:
 	deck.position.y = height

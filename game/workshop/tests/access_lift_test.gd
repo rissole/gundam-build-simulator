@@ -29,7 +29,11 @@ class Harness extends Node3D:
 		return mesh
 	func _physics_process(delta: float) -> void:
 		if not is_instance_valid(lift):return
+		# The workshop registry carries a rider's hand load with the deck.
+		var held: Node3D = components.held_body if is_instance_valid(components) and lift.rider() != null else null
+		var before: float = lift.height
 		lift.physics(delta)
+		if is_instance_valid(held):held.position.y += lift.height-before
 		player.velocity.y = -0.1 if player.is_on_floor() else player.velocity.y-14*delta
 		player.move_and_slide()
 var game: Harness
@@ -46,6 +50,12 @@ func obstacle(at: Vector3, size: Vector3) -> StaticBody3D:
 	body.add_child(col)
 	game.add_child(body)
 	return body
+## Runs a requested trip until it arrives or holds for an obstruction.
+func until_held(limit: int = 900) -> void:
+	for tick in range(limit):
+		if not lift.moving or not lift.blocked_reason.is_empty():return
+		await frames(1)
+
 func connected_to_guides() -> bool:
 	var fixed = lift.get_node("FloorAnchoredLiftGuides")
 	var contacts = 0
@@ -124,23 +134,32 @@ func run() -> void:
 	game.add_child(loose)
 	loose.position = Vector3(0,3,0)
 	await frames(4)
-	expect(not lift.request("stop2").is_empty(),"Loose solids obstruct full travel route")
+	expect(lift.request("stop2").is_empty() and lift.blocked_reason.is_empty(),"A loose solid far up the shaft never refuses the call")
+	await until_held()
+	expect(lift.moving and lift.blocked_reason.begins_with("Clear the lift shaft:") and lift.height > 1.2 and lift.height+1.2 < 3.0,"Car holds short of the loose solid and names it: "+lift.blocked_reason)
+	expect(lift.request("ground").is_empty(),"A held car accepts a new destination")
+	await until_held()
+	expect(not lift.moving and is_equal_approx(lift.height,0.15),"Held car returns to the ground on request")
 	loose.queue_free()
 	await frames(3)
 	capsule.height = 1.7
 	col.position.y = 0.86
 	var ceiling = obstacle(Vector3(0,5.0,0),Vector3(1,0.1,1))
 	await frames(3)
-	expect(not lift.request("stop2").is_empty(),"Destination head clearance rejects overhead crush before motion")
+	expect(lift.request("stop2").is_empty(),"Overhead obstruction never refuses the call")
+	await until_held()
+	expect(lift.moving and not lift.blocked_reason.is_empty() and lift.height < 3.8 and game.player.global_position.y+1.72 < 4.95,"Car holds before the rider's head reaches the overhead obstruction")
+	expect(lift.request("ground").is_empty(),"Rider sends the held car back down")
+	await until_held()
 	ceiling.queue_free()
 	await frames(3)
 	expect(lift.request("stop2").is_empty(),"Clear route can move again")
 	await frames(40)
 	var blocker = obstacle(Vector3(0,2.9,0),Vector3(0.5,0.12,0.5))
-	await frames(4)
+	await until_held()
 	var blocked_height: float = lift.height
 	await frames(15)
-	expect(lift.moving and not lift.blocked_reason.is_empty() and is_equal_approx(lift.height,blocked_height),"New midmotion obstacle holds platform safely")
+	expect(lift.moving and not lift.blocked_reason.is_empty() and is_equal_approx(lift.height,blocked_height) and blocked_height+1.72 < 2.84,"New midmotion obstacle holds platform safely below it")
 	blocker.queue_free()
 	await frames(310)
 	expect(absf(lift.height-3.8)<0.001 and absf(game.player.position.y-3.8)<0.06,"Clearing obstruction resumes carrying")
@@ -177,16 +196,33 @@ func run() -> void:
 	game.components.held_body = held
 	var overhang = obstacle(Vector3(1.2,4.1,0),Vector3(0.12,0.15,0.12))
 	await frames(4)
-	expect(not lift.request("stop2").is_empty(),"Carried overhang separately checks external head clearance beyond deck")
+	expect(lift.request("stop2").is_empty(),"Carried overhang never refuses the call")
+	await until_held()
+	expect(lift.moving and lift.blocked_reason == "Clear the carried component's lift route, including overhead." and lift.height < 3.8,"Carried overhang separately checks external head clearance beyond deck")
 	overhang.queue_free()
 	await frames(3)
-	expect(lift.request("stop2").is_empty(),"Actual rider may bring held solid and mounted controls on clear lift")
+	await until_held()
+	expect(not lift.moving and is_equal_approx(lift.height,3.8),"Actual rider may bring held solid and mounted controls on clear lift")
 	lift.moving = false
 	lift.destination = lift.height
 	game.player.position.x = 4
 	held.position.x = 0.6
 	await frames(4)
-	expect(not lift.request("up").is_empty(),"A held body is still an obstacle when its operator is off the lift")
+	expect(lift.request("up").is_empty() and lift.blocked_reason == "Keep the component in your hands out of the lift shaft.","A held body is still an obstacle when its operator is off the lift")
+	game.components.held_body = null
+	held.queue_free()
+	for lean in [[0.08,""],[0.18,""],[0.26,"Step back out of the lift doorway."]]:
+		lift.apply({"height":3.8,"destination":3.8,"moving":false})
+		# Physics sees the raised deck only after a step.
+		await frames(2)
+		game.player.velocity = Vector3.ZERO
+		game.player.position = Vector3(1.0+0.26-float(lean[0]),0.03,0)
+		await frames(8)
+		expect(lift.request("ground").is_empty(),"Landing call accepted with the player leaning %.2f m into the shaft" % lean[0])
+		await until_held()
+		expect(lift.blocked_reason == lean[1],"Leaning %.2f m: '%s', got '%s'" % [lean[0],lean[1],lift.blocked_reason])
+		if lean[1].is_empty():expect(not lift.moving and game.player.position.x > 1.25 and game.player.is_on_floor(),"Arriving car nudges the leaning player back onto the landing")
+	expect(lift.height > 0.15+1.72,"A player in the doorway holds the car above their head")
 	print("ACCESS LIFT ","PASS" if checks.all(func(c):return c.passed) else "FAIL", " ",checks.size()," checks")
 	game.queue_free()
 	await process_frame

@@ -159,7 +159,9 @@ func settle(controller: Node, limit: int = 1600) -> String:
 		_equipment("workshop_access").physics(.1)
 		_equipment("rail_gates").physics(.1)
 		controller.physics(.1)
-	return "Motion did not settle within "+str(limit)+" ticks."
+	# A held lift waits for its obstruction instead of refusing the request.
+	var held: String = str(controller.get("blocked_reason")) if controller.get("blocked_reason") != null else ""
+	return "Motion did not settle within "+str(limit)+" ticks."+("" if held.is_empty() else " "+held)
 
 func command(controller: Node, action: String) -> String:
 	var step: String=controller.equipment_id+" "+action
