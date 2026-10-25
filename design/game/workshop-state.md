@@ -152,8 +152,11 @@ last version before consolidation.
   explicit go-ahead.
 - **One workshop.** Don't add launch profiles or separate scenarios. Development
   and tests reach later progress through `--stage` / `boot_workshop(stage)`.
-- **Nothing is saved.** `--stage=<name>` gives supplied progress for inspection. It
-  is not a save and not playtest evidence.
+- **Saves are snapshots at rest.** A normal launch saves each set component; a
+  machine's `capture()`/`apply()` must round-trip its at-rest state, including its
+  supported load. No migrations, mid-motion state or per-machine validators.
+  `--stage=<name>` gives supplied progress for inspection. It is never saved and is
+  not playtest evidence.
 - **New sections are data.** Add them on the shared staged receiver and the
   `game.zones` occupancy register. Don't add bespoke receiver controllers,
   pairwise machine checks or new crane-contract flags.
@@ -186,11 +189,9 @@ last version before consolidation.
 
 ## Deferred: needs a decision
 
-- Saving, save validation and pause-menu checkpoints. When they return, save
-  only at rest: no equipment moving, every load on a support. The original
-  requirements are preserved in the plan's
-  [Saves and checkpoints](robot-workshop-plan.md#saves-and-checkpoints); the
-  removed foot save design is [archived](history/save-resume.md).
+- Pause-menu playtest checkpoints. Saving itself is implemented; the original
+  checkpoint list is in the plan's
+  [Saves and checkpoints](robot-workshop-plan.md#saves-and-checkpoints).
 - The chest's 60° bare-frame service tilt. It only matters once chest preparation
   is built; the prepared chest stays upright.
 - Obsolete top-level layout keys (the single-task `crane` fields and `rail` values
