@@ -62,6 +62,8 @@ var automated_test: bool = false
 var start_stage: String = ""
 ## Pause-menu note describing the last --stage preparation.
 var stage_notice: String = ""
+## True while a --stage launch is still being prepared; nothing is saved meanwhile.
+var staging: bool = false
 ## The save slot. Empty (no saving) unless this is a normal launch; tests opt in.
 var save_path: String = ""
 var save: RefCounted
@@ -159,13 +161,15 @@ func _ready() -> void:
 	preload("res://scripts/scenario_staging.gd").prepare(self)
 	_build_equipment(EQUIPMENT.filter(func(id):return id != "foot_fixture"))
 	start_stage = Stages.stage_flag(Array(OS.get_cmdline_user_args()))
-	# Only a normal launch keeps a save; tests, tools (custom SceneTree scripts)
-	# and --stage launches never touch it.
-	if save_path.is_empty() and not automated_test and start_stage.is_empty() and get_tree().get_script() == null:save_path = Save.PATH
+	# Player launches keep a save; tests and tools (custom SceneTree scripts) never
+	# touch it. A --stage launch starts from its stage, never the save, but Save
+	# overwrites the slot with the progress made from there.
+	if save_path.is_empty() and not automated_test and get_tree().get_script() == null:save_path = Save.PATH
 	save = Save.new(self,save_path)
+	staging = not start_stage.is_empty()
 	# Closing the window is Save & quit (see _notification).
 	if save.enabled():get_tree().set_auto_accept_quit(false)
-	if save.load_saved():
+	if not staging and save.load_saved():
 		# Restored milestones are not new: no toast or chime on load.
 		for id in builds:
 			prepared_flags[id] = build_prepared(id)
@@ -610,7 +614,11 @@ func save_and_quit() -> void:
 	hud.show_save_error(error)
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_CLOSE_REQUEST and started and save.enabled():save_and_quit()
+	if what != NOTIFICATION_WM_CLOSE_REQUEST or not started or not save.enabled():return
+	# A stage launch saves on close only once the player has changed the build,
+	# so inspecting a stage never overwrites the saved workshop.
+	if not start_stage.is_empty() and (staging or not save.unsaved()):get_tree().quit()
+	else:save_and_quit()
 
 ## Pause menu: forget the saved workshop and start again from a fresh launch.
 func new_workshop() -> void:
@@ -647,6 +655,9 @@ func run_stage(stage: String) -> String:
 	automated_test = was_automated
 	overlay.queue_free()
 	stage_notice=("Started at stage: "+title+". Earlier work was supplied by script, not playtested.") if error.is_empty() else ("Stage preparation stopped: "+error)
+	# The prepared stage is the baseline: only the player's own progress is unsaved.
+	save.settle()
+	staging = false
 	set_paused(true)
 	if is_instance_valid(hud):hud.toast(stage_notice,error.is_empty());hud.refresh_session_status()
 	if not error.is_empty():push_error("Stage "+stage+": "+error)

@@ -164,8 +164,10 @@ last version before consolidation.
 - **Saves are snapshots at rest.** A normal launch saves each set component; a
   machine's `capture()`/`apply()` must round-trip its at-rest state, including its
   supported load. No migrations, mid-motion state or per-machine validators.
-  `--stage=<name>` gives supplied progress for inspection. It is never saved and is
-  not playtest evidence.
+  `--stage=<name>` gives supplied progress and is not playtest evidence. It never
+  loads the save, but Save overwrites the slot with the stage plus the player's
+  progress (user decision, 2026-10-25); closing the window saves only after a build
+  change since the stage, and Restart re-runs the stage without deleting the save.
 - **New sections are data.** Add them on the shared staged receiver and the
   `game.zones` occupancy register. Don't add bespoke receiver controllers,
   pairwise machine checks or new crane-contract flags.

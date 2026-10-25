@@ -452,25 +452,32 @@ func _make_pause() -> void:
 	footer.add_child(quit_button)
 	refresh_session_status()
 
-## Whether this launch keeps the workshop save (never in tests or --stage launches).
+## Whether this launch keeps the workshop save (never in tests or tools).
 func _saving() -> bool:
 	var slot = game.get("save")
 	return slot != null and slot.enabled()
 
-## Normal launches save from this menu or on closing the window; --stage launches
-## restart from their start.
+## Whether Restart deletes the save for a fresh workshop. A --stage launch
+## restarts from its stage and keeps the save.
+func _restart_is_new_workshop() -> bool:
+	return _saving() and String(game.get("start_stage")).is_empty()
+
+## Player launches save from this menu or on closing the window; --stage launches
+## restart from their stage.
 func refresh_session_status() -> void:
 	if session_label == null:return
 	var saving: bool = _saving()
-	if confirm_restart:restart_button.text = "Confirm new workshop" if saving else "Confirm restart"
-	else:restart_button.text = "New workshop" if saving else "Restart build"
+	var fresh: bool = _restart_is_new_workshop()
+	if confirm_restart:restart_button.text = "Confirm new workshop" if fresh else "Confirm restart"
+	else:restart_button.text = "New workshop" if fresh else "Restart build"
 	save_button.visible = saving
 	save_quit_button.visible = saving
 	quit_button.text = ("Confirm quit" if confirm_quit else "Quit without saving") if saving else "Quit"
 	resume_button.text = "Resume    →" if entered else "Start building    →"
 	if confirm_restart or confirm_quit:return
 	var status: String = "Robot workshop · this launch is not saved.\nRestart begins again from this launch's starting point."
-	if saving:status = "Robot workshop · "+("unsaved changes since your last save." if game.save.unsaved() else "no build changes since your last save.")+" Closing the window saves."
+	if saving and not fresh:status = "Robot workshop · stage launch: "+("unsaved changes since the stage started or your last save." if game.save.unsaved() else "no build changes since the stage started or your last save.")+" Save overwrites your saved workshop; closing the window saves only if you changed the build. Restart begins again from this stage."
+	elif saving:status = "Robot workshop · "+("unsaved changes since your last save." if game.save.unsaved() else "no build changes since your last save.")+" Closing the window saves."
 	var notice: String = game.Save.notice if saving else ""
 	var lines: Array = [status]
 	for line in [save_message,notice,game.stage_notice]:
@@ -498,17 +505,17 @@ func _quit_clicked() -> void:
 	session_label.text = "Quit without saving? Build changes since your last save are lost.\nResume to keep playing."
 
 func _restart_clicked() -> void:
-	var saving: bool = _saving()
+	var fresh: bool = _restart_is_new_workshop()
 	if confirm_restart:
 		confirm_restart = false
-		if saving:game.new_workshop()
+		if fresh:game.new_workshop()
 		else:game.reset_demo()
 		refresh_session_status()
 	else:
 		confirm_restart = true
 		confirm_quit = false
 		refresh_session_status()
-		session_label.text = "Start a new workshop? This deletes your saved build.\nResume to keep it." if saving else "Restart this build from the beginning?\nResume to keep your progress."
+		session_label.text = "Start a new workshop? This deletes your saved build.\nResume to keep it." if fresh else "Restart this build from the beginning?\nResume to keep your progress."
 
 func show_pause(value: bool) -> void:
 	pause_panel.visible = value

@@ -50,9 +50,13 @@ func _signature() -> int:
 ## Whether the build or a machine changed since the last save or load.
 func unsaved() -> bool:return enabled() and _signature() != _last
 
+## Treats the current build as saved, e.g. once a --stage launch is prepared.
+func settle() -> void:_last = _signature()
+
 ## Writes the workshop now. Returns why it could not, or empty.
 func save_now() -> String:
 	if not enabled():return "This launch is not saved."
+	if game.get("staging") == true:return "the stage is still being prepared."
 	var error: String = write(snapshot())
 	if error.is_empty():_last = _signature()
 	return error

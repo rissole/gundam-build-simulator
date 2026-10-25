@@ -98,7 +98,9 @@ The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tool
 `./play.command -- --stage=<stage>` starts later in the build. It scripts the
 earlier work with the same model and equipment commands as the mechanical tests,
 then hands over paused. Fastenings and rigging are supplied, so this is not
-playtest evidence, and stage launches are never saved. Restart re-runs the shortcut. Wait for
+playtest evidence. A stage launch never loads the save, but Save overwrites it
+with the stage plus your progress since; closing the window saves only if you
+changed the build after the stage. Restart re-runs the shortcut and keeps the save. Wait for
 the preparation overlay to close before using the controls. Tests start at a
 stage the same way, with `boot_workshop("<stage>")` in [tests/kit](tests/kit).
 
