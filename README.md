@@ -1,109 +1,153 @@
 # Gundam Build Simulator
 
-A first-person mecha workshop prototype: organise parts, follow illustrated manuals, and assemble a giant robot one component at a time.
+**Start with a handful of bolts. End beneath a giant robot you assembled.**
 
-The full-game design targets an **18 m piloted mecha**. The current prototype is one continuous build in a Godot hangar. Build the left foot's heel pads and pitch actuator, then assemble the robot's structure: pelvis, both legs, torso, arms and head. The hangar includes preparation stations, a turning foot rig, a service crane, lifting equipment, personnel platforms and linked manuals. Its FA-01 foot retains **745 separate source parts** and a reproducible Blender generation pipeline.
+A first-person mecha workshop built in Godot. Stock your pockets, follow illustrated manuals, build mechanisms at preparation stations, then use cranes and moving platforms to bring the larger assemblies together. The full-game design targets an **18-metre piloted mecha**; the playable prototype takes you from the left foot to the final crown in one continuous hangar.
 
-![FA-01 assembled foot, with separate armor, frame, ankle mechanisms, and sole pads](models/foot-fa01/output/foot-fa01-assembled.png)
+[Play the prototype](#play-the-prototype) · [Watch the workshop](#watch-the-workshop) · [Concept & design](#concept--design) · [Development](#development)
 
-## Watch the assembly
+[![Completed robot standing between the gantry platforms, from the crown installation film](docs/images/workshop-crown-film.jpg)](docs/videos/crown.mp4)
 
-![FA-01 foot separating from its assembled form into an exploded view](models/foot-fa01/output/foot-fa01-exploding.gif)
+*The final crown installation and robot reveal. Click the image to open the film. This capture predates the current lighting and gantry detail pass.*
 
-## Play the workshop
+## Watch the workshop
 
-![Compact crane movement controls with a separate Change load button](docs/images/workshop-crane-controls.png)
+Three short films follow the equipment through the big assembly milestones. Click a preview to open its **10-second, 1080p MP4**.
 
-*Earlier crane controls. The load chooser shown here has since been removed: the
-crane now offers Move to pickup / Move to delivery for the next load in build
-order. The manual and pockets return when you close the console.*
+| Seat the pelvis | Dock the leg | Finish the robot |
+| --- | --- | --- |
+| [![Pelvis suspended during delivery to the gantry](docs/images/workshop-pelvis-film.jpg)](docs/videos/pelvis.mp4) | [![Leg assembly approaching its mounting position](docs/images/workshop-leg-film.jpg)](docs/videos/leg.mp4) | [![Robot revealed after crown installation](docs/images/workshop-crown-film.jpg)](docs/videos/crown.mp4) |
+| [Watch the gantry delivery](docs/videos/pelvis.mp4) | [Watch the lift and docking](docs/videos/leg.mp4) | [Watch the crown and reveal](docs/videos/crown.mp4) |
 
-![Mobile platform with labelled Up, Down and Move buttons](docs/images/workshop-mobile-controls.png)
+These are scripted progress films using the workshop's equipment controllers, with supplied earlier construction and accelerated motion. They predate the latest visual uplift. See the [recording guide](game/workshop/README.md#progress-videos) for camera edits and reproduction.
 
-*Dedicated height controls and a Move menu for choosing a destination. Elevators use only Up/Down
-onboard, with Call buttons at landings. See the [load chooser and elevator
-screenshots](game/workshop/README.md#equipment-controls) and the
-[verification checklist](design/game/robot-workshop-playtest-checklist.md#focused-controls-check--2026-10-24).
-These are rendered UI fixtures; hands-on acceptance is pending. Regressions were
-not run for this revision, at the user's request.*
+### One foot. 745 separate parts.
 
-Use **Godot 4.7.2**. On macOS, double-click [play.command](play.command), or run it from the repository root:
+The FA-01 source model keeps every frame, shell, actuator and fastener individually identifiable. Its construction film shows how those pieces become a foot roughly **3.0 m long × 1.3 m wide**.
+
+[![FA-01 foot opening into an exploded assembly of its mechanisms, armor and hardware](models/foot-fa01/output/foot-fa01-exploding.gif)](models/foot-fa01/output/foot-fa01-build-and-explode.mp4)
+
+[Watch the full build-and-explode film →](models/foot-fa01/output/foot-fa01-build-and-explode.mp4)
+
+## Inside the hangar
+
+The satisfaction is in the sequence: find the right hardware, expose the connection, seat the part, and watch a small mechanism become part of something much larger.
+
+- **Build at the bench.** Prepare two heel pads and a 91-piece pitch actuator, then secure them to the left foot. This opening build uses 135 physical identities from the 745-piece source model.
+- **Work from a living manual.** Illustrated chapters break the build into goals and checklists that tick themselves as you work. Ghost previews show valid placements.
+- **Handle the scale.** Turn the foot in its fixture, move heavy loads by crane, and ride personnel platforms to reach higher connections.
+- **Keep building.** Continue through the pelvis, both legs, chest, core, backpack, arms, pauldrons, head and crown. Save your workshop and return to it later.
+
+| Small parts, close attention | Room for the whole machine |
+| --- | --- |
+| ![Heel pad suspended at a preparation station beside stocked hardware drawers and an illustrated manual](docs/images/heel-pad-demo.png) | ![Workshop floor showing preparation stations, storage and assembly fixtures](docs/images/workshop-engineering-overview.png) |
+
+*Earlier prototype screenshots: the heel-pad view shows the original preparation workflow; the overview shows the hangar blockout. Lighting, manuals and gantry detail have since evolved.*
+
+The current game is a **work-in-progress structural assembly prototype**. The detailed foot establishes the component approach; much of the wider robot remains blockout geometry, with further mechanisms, armor and finished art still to come.
+
+## Play the prototype
+
+Use **Godot 4.7.2**. On macOS, double-click [play.command](play.command), or run this from the repository root:
 
 ```sh
 ./play.command
 ```
 
-The launcher finds Godot on your PATH, in `/Applications/Godot.app`, or in the existing local tool cache. You can also specify an executable:
+The launcher finds the local Godot tool cache, a `godot` executable on your PATH, or `/Applications/Godot.app`. To select your own executable:
 
 ```sh
 GODOT_BIN=/path/to/godot ./play.command
 ```
 
-On other platforms, open [game/workshop/project.godot](game/workshop/project.godot) in Godot and run the project. The first launch imports the model.
+On other platforms, open [game/workshop/project.godot](game/workshop/project.godot) in Godot and run the project. The first launch imports the assets.
 
-The game starts in the final-assembly hangar. Prepare two independent heel pads and the pitch actuator at the preparation stations, then secure them to the left foot, which waits in a turning fixture in the foot bay. Use **E** at the fixture controls to turn the foot to a working position. Labelled wall drawers supply small hardware; shelves hold larger components. The foot manual links to each build, remembers your pages, and tracks preparation and installation. A ghost preview shows valid placements.
-
-With the foot upright, the wider workshop continues. Deliver the pelvis to the gantry, then crane the foot to dispatch and build the structural leg on the leg rig. The right leg, chest, core, backpack, arms, pauldrons and head follow, using the crane console, personnel lifts and local equipment controls.
-
-To start later in the build, add a stage. The game supplies the earlier work by script:
-
-```sh
-./play.command -- --stage=actuator      # heel pads fitted; build the pitch actuator
-./play.command -- --stage=pelvis        # foot complete; deliver the pelvis
-./play.command -- --stage=left_arm      # any later stage, up to --stage=complete
-```
+Begin at the preparation stations and wall cabinets beside the left foot. Follow the manual through the heel pads and pitch actuator, then turn the completed foot upright for the crane handoff.
 
 | Input | Action |
 | --- | --- |
 | WASD / mouse | Move / look |
 | Space | Jump |
-| E | Stock a pocket / carry a component / operate bay controls |
-| 1–0 | Select one of ten small-part pockets |
-| Left click | Attach at the highlighted point |
-| Q / B | Set down carried component / clear selected pocket |
+| E | Stock a pocket, carry a component or operate equipment |
+| 1–0 | Select a small-part pocket |
+| Left click | Attach at the highlighted connection |
+| Q / B | Set down a carried component / clear the selected pocket |
 | Hold R + mouse / double-tap R | Rotate / reset a preparation station |
-| Tab or M | Toggle the manual |
-| N | Browse the manual tree and steps |
-| Enter / Backspace | Open child / parent manual |
-| C / V | Cycle manuals / open inspected build |
+| M | Open the manual |
+| Tab | Show or hide the current-step panel |
 | Z | Undo in the selected manual |
-| Escape | Release the mouse and open help |
+| Escape | Pause and release the mouse |
 
-See the [workshop README](game/workshop/README.md) for every stage name, the build sequence, controls and limitations. The game does not save yet: quitting or restarting begins again from the launch's starting stage. This is a structural blockout: detailed actuators, armor and finished art remain future work.
+Save through **Save**, **Save & quit**, or by closing the window. A normal relaunch restores the saved workshop; **New workshop** starts over. See the [save design](design/game/robot-workshop-plan.md#saves-and-checkpoints) for what is restored.
 
-## Explore the model and design
+Want to jump to the heavy machinery? Stage launches supply the earlier construction:
 
-The foot measures approximately **3.0 m long × 1.3 m wide**. Its inventory contains 229 other pieces or manufactured modules, 258 bolts/screws, and 258 matching washers. Parts retain individual identities for construction, export, and inspection.
+```sh
+./play.command -- --stage=actuator   # heel pads fitted; build the pitch actuator
+./play.command -- --stage=pelvis     # foot complete; begin the pelvis delivery
+./play.command -- --stage=complete   # explore the completed structural robot
+```
 
-| Start here | Contents |
+See the [workshop guide](game/workshop/README.md) for all stages, equipment controls and implementation details. A stage launch skips loading your existing save; explicitly saving that run replaces it.
+
+## Concept & design
+
+### The workshop we are building toward
+
+![DiffUI panel C concept: a suspended mechanical leg in an industrial hangar, with a translucent assembly checklist, part diagram and pocket inventory](docs/images/diffui-panel-c.webp)
+
+*DiffUI **panel C**, preserved from `.diffui/panel-c.webp`. Concept art and interface direction; this is not a gameplay screenshot.*
+
+The concept pairs the scale of an industrial hangar with the clarity of a model-kit manual: the work stays visible, the current goal sits beside it, and parts are recognizable before you pick them up. Warm task lighting, readable machinery and a compact checklist give the workshop its intended character.
+
+### Plan the space around the build
+
+The hangar needs room for a suspended load, a person reaching its fasteners, and the equipment that gets both into position. The layout study maps fixtures, delivery routes and access levels before they become playable machinery.
+
+[![Dimensioned workshop schematic with fixture locations, crane routes, elevated access plans and a side section](design/game/final-assembly-layout.svg)](design/game/final-assembly-layout.svg)
+
+[Explore the workshop layout and assembly plan →](design/game/final-assembly-plan.md)
+
+### Design the machine from the inside out
+
+Cockpit space, the removable core, shoulder connections and lifting points all compete for room inside the torso. The chest study makes those interfaces explicit; the gantry study carries the same attention into the equipment surrounding it.
+
+| Chest & cockpit packaging | Gantry construction study |
 | --- | --- |
-| [Game design](GAME_DESIGN.md) | Workshop loop, carrying, targeting, manuals, dependencies, and undo |
-| [Robot design](ROBOT_DESIGN.md) | Whole-robot scope and links to each body assembly |
-| [Foot and ankle specification](design/legs/foot-and-ankle.md) | Dimensions, parts, actuators, hardware, and assembly sequence |
-| [Reference sheets](design/legs/foot-and-ankle/images/README.md) | Engineering-style images and their generation prompts |
-| [FA-01 model](models/foot-fa01/README.md) | Model deliverables, Blender workflow, exports, and audit records |
-| [Modeling notes](models/foot-fa01/MODELING_NOTES.md) | Geometry decisions and visualization scope |
-| [Current workshop state](design/game/workshop-state.md) | Current status, active rules, open decisions, and which design document to read when |
-| [Robot workshop plan](design/game/robot-workshop-plan.md) | Whole-robot workshop stages, equipment and verification scope |
-| [Leg and pelvis interfaces](design/game/leg-prototype-interface.md) | Physical parts, dimensions, ownership and manual dependencies |
+| [![Front and side schematic sections of the chest, cockpit, core and mounting interfaces](design/torso/chest-and-cockpit-layout.svg)](design/torso/chest-and-cockpit-layout.svg) | [![Engineering detail study for the assembly gantry](design/game/gantry-detail-study.svg)](design/game/gantry-detail-study.svg) |
 
-![Foot mechanisms with the armor hidden](models/foot-fa01/output/foot-fa01-skeleton.png)
+*Design schematics describe packaging and spatial intent; they are not structural certification or a guarantee that every detail is implemented.*
+
+![FA-01 foot with armor hidden to reveal its frame and ankle mechanisms](models/foot-fa01/output/foot-fa01-skeleton.png)
+
+*The FA-01 source model beneath the shells: separate mechanisms and hardware, generated through a reproducible Blender pipeline.*
+
+| Explore further | What you will find |
+| --- | --- |
+| [Game design](GAME_DESIGN.md) | The workshop loop, carrying, targeting, manuals and undo |
+| [Robot design](ROBOT_DESIGN.md) | Whole-robot scope and body assembly specifications |
+| [Foot & ankle specification](design/legs/foot-and-ankle.md) | Dimensions, interfaces, actuators and hardware |
+| [Reference sheets](design/legs/foot-and-ankle/images/README.md) | Engineering-style concept images and their prompts |
+| [FA-01 model](models/foot-fa01/README.md) | Source assets, exports, Blender workflow and audits |
+| [Current workshop state](design/game/workshop-state.md) | Current implementation, active rules and open decisions |
+| [Playtest checklist](design/game/robot-workshop-playtest-checklist.md) | Player findings and work still awaiting hands-on feedback |
 
 ## Development
 
-`play.command` is the one entry point: it passes Godot options through, so it also opens the editor and runs tests. Gameplay scripts, the workshop scene, tests, and source-part metadata live in [game/workshop](game/workshop/).
+**Godot / GDScript** powers the workshop; **Blender / Python** generates the detailed source model. Start with the [current workshop state](design/game/workshop-state.md) before changing gameplay.
 
 ```sh
-./play.command --editor                                   # Godot editor
-./play.command --headless --script tests/state_test.gd    # one headless test
-python3 game/workshop/tools/run_regressions.py            # fast routine checks
+./play.command --editor
+python3 game/workshop/tools/run_regressions.py
 python3 game/workshop/tools/run_regressions.py --only stage_contract_test workshop_smoke_test
 ```
 
-The model generator uses Blender's built-in Python API. With **Blender 4.5 or later** available as `blender`, regenerate the scene and exports with:
+Routine verification uses isolated checks and one startup smoke. See the [testing guide](game/workshop/tests/TESTING.md) for coverage and the separate, opt-in diagnostics.
+
+To regenerate the FA-01 scene and exports with **Blender 4.5 or later**:
 
 ```sh
 blender --background --factory-startup --python-exit-code 1 --python models/foot-fa01/src/build.py
 ```
 
-The [model README](models/foot-fa01/README.md#reproduce-the-build) documents rendering and verification. Git retains the playable game's GLB, the editable Blender scene, final presentation images, and the construction film. The model output GLBs and ZIP archives are generated locally and ignored, along with rendered video frames, inspection previews, engine caches, logs, Python bytecode, and Blender backups.
+The [model README](models/foot-fa01/README.md#reproduce-the-build) covers rendering and verification. The repository retains the playable GLB, editable Blender scene and presentation media; generated intermediates and engine caches stay local.
