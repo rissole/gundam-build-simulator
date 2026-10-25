@@ -2,6 +2,17 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Progress video feedback — 2026-10-25
+
+- User rejected the foot-rotation film ("it's bad") and requested its deletion
+  and a replacement. No specific framing or pacing reason was given. The foot
+  preset and its generated captures were removed; earlier mechanical checks did
+  not establish that the film was appealing.
+- Replacement: final head-crown installation followed by a pullback revealing
+  the assembled robot. **Awaiting the user's review of the new video.**
+- Pelvis and leg films remain available; this request did not grant them new
+  presentation approval. This feedback concerns progress films, not gameplay.
+
 ## How to launch
 
 Fresh start, from the repository root. Since 2026-10-24 this begins with the

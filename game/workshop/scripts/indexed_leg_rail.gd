@@ -295,6 +295,10 @@ func physics(delta: float) -> void:
 	if mode in ["path","release"]:
 		phase_goal = minf(goal,floorf(before[field]+.00001)+1) if goal>before[field] else maxf(goal,ceilf(before[field]-.00001)-1)
 	next[field]=move_toward(before[field],phase_goal,speed*delta)
+	# At 60 Hz, repeated additions can stop within epsilon of the indexed
+	# destination. Arrival branches (including supported mounting at path 3)
+	# require that exact stop, not the almost-equal value that ends motion.
+	if is_equal_approx(next[field],phase_goal):next[field]=phase_goal
 	var ahead=before.duplicate(true)
 	ahead[field]=EquipmentRegistry.Motion.ahead(before[field],phase_goal,next[field]-before[field],_travel_scale())
 	blocked_reason=motion_error(before,ahead)

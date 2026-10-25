@@ -535,6 +535,74 @@ Carry implementation references: [kinematic freeze mode](https://docs.godotengin
 
 Attached assemblies use the [static freeze mode](https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html#enum-rigidbody3d-freezemode), which leaves their movement to scene code. The rotation regression reproduces the old carrying-mode transform conflict during input between physics ticks, rather than relying only on settled transforms.
 
+## Progress videos
+
+From the repository root, record three **10-second, 1080p/30 MP4s**:
+
+```sh
+python3 game/workshop/tools/record_progress.py
+```
+
+Requires the normal Godot installation and FFmpeg (`brew install ffmpeg` on
+macOS, or set `FFMPEG_BIN`). A new checkout first needs
+`./play.command --headless --editor --import --quit`. Recording opens a small
+Godot window; it does **not** need focus, so you can use other apps. Leave the
+recorder running and the Mac awake until it finishes. The film is rendered
+offline into an exact-size viewport, independent of Retina scaling, window size,
+desktop input and rendering speed. The HUD and cursor are absent. Saves are
+disabled, and each sequence boots the normal workshop with supplied stage progress.
+
+| Sequence | Edit |
+| --- | --- |
+| `crown` | Final crown approach → seating close-up → crane release → assembled robot reveal. |
+| `pelvis` | Gantry platforms open → tracking hoist → suspended delivery → seating and platform closure. |
+| `leg` | Rear decks fold → rail travel → horizontal-to-upright turn → hip docking. |
+
+Each edit has four moving-camera shots lasting 2–3 seconds. Equipment uses its
+real controllers and interlocks, with explicit 1–5× playback speeds to fit the
+edit. Setup, rig attachment and earlier construction are supplied offscreen;
+these are progress films, not recordings of player input or playtest evidence.
+The opening “doors” are the working gantry platforms; the large hangar door
+does not currently animate. Clips are silent, with clean cuts and no title cards.
+
+```sh
+python3 game/workshop/tools/record_progress.py --list
+python3 game/workshop/tools/record_progress.py crown            # just one film
+python3 game/workshop/tools/record_progress.py --draft          # quick 960×540 videos
+python3 game/workshop/tools/record_progress.py --storyboard     # 3 stills per shot
+python3 game/workshop/tools/record_progress.py --check          # mechanical replay only
+python3 game/workshop/tools/record_progress.py --fps 60         # same edit, 60 fps
+python3 game/workshop/tools/record_progress.py --output /tmp/progress-v1
+python3 game/workshop/tools/record_progress.py --compare /tmp/progress-v1
+```
+
+Outputs go to a new `verification/progress-<timestamp>/` directory. Each sequence
+contains `video.mp4`, `storyboard.jpg` (one row per shot; start/middle/end), selected
+lossless `stills/`, logs, the exact job and a `manifest.json`. `--check` produces
+no images; `--storyboard` produces no MP4. Existing output directories are refused.
+All PNG frames are kept on failure, or with `--keep-frames`; after a successful
+export only the selected stills remain. Allow several minutes for the full set.
+
+Edit cameras, durations, playback rates and action cues in
+[tools/progress_shots.json](tools/progress_shots.json). Camera coordinates are
+world metres; `anchor` adds the live assembly origin to both eye and target.
+`before` completes setup between cuts, while `start` launches motion on camera.
+The crown sequence supplies earlier head parts through the existing shelf path
+and supplies crown retention between the seating and crane-release shots; the
+fastener work is omitted by the cut. Its final state must satisfy the normal
+`complete` stage contract.
+Equipment always advances in 1/60-second steps. A blocked machine or incorrect
+end state aborts capture rather than silently producing a stalled film.
+
+The manifest records source hashes, engine/GPU, the shot list, every rendered
+frame's hash and a hash of the camera/equipment trace. `--compare` reports whether
+source, replay, final state and pixels match a previous output. Keep resolution,
+FPS, Godot version and renderer the same for comparisons. Timing and camera paths
+are repeatable; GPU rasterization can differ at individual edge pixels, and
+byte-identical pixels across GPUs/engine versions are not promised. Exact pixel
+hashes are reported rather than assumed. Source changes during a capture reject
+that run.
+
 ## Performance measurements
 
 The opt-in `tools/benchmark_mouse_look.gd` measures the starting workshop at fixed

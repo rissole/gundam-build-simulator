@@ -35,6 +35,25 @@ last version before consolidation.
   checks pass (29 + 12 checks, 4.493 s). The stage fixture now supplies the session
   stub required by `save.settle()`. No rendered review; startup feel awaits playtest.
 
+- **Progress films (2026-10-25, revised):** the user rejected the foot-rotation
+  film; its preset and generated captures were deleted. Its replacement is the
+  final crown installation: tracked approach, seating close-up, crane release,
+  then a pullback as the gantry platforms open around the completed robot.
+  Pelvis and leg edits/MP4s remain unchanged. Four moving-camera shots, ten
+  seconds each; fixed simulation timing and player-save isolation remain.
+  Crown setup uses the existing shelf and retention paths and must finish at
+  the normal `complete` stage. Five recorder tests passed; rendered storyboards
+  inspected. The replacement decodes to 300 frames at 1080p/30 (10 seconds);
+  repeat traces, final state and all 12 sampled PNGs match exactly.
+  **Awaiting the user's review**, tracked in
+  [video feedback](robot-workshop-playtest-checklist.md#progress-video-feedback--2026-10-25).
+  Finished MP4s are retained locally in `verification/progress-videos/`;
+  temporary capture evidence was discarded when retiring the worktree. These
+  exports predate the visual uplift now on main; they have not been re-rendered.
+  [Usage and shot editing](../../game/workshop/README.md#progress-videos).
+  The earlier 60 Hz rail-stop snap fix remains; its seven relevant routine
+  suites passed before this video-only revision. No player acceptance inferred.
+
 - **Manual redesign (2026-10-25, whole robot converted):** every action step is a
   one-sentence goal plus a self-ticking checklist generated from typed objectives;
   every machine line reads "<Where>: <exact control text>" from one label function
