@@ -61,7 +61,7 @@ func update_target() -> void:
 		var connection_visible = true
 		if candidate.type == "component":
 			score -= 1.0 if candidate.get("compatible",false) else 0.12
-			connection_visible = can_see(candidate.point,game.components.receiving_bodies(candidate.owner,candidate.sid),game.components.service_access(candidate.owner,candidate.sid))
+			connection_visible = can_see(candidate.point,game.components.receiving_bodies(candidate.owner,candidate.sid),game.components.service_access(candidate.owner,candidate.sid),game.components.sight_depth(candidate.owner,candidate.sid))
 			if not connection_visible:score += 1.0
 		if connection_visible and candidate.type == "component":
 			var owner: String = candidate.get("owner",candidate.get("build",""))
@@ -93,7 +93,7 @@ func aim_score(point: Vector3, radius: float) -> float:
 	if perpendicular > radius: return INF
 	return perpendicular/radius + ahead*0.008
 
-func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false) -> bool:
+func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, depth: float = 0.065) -> bool:
 	var query = PhysicsRayQueryParameters3D.create(game.camera.global_position,point,game.WORLD_MASK)
 	var excluded: Array[RID] = [game.player.get_rid()]
 	for body in game.bodies.values():
@@ -112,7 +112,9 @@ func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false) 
 		if allow_body_hit:return true
 		# A surface at the destination is expected; hitting the back/side far
 		# before the target is an occlusion, even on the same assembly.
-		return hit.position.distance_to(point) < 0.065
+		# `depth` is the near-surface allowance. Hollow seats whose collision
+		# is a solid proxy name a larger one; it is not a view through the part.
+		return hit.position.distance_to(point) < depth
 	return hit.position.distance_to(point) < 0.025
 
 func assembly_discovery_hit(owner: String) -> Variant:
@@ -176,7 +178,7 @@ func present_target(access_error: String) -> void:
 	var receivers = target_receivers()
 	# A prompt should not disclose a connection through unrelated scenery. Keep
 	# the target itself so attempting the action can still explain an obstruction.
-	if game.camera.is_position_behind(game.target.point) or not can_see(game.target.point,receivers,target_allows_body_hit()):
+	if game.camera.is_position_behind(game.target.point) or not can_see(game.target.point,receivers,target_allows_body_hit(),target_sight_depth()):
 		game.hud.present_target("")
 		_present_outline()
 		return
@@ -252,6 +254,10 @@ func present_target(access_error: String) -> void:
 		return
 	if not detail.is_empty():caption += "\n"+detail
 	game.hud.present_target(caption,action_key,action_label,game.camera.unproject_position(game.target.point),usable)
+
+func target_sight_depth() -> float:
+	if game.target.get("type","") != "component":return 0.065
+	return game.components.sight_depth(game.target.owner,game.target.sid)
 
 func target_allows_body_hit() -> bool:
 	if game.target.get("type","") == "equipment":return game.target.get("allow_body_hit",false)
@@ -335,7 +341,7 @@ func snap_guidance_available() -> bool:
 	var distance = game.camera.global_position.distance_to(game.target.point)
 	if (distance <= game.REACH and not game.target.get("discovery_only",false)) or distance > game.SNAP_DISCOVERY_RANGE:return false
 	if game.camera.is_position_behind(game.target.point):return false
-	if not can_see(game.target.point,target_receivers(),target_allows_body_hit()):return false
+	if not can_see(game.target.point,target_receivers(),target_allows_body_hit(),target_sight_depth()):return false
 	if game.target.has("discovery_hit") and not can_see(game.target.discovery_hit,[game.assembly_node(game.model.top_level(game.target.get("owner",game.target.get("build",""))))],true):return false
 	return snap_candidate_valid(game.target)
 

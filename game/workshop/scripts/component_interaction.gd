@@ -108,6 +108,11 @@ func candidates() -> Array[Dictionary]:
 			result.append({"type":"component","owner":owner,"sid":sid,"point":point,"radius":record.radius,"compatible":d.accepts == selected})
 	return result
 
+## How far in front of a logical point the receiver surface may sit. The default
+## matches a fastener head. A hollow seat with a solid collision proxy is larger.
+func sight_depth(owner: String, sid: String) -> float:
+	return float(game.model.slot_definition(owner,sid).get("sight_depth",0.065))
+
 func service_access(owner: String, sid: String = "") -> bool:
 	var a: Dictionary = game.model.assemblies[owner]
 	var d: Dictionary = definition(owner)
@@ -139,7 +144,7 @@ func access(check_approach: bool = true) -> String:
 	var policy_error: String = game.model.assembly_access_error(owner,game.target.sid)
 	if not policy_error.is_empty():return policy_error
 	var body: Node3D = game.assembly_node(owner)
-	if not game._visible(game.target.point,receiving_bodies(owner,game.target.sid),service_access(owner,game.target.sid)):return "View obstructed. Approach the station's open side."
+	if not game._visible(game.target.point,receiving_bodies(owner,game.target.sid),service_access(owner,game.target.sid),sight_depth(owner,game.target.sid)):return "View obstructed. Approach the station's open side."
 	if check_approach and is_instance_valid(held_body):return game._carry_placement_error(slot_pose(game.target.owner,game.target.sid),held_body,body)
 	return ""
 

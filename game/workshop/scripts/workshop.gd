@@ -631,7 +631,7 @@ func _update_ghost(access_result: Variant = null) -> void:targeting.update_ghost
 func _update_markers() -> void:targeting.update_markers()
 func _show_assembly_ghost(owner: String = "") -> void:targeting.show_assembly_ghost(owner)
 func _aim_score(point: Vector3, radius: float) -> float:return targeting.aim_score(point,radius)
-func _visible(point: Vector3, allowed: Array = [], allow_body_hit: bool = false) -> bool:return targeting.can_see(point,allowed,allow_body_hit)
+func _visible(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, depth: float = 0.065) -> bool:return targeting.can_see(point,allowed,allow_body_hit,depth)
 func _assembly_discovery_hit(owner: String) -> Variant:return targeting.assembly_discovery_hit(owner)
 func _target_receivers() -> Array:return targeting.target_receivers()
 func _access(allowed: Array = [], check_approach: bool = true) -> String:return targeting.access(allowed,check_approach)

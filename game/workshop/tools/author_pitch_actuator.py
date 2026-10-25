@@ -81,6 +81,11 @@ page('Rod eye','Fit FA-525 (rod eye housing), one FA-526 spherical eye bearing, 
 # Within each eye, and guide/seal layer, enforce the explicitly illustrated order.
 for chain in [[uid('FA-525'),uid('FA-526'),uid('FA-527')],[uid('FA-525',2),uid('FA-526',2),uid('FA-527',2)],[uid('FA-519'),uid('FA-520')]]:
     for a,b in zip(chain,chain[1:]): slots[b]['requires'].append(a)
+# The housing collides as a solid box around its hollow bore. The bearing center
+# is 66–81 mm behind the face a standing player looks at, past the 65 mm
+# near-surface test, so the placement preview never appears. 120 mm covers that
+# proxy and still rejects a look along the closed barrel.
+for n in (1, 2): slots[uid('FA-526', n)]['sight_depth'] = 0.12
 assert len(slots)==91
 pages.append(dict(title='Ready to install',body='FA-500-P is ready after all 91 pieces. Open the parent foot manual for installation.',slots=list(slots),view='prepared'))
 actuator = dict(part_id='FA-500-P',title='FA-500-P · Pitch actuator',root_slot='base',frame_source=uid('FA-510'),bounds=[0.24,0.80,0.80],interaction='components',service_access='open_station',work_locations=['station'],slots=slots,milestones={'prepared':list(slots),'enclosed':[uid('FA-510')]+pages[10]['slots']},enclosure_source=uid('FA-510'),manual=pages)

@@ -7,6 +7,7 @@ ROUTINE = (
     'chest_content_test',
     'crane_policy_test',
     'equipment_motion_test',
+    'eye_bearing_access_test',
     'geometry_surface_audit_test',
     'interaction_outline_test',
     'leg_content_test',
