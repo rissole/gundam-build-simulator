@@ -26,7 +26,10 @@ func update_target() -> void:
 				if not game.model.assembly_access_error(owner,sid).is_empty():continue
 				candidates.append({"type":"mount","owner":owner,"build":held,"mount":sid,"point":game.mount_point(sid,owner,held),"radius":0.30})
 
-	for kind in game.bins:candidates.append({"type":"bin","kind":kind,"point":game.bins[kind].global_transform*Vector3(0,0.13,0.27),"radius":0.35})
+	for kind in game.bins:
+		var point: Vector3 = game.bins[kind].global_transform*Vector3(0,0.13,0.27)
+		if game.camera.global_position.distance_squared_to(point) <= game.SNAP_DISCOVERY_RANGE*game.SNAP_DISCOVERY_RANGE:
+			candidates.append({"type":"bin","kind":kind,"point":point,"radius":0.35})
 	for uid in game.loose:
 		if is_instance_valid(game.loose[uid]):candidates.append({"type":"loose","uid":uid,"point":game.loose[uid].global_position,"radius":0.12})
 	if game.journey != null:candidates = game.journey.filter_candidates(candidates)
@@ -124,6 +127,9 @@ func assembly_discovery_hit(owner: String) -> Variant:
 	return point if can_see(point,[body],true) else null
 
 func snap_candidate_valid(candidate: Dictionary) -> bool:
+	# Stock, pickups and controls cannot become attachment previews. Avoid
+	# querying every equipment interlock for these non-connection candidates.
+	if candidate.get("type","") not in ["component","mount"]:return false
 	var owner: String = candidate.get("owner",candidate.get("build",""))
 	if not game.equipment_access_error(owner).is_empty():return false
 	match candidate.get("type",""):

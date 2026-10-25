@@ -40,7 +40,12 @@ static func _cell(grid: Dictionary, index: int) -> Rect2:
 
 ## Empty drawers and shelves offer nothing; every other target stays.
 func filter_candidates(candidates: Array[Dictionary]) -> Array[Dictionary]:
-	return candidates.filter(func(entry):return entry.type != "bin" or game.model.count_at(entry.kind,"bin") > 0)
+	# One inventory pass, not one full recount for every drawer. Build this from
+	# current state so collection, return and supplied staging need no cache invalidation.
+	var stocked: Dictionary = {}
+	for item in game.model.items.values():
+		if item.location == "bin":stocked[item.kind] = true
+	return candidates.filter(func(entry):return entry.type != "bin" or stocked.has(entry.kind))
 
 func undo_error(owner: String) -> String:
 	return "The supplied right foot stays assembled." if owner in RIGHT_FOOT else ""

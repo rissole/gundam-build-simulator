@@ -2,7 +2,7 @@ extends SceneTree
 ## Real-time mouse-look benchmark. Do not use --fixed-fps or --disable-render-loop.
 ## ./play.command --script tools/benchmark_mouse_look.gd
 ## --headless measures CPU only. Optional user args: --seconds=4 --tag=baseline
-## --variant=no-shadows|no-msaa|no-context|no-feedback
+## --variant=no-shadows|four-split-shadows|no-msaa|no-context|no-feedback
 ## --input-events=8 dispatches a burst through Godot; default 1. 0 calls the adapter directly.
 ## --benchmark-windowed requests a 1440x900 window; actual size is recorded.
 ## --force-draw measures explicit render throughput, not normal presentation pacing.
@@ -122,7 +122,7 @@ func run() -> void:
 		elif arg.begins_with("--input-events="):input_events = clampi(int(arg.trim_prefix("--input-events=")),0,64)
 		elif arg == "--force-draw":force_draw = true
 		elif arg == "--benchmark-windowed":windowed = true
-	if not variant in ["normal","no-shadows","no-msaa","no-context","no-feedback"]:
+	if not variant in ["normal","no-shadows","four-split-shadows","no-msaa","no-context","no-feedback"]:
 		push_error("Unknown benchmark variant: "+variant)
 		quit(2)
 		return
@@ -142,6 +142,10 @@ func run() -> void:
 	if force_draw:RenderingServer.render_loop_enabled = false
 	if variant == "no-shadows":
 		for light in game.find_children("*","Light3D",true,false):light.shadow_enabled = false
+	elif variant == "four-split-shadows":
+		for light in game.find_children("*","DirectionalLight3D",true,false):
+			light.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+			light.directional_shadow_split_1 = 0.1
 	elif variant == "no-msaa":root.msaa_3d = Viewport.MSAA_DISABLED
 	elif variant == "no-context":
 		for mesh in game.foot.find_children("*","MeshInstance3D",true,false):mesh.visible = false

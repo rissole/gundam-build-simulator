@@ -53,8 +53,9 @@ func controls() -> Array[Dictionary]:
 	if not held.is_empty():
 		result.append(control_entry(surface,"store","Store component on lift shelf · click",.4,{"point":to_global(Vector3(0,.08,.26)),"input":"place","allowed":[lift.deck]}))
 	else:
+		var stored = occupants()
 		for index in range(2):
-			var uid = occupants()[index]
+			var uid = stored[index]
 			if uid.is_empty():continue
 			var body: Node3D = cargo[uid]
 			var bounds: AABB = game.source[game.source_uid(uid)].mesh.get_aabb()

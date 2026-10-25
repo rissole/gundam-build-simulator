@@ -10,6 +10,19 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Performance (2026-10-25):** shadows stay enabled with the same 4096 atlas,
+  65 m coverage, split blending and approved lighting. Two cascades replace four;
+  distant shadows trade detail for fewer caster draws. Targeting now counts stock
+  once per pass, rejects distant static connection groups using their authored
+  target bounds, and keeps articulated/child targets and access rules live.
+  CPU probe: ~7.0→1.7 ms targeting. Same explicit-draw arrival sweep: ~35–36→43–44
+  FPS; normal rendering also completed validly at ~42–45 FPS. All 29 routine
+  cases passed (7.6 s), then the expanded 20-check targeting fixture passed.
+  **60 FPS is not achieved.** Reported 6003×3750 render texture, later-stage
+  performance and broader hardware remain unresolved. Shadow appearance awaits
+  user playtest; no rendered visual review. Evidence: local
+  `verification/shadows-targeting-report.json`; benchmark usage in the workshop README.
+
 - **Fast verification (2026-10-25):** the default runner now selects isolated tests
   and one fresh-workshop smoke. Expensive investigations require explicitly requested
   named diagnostics, never automatic full-suite verification. A 60-second warning
@@ -180,6 +193,7 @@ last version before consolidation.
 
 | Feedback / positive finding | Current direction and open question |
 | --- | --- |
+| Generally low FPS, with much more component detail still to come; wants 60 FPS on entry gaming hardware and Apple Silicon. Explicitly rejects disabling shadows because it makes the world flat (2026-10-25) | Preserve shadows and approved brightness. Two-cascade shadows plus targeting improvements implemented and mechanically measured as above. This is a gain, not a 60 FPS pass. Remaining options: verify/control actual render resolution, reduce repeated geometry submissions, then measure later stages and component growth. Far-shadow detail needs the user's judgment. The initial focus-lost benchmark was rejected; subsequent normal rendering passed the frame-validity guard. |
 | Elevators can't be called because the game always thinks the player is in the way. With thousands of loose parts coming, movement must not need completely clear routes (2026-10-25) | Guarded motion as described under “Where things stand”. The user chose to point at loose parts rather than push them, provided the platform's path is very visibly marked, and chose the simplest elevator form: queued calls, no landing gates. The elevator, mobile platform, shelf cargo, loaded crane/rig and rail now share guarded-motion policy, mechanically checked. The mobile platform's visible lane and the user's ride/feedback checks remain. |
 | Regression verification took 10–15 minutes per change; agents kept running full suites despite documentation. Wants unit-style tests around one minute, separate named diagnostics, and a warning rather than a 60-second timeout (2026-10-25) | Default runner structurally selects routine tests only. Shared content, local crane/receiver/staging contracts and isolated chest/shoulder geometry replace routine journeys. Unique full-scene checks remain named-only diagnostics; never automatically selected. Warn and improve tests above 60 seconds; do not raise the budget. Existing fast model/physics tests were a positive baseline. See the coverage migration linked above. |
 | Wanted everything consolidated into a single play command (the full workshop) with flags such as `--stage=` to skip stages or support tests, and no milestone references outside history (2026-10-25) | Implemented as described under “Where things stand”. The user chose to remove the foot workshop with its save code, and to delete the leg-bay trials with their tests. Removed with them: the single/two-pad, trial and save suites, the broken walked-journey suites, the stale single-leg geometry review, and (at the user's request, who will verify the foot build by hand) the foot-room suites that depended on the old room's coordinates: jump, snap discovery, manual navigation, free-build targeting, interaction feedback, workshop geometry, supported fixture and crane console panel. Porting the foot suites found and fixed three robot-game bugs: the journey filter removed carry, station and mount targets (the pads and actuator could not be picked up, suspended or mounted); staging the supplied right foot consumed the left foot's own identities; and the foot carrier refused undo of the left foot while it was still in its fixture. The stock grid now also keeps a 1.6 m aisle clear in front of the preparation stations, tray and actuator start. Preparation-station rotation (hold R) is enabled, as it was in the foot workshop; the hangar had disabled it. Mechanically checked only; awaiting the user's check of the foot build. |

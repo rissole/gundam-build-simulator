@@ -514,3 +514,34 @@ Godot is used under its [MIT license](https://godotengine.org/license/). Engine 
 Carry implementation references: [kinematic freeze mode](https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html#enum-rigidbody3d-freezemode), [collision-aware body movement](https://docs.godotengine.org/en/stable/classes/class_physicsbody3d.html#class-physicsbody3d-method-move-and-collide), and [non-exclusive fullscreen](https://docs.godotengine.org/en/stable/classes/class_displayserver.html#enum-displayserver-windowmode).
 
 Attached assemblies use the [static freeze mode](https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html#enum-rigidbody3d-freezemode), which leaves their movement to scene code. The rotation regression reproduces the old carrying-mode transform conflict during input between physics ticks, rather than relying only on settled transforms.
+
+## Performance measurements
+
+The opt-in `tools/benchmark_mouse_look.gd` measures the starting workshop at fixed
+arrival/work-bay positions, stationary and with synthetic mouse look. Run it only
+for a requested performance investigation, separately from routine regressions:
+
+```sh
+./play.command --script tools/benchmark_mouse_look.gd -- --tag=baseline --seconds=4
+```
+
+Keep the window visible and focused. The report rejects skipped rendering and
+blocked camera input. Do not use fixed FPS or disable the render loop. Each phase
+warms for two seconds; raw samples, percentiles, draw counts, actual reported
+window/texture sizes and validity flags are written to `verification/mouse-look-*`.
+`--force-draw` measures explicit-draw throughput, not ordinary presentation pacing;
+compare it only against the same mode. Headless runs measure CPU work only.
+
+`--variant=four-split-shadows` restores the former four-cascade configuration for
+an isolated shadow comparison. Normal play uses two blended cascades, still at
+4096 resolution and 65 m coverage. This saves repeated caster submissions while
+retaining near working detail; distant shadows have less graduated detail. Lighting,
+brightness, MSAA and all geometry remain unchanged. Other benchmark-only variants
+include `no-shadows`, `no-msaa` and `no-feedback`; they do not change normal settings.
+
+Targeting uses one stock-inventory pass and cached local bounds of actual authored
+connection targets, rather than collision bounds. Bounds move with the assembly;
+model changes invalidate the geometry cache. Articulated and forwarded child
+connections are evaluated live, as are prerequisites, ownership, variant feedback,
+reach and obstruction. `targeting_candidates_test` compares discovery with an
+exhaustive reference, including motion, mounting, installation and undo.
