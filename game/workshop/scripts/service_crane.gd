@@ -463,6 +463,9 @@ func _undo_beam() -> String:
 func _crane_owned(model: AssemblyModel = null) -> bool:
 	return _record(model).location == "support:"+support
 
+## True while the active load hangs on the crane: the workshop save waits for delivery.
+func holds_load() -> bool:return _crane_owned()
+
 func _path(at: String, up: bool, action: String, p: float) -> float:
 	var high=float(route.size()-3);var seat=float(route.size()-1)
 	var start = (1.0 if up else 0.0) if at == "source" else (high if up else seat)

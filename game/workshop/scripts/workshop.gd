@@ -8,6 +8,7 @@ const Registry = preload("res://scripts/equipment_registry.gd")
 const Hands = preload("res://scripts/hand_slot.gd")
 const Content = preload("res://scripts/workshop_content.gd")
 const Stages = preload("res://scripts/build_stages.gd")
+const Save = preload("res://scripts/workshop_save.gd")
 ## Interaction and physics order; earlier equipment answers aggregate queries first.
 const EQUIPMENT_ORDER = ["workshop_access","rail_gates","mobile_platform","module_supports","core_guide","backpack_hinge","captive_controls","joint_restraints","foot_carrier","leg_rail","arm_cassette","left_shoulder","right_shoulder","left_shelf","right_shelf","service_crane","foot_fixture","left_lift","right_lift"]
 const FOOT_CENTER = Vector3(0,0.8,-0.7)
@@ -61,6 +62,9 @@ var automated_test: bool = false
 var start_stage: String = ""
 ## Pause-menu note describing the last --stage preparation.
 var stage_notice: String = ""
+## The save slot. Empty (no saving) unless this is a normal launch; tests opt in.
+var save_path: String = ""
+var save: RefCounted
 var scripted_controls: Dictionary = {}
 var config: Dictionary
 var source: Dictionary = {}
@@ -154,6 +158,16 @@ func _ready() -> void:
 	journey = preload("res://scripts/leg_journey_policy.gd").new(self)
 	preload("res://scripts/scenario_staging.gd").prepare(self)
 	_build_equipment(EQUIPMENT.filter(func(id):return id != "foot_fixture"))
+	start_stage = Stages.stage_flag(Array(OS.get_cmdline_user_args()))
+	# Only a normal launch keeps a save; tests, tools (custom SceneTree scripts)
+	# and --stage launches never touch it.
+	if save_path.is_empty() and not automated_test and start_stage.is_empty() and get_tree().get_script() == null:save_path = Save.PATH
+	save = Save.new(self,save_path)
+	if save.load_saved():
+		# Restored milestones are not new: no toast or chime on load.
+		for id in builds:
+			prepared_flags[id] = build_prepared(id)
+			completed_flags[id] = build_complete(id)
 	player_controller.spawn(SPAWN)
 	storage = preload("res://scripts/part_storage.gd").new(self)
 	add_child(storage)
@@ -176,12 +190,12 @@ func _ready() -> void:
 	add_child(hud)
 	hud.open_manual("foot")
 	model.changed.connect(_state_changed)
+	model.changed.connect(save.model_changed)
 	_make_audio()
 	_state_changed()
 	world.configure_foot_rendering()
 	set_paused(true)
 	started = true
-	start_stage = Stages.stage_flag(Array(OS.get_cmdline_user_args()))
 	if not start_stage.is_empty() and not automated_test:call_deferred("run_stage",start_stage)
 
 func has_equipment(id: String) -> bool:
@@ -580,8 +594,14 @@ func _milestone(message: String, owner: String) -> void:
 		if is_instance_valid(glowing_mesh) and glowing_mesh.material_overlay == glow:glowing_mesh.material_overlay = null)
 
 func reset_demo() -> void:
-	# Nothing is saved; reloading also re-runs any --stage launch flag.
+	# Reloading restores the saved workshop, if any, or re-runs a --stage launch.
 	get_tree().reload_current_scene()
+
+## Pause menu: forget the saved workshop and start again from a fresh launch.
+func new_workshop() -> void:
+	Save.delete(save_path)
+	Save.notice = ""
+	reset_demo()
 
 ## Overridable orchestration boundary; production always uses the real stage runner.
 func create_stage_runner() -> RefCounted:return Stages.new(self)
