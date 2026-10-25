@@ -164,7 +164,7 @@ off **Suggested only**.
 2. Press **E** on a drawer to fill a pocket with up to **20 copies** from the available stock. A matching pocket is topped up; otherwise an empty pocket is used and selected. When all ten pockets are occupied, E replaces the selected stack and returns the displaced pieces to their drawer. An empty drawer never evicts stock.
 3. The **ten persistent pockets** are hotkeyed to **1 2 3 4 5 6 7 8 9 0**. Their images, IDs and quantities show what you actually have. Switching manuals or pages never changes the bar. There is no shared item-count limit.
 4. **B clears the selected pocket anywhere**, returning the whole stack to its drawer. Small parts never become loose world objects. **Q** sets down a carried shelf component or assembly. Hands operate separately from the hotbar; no numbered key is reserved for hands.
-5. The top-right **current step** panel shows the chapter, step, a one-sentence goal and a checklist that ticks itself from the build and the machines, with counts such as 1/2 and a note for the current item. **V** shows or hides its diagram; **Tab / M** hides the panel. **N** opens the **manual**: chapters with each step marked Done, In progress, Ready to start or Locked. Select a step to read its objectives; **Enter** tracks it. N or Escape returns to play. **Page Up / Page Down** scroll pages that still use prose. Objectives use the same part IDs as the drawers and shelves.
+5. The top-right **current step** panel shows the chapter, step, a one-sentence goal and a checklist that ticks itself from the build and the machines, with counts such as 1/2 and a note for the current item. **Tab** hides or shows the panel. **M** opens the **manual**: chapters with each step marked Done, In progress, Ready to start or Locked. Select a step to read its objectives; **Enter** tracks it. M or Escape returns to play. **Page Up / Page Down** scroll pages that still use prose. Objectives use the same part IDs as the drawers and shelves.
 6. Carry either FA-302 heel pad with E and click an empty preparation station. Stock FA-305, W-24 and H-24120 in separate pockets. Fit four FA-305 sleeves, seat the pad at either heel position, then fit W-24 before H-24120 at each connection.
 7. Pick up FA-513 from the floor beside preparation C and suspend it there to start the FA-500-P pitch build. Assemble the exposed drive using the fixture for support. Fit FA-510 after the rod, fasten the motor through the open rear and the retainer from outside, then add the guide, sensors, seals and caps. The foot manual then covers both FA-220 clevises, seating FA-500-P, and retaining both ends with FA-221, FA-222, W-12 and H-12030.
 8. Use **E on the foot bay controls** to select **Upright**, **Sole left** or **Sole right**. The mechanical cradle turns the supported foot gradually. Walk around it and use the ramp/platform to reach the exposed connections. R rotates the small preparation fixtures; the foot uses its equipment controls.
@@ -213,9 +213,8 @@ Equipment still captures and restores its own state, which the stage runner uses
 | Hold R + move mouse | Rotate the preparation station you are looking at |
 | Double-tap R | Restore that preparation station's working orientation (F remains an alternate binding) |
 | Mouse wheel | Inspect zoom |
-| Tab or M | Show/hide the current step panel |
-| N | Open/close the manual; Escape also closes it. ↑/↓ select a step, Enter tracks it |
-| V | Show/hide the current step's diagram |
+| Tab | Show/hide the current step panel |
+| M | Open/close the manual; Escape also closes it. ↑/↓ select a step, Enter tracks it |
 | Page Up / Page Down | Scroll steps that still use prose |
 | Z | Undo the latest action in the aimed build, otherwise in the current step's build |
 | Escape | Open grouped controls, Resume, New workshop (Restart build in --stage launches; asks for confirmation) or Quit |

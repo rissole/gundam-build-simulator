@@ -30,9 +30,14 @@ func run() -> void:
 	expect((str(after.owner) != str(tracked.owner) or int(after.page) != int(tracked.page)) and str(after.owner) == str(picked.owner) and int(after.page) == int(picked.page) and game.hud.page_title.text == str(after.title),"Enter tracks the newly selected step and the panel title follows")
 	game.hud.handle_manual_browser_input(key(KEY_ESCAPE))
 	expect(not game.hud.browser.visible and not game.paused,"Esc closes the manual and resumes the workshop")
-	var shown: bool = game.hud.diagram.visible
-	game.handle_desktop_input(key(KEY_V))
-	expect(game.hud.diagram.visible != shown,"V toggles the current step diagram")
+	expect(game.hud.diagram.visible,"the current step diagram is always shown")
+	game.hud.handle_manual_browser_input(key(KEY_M))
+	expect(game.hud.browser.visible,"M opens the manual")
+	game.hud.handle_manual_browser_input(key(KEY_M))
+	expect(not game.hud.browser.visible and not game.paused,"M closes the manual again")
+	var panel_shown: bool = game.hud.manual.visible
+	game.handle_desktop_input(key(KEY_TAB))
+	expect(game.hud.manual.visible != panel_shown,"Tab toggles the current step panel")
 	var passed: bool = checks.all(func(check):return check.passed)
 	print("MANUAL_PANEL ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free()

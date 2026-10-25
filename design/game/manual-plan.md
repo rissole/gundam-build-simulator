@@ -128,9 +128,9 @@ is its own chapter, placed before the step that seats it.
 - **Current step panel** (top-right, replacing the compact manual): chapter ·
   step title, the goal, the checklist with counts and the current objective
   marked, the current objective's note, and a toggleable diagram showing the
-  current objective's parts. Other unblocked steps appear as a short line ("2
+  current objective's parts (always shown). Tab hides the panel; it is translucent. Other unblocked steps appear as a short line ("2
   more ready to start").
-- **Manual** (N, pauses like now): a chapter list on the left with each step's
+- **Manual** (M, pauses like now): a chapter list on the left with each step's
   status and "You are here" pinned. The selected step is on the right with a
   larger diagram. Pin a step to track it.
 - **Chosen layouts (user, 2026-10-25):** current step panel = diffui panel

@@ -17,7 +17,6 @@ var note_label: Label
 var diagram_rule: ColorRect
 var ready_label: Label
 var diagram: Control
-var diagram_open: bool = true
 var _panel_signature: String = ""
 var _progress_timer: float = 0.0
 var target_label: Label
@@ -198,7 +197,7 @@ func _make_fps_counter() -> void:
 
 func _make_manual() -> void:
 	manual = panel_at(root,Vector2(1,0),Rect2(-366,24,342,0))
-	manual.add_theme_stylebox_override("panel",style(Color("101b23"),Color("a6bac344"),12))
+	manual.add_theme_stylebox_override("panel",style(Color("101b2399"),Color("a6bac344"),12))
 	var column = VBoxContainer.new()
 	column.add_theme_constant_override("separation",6)
 	manual.add_child(column)
@@ -254,8 +253,8 @@ func _make_manual() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	footer.add_child(spacer)
-	footer.add_child(hint_row(["N"],"Manual",12))
-	footer.add_child(hint_row(["V"],"Diagram",12))
+	footer.add_child(hint_row(["M"],"Manual",12))
+	footer.add_child(hint_row(["Tab"],"Hide panel",12))
 	column.add_child(footer)
 
 func _make_action_bar() -> void:
@@ -459,7 +458,7 @@ func _make_pause() -> void:
 		[["LMB"],"Attach at the preview"],[["~Hold","R","~+ mouse"],"Rotate preparation station"],
 		[["R","~then","R"],"Reset preparation rotation"],		[["Z"],"Undo (aimed build, else the current step's)"]]))
 	grid.add_child(_control_group("Manual & menu",[
-		[["N","~Manual ·","V","~Diagram ·","Tab"],"Hide step"],[["Esc"],"Pause / resume"]]))
+		[["M","~Manual ·","Tab"],"Hide panel"],[["Esc"],"Pause / resume"]]))
 	session_label = label("",13,muted)
 	session_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -611,13 +610,13 @@ func manual_title() -> String:
 func handle_manual_browser_input(event: InputEvent) -> bool:
 	if browser == null:return false
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.physical_keycode == KEY_N:
+		if event.physical_keycode == KEY_M:
 			if browser.visible:browser.close_browser()
 			elif not game.paused:browser.open_browser()
 			return true
 		if browser.visible:
 			match event.physical_keycode:
-				KEY_ESCAPE, KEY_TAB, KEY_M:browser.close_browser()
+				KEY_ESCAPE, KEY_TAB:browser.close_browser()
 				KEY_UP:browser.move_selection(-1)
 				KEY_DOWN:browser.move_selection(1)
 				KEY_ENTER, KEY_KP_ENTER:browser.track_selected()
@@ -635,11 +634,6 @@ func open_manual(id: String, at_page: int = -1) -> void:
 	page = clampi(page,0,page_total()-1)
 	manual.visible = true
 	refresh()
-
-func toggle_diagram() -> void:
-	diagram_open = not diagram_open
-	if diagram != null:diagram.visible = diagram_open and _tracked_step().is_empty() == false
-	if diagram_rule != null:diagram_rule.visible = diagram.visible if diagram != null else false
 
 func _tracked_step() -> Dictionary:
 	if game == null or game.manual_progress == null:return {}
@@ -779,7 +773,7 @@ func _step_signature(step: Dictionary) -> String:
 func _refresh_step_panel() -> void:
 	if diagram == null:return
 	var step := _tracked_step()
-	var show_figure := diagram_open and not step.is_empty()
+	var show_figure := not step.is_empty()
 	diagram.visible = show_figure
 	if diagram_rule != null:diagram_rule.visible = show_figure
 	var signature := _step_signature(step)

@@ -63,10 +63,9 @@ func handle(event: InputEvent) -> void:
 			KEY_Q: game.drop_selected()
 			KEY_B: game.deposit()
 			KEY_Z: game.undo_build()
-			KEY_TAB, KEY_M: game.hud.manual.visible = not game.hud.manual.visible
+			KEY_TAB: game.hud.manual.visible = not game.hud.manual.visible
 			KEY_PAGEUP: game.hud.body_scroll.scroll_vertical -= 140
 			KEY_PAGEDOWN: game.hud.body_scroll.scroll_vertical += 140
-			KEY_V: game.hud.toggle_diagram()
 			KEY_F: reset_station()
 		game.hud.refresh()
 		# Pocket changes can switch between pickup and placement intent. Resolve
