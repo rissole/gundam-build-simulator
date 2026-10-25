@@ -1,6 +1,6 @@
 extends "res://scripts/guided_receiver.gd"
 ## Seat -> retain -> release. Physical ownership and filled slots are authoritative;
-## this controller deliberately inherits the equipment's empty save contract.
+## its only save state is which joint and digit restraints the player released.
 var released_operations: Dictionary = {}
 var operation_nodes: Dictionary = {}
 var captive_nodes: Dictionary = {}
@@ -74,6 +74,16 @@ func request(action: String) -> String:
 	return ""
 
 func operations_released() -> bool:return released_operations.values().all(func(value):return value)
+
+func capture() -> Dictionary:return {"released_operations":released_operations.duplicate()}
+
+func apply(data: Dictionary) -> void:
+	for operation in released_operations:
+		var released: bool = data.get("released_operations",{}).get(operation,false) == true
+		released_operations[operation] = released
+		operation_nodes[operation].visual.visible = not released
+		operation_nodes[operation].collision.disabled = released
+	_sync()
 
 func _sync() -> void:
 	active=game.model.assemblies[spec.owner].slots[spec.slot]==spec.uid

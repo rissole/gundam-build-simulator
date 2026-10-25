@@ -1,0 +1,61 @@
+extends "res://tests/kit/harness.gd"
+## Workshop save round trip from a fresh boot: build state, machine stops, the
+## parked crane and deletion of invalid files. Later stages: save_roundtrip_stages_test.
+const Save = preload("res://scripts/workshop_save.gd")
+const Stages = preload("res://scripts/build_stages.gd")
+const Roundtrip = preload("res://tests/kit/save_roundtrip.gd")
+const PATH = "user://save-roundtrip-test.json"
+func _initialize() -> void:call_deferred("run")
+func run() -> void:
+	Save.delete(PATH)
+	var game = await boot_workshop("",8,{"save_path":PATH})
+	expect(game.save.enabled() and not FileAccess.file_exists(PATH),"an opted-in fresh workshop writes nothing before a component is set")
+	expect(game.automation.suspend_at_station("pad_1","prep").is_empty() and game.automation.fill("pad_1",2) == 2,"pad_1 sits at a station with two fitted sleeves")
+	await frames(2,false)
+	expect(FileAccess.file_exists(PATH),"setting a component writes the save")
+	var fixture = game.equipment.get_equipment("foot_fixture")
+	expect(Stages.new(game).command(fixture,"sole_left").is_empty() and fixture.work_pose == "sole_left","the foot fixture turns to a stop")
+	await frames(2)
+	var lift = game.equipment.get_equipment("left_lift")
+	var lift_rest: String = JSON.stringify(lift.capture())
+	expect(lift.request("up").is_empty() and lift.moving,"the left lift starts moving")
+	expect(game.automation.fill("pad_1",1) == 1,"a sleeve is fitted while the lift moves")
+	await frames(2,false)
+	var undone: Dictionary = game.model.undo("pad_1")
+	game.components.sync("pad_1")
+	expect(undone.ok,"an undo is saved like any other change")
+	await frames(2,false)
+	expect(lift.moving,"the lift is still moving when the save is written")
+	var file: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PATH))
+	expect(JSON.stringify(Save.coerce(file.equipment.left_lift,lift.capture())) == lift_rest,"a moving machine is saved at its last stop")
+	expect(not file.equipment.has("service_crane"),"the crane is not saved")
+	var saved: Dictionary = Roundtrip.state(game)
+	game.free()
+	await frames(2)
+	var loaded = await boot_workshop("",8,{"save_path":PATH})
+	var differences: Array[String] = Roundtrip.differences(saved,Roundtrip.state(loaded))
+	expect(differences.is_empty(),"the reload matches the saved workshop: "+"; ".join(differences))
+	var crane = loaded.equipment.get_equipment("service_crane")
+	expect(crane.station == "park" and crane.attached_count() == 0,"the crane reloads parked with its ends stowed")
+	expect(loaded.model.integrity_errors().is_empty() and loaded.model.held_item().is_empty() and loaded.held_build().is_empty() and loaded.model.pockets.all(func(kind):return kind.is_empty()),"the reload is valid with empty hands and pockets")
+	expect(Save.notice.begins_with("Restored"),"the pause menu notice reports the restore")
+	# Invalid files are deleted before anything live changes.
+	var good: String = FileAccess.get_file_as_string(PATH)
+	var before: String = JSON.stringify(loaded.save.normalised_model())
+	var wrong_format: Dictionary = JSON.parse_string(good)
+	wrong_format.format = 999
+	var unknown: Dictionary = JSON.parse_string(good)
+	unknown.model.items["ghost"] = unknown.model.items.values()[0]
+	var renamed: Dictionary = JSON.parse_string(good)
+	renamed.equipment.left_lift["renamed"] = 1
+	for case in [["truncated JSON",good.substr(0,good.length()/2)],["wrong format",JSON.stringify(wrong_format)],["unknown identity",JSON.stringify(unknown)],["changed machine fields",JSON.stringify(renamed)]]:
+		var out = FileAccess.open(PATH,FileAccess.WRITE)
+		out.store_string(case[1])
+		out.close()
+		Save.notice = ""
+		expect(not loaded.save.load_saved() and not FileAccess.file_exists(PATH) and Save.notice.begins_with("Your saved workshop") and JSON.stringify(loaded.save.normalised_model()) == before,"discarded without changes: "+case[0])
+	loaded.free()
+	Save.delete(PATH)
+	var passed = checks.all(func(c):return c.passed)
+	print("SAVE_ROUNDTRIP ","PASS " if passed else "FAIL ",checks.size()," checks")
+	quit(0 if passed else 1)

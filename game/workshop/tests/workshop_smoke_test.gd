@@ -12,6 +12,7 @@ func run() -> void:
 	expect(game.model.assemblies.foot.location=="support:foot_store" and game.model.milestone("right_foot","complete"),"initial supports and supplied right foot are correct")
 	expect(["pad_1","pad_2","pitch"].all(func(id):return game.model.assemblies[id].parent.is_empty()),"left foot children remain available to build")
 	expect(game.hud.manual_id=="foot" and game.model.integrity_errors().is_empty(),"initial manual and ownership are valid")
+	expect(game.save != null and not game.save.enabled(),"automated boots never read or write the human save")
 	expect(preload("res://scripts/build_stages.gd").new(game).stage_errors("foot").is_empty(),"actual startup satisfies fresh stage boundary")
 	game.set_paused(false)
 	var key=InputEventKey.new();key.physical_keycode=KEY_ESCAPE;key.pressed=true

@@ -178,7 +178,14 @@ func apply(data: Dictionary) -> void:
 	_destination_dispatch = data.destination_dispatch
 	_destination = Transform3D(Basis(Vector3.BACK, POSE_ANGLES[data.destination_pose]), dispatch_origin if data.destination_dispatch else work_origin)
 	blocked_reason = ""
-	_apply_pose(foot.global_transform)
+	# At rest the indexed pose is authoritative (a reload starts from the fresh pose).
+	# The foot follows only while this fixture still holds it.
+	var pose: Transform3D = foot.global_transform if moving else Transform3D(Basis(Vector3.BACK, POSE_ANGLES[work_pose]), dispatch_origin if at_dispatch else work_origin)
+	if game.model.assemblies[game.default_parent_id()].location == holding_location:
+		_apply_pose(pose)
+	else:
+		carriage.global_position = Vector3(pose.origin.x, 0, pose.origin.z)
+		rotator.global_transform = pose
 	_refresh_labels()
 
 func physics(delta: float) -> void:

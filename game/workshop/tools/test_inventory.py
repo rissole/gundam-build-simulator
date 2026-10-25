@@ -22,6 +22,7 @@ ROUTINE = (
     'receiver_contract_test',
     'robot_content_test',
     'runner_contracts',
+    'save_roundtrip_test',
     'shoulder_content_test',
     'source_assets',
     'stage_contract_test',
