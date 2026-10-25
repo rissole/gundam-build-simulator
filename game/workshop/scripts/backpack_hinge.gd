@@ -6,9 +6,9 @@ const Sweep=preload("res://scripts/motion_sweep.gd")
 const Solid=preload("res://scripts/solid_handling.gd")
 var spec: Dictionary
 var active=false
-var angle=0.0
-var goal=0.0
-var tension=0.0
+var angle: float=0.0
+var goal: float=0.0
+var tension: float=0.0
 var struts: Array[float]=[0,0]
 var strut_goals: Array[float]=[0,0]
 var locks: Array[bool]=[false,false]

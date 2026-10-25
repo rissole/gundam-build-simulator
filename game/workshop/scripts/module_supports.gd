@@ -274,3 +274,8 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 
 func apply(data: Dictionary) -> void:
 	template=data.template;height=data.height;goal=data.goal;moving=data.moving;source_release=data.source_release;jaws.assign(data.jaws);jaw_goals.assign(data.jaw_goals);locks=data.locks.duplicate();blocked_reason="";_pose()
+	# A reload starts with the pelvis on the bulky fixture; the gantry seat is fixed.
+	# Builds mounted on the pelvis follow it.
+	if _location()=="support:"+spec.receiver_support:
+		var pelvis: CollisionObject3D=game.runtime.node("pelvis");pelvis.global_transform=Layout.authored_pose(spec.receiver_pose)
+		pelvis.force_update_transform();PhysicsServer3D.body_set_state(pelvis.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,pelvis.global_transform)

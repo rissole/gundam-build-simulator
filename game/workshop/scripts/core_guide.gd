@@ -4,10 +4,10 @@ const Codec=preload("res://scripts/pose_codec.gd")
 const Sweep=preload("res://scripts/motion_sweep.gd")
 var spec: Dictionary
 var active=false
-var rig=0.0
-var rig_goal=0.0
-var travel=0.0
-var goal=0.0
+var rig: float=0.0
+var rig_goal: float=0.0
+var travel: float=0.0
+var goal: float=0.0
 var moving=false
 var blocked_reason=""
 var bolts: Array[bool]=[false,false,false,false]

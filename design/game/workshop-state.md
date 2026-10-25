@@ -15,9 +15,12 @@ last version before consolidation.
   set and restore on launch: the model and every machine's last stop, with the
   crane parked and hands/pockets/loose parts back in drawers. Invalid saves are
   deleted, never migrated. The pause menu offers **New workshop**. Mechanical
-  checks: `save_roundtrip_test` (fresh boot). The later-stage diagnostic
-  `save_roundtrip_stages_test` has **not** been run. Reload feel and correctness in
-  later stages await the user's playtest. Design:
+  checks: `save_roundtrip_test` (fresh boot) and the diagnostic
+  `save_roundtrip_stages_test`, which passes at every stage boundary. Its first run
+  found that reloads left the pelvis on the bulky fixture. Every build mounted on
+  the pelvis moved with it, and the fall-through-floor rescue sent the sunken heel
+  pads and pitch actuators home. `module_supports.apply` now seats the pelvis on
+  the gantry. Reload feel awaits the user's playtest. Design:
   [Saves and checkpoints](robot-workshop-plan.md#saves-and-checkpoints).
 
 - **Retina rendering (2026-10-25):** disabling HiDPI made UI text blurry in the

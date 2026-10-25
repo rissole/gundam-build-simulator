@@ -132,5 +132,8 @@ func busy() -> bool:
 	return task >= 0 or not pending.is_empty()
 
 func _exit_tree() -> void:
+	# Reparenting also exits the tree; a waited task id is invalid afterwards.
 	if task >= 0:WorkerThreadPool.wait_for_task_completion(task)
+	task = -1
+	job = {}
 	for key in groups.keys():_discard(key)

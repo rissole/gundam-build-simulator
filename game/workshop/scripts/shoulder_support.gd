@@ -7,8 +7,8 @@ var spec: Dictionary
 var active=false
 var brakes=false
 var released=false
-var tension=0.0
-var goal=0.0
+var tension: float=0.0
+var goal: float=0.0
 var moving=false
 var motion=""
 var blocked_reason=""
