@@ -13,8 +13,12 @@ class Prepared extends RefCounted:
 	func run_to(stage: String, progress: Callable) -> String:
 		calls.append(stage);progress.call("Fixture stage")
 		return ""
+class SettledSave extends RefCounted:
+	var settled=0
+	func settle() -> void:settled+=1
 class Handover extends "res://scripts/workshop.gd":
 	var runner=Prepared.new()
+	func _init() -> void:save=SettledSave.new()
 	func _ready() -> void:pass
 	func set_paused(value: bool) -> void:paused=value
 	func create_stage_runner() -> RefCounted:return runner

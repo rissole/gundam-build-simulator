@@ -17,9 +17,8 @@ last version before consolidation.
   per machine (prompts and the crane console use the same text). The user approved
   the pilot ("no notes, perfection"); M opens the manual, Tab hides the translucent
   panel. Waist yaw/lean neutral pins are now twist/tilt lock pins. New steps cover
-  crane trips that had no page. 34 of 35 routine cases pass; `stage_contract_test`
-  fails before and after this work (its fixture lacks the `save` that commit
-  0721744 started calling). No diagnostics or rendered review ran. **Awaiting the
+  crane trips that had no page. All 35 routine cases pass (`stage_contract_test`'s
+  fixture now supplies the `save` that commit 0721744 started calling). No diagnostics or rendered review ran. **Awaiting the
   user's playtest of the converted chapters.** [Manual plan](manual-plan.md).
 
 - **Workshop save (2026-10-25):** saving is manual: pause-menu **Save**,
