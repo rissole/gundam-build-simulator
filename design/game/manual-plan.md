@@ -162,9 +162,25 @@ is its own chapter, placed before the step that seats it.
    for real requests, staging shortcuts for player actions) so stage runs prove
    the manual sequence. Proving it needs the named stage diagnostics, which run
    only on the user's request.
-5. **User playtest of the pilot.** Record results in the
+5. **User playtest of the pilot.** Done 2026-10-25: "no notes, perfection"; key changes and the label rule followed. Record results in the
    [checklist](robot-workshop-playtest-checklist.md).
-6. **Remaining content,** chapter by chapter in the author scripts
+6. **Review of unconverted steps (2026-10-25).** In play order:
+   - **Leg docking (pelvis pages):** rail Advance phases described in prose,
+     "neutral lock" jargon for the hip cylinders, and the rig release/return has no
+     step (only a summary page). Converting now (leg rig, hip cylinder lock pins).
+   - **Chest, core, backpack, arms, pauldrons, head:** every crane page instructs
+     task selection that no longer exists ("use Chest to waist", "Select Left arm
+     to shoulder", "Select Head baseplate"); the console only offers
+     Move/Raise/Lower and picks the next load itself. Mixed names for the same
+     part ("lifting shoes", "ends", "magnetic connectors"), button names that don't
+     match ("Up", "Down", "Travel"), and world coordinates ("X-9.0, Z1",
+     "lowest load is Y19, cross to X13 at Z13"). Heavy module rig insert changes
+     ("Select core saddles") need a `template` objective. Machines to wire up:
+     core guide, backpack hinge, arm rig, shoulder support, guided receivers,
+     joint restraints.
+   - **Pitch actuator:** "Put FA-513 in the preparation C fixture" is in the goal
+     but not checkable; a station objective could cover it.
+7. **Remaining content,** chapter by chapter in the author scripts
    (`tools/author_*.py`), then remove `body`. Machines still without manual
    functions: leg rail, captive controls, guided receivers, lifts, arm rig and
    the other section fixtures; `set`-style counted controls use `manual_count`.
