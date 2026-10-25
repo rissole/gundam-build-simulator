@@ -1,0 +1,40 @@
+{
+  "chapters": [
+    {"id": "left_heel_pads", "title": "Left-foot heel pads", "after": [],
+     "steps": [["pad_1", 0, "Prepare heel pad 1"], ["pad_2", 0, "Prepare heel pad 2"], ["foot", 1], ["foot", 2]]},
+    {"id": "left_pitch_actuator", "title": "Left-foot pitch actuator", "after": [],
+     "steps": [["pitch", 0], ["pitch", 1], ["pitch", 2], ["pitch", 3], ["pitch", 4], ["pitch", 5], ["pitch", 6], ["pitch", 7], ["pitch", 8], ["pitch", 9], ["pitch", 10], ["pitch", 11], ["pitch", 12], ["foot", 3], ["foot", 4], ["foot", 5]]},
+    {"id": "pelvis_delivery", "title": "Pelvis delivery", "after": ["left_heel_pads", "left_pitch_actuator"],
+     "steps": [["pelvis", 0]]},
+    {"id": "left_leg_build", "title": "Left-leg construction", "after": ["pelvis_delivery"],
+     "steps": [["left_leg", 1], ["left_leg", 2], ["left_leg", 3], ["left_leg", 4], ["left_leg", 5], ["left_leg", 6], ["left_leg", 7], ["left_leg", 8], ["left_leg", 9], ["left_leg", 10]]},
+    {"id": "left_leg_dock", "title": "Left-leg docking", "after": ["left_leg_build"],
+     "steps": [["pelvis", 1], ["pelvis", 2], ["pelvis", 3], ["pelvis", 4], ["pelvis", 5], ["pelvis", 6], ["pelvis", 7], ["pelvis", 8], ["pelvis", 9], ["pelvis", 10], ["pelvis", 11]]},
+    {"id": "right_leg_build", "title": "Right-leg construction", "after": ["left_leg_dock"],
+     "steps": [["right_leg", 1], ["right_leg", 2], ["right_leg", 3], ["right_leg", 4], ["right_leg", 5], ["right_leg", 6], ["right_leg", 7], ["right_leg", 8], ["right_leg", 9], ["right_leg", 10]]},
+    {"id": "right_leg_dock", "title": "Right-leg docking", "after": ["right_leg_build"],
+     "steps": [["pelvis", 14], ["pelvis", 15], ["pelvis", 16], ["pelvis", 17], ["pelvis", 18], ["pelvis", 19], ["pelvis", 20], ["pelvis", 21], ["pelvis", 22], ["pelvis", 23], ["pelvis", 24]]},
+    {"id": "chest", "title": "Chest delivery", "after": ["right_leg_dock"],
+     "steps": [["pelvis", 27], ["pelvis", 28], ["pelvis", 29]]},
+    {"id": "core", "title": "Core delivery", "after": ["chest"],
+     "steps": [["chest", 1], ["chest", 2]]},
+    {"id": "backpack", "title": "Backpack delivery", "after": ["core"],
+     "steps": [["chest", 3], ["chest", 4], ["chest", 5], ["chest", 6], ["chest", 7]]},
+    {"id": "left_arm", "title": "Left-arm delivery", "after": ["backpack"],
+     "steps": [["chest", 8], ["chest", 9], ["chest", 10], ["chest", 11], ["chest", 12], ["chest", 13], ["chest", 14]]},
+    {"id": "right_arm", "title": "Right-arm delivery", "after": ["left_arm"],
+     "steps": [["chest", 15], ["chest", 16], ["chest", 17], ["chest", 18], ["chest", 19], ["chest", 20], ["chest", 21]]},
+    {"id": "pauldrons", "title": "Pauldron fitting", "after": ["right_arm"],
+     "steps": [["chest", 22], ["chest", 23], ["chest", 24], ["chest", 25], ["chest", 26], ["chest", 27], ["chest", 28], ["chest", 29]]},
+    {"id": "head", "title": "Head fitting", "after": ["pauldrons"],
+     "steps": [["chest", 30], ["chest", 31], ["chest", 32], ["chest", 33], ["chest", 34], ["chest", 35], ["chest", 36], ["chest", 37], ["chest", 38]]},
+    {"id": "head_sensors", "title": "Head sensor fitting", "after": ["head"],
+     "steps": [["chest", 39], ["chest", 40], ["chest", 41]]},
+    {"id": "face", "title": "Face and crown", "after": ["head_sensors"],
+     "steps": [["chest", 42], ["chest", 43], ["chest", 44], ["chest", 45], ["chest", 46], ["chest", 47]]}
+  ],
+  "reference": {
+    "title": "Recovery and undo",
+    "steps": [["left_leg", 12, "Left leg: supported construction recovery"], ["pelvis", 13, "Left hip: reacquire support and recover"], ["right_leg", 12, "Right leg: supported construction recovery"], ["pelvis", 26, "Right hip: reacquire support and recover"]]
+  }
+}

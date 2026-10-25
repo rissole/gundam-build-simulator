@@ -96,6 +96,7 @@ var rotate_press_time: int = 0
 var last_rotate_tap: int = -1000
 var last_rotate_station: String = ""
 var hud: CanvasLayer
+var manual_progress: RefCounted
 var selected_kind: String:
 	get:return model.selected_kind()
 	set(value):
@@ -192,6 +193,7 @@ func _ready() -> void:
 	interaction_outline = preload("res://scripts/interaction_outline.gd").new()
 	add_child(interaction_outline)
 	components.make_markers()
+	manual_progress = preload("res://scripts/manual_progress.gd").new(self)
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)

@@ -140,13 +140,23 @@ static func done_states(game, steps: Array) -> Array[bool]:
 	for i in range(steps.size()-1,-1,-1):
 		var page: Dictionary = steps[i].page
 		var started_next := false
-		if i+1 < steps.size():started_next = bool(evals[i+1].started) or done[i+1]
+		if i+1 < steps.size():
+			var next: Dictionary = steps[i+1].page
+			if next.has("objectives"):started_next = bool(evals[i+1].started) or done[i+1]
+			else:
+				var began := false
+				for sid in next.get("slots",[]):
+					if _filled(game,str(steps[i+1].owner),str(sid)):began = true
+				started_next = began or done[i+1]
 		if page.has("objectives"):done[i] = bool(evals[i].fits_complete) and (bool(evals[i].machine_complete) or started_next)
 		else:
-			var filled := true
-			for sid in page.get("slots",[]):
-				if not _filled(game,str(steps[i].owner),str(sid)):filled = false
-			done[i] = filled
+			var slots: Array = page.get("slots",[]) if page.get("slots") is Array else []
+			if slots.is_empty():done[i] = started_next
+			else:
+				var filled := true
+				for sid in slots:
+					if not _filled(game,str(steps[i].owner),str(sid)):filled = false
+				done[i] = filled
 	return done
 
 static func errors(definitions: Dictionary, machines: Dictionary) -> Array[String]:

@@ -13,6 +13,7 @@ ROUTINE = (
     'leg_content_test',
     'manual_diagram_cache_test',
     'manual_objectives_test',
+    'manual_progress_test',
     'mobile_platform_test',
     'nested_runtime_test',
     'part_variants_test',
