@@ -58,6 +58,11 @@ inspection or GPU benchmark ran. [Roadmap assessment and scope](final-assembly-p
 
 Deferred user proposals, retained for the next decision:
 
+- Latest scope decision: remain on the visual worktree; design one candidate area.
+  No sound or console screens yet. The [gantry column design](final-assembly-plan.md#gantry-column-detail-study--2026-10-25)
+  is documented and illustrated, not implemented in the game. Review whether the
+  recessed hardware, inspection cover, stencil and sparse wear fit the desired style.
+
 - ACES/Filmic versus existing AgX; darker ambient/near-black background versus readable working bays; stronger warm beams and cool perimeter fill. This spike keeps AgX and the approved ambient/key/exposure values as its starting point.
 - Photo-quality oily concrete, worn yellow paint and matte structural metal. Procedural roughness/normal maps are the first material experiment; authored wear and richer texture sources remain open.
 - Decal-projected warning stripes, `02 / FINAL ASSEMBLY` and floor markings. Existing labels/hazard marks remain; route-specific marking and additional decals are deferred.
@@ -138,6 +143,7 @@ The pauldron route's tightest clearance is about 1 mm at seating.
 
 | Date | Stage | Issue or positive finding | Severity |
 | --- | --- | --- | --- |
+| 2026-10-25 | Launch (visual worktree) | User asks to stop the pause menu appearing at startup. Implemented direct entry for fresh/restored launches and successful stage handover; Escape still opens/closes pause. Mechanical startup and stage checks pass; player should check a normal launch, a stage launch and Escape. | Fixed, re-check |
 | 2026-10-25 | Visual uplift spike | "wow, it looks so much better and runs much more performantly too." Preserve this lighting/material direction. Reported improvement is player evidence; FPS, tested stage and individual readability checks were not specified. User asks what comes next; proposed next work is integration of this baseline followed by one bay's surface and equipment detail, then sound and a single console screen trial. | Positive |
 | 2026-10-25 | Any (workshop save) | Asked for Save & quit, Quit without saving, and the player position kept. Implemented: saving is manual (pause-menu Save, Save & quit, or closing the window), Quit without saving confirms unsaved build changes, and position and view are restored. The user disliked refused saves: a mid-ride save now reloads the player on the deck at the machine's last stop; a crane caught mid-move is saved stopped where it is with its load hanging, and Resume continues. Re-check: walk somewhere, Save & quit, relaunch; save mid-lift; save with a load on the moving crane and press Resume after reloading; then fit a part and Quit without saving. | Request |
 | 2026-10-25 | Any (manual) | Positive: "I love this new manual — no notes, perfection." Requested: M opens the manual (was N), Tab hides the panel, the diagram is always shown, translucent panel. Done. | Positive |

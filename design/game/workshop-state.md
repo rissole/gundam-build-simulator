@@ -18,9 +18,18 @@ last version before consolidation.
   28 checks pass (4.243 s); no diagnostics, rendered review or FPS measurement.
   **Player reports substantially better appearance and performance** (2026-10-25).
   No FPS figure or completion of individual readability checks was supplied.
-  Keep this direction; integration and a one-bay detail pass are proposed next.
+  Keep this direction. User asks to remain in this worktree, design one area,
+  and defer sound/console screens. The [left gantry column study](final-assembly-plan.md#gantry-column-detail-study--2026-10-25)
+  specifies recessed anchors, a flush cover, stencil and localized wear within
+  existing dimensions; design only, with a verification plan and SVG drawing.
   [Scope and roadmap assessment](final-assembly-plan.md#visual-uplift-spike--2026-10-25);
   [playtest and deferred ideas](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
+
+- **Direct startup (2026-10-25, visual worktree):** fresh/restored launches and
+  successful stage preparation enter play without the pause menu. Escape still
+  toggles pause; stage errors stop at the menu. Routine startup and stage-contract
+  checks pass (29 + 12 checks, 4.493 s). The stage fixture now supplies the session
+  stub required by `save.settle()`. No rendered review; startup feel awaits playtest.
 
 - **Manual redesign (2026-10-25, pilot implemented):** steps are a one-sentence
   goal plus a self-ticking checklist generated from typed objectives (`fit`,

@@ -712,10 +712,77 @@ direction while preserving main's latest gameplay work and normal save path;
 then detail one assembly bay's floor and equipment surfaces as a repeatable
 example. Keep small-part readability and the reported performance gain as
 constraints. Follow with machine audio and a single console-screen trial.
-These are recommendations, not authorization to merge, purchase assets or expand
-the implementation. Remaining checks are in the
+The user subsequently chose to stay in the worktree and design one area's detail;
+integration, audio and console screens are deferred. Remaining checks are in the
 [visual spike playtest](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
 The proposed one-hour/week schedule is a useful
 ordering, not a delivery estimate: renderer migration and import adaptation need
 their own checkpoints. Lighting cannot supply the reference's detailed machinery
 silhouettes, bevels, authored wear and close-up model detail.
+
+### Gantry column detail study — 2026-10-25
+
+**Design only.** Candidate: the left fixed gantry column at X8.8/Z31.1, especially
+its foundation and lower 3.1 m. It has quiet surfaces large enough to carry useful
+construction detail, and can establish a repeatable treatment without changing
+the moving crane or the robot's retention hardware. Keep the accepted lighting.
+The right column at X17.2 is the eventual repeat, after the first one reads well.
+No sound, console screens or main-branch integration in this work.
+
+![Gantry foundation and lower-column concept](gantry-detail-study.svg)
+
+The intent is a maintained load-bearing machine: dark coated steel, existing
+ochre hazard sleeves, shallow seams, recessed fixings and restrained contact wear.
+Avoid general rust, dense decorative bolts and luminous accents that compete with
+real interaction targets. This drawing is a design illustration, not a game render
+or a structural engineering approval.
+
+| Element | Proposed visual detail | Envelope and implementation constraint |
+| --- | --- | --- |
+| Foundation | Preserve the existing 1.40 × 1.60 × 0.30 m foot. Add an 8 mm edge chamfer and a dark 10 mm contact band at its bottom. | Replace the visual mesh inside the existing bounds; preserve the authored collider, origin and upper walking surface. No separate pedestal or wider skirt. |
+| Anchor fixings | Four square 140 mm pockets, 30 mm deep, with approximately 80 mm hex heads, washers and a short stud end. Centres X8.3/9.3, Z31.10/32.25. | Nut/stud tops at or below Y0.30; pocket floors Y0.27. Model recesses in the replacement foot, rather than overlaying coplanar faces. These are fixed scenery, without pickup metadata or targets. |
+| Column | Retain its 600 mm square section, top Y10.50. Add a subtle longitudinal fabrication seam on an outward face and small edge bevels. | All detail inside the existing X8.5..9.1/Z30.8..31.4 envelope. No ribs, pipes or brackets extending into passage space. The existing 640 mm hazard sleeve remains the outer visual envelope below Y1.50. |
+| Inspection cover | A 420 × 450 mm flush cover, Y1.68..2.13, on the forward face; four small captive fixings, a 2 mm dark perimeter seam. | Maximum inset 3 mm. No handle, hinge swing, status lamp or implied player action. Match the panel's colour closely to the column. |
+| Identity | A modest pale `02 / GANTRY` stencil above the cover, centred around Y2.4. | No invented capacity ratings, maintenance dates or controls. Surface colour, no emission; keep the existing bay signs as primary wayfinding. |
+| Wear | A few exposed-metal flecks on vulnerable corners; small streaks below the cover screws; dusty material where the base meets the floor. | No continuous silver outline. Keep most coating intact and wear concentrated below eye level. Use normals/roughness for fine marks, not additional geometry. |
+| Floor contact | A low-contrast dirt/roughness fringe, at most 80 mm outside the foot, fading into the existing epoxy. | No raised lip, new slab or collider. This is contact staining, not a safety or travel boundary. Mobile-platform route marking remains a separate task. |
+
+Authored geometry check: the foot covers X8.1..9.5/Z30.9..32.5, while the column
+starts at Z30.8. Its existing 100 mm front overhang is shown explicitly. This
+study preserves it; do not move or enlarge the foot as an incidental art change.
+The current hazard wrap extends another 20 mm beyond each column face. Keep the
+rear braces, crosshead, bearing caps, cantilever arms and jaws as authored. No
+new detail belongs in the rear lifting well or the assembly access openings.
+
+Material targets build on the spike: coated steel `#58666b`, safety paint
+`#bb893b`, recesses `#303c43`, pale stencil `#b9c5c7`. Paint stays nonmetallic;
+only exposed anchor hardware and small chips receive a metal response. The
+diagram uses shaded colours for form and does not predict in-game brightness.
+
+Implementation plan: create one replacement base/column visual assembly attached
+to the existing fixed blockout pieces, with shared materials and instanced fixings.
+Hide only the replaced visuals, leaving solids and equipment references intact.
+Keep tiny wear in textures; no additional lights, reflection captures or per-frame
+scripts. Initial budget for the two eventual copies: at most 8,000 added triangles,
+four shared material resources and eight additional draw submissions in the main
+view. These are review budgets, not measured performance claims.
+
+Review plan before expanding the treatment:
+
+1. Check the actual replacement mesh bounds against the named source solids;
+   check recess faces for coplanar overlap and the unchanged upper foot surface.
+   Fingerprint layout/recipes to prove that only visual resources changed.
+2. Audit that fixed anchor hardware introduces no stock identities, manual steps,
+   interaction targets, collisions or support/attachment changes. Relevant manual
+   pages and part allocations are unchanged; no new assembly workflow is proposed.
+3. Run the startup smoke and a focused mesh/envelope audit through the routine
+   runner. Classify any new runnable fixture in the test inventory. A generic
+   geometry-audit self-test alone does not verify the replacement meshes.
+4. The user inspects the base from normal walking height and the nearby deck:
+   do the anchors and cover look like fixed scenery, does the contact read, and
+   are the interactive parts still visually dominant? A rendered comparison and
+   performance diagnostic can be run if explicitly requested. Do not infer those
+   results from headless checks.
+
+No game geometry or materials were changed for this study. The accompanying
+startup-menu change is independent and is recorded in the workshop state.

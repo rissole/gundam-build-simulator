@@ -13,6 +13,9 @@ class Prepared extends RefCounted:
 	func run_to(stage: String, progress: Callable) -> String:
 		calls.append(stage);progress.call("Fixture stage")
 		return ""
+class Session extends RefCounted:
+	var settled: int = 0
+	func settle() -> void:settled += 1
 class Handover extends "res://scripts/workshop.gd":
 	var runner=Prepared.new()
 	func _ready() -> void:pass
@@ -35,10 +38,12 @@ func run() -> void:
 	sequence.failed="";sequence.rejected="pelvis";sequence.visited.clear()
 	expect(not (await sequence.run_to("chest")).is_empty() and sequence.visited==["foot","actuator"],"intermediate invalid boundary prevents continuation")
 	var game=Handover.new();root.add_child(game);game.automated_test=true
+	game.save=Session.new()
 	expect(not (await game.run_stage("unknown")).is_empty() and game.runner.calls.is_empty(),"handover rejects unknown stages before runner")
 	for automated in [false,true]:
 		game.automated_test=automated
-		expect((await game.run_stage("pelvis")).is_empty() and game.paused and game.automated_test==automated,"handover restores input mode and pauses after supplied progress")
+		expect((await game.run_stage("pelvis")).is_empty() and not game.paused and not game.staging and game.automated_test==automated,"handover restores input mode and enters play after supplied progress")
+	expect(game.save.settled==2,"each prepared stage establishes the session baseline")
 	expect(game.runner.calls==["pelvis","pelvis"] and game.stage_notice.contains("not playtested"),"handover reports supplied progress honestly")
 	var passed=checks.all(func(c):return c.passed)
 	print("STAGE_CONTRACT ","PASS " if passed else "FAIL ",checks.size()," checks")

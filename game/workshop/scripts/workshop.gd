@@ -202,7 +202,7 @@ func _ready() -> void:
 	_make_audio()
 	_state_changed()
 	world.configure_foot_rendering()
-	set_paused(true)
+	set_paused(false)
 	started = true
 	if not start_stage.is_empty() and not automated_test:call_deferred("run_stage",start_stage)
 
@@ -631,17 +631,23 @@ func new_workshop() -> void:
 ## Overridable orchestration boundary; production always uses the real stage runner.
 func create_stage_runner() -> RefCounted:return Stages.new(self)
 
-## Development shortcut: script the sequence up to `stage`, then hand over
-## paused. Supplied progress only; never a save or playtest evidence.
+## Development shortcut: script the sequence up to `stage`, then enter play.
+## Supplied progress only; never playtest evidence.
 func run_stage(stage: String) -> String:
 	if stage not in Stages.ALL:
 		var unknown = "Unknown stage '"+stage+"'. Use one of: "+", ".join(Stages.ALL)
+		staging = false
+		set_paused(true)
 		if is_instance_valid(hud):hud.toast(unknown)
 		# Headless suites already record the returned message. push_error would
 		# fail the regression runner, which treats every ERROR line as a failure.
 		if not automated_test:push_error(unknown)
 		return unknown
 	var title: String = Stages.TITLES[stage]
+	staging = true
+	# Block live input before the overlay's first frame, not after it appears.
+	var was_automated = automated_test
+	automated_test = true
 	var overlay = CanvasLayer.new();overlay.layer = 100;add_child(overlay)
 	var shade = ColorRect.new();shade.color = Color("111d26e6");shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);overlay.add_child(shade)
 	var note = Label.new();note.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -650,8 +656,6 @@ func run_stage(stage: String) -> String:
 	note.text = "Preparing stage: "+title+"\nEarlier work is supplied by script, not playtested."
 	await get_tree().process_frame;await get_tree().process_frame
 	# Scripted controls block walking/look so the player can't step into a route.
-	var was_automated = automated_test
-	automated_test = true
 	set_paused(false)
 	var error: String = await create_stage_runner().run_to(stage,func(step: String):note.text = "Preparing stage: "+title+"\nNow: "+step)
 	automated_test = was_automated
@@ -660,7 +664,7 @@ func run_stage(stage: String) -> String:
 	# The prepared stage is the baseline: only the player's own progress is unsaved.
 	save.settle()
 	staging = false
-	set_paused(true)
+	set_paused(not error.is_empty())
 	if is_instance_valid(hud):hud.toast(stage_notice,error.is_empty());hud.refresh_session_status()
 	if not error.is_empty():push_error("Stage "+stage+": "+error)
 	return error

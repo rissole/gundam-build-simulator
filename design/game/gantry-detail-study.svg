@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-labelledby="title desc">
+<title id="title">Gantry column and foundation detail study</title>
+<desc id="desc">Proposed visual treatment of the existing final assembly gantry. A lower column axonometric, dimensioned foundation plan and numbered material details. Design drawing only, not a game render. Existing collision and working clearances are retained.</desc>
+<defs>
+ <pattern id="hazard" width="48" height="48" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="48" height="48" fill="#bb893b"/><rect width="23" height="48" fill="#303c43"/></pattern>
+ <linearGradient id="steel" x1="0" x2="1"><stop stop-color="#46545a"/><stop offset=".12" stop-color="#67767a"/><stop offset=".18" stop-color="#58666b"/><stop offset="1" stop-color="#48565c"/></linearGradient>
+ <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M8 4L0 0L0 8Z" fill="#687779"/></marker>
+ <style>text{font-family:Arial,Helvetica,sans-serif;fill:#24393f}.muted{fill:#607277}.small{font-size:16px}.body{font-size:19px}.label{font-size:16px;font-weight:700;letter-spacing:1.3px}.dim{stroke:#687779;stroke-width:1;fill:none;marker-start:url(#arrow);marker-end:url(#arrow)}.leader{stroke:#996d30;stroke-width:1.5;fill:none}.outline{stroke:#33454a;stroke-width:1.5;stroke-linejoin:round}</style>
+</defs>
+<rect width="1600" height="1080" fill="#f3f1e9"/>
+<path d="M52 118H1548" stroke="#bcc6c3"/>
+<text x="52" y="48" class="label">FINAL ASSEMBLY / DETAIL STUDY 01</text>
+<text x="52" y="88" font-size="34" font-weight="700">A gantry that looks anchored, assembled and maintained.</text>
+<text x="52" y="148" class="small muted">PROPOSED DESIGN · 2026-10-25 · visual-uplift worktree · lighting stays as approved</text>
+<rect x="52" y="178" width="730" height="684" rx="3" fill="#e3e6df"/>
+<text x="76" y="213" class="label">LOWER COLUMN / AXONOMETRIC</text>
+<text x="76" y="240" class="small muted">Lower 3.1 m shown; column continues to Y10.50.</text>
+
+<polygon points="85.0,840.0 484.0,840.0 684.2,730.0 285.2,730.0" fill="#b8bfba"/>
+<polygon points="178.8,825.0 444.8,825.0 444.8,772.5 178.8,772.5" fill="#354047" class="outline"/>
+<polygon points="444.8,825.0 590.4,745.0 590.4,692.5 444.8,772.5" fill="#455158" class="outline"/>
+<polygon points="178.8,772.5 444.8,772.5 590.4,692.5 324.4,692.5" fill="#6b7679" class="outline"/>
+<path d="M182.6,774.25 L441.00000000000006,774.25" stroke="#89938f" stroke-width="2"/>
+<polygon points="215.3,765.8 241.9,765.8 254.7,758.8 228.1,758.8" fill="#242e34" class="outline"/>
+<polygon points="243.2,762.1 242.5,760.3 234.3,760.3 226.8,762.1 227.5,764.0 235.7,764.0" fill="#92988d"/>
+<polygon points="320.0,708.3 346.6,708.3 359.3,701.3 332.7,701.3" fill="#242e34" class="outline"/>
+<polygon points="347.8,704.6 347.1,702.8 339.0,702.8 331.5,704.6 332.2,706.5 340.3,706.5" fill="#92988d"/>
+<polygon points="405.3,765.8 431.9,765.8 444.7,758.8 418.1,758.8" fill="#242e34" class="outline"/>
+<polygon points="433.2,762.1 432.5,760.3 424.3,760.3 416.8,762.1 417.5,764.0 425.7,764.0" fill="#92988d"/>
+<polygon points="510.0,708.3 536.6,708.3 549.3,701.3 522.7,701.3" fill="#242e34" class="outline"/>
+<polygon points="537.8,704.6 537.1,702.8 529.0,702.8 521.5,704.6 522.2,706.5 530.3,706.5" fill="#92988d"/>
+<polygon points="240.1,778.5 361.7,778.5 361.7,568.5 240.1,568.5" fill="url(#hazard)" class="outline"/>
+<polygon points="361.7,778.5 419.9,746.5 419.9,536.5 361.7,568.5" fill="#8d703c" class="outline"/>
+<polygon points="240.1,568.5 361.7,568.5 419.9,536.5 298.3,536.5" fill="#616869" class="outline"/>
+<polygon points="245.7,567.5 359.7,567.5 359.7,287.5 245.7,287.5" fill="url(#steel)" class="outline"/>
+<polygon points="359.7,567.5 414.3,537.5 414.3,257.5 359.7,287.5" fill="#34434b" class="outline"/>
+<polygon points="245.7,287.5 359.7,287.5 414.3,257.5 300.3,257.5" fill="#748184" class="outline"/>
+<polygon points="262.7,536.0 342.5,536.0 342.5,457.3 262.7,457.3" fill="#38484f" class="outline"/>
+<circle cx="270.21799999999996" cy="529.1" r="2.6" fill="#b2b7ad"/>
+<circle cx="270.21799999999996" cy="464.35" r="2.6" fill="#b2b7ad"/>
+<circle cx="334.818" cy="529.1" r="2.6" fill="#b2b7ad"/>
+<circle cx="334.818" cy="464.35" r="2.6" fill="#b2b7ad"/>
+<text x="302.427" y="401.3999999999999" text-anchor="middle" font-size="39" font-weight="700" fill="#d4d3c1" style="fill:#d4d3c1">02</text>
+<text x="302.427" y="431.15000000000003" text-anchor="middle" font-size="10" style="fill:#c0c6bc">GANTRY</text>
+<path d="M246.75699999999998 354.1499999999999l2 -7" stroke="#9b9c8d" stroke-width="2"/>
+<path d="M246.75699999999998 361.15l2 -7" stroke="#9b9c8d" stroke-width="2"/>
+<path d="M357.52700000000004 551.9l2 -7" stroke="#9b9c8d" stroke-width="2"/>
+<path d="M357.52700000000004 326.15l2 -7" stroke="#9b9c8d" stroke-width="2"/>
+<path d="M259 266l15 -6 14 6 14 -6 14 6 14 -6 14 6 14 -6 14 6 14 -6 14 6 14 -6 14 6" fill="none" stroke="#f3f1e9" stroke-width="7"/>
+<path d="M522 360H492L359.7 366.2" class="leader"/><circle cx="540" cy="360" r="15" fill="#996d30"/><text x="540" y="366" text-anchor="middle" font-size="16" style="fill:#fff">1</text><text x="565" y="366" class="small">Broken edge wear</text>
+<path d="M522 450H492L336.9 497.5" class="leader"/><circle cx="540" cy="450" r="15" fill="#996d30"/><text x="540" y="456" text-anchor="middle" font-size="16" style="fill:#fff">2</text><text x="565" y="456" class="small">Flush inspection cover</text>
+<path d="M522 564H492L359.7 655.0" class="leader"/><circle cx="540" cy="564" r="15" fill="#996d30"/><text x="540" y="570" text-anchor="middle" font-size="16" style="fill:#fff">3</text><text x="565" y="570" class="small">Keep the hazard sleeve</text>
+<path d="M522 685H492L529.6 705.0" class="leader"/><circle cx="540" cy="685" r="15" fill="#996d30"/><text x="540" y="691" text-anchor="middle" font-size="16" style="fill:#fff">4</text><text x="565" y="691" class="small">Recessed anchor pockets</text>
+<path d="M522 790H492L444.8 820.6" class="leader"/><circle cx="540" cy="790" r="15" fill="#996d30"/><text x="540" y="796" text-anchor="middle" font-size="16" style="fill:#fff">5</text><text x="565" y="796" class="small">Dark contact / dust edge</text>
+<text x="822" y="212" class="label">FOUNDATION / PLAN</text>
+<text x="822" y="240" class="small muted">Left column X8.80, Z31.10 · mirror at X17.20</text>
+<rect x="905" y="284" width="280" height="320" fill="#697679" stroke="#33454a" stroke-width="2"/>
+<rect x="985" y="264" width="120" height="120" fill="#46565c" stroke="#33454a" stroke-width="2"/>
+<rect x="981" y="260" width="128" height="128" fill="none" stroke="#bb893b" stroke-width="3"/>
+<text x="1045" y="321" text-anchor="middle" font-size="16" style="fill:#f3f1e9">COLUMN</text>
+<text x="1045" y="347" text-anchor="middle" font-size="16" style="fill:#f3f1e9">600 × 600</text>
+<path d="M905 632H1185" class="dim"/>
+<text x="1045" y="656" text-anchor="middle" class="small">1.40 m existing width</text>
+<path d="M878 284V604" class="dim"/>
+<text x="859" y="451" text-anchor="middle" class="small" transform="rotate(-90 859 451)">1.60 m existing depth</text>
+<path d="M1230 284H1260V264H1230" stroke="#996d30" fill="none"/>
+<text x="1275" y="282" class="small">Existing 100 mm</text><text x="1275" y="305" class="small">front overhang stays.</text>
+<text x="1275" y="370" class="small">Four 140 mm pockets</text><text x="1275" y="393" class="small">30 mm deep.</text>
+<text x="1275" y="441" class="small">Nut tops remain at</text><text x="1275" y="464" class="small">or below Y0.30.</text>
+<text x="1275" y="512" class="small">No footprint growth.</text><text x="1275" y="535" class="small">No new interactables.</text>
+<text x="1045" y="578" text-anchor="middle" class="small" style="fill:#e3e6df">REAR / +Z</text>
+
+<rect x="931" y="310" width="28" height="28" rx="2" fill="#29363b"/>
+<polygon points="954.0,324.0 949.5,331.8 940.5,331.8 936.0,324.0 940.5,316.2 949.5,316.2" fill="#bbc0b5"/>
+<rect x="931" y="540" width="28" height="28" rx="2" fill="#29363b"/>
+<polygon points="954.0,554.0 949.5,561.8 940.5,561.8 936.0,554.0 940.5,546.2 949.5,546.2" fill="#bbc0b5"/>
+<rect x="1131" y="310" width="28" height="28" rx="2" fill="#29363b"/>
+<polygon points="1154.0,324.0 1149.5,331.8 1140.5,331.8 1136.0,324.0 1140.5,316.2 1149.5,316.2" fill="#bbc0b5"/>
+<rect x="1131" y="540" width="28" height="28" rx="2" fill="#29363b"/>
+<polygon points="1154.0,554.0 1149.5,561.8 1140.5,561.8 1136.0,554.0 1140.5,546.2 1149.5,546.2" fill="#bbc0b5"/>
+<path d="M822 686H1548" stroke="#bcc6c3"/>
+<text x="822" y="721" class="label">DESIGN RULE</text>
+<text x="822" y="757" class="body">Large quiet surfaces, a few useful seams,</text>
+<text x="822" y="785" class="body">wear only where contact would happen.</text>
+<text x="822" y="827" class="small muted">Detail density drops above eye level. Existing load path,</text>
+<text x="822" y="850" class="small muted">braces, jaws, bearings and cable clearances stay intact.</text>
+<path d="M52 893H1548" stroke="#bcc6c3"/>
+<text x="52" y="930" class="label">MATERIAL FAMILY</text>
+
+<rect x="52" y="950" width="42" height="28" rx="2" fill="#58666b"/><text x="107" y="971" class="small">Coated steel</text>
+<rect x="340" y="950" width="42" height="28" rx="2" fill="#bb893b"/><text x="395" y="971" class="small">Safety ochre</text>
+<rect x="628" y="950" width="42" height="28" rx="2" fill="#303c43"/><text x="683" y="971" class="small">Recess / contact</text>
+<rect x="916" y="950" width="42" height="28" rx="2" fill="#969d93"/><text x="971" y="971" class="small">Exposed edge</text>
+<rect x="1204" y="950" width="42" height="28" rx="2" fill="#b9c5c7"/><text x="1259" y="971" class="small">Stencil</text>
+<text x="52" y="1025" class="small muted">DESIGN ONLY · diagram colours are illustrative; judge materials under the accepted in-game lighting.</text>
+<text x="52" y="1052" class="small muted">First implementation: one left-column base. Review close-up readability and cost before repeating on the right.</text>
+</svg>
