@@ -5,6 +5,7 @@ signal changed
 const Layout = preload("res://scripts/leg_bay_layout.gd")
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
+const MANUAL_COMMANDS = ["advance:1","advance:2","advance:3"]
 var layout: Node3D
 var spec: Dictionary
 var assembly_id = "foot"
@@ -88,6 +89,18 @@ func controls() -> Array[Dictionary]:
 	for button in buttons:
 		var entry = button.duplicate();entry.point = entry.node.global_position;result.append(entry)
 	return result
+
+func manual_commands() -> Array:return MANUAL_COMMANDS
+func command_label(action: String) -> String:
+	match action:
+		"advance:1":return "Advance the foot rig to raise the foot"
+		"advance:2":return "Advance the foot rig to the leg rig"
+		"advance:3":return "Advance the foot rig"
+	return ""
+func manual_state() -> Dictionary:return {"stop":int(floorf(path+.0001))}
+func manual_effect(objective: Dictionary) -> Dictionary:
+	var action: String=objective.get("command","")
+	return {"stop":action.get_slice(":",1).to_int()} if action in MANUAL_COMMANDS else {}
 
 func mounted(model: AssemblyModel = null) -> bool:
 	return (game.model if model == null else model).assemblies[assembly_id].parent == receiving_assembly

@@ -4,6 +4,7 @@ extends "res://scripts/equipment.gd"
 const Codec=preload("res://scripts/pose_codec.gd")
 const Sweep=preload("res://scripts/motion_sweep.gd")
 const Layout=preload("res://scripts/leg_bay_layout.gd")
+const MANUAL_COMMANDS=["insert_pins","close_jaws"]
 var blockout: Node3D
 var spec: Dictionary
 var template="pelvis"
@@ -57,6 +58,29 @@ func controls() -> Array[Dictionary]:
 	for key in locks:
 		result.append(control_entry(lock_nodes[key],"lock:"+key,("Unlock " if locks[key] else "Engage ")+"waist "+key+" neutral pin",.10,{"point":lock_nodes[key].global_position}))
 	return result
+
+func manual_commands() -> Array:return MANUAL_COMMANDS
+func command_label(action: String) -> String:
+	match action:
+		"insert_pins":return "Insert both waist neutral pins"
+		"close_jaws":return "Close the gantry hold-down jaws"
+	return ""
+func manual_state() -> Dictionary:return {"pins":locks.values().count(true),"jaws_closed":_closed_jaws()}
+func manual_effect(objective: Dictionary) -> Dictionary:
+	match objective.get("command",""):
+		"insert_pins":return {"pins":locks.size()}
+		"close_jaws":return {"jaws_closed":jaws.size()}
+	return {}
+func manual_count(objective: Dictionary) -> Vector2i:
+	match objective.get("command",""):
+		"insert_pins":return Vector2i(locks.values().count(true),locks.size())
+		"close_jaws":return Vector2i(_closed_jaws(),jaws.size())
+	return Vector2i(-1,-1)
+func _closed_jaws() -> int:
+	var count=0
+	for i in jaws.size():
+		if jaws[i]<=.0001 and jaw_goals[i]==0:count+=1
+	return count
 
 func _location(model: AssemblyModel=null) -> String:return (game.model if model==null else model).assemblies.pelvis.location
 func waist_ready(state: Dictionary={}) -> bool:

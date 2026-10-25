@@ -7,11 +7,11 @@
     {"id": "pelvis_delivery", "title": "Pelvis delivery", "after": ["left_heel_pads", "left_pitch_actuator"],
      "steps": [["pelvis", 0]]},
     {"id": "left_leg_build", "title": "Left-leg construction", "after": ["pelvis_delivery"],
-     "steps": [["left_leg", 1], ["left_leg", 2], ["left_leg", 3], ["left_leg", 4], ["left_leg", 5], ["left_leg", 6], ["left_leg", 7], ["left_leg", 8], ["left_leg", 9], ["left_leg", 10]]},
+     "steps": [["left_leg", 1], ["left_leg", 2], ["left_leg", 3], ["left_leg", 4], ["left_leg", 5], ["left_leg", 6], ["left_leg", 7], ["left_leg", 8], ["left_leg", 9], ["left_leg", 10], ["left_leg", 11]]},
     {"id": "left_leg_dock", "title": "Left-leg docking", "after": ["left_leg_build"],
      "steps": [["pelvis", 1], ["pelvis", 2], ["pelvis", 3], ["pelvis", 4], ["pelvis", 5], ["pelvis", 6], ["pelvis", 7], ["pelvis", 8], ["pelvis", 9], ["pelvis", 10], ["pelvis", 11]]},
     {"id": "right_leg_build", "title": "Right-leg construction", "after": ["left_leg_dock"],
-     "steps": [["right_leg", 1], ["right_leg", 2], ["right_leg", 3], ["right_leg", 4], ["right_leg", 5], ["right_leg", 6], ["right_leg", 7], ["right_leg", 8], ["right_leg", 9], ["right_leg", 10]]},
+     "steps": [["right_leg", 1], ["right_leg", 2], ["right_leg", 3], ["right_leg", 4], ["right_leg", 5], ["right_leg", 6], ["right_leg", 7], ["right_leg", 8], ["right_leg", 9], ["right_leg", 10], ["right_leg", 11]]},
     {"id": "right_leg_dock", "title": "Right-leg docking", "after": ["right_leg_build"],
      "steps": [["pelvis", 14], ["pelvis", 15], ["pelvis", 16], ["pelvis", 17], ["pelvis", 18], ["pelvis", 19], ["pelvis", 20], ["pelvis", 21], ["pelvis", 22], ["pelvis", 23], ["pelvis", 24]]},
     {"id": "chest", "title": "Chest delivery", "after": ["right_leg_dock"],
@@ -35,6 +35,6 @@
   ],
   "reference": {
     "title": "Recovery and undo",
-    "steps": [["left_leg", 12, "Left leg: supported construction recovery"], ["pelvis", 13, "Left hip: reacquire support and recover"], ["right_leg", 12, "Right leg: supported construction recovery"], ["pelvis", 26, "Right hip: reacquire support and recover"]]
+    "steps": [["left_leg", 13, "Left leg: supported construction recovery"], ["pelvis", 13, "Left hip: reacquire support and recover"], ["right_leg", 13, "Right leg: supported construction recovery"], ["pelvis", 26, "Right hip: reacquire support and recover"]]
   }
 }

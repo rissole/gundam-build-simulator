@@ -49,8 +49,21 @@ def extend(trial, pelvis, layout):
         add(f"PV-C-H36160__{index:03}",[x,.546,z],[tube([0,-.08,0],.018,0,.16),tube([0,.018,0],.029,0,.036),tube([0,-.003,0],.033,.019,.006)])
     pelvis["context_sources"]=list(trial["context_sources"])
     pelvis.update(carry_class="equipment",work_locations=["support"],bounds=[4.02,4.1,2.0])
-    pelvis["manual"].insert(0,dict(title="Deliver the prepared pelvis and waist",view="overview",slots=[],
-        body="The heavy module rig supplies the bridge, both socket housings and the waist. Insert both waist neutral pins on the pelvis before the crane will lift it. The yaw pin is on the front of the waist and the lean pin is on the right side; both start pulled out. Aim at each pin and press E. At the crane console, choose Move to pickup. Lower the crane, attach all four magnetic connectors, then Raise crane. Choose Move to delivery and Lower crane to seat the bridge on the gantry bearings. Close all four gantry jaws with their handles, check that both pins are still in, then detach and stow the magnetic connectors. The legs can dock only after this support is secure."))
+    pelvis["manual"].insert(0,dict(title="Deliver the prepared pelvis and waist",view="components",slots=[],
+        goal="Pin the waist, crane the pelvis onto the gantry and close its jaws.",
+        objectives=[
+            dict(op="operate",machine="module_supports",command="insert_pins"),
+            dict(op="operate",machine="service_crane",command="pickup",task="pelvis"),
+            dict(op="operate",machine="service_crane",command="down"),
+            dict(op="connect",machine="service_crane"),
+            dict(op="operate",machine="service_crane",command="up"),
+            dict(op="operate",machine="service_crane",command="go:receiver"),
+            dict(op="operate",machine="service_crane",command="down"),
+            dict(op="operate",machine="module_supports",command="close_jaws"),
+            dict(op="detach",machine="service_crane"),
+            dict(op="operate",machine="service_crane",command="up"),
+            dict(op="operate",machine="service_crane",command="go:park")],
+        note=dict(at=0,text="The yaw pin is on the front of the waist; the lean pin is on its right side.")))
     for parent in trial["parents"]:
         if parent["id"]=="pelvis":parent.update(label="Prepared pelvis and waist",location="support:bulky_fixture",home=[3.25,1.2,13])
     for name in ["bulky_fixture","pelvis_gantry"]:trial["supports"][name]=dict(assemblies=["pelvis"],assembly_ids=["pelvis"])

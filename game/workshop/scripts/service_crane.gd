@@ -232,6 +232,9 @@ func manual_effect(objective: Dictionary) -> Dictionary:
 	if action.begins_with("go:"):return {"station":action.get_slice(":",1)}
 	return {}
 
+func manual_count(objective: Dictionary) -> Vector2i:
+	return Vector2i(attached_count(),required_ends) if objective.get("op","")=="connect" else Vector2i(-1,-1)
+
 func menu_options() -> Array[Dictionary]:
 	var options: Array[Dictionary] = []
 	if _guided_live() and _guide().has_method("crane_options"):options.append_array(_guide().crane_options())

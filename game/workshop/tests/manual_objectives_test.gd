@@ -106,7 +106,7 @@ func run() -> void:
 	expect(mixed == "Fit FA-221, FA-222, W-12, H-12030 · base end","count 1 omits the multiplier, got "+mixed)
 	var repeated := Objectives.fit_text(parts,[washer,washer,screw])
 	expect(repeated == "Fit 2 × W-12, H-12040","counts above 1 keep the multiplier, got "+repeated)
-	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS}
+	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS,"foot_carrier":preload("res://scripts/foot_carrier.gd").MANUAL_COMMANDS,"module_supports":preload("res://scripts/module_supports.gd").MANUAL_COMMANDS}
 	var good = {"title":"Bolt the flange","goal":"Fasten the flange","view":"components","slots":["a","b"],"objectives":[{"op":"fit","slots":["a"]},{"op":"fit","slots":["b"]}]}
 	var good_errors = Objectives.errors(manual_of(good),commands)
 	expect(good_errors.is_empty(),"valid page has no objective errors: "+joined(good_errors))
@@ -165,6 +165,30 @@ func run() -> void:
 		if str(label).begins_with("Move to delivery · "):has_delivery = true
 		if str(label) == "↓  Lower crane":has_lower = true
 	expect(has_delivery and has_lower,"source menu keeps delivery and lower, got "+str(source_labels))
+	var pelvis_page := page_named(definitions.pelvis.manual,"Deliver the prepared pelvis and waist")
+	var supports = preload("res://scripts/module_supports.gd").new();game.add_child(supports);supports.equipment_id = "module_supports";game.equipment.register(supports)
+	var pelvis_first := Objectives.text(game,"pelvis",pelvis_page.objectives[0])
+	expect(pelvis_page.objectives.size() == 11 and pelvis_first == "Insert both waist neutral pins" and pelvis_first == supports.command_label("insert_pins"),"pelvis delivery checklist, got "+str(pelvis_page.objectives.size())+" "+pelvis_first)
+	var deliver: Dictionary = definitions[left_definition].manual[1]
+	expect(str(deliver.title) == "Deliver the foot" and str(deliver.objectives[0].task) == "foot","left foot delivery, got "+str(deliver.title)+" "+str(deliver.objectives[0].get("task","")))
+	var right_deliver: Dictionary = definitions.right_leg.manual[1]
+	expect(str(right_deliver.objectives[0].task) == "right_foot","right foot pickup task, got "+str(right_deliver.objectives[0].get("task","")))
+	var dock := page_named(definitions[left_definition].manual,"Dock the prepared foot")
+	var rig = preload("res://scripts/foot_carrier.gd").new();game.add_child(rig);rig.equipment_id = "foot_carrier";game.equipment.register(rig)
+	rig.path = 1.0
+	var at_raise = Objectives.evaluate(game,"left_leg",dock)
+	expect(same_ticks(at_raise,[true,false,false]),"foot rig at 1 ticks the raise, got "+str(at_raise.ticked))
+	rig.path = 1.6
+	var at_travel = Objectives.evaluate(game,"left_leg",dock)
+	expect(same_ticks(at_travel,[true,false,false]),"foot rig at 1.6 stays on the raise, got "+str(at_travel.ticked))
+	rig.path = 2.0
+	var at_leg = Objectives.evaluate(game,"left_leg",dock)
+	expect(same_ticks(at_leg,[true,true,false]),"foot rig at 2 ticks the leg approach, got "+str(at_leg.ticked))
+	rig.path = 3.0
+	var at_seat = Objectives.evaluate(game,"left_leg",dock)
+	expect(same_ticks(at_seat,[true,true,true]) and at_seat.machine_complete,"foot rig at 3 completes docking, got "+str(at_seat.ticked)+" complete "+str(at_seat.machine_complete))
+	var seat_text := Objectives.text(game,"left_leg",dock.objectives[2])
+	expect(seat_text == "Advance the foot rig to seat the prepared foot","dock seat text, got "+seat_text)
 	var passed = checks.all(func(check):return check.passed)
 	print("MANUAL_OBJECTIVES ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)

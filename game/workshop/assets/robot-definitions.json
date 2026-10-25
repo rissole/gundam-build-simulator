@@ -4816,9 +4816,69 @@
       "manual": [
         {
           "title": "Deliver the prepared pelvis and waist",
-          "view": "overview",
+          "view": "components",
           "slots": [],
-          "body": "The heavy module rig supplies the bridge, both socket housings and the waist. Insert both waist neutral pins on the pelvis before the crane will lift it. The yaw pin is on the front of the waist and the lean pin is on the right side; both start pulled out. Aim at each pin and press E. At the crane console, choose Move to pickup. Lower the crane, attach all four magnetic connectors, then Raise crane. Choose Move to delivery and Lower crane to seat the bridge on the gantry bearings. Close all four gantry jaws with their handles, check that both pins are still in, then detach and stow the magnetic connectors. The legs can dock only after this support is secure."
+          "goal": "Pin the waist, crane the pelvis onto the gantry and close its jaws.",
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "insert_pins"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "pelvis"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "operate",
+              "machine": "module_supports",
+              "command": "close_jaws"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
+          "note": {
+            "at": 0,
+            "text": "The yaw pin is on the front of the waist; the lean pin is on its right side."
+          }
         },
         {
           "title": "Travel and seat the supported leg",
@@ -14101,13 +14161,109 @@
           "body": "The complete 135-piece foot is supplied on its rig. The leg rig and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
         },
         {
-          "title": "Dock the prepared foot",
-          "body": "Keep the leg rig in the Limb Bay with neutral roll. At the foot rig, Advance raises the complete foot, Advance moves it to the receiving bolster, and Advance turns and seats it horizontally. The leg rig takes contact before the foot rig releases and withdraws. Stop holds any transfer; Advance resumes it.",
-          "slots": [
-            "foot"
+          "title": "Deliver the foot",
+          "goal": "Crane the finished foot from its turning rig onto the foot rig.",
+          "slots": [],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "right_foot"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
           ],
           "view": "components",
           "context_sources": [],
+          "diagram_views": [
+            {
+              "title": "Deliver the foot",
+              "sources": [],
+              "context": [],
+              "offsets": {},
+              "direction": [
+                -1,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "context_padding": 0.08
+            }
+          ]
+        },
+        {
+          "title": "Dock the prepared foot",
+          "goal": "Hand the foot from the foot rig to the leg rig.",
+          "slots": [
+            "foot"
+          ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "foot_carrier",
+              "command": "advance:1"
+            },
+            {
+              "op": "operate",
+              "machine": "foot_carrier",
+              "command": "advance:2"
+            },
+            {
+              "op": "seat",
+              "slot": "foot",
+              "via": {
+                "machine": "foot_carrier",
+                "command": "advance:3"
+              }
+            }
+          ],
+          "view": "components",
+          "context_sources": [],
+          "note": {
+            "at": 0,
+            "text": "The leg rig must be home in the Limb Bay with neutral roll."
+          },
           "diagram_views": [
             {
               "title": "Dock the prepared foot",
@@ -18744,13 +18900,109 @@
             "body": "The complete 135-piece foot is supplied on its rig. The leg rig and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
           },
           {
-            "title": "Dock the prepared foot",
-            "body": "Keep the leg rig in the Limb Bay with neutral roll. At the foot rig, Advance raises the complete foot, Advance moves it to the receiving bolster, and Advance turns and seats it horizontally. The leg rig takes contact before the foot rig releases and withdraws. Stop holds any transfer; Advance resumes it.",
-            "slots": [
-              "foot"
+            "title": "Deliver the foot",
+            "goal": "Crane the finished foot from its turning rig onto the foot rig.",
+            "slots": [],
+            "objectives": [
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "pickup",
+                "task": "foot"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "down"
+              },
+              {
+                "op": "connect",
+                "machine": "service_crane"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "up"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "go:receiver"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "down"
+              },
+              {
+                "op": "detach",
+                "machine": "service_crane"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "up"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "go:park"
+              }
             ],
             "view": "components",
             "context_sources": [],
+            "diagram_views": [
+              {
+                "title": "Deliver the foot",
+                "sources": [],
+                "context": [],
+                "offsets": {},
+                "direction": [
+                  1,
+                  1,
+                  1
+                ],
+                "up": [
+                  0,
+                  1,
+                  0
+                ],
+                "context_padding": 0.08
+              }
+            ]
+          },
+          {
+            "title": "Dock the prepared foot",
+            "goal": "Hand the foot from the foot rig to the leg rig.",
+            "slots": [
+              "foot"
+            ],
+            "objectives": [
+              {
+                "op": "operate",
+                "machine": "foot_carrier",
+                "command": "advance:1"
+              },
+              {
+                "op": "operate",
+                "machine": "foot_carrier",
+                "command": "advance:2"
+              },
+              {
+                "op": "seat",
+                "slot": "foot",
+                "via": {
+                  "machine": "foot_carrier",
+                  "command": "advance:3"
+                }
+              }
+            ],
+            "view": "components",
+            "context_sources": [],
+            "note": {
+              "at": 0,
+              "text": "The leg rig must be home in the Limb Bay with neutral roll."
+            },
             "diagram_views": [
               {
                 "title": "Dock the prepared foot",

@@ -25,6 +25,7 @@ func manual_commands() -> Array:return []
 func command_label(_action: String) -> String:return ""
 func manual_state() -> Dictionary:return {}
 func manual_effect(_objective: Dictionary) -> Dictionary:return {}
+func manual_count(_objective: Dictionary) -> Vector2i:return Vector2i(-1,-1)
 func physics(_delta: float) -> void:pass
 func placement_error(_owner: String, _slot: String) -> String:return ""
 func access_error(_owner: String) -> String:return ""

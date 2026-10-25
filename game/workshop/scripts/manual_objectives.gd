@@ -11,12 +11,15 @@ static func text(game, owner: String, objective: Dictionary) -> String:
 			kinds.append(str(game.model.slot_definition(owner,str(sid)).get("accepts","")))
 		return fit_text(game.model.definitions.parts,kinds,str(objective.get("where","")))
 	if op == "seat":
-		var label := _seat_label(game,owner,objective)
+		var named: Dictionary = _seat_label(game,owner,objective)
+		var label := str(named.label)
+		var from_slot := bool(named.slot)
 		if objective.has("via"):
 			var via: Dictionary = objective.via if objective.via is Dictionary else {}
 			var machine = game.equipment.get_equipment(str(via.get("machine","")))
 			if machine == null:return ""
-			return machine.command_label(str(via.get("command","")))+" to seat "+label
+			return machine.command_label(str(via.get("command","")))+(" to seat the " if from_slot else " to seat ")+label
+		if from_slot:return "Seat the "+label
 		if game.model.slot_definition(owner,str(objective.get("slot",""))).has("assembly"):return "Seat the prepared "+label
 		return "Seat "+label
 	if op == "operate" or op == "connect" or op == "detach":
@@ -73,9 +76,11 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 			if slots.size() > 1:counts[i] = "%d/%d"%[filled,slots.size()]
 		elif op == "seat":
 			ticked[i] = _filled(game,owner,str(objective.get("slot","")))
-		elif op == "connect":
+		elif MACHINE_OPS.has(op):
 			var machine = game.equipment.get_equipment(str(objective.get("machine","")))
-			if machine != null:counts[i] = "%d/%d"%[int(machine.manual_state().get("attached",0)),int(machine.manual_effect(objective).get("attached",0))]
+			if machine != null:
+				var count: Vector2i = machine.manual_count(objective)
+				if count.y >= 0:counts[i] = "%d/%d"%[count.x,count.y]
 	# Machine objectives tick through the latest cumulative state that still matches.
 	var sequence: Array[int] = []
 	for i in objectives.size():
@@ -174,14 +179,17 @@ static func errors(definitions: Dictionary, machines: Dictionary) -> Array[Strin
 			_check_page(str(def_id),index,page,slots,machines,used,found)
 	return found
 
-static func _seat_label(game, owner: String, objective: Dictionary) -> String:
+static func _seat_label(game, owner: String, objective: Dictionary) -> Dictionary:
 	var spec: Dictionary = game.model.slot_definition(owner,str(objective.get("slot","")))
 	if spec.has("assembly"):
 		var child: Dictionary = game.model.definitions.assemblies[str(spec.assembly)]
 		var part_id := str(child.get("part_id",""))
-		return part_id if not part_id.is_empty() else str(child.get("title",""))
-	if spec.has("accepts"):return str(game.model.definitions.parts[str(spec.accepts)].get("family",""))
-	return ""
+		if not part_id.is_empty():return {"label":part_id,"slot":false}
+		var slot_label := str(spec.get("label",""))
+		if not slot_label.is_empty():return {"label":slot_label.substr(0,1).to_lower()+slot_label.substr(1),"slot":true}
+		return {"label":str(child.get("title","")),"slot":false}
+	if spec.has("accepts"):return {"label":str(game.model.definitions.parts[str(spec.accepts)].get("family","")),"slot":false}
+	return {"label":"","slot":false}
 
 static func _filled(game, owner: String, sid: String) -> bool:
 	return not str(game.model.assemblies[owner].slots.get(sid,"")).is_empty()

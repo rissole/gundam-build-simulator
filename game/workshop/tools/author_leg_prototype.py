@@ -580,7 +580,21 @@ def robot_documents(check=False):
         trial_leg["slots"][sid]["undo_to"] = "hands"
     pages = []
     pages.append(dict(title="Prepared foot, empty leg rail", view="overview", slots=[], body="The complete 135-piece foot is supplied on its rig. The leg rig and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."))
-    page(pages, "Dock the prepared foot", "Keep the leg rig in the Limb Bay with neutral roll. At the foot rig, Advance raises the complete foot, Advance moves it to the receiving bolster, and Advance turns and seats it horizontally. The leg rig takes contact before the foot rig releases and withdraws. Stop holds any transfer; Advance resumes it.", ["foot"])
+    page(pages, "Deliver the foot", "", [], goal="Crane the finished foot from its turning rig onto the foot rig.", objectives=[
+        dict(op="operate", machine=CRANE, command="pickup", task="foot"),
+        dict(op="operate", machine=CRANE, command="down"),
+        dict(op="connect", machine=CRANE),
+        dict(op="operate", machine=CRANE, command="up"),
+        dict(op="operate", machine=CRANE, command="go:receiver"),
+        dict(op="operate", machine=CRANE, command="down"),
+        dict(op="detach", machine=CRANE),
+        dict(op="operate", machine=CRANE, command="up"),
+        dict(op="operate", machine=CRANE, command="go:park")])
+    page(pages, "Dock the prepared foot", "", ["foot"], goal="Hand the foot from the foot rig to the leg rig.", objectives=[
+        dict(op="operate", machine="foot_carrier", command="advance:1"),
+        dict(op="operate", machine="foot_carrier", command="advance:2"),
+        dict(op="seat", slot="foot", via=dict(machine="foot_carrier", command="advance:3"))],
+        note=dict(at=0, text="The leg rig must be home in the Limb Bay with neutral roll."))
     def delivery(title, task, uid, receiver):
         page(pages, title, "", [task], goal=f"Crane {uid} from its rig onto the {receiver}.", objectives=[
             dict(op="operate", machine=CRANE, command="pickup", task=task),
