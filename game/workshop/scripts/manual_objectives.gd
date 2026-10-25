@@ -47,7 +47,9 @@ static func fit_text(parts: Dictionary, kinds: Array, where: String = "") -> Str
 		result = ("Fasten %s + %s"%[a,b]) if n == 1 else ("Fasten %d × %s + %s"%[n,a,b])
 	else:
 		var bits: PackedStringArray = []
-		for kind in order:bits.append("%d × %s"%[int(counts[kind]),parts[kind].family])
+		for kind in order:
+			var n := int(counts[kind])
+			bits.append(str(parts[kind].family) if n == 1 else "%d × %s"%[n,parts[kind].family])
 		result = "Fit "+", ".join(bits)
 	if not where.is_empty():result += " · "+where
 	return result

@@ -54,8 +54,11 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
                 if key in slot:slot[key]=vector(slot[key])
             if "snap_rotation_degrees" in slot:slot["snap_rotation_degrees"]=[slot["snap_rotation_degrees"][0],-slot["snap_rotation_degrees"][1],-slot["snap_rotation_degrees"][2]]
         for page in result["manual"]:
-            for field in ["title","body"]:
+            for field in ["title","body","goal"]:
                 if field in page:page[field]=page[field].replace("Left","Right").replace("left","right")
+            if "note" in page:page["note"]["text"]=page["note"]["text"].replace("Left","Right").replace("left","right")
+            for objective in page.get("objectives",[]):
+                if "task" in objective:objective["task"]="right_"+objective["task"]
             for field in ["context_sources"]:
                 if field in page:page[field]=[mirrored(uid) for uid in page[field]]
             for diagram in page.get("diagram_views",[]):
@@ -78,7 +81,7 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
     right_pitch=reflect_recipe(base["pitch_actuator"],"Right pitch actuator · prepared")
     right_leg["slots"]["foot"]["label"]="Prepared right foot"
     for page in right_leg["manual"]:
-        if page["title"]=="Insert the knee axle":page["body"]="Carry LG-140 lengthwise with both hands. Insert from the right leg's outward (+X) axle aisle through the seated fork and bearings. The cap and its screws fit on the inner side. Keep the crane and rail brace engaged."
+        if page["title"]=="Insert the knee axle":page["note"]["text"]="Insert from the right leg's outward (+X) axle aisle. The cap and its screws fit on the inner side."
     # The left and right definitions share their manufactured hardware types,
     # but their placement geometry is reflected through X.
     original_stock=deepcopy(trial["parts"])

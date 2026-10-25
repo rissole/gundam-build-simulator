@@ -1,6 +1,7 @@
 extends CanvasLayer
 const Diagram = preload("res://scripts/manual_diagram.gd")
 const ManualBrowser = preload("res://scripts/manual_browser.gd")
+const ManualObjectives = preload("res://scripts/manual_objectives.gd")
 var game: Node
 var root: Control
 var manual: PanelContainer
@@ -719,8 +720,24 @@ func _refresh_manual() -> void:
 	var definition: Dictionary = game.components.definition(manual_id)
 	var step: Dictionary = definition.manual[page]
 	page_title.text = "%02d / %s"%[page+1,step.title]
-	page_body.text = step.body
-	if step.get("view","") not in ["overview","prepared"]:
+	if step.has("objectives"):
+		var state: Dictionary = ManualObjectives.evaluate(game,manual_id,step)
+		var lines: Array[String] = [str(step.goal),""]
+		for i in step.objectives.size():
+			var mark := "○ "
+			if state.ticked[i]:mark = "✓ "
+			elif i == int(state.current):mark = "▸ "
+			var line := mark+ManualObjectives.text(game,manual_id,step.objectives[i])
+			var count := str(state.counts[i])
+			if not count.is_empty():line += "  "+count
+			lines.append(line)
+		var note = step.get("note",null)
+		if note is Dictionary and int(note.get("at",-1)) == int(state.current):
+			lines.append("")
+			lines.append("Note: "+str(note.text))
+		page_body.text = "\n".join(lines)
+	else:page_body.text = step.body
+	if not step.has("objectives") and step.get("view","") not in ["overview","prepared"]:
 		var quantities: Dictionary = {}
 		for sid in step.slots:
 			var spec = game.model.slot_definition(manual_id,sid)

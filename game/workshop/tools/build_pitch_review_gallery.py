@@ -102,7 +102,7 @@ def main():
     content += ['</nav>']
     for key,names in sheets.items():
         page=data['pages'][key]
-        content += [f'<h2 id="{key}">{key}: {html.escape(page["title"])}</h2><p>{html.escape(page["body"])}</p>']
+        content += [f'<h2 id="{key}">{key}: {html.escape(page["title"])}</h2><p>{html.escape(page.get("body", page.get("goal", "")))}</p>']
         content += [f'<details><summary>{name}</summary><a href="{name}"><img loading="lazy" src="{name}"></a></details>' for name in names]
         content += ['<details><summary>Full-resolution captures</summary>']
         content += [f'<a href="{p}">{p}</a><br>' for r in data['records'] if r['owner']==page['owner'] and r['page']==page['page'] for p in r['captures']]

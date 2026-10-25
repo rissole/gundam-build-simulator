@@ -2974,7 +2974,7 @@
       "manual": [
         {
           "title": "Foot workshop",
-          "body": "Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Use the foot bay controls to expose each side. Follow each branch to install and secure it before transferring the foot.",
+          "body": "Build both heel pads and the pitch actuator, then fit them to the foot.",
           "view": "overview",
           "slots": [
             "heel_1",
@@ -3018,7 +3018,6 @@
         },
         {
           "title": "Heel position 1",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_1",
           "slots": [
             "heel_1",
@@ -3031,11 +3030,30 @@
             "heel_1/washer_3",
             "heel_1/bolt_3"
           ],
-          "view": "install"
+          "view": "install",
+          "goal": "Seat a prepared heel pad here and bolt it down.",
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "heel_1"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "heel_1/washer_0",
+                "heel_1/bolt_0",
+                "heel_1/washer_1",
+                "heel_1/bolt_1",
+                "heel_1/washer_2",
+                "heel_1/bolt_2",
+                "heel_1/washer_3",
+                "heel_1/bolt_3"
+              ]
+            }
+          ]
         },
         {
           "title": "Heel position 2",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_2",
           "slots": [
             "heel_2",
@@ -3048,17 +3066,54 @@
             "heel_2/washer_3",
             "heel_2/bolt_3"
           ],
-          "view": "install"
+          "view": "install",
+          "goal": "Seat a prepared heel pad here and bolt it down.",
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "heel_2"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "heel_2/washer_0",
+                "heel_2/bolt_0",
+                "heel_2/washer_1",
+                "heel_2/bolt_1",
+                "heel_2/washer_2",
+                "heel_2/bolt_2",
+                "heel_2/washer_3",
+                "heel_2/bolt_3"
+              ]
+            }
+          ]
         },
         {
           "title": "Cradle clevis",
-          "body": "Carry FA-220 (cradle clevis) from its shelf and fit it to FA-103. Secure it with two W-24 washers and two H-24070 bolts.",
+          "goal": "Bolt the cradle clevis to FA-103.",
           "slots": [
             "pitch/FA-220__001",
             "pitch/W-24__023",
             "pitch/H-24070__013",
             "pitch/W-24__024",
             "pitch/H-24070__014"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-220__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/W-24__023",
+                "pitch/H-24070__013",
+                "pitch/W-24__024",
+                "pitch/H-24070__014"
+              ]
+            }
           ],
           "view": "components",
           "child_slot": "pitch",
@@ -3115,13 +3170,30 @@
         },
         {
           "title": "Ring clevis",
-          "body": "Carry FA-220 (ring clevis) from its shelf and fit it to FA-200. Secure it with two W-24 washers and two H-24070 bolts.",
+          "goal": "Bolt the ring clevis to FA-200.",
           "slots": [
             "pitch/FA-220__002",
             "pitch/W-24__025",
             "pitch/H-24070__015",
             "pitch/W-24__026",
             "pitch/H-24070__016"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-220__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/W-24__025",
+                "pitch/H-24070__015",
+                "pitch/W-24__026",
+                "pitch/H-24070__016"
+              ]
+            }
           ],
           "view": "components",
           "child_slot": "pitch",
@@ -3178,7 +3250,7 @@
         },
         {
           "title": "Seat & pin actuator",
-          "body": "Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. The FA-500-P child manual covers its preparation.",
+          "goal": "Seat the prepared actuator between the clevises and pin both ends.",
           "slots": [
             "pitch",
             "pitch/FA-221__001",
@@ -3189,6 +3261,32 @@
             "pitch/FA-222__002",
             "pitch/W-12__054",
             "pitch/H-12030__030"
+          ],
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "pitch"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-221__001",
+                "pitch/FA-222__001",
+                "pitch/W-12__053",
+                "pitch/H-12030__029"
+              ],
+              "where": "base end"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-221__002",
+                "pitch/FA-222__002",
+                "pitch/W-12__054",
+                "pitch/H-12030__030"
+              ],
+              "where": "rod end"
+            }
           ],
           "view": "components",
           "child_slot": "pitch",

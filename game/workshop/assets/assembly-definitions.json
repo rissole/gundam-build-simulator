@@ -106,18 +106,29 @@
       "manual": [
         {
           "title": "Prepare",
-          "body": "Suspend FA-302 (heel pad) at any preparation station. Collect FA-305 from its drawer, then fit one at each opening in any order.",
+          "goal": "Hang FA-302 (heel pad) at a preparation station and fit its four sleeves.",
           "slots": [
             "sleeve_0",
             "sleeve_1",
             "sleeve_2",
             "sleeve_3"
           ],
-          "view": "prepare"
+          "view": "prepare",
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "sleeve_0",
+                "sleeve_1",
+                "sleeve_2",
+                "sleeve_3"
+              ]
+            }
+          ]
         },
         {
           "title": "Bring together",
-          "body": "Carry the prepared FA-302 and seat it at an empty heel position. Open the parent foot manual to secure it. Hands work separately from your numbered pockets.",
+          "body": "Carry the prepared heel pad to an empty heel position on the foot.",
           "slots": [
             "base",
             "sleeve_0",

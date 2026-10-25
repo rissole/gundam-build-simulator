@@ -1396,7 +1396,7 @@
       "manual": [
         {
           "title": "Drive cartridge",
-          "body": "Start with FA-513 (motor) beside preparation C. Place it in the fixture, seat FA-514 on its flange, then fit four W-12 washers and four H-12040 screws in the upper holes.",
+          "goal": "Put FA-513 (motor) in the preparation C fixture and mount the gearbox on it.",
           "slots": [
             "FA-514__001",
             "W-12__039",
@@ -1407,6 +1407,28 @@
             "H-12040__011",
             "W-12__042",
             "H-12040__012"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-514__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__039",
+                "H-12040__009",
+                "W-12__040",
+                "H-12040__010",
+                "W-12__041",
+                "H-12040__011",
+                "W-12__042",
+                "H-12040__012"
+              ],
+              "where": "upper holes"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -1492,12 +1514,30 @@
         },
         {
           "title": "Coupling & bearing",
-          "body": "Fit FA-515 on the already fitted FA-514 output shaft. Position FA-522 in the preparation fixture; the fixture supports the exposed drive while you assemble it. Leave FA-515 unclamped.",
+          "goal": "Fit the coupling on the gearbox shaft and position the bearing.",
           "slots": [
             "FA-515__001",
             "FA-522__001"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-515__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-522__001"
+              ]
+            }
+          ],
           "view": "components",
+          "note": {
+            "at": 0,
+            "text": "Leave FA-515 unclamped for now."
+          },
           "diagram_views": [
             {
               "title": "FA-515 • output shaft",
@@ -1561,13 +1601,31 @@
         },
         {
           "title": "Lead screw",
-          "body": "Carry FA-516 (lead screw) from its shelf into the already fitted FA-522 bearing and FA-515 coupling. Clamp FA-515 with two W-12 washers and two H-12030 screws.",
+          "goal": "Slide the lead screw into the bearing and clamp the coupling.",
           "slots": [
             "FA-516__001",
             "W-12__043",
             "H-12030__023",
             "W-12__044",
             "H-12030__024"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-516__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__043",
+                "H-12030__023",
+                "W-12__044",
+                "H-12030__024"
+              ],
+              "where": "coupling clamp"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -1631,7 +1689,7 @@
         },
         {
           "title": "Retain the shaft",
-          "body": "Seat FA-523 against the already fitted FA-522 bearing. Fit the FA-524 receiver collar half and clearance collar half around the shaft. Fit two W-12 washers and H-12030 screws through the clearance half into the receiver half.",
+          "goal": "Lock the lead screw in place with the retainer and collar.",
           "slots": [
             "FA-523__001",
             "FA-524__001",
@@ -1640,6 +1698,36 @@
             "H-12030__025",
             "W-12__050",
             "H-12030__026"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-523__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-524__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-524__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__049",
+                "H-12030__025",
+                "W-12__050",
+                "H-12030__026"
+              ],
+              "where": "through the clearance half"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -1733,9 +1821,17 @@
         },
         {
           "title": "Travelling nut",
-          "body": "Fit FA-517 (travelling nut) onto the already fitted FA-516 lead screw.",
+          "goal": "Thread the travelling nut onto the lead screw.",
           "slots": [
             "FA-517__001"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-517__001"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -1772,13 +1868,30 @@
         },
         {
           "title": "Output rod",
-          "body": "Carry FA-518 (output rod) from its shelf. Join it to the already fitted FA-517 travelling nut with two W-12 washers and two H-12040 screws.",
+          "goal": "Join the output rod to the travelling nut.",
           "slots": [
             "FA-518__001",
             "W-12__045",
             "H-12040__013",
             "W-12__046",
             "H-12040__014"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-518__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__045",
+                "H-12040__013",
+                "W-12__046",
+                "H-12040__014"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -1840,7 +1953,7 @@
         },
         {
           "title": "Enclose the drive",
-          "body": "Fit FA-510 around the exposed drive held by the preparation fixture. From the open rear end, secure the already fitted FA-513 motor with four W-12 and H-12040 pairs. Secure the already fitted FA-523 retainer from outside the housing with two more pairs.",
+          "goal": "Close the housing around the drive and bolt it to the motor and retainer.",
           "slots": [
             "FA-510__001",
             "W-12__035",
@@ -1855,6 +1968,38 @@
             "H-12040__015",
             "W-12__048",
             "H-12040__016"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-510__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__035",
+                "H-12040__005",
+                "W-12__036",
+                "H-12040__006",
+                "W-12__037",
+                "H-12040__007",
+                "W-12__038",
+                "H-12040__008"
+              ],
+              "where": "motor, from the open rear"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__047",
+                "H-12040__015",
+                "W-12__048",
+                "H-12040__016"
+              ],
+              "where": "retainer, from outside"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -1994,13 +2139,31 @@
         },
         {
           "title": "Guide key",
-          "body": "Engage FA-521 (guide key) in the longitudinal slot of the already fitted FA-518 rod. Its offset ears attach to the FA-510 housing with two W-12 washers and two H-12030 screws; the rod slides along the key.",
+          "goal": "Fit the guide key so the rod slides without turning.",
           "slots": [
             "FA-521__001",
             "W-12__051",
             "H-12030__027",
             "W-12__052",
             "H-12030__028"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-521__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__051",
+                "H-12030__027",
+                "W-12__052",
+                "H-12030__028"
+              ],
+              "where": "key ears to housing"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -2098,7 +2261,7 @@
         },
         {
           "title": "End sensors",
-          "body": "Seat both FA-528 probes in the FA-510 openings. Each external mounting flange takes W-12 and H-12030. Fit FA-530 in the round barrel port.",
+          "goal": "Fit both end-stop probes and the barrel plug.",
           "slots": [
             "FA-528__001",
             "FA-528__002",
@@ -2107,6 +2270,37 @@
             "H-12030__021",
             "W-12__026",
             "H-12030__022"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-528__001",
+                "FA-528__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-530__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__025",
+                "H-12030__021"
+              ],
+              "where": "rear probe"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__026",
+                "H-12030__022"
+              ],
+              "where": "front probe"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -2185,14 +2379,44 @@
         },
         {
           "title": "Front guide & seals",
-          "body": "Slide FA-519 along the already fitted FA-518 rod into the FA-510 front shoulder. Place FA-520 on the rod. Fit the FA-529 rear cap gasket, with its extra clearance holes, at the motor end; fit the front cap gasket at the rod end.",
+          "goal": "Fit the front guide, the wiper and both cap gaskets.",
           "slots": [
             "FA-519__001",
             "FA-520__001",
             "FA-529__001",
             "FA-529__002"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-519__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-520__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-529__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-529__002"
+              ]
+            }
+          ],
           "view": "components",
+          "note": {
+            "at": 2,
+            "text": "The gasket with extra clearance holes goes at the motor end."
+          },
           "diagram_views": [
             {
               "title": "FA-519 / FA-520",
@@ -2259,7 +2483,7 @@
         },
         {
           "title": "Close the housing",
-          "body": "Fit one FA-511 (front cap) and one FA-512 (rear cap). Secure each cap with four W-12 washers and four H-12050 screws.",
+          "goal": "Fit both end caps and bolt them shut.",
           "slots": [
             "FA-511__001",
             "FA-512__001",
@@ -2279,6 +2503,48 @@
             "H-12050__007",
             "W-12__034",
             "H-12050__008"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-511__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-512__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__027",
+                "H-12050__001",
+                "W-12__028",
+                "H-12050__002",
+                "W-12__029",
+                "H-12050__003",
+                "W-12__030",
+                "H-12050__004"
+              ],
+              "where": "rear cap"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__031",
+                "H-12050__005",
+                "W-12__032",
+                "H-12050__006",
+                "W-12__033",
+                "H-12050__007",
+                "W-12__034",
+                "H-12050__008"
+              ],
+              "where": "front cap"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -2446,7 +2712,7 @@
         },
         {
           "title": "Base eye",
-          "body": "Fit FA-525 (base eye housing), one FA-526 spherical eye bearing, then one FA-527 eye retaining ring. Secure the housing with two W-12 washers and H-12040 screws.",
+          "goal": "Build the base eye: housing, bearing, then retaining ring.",
           "slots": [
             "FA-525__001",
             "FA-526__001",
@@ -2455,6 +2721,35 @@
             "H-12040__001",
             "W-12__022",
             "H-12040__002"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-525__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-526__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-527__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__021",
+                "H-12040__001",
+                "W-12__022",
+                "H-12040__002"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -2535,7 +2830,7 @@
         },
         {
           "title": "Rod eye",
-          "body": "Fit FA-525 (rod eye housing), one FA-526 spherical eye bearing, then one FA-527 eye retaining ring. Secure the housing with two W-12 washers and H-12040 screws.",
+          "goal": "Build the rod eye: housing, bearing, then retaining ring.",
           "slots": [
             "FA-525__002",
             "FA-526__002",
@@ -2544,6 +2839,35 @@
             "H-12040__003",
             "W-12__024",
             "H-12040__004"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-525__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-526__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-527__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__023",
+                "H-12040__003",
+                "W-12__024",
+                "H-12040__004"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -2624,7 +2948,7 @@
         },
         {
           "title": "Ready to install",
-          "body": "FA-500-P is ready after all 91 pieces. Open the parent foot manual for installation.",
+          "body": "FA-500-P is ready. Seat it in the foot.",
           "slots": [
             "base",
             "FA-514__001",
@@ -3326,7 +3650,7 @@
       "manual": [
         {
           "title": "Foot workshop",
-          "body": "Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Use the foot bay controls to expose each side. Follow each branch to install and secure it before transferring the foot.",
+          "body": "Build both heel pads and the pitch actuator, then fit them to the foot.",
           "view": "overview",
           "slots": [
             "heel_1",
@@ -3370,7 +3694,6 @@
         },
         {
           "title": "Heel position 1",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_1",
           "slots": [
             "heel_1",
@@ -3383,11 +3706,30 @@
             "heel_1/washer_3",
             "heel_1/bolt_3"
           ],
-          "view": "install"
+          "view": "install",
+          "goal": "Seat a prepared heel pad here and bolt it down.",
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "heel_1"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "heel_1/washer_0",
+                "heel_1/bolt_0",
+                "heel_1/washer_1",
+                "heel_1/bolt_1",
+                "heel_1/washer_2",
+                "heel_1/bolt_2",
+                "heel_1/washer_3",
+                "heel_1/bolt_3"
+              ]
+            }
+          ]
         },
         {
           "title": "Heel position 2",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_2",
           "slots": [
             "heel_2",
@@ -3400,17 +3742,54 @@
             "heel_2/washer_3",
             "heel_2/bolt_3"
           ],
-          "view": "install"
+          "view": "install",
+          "goal": "Seat a prepared heel pad here and bolt it down.",
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "heel_2"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "heel_2/washer_0",
+                "heel_2/bolt_0",
+                "heel_2/washer_1",
+                "heel_2/bolt_1",
+                "heel_2/washer_2",
+                "heel_2/bolt_2",
+                "heel_2/washer_3",
+                "heel_2/bolt_3"
+              ]
+            }
+          ]
         },
         {
           "title": "Cradle clevis",
-          "body": "Carry FA-220 (cradle clevis) from its shelf and fit it to FA-103. Secure it with two W-24 washers and two H-24070 bolts.",
+          "goal": "Bolt the cradle clevis to FA-103.",
           "slots": [
             "pitch/FA-220__001",
             "pitch/W-24__023",
             "pitch/H-24070__013",
             "pitch/W-24__024",
             "pitch/H-24070__014"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-220__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/W-24__023",
+                "pitch/H-24070__013",
+                "pitch/W-24__024",
+                "pitch/H-24070__014"
+              ]
+            }
           ],
           "view": "components",
           "child_slot": "pitch",
@@ -3467,13 +3846,30 @@
         },
         {
           "title": "Ring clevis",
-          "body": "Carry FA-220 (ring clevis) from its shelf and fit it to FA-200. Secure it with two W-24 washers and two H-24070 bolts.",
+          "goal": "Bolt the ring clevis to FA-200.",
           "slots": [
             "pitch/FA-220__002",
             "pitch/W-24__025",
             "pitch/H-24070__015",
             "pitch/W-24__026",
             "pitch/H-24070__016"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-220__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/W-24__025",
+                "pitch/H-24070__015",
+                "pitch/W-24__026",
+                "pitch/H-24070__016"
+              ]
+            }
           ],
           "view": "components",
           "child_slot": "pitch",
@@ -3530,7 +3926,7 @@
         },
         {
           "title": "Seat & pin actuator",
-          "body": "Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. The FA-500-P child manual covers its preparation.",
+          "goal": "Seat the prepared actuator between the clevises and pin both ends.",
           "slots": [
             "pitch",
             "pitch/FA-221__001",
@@ -3541,6 +3937,32 @@
             "pitch/FA-222__002",
             "pitch/W-12__054",
             "pitch/H-12030__030"
+          ],
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "pitch"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-221__001",
+                "pitch/FA-222__001",
+                "pitch/W-12__053",
+                "pitch/H-12030__029"
+              ],
+              "where": "base end"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-221__002",
+                "pitch/FA-222__002",
+                "pitch/W-12__054",
+                "pitch/H-12030__030"
+              ],
+              "where": "rod end"
+            }
           ],
           "view": "components",
           "child_slot": "pitch",

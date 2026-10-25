@@ -14132,12 +14132,51 @@
         },
         {
           "title": "Deliver the structural shin",
-          "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Structural shin task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-100 against the already fitted foot adapter. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
+          "goal": "Crane LG-100 from its rig onto the foot adapter.",
           "slots": [
             "shin"
           ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "right_shin"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver"
+            },
+            {
+              "op": "seat",
+              "slot": "shin",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
+          ],
           "view": "components",
           "context_sources": [],
+          "note": {
+            "at": 2,
+            "text": "Keep both connectors attached until this connection is bolted."
+          },
           "diagram_views": [
             {
               "title": "Deliver the structural shin",
@@ -14162,7 +14201,7 @@
         },
         {
           "title": "Secure the ankle flange",
-          "body": "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic connectors, raise and park the empty crane before changing task.",
+          "goal": "Bolt the shin flange to the foot adapter, then release and park the crane.",
           "slots": [
             "ankle/W-36__021",
             "ankle/H-36090__001",
@@ -14173,11 +14212,44 @@
             "ankle/W-36__024",
             "ankle/H-36090__004"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "ankle/W-36__021",
+                "ankle/H-36090__001",
+                "ankle/W-36__022",
+                "ankle/H-36090__002",
+                "ankle/W-36__023",
+                "ankle/H-36090__003",
+                "ankle/W-36__024",
+                "ankle/H-36090__004"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
           "view": "components",
           "context_sources": [
             "R-LG-100__001",
             "R-FA-201__001"
           ],
+          "note": {
+            "at": 0,
+            "text": "Insert the bolts from the knee side, toward the foot."
+          },
           "diagram_views": [
             {
               "title": "Secure the ankle flange",
@@ -14212,15 +14284,27 @@
         },
         {
           "title": "Connect the shin disconnect",
-          "body": "Carry FA-605 with both attached plugs. Approach from the side away from the part rigs, standing back toward the knee. Leave room for the upright harness to turn clear of the ankle brace before fitting it. Seat its box end in the already fitted FA-604 socket, follow the foot guide clips and seat the upper keyed plug in LG-100's angled socket. The harness and knee-bearing branches can be completed in either order after the ankle bolts. Unplug this harness before separating foot and shin.",
+          "goal": "Plug the shin harness into the foot socket and the shin.",
           "slots": [
             "main_input"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "main_input"
+              ]
+            }
           ],
           "view": "components",
           "context_sources": [
             "R-FA-604__001",
             "R-LG-100__001"
           ],
+          "note": {
+            "at": 0,
+            "text": "Approach from the side away from the part rigs, standing back toward the knee."
+          },
           "diagram_views": [
             {
               "title": "Connect the shin disconnect",
@@ -14248,17 +14332,37 @@
         },
         {
           "title": "Seat bearings and thrust spacers",
-          "body": "Carry and fit the two LG-130 bearings from opposite sides of the shin knee boss, then one LG-135 thrust spacer against each end. Bearings are interchangeable with bearings; spacers are interchangeable with spacers. Keep the marked knee axle extraction aisle clear.",
+          "goal": "Fit both knee bearings, then a thrust spacer at each end of the knee boss.",
           "slots": [
             "bearing_1",
             "bearing_2",
             "thrust_1",
             "thrust_2"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "bearing_1",
+                "bearing_2"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "thrust_1",
+                "thrust_2"
+              ]
+            }
+          ],
           "view": "components",
           "context_sources": [
             "R-LG-100__001"
           ],
+          "note": {
+            "at": 0,
+            "text": "Keep the marked knee axle aisle clear."
+          },
           "diagram_views": [
             {
               "title": "Seat bearings and thrust spacers",
@@ -14288,12 +14392,51 @@
         },
         {
           "title": "Deliver the knee fork",
-          "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Knee fork task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-110 against the already fitted shin knee boss and thrust spacers. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
+          "goal": "Crane LG-110 from its rig onto the shin knee boss and thrust spacers.",
           "slots": [
             "fork"
           ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "right_fork"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver"
+            },
+            {
+              "op": "seat",
+              "slot": "fork",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
+          ],
           "view": "components",
           "context_sources": [],
+          "note": {
+            "at": 2,
+            "text": "Keep both connectors attached until this connection is bolted."
+          },
           "diagram_views": [
             {
               "title": "Deliver the knee fork",
@@ -14318,14 +14461,26 @@
         },
         {
           "title": "Insert the knee axle",
-          "body": "Carry LG-140 lengthwise with both hands. Insert from the right leg's outward (+X) axle aisle through the seated fork and bearings. The cap and its screws fit on the inner side. Keep the crane and rail brace engaged.",
+          "goal": "Slide the knee axle through the fork and bearings.",
           "slots": [
             "axle"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "axle"
+              ]
+            }
           ],
           "view": "components",
           "context_sources": [
             "R-LG-110__001"
           ],
+          "note": {
+            "at": 0,
+            "text": "Insert from the right leg's outward (+X) axle aisle. The cap and its screws fit on the inner side."
+          },
           "diagram_views": [
             {
               "title": "Insert the knee axle",
@@ -14352,7 +14507,7 @@
         },
         {
           "title": "Retain the knee axle",
-          "body": "Walk to the opposite side from the marked axle extraction aisle. Fit LG-150 on the exposed axle end, then two LG-W12 washers and two LG-H12050 screws, each washer before its screw. With the axle and both cap pairs complete, detach and stow both magnetic connectors, raise and park the empty crane.",
+          "goal": "Cap the axle end, then release and park the crane.",
           "slots": [
             "cap",
             "cap/washer_1",
@@ -14360,11 +14515,46 @@
             "cap/washer_2",
             "cap/screw_2"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "cap"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "cap/washer_1",
+                "cap/screw_1",
+                "cap/washer_2",
+                "cap/screw_2"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
           "view": "components",
           "context_sources": [
             "R-LG-110__001",
             "R-LG-140__001"
           ],
+          "note": {
+            "at": 0,
+            "text": "Work from the side opposite the axle aisle."
+          },
           "diagram_views": [
             {
               "title": "Retain the knee axle",
@@ -14396,12 +14586,51 @@
         },
         {
           "title": "Deliver the Upper-leg beam",
-          "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Upper-leg beam task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-120 against the already fitted fork flange. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
+          "goal": "Crane LG-120 from its rig onto the fork flange.",
           "slots": [
             "spar"
           ],
+          "objectives": [
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "pickup",
+              "task": "right_spar"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "down"
+            },
+            {
+              "op": "connect",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:receiver"
+            },
+            {
+              "op": "seat",
+              "slot": "spar",
+              "via": {
+                "machine": "service_crane",
+                "command": "down"
+              }
+            }
+          ],
           "view": "components",
           "context_sources": [],
+          "note": {
+            "at": 2,
+            "text": "Keep both connectors attached until this connection is bolted."
+          },
           "diagram_views": [
             {
               "title": "Deliver the Upper-leg beam",
@@ -14426,7 +14655,7 @@
         },
         {
           "title": "Fasten the Upper-leg beam flange",
-          "body": "Pocket four LG-W24 washers and four LG-H24100 bolts. Fit each washer and then its bolt through the exposed flange corners into the already fitted fork. Approach the bolt heads from the hip side of the flange and insert toward the knee. These M24 x 100 bolts differ from the pelvis M24 x 140 bolts. After every pair is fitted, detach and stow both magnetic connectors, then raise and park the empty crane.",
+          "goal": "Bolt the beam flange to the fork, then release and park the crane.",
           "slots": [
             "fork/washer_1",
             "fork/bolt_1",
@@ -14437,11 +14666,44 @@
             "fork/washer_4",
             "fork/bolt_4"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "fork/washer_1",
+                "fork/bolt_1",
+                "fork/washer_2",
+                "fork/bolt_2",
+                "fork/washer_3",
+                "fork/bolt_3",
+                "fork/washer_4",
+                "fork/bolt_4"
+              ]
+            },
+            {
+              "op": "detach",
+              "machine": "service_crane"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "service_crane",
+              "command": "go:park"
+            }
+          ],
           "view": "components",
           "context_sources": [
             "R-LG-110__001",
             "R-LG-120__001"
           ],
+          "note": {
+            "at": 0,
+            "text": "Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the pelvis M24 × 140."
+          },
           "diagram_views": [
             {
               "title": "Fasten the Upper-leg beam flange",
@@ -14982,7 +15244,7 @@
       "manual": [
         {
           "title": "Foot workshop",
-          "body": "Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Use the foot bay controls to expose each side. Follow each branch to install and secure it before transferring the foot.",
+          "body": "Build both heel pads and the pitch actuator, then fit them to the foot.",
           "view": "overview",
           "slots": [
             "heel_1",
@@ -15026,7 +15288,6 @@
         },
         {
           "title": "Heel position 1",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_1",
           "slots": [
             "heel_1",
@@ -15039,11 +15300,30 @@
             "heel_1/washer_3",
             "heel_1/bolt_3"
           ],
-          "view": "install"
+          "view": "install",
+          "goal": "Seat a prepared heel pad here and bolt it down.",
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "heel_1"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "heel_1/washer_0",
+                "heel_1/bolt_0",
+                "heel_1/washer_1",
+                "heel_1/bolt_1",
+                "heel_1/washer_2",
+                "heel_1/bolt_2",
+                "heel_1/washer_3",
+                "heel_1/bolt_3"
+              ]
+            }
+          ]
         },
         {
           "title": "Heel position 2",
-          "body": "Seat a prepared FA-302 here. At each connection, fit W-24 (washer) before H-24120 (bolt). Stock the hardware from its drawers and select the matching pocket. Any connection order works.",
           "child_slot": "heel_2",
           "slots": [
             "heel_2",
@@ -15056,17 +15336,54 @@
             "heel_2/washer_3",
             "heel_2/bolt_3"
           ],
-          "view": "install"
+          "view": "install",
+          "goal": "Seat a prepared heel pad here and bolt it down.",
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "heel_2"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "heel_2/washer_0",
+                "heel_2/bolt_0",
+                "heel_2/washer_1",
+                "heel_2/bolt_1",
+                "heel_2/washer_2",
+                "heel_2/bolt_2",
+                "heel_2/washer_3",
+                "heel_2/bolt_3"
+              ]
+            }
+          ]
         },
         {
           "title": "Cradle clevis",
-          "body": "Carry FA-220 (cradle clevis) from its shelf and fit it to FA-103. Secure it with two W-24 washers and two H-24070 bolts.",
+          "goal": "Bolt the cradle clevis to FA-103.",
           "slots": [
             "pitch/FA-220__001",
             "pitch/W-24__023",
             "pitch/H-24070__013",
             "pitch/W-24__024",
             "pitch/H-24070__014"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-220__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/W-24__023",
+                "pitch/H-24070__013",
+                "pitch/W-24__024",
+                "pitch/H-24070__014"
+              ]
+            }
           ],
           "view": "components",
           "child_slot": "pitch",
@@ -15123,13 +15440,30 @@
         },
         {
           "title": "Ring clevis",
-          "body": "Carry FA-220 (ring clevis) from its shelf and fit it to FA-200. Secure it with two W-24 washers and two H-24070 bolts.",
+          "goal": "Bolt the ring clevis to FA-200.",
           "slots": [
             "pitch/FA-220__002",
             "pitch/W-24__025",
             "pitch/H-24070__015",
             "pitch/W-24__026",
             "pitch/H-24070__016"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-220__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/W-24__025",
+                "pitch/H-24070__015",
+                "pitch/W-24__026",
+                "pitch/H-24070__016"
+              ]
+            }
           ],
           "view": "components",
           "child_slot": "pitch",
@@ -15186,7 +15520,7 @@
         },
         {
           "title": "Seat & pin actuator",
-          "body": "Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. The FA-500-P child manual covers its preparation.",
+          "goal": "Seat the prepared actuator between the clevises and pin both ends.",
           "slots": [
             "pitch",
             "pitch/FA-221__001",
@@ -15197,6 +15531,32 @@
             "pitch/FA-222__002",
             "pitch/W-12__054",
             "pitch/H-12030__030"
+          ],
+          "objectives": [
+            {
+              "op": "seat",
+              "slot": "pitch"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-221__001",
+                "pitch/FA-222__001",
+                "pitch/W-12__053",
+                "pitch/H-12030__029"
+              ],
+              "where": "base end"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "pitch/FA-221__002",
+                "pitch/FA-222__002",
+                "pitch/W-12__054",
+                "pitch/H-12030__030"
+              ],
+              "where": "rod end"
+            }
           ],
           "view": "components",
           "child_slot": "pitch",
@@ -15362,18 +15722,29 @@
       "manual": [
         {
           "title": "Prepare",
-          "body": "Suspend FA-302 (heel pad) at any preparation station. Collect FA-305 from its drawer, then fit one at each opening in any order.",
+          "goal": "Hang FA-302 (heel pad) at a preparation station and fit its four sleeves.",
           "slots": [
             "sleeve_0",
             "sleeve_1",
             "sleeve_2",
             "sleeve_3"
           ],
-          "view": "prepare"
+          "view": "prepare",
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "sleeve_0",
+                "sleeve_1",
+                "sleeve_2",
+                "sleeve_3"
+              ]
+            }
+          ]
         },
         {
           "title": "Bring together",
-          "body": "Carry the prepared FA-302 and seat it at an empty heel position. Open the parent foot manual to secure it. Hands work separately from your numbered pockets.",
+          "body": "Carry the prepared heel pad to an empty heel position on the foot.",
           "slots": [
             "base",
             "sleeve_0",
@@ -16535,7 +16906,7 @@
       "manual": [
         {
           "title": "Drive cartridge",
-          "body": "Start with FA-513 (motor) beside preparation C. Place it in the fixture, seat FA-514 on its flange, then fit four W-12 washers and four H-12040 screws in the upper holes.",
+          "goal": "Put FA-513 (motor) in the preparation C fixture and mount the gearbox on it.",
           "slots": [
             "FA-514__001",
             "W-12__039",
@@ -16546,6 +16917,28 @@
             "H-12040__011",
             "W-12__042",
             "H-12040__012"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-514__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__039",
+                "H-12040__009",
+                "W-12__040",
+                "H-12040__010",
+                "W-12__041",
+                "H-12040__011",
+                "W-12__042",
+                "H-12040__012"
+              ],
+              "where": "upper holes"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -16631,12 +17024,30 @@
         },
         {
           "title": "Coupling & bearing",
-          "body": "Fit FA-515 on the already fitted FA-514 output shaft. Position FA-522 in the preparation fixture; the fixture supports the exposed drive while you assemble it. Leave FA-515 unclamped.",
+          "goal": "Fit the coupling on the gearbox shaft and position the bearing.",
           "slots": [
             "FA-515__001",
             "FA-522__001"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-515__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-522__001"
+              ]
+            }
+          ],
           "view": "components",
+          "note": {
+            "at": 0,
+            "text": "Leave FA-515 unclamped for now."
+          },
           "diagram_views": [
             {
               "title": "FA-515 • output shaft",
@@ -16700,13 +17111,31 @@
         },
         {
           "title": "Lead screw",
-          "body": "Carry FA-516 (lead screw) from its shelf into the already fitted FA-522 bearing and FA-515 coupling. Clamp FA-515 with two W-12 washers and two H-12030 screws.",
+          "goal": "Slide the lead screw into the bearing and clamp the coupling.",
           "slots": [
             "FA-516__001",
             "W-12__043",
             "H-12030__023",
             "W-12__044",
             "H-12030__024"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-516__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__043",
+                "H-12030__023",
+                "W-12__044",
+                "H-12030__024"
+              ],
+              "where": "coupling clamp"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -16770,7 +17199,7 @@
         },
         {
           "title": "Retain the shaft",
-          "body": "Seat FA-523 against the already fitted FA-522 bearing. Fit the FA-524 receiver collar half and clearance collar half around the shaft. Fit two W-12 washers and H-12030 screws through the clearance half into the receiver half.",
+          "goal": "Lock the lead screw in place with the retainer and collar.",
           "slots": [
             "FA-523__001",
             "FA-524__001",
@@ -16779,6 +17208,36 @@
             "H-12030__025",
             "W-12__050",
             "H-12030__026"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-523__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-524__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-524__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__049",
+                "H-12030__025",
+                "W-12__050",
+                "H-12030__026"
+              ],
+              "where": "through the clearance half"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -16872,9 +17331,17 @@
         },
         {
           "title": "Travelling nut",
-          "body": "Fit FA-517 (travelling nut) onto the already fitted FA-516 lead screw.",
+          "goal": "Thread the travelling nut onto the lead screw.",
           "slots": [
             "FA-517__001"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-517__001"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -16911,13 +17378,30 @@
         },
         {
           "title": "Output rod",
-          "body": "Carry FA-518 (output rod) from its shelf. Join it to the already fitted FA-517 travelling nut with two W-12 washers and two H-12040 screws.",
+          "goal": "Join the output rod to the travelling nut.",
           "slots": [
             "FA-518__001",
             "W-12__045",
             "H-12040__013",
             "W-12__046",
             "H-12040__014"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-518__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__045",
+                "H-12040__013",
+                "W-12__046",
+                "H-12040__014"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -16979,7 +17463,7 @@
         },
         {
           "title": "Enclose the drive",
-          "body": "Fit FA-510 around the exposed drive held by the preparation fixture. From the open rear end, secure the already fitted FA-513 motor with four W-12 and H-12040 pairs. Secure the already fitted FA-523 retainer from outside the housing with two more pairs.",
+          "goal": "Close the housing around the drive and bolt it to the motor and retainer.",
           "slots": [
             "FA-510__001",
             "W-12__035",
@@ -16994,6 +17478,38 @@
             "H-12040__015",
             "W-12__048",
             "H-12040__016"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-510__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__035",
+                "H-12040__005",
+                "W-12__036",
+                "H-12040__006",
+                "W-12__037",
+                "H-12040__007",
+                "W-12__038",
+                "H-12040__008"
+              ],
+              "where": "motor, from the open rear"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__047",
+                "H-12040__015",
+                "W-12__048",
+                "H-12040__016"
+              ],
+              "where": "retainer, from outside"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -17133,13 +17649,31 @@
         },
         {
           "title": "Guide key",
-          "body": "Engage FA-521 (guide key) in the longitudinal slot of the already fitted FA-518 rod. Its offset ears attach to the FA-510 housing with two W-12 washers and two H-12030 screws; the rod slides along the key.",
+          "goal": "Fit the guide key so the rod slides without turning.",
           "slots": [
             "FA-521__001",
             "W-12__051",
             "H-12030__027",
             "W-12__052",
             "H-12030__028"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-521__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__051",
+                "H-12030__027",
+                "W-12__052",
+                "H-12030__028"
+              ],
+              "where": "key ears to housing"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -17237,7 +17771,7 @@
         },
         {
           "title": "End sensors",
-          "body": "Seat both FA-528 probes in the FA-510 openings. Each external mounting flange takes W-12 and H-12030. Fit FA-530 in the round barrel port.",
+          "goal": "Fit both end-stop probes and the barrel plug.",
           "slots": [
             "FA-528__001",
             "FA-528__002",
@@ -17246,6 +17780,37 @@
             "H-12030__021",
             "W-12__026",
             "H-12030__022"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-528__001",
+                "FA-528__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-530__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__025",
+                "H-12030__021"
+              ],
+              "where": "rear probe"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__026",
+                "H-12030__022"
+              ],
+              "where": "front probe"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -17324,14 +17889,44 @@
         },
         {
           "title": "Front guide & seals",
-          "body": "Slide FA-519 along the already fitted FA-518 rod into the FA-510 front shoulder. Place FA-520 on the rod. Fit the FA-529 rear cap gasket, with its extra clearance holes, at the motor end; fit the front cap gasket at the rod end.",
+          "goal": "Fit the front guide, the wiper and both cap gaskets.",
           "slots": [
             "FA-519__001",
             "FA-520__001",
             "FA-529__001",
             "FA-529__002"
           ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-519__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-520__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-529__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-529__002"
+              ]
+            }
+          ],
           "view": "components",
+          "note": {
+            "at": 2,
+            "text": "The gasket with extra clearance holes goes at the motor end."
+          },
           "diagram_views": [
             {
               "title": "FA-519 / FA-520",
@@ -17398,7 +17993,7 @@
         },
         {
           "title": "Close the housing",
-          "body": "Fit one FA-511 (front cap) and one FA-512 (rear cap). Secure each cap with four W-12 washers and four H-12050 screws.",
+          "goal": "Fit both end caps and bolt them shut.",
           "slots": [
             "FA-511__001",
             "FA-512__001",
@@ -17418,6 +18013,48 @@
             "H-12050__007",
             "W-12__034",
             "H-12050__008"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-511__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-512__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__027",
+                "H-12050__001",
+                "W-12__028",
+                "H-12050__002",
+                "W-12__029",
+                "H-12050__003",
+                "W-12__030",
+                "H-12050__004"
+              ],
+              "where": "rear cap"
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__031",
+                "H-12050__005",
+                "W-12__032",
+                "H-12050__006",
+                "W-12__033",
+                "H-12050__007",
+                "W-12__034",
+                "H-12050__008"
+              ],
+              "where": "front cap"
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -17585,7 +18222,7 @@
         },
         {
           "title": "Base eye",
-          "body": "Fit FA-525 (base eye housing), one FA-526 spherical eye bearing, then one FA-527 eye retaining ring. Secure the housing with two W-12 washers and H-12040 screws.",
+          "goal": "Build the base eye: housing, bearing, then retaining ring.",
           "slots": [
             "FA-525__001",
             "FA-526__001",
@@ -17594,6 +18231,35 @@
             "H-12040__001",
             "W-12__022",
             "H-12040__002"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-525__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-526__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-527__001"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__021",
+                "H-12040__001",
+                "W-12__022",
+                "H-12040__002"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -17674,7 +18340,7 @@
         },
         {
           "title": "Rod eye",
-          "body": "Fit FA-525 (rod eye housing), one FA-526 spherical eye bearing, then one FA-527 eye retaining ring. Secure the housing with two W-12 washers and H-12040 screws.",
+          "goal": "Build the rod eye: housing, bearing, then retaining ring.",
           "slots": [
             "FA-525__002",
             "FA-526__002",
@@ -17683,6 +18349,35 @@
             "H-12040__003",
             "W-12__024",
             "H-12040__004"
+          ],
+          "objectives": [
+            {
+              "op": "fit",
+              "slots": [
+                "FA-525__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-526__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "FA-527__002"
+              ]
+            },
+            {
+              "op": "fit",
+              "slots": [
+                "W-12__023",
+                "H-12040__003",
+                "W-12__024",
+                "H-12040__004"
+              ]
+            }
           ],
           "view": "components",
           "diagram_views": [
@@ -17763,7 +18458,7 @@
         },
         {
           "title": "Ready to install",
-          "body": "FA-500-P is ready after all 91 pieces. Open the parent foot manual for installation.",
+          "body": "FA-500-P is ready. Seat it in the foot.",
           "slots": [
             "base",
             "FA-514__001",
@@ -18080,12 +18775,51 @@
           },
           {
             "title": "Deliver the structural shin",
-            "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Structural shin task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-100 against the already fitted foot adapter. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
+            "goal": "Crane LG-100 from its rig onto the foot adapter.",
             "slots": [
               "shin"
             ],
+            "objectives": [
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "pickup",
+                "task": "shin"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "down"
+              },
+              {
+                "op": "connect",
+                "machine": "service_crane"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "up"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "go:receiver"
+              },
+              {
+                "op": "seat",
+                "slot": "shin",
+                "via": {
+                  "machine": "service_crane",
+                  "command": "down"
+                }
+              }
+            ],
             "view": "components",
             "context_sources": [],
+            "note": {
+              "at": 2,
+              "text": "Keep both connectors attached until this connection is bolted."
+            },
             "diagram_views": [
               {
                 "title": "Deliver the structural shin",
@@ -18110,7 +18844,7 @@
           },
           {
             "title": "Secure the ankle flange",
-            "body": "Collect four W-36 washers and four H-36090 bolts into pockets. Fit each washer before its bolt on the exposed shin flange. Approach the bolt heads from the knee side of the flange and insert toward the foot into the already fitted FA-201 adapter. After all four pairs, detach and stow both magnetic connectors, raise and park the empty crane before changing task.",
+            "goal": "Bolt the shin flange to the foot adapter, then release and park the crane.",
             "slots": [
               "ankle/W-36__021",
               "ankle/H-36090__001",
@@ -18121,11 +18855,44 @@
               "ankle/W-36__024",
               "ankle/H-36090__004"
             ],
+            "objectives": [
+              {
+                "op": "fit",
+                "slots": [
+                  "ankle/W-36__021",
+                  "ankle/H-36090__001",
+                  "ankle/W-36__022",
+                  "ankle/H-36090__002",
+                  "ankle/W-36__023",
+                  "ankle/H-36090__003",
+                  "ankle/W-36__024",
+                  "ankle/H-36090__004"
+                ]
+              },
+              {
+                "op": "detach",
+                "machine": "service_crane"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "up"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "go:park"
+              }
+            ],
             "view": "components",
             "context_sources": [
               "LG-100__001",
               "FA-201__001"
             ],
+            "note": {
+              "at": 0,
+              "text": "Insert the bolts from the knee side, toward the foot."
+            },
             "diagram_views": [
               {
                 "title": "Secure the ankle flange",
@@ -18160,15 +18927,27 @@
           },
           {
             "title": "Connect the shin disconnect",
-            "body": "Carry FA-605 with both attached plugs. Approach from the side away from the part rigs, standing back toward the knee. Leave room for the upright harness to turn clear of the ankle brace before fitting it. Seat its box end in the already fitted FA-604 socket, follow the foot guide clips and seat the upper keyed plug in LG-100's angled socket. The harness and knee-bearing branches can be completed in either order after the ankle bolts. Unplug this harness before separating foot and shin.",
+            "goal": "Plug the shin harness into the foot socket and the shin.",
             "slots": [
               "main_input"
+            ],
+            "objectives": [
+              {
+                "op": "fit",
+                "slots": [
+                  "main_input"
+                ]
+              }
             ],
             "view": "components",
             "context_sources": [
               "FA-604__001",
               "LG-100__001"
             ],
+            "note": {
+              "at": 0,
+              "text": "Approach from the side away from the part rigs, standing back toward the knee."
+            },
             "diagram_views": [
               {
                 "title": "Connect the shin disconnect",
@@ -18196,17 +18975,37 @@
           },
           {
             "title": "Seat bearings and thrust spacers",
-            "body": "Carry and fit the two LG-130 bearings from opposite sides of the shin knee boss, then one LG-135 thrust spacer against each end. Bearings are interchangeable with bearings; spacers are interchangeable with spacers. Keep the marked knee axle extraction aisle clear.",
+            "goal": "Fit both knee bearings, then a thrust spacer at each end of the knee boss.",
             "slots": [
               "bearing_1",
               "bearing_2",
               "thrust_1",
               "thrust_2"
             ],
+            "objectives": [
+              {
+                "op": "fit",
+                "slots": [
+                  "bearing_1",
+                  "bearing_2"
+                ]
+              },
+              {
+                "op": "fit",
+                "slots": [
+                  "thrust_1",
+                  "thrust_2"
+                ]
+              }
+            ],
             "view": "components",
             "context_sources": [
               "LG-100__001"
             ],
+            "note": {
+              "at": 0,
+              "text": "Keep the marked knee axle aisle clear."
+            },
             "diagram_views": [
               {
                 "title": "Seat bearings and thrust spacers",
@@ -18236,12 +19035,51 @@
           },
           {
             "title": "Deliver the knee fork",
-            "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Knee fork task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-110 against the already fitted shin knee boss and thrust spacers. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
+            "goal": "Crane LG-110 from its rig onto the shin knee boss and thrust spacers.",
             "slots": [
               "fork"
             ],
+            "objectives": [
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "pickup",
+                "task": "fork"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "down"
+              },
+              {
+                "op": "connect",
+                "machine": "service_crane"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "up"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "go:receiver"
+              },
+              {
+                "op": "seat",
+                "slot": "fork",
+                "via": {
+                  "machine": "service_crane",
+                  "command": "down"
+                }
+              }
+            ],
             "view": "components",
             "context_sources": [],
+            "note": {
+              "at": 2,
+              "text": "Keep both connectors attached until this connection is bolted."
+            },
             "diagram_views": [
               {
                 "title": "Deliver the knee fork",
@@ -18266,14 +19104,26 @@
           },
           {
             "title": "Insert the knee axle",
-            "body": "Carry LG-140 lengthwise with both hands. Stand back at the marked axle extraction aisle so the shaft can align with the bore, then insert through the already seated fork and bearings until its shoulder contacts the fork. The rail brace keeps the knee straight and crane assistance remains attached.",
+            "goal": "Slide the knee axle through the fork and bearings.",
             "slots": [
               "axle"
+            ],
+            "objectives": [
+              {
+                "op": "fit",
+                "slots": [
+                  "axle"
+                ]
+              }
             ],
             "view": "components",
             "context_sources": [
               "LG-110__001"
             ],
+            "note": {
+              "at": 0,
+              "text": "Carry it lengthwise with both hands from the marked axle aisle."
+            },
             "diagram_views": [
               {
                 "title": "Insert the knee axle",
@@ -18300,7 +19150,7 @@
           },
           {
             "title": "Retain the knee axle",
-            "body": "Walk to the opposite side from the marked axle extraction aisle. Fit LG-150 on the exposed axle end, then two LG-W12 washers and two LG-H12050 screws, each washer before its screw. With the axle and both cap pairs complete, detach and stow both magnetic connectors, raise and park the empty crane.",
+            "goal": "Cap the axle end, then release and park the crane.",
             "slots": [
               "cap",
               "cap/washer_1",
@@ -18308,11 +19158,46 @@
               "cap/washer_2",
               "cap/screw_2"
             ],
+            "objectives": [
+              {
+                "op": "fit",
+                "slots": [
+                  "cap"
+                ]
+              },
+              {
+                "op": "fit",
+                "slots": [
+                  "cap/washer_1",
+                  "cap/screw_1",
+                  "cap/washer_2",
+                  "cap/screw_2"
+                ]
+              },
+              {
+                "op": "detach",
+                "machine": "service_crane"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "up"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "go:park"
+              }
+            ],
             "view": "components",
             "context_sources": [
               "LG-110__001",
               "LG-140__001"
             ],
+            "note": {
+              "at": 0,
+              "text": "Work from the side opposite the axle aisle."
+            },
             "diagram_views": [
               {
                 "title": "Retain the knee axle",
@@ -18344,12 +19229,51 @@
           },
           {
             "title": "Deliver the Upper-leg beam",
-            "body": "At the central crane console, with the empty crane parked and both magnetic connectors stowed, select the Upper-leg beam task. Choose Move to pickup, then Lower crane. Q closes the console; click commands or use arrow keys and E. At the rig, E picks up a magnetic connector; aim and click either free marked point, then attach the other connector. Either connector fits either point. Q stows a held connector. Choose Raise crane to take weight, Move to delivery, then Lower crane to seat LG-120 against the already fitted fork flange. The crane lowers the component, then approaches along the leg to mate the connection. Keep both magnetic connectors attached until this task's retaining hardware is complete.",
+            "goal": "Crane LG-120 from its rig onto the fork flange.",
             "slots": [
               "spar"
             ],
+            "objectives": [
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "pickup",
+                "task": "spar"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "down"
+              },
+              {
+                "op": "connect",
+                "machine": "service_crane"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "up"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "go:receiver"
+              },
+              {
+                "op": "seat",
+                "slot": "spar",
+                "via": {
+                  "machine": "service_crane",
+                  "command": "down"
+                }
+              }
+            ],
             "view": "components",
             "context_sources": [],
+            "note": {
+              "at": 2,
+              "text": "Keep both connectors attached until this connection is bolted."
+            },
             "diagram_views": [
               {
                 "title": "Deliver the Upper-leg beam",
@@ -18374,7 +19298,7 @@
           },
           {
             "title": "Fasten the Upper-leg beam flange",
-            "body": "Pocket four LG-W24 washers and four LG-H24100 bolts. Fit each washer and then its bolt through the exposed flange corners into the already fitted fork. Approach the bolt heads from the hip side of the flange and insert toward the knee. These M24 x 100 bolts differ from the pelvis M24 x 140 bolts. After every pair is fitted, detach and stow both magnetic connectors, then raise and park the empty crane.",
+            "goal": "Bolt the beam flange to the fork, then release and park the crane.",
             "slots": [
               "fork/washer_1",
               "fork/bolt_1",
@@ -18385,11 +19309,44 @@
               "fork/washer_4",
               "fork/bolt_4"
             ],
+            "objectives": [
+              {
+                "op": "fit",
+                "slots": [
+                  "fork/washer_1",
+                  "fork/bolt_1",
+                  "fork/washer_2",
+                  "fork/bolt_2",
+                  "fork/washer_3",
+                  "fork/bolt_3",
+                  "fork/washer_4",
+                  "fork/bolt_4"
+                ]
+              },
+              {
+                "op": "detach",
+                "machine": "service_crane"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "up"
+              },
+              {
+                "op": "operate",
+                "machine": "service_crane",
+                "command": "go:park"
+              }
+            ],
             "view": "components",
             "context_sources": [
               "LG-110__001",
               "LG-120__001"
             ],
+            "note": {
+              "at": 0,
+              "text": "Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the pelvis M24 × 140."
+            },
             "diagram_views": [
               {
                 "title": "Fasten the Upper-leg beam flange",

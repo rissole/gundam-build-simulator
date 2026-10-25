@@ -53,31 +53,56 @@ def slot(id, requires):
     slots[sid] = dict(accepts=kinds[id],requires=requires,pose_source=id,label=parts[kinds[id]]['short_title'])
     return sid
 slot(uid('FA-513'), [])
-def page(title, body, components, hardware=()):
+def page(title, goal, components, hardware=(), where={}, note=None):
     global last
     current = []
-    for id in components: current.append(slot(id, list(last)))
+    component_slots = []
+    for id in components:
+        sid = slot(id, list(last))
+        current.append(sid)
+        component_slots.append(sid)
+    hardware_slots = []
     for connection in hardware:
+        created = []
         for screw, washer in pitch_pairs(connection):
             assert by_id[screw]['paired_instance_id'] == washer
             assert by_id[washer]['paired_instance_id'] == screw
             w = slot(washer,list(current[:len(components)]) or list(last))
-            current += [w,slot(screw,[w])]
-    pages.append(dict(title=title,body=body,slots=current,view='components'))
+            s = slot(screw,[w])
+            current += [w,s]
+            created += [w,s]
+        hardware_slots.append((connection, created))
+    objectives = []
+    order = []
+    grouped = {}
+    for sid in component_slots:
+        kind = slots[sid]['accepts']
+        if kind not in grouped:
+            order.append(kind)
+            grouped[kind] = []
+        grouped[kind].append(sid)
+    for kind in order: objectives.append(dict(op='fit', slots=grouped[kind]))
+    for connection, created in hardware_slots:
+        objective = dict(op='fit', slots=created)
+        if connection in where: objective['where'] = where[connection]
+        objectives.append(objective)
+    record = dict(title=title, goal=goal, slots=current, objectives=objectives, view='components')
+    if note: record['note'] = note
+    pages.append(record)
     last = current
-page('Drive cartridge','Start with FA-513 (motor) beside preparation C. Place it in the fixture, seat FA-514 on its flange, then fit four W-12 washers and four H-12040 screws in the upper holes.',[uid('FA-514')],['gearbox'])
-page('Coupling & bearing','Fit FA-515 on the already fitted FA-514 output shaft. Position FA-522 in the preparation fixture; the fixture supports the exposed drive while you assemble it. Leave FA-515 unclamped.',[uid('FA-515'),uid('FA-522')])
-page('Lead screw','Carry FA-516 (lead screw) from its shelf into the already fitted FA-522 bearing and FA-515 coupling. Clamp FA-515 with two W-12 washers and two H-12030 screws.',[uid('FA-516')],['coupling'])
-page('Retain the shaft','Seat FA-523 against the already fitted FA-522 bearing. Fit the FA-524 receiver collar half and clearance collar half around the shaft. Fit two W-12 washers and H-12030 screws through the clearance half into the receiver half.',[uid('FA-523'),uid('FA-524'),uid('FA-524',2)],['collar'])
-page('Travelling nut','Fit FA-517 (travelling nut) onto the already fitted FA-516 lead screw.',[uid('FA-517')])
-page('Output rod','Carry FA-518 (output rod) from its shelf. Join it to the already fitted FA-517 travelling nut with two W-12 washers and two H-12040 screws.',[uid('FA-518')],['rod'])
-page('Enclose the drive','Fit FA-510 around the exposed drive held by the preparation fixture. From the open rear end, secure the already fitted FA-513 motor with four W-12 and H-12040 pairs. Secure the already fitted FA-523 retainer from outside the housing with two more pairs.',[uid('FA-510')],['motor','retainer'])
-page('Guide key','Engage FA-521 (guide key) in the longitudinal slot of the already fitted FA-518 rod. Its offset ears attach to the FA-510 housing with two W-12 washers and two H-12030 screws; the rod slides along the key.',[uid('FA-521')],['guide'])
-page('End sensors','Seat both FA-528 probes in the FA-510 openings. Each external mounting flange takes W-12 and H-12030. Fit FA-530 in the round barrel port.',[uid('FA-528'),uid('FA-528',2),uid('FA-530')],['rear-sensor','front-sensor'])
-page('Front guide & seals','Slide FA-519 along the already fitted FA-518 rod into the FA-510 front shoulder. Place FA-520 on the rod. Fit the FA-529 rear cap gasket, with its extra clearance holes, at the motor end; fit the front cap gasket at the rod end.',[uid('FA-519'),uid('FA-520'),uid('FA-529'),uid('FA-529',2)])
-page('Close the housing','Fit one FA-511 (front cap) and one FA-512 (rear cap). Secure each cap with four W-12 washers and four H-12050 screws.',[uid('FA-511'),uid('FA-512')],['rear-cap','front-cap'])
-page('Base eye','Fit FA-525 (base eye housing), one FA-526 spherical eye bearing, then one FA-527 eye retaining ring. Secure the housing with two W-12 washers and H-12040 screws.',[uid('FA-525'),uid('FA-526'),uid('FA-527')],['base-eye'])
-page('Rod eye','Fit FA-525 (rod eye housing), one FA-526 spherical eye bearing, then one FA-527 eye retaining ring. Secure the housing with two W-12 washers and H-12040 screws.',[uid('FA-525',2),uid('FA-526',2),uid('FA-527',2)],['rod-eye'])
+page('Drive cartridge','Put FA-513 (motor) in the preparation C fixture and mount the gearbox on it.',[uid('FA-514')],['gearbox'],{'gearbox':'upper holes'})
+page('Coupling & bearing','Fit the coupling on the gearbox shaft and position the bearing.',[uid('FA-515'),uid('FA-522')],note={'at':0,'text':'Leave FA-515 unclamped for now.'})
+page('Lead screw','Slide the lead screw into the bearing and clamp the coupling.',[uid('FA-516')],['coupling'],{'coupling':'coupling clamp'})
+page('Retain the shaft','Lock the lead screw in place with the retainer and collar.',[uid('FA-523'),uid('FA-524'),uid('FA-524',2)],['collar'],{'collar':'through the clearance half'})
+page('Travelling nut','Thread the travelling nut onto the lead screw.',[uid('FA-517')])
+page('Output rod','Join the output rod to the travelling nut.',[uid('FA-518')],['rod'])
+page('Enclose the drive','Close the housing around the drive and bolt it to the motor and retainer.',[uid('FA-510')],['motor','retainer'],{'motor':'motor, from the open rear','retainer':'retainer, from outside'})
+page('Guide key','Fit the guide key so the rod slides without turning.',[uid('FA-521')],['guide'],{'guide':'key ears to housing'})
+page('End sensors','Fit both end-stop probes and the barrel plug.',[uid('FA-528'),uid('FA-528',2),uid('FA-530')],['rear-sensor','front-sensor'],{'rear-sensor':'rear probe','front-sensor':'front probe'})
+page('Front guide & seals','Fit the front guide, the wiper and both cap gaskets.',[uid('FA-519'),uid('FA-520'),uid('FA-529'),uid('FA-529',2)],note={'at':2,'text':'The gasket with extra clearance holes goes at the motor end.'})
+page('Close the housing','Fit both end caps and bolt them shut.',[uid('FA-511'),uid('FA-512')],['rear-cap','front-cap'],{'rear-cap':'rear cap','front-cap':'front cap'})
+page('Base eye','Build the base eye: housing, bearing, then retaining ring.',[uid('FA-525'),uid('FA-526'),uid('FA-527')],['base-eye'])
+page('Rod eye','Build the rod eye: housing, bearing, then retaining ring.',[uid('FA-525',2),uid('FA-526',2),uid('FA-527',2)],['rod-eye'])
 # Within each eye, and guide/seal layer, enforce the explicitly illustrated order.
 for chain in [[uid('FA-525'),uid('FA-526'),uid('FA-527')],[uid('FA-525',2),uid('FA-526',2),uid('FA-527',2)],[uid('FA-519'),uid('FA-520')]]:
     for a,b in zip(chain,chain[1:]): slots[b]['requires'].append(a)
@@ -87,7 +112,7 @@ for chain in [[uid('FA-525'),uid('FA-526'),uid('FA-527')],[uid('FA-525',2),uid('
 # proxy and still rejects a look along the closed barrel.
 for n in (1, 2): slots[uid('FA-526', n)]['sight_depth'] = 0.12
 assert len(slots)==91
-pages.append(dict(title='Ready to install',body='FA-500-P is ready after all 91 pieces. Open the parent foot manual for installation.',slots=list(slots),view='prepared'))
+pages.append(dict(title='Ready to install',body='FA-500-P is ready. Seat it in the foot.',slots=list(slots),view='prepared'))
 actuator = dict(part_id='FA-500-P',title='FA-500-P · Pitch actuator',root_slot='base',frame_source=uid('FA-510'),bounds=[0.24,0.80,0.80],interaction='components',service_access='open_station',work_locations=['station'],slots=slots,milestones={'prepared':list(slots),'enclosed':[uid('FA-510')]+pages[10]['slots']},enclosure_source=uid('FA-510'),manual=pages)
 foot = json.loads((ASSETS/'assembly-definitions.json').read_text())['assemblies']['foot']
 foot['title']='Foot · pads and pitch actuator'
@@ -123,17 +148,26 @@ for end,n in [('base',1),('rod',2)]:
     brackets+=group
     receiver = 'FA-103' if n==1 else 'FA-200'
     clevis_name = 'Cradle clevis' if n==1 else 'Ring clevis'
-    parent_pages.append(dict(title=clevis_name,body=f'Carry FA-220 ({clevis_name.lower()}) from its shelf and fit it to {receiver}. Secure it with two W-24 washers and two H-24070 bolts.',slots=group,view='components',child_slot='pitch',context_sources=[uid(receiver)]))
+    parent_pages.append(dict(title=clevis_name,goal=f'Bolt the {clevis_name.lower()} to {receiver}.',slots=group,objectives=[dict(op='fit',slots=group[:1]),dict(op='fit',slots=group[1:])],view='components',child_slot='pitch',context_sources=[uid(receiver)]))
 parent['pitch']=dict(assembly='pitch_actuator',milestone='prepared',requires=brackets,pose_source=uid('FA-510'),label='Pitch actuator',service_access='assisted',connections=[uid('FA-220'),uid('FA-220',2)])
 group=['pitch']
 for n in [1,2]:
     screw_id, washer_id = pitch_pairs('base-keeper' if n==1 else 'rod-keeper')[0]
     pin=pslot(uid('FA-221',n),['pitch']); keeper=pslot(uid('FA-222',n),[pin]); w=pslot(washer_id,[keeper]); screw=pslot(screw_id,[w]); group +=[pin,keeper,w,screw]
-parent_pages.append(dict(title='Seat & pin actuator',body='Carry the prepared FA-500-P and seat it here. At each end fit FA-221 (pin), FA-222 (keeper), W-12, then H-12030. The FA-500-P child manual covers its preparation.',slots=group,view='components',child_slot='pitch',context_sources=[uid('FA-220'),uid('FA-220',2)]))
+base_end, rod_end = group[1:5], group[5:9]
+assert base_end + rod_end == group[1:] and base_end == ['pitch/FA-221__001','pitch/FA-222__001','pitch/W-12__053','pitch/H-12030__029']
+parent_pages.append(dict(title='Seat & pin actuator',goal='Seat the prepared actuator between the clevises and pin both ends.',slots=group,objectives=[dict(op='seat',slot='pitch'),dict(op='fit',slots=base_end,where='base end'),dict(op='fit',slots=rod_end,where='rod end')],view='components',child_slot='pitch',context_sources=[uid('FA-220'),uid('FA-220',2)]))
 foot['manual']+=parent_pages
 foot['manual'][0]['title']='Foot workshop'
-foot['manual'][0]['body']='Prepare both FA-302 heel pads and FA-500-P (pitch actuator). Use the foot bay controls to expose each side. Follow each branch to install and secure it before transferring the foot.'
+foot['manual'][0]['body']='Build both heel pads and the pitch actuator, then fit them to the foot.'
 foot['manual'][0]['slots']=list(parent)
+for index, heel in ((1,'heel_1'),(2,'heel_2')):
+    step = foot['manual'][index]
+    s = step['slots']
+    assert s[0] == heel
+    del step['body']
+    step['goal'] = 'Seat a prepared heel pad here and bolt it down.'
+    step['objectives'] = [dict(op='seat',slot=s[0]),dict(op='fit',slots=s[1:])]
 foot['milestones']['pitch_secured']=brackets+group
 foot['milestones']['complete']=list(parent)
 base=json.loads((ASSETS/'heel-pads.json').read_text())

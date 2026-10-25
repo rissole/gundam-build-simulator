@@ -20,6 +20,11 @@ func part_kind(parts: Dictionary, family: String) -> String:
 func manual_of(page: Dictionary) -> Dictionary:
 	return {"parts":{},"assemblies":{"leg":{"slots":{"a":{"requires":[]},"b":{"requires":["a"]}},"manual":[page]}}}
 
+func page_named(manual: Array, title: String) -> Dictionary:
+	for step in manual:
+		if str(step.title) == title:return step
+	return {}
+
 func joined(lines: Array) -> String:
 	var text := ""
 	for line in lines:text += str(line)+" | "
@@ -93,6 +98,14 @@ func run() -> void:
 	expect(single == "Fit "+str(parts[washer].title),"single fit uses the part title, got "+single)
 	var located := Objectives.fit_text(parts,[washer],"upper holes")
 	expect(located == "Fit "+str(parts[washer].title)+" · upper holes","where suffix, got "+located)
+	var pin := part_kind(parts,"FA-221")
+	var keeper := part_kind(parts,"FA-222")
+	var screw30 := part_kind(parts,"H-12030")
+	expect(not pin.is_empty() and not keeper.is_empty() and not screw30.is_empty(),"part families FA-221, FA-222 and H-12030 exist")
+	var mixed := Objectives.fit_text(parts,[pin,keeper,washer,screw30],"base end")
+	expect(mixed == "Fit FA-221, FA-222, W-12, H-12030 · base end","count 1 omits the multiplier, got "+mixed)
+	var repeated := Objectives.fit_text(parts,[washer,washer,screw])
+	expect(repeated == "Fit 2 × W-12, H-12040","counts above 1 keep the multiplier, got "+repeated)
 	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS}
 	var good = {"title":"Bolt the flange","goal":"Fasten the flange","view":"components","slots":["a","b"],"objectives":[{"op":"fit","slots":["a"]},{"op":"fit","slots":["b"]}]}
 	var good_errors = Objectives.errors(manual_of(good),commands)
@@ -112,6 +125,33 @@ func run() -> void:
 	expect(not order_errors.is_empty() and joined(order_errors).contains("before its prerequisite"),"dependant before its prerequisite is rejected: "+joined(order_errors))
 	var authored = Objectives.errors(preload("res://scripts/workshop_content.gd").load_workshop().data,commands)
 	expect(authored.is_empty(),"authored manuals have no objective errors: "+joined(authored))
+	var definitions: Dictionary = game.model.definitions.assemblies
+	var left_definition := str(game.model.assemblies["left_leg"].definition)
+	for def_id in ["pitch_actuator","right_pitch_actuator","foot","right_foot","heel_pad","right_heel_pad",left_definition,"right_leg"]:
+		var found := false
+		for step in definitions[def_id].manual:
+			if step.has("objectives"):found = true
+		expect(found,def_id+" has an objective page")
+	for def_id in ["pitch_actuator","foot","heel_pad"]:
+		for step in definitions[def_id].manual:
+			var view := str(step.get("view",""))
+			if view != "components" and view != "prepare":continue
+			expect(step.has("objectives"),def_id+" page "+str(step.title)+" has objectives")
+	var shin_page := page_named(definitions[left_definition].manual,"Deliver the structural shin")
+	var shin_text: Array[String] = []
+	for objective in shin_page.objectives:shin_text.append(Objectives.text(game,"left_leg",objective))
+	expect(shin_text == ["Move to pickup","Lower crane","Attach magnetic connectors","Raise crane","Move to delivery","Lower crane to seat LG-100"],"shin delivery text, got "+str(shin_text))
+	var right_shin := page_named(definitions.right_leg.manual,"Deliver the structural shin")
+	expect(str(right_shin.objectives[0].task) == "right_shin","right shin pickup task, got "+str(right_shin.objectives[0].task))
+	var cartridge := page_named(definitions.pitch_actuator.manual,"Drive cartridge")
+	var cartridge_text := Objectives.text(game,"pitch",cartridge.objectives[1])
+	expect(cartridge_text == "Fasten 4 × W-12 + H-12040 · upper holes","drive cartridge fasteners, got "+cartridge_text)
+	var ankle := page_named(definitions[left_definition].manual,"Secure the ankle flange")
+	var ankle_text: Array[String] = []
+	for index in [1,2,3]:ankle_text.append(Objectives.text(game,"left_leg",ankle.objectives[index]))
+	var park_text := "Move to Parking bay"
+	if crane.command_label("go:park") != "Move to Parking bay":park_text = crane.command_label("go:park")
+	expect(ankle_text == ["Detach and stow magnetic connectors","Raise crane",park_text],"ankle release text, got "+str(ankle_text))
 	crane.station = "park";crane.raised = true;crane.motion = "";crane.moving = false
 	crane.endpoints.a.state = "stowed";crane.endpoints.b.state = "stowed"
 	var parked_labels: Array = crane.menu_options().map(func(option):return option.label)
