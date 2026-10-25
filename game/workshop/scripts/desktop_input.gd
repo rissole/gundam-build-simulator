@@ -64,17 +64,9 @@ func handle(event: InputEvent) -> void:
 			KEY_B: game.deposit()
 			KEY_Z: game.undo_build()
 			KEY_TAB, KEY_M: game.hud.manual.visible = not game.hud.manual.visible
-			KEY_LEFT: game.hud.turn_page(-1)
-			KEY_RIGHT: game.hud.turn_page(1)
 			KEY_PAGEUP: game.hud.body_scroll.scroll_vertical -= 140
 			KEY_PAGEDOWN: game.hud.body_scroll.scroll_vertical += 140
-			KEY_BACKSPACE: game.hud.open_manual(game.hud.manual_parent(game.hud.manual_id))
-			KEY_ENTER: game.hud.open_selected_child()
-			KEY_C: game.hud.cycle_build()
-			KEY_V:
-				if game.target.has("owner"):game.hud.open_manual(game.target.owner)
-				elif game.target.has("build"):game.hud.open_manual(game.target.build)
-				else:game.hud.open_manual(game.default_parent_id())
+			KEY_V: game.hud.toggle_diagram()
 			KEY_F: reset_station()
 		game.hud.refresh()
 		# Pocket changes can switch between pickup and placement intent. Resolve

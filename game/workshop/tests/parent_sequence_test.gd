@@ -59,6 +59,5 @@ func run() -> void:
 		if sid == "pitch" or not game.model.assemblies.foot.slots[sid].is_empty():continue
 		if not await driver.place_slot("foot",sid):finish();return
 	expect(driver.installed_count == 18 and game.model.milestone("foot","pitch_secured"),"All eighteen parent parts fit in actual order with their receiving geometry present")
-	expect(game.hud.manual_id == "pad_2" and game.hud.page == 1,"The entire parent sequence preserves the unrelated selected manual")
 	expect(game.model.integrity_errors().is_empty(),"Full parent sequence preserves physical ownership and exact dependencies")
 	finish()

@@ -41,6 +41,10 @@ func reference_steps() -> Array[Dictionary]:
 		result.append(step)
 	return result
 
+func reference_title() -> String:
+	var reference: Dictionary = _data.get("reference",{}) if _data.get("reference") is Dictionary else {}
+	return str(reference.get("title","Recovery and undo"))
+
 func refresh() -> void:
 	var built := chapters()
 	var flat: Array = []
@@ -56,7 +60,9 @@ func refresh() -> void:
 			var step: Dictionary = steps[index]
 			flat.append({"owner":step.owner,"page":step.definition})
 			rows.append({"owner":step.owner,"page":int(step.page),"title":str(step.title),"definition":step.definition,"chapter":chapter,"index":index+1,"count":count})
-	var done: Array = Objectives.done_states(game,flat)
+	var evaluations: Array = []
+	for step in flat:evaluations.append(Objectives.evaluate(game,str(step.owner),step.page))
+	var done: Array = Objectives.done_states(game,flat,evaluations)
 	for i in rows.size():
 		if done[i]:done_for[str(rows[i].chapter.id)] = int(done_for[str(rows[i].chapter.id)])+1
 	var finished: Dictionary = {}
@@ -66,7 +72,7 @@ func refresh() -> void:
 	_order = rows
 	for i in rows.size():
 		var row: Dictionary = rows[i]
-		var evaluation: Dictionary = Objectives.evaluate(game,str(row.owner),row.definition)
+		var evaluation: Dictionary = evaluations[i]
 		var state := "ready"
 		if done[i]:state = "done"
 		elif _locked(row,i,done,finished):state = "locked"

@@ -137,9 +137,11 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 			if (op == "fit" or op == "seat") and not ticked[i]:fits_complete = false
 	return {"ticked":ticked,"counts":counts,"current":current,"fits_complete":fits_complete,"machine_complete":sequence.is_empty() or latest == sequence.size()-1,"started":started}
 
-static func done_states(game, steps: Array) -> Array[bool]:
-	var evals: Array = []
-	for step in steps:evals.append(evaluate(game,str(step.owner),step.page))
+## `evals` may carry evaluate() results already computed for `steps`.
+static func done_states(game, steps: Array, evals: Array = []) -> Array[bool]:
+	if evals.size() != steps.size():
+		evals = []
+		for step in steps:evals.append(evaluate(game,str(step.owner),step.page))
 	var done: Array[bool] = []
 	done.resize(steps.size())
 	for i in range(steps.size()-1,-1,-1):

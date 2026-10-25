@@ -530,7 +530,7 @@ func deposit() -> void:
 	hud.toast("Returned %d pieces to their drawer."%count if count else "Selected pocket is empty.",count>0)
 
 func undo_build() -> void:
-	var owner: String = hud.manual_id
+	var owner: String = str(target.owner) if target.has("owner") and model.assemblies.has(str(target.owner)) else str(target.build) if target.has("build") and model.assemblies.has(str(target.build)) else hud.manual_id
 	var assisted: Dictionary = equipment.undo(owner)
 	if assisted.handled:
 		hud.toast(assisted.error if not assisted.error.is_empty() else "Undid the last installation with equipment support.",assisted.error.is_empty())

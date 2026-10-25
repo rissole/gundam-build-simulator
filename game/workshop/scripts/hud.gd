@@ -8,8 +8,18 @@ var manual: PanelContainer
 var page_title: Label
 var page_body: Label
 var body_scroll: ScrollContainer
-var page_count: Label
+var chapter_line: Label
+var goal_label: Label
+var goal_rule: ColorRect
+var objective_rows: VBoxContainer
+var note_row: HBoxContainer
+var note_label: Label
+var diagram_rule: ColorRect
+var ready_label: Label
 var diagram: Control
+var diagram_open: bool = true
+var _panel_signature: String = ""
+var _progress_timer: float = 0.0
 var target_label: Label
 var target_panel: PanelContainer
 var target_action: HBoxContainer
@@ -40,10 +50,7 @@ var carry_panel: PanelContainer
 var set_down_hint: HBoxContainer
 var manual_id: String = "foot"
 var pages: Dictionary = {}
-var breadcrumb: Label
-var manual_hint: VBoxContainer
 var browser: Control
-var browse_button: Button
 var page: int:
 	get:return pages.get(manual_id,0)
 	set(value):pages[manual_id] = value
@@ -191,40 +198,65 @@ func _make_fps_counter() -> void:
 
 func _make_manual() -> void:
 	manual = panel_at(root,Vector2(1,0),Rect2(-366,24,342,0))
+	manual.add_theme_stylebox_override("panel",style(Color("101b23"),Color("a6bac344"),12))
 	var column = VBoxContainer.new()
-	column.add_theme_constant_override("separation",8)
+	column.add_theme_constant_override("separation",6)
 	manual.add_child(column)
-	breadcrumb = label("",12,tone)
-	breadcrumb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	column.add_child(breadcrumb)
-	browse_button = shortcut_button("Browse manuals","N")
-	browse_button.custom_minimum_size.y = 30
-	browse_button.pressed.connect(func():browser.open_browser())
-	column.add_child(browse_button)
-	page_title = label("",21)
+	chapter_line = label("",12,tone)
+	chapter_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(chapter_line)
+	page_title = label("",20)
 	page_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(page_title)
-	diagram = Diagram.new()
-	diagram.custom_minimum_size = Vector2(290,205)
-	column.add_child(diagram)
-	page_body = label("",15,Color("e0e7e7"))
+	goal_label = label("",14,muted)
+	goal_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(goal_label)
+	goal_rule = _rule()
+	column.add_child(goal_rule)
+	objective_rows = VBoxContainer.new()
+	objective_rows.add_theme_constant_override("separation",6)
+	column.add_child(objective_rows)
+	page_body = label("",14,Color("e0e7e7"))
 	page_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	page_body.custom_minimum_size.y = 130
+	page_body.custom_minimum_size.x = 300
+	page_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body_scroll = ScrollContainer.new()
-	body_scroll.custom_minimum_size = Vector2(0,250)
+	body_scroll.custom_minimum_size = Vector2(0,0)
 	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(body_scroll)
-	page_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body_scroll.add_child(page_body)
-	page_count = label("",12,tone)
-	column.add_child(page_count)
-	manual_hint = VBoxContainer.new()
-	manual_hint.add_theme_constant_override("separation",4)
-	manual_hint.add_child(hint_row(["←","→","~Pages ·","PgUp","PgDn"],"Scroll",11))
-	manual_hint.add_child(hint_row(["Enter","~Child ·","Backspace"],"Parent",11))
-	manual_hint.add_child(hint_row(["C","~Builds ·","Tab"],"Close",11))
-	column.add_child(manual_hint)
+	column.add_child(body_scroll)
+	body_scroll.hide()
+	note_row = HBoxContainer.new()
+	note_row.add_theme_constant_override("separation",6)
+	note_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var warning = label("⚠",13,Color("e8b46b"))
+	warning.add_theme_color_override("font_shadow_color",Color.TRANSPARENT)
+	note_row.add_child(warning)
+	note_label = label("",13,Color("ffd2a0"))
+	note_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	note_row.add_child(note_label)
+	column.add_child(note_row)
+	note_row.hide()
+	diagram_rule = _rule()
+	column.add_child(diagram_rule)
+	diagram = Diagram.new()
+	diagram.custom_minimum_size = Vector2(300,205)
+	diagram.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_child(diagram)
+	var footer = HBoxContainer.new()
+	footer.add_theme_constant_override("separation",8)
+	footer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ready_label = label("",12,muted)
+	footer.add_child(ready_label)
+	var spacer = Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	footer.add_child(spacer)
+	footer.add_child(hint_row(["N"],"Manual",12))
+	footer.add_child(hint_row(["V"],"Diagram",12))
+	column.add_child(footer)
 
 func _make_action_bar() -> void:
 	action_bar = HBoxContainer.new()
@@ -425,10 +457,9 @@ func _make_pause() -> void:
 		[["Q"],"Set down component"],[["B"],"Clear selected pocket"]]))
 	grid.add_child(_control_group("Build & rotate",[
 		[["LMB"],"Attach at the preview"],[["~Hold","R","~+ mouse"],"Rotate preparation station"],
-		[["R","~then","R"],"Reset preparation rotation"],[["Z"],"Undo in selected manual"]]))
+		[["R","~then","R"],"Reset preparation rotation"],		[["Z"],"Undo (aimed build, else the current step's)"]]))
 	grid.add_child(_control_group("Manual & menu",[
-		[["Tab","~/","M","~·","N"],"Manual · browse tree"],[["←","→"],"Previous / next page"],
-		[["Enter","~/","Backspace"],"Child / parent manual"],[["C","~/","V"],"Cycle / inspect manual"],[["Esc"],"Pause / resume"]]))
+		[["N","~Manual ·","V","~Diagram ·","Tab"],"Hide step"],[["Esc"],"Pause / resume"]]))
 	session_label = label("",13,muted)
 	session_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -537,6 +568,9 @@ func show_pause(value: bool) -> void:
 
 func refresh() -> void:
 	if game == null:return
+	if game.manual_progress != null:
+		game.manual_progress.refresh()
+		_follow_tracked_step()
 	for i in range(action_slots.size()):
 		var slot = action_slots[i]
 		var kind: String = game.model.pockets[i]
@@ -556,12 +590,16 @@ func refresh() -> void:
 	var held: String = game.model.held_item()
 	var build: String = game.held_build()
 	var carrying: String = ""
-	if not held.is_empty():carrying = "Carrying "+game.components.title(game.model.items[held].kind)
+	if not held.is_empty():
+		carrying = "Carrying "+game.components.title(game.model.items[held].kind)
+		if game.manual_progress != null:
+			var for_step: Dictionary = game.manual_progress.step_for_part(game.model.items[held].kind)
+			if not for_step.is_empty():carrying += "\nFor: %s · %s"%[str(for_step.title),str(for_step.chapter.title)]
 	elif not build.is_empty():carrying = "Carrying "+game.build_label(build)
 	if game.hands.payload_holder() != null:carrying = "Holding magnetic connector · aim at a marked point and click · Q stow"
 	carry_label.text = carrying
 	carry_panel.visible = not carrying.is_empty() and not game.paused
-	_refresh_manual()
+	_refresh_step_panel()
 	game.components.update_service_view()
 
 func manual_name(id: String) -> String:
@@ -569,26 +607,6 @@ func manual_name(id: String) -> String:
 
 func manual_title() -> String:
 	return manual_name(manual_id)
-
-func manual_parent(id: String) -> String:
-	var instance: Dictionary = game.model.assemblies[id]
-	if not instance.parent.is_empty():return instance.parent
-	# Only an unambiguous receiving build supplies a suggested breadcrumb.
-	# Physical ownership always wins when several identical parents are present.
-	var parents: Array[String] = []
-	for candidate in game.model.assemblies:
-		if candidate == id:continue
-		for spec in game.components.definition(candidate).slots.values():
-			if spec.get("assembly","") == instance.definition and not parents.has(candidate):parents.append(candidate)
-	if parents.size() == 1:return parents[0]
-	return ""
-
-func manual_path(id: String) -> Array[String]:
-	var result: Array[String] = []
-	while not id.is_empty() and not result.has(id):
-		result.push_front(id)
-		id = manual_parent(id)
-	return result
 
 func handle_manual_browser_input(event: InputEvent) -> bool:
 	if browser == null:return false
@@ -600,10 +618,9 @@ func handle_manual_browser_input(event: InputEvent) -> bool:
 		if browser.visible:
 			match event.physical_keycode:
 				KEY_ESCAPE, KEY_TAB, KEY_M:browser.close_browser()
-				KEY_BACKSPACE:browser.navigate_parent()
-				KEY_C:cycle_candidate(1,browser.suggestions)
-				KEY_LEFT:turn_page(-1);refresh();browser.sync_selection()
-				KEY_RIGHT:turn_page(1);refresh();browser.sync_selection()
+				KEY_UP:browser.move_selection(-1)
+				KEY_DOWN:browser.move_selection(1)
+				KEY_ENTER, KEY_KP_ENTER:browser.track_selected()
 			return true
 	return browser.visible
 
@@ -619,194 +636,233 @@ func open_manual(id: String, at_page: int = -1) -> void:
 	manual.visible = true
 	refresh()
 
-func turn_page(direction: int) -> void:
-	page = clampi(page+direction,0,page_total()-1)
-	body_scroll.scroll_vertical = 0
+func toggle_diagram() -> void:
+	diagram_open = not diagram_open
+	if diagram != null:diagram.visible = diagram_open and _tracked_step().is_empty() == false
+	if diagram_rule != null:diagram_rule.visible = diagram.visible if diagram != null else false
 
-func cycle_build() -> void:
-	cycle_candidate(1)
+func _tracked_step() -> Dictionary:
+	if game == null or game.manual_progress == null:return {}
+	var step = game.manual_progress.tracked()
+	return step if step is Dictionary else {}
 
-func candidate_manuals(context: Dictionary = {}) -> Array[Dictionary]:
-	# Capture context once when browsing. Aiming and model changes can update
-	# suggestions, but never open a different manual or alter remembered pages.
-	if context.is_empty():context = discovery_context()
-	var kind: String = context.get("kind","")
-	var focused: String = context.get("owner","")
-	var child_definition: String = context.get("assembly","")
-	var result: Array[Dictionary] = []
-	for id in game.model.assemblies:
-		if not focused.is_empty() and id != focused:continue
-		var a: Dictionary = game.model.assemblies[id]
-		var d: Dictionary = game.components.definition(id)
-		var matched: Array[int] = []
-		var ready: int = 0
-		for i in range(d.manual.size()):
-			var step: Dictionary = d.manual[i]
-			if step.get("view","") in ["overview","prepared"]:continue
-			var remaining: bool = false
-			for sid in step.slots:
-				if not a.slots[sid].is_empty():continue
-				var slot: Dictionary = game.model.slot_definition(id,sid)
-				if not kind.is_empty() and slot.get("accepts","") != kind:continue
-				if not child_definition.is_empty() and slot.get("assembly","") != child_definition:continue
-				remaining = true
-				if slot.get("requires",[]).all(func(r):return not a.slots[r].is_empty()):ready += 1
-			if remaining:matched.append(i)
-		# A focused finished build still offers its manual for inspection/undo.
-		if matched.is_empty() and (not focused.is_empty() or (kind.is_empty() and child_definition.is_empty())):
-			for i in range(d.manual.size()):matched.append(i)
-		if matched.is_empty():continue
-		result.append({"id":id,"pages":matched,"ready":ready,"filled":a.slots.size()-a.slots.values().count("")})
-	return result
+func _follow_tracked_step() -> void:
+	var step := _tracked_step()
+	if step.is_empty():return
+	manual_id = str(step.owner)
+	page = int(step.page)
 
-func discovery_context() -> Dictionary:
-	var result: Dictionary = {}
-	var held: String = game.model.held_item()
-	var kind: String = game.selected_kind
-	if not held.is_empty():kind = game.model.items[held].kind
-	if not kind.is_empty():result.kind = kind
-	var carried: String = game.held_build()
-	if not carried.is_empty():
-		if game.model.milestone(carried,"prepared"):
-			return {"assembly":game.model.assemblies[carried].definition,"child":carried}
-		return {"owner":carried}
-	var aimed: Dictionary = game.target
-	var owner: String = aimed.get("owner",aimed.get("build",""))
-	if not owner.is_empty() and game.model.assemblies.has(owner):result.owner = owner
-	elif aimed.get("type","") == "loose":result.kind = game.model.items[aimed.uid].kind
-	elif aimed.get("type","") == "bin":result.kind = aimed.kind
-	return result
+func _rule() -> ColorRect:
+	var line = ColorRect.new()
+	line.color = Color("a6bac333")
+	line.custom_minimum_size = Vector2(0,1)
+	line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return line
 
-func candidate_summary(context: Dictionary) -> String:
-	if context.has("owner"):
-		var id: String = context.owner
-		var a: Dictionary = game.model.assemblies[id]
-		return "%s · %d fitted"%[manual_name(id),a.slots.size()-a.slots.values().count("")]
-	if context.has("child"):return manual_name(context.child)+" · compatible receiving manuals"
-	if context.has("kind"):return "Matching "+game.components.title(context.kind)
-	return "All available builds · aim at a build or select a component to narrow"
+func _free_children(node: Node) -> void:
+	for child in node.get_children():
+		node.remove_child(child)
+		child.free()
 
-func cycle_candidate(direction: int, suggestions: Array[Dictionary] = []) -> void:
-	if suggestions.is_empty():suggestions = candidate_manuals()
-	if suggestions.is_empty():return
-	var ids: Array[String] = []
-	for candidate in suggestions:ids.append(candidate.id)
-	var current: int = ids.find(manual_id)
-	var next_index: int = posmod(current+direction,ids.size()) if current >= 0 else (0 if direction >= 0 else ids.size()-1)
-	open_manual(ids[next_index])
-	if browser.visible:browser.sync_selection()
+func _tick_box(state: String) -> Control:
+	var holder = CenterContainer.new()
+	holder.custom_minimum_size = Vector2(16,16)
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var box = PanelContainer.new()
+	box.custom_minimum_size = Vector2(16,16)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var surface = StyleBoxFlat.new()
+	surface.set_corner_radius_all(2)
+	surface.set_border_width_all(1)
+	if state == "current":
+		surface.bg_color = tone
+		surface.border_color = tone
+	elif state == "done":
+		surface.bg_color = Color(0,0,0,0)
+		surface.border_color = muted
+	else:
+		surface.bg_color = Color(0,0,0,0)
+		surface.border_color = muted
+	box.add_theme_stylebox_override("panel",surface)
+	holder.add_child(box)
+	if state == "done":
+		var mark = label("✓",11,muted)
+		mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		mark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		mark.add_theme_color_override("font_shadow_color",Color.TRANSPARENT)
+		box.add_child(mark)
+	elif state == "current":
+		var dot_holder = CenterContainer.new()
+		dot_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		dot_holder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		dot_holder.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		box.add_child(dot_holder)
+		var dot = PanelContainer.new()
+		dot.custom_minimum_size = Vector2(6,6)
+		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var dot_style = StyleBoxFlat.new()
+		dot_style.bg_color = Color("10241f")
+		dot_style.set_corner_radius_all(3)
+		dot.add_theme_stylebox_override("panel",dot_style)
+		dot_holder.add_child(dot)
+	return holder
 
-func open_selected_child() -> void:
-	var step: Dictionary = game.components.definition(manual_id).manual[page]
-	var sid: String = step.get("child_slot","")
-	if sid.is_empty():
-		for candidate in step.slots:
-			if game.model.slot_definition(manual_id,candidate).has("assembly"):sid = candidate;break
-	if sid.is_empty():return
-	var child: String = game.model.assemblies[manual_id].slots[sid]
-	if child.is_empty():
-		for id in game.model.assemblies:
-			var instance: Dictionary = game.model.assemblies[id]
-			if instance.definition == game.model.slot_definition(manual_id,sid).assembly and instance.parent.is_empty():child = id;break
-	if not child.is_empty():open_manual(child)
-
-func _refresh_manual() -> void:
-	page = clampi(page,0,page_total()-1)
-	var path: Array[String] = []
-	for id in manual_path(manual_id):path.append(manual_name(id))
-	breadcrumb.text = "  ›  ".join(path)
+func diagram_entries(owner: String, page_index: int) -> Array:
 	var entries: Array = []
-	var a: Dictionary = game.model.assemblies[manual_id]
-	var definition: Dictionary = game.components.definition(manual_id)
-	var step: Dictionary = definition.manual[page]
-	page_title.text = "%02d / %s"%[page+1,step.title]
-	if step.has("objectives"):
-		var state: Dictionary = ManualObjectives.evaluate(game,manual_id,step)
-		var lines: Array[String] = [str(step.goal),""]
-		for i in step.objectives.size():
-			var mark := "○ "
-			if state.ticked[i]:mark = "✓ "
-			elif i == int(state.current):mark = "▸ "
-			var line := mark+ManualObjectives.text(game,manual_id,step.objectives[i])
-			var count := str(state.counts[i])
-			if not count.is_empty():line += "  "+count
-			lines.append(line)
-		var note = step.get("note",null)
-		if note is Dictionary and int(note.get("at",-1)) == int(state.current):
-			lines.append("")
-			lines.append("Note: "+str(note.text))
-		page_body.text = "\n".join(lines)
-	else:page_body.text = step.body
-	if not step.has("objectives") and step.get("view","") not in ["overview","prepared"]:
-		var quantities: Dictionary = {}
-		for sid in step.slots:
-			var spec = game.model.slot_definition(manual_id,sid)
-			var label: String
-			if spec.has("accepts"):label = game.components.title(spec.accepts)
-			else:
-				var child: Dictionary = game.model.definitions.assemblies[spec.assembly]
-				var family: String = child.get("part_id","")
-				if family.is_empty() and child.has("root_slot"):
-					family = game.model.definitions.parts[child.slots[child.root_slot].accepts].family
-				label = child.title if child.title.begins_with(family) else family+" · "+child.title
-				label += " (prepared)"
-			quantities[label] = quantities.get(label,0)+1
-		var lines: Array[String] = []
-		for label in quantities:lines.append("%s ×%d"%[label,quantities[label]])
-		page_body.text += "\n\nParts for this step\n"+"\n".join(lines)
-	var progress_slots: Array = step.slots
-	if step.get("view","") == "prepared" and progress_slots.is_empty():progress_slots = a.slots.keys()
-	var filled = 0
-	for sid in progress_slots:
-		if not a.slots[sid].is_empty():filled += 1
-	page_count.text = "%d / %d step components · page %d / %d"%[filled,step.slots.size(),page+1,page_total()]
-	if step.get("view","") == "prepared":page_count.text = "%d / %d assembly components · page %d / %d"%[filled,progress_slots.size(),page+1,page_total()]
+	var views: Array = []
+	if game == null or not game.model.assemblies.has(owner):return [entries,views]
+	var definition: Dictionary = game.components.definition(owner)
+	var manual = definition.get("manual",[])
+	if not manual is Array or page_index < 0 or page_index >= manual.size() or not manual[page_index] is Dictionary:return [entries,views]
+	var step: Dictionary = manual[page_index]
+	var assembly: Dictionary = game.model.assemblies[owner]
+	views = step.get("diagram_views",[]) if step.get("diagram_views") is Array else []
+	var slots: Array = step.get("slots",[]) if step.get("slots") is Array else []
 	if step.get("view","") == "overview":
-		var lines: Array[String] = [step.body,""]
-		var secured = 0
-		var children: Array[String] = []
-		for id in game.model.assemblies:
-			if manual_parent(id) == manual_id:children.append(id)
-		for id in children:
-			var child: Dictionary = game.model.assemblies[id]
-			var progress = "%d / %d pieces"%[child.slots.size()-child.slots.values().count(""),child.slots.size()]
-			if child.definition == "heel_pad":progress = "%d / 4 sleeves"%(game.model.assemblies[id].slots.size()-game.model.assemblies[id].slots.values().count("")-1)
-			var status: String = "seated" if child.parent == manual_id else ("prepared" if game.model.milestone(id,"prepared") else progress)
-			var secured_child: bool = false
-			if child.parent == manual_id:
-				var mount: Dictionary = game.model.slot_definition(manual_id,child.parent_slot)
-				var retention: Array = mount.get("secured_by",[])
-				if retention.is_empty():
-					for sid in definition.slots:
-						if sid.begins_with(child.parent_slot+"/"):retention.append(sid)
-				secured_child = not retention.is_empty() and retention.all(func(sid):return not a.slots[sid].is_empty())
-				if mount.has("secured_equipment"):
-					var equipment=game.equipment.get_equipment(mount.secured_equipment)
-					secured_child=equipment!=null and equipment.secured()
-			if secured_child:secured += 1;status = "secured"
-			lines.append(manual_name(id)+": "+status)
-		page_body.text = "\n".join(lines)
-		page_count.text = "%d / %d builds secured"%[secured,children.size()]
-		for sid in step.slots:
-			var slot: Dictionary = game.model.slot_definition(manual_id,sid)
-			if slot.has("assembly"):entries.append({"source":slot.pose_source,"highlight":true,"installed":not a.slots[sid].is_empty()})
+		for sid in slots:
+			if not assembly.slots.has(sid):continue
+			var slot: Dictionary = game.model.slot_definition(owner,sid)
+			if slot.has("assembly"):entries.append({"source":slot.pose_source,"highlight":true,"installed":not assembly.slots[sid].is_empty()})
 	else:
 		var component_view: bool = step.get("view","") == "components"
-		var display_slots: Array = step.slots.duplicate() if not definition.has("root_slot") or component_view else definition.slots.keys()
+		var display_slots: Array = slots.duplicate() if not definition.has("root_slot") or component_view else definition.slots.keys()
 		if component_view and definition.has("root_slot"):display_slots.push_front(definition.root_slot)
 		for sid in display_slots:
-			var d: Dictionary = definition.slots[sid]
+			if not definition.slots.has(sid) or not assembly.slots.has(sid):continue
+			var spec: Dictionary = definition.slots[sid]
 			# Logical children have no manufactured root mesh. Authored views may
 			# supply a connection-scale display source; never assume a part here.
-			if d.has("assembly") and not d.has("pose_source"):continue
-			entries.append({"source":d.pose_source,"highlight":step.slots.has(sid),"installed":not a.slots[sid].is_empty(),"faint":sid == definition.get("root_slot","") and component_view})
-		if not a.parent.is_empty() and not step.slots.all(func(sid):return definition.slots[sid].get("access_policy","")=="mounted"):page_body.text += "\n\nInstalled in "+manual_name(a.parent)+". Undo its mounting there before dismantling."
-	if step.has("status_equipment"):
-		var equipment=game.equipment.get_equipment(step.status_equipment)
-		if equipment!=null:page_body.text+="\n\n"+equipment.status_text()
+			if spec.has("assembly") and not spec.has("pose_source"):continue
+			entries.append({"source":spec.pose_source,"highlight":slots.has(sid),"installed":not assembly.slots[sid].is_empty(),"faint":sid == definition.get("root_slot","") and component_view})
 	var context: Array = step.get("context_sources",definition.get("context_sources",[]))
+	if not context is Array:context = []
 	for uid in context:entries.append({"source":uid,"highlight":false,"installed":true,"faint":true})
-	diagram.show_parts(game,entries,step.get("diagram_views",[]))
+	return [entries,views]
+
+func _step_signature(step: Dictionary) -> String:
+	if step.is_empty():return "complete"
+	var owner := str(step.owner)
+	var page_index := int(step.page)
+	var definition: Dictionary = step.definition if step.get("definition") is Dictionary else {}
+	var parts: PackedStringArray = []
+	parts.append(owner)
+	parts.append(str(page_index))
+	parts.append(str(step.get("title","")))
+	var chapter = step.get("chapter",{})
+	parts.append(str(chapter.get("title","")) if chapter is Dictionary else "")
+	parts.append(str(step.get("index",0)))
+	parts.append(str(step.get("count",0)))
+	parts.append(str(definition.get("goal","")))
+	parts.append(str(definition.get("body","")))
+	var state: Dictionary = game.manual_progress.evaluation(owner,page_index)
+	var objectives: Array = definition.get("objectives",[]) if definition.get("objectives") is Array else []
+	parts.append(str(objectives.size()))
+	for i in objectives.size():
+		var objective = objectives[i]
+		parts.append(ManualObjectives.text(game,owner,objective) if objective is Dictionary else "")
+		var ticked := false
+		if state.get("ticked") is Array and i < state.ticked.size():ticked = bool(state.ticked[i])
+		var count := ""
+		if state.get("counts") is Array and i < state.counts.size():count = str(state.counts[i])
+		parts.append("1" if ticked else "0")
+		parts.append(count)
+		parts.append(str(state.get("current",-1)))
+	var note = definition.get("note",null)
+	if note is Dictionary:
+		parts.append(str(note.get("at",-1)))
+		parts.append(str(note.get("text","")))
+	parts.append(str(game.manual_progress.ready_count(step)))
+	parts.append(str(diagram_entries(owner,page_index)))
+	return "|".join(parts)
+
+func _refresh_step_panel() -> void:
+	if diagram == null:return
+	var step := _tracked_step()
+	var show_figure := diagram_open and not step.is_empty()
+	diagram.visible = show_figure
+	if diagram_rule != null:diagram_rule.visible = show_figure
+	var signature := _step_signature(step)
+	if signature == _panel_signature:return
+	_panel_signature = signature
+	_fill_step_panel(step)
+
+func _fill_step_panel(step: Dictionary) -> void:
+	_free_children(objective_rows)
+	if step.is_empty():
+		chapter_line.visible = false
+		chapter_line.text = ""
+		page_title.text = "Robot structure complete"
+		goal_label.visible = false
+		goal_rule.visible = false
+		objective_rows.visible = false
+		body_scroll.visible = false
+		note_row.visible = false
+		ready_label.visible = false
+		return
+	var definition: Dictionary = step.definition if step.get("definition") is Dictionary else {}
+	var objectives: Array = definition.get("objectives",[]) if definition.get("objectives") is Array else []
+	var has_objectives := not objectives.is_empty()
+	var chapter = step.get("chapter",{})
+	var chapter_title := str(chapter.get("title","")) if chapter is Dictionary else ""
+	chapter_line.visible = true
+	chapter_line.text = "%s · STEP %d OF %d"%[chapter_title.to_upper(),int(step.get("index",1)),int(step.get("count",1))]
+	page_title.text = str(step.get("title",""))
+	goal_rule.visible = true
+	var goal := str(definition.get("goal","")) if has_objectives else ""
+	goal_label.visible = not goal.is_empty()
+	goal_label.text = goal
+	var owner := str(step.owner)
+	var page_index := int(step.page)
+	var state: Dictionary = game.manual_progress.evaluation(owner,page_index)
+	var current := int(state.get("current",-1))
+	if has_objectives:
+		objective_rows.visible = true
+		body_scroll.visible = false
+		for i in objectives.size():
+			var objective = objectives[i]
+			if not objective is Dictionary:continue
+			var ticked := false
+			if state.get("ticked") is Array and i < state.ticked.size():ticked = bool(state.ticked[i])
+			var count := ""
+			if state.get("counts") is Array and i < state.counts.size():count = str(state.counts[i])
+			var kind := "done" if ticked else ("current" if i == current else "pending")
+			var row = HBoxContainer.new()
+			row.add_theme_constant_override("separation",8)
+			row.alignment = BoxContainer.ALIGNMENT_CENTER
+			row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			row.add_child(_tick_box(kind))
+			var text := ManualObjectives.text(game,owner,objective)
+			var color: Color = muted if ticked else (tone if kind == "current" else Color("e0e7e7"))
+			var text_label = label(text,14,color)
+			text_label.name = "text"
+			text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			text_label.custom_minimum_size.x = 160
+			text_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(text_label)
+			row.set_meta("objective_text",text)
+			row.set_meta("objective_count",count)
+			if not count.is_empty():
+				var count_label = label(count,13,tone if kind == "current" else muted)
+				count_label.name = "count"
+				count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+				row.add_child(count_label)
+			objective_rows.add_child(row)
+	else:
+		objective_rows.visible = false
+		body_scroll.visible = true
+		page_body.text = str(definition.get("body",""))
+		var height := page_body.get_combined_minimum_size().y
+		body_scroll.custom_minimum_size.y = minf(maxf(height,1.0),260.0)
+	var note = definition.get("note",null)
+	var show_note := note is Dictionary and int(note.get("at",-1)) == current
+	note_row.visible = show_note
+	if show_note:note_label.text = str(note.get("text",""))
+	var ready: int = game.manual_progress.ready_count(step)
+	ready_label.visible = ready > 0
+	ready_label.text = "%d more ready to start"%ready
+	var packed: Array = diagram_entries(owner,page_index)
+	diagram.show_parts(game,packed[0],packed[1])
 
 func toast(text: String, success: bool = false) -> void:
 	toast_label.text = text
@@ -825,5 +881,12 @@ func _process(delta: float) -> void:
 			fps_refresh = 0.0
 			fps_label.text = "%.1f FPS" % fps_estimate
 	if game.paused:return
+	_progress_timer += delta
+	if _progress_timer >= 0.25:
+		_progress_timer = 0.0
+		if game.manual_progress != null:
+			game.manual_progress.refresh()
+			_follow_tracked_step()
+			_refresh_step_panel()
 	toast_time = maxf(0.0,toast_time-delta)
 	toast_panel.visible = toast_time > 0.0

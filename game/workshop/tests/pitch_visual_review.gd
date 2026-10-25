@@ -165,7 +165,7 @@ func review_checkpoint(owner: String, phase: String, sid: String = "") -> void:
 			var d = game.model.slot_definition(owner,slot)
 			var kind = d.get("accepts",d.get("assembly",""))
 			quantities[kind] = quantities.get(kind,0)+1
-		page_records[prefix] = {"owner":owner,"page":page,"title":step.title,"slots":step.slots,"required":quantities if step.get("view","") != "prepared" else {},"body":step.body}
+		page_records[prefix] = {"owner":owner,"page":page,"title":step.title,"slots":step.slots,"required":quantities if step.get("view","") != "prepared" else {},"body":step.get("body",step.get("goal",""))}
 	game.hud.refresh()
 	if sid.is_empty():
 		var pose: Transform3D = game.bodies.pitch.global_transform*game.source["FA-510__001"].transform.affine_inverse()
@@ -174,7 +174,6 @@ func review_checkpoint(owner: String, phase: String, sid: String = "") -> void:
 		if owner == "foot":await aim_parent_work(midpoint)
 		else:await aim(midpoint,1.1)
 	game.hud.refresh()
-	record["hud_page_count"] = game.hud.page_count.text
 	record["filled_slots"] = step.slots.filter(func(slot):return not game.model.assemblies[owner].slots[slot].is_empty()).size()
 	record["process_frame"] = Engine.get_process_frames()
 	await get_tree().process_frame

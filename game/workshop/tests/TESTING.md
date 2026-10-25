@@ -50,7 +50,7 @@ passing. The fixture setup is supplied state, not evidence of player access.
 | arm_cassette, backpack_fixture, indexed_leg_rail | Named diagnostics retain their unique shared fixture, clamp and rail sequence coverage. They are not silently substituted with fake controller decisions. |
 | arm_preflight, backpack_preflight, pauldron_preflight, head_preflight, core_content | Named diagnostics retain full payload/rig paths and unique obstruction/clocking checks. |
 | mirrored_leg_content, stock | Named diagnostics retain physical source contacts, holder switching, canonical runtime stock bodies and task-switch identity checks. |
-| parent_sequence, pitch_desktop, pitch_swapped_desktop, pockets_desktop, manual_candidates | Named diagnostics retain full desktop/manual integration. Pitch build helper stays available to explicitly requested visual review. |
+| parent_sequence, pitch_desktop, pitch_swapped_desktop, pockets_desktop, manual_candidates | Named diagnostics retain full desktop/manual integration. Pitch build helper stays available to explicitly requested visual review. manual_candidates retired with the manual browser (2026-10-25). |
 | robot_workshop, wide_foundation, wide_access, stage_sequence, stage_launch | Named diagnostics retain stage journeys, actual equipment integration and full-blockout motion. Startup and local controller coverage are routine; long sequence success is not inferred. |
 
 New staging_policy exercises production right-foot preparation with a real model,
