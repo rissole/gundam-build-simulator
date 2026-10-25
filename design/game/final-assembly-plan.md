@@ -701,12 +701,21 @@ checks passed but the runner rejected sandbox errors creating the isolated
 user-data folder; the unrestricted rerun passed. Evidence is in
 `game/workshop/verification/regressions-20261025T085646.805542Z/` (paths inside the
 report predate moving the worktree from `/private/tmp`). No diagnostics or
-rendered review ran. GPU effects, appearance and frame rate remain unverified;
-headless startup does not exercise Forward+ rendering.
+rendered review ran; headless startup does not exercise Forward+ rendering.
+Subsequent player feedback on 2026-10-25: "wow, it looks so much better and runs
+much more performantly too." Appearance and perceived performance now have
+positive player evidence; exact FPS and the individual readability checks remain
+unreported.
 
-Next checkpoint: the user's [visual spike playtest](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
-Accept brightness, interaction readability and performance before choosing a kit
-or replacing console presentation. The proposed one-hour/week schedule is a useful
+Proposed next work, following that feedback: integrate the accepted visual
+direction while preserving main's latest gameplay work and normal save path;
+then detail one assembly bay's floor and equipment surfaces as a repeatable
+example. Keep small-part readability and the reported performance gain as
+constraints. Follow with machine audio and a single console-screen trial.
+These are recommendations, not authorization to merge, purchase assets or expand
+the implementation. Remaining checks are in the
+[visual spike playtest](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
+The proposed one-hour/week schedule is a useful
 ordering, not a delivery estimate: renderer migration and import adaptation need
 their own checkpoints. Lighting cannot supply the reference's detailed machinery
 silhouettes, bevels, authored wear and close-up model detail.

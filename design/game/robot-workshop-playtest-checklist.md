@@ -24,7 +24,10 @@ Stage preparation is supplied progress and nothing is saved. Wait for the overla
 User direction: the supplied dream reference's warm industrial lighting, cool
 fill, atmospheric depth, reflective worn floor and detailed hangar. Preserve the
 previous positive approval of the workshop's intermediate brightness and the
-manual's readability. No player response to this spike has been received yet.
+manual's readability. Player response on 2026-10-25: "wow, it looks so much
+better and runs much more performantly too." This is positive visual and
+performance feedback from actual play, without a measured FPS figure or
+confirmation of every detailed check below.
 
 Use the **new worktree**, `/Users/blakeyboy/gundam-build-simulator-visual-uplift`,
 branch `spike/hangar-visual-uplift`:
@@ -42,8 +45,9 @@ renderer support with the same new materials, use
 `./play.command --rendering-method gl_compatibility`; this disables the advanced
 effects, so it is not a reproduction of main's old appearance.
 
-Mechanical evidence: startup smoke passes all 28 checks. No rendered inspection,
-GPU benchmark or player acceptance. [Roadmap assessment and scope](final-assembly-plan.md#visual-uplift-spike--2026-10-25).
+Mechanical evidence: startup smoke passes all 28 checks. Player evidence: the
+user reports substantially better appearance and performance. No agent rendered
+inspection or GPU benchmark ran. [Roadmap assessment and scope](final-assembly-plan.md#visual-uplift-spike--2026-10-25).
 
 - [ ] At the foot preparation bench, can you identify small washers, sockets and magnetic connectors without relying on outlines?
 - [ ] Compare the warm floor pools, dark walls and cool roof with the reference. Is the atmosphere welcome, or too dark/washed out?
@@ -134,6 +138,7 @@ The pauldron route's tightest clearance is about 1 mm at seating.
 
 | Date | Stage | Issue or positive finding | Severity |
 | --- | --- | --- | --- |
+| 2026-10-25 | Visual uplift spike | "wow, it looks so much better and runs much more performantly too." Preserve this lighting/material direction. Reported improvement is player evidence; FPS, tested stage and individual readability checks were not specified. User asks what comes next; proposed next work is integration of this baseline followed by one bay's surface and equipment detail, then sound and a single console screen trial. | Positive |
 | 2026-10-25 | Any (workshop save) | Asked for Save & quit, Quit without saving, and the player position kept. Implemented: saving is manual (pause-menu Save, Save & quit, or closing the window), Quit without saving confirms unsaved build changes, and position and view are restored. The user disliked refused saves: a mid-ride save now reloads the player on the deck at the machine's last stop; a crane caught mid-move is saved stopped where it is with its load hanging, and Resume continues. Re-check: walk somewhere, Save & quit, relaunch; save mid-lift; save with a load on the moving crane and press Resume after reloading; then fit a part and Quit without saving. | Request |
 | 2026-10-25 | Any (manual) | Positive: "I love this new manual — no notes, perfection." Requested: M opens the manual (was N), Tab hides the panel, the diagram is always shown, translucent panel. Done. | Positive |
 | 2026-10-25 | Pelvis delivery | "Insert both pins" appeared in the world as "Engage/Unlock waist yaw neutral pin", which made no sense to the player. From the pelvis design: the waist has a twist (yaw) joint and a tilt (lean) joint, both unpowered during assembly; each captive pin holds its joint straight so the waist cannot twist or tilt while the pelvis hangs from the crane and while the chest seats. Now "Waist: Insert twist lock pin" / "tilt lock pin" in the world and "Waist: Insert both lock pins" with a note in the manual. | Fixed, re-check |

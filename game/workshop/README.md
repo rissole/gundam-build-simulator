@@ -6,7 +6,8 @@ This worktree is the **visual uplift spike**, branch `spike/hangar-visual-uplift
 `./play.command` uses Forward+ with atmospheric lighting and procedural concrete/
 paint materials. It saves separately as `Gundam Build Simulator Visual Spike`.
 For the renderer fallback, run `./play.command --rendering-method gl_compatibility`.
-The startup smoke passes; appearance and GPU performance await playtest.
+The startup smoke passes; the user reports substantially better appearance and
+performance. Exact FPS and the remaining detailed checks are not yet recorded.
 See the [roadmap assessment](../../design/game/final-assembly-plan.md#visual-uplift-spike--2026-10-25)
 and [focused playtest](../../design/game/robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
 

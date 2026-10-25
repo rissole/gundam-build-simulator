@@ -16,8 +16,10 @@ last version before consolidation.
   fog, SSAO/SSR, two warm shadowed assembly lamps, a static room reflection probe
   and concrete/paint PBR variation. Main and its save are separate. Startup smoke:
   28 checks pass (4.243 s); no diagnostics, rendered review or FPS measurement.
-  **Awaiting visual/performance playtest**, not an approved replacement for the
-  brightness below. [Scope and roadmap assessment](final-assembly-plan.md#visual-uplift-spike--2026-10-25);
+  **Player reports substantially better appearance and performance** (2026-10-25).
+  No FPS figure or completion of individual readability checks was supplied.
+  Keep this direction; integration and a one-bay detail pass are proposed next.
+  [Scope and roadmap assessment](final-assembly-plan.md#visual-uplift-spike--2026-10-25);
   [playtest and deferred ideas](robot-workshop-playtest-checklist.md#visual-uplift-spike--2026-10-25).
 
 - **Manual redesign (2026-10-25, pilot implemented):** steps are a one-sentence
