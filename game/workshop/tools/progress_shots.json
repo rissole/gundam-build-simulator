@@ -255,7 +255,7 @@
       "final_stage": "complete"
     },
     "pelvis": {
-      "title": "Pelvis / the gantry receives",
+      "title": "Hip assembly / the gantry receives",
       "stage": "pelvis",
       "watch": [
         "workshop_access",

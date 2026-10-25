@@ -297,7 +297,7 @@
     {
       "id": "pelvis",
       "definition": "pelvis",
-      "label": "Pelvis gantry",
+      "label": "Gantry",
       "location": "fixture",
       "home": [
         3.25,

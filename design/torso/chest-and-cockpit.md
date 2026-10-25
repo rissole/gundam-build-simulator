@@ -4,7 +4,7 @@ Last updated: 2026-10-24
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
-Connected assemblies and clearance checks: [pelvis and waist](pelvis-and-waist.md), [backpack, power, and cooling](backpack-and-power.md), [shoulder and upper arm](../arms/shoulder-and-upper-arm.md), [head](../head.md).
+Connected assemblies and clearance checks: [hip assembly](pelvis-and-waist.md), [backpack, power, and cooling](backpack-and-power.md), [shoulder and upper arm](../arms/shoulder-and-upper-arm.md), [head](../head.md).
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#torso-and-backpack). [Canonical packaging sections](chest-and-cockpit-layout.svg).
 
@@ -14,12 +14,12 @@ Dimensions and reference pose: [shared proportion layout](../proportions.md#tors
 - **Abdomen:** three overlapping front armor segments, with narrow mechanical gaps at the sides, accommodating waist turn and lean.
 - **Torso skeleton:** a rear structural spine, two angular side frames and a bolted shoulder crossmember. These carry the waist-to-shoulder/neck loads around the cockpit.
 - **Cockpit:** an enclosed, separate single-pilot capsule on shock-isolating mounts, installed before the front armor. A slightly reclined seat has a harness, two hand controls and pedals. Cameras supply one main and two angled side displays; the hatch remains opaque.
-- **Prepared delivery:** build the chest frame **with the cockpit fitted** at the workstation, then crane that unit onto the prepared pelvis/waist. Waist retention, services and lifting attachments must remain accessible with the cockpit installed.
+- **Prepared delivery:** build the chest frame **with the cockpit fitted** at the workstation, then crane that unit onto the prepared hip assembly. Waist retention, services and lifting attachments must remain accessible with the cockpit installed.
 - **Neighbor boundaries:** the torso owns the shoulder sockets and fixed keyed neck spoke; arms bring their balls and removable pauldrons; the head is built on the neck in its established sequence. Core insertion follows chest installation, before backpack, arms and head.
 
 ## Working packaging contract — 2026-10-24
 
-These dimensions are selected design decisions under the user's delegated detail-design authority, coordinated with the pelvis, core, shoulder and head owners. They preserve the confirmed landmarks and concepts. They are bounded packaging and access calculations, not structural certification, source-solid validation, implemented gameplay or inspected rendered evidence. This pass resolves interfaces and preparation/access order; detailed inventories and control internals follow later.
+These dimensions are selected design decisions under the user's delegated detail-design authority, coordinated with the hip assembly, core, shoulder and head owners. They preserve the confirmed landmarks and concepts. They are bounded packaging and access calculations, not structural certification, source-solid validation, implemented gameplay or inspected rendered evidence. This pass resolves interfaces and preparation/access order; detailed inventories and control internals follow later.
 
 ### Coordinates and ownership
 
@@ -68,7 +68,7 @@ Capsule service connectors face outward on each side near `(±0.70, +0.20, 13.10
 
 ### Chest-to-waist seat, retention and services
 
-The [pelvis/waist specification](pelvis-and-waist.md) owns the neutral receiver, lean/yaw mechanism, captive threaded bosses, alignment keys and mechanical assembly locks. The chest owns its receiving flange/pockets and the hardware installed when mounting the prepared chest.
+The [hip assembly specification](pelvis-and-waist.md) owns the neutral receiver, lean/yaw mechanism, captive threaded bosses, alignment keys and mechanical assembly locks. The chest owns its receiving flange/pockets and the hardware installed when mounting the prepared chest.
 
 | Connection | Chosen geometry and access |
 | --- | --- |
@@ -130,13 +130,13 @@ The future child cockpit manual owns its seat, panels, door and internal service
 | Frame preparation | Assemble rear portal spine, side frames, crossmember, flange and neck bridge on the supported fixture; audit actual bolted joints and preserve the front opening. |
 | Fit capsule | Front ties/armor absent; dolly and guides support insertion; seat isolators, fit four retaining bolts/washers, connect flexible services, refit both ties/eight bolts. Check ear/guide/tool clearance with actual solids. |
 | Prepared handoff | Audit retained capsule/frame, locked doors, secured service loops, four rig attachments and fixture release. Demonstrate upright supported pickup and a return to the fixture for local correction. |
-| Seat chest | Pelvis supported, both legs present, waist yaw/lean locked; perform the 0.18 m keyed lowering, fit four M36 bolts/washers through the four accessible windows, establish support, then release rigging. |
+| Seat chest | Hip assembly supported, both legs present, waist yaw/lean locked; perform the 0.18 m keyed lowering, fit four M36 bolts/washers through the four accessible windows, establish support, then release rigging. |
 | Complete torso services | Connect side waist groups and core from rear; retain core and remove its handling equipment before installing backpack. Close only after the associated fastening/service targets are complete. |
 | Downstream access | Check backpack opening/core extraction with arms/head fitted; complete shoulder interfaces before pauldrons; build the head on the fixed neck. Preserve pilot hatch and capsule-maintenance access separately. |
 
 Completed in this pass: coordinate/interface agreement, capsule/pilot bounding allocation, vertically separated core bay, spine aperture, removable front access, explicit waist retention/tool spaces, rear roots, upright source pose, lifting points and derived workshop impact. Arithmetic margins include 0.10 m dock-to-capsule vertical separation, 0.13 m cartridge-flange-to-capsule separation, 0.10 m rear-beam and neck-bridge gaps, 0.05 m inner waist-tool-to-capsule clearance, 0.12 m total capsule-ear insertion clearance and 0.08 m rear-tool-window-to-spine-limb clearance.
 
-Before implementation, validate **actual solids and sweeps** for the capsule opening/guides/isolators/ties, pilot fit/entry and two hatch doors, waist keys/threads/tools, neutral and articulated abdomen/pelvis clearances, backpack-root pockets, mass/rigging equalization, source support/release, full loaded route through platform openings and access to every retained fastener. Overlay the pelvis owner's ±10° lean/±25° yaw envelopes with fixed gantry/services; the local core/frame clearances remain fixed because both move with the chest, but that does not prove clearance to the stationary pelvis or workshop. Validate the settled shoulder/root and head/spoke mating details against their owning specifications, including root-bolt rear tool lanes and the projecting neck key. For later gameplay, audit unique physical slots/hardware stock and prerequisite ownership, then one ordinary-control collection → supported preparation → crane delivery → fastening → release journey, local correction and interrupted save/restore. Run rendered review only if requested. This design pass runs no gameplay tests, model export or render campaign.
+Before implementation, validate **actual solids and sweeps** for the capsule opening/guides/isolators/ties, pilot fit/entry and two hatch doors, waist keys/threads/tools, neutral and articulated abdomen/hip assembly clearances, backpack-root pockets, mass/rigging equalization, source support/release, full loaded route through platform openings and access to every retained fastener. Overlay the hip assembly owner's ±10° lean/±25° yaw envelopes with fixed gantry/services; the local core/frame clearances remain fixed because both move with the chest, but that does not prove clearance to the stationary hip assembly or workshop. Validate the settled shoulder/root and head/spoke mating details against their owning specifications, including root-bolt rear tool lanes and the projecting neck key. For later gameplay, audit unique physical slots/hardware stock and prerequisite ownership, then one ordinary-control collection → supported preparation → crane delivery → fastening → release journey, local correction and interrupted save/restore. Run rendered review only if requested. This design pass runs no gameplay tests, model export or render campaign.
 
 ## Robot workshop prepared implementation — 2026-10-24
 
@@ -154,15 +154,15 @@ The same physical chest starts on four passive pads at world
 travels forward to Z13, traverses to X3.25, then lowers to the selected Y0.85
 fixture datum. Storage occupies X−9.74..−4.26/Z26.30..28.85, beyond the structural
 stock rigs. The heavy module rig must be empty and lowered before changing
-its pelvis inserts for four chest pads/clamps. Chest contacts at local
+its hip assembly inserts for four chest pads/clamps. Chest contacts at local
 X±0.84/Z±0.45 avoid the key bosses and bolt axes. The common grounded base and
-height mechanism remain; the taller pelvis contacts are removable inserts.
+height mechanism remain; the taller hip assembly contacts are removable inserts.
 Four crane ends carry the chest until fixture contact and clamp closure are
 complete. Height adjustment then moves this existing assembly. Loaded-cockpit
 tilt is not offered.
 
 The second crane task uses the selected upright route to world `(13,12.70,26)`.
-The parent pelvis manual owns its keyed seat, four interchangeable CH-W36
+The parent hip assembly manual owns its keyed seat, four interchangeable CH-W36
 washers, four interchangeable CH-H36160 M36×160 bolts and two CH-SERVICE plugs.
 Each plug represents its flexible service lead as one supplied component.
 Prepared tails stay above the flange during transport; fitting each lead bridges

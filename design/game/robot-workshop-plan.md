@@ -70,7 +70,7 @@ motion envelopes in the fixture and route contract, including:
 - 11 × 12 m Heavy Module Bay.
 - 7 × 13 m shared limb bay centred at X14.
 - Passive leg parking at X22 and the front arm-cassette parking berth.
-- Low pelvis-support gantry, with the specified bearing contacts and operating handles.
+- Low hip assembly-support gantry, with the specified bearing contacts and operating handles.
 - Two side elevators centred at X6.6/19.4, Z29, serving ground and levels 8.4,
   11.2, 14.0 and 16.4.
 - Shared front wings, retracting work fingers, upward-folding two-leaf rear hip
@@ -120,7 +120,7 @@ service work.
 
 | Stage | Playable work |
 | --- | --- |
-| Pelvis/waist | Rig the prepared unit on the heavy module rig, deliver it, close the gantry hold-downs and establish neutral locks before releasing the crane. |
+| Hip assembly | Rig the prepared unit on the heavy module rig, deliver it, close the gantry hold-downs and establish neutral locks before releasing the crane. |
 | Both legs | Perform the simplified structural builds. Retain the existing hip rings/hardware; represent additional hip cartridges as complete parts with mounting pins and neutral locks. |
 | Chest/cockpit | Deliver the prepared frame and fitted cockpit upright. Install four waist bolt/washer pairs, release rigging and connect side services. |
 | Core | Follow the rear crane route, transfer forward support to the captured guide, complete flange retention and connect the rear interface. |
@@ -160,7 +160,7 @@ current single-load assumptions:
 - Support loose structural parts and prepared assemblies through the same crane
   controller. Use each task's required two- or four-end configuration rather than
   assuming every task has exactly two ends.
-- Remove the original journey's rule requiring the pelvis to remain at its initial gantry pose.
+- Remove the original journey's rule requiring the hip assembly to remain at its initial gantry pose.
   Its position follows its current fixture, crane or secured gantry support.
 
 Represent equipment movement as explicit phases with resumable progress. The

@@ -196,7 +196,7 @@ func run() -> void:
 	crane.station = "receiver"
 	var receiver_options: Array = crane.menu_options()
 	expect(option_label(receiver_options,"go:source") == "Move to Heavy Module Bay" and plain_menu(receiver_options),"receiver put-back label, got "+str(receiver_options))
-	var pelvis_page := page_named(definitions.pelvis.manual,"Deliver the prepared pelvis and waist")
+	var pelvis_page := page_named(definitions.pelvis.manual,"Deliver the prepared hip assembly")
 	var supports = preload("res://scripts/module_supports.gd").new();game.add_child(supports);supports.equipment_id = "module_supports";game.equipment.register(supports)
 	var bring := page_named(definitions.pelvis.manual,"Bring the chest to the heavy module rig")
 	var bring_fit := Objectives.text(game,"pelvis",bring.objectives[0])
@@ -256,7 +256,7 @@ func run() -> void:
 	var rail = preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail);rail.equipment_id="leg_rail";game.equipment.register(rail)
 	rail.spec={"station_x":14.0,"lanes":{"left":10.0,"right":18.0}}
 	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.path=0.0;rail.bolster=0.0;rail.release=0.0;rail.index_x=14.0;rail.moving=false;rail.mode=""
-	var seat := page_named(definitions.pelvis.manual,"Seat the leg in the pelvis")
+	var seat := page_named(definitions.pelvis.manual,"Seat the leg in the hip assembly")
 	var seat_text: Array[String] = []
 	for objective in seat.objectives:seat_text.append(Objectives.text(game,"pelvis",objective))
 	var seat_prefix := true

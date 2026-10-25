@@ -1,4 +1,4 @@
-# Pelvis and waist
+# Hip assembly
 
 Last updated: 2026-10-24
 
@@ -12,15 +12,15 @@ Dimensions and reference pose: [shared proportion layout](../proportions.md#tors
 
 ### Interface and armor
 
-- The pelvis belongs to the torso assembly.
-- Each pelvis hip socket receives the ball at the top of its corresponding leg.
+- The hip assembly belongs to the torso assembly.
+- Each hip assembly hip socket receives the ball at the top of its corresponding leg.
 - Each socket retains its ball with a bolted, removable two-piece ring around the ball's neck.
 - Two short front hip guards overlap the tops of the thighs.
-- Small hinged outer hip plates attach to the pelvis.
+- Small hinged outer hip plates attach to the hip assembly.
 - Keep these guards compact enough to preserve humanlike proportions and leave the upper thighs visually prominent.
 - Preserve the narrow mechanical gap above each thigh's armor.
 
-### Pelvis frame
+### Hip assembly frame
 
 - A braced structural bridge connects the left and right hip socket housings.
 - The two socket housings are separate components bolted onto the frame.
@@ -29,15 +29,15 @@ Dimensions and reference pose: [shared proportion layout](../proportions.md#tors
 
 ### Hip actuation
 
-- Compact angled linear actuators with jointed ends connect pelvis brackets to attachment lugs below each hip ball.
+- Compact angled linear actuators with jointed ends connect hip assembly brackets to attachment lugs below each hip ball.
 - Most of each actuator is sheltered behind the hip guards; short rod sections remain visible through the gaps.
 - Accessible removable pins at the thigh connections allow the actuator connections to detach when removing a leg.
 - The user's direction is to reserve hydraulics for larger leg joints, including the knees. The selected working interpretation below uses three double-acting hydraulic cylinders per hip, retaining the ball's three rotational degrees of freedom.
 
 ### Waist connection
 
-- A rotary waist bearing allows the chest to turn relative to the pelvis.
-- A forward/backward pivot sits above the rotary bearing, allowing the chest to lean independently of the pelvis.
+- A rotary waist bearing allows the chest to turn relative to the hip assembly.
+- A forward/backward pivot sits above the rotary bearing, allowing the chest to lean independently of the hip assembly.
 - Both mechanisms belong within the torso assembly.
 - The working layout below selects movement limits, drive packaging and the chest receiving connection without changing these two joint concepts.
 
@@ -59,8 +59,8 @@ The waist bearing centre is `(0,0,10.50)`. For workshop comparison only,
 the chest seating plane is **robot Z11.30 / world Y12.70**.
 
 The torso owns bridge, socket housings/liners, hip retaining rings/hardware,
-pelvis-side cylinder brackets, six hip cylinder cartridges and their removable
-pins, waist mechanisms, service disconnects and pelvis guards. The legs own their
+hip assembly-side cylinder brackets, six hip cylinder cartridges and their removable
+pins, waist mechanisms, service disconnects and hip assembly guards. The legs own their
 integral balls/necks/spars, cylinder lug carriers, stop tongues and leg service
 tails. The chest owns its lower flange and connecting bolts/washers; the waist
 owns the receiving seats, keys and captive threads. Equipment supports and
@@ -72,7 +72,7 @@ guards off for upward ball entry and underside work. Engage both waist neutral
 locks. The prepared delivery envelope is X±2.01, Y−.90..+.90,
 Z8.49..11.42 including the prepared upper cylinder clevises and parking catches.
 The earlier X±1.78/Z8.85 lower bound covered the socket flanges but omitted those
-descending brackets. This is a handling-envelope correction, not wider pelvis
+descending brackets. This is a handling-envelope correction, not wider hip assembly
 armor. Supply loose connection items separately. Chest preparation and its
 fitted cockpit remain a distinct later crane load.
 
@@ -97,7 +97,7 @@ built. Left/right housings with integral cylinder-bracket roots are a **mirrored
 pair**: their three roots are reflected in X while both saddles stay rear. Their ball,
 liner, ring and ring-bolt interfaces are identical. The small leg-journey contextual rear
 blocks/four M24×90 representations are historical simplified construction, not a
-validated hardware schedule for the finished pelvis. This new housing attachment
+validated hardware schedule for the finished hip assembly. This new housing attachment
 does **not** alter the leg journey's four M24×140 ring bolts per hip.
 
 Two gantry bearing patches on the rear crossbeam underside are centred
@@ -132,7 +132,7 @@ release. Retain access to lifting eyes from front/side landings after seating.
 
 ### Established hip seating and structural retention
 
-The [implemented structural interface](../game/leg-prototype-interface.md#hip-and-pelvis-retention)
+The [implemented structural interface](../game/leg-prototype-interface.md#hip-retention)
 remains authoritative here:
 
 | Feature | Robot/hip-relative working geometry |
@@ -219,7 +219,7 @@ One or two cylinders would leave at least one unrestrained degree of freedom;
 six antagonistic cylinders add bulk without being needed for this working
 double-acting layout. Each complete cartridge includes barrel, rod, spherical
 eyes, local load-holding valves and a positive external neutral index lock.
-Pressure supply/return comes from the pelvis manifold; actuator internals and
+Pressure supply/return comes from the hip assembly manifold; actuator internals and
 force/pressure ratings remain a later engineering task.
 
 Define right-hip-relative upper centres A on radius .78 at angles 0°,120°,240°,
@@ -227,7 +227,7 @@ Z−.60, and lower centres B on radius .48 at angles 45°,165°,285°, Z−1.80.
 Angles are measured from +X toward +Y. Mirror X for left; do not merely rotate a
 right-handed lug carrier into the left leg. Rounded neutral coordinates:
 
-| Cylinder position | A: pelvis spherical-eye centre | B: leg spherical-eye centre | Removable pin entry/extraction side |
+| Cylinder position | A: hip assembly spherical-eye centre | B: leg spherical-eye centre | Removable pin entry/extraction side |
 | --- | --- | --- | --- |
 | Outer/front | `(+.780,0,−.600)` | `(+.339,+.339,−1.800)` | Robot +Y at both ends |
 | Inner/front | `(−.390,+.675,−.600)` | `(−.464,+.124,−1.800)` | Robot +Y at both ends |
@@ -242,7 +242,7 @@ needs .34 m of unobstructed entry/extraction along its stated ±Y side and an R.
 tool/release tube. Keeper operation is from the same service side via a captive
 release tab; do not put a loose nut behind the inaccessible cheek.
 
-Pelvis clevises descend from the socket housing along R≥.76 outside the ring
+Hip assembly clevises descend from the socket housing along R≥.76 outside the ring
 and end **below** it at H.Z−.60; cylinders never pass through the retaining
 annulus. Lower clevises are separate bolted lug carriers on the upper spar,
 fitted during leg preparation. Preserve a plain spar/contact/service channel
@@ -283,19 +283,19 @@ their owning components' responsibility.
 
 ### Hip services, guards and reachable work faces
 
-Put one four-way service block on each pelvis housing at
+Put one four-way service block on each hip assembly housing at
 `(s×.78,+.70,9.05)`, facing +Y: electrical power/data and a pair of dry-break
 hydraulic supply/return connections. The leg-side matching block is at
 `(s×.78,+.60,8.35)`; its leg-owned protected U-loop has .95 m available free
 length and .12 minimum bend radius in the front-inner channel. Cylinder hoses
-stay on the pelvis side, two ports per cartridge with local valves, routed around
+stay on the hip assembly side, two ports per cartridge with local valves, routed around
 the housing exterior before crossing into the manifold. No hose crosses a ring
 bolt axis, ball entry, removable pin tube or the inner gap between the two legs.
 Leave .18 m connector withdrawal and R.10 hand clearance toward +Y. Clips release
 before a loop is unplugged; seal caps are captive. Core/power details do not
 create duplicate leg harness items.
 
-Two compact hinged front guards cover the pelvis-side cylinders/services and
+Two compact hinged front guards cover the hip assembly-side cylinders/services and
 overlap the thigh top. Their neutral bounds are each approximately
 X=`s×(.45..1.45)`, Y+.76..+.92, Z8.35..9.50; an outboard hinge swings each
 70° away from its front service face. Small outer hip plates cover the outer
@@ -343,7 +343,7 @@ the stated service patch. Its upright carrying envelope is approximately
 .90 clear walking width through the 1.20-deep landing strip. The rail continues
 to support the leg throughout this carry and installation.
 
-Each pelvis clevis has two short **integral parking hooks** flanking its upper
+Each hip assembly clevis has two short **integral parking hooks** flanking its upper
 eye, with a captive catch. The cartridge's upper-eye housing has two matching
 parking lugs projecting along X to ±.11 from the eye centre, clear of the ±Y pin
 tube. Lowering the carried upper eye .03 into the hooks seats those lugs; the
@@ -400,14 +400,14 @@ X±.40/Y±.30 service bay. At lean10°, a lower front corner has
 Z=`10.90+.32cos10°−.75sin10°=11.085`, still .495 above the rotary top.
 The cradle's upper swept Z is about11.48 and conservative rear Y≥−1.12 after
 yaw/lean. Waist fixed outer armor remains 2.20 W ×1.60 D and ends below Z10.70;
-overlapping moving armor carries the rest. Keep fixed upper pelvis armor at
+overlapping moving armor carries the rest. Keep fixed upper hip assembly armor at
 Z≤10.40. Do not bridge either articulation with a rigid vent or armor plate.
 
 The chest's rear spreader feet additionally occupy
 X±(.72..1.32),Y−1.10..−.44,Z11.30..11.38, rigid to the chest. Their lowest
 rear edge at lean10° is approximately
 `10.90+.40cos10°−1.10sin10°=11.103`, .403 above the fixed waist armor and
-.703 above fixed pelvis armor. Include these wider moving feet in the yaw sweep;
+.703 above fixed hip assembly armor. Include these wider moving feet in the yaw sweep;
 the 2.00-wide main flange alone is not the whole lower-frame bound.
 
 A protected finite-travel service cassette runs through the .85 bearing opening
@@ -457,12 +457,12 @@ are retained, gantry supports are clamped and both waist neutral locks confirmed
 The robot connection then carries the chest; disconnect rigging from the exposed
 structural eyes before services and abdominal closures. Source chest fixture
 release is owned by the chest workflow. Its lower frame/cockpit must already be
-complete; the pelvis manual requests one prepared chest, not its internals again.
+complete; the hip assembly manual requests one prepared chest, not its internals again.
 
 ### Physical connection allocation and manual outline
 
 This interface pass identifies meaningful physical families; it does not claim a
-complete pelvis inventory or allocate hidden actuator internals as loose stock.
+complete hip assembly inventory or allocate hidden actuator internals as loose stock.
 
 | Connection scope | Physical supplies / compatible types |
 | --- | --- |
@@ -470,11 +470,11 @@ complete pelvis inventory or allocate hidden actuator internals as loose stock.
 | Each hip structural retention | Prepared leg; two identical PV-120 halves; four PV-H24140 bolts/four shared LG-W24 washers |
 | Each hip stops | Two identical stop-cage halves/four M12×60 bolts/four washers; two leg-owned tongues prepared with spar |
 | Each hip drive | Three identical complete cylinder cartridges; six identical Ø60 eye pins with captive keepers; cylinder neutral lock pins stay captive |
-| Hip services/closures | One leg service-loop assembly per hip, fitted pelvis service blocks, two front guards, two outer plates and two rear service covers across the pelvis; exact small closure hardware follows armor detailing |
+| Hip services/closures | One leg service-loop assembly per hip, fitted hip assembly service blocks, two front guards, two outer plates and two rear service covers across the hip assembly; exact small closure hardware follows armor detailing |
 | Waist preparation | One rotary bearing/drive, rotating yoke, lean cradle/two trunnion bearings, two identical lean cartridges, captive yaw/lean index locks and service cassette |
 | Chest mount | Prepared chest, four M36×160/four 6 mm washers owned by chest; receiver seats/keys/captive threads are fitted context |
 
-The parent pelvis/waist manual owns gantry seating, each prepared leg's seating,
+The parent hip assembly manual owns gantry seating, each prepared leg's seating,
 retention, actuation and service handoff, and the prepared chest's seating and
 retention. Child manuals own leg and chest internal preparation. No shopping list
 belongs on readiness/overview pages. Step supply lists derive from the physical
@@ -493,7 +493,7 @@ source support and removes only closures/services blocking the connection.
 
 ### Required review before models or gameplay claim completion
 
-The wider-workshop implementation now supplies a movable prepared pelvis/waist
+The wider-workshop implementation now supplies a movable prepared hip assembly
 on the heavy module rig, including the bearing/yoke/cradle, two lean cartridges,
 four lifting eyes and the existing socket/clevis context. These are simplified
 prepared internals, not the completed detailed mechanism model. The heavy module rig

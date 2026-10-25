@@ -1261,7 +1261,7 @@
         ]
       },
       "pelvis": {
-        "title": "Pelvis and waist",
+        "title": "Hip assembly",
         "payload": "assembly",
         "load_uid": "pelvis",
         "owner": "pelvis",

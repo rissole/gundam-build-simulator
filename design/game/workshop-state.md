@@ -35,7 +35,7 @@ last version before consolidation.
   checks pass (29 + 12 checks, 4.493 s). The stage fixture now supplies the session
   stub required by `save.settle()`. No rendered review; startup feel awaits playtest.
 
-- **Progress films (2026-10-25, refreshed):** crown, pelvis and leg films now
+- **Progress films (2026-10-25, refreshed):** crown, hip assembly and leg films now
   use the accepted visual uplift. The rejected foot-rotation preset stays removed.
   A historical leg film retains the flat lighting/materials of `cebf6b7`
   (2026-10-24), the oldest matching gantry/rail layout, with the current endpoint
@@ -71,9 +71,9 @@ last version before consolidation.
   checks: `save_roundtrip_test` (fresh boot, mid-ride, mid-lift crane) and the
   diagnostic `save_roundtrip_stages_test` (145 checks), which passes at every stage
   boundary and mid-way through each stage's first crane delivery. Its first run
-  found that reloads left the pelvis on the heavy module rig. Every build mounted on
-  the pelvis moved with it, and the fall-through-floor rescue sent the sunken heel
-  pads and pitch actuators home. `module_supports.apply` now seats the pelvis on
+  found that reloads left the hip assembly on the heavy module rig. Every build mounted on
+  the hip assembly moved with it, and the fall-through-floor rescue sent the sunken heel
+  pads and pitch actuators home. `module_supports.apply` now seats the hip assembly on
   the gantry. Reload feel awaits the user's playtest. Design:
   [Saves and checkpoints](robot-workshop-plan.md#saves-and-checkpoints).
 
@@ -122,7 +122,7 @@ last version before consolidation.
   `./play.command --editor`. Mechanical checks only. Player findings are in the playtest checklist.
 - **Robot workshop (2026-10-24):** the base foot build (two heel pads and the
   pitch actuator) happens in the final-assembly hangar, then the build continues
-  in the same session: pelvis → both legs → chest → core → backpack → both arms
+  in the same session: hip assembly → both legs → chest → core → backpack → both arms
   → pauldrons → head → crown. `--stage=complete` is the final boundary. The left
   foot rests on the turning foot rig, which stands in for its bay store
   (store masts and soles removed, no dispatch rails). The crane collects it from
@@ -198,7 +198,7 @@ last version before consolidation.
 
 ## Active rules
 
-- **Player language:** a bay is a crane destination (Heavy Module Bay, Limb Bay, Foot Bay, Final Assembly Bay, Parking bay). Every holder except the gantry is a rig. The gantry is the only named machine. Crane lines are crane cables; the ends are magnetic connectors. Internal ids stay as they are.
+- **Player language:** the component is **Hip assembly** (lowercase in prose); `pelvis` remains its internal ID. A bay is a crane destination (Heavy Module Bay, Limb Bay, Foot Bay, Final Assembly Bay, Parking bay). Every holder except the gantry is a rig. The gantry is the only named machine. Crane lines are crane cables; the ends are magnetic connectors. Internal ids stay as they are.
 - **The user owns playtesting** of walking, visibility, reach and connection access.
   Automated checks cover content, equipment movement, support ownership and
   interlocks. Don't run automated walked acceptance, reach/visibility sweeps or

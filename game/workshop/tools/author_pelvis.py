@@ -49,8 +49,8 @@ def extend(trial, pelvis, layout):
         add(f"PV-C-H36160__{index:03}",[x,.546,z],[tube([0,-.08,0],.018,0,.16),tube([0,.018,0],.029,0,.036),tube([0,-.003,0],.033,.019,.006)])
     pelvis["context_sources"]=list(trial["context_sources"])
     pelvis.update(carry_class="equipment",work_locations=["support"],bounds=[4.02,4.1,2.0])
-    pelvis["manual"].insert(0,dict(title="Deliver the prepared pelvis and waist",view="components",slots=[],
-        goal="Lock the waist straight, crane the pelvis onto the gantry and close its jaws.",
+    pelvis["manual"].insert(0,dict(title="Deliver the prepared hip assembly",view="components",slots=[],
+        goal="Lock the waist straight, crane the hip assembly onto the gantry and close its jaws.",
         objectives=[
             dict(op="operate",machine="module_supports",command="insert_pins"),
             dict(op="operate",machine="service_crane",command="pickup",task="pelvis"),
@@ -65,7 +65,7 @@ def extend(trial, pelvis, layout):
             dict(op="operate",machine="service_crane",command="go:park")],
         note=dict(at=0,text="The pins stop the waist twisting or tilting while it hangs from the crane. Twist pin: front of the waist. Tilt pin: its right side.")))
     for parent in trial["parents"]:
-        if parent["id"]=="pelvis":parent.update(label="Prepared pelvis and waist",location="support:bulky_fixture",home=[3.25,1.2,13])
+        if parent["id"]=="pelvis":parent.update(label="Prepared hip assembly",location="support:bulky_fixture",home=[3.25,1.2,13])
     for name in ["bulky_fixture","pelvis_gantry"]:trial["supports"][name]=dict(assemblies=["pelvis"],assembly_ids=["pelvis"])
     crane=trial["supports"]["crane_rigging"]
     crane["assemblies"].append("pelvis");crane["assembly_ids"].append("pelvis")

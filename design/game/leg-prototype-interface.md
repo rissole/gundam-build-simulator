@@ -1,8 +1,8 @@
-# Structural left leg and pelvis prototype
+# Structural left leg and hip assembly prototype
 
 Revision: 2026-10-22. This is the playable structural subset selected for the
 expanded workshop. It develops the existing confirmed shin, detachable knee fork,
-integral thigh ball and pelvis split-ring concept. Dimensions below are selected
+integral thigh ball and hip assembly split-ring concept. Dimensions below are selected
 prototype working interfaces, not a completed engineering design or a change to
 the confirmed robot proportions.
 
@@ -23,7 +23,7 @@ definition and physical children and mounts in `left_leg.foot` at
 `complete` milestone is required before docking. The leg adds no inventory object
 for its logical container.
 
-The pelvis frame has hips at X±1.1, Y0, Z0. Its left leg mount puts the leg origin
+The hip assembly frame has hips at X±1.1, Y0, Z0. Its left leg mount puts the leg origin
 at `[-1.1, -9.2, 0]`. At the gantry's selected Y10.6 hip height, the standing leg's
 ground reference is therefore Y1.4. This lift is a workshop placement, not a change
 to the robot's proportions.
@@ -50,13 +50,13 @@ preassembled structures and mechanisms retain their previous boundary.
 | Left leg | Existing FA-605 complete main harness, with both plugs | 1 |
 | Left leg | LG-H12050 cap screws and LG-W12 washers | 2 + 2 |
 | Left leg | LG-H24100 fork bolts and LG-W24 washers | 4 + 4 |
-| Pelvis | PV-120 semicircular retaining halves | 2 |
-| Pelvis | PV-H24140 ring bolts and shared LG-W24 washers | 4 + 4 |
+| Hip assembly | PV-120 semicircular retaining halves | 2 |
+| Hip assembly | PV-H24140 ring bolts and shared LG-W24 washers | 4 + 4 |
 
 There are **40 new active physical identities**, including nine reused GLB
 hardware sources that were previously static context. Combined with the original
 135 playable foot/pad/actuator identities, there are **175 active pieces**, six
-logical assemblies, 31 left-leg slots and 11 pelvis slots. The preassembled pelvis
+logical assemblies, 31 left-leg slots and 11 hip assembly slots. The preassembled hip assembly
 bridge, both distinct bolted socket housings and four socket-to-bridge bolts are
 source geometry only; they add no stock or installation slots. The right socket
 is context without a right leg or ring supplies.
@@ -64,7 +64,7 @@ is context without a right leg or ring supplies.
 Numbered instances of LG-130, LG-135 and PV-120 are interchangeable within each
 type. The PV-120 rear destination rotates an identical semicircular half by 180°
 around Y; it is not a handed variant. All eight LG-W24 washers share one stock type
-across the fork and pelvis. Compatible identity, source geometry and destination
+across the fork and hip assembly. Compatible identity, source geometry and destination
 pose remain separate, including when these copies are swapped.
 
 ## Ankle and shin
@@ -131,7 +131,7 @@ Their head and tool access lies outside the central 300×200 spar and outside th
 crossbar's 360 mm depth. A separate lower fork is a real bolted connection, not
 a decorative seam in an integral thigh.
 
-## Hip and pelvis retention
+## Hip retention
 
 LG-120's ball is Ø900 at Y9.2 and is integral with a Ø300 neck and the spar.
 The matching socket is a spherical upper bowl of inner radius456/outer530 mm,
@@ -153,13 +153,13 @@ Four M24×140 bolts enter upward from below through 4 mm washers, cross
 the 80 mm ring and engage 56 mm into the 70 mm socket flange. The two halves can
 be independently positioned after seating the ball. Each half's washer/bolt
 dependencies require that half; releasing hoist load requires **both halves and
-all four bolts**. The parent pelvis manual owns the child seating and this
+all four bolts**. The parent hip assembly manual owns the child seating and this
 retention; the leg manual owns internal construction.
 
-The preassembled 2.7 m pelvis bridge is behind the sockets at Z+.65, clearing the
+The preassembled 2.7 m hip bridge is behind the sockets at Z+.65, clearing the
 balls. Both socket housings have rear attachment lugs with two existing-context
 bolts each. These contextual bridge connections are simplified blockout geometry;
-they are not an additional playable pelvis-building branch.
+they are not an additional playable hip assembly-building branch.
 
 ## Handling and manual contract
 
@@ -169,7 +169,7 @@ retaining halves start at `pelvis_ring_rack_1/2`. These pieces use
 `carry_class: equipment`. Smaller bearings, thrust spacers, axle and cap are hand
 or two-hand carried; loose fasteners use pockets. Each equipment slot names the
 authorized source support. The hoist receives the structurally ready leg and is
-the authorized source/output for the pelvis's `left_leg` slot. It must be
+the authorized source/output for the hip assembly's `left_leg` slot. It must be
 reacquired before releasing retention or removing the supported leg.
 
 The foot carrier remains at dispatch during transfer. Its prepared foot is
@@ -190,7 +190,7 @@ the equipment controller. These staging positions may be relocated with the
 workshop layout; physical source coordinates and snap poses must remain intact.
 
 The manual has eight installation pages plus one structural status page for the
-leg, and three installation pages plus one status page for the pelvis. Component
+leg, and three installation pages plus one status page for the hip assembly. Component
 lists derive only from each installation page's unique slots. Status pages are
 progress/navigation and add no supplies. Assembly readiness and child completion
 are retained when the hoist removes and reinstalls the leg.

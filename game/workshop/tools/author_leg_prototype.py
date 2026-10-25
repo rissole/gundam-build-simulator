@@ -306,7 +306,7 @@ for n, (x, z) in enumerate(((x, z) for x in (-.25, .25) for z in (-.20, .20)), 1
     ws = slot(leg_slots, f"fork/washer_{n}", "lg-w24", w, ["spar"], target_offset=[0, .003, 0])
     spar_slots += [ws, slot(leg_slots, f"fork/bolt_{n}", "lg-m24-100", b, [ws], target_offset=[0, .026, 0])]
 page(leg_pages, "Join the thigh spar", "Use the service crane to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four LG-W24 washers and four LG-H24100 bolts downward through the exposed flange corners.", spar_slots, ["LG-110__001"])
-leg_pages.append(dict(title="Structural leg ready", body="The load-bearing prototype is structurally ready. Use the leg rail to carry it to the pelvis gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the pelvis manual for seating and retention.", slots=list(leg_slots), view="prepared"))
+leg_pages.append(dict(title="Structural leg ready", body="The load-bearing prototype is structurally ready. Use the leg rail to carry it to the gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the hip assembly manual for seating and retention.", slots=list(leg_slots), view="prepared"))
 leg = dict(title="Left leg · structural prototype", carry_class="equipment", bounds=[1.4, 9.65, 3.0],
            work_locations=["support"], interaction="components", service_access="assisted",
            slots=leg_slots, milestones={"structural_ready": list(leg_slots),
@@ -352,7 +352,7 @@ pelvis_slots = {"left_leg": dict(assembly="left_leg", milestone="structural_read
                   pose_source="PV-V-HIP-BALL", snap_position=[-1.1, -9.2, 0], label="Structural left leg",
                   support_required=True, source_supports=[RAIL["support"]])}
 pelvis_pages = []
-page(pelvis_pages, "Seat the supported leg", "The braced pelvis bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the leg rail to dock the LG-120 hip ball upward into the left socket's open underside. Keep rail support until all retaining bolts are fitted.", ["left_leg"], context_sources)
+page(pelvis_pages, "Seat the supported leg", "The braced hip bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the leg rail to dock the LG-120 hip ball upward into the left socket's open underside. Keep rail support until all retaining bolts are fitted.", ["left_leg"], context_sources)
 for n in (1, 2):
     slot(pelvis_slots, f"ring_{n}", "pv-ring-half", f"PV-120__{n:03}", ["left_leg"])
 page(pelvis_pages, "Fit the split retaining ring", "Carry and fit both PV-120 semicircular halves around the already seated LG-120 neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.", ["ring_1", "ring_2"], ["PV-110__001", "LG-120__001"])
@@ -365,7 +365,7 @@ for n, (x, z, _) in enumerate(ring_holes, 1):
     ring_fasteners += [ws, slot(pelvis_slots, f"ring/bolt_{n}", "pv-m24-140", b, [ws], target_offset=[0, -.026, 0])]
 page(pelvis_pages, "Bolt the ring to the socket", "Fit four LG-W24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing rail support. To remove the leg, reacquire rail support first, then reverse the retention steps.", ring_fasteners, ["PV-110__001", "PV-120__001", "PV-120__002"])
 pelvis_pages.append(dict(title="Left leg structurally mounted", body="The left ball is captured by both bolted ring halves. The gantry and mechanical transport braces support this unpowered prototype. This is structural readiness; hydraulic actuators, services and armor remain deferred.", slots=list(pelvis_slots), view="prepared"))
-pelvis = dict(title="Pelvis · left leg installation", bounds=[3.6, 1.5, 1.5], work_locations=["fixture"],
+pelvis = dict(title="Hip assembly · left leg installation", bounds=[3.6, 1.5, 1.5], work_locations=["fixture"],
               interaction="components", context_sources=context_sources, slots=pelvis_slots,
               milestones={"left_leg_secured": list(pelvis_slots), "structural_ready": list(pelvis_slots)}, manual=pelvis_pages)
 
@@ -412,7 +412,7 @@ supports = {
 }
 content = dict(version=1, parts=stock, parents=[
     dict(id="left_leg", definition="left_leg", label="Structural left leg", location="support:"+RAIL["support"], home=LAYOUT["parent_homes"]["left_leg"]),
-    dict(id="pelvis", definition="pelvis", label="Pelvis gantry", location="fixture", home=LAYOUT["parent_homes"]["pelvis"]),
+    dict(id="pelvis", definition="pelvis", label="Gantry", location="fixture", home=LAYOUT["parent_homes"]["pelvis"]),
 ], supports=supports, sources=sources, context_sources=context_sources,
                source_units="metres", source_axes="Godot X robot right, Y up, -Z forward",
                joint_heights=dict(ankle=1.0, knee=5.1, hip=9.2),
@@ -579,7 +579,7 @@ def robot_documents(check=False):
     for sid in ("main_input", "bearing_1", "bearing_2", "thrust_1", "thrust_2", "axle", "cap"):
         trial_leg["slots"][sid]["undo_to"] = "hands"
     pages = []
-    pages.append(dict(title="Prepared foot, empty leg rail", view="overview", slots=[], body="The complete 135-piece foot is supplied on its rig. The leg rig and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."))
+    pages.append(dict(title="Prepared foot, empty leg rail", view="overview", slots=[], body="The complete 135-piece foot is supplied on its rig. The leg rig and hip assembly connections are empty. Build the leg here, then open the hip assembly manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."))
     page(pages, "Deliver the foot", "", [], goal="Crane the finished foot from its turning rig onto the foot rig.", objectives=[
         dict(op="operate", machine=CRANE, command="pickup", task="foot"),
         dict(op="operate", machine=CRANE, command="down"),
@@ -613,12 +613,12 @@ def robot_documents(check=False):
     assert cap_slots[0] == "cap"
     page(pages, "Retain the knee axle", "", cap_slots, ["LG-110__001", "LG-140__001"], goal="Cap the axle end, then release and park the crane.", objectives=[dict(op="fit", slots=[cap_slots[0]]), dict(op="fit", slots=list(cap_slots[1:]))] + deepcopy(RELEASE), note=dict(at=0, text="Work from the side opposite the axle aisle."))
     delivery("Deliver the Upper-leg beam", "spar", "LG-120", "fork flange")
-    page(pages, "Fasten the Upper-leg beam flange", "", spar_slots[1:], ["LG-110__001", "LG-120__001"], goal="Bolt the beam flange to the fork, then release and park the crane.", objectives=[dict(op="fit", slots=list(spar_slots[1:]))] + deepcopy(RELEASE), note=dict(at=0, text="Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the pelvis M24 × 140."))
-    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the pelvis manual for delivery."))
+    page(pages, "Fasten the Upper-leg beam flange", "", spar_slots[1:], ["LG-110__001", "LG-120__001"], goal="Bolt the beam flange to the fork, then release and park the crane.", objectives=[dict(op="fit", slots=list(spar_slots[1:]))] + deepcopy(RELEASE), note=dict(at=0, text="Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the hip assembly M24 × 140."))
+    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the hip assembly manual for delivery."))
     pages.append(dict(title="Supported construction recovery", view="overview", slots=[], body="Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot rig Return reacquires the foot and reverses one guided phase per press; Return again lowers it to dispatch."))
     trial_leg["manual"] = pages
     pages = []
-    page(pages, "Seat the leg in the pelvis", "", ["left_leg"], context_sources,
+    page(pages, "Seat the leg in the hip assembly", "", ["left_leg"], context_sources,
          goal="Drive the finished leg on its rig to the Final Assembly Bay and dock it into the left hip.",
          objectives=[
              dict(op="operate", machine="leg_rail", command="next:bolster"),

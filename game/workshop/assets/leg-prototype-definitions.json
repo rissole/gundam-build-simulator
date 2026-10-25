@@ -2105,7 +2105,7 @@
         },
         {
           "title": "Structural leg ready",
-          "body": "The load-bearing prototype is structurally ready. Use the leg rail to carry it to the pelvis gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the pelvis manual for seating and retention.",
+          "body": "The load-bearing prototype is structurally ready. Use the leg rail to carry it to the gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the hip assembly manual for seating and retention.",
           "slots": [
             "foot",
             "shin",
@@ -2144,7 +2144,7 @@
       ]
     },
     "pelvis": {
-      "title": "Pelvis · left leg installation",
+      "title": "Hip assembly · left leg installation",
       "bounds": [
         3.6,
         1.5,
@@ -2332,7 +2332,7 @@
       "manual": [
         {
           "title": "Seat the supported leg",
-          "body": "The braced pelvis bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the leg rail to dock the LG-120 hip ball upward into the left socket's open underside. Keep rail support until all retaining bolts are fitted.",
+          "body": "The braced hip bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the leg rail to dock the LG-120 hip ball upward into the left socket's open underside. Keep rail support until all retaining bolts are fitted.",
           "slots": [
             "left_leg"
           ],

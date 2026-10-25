@@ -30,7 +30,7 @@ left foot. That is **135 playable physical identities** from the preserved
 foot bay, standing in for the left foot's store. The preparation stations,
 heel-pad table and the foot's own wall cabinets share the hangar's parts and
 preparation zone. Once the upright foot is complete, the build continues in the
-same session: pelvis → both legs → chest → core → backpack → both arms →
+same session: hip assembly → both legs → chest → core → backpack → both arms →
 pauldrons → head → crown. The right foot stays supplied complete.
 
 Read the [current workshop state](../../design/game/workshop-state.md)
@@ -126,7 +126,7 @@ stage the same way, with `boot_workshop("<stage>")` in [tests/kit](tests/kit).
 | --- | --- |
 | `foot` | The fresh game (the same as no flag) |
 | `actuator` | Both heel pads fitted; build the pitch actuator |
-| `pelvis` | The foot complete; deliver the pelvis to the gantry |
+| `pelvis` | The foot complete; deliver the hip assembly to the gantry |
 | `left_leg_build`, `left_leg_dock` | The left leg's construction, then its docking |
 | `right_leg_build`, `right_leg_dock` | The same for the right leg |
 | `chest`, `core`, `backpack` | Each torso delivery |
@@ -139,7 +139,7 @@ stage the same way, with `boot_workshop("<stage>")` in [tests/kit](tests/kit).
 The [robot workshop plan](../../design/game/robot-workshop-plan.md) describes
 every stage; the [playtest checklist](../../design/game/robot-workshop-playtest-checklist.md)
 lists what to check in each. Start at the leg with `./play.command -- --stage=pelvis`
-and deliver the pelvis first. The original leg-only journey's evidence is
+and deliver the hip assembly first. The original leg-only journey's evidence is
 [archived](../../design/game/history/leg-workshop-m3-plan.md).
 
 1. At the **crane console**, choose **Move to pickup** for the finished foot and
@@ -161,14 +161,14 @@ and deliver the pelvis first. The original leg-only journey's evidence is
    Fit the harness from the side away from the crane racks, standing back toward
    the knee so its upright bundle has room to turn clear of the ankle brace.
 4. With every structural connection complete and the crane parked, open the
-   **Pelvis gantry** manual. Use the local rail **Advance** controls for travel,
+   **Gantry** manual. Use the local rail **Advance** controls for travel,
    upright tilt and upward docking. The holder continues supporting the leg.
 5. Carry either **PV-120** half onto a personnel lift, click the component shelf
    to store it, and ride **Up**. Retrieve and seat it, then fit its two washer/bolt
    pairs from below. Ride **Down** to ground and repeat with the other half. The
    shelf holds one two-hand component, so the halves make separate trips.
 6. Both halves and all four pairs permit **Advance** to release the holder.
-   The secured leg stays mounted to the pelvis. The right leg follows the same
+   The secured leg stays mounted to the hip assembly. The right leg follows the same
    steps with the supplied right foot.
 
 Use **Z** to correct mistakes, subject to the existing support and dependency
@@ -241,8 +241,8 @@ Each of the ten pockets holds one small-part type, with up to 20 copies per stac
 
 ## Implemented behavior
 
-- Metre-scale source geometry: the preserved 745-mesh foot, with 135 active identities in the foot build, plus procedural leg, pelvis, torso, arm and head blockouts.
-- One final-assembly hangar hosts the whole build: parts and preparation zone, foot bay, pelvis gantry, indexed leg holder, personnel lifts with shelves, mobile platform, service crane and module fixtures. Equipment preserves real support ownership while players fit reachable hardware.
+- Metre-scale source geometry: the preserved 745-mesh foot, with 135 active identities in the foot build, plus procedural leg, hip assembly, torso, arm and head blockouts.
+- One final-assembly hangar hosts the whole build: parts and preparation zone, foot bay, gantry, indexed leg holder, personnel lifts with shelves, mobile platform, service crane and module fixtures. Equipment preserves real support ownership while players fit reachable hardware.
 - Firm two-handed carrying. A collision-aware kinematic grip follows the camera without a spring or angular momentum. Translation is swept against scenery and turning checks intermediate orientations. Dropping restores normal rigid-body physics. Placement still checks the swept approach and destination against scenery and loose obstacles.
 - Small preparation stations retain free rotation and double-tap R to reset. The foot uses a mechanically supported cradle with controlled work positions and an access platform/ramp; the crane collects it from the fixture. Equipment movement preserves mounted child poses and physical identities; parent construction and undo wait until it is stationary in the assembly bay.
 - Reachable pickup and collection targets under the crosshair get a thin contour; fixed equipment keeps its Operate prompt without a contour. Up to four recently focused objects reuse hidden contours, which inherit their source meshes' motion and visibility. Geometry, material and assembly changes invalidate the relevant cache; stable focus avoids hierarchy scans and renderer transform updates. Compact world prompts follow the object and use keyboard keycaps; obstacles hide both. With no part selected, unfinished builds keep one whole-assembly pickup prompt. With a selected part, nearby connections take priority; E still picks up their containing assembly. Aiming at the whole in-progress workpiece uses its cached bounds to reveal a compatible, ready destination in yellow within 6 m. The prompt asks you to move closer or aim at the highlighted connection; precise, reachable aim turns it green. Yellow guidance alone never permits attachment. Scenery, missing prerequisites and moving equipment suppress distant guidance. A valid green attachment preview stands on its own, while blocked or incompatible actions retain explanatory feedback. Placement never outlines the entire receiving assembly. Prompt and preview share one approach check per update; actual clicks recheck collision, and settled carried parts skip redundant rotation sweeps.
@@ -419,7 +419,7 @@ For a focused repair, append `-- --review-pages=pitch-04,foot-06` to the capture
 
 ## Scope and current limits
 
-The workshop delivers the foot build and the robot's structural blockout: pelvis, both legs, torso, arms and head. Detailed powered mechanisms, armor, saving and AR remain future work.
+The workshop delivers the foot build and the robot's structural blockout: hip assembly, both legs, torso, arms and head. Detailed powered mechanisms, armor, saving and AR remain future work.
 
 The reusable construction model owns prerequisites, inventory, carrying capacity, milestones and undo. `component_interaction.gd` projects arbitrary authored component slots into desktop collection, grip, placement, and service views. Pad connections retain their established four-opening adapter. The generic model supports the new content without requiring pad-shaped rules.
 
@@ -432,7 +432,7 @@ The room and new structural parts are functional blockouts. Layout, lighting, ca
 - [workshop.gd](scripts/workshop.gd): room, imported geometry, player, targeting, carrying, station interaction, and completion presentation.
 - [supported_fixture.gd](scripts/supported_fixture.gd): foot support, guided working poses, platform, rail transfer and movement clearance.
 - [leg_bay_layout.gd](scripts/leg_bay_layout.gd), [indexed_leg_rail.gd](scripts/indexed_leg_rail.gd), [service_crane.gd](scripts/service_crane.gd), [lift_shelf.gd](scripts/lift_shelf.gd) and [work_access_lift.gd](scripts/work_access_lift.gd): hangar layout and its leg holder, crane, shelves and lifts.
-- [leg_source_geometry.gd](scripts/leg_source_geometry.gd): separate procedural source meshes for the leg and pelvis, including real bores, bearing seats and split retaining rings.
+- [leg_source_geometry.gd](scripts/leg_source_geometry.gd): separate procedural source meshes for the leg and hip assembly, including real bores, bearing seats and split retaining rings.
 - [part_storage.gd](scripts/part_storage.gd): low cabinets, shelves, cached catalogue images and stock labels. Images are generated from the source GLB by `python3 game/workshop/tools/render_part_images.py` (Pillow required only for regeneration).
 - [build_stages.gd](scripts/build_stages.gd): stage names, the `--stage` flag, boundary checks and scripted progression.
 - [workshop.gd](scripts/workshop.gd), [player_controller.gd](scripts/player_controller.gd), [desktop_input.gd](scripts/desktop_input.gd), [targeting.gd](scripts/targeting.gd), [workshop_world.gd](scripts/workshop_world.gd) and [primitives.gd](scripts/primitives.gd): bootstrap, movement, modal input, targeting, layout construction and shared material palette.
@@ -452,7 +452,7 @@ The room and new structural parts are functional blockouts. Layout, lighting, ca
 - [assembly-definitions.json](assets/assembly-definitions.json): part types, child and parent slots, prerequisites, milestone sets, work locations, geometry references, and manual steps.
 - [heel-pads.json](assets/heel-pads.json): 26 source identities, physical build instances, starting positions, and parent destinations.
 - [pitch-workshop.json](assets/pitch-workshop.json) and [pitch-actuator-definitions.json](assets/pitch-actuator-definitions.json): 135-piece scenario and the actuator/parent recipe overlay. Regenerate with `python3 game/workshop/tools/author_pitch_actuator.py`; the authoring script resolves the exact pitch block in the source manifest and explicitly authors prerequisites separately from animation phases.
-- [leg-prototype-content.json](assets/leg-prototype-content.json), [leg-prototype-definitions.json](assets/leg-prototype-definitions.json), [robot-content.json](assets/robot-content.json) and [robot-definitions.json](assets/robot-definitions.json): structural leg/pelvis base and the robot's torso, arm and head extension, with support permissions, physical source descriptors and manuals. Regenerate and audit with `python3 game/workshop/tools/author_leg_prototype.py`.
+- [leg-prototype-content.json](assets/leg-prototype-content.json), [leg-prototype-definitions.json](assets/leg-prototype-definitions.json), [robot-content.json](assets/robot-content.json) and [robot-definitions.json](assets/robot-definitions.json): structural leg/hip assembly base and the robot's torso, arm and head extension, with support permissions, physical source descriptors and manuals. Regenerate and audit with `python3 game/workshop/tools/author_leg_prototype.py`.
 - [heel-pad.json](assets/heel-pad.json): original 13-piece model-test scenario metadata.
 - [Original model package](../../models/foot-fa01/README.md), [game design](../../GAME_DESIGN.md), and [prototype plan](../../design/game/foot-prototype-plan.md).
 
@@ -467,7 +467,7 @@ Stations provide occupancy, rotation, and work-volume checks. Collection and con
 The scene projection mounts a child into an explicit `(parent, slot)` and retains
 its descendant identities and local frames. Only the top assembly supplies active
 carrying collision; mounted child bodies inherit its transform. The current
-expanded workshop mounts foot into leg and leg into pelvis; the nested runtime
+expanded workshop mounts foot into leg and leg into hip assembly; the nested runtime
 regression also exercises four levels and two distinct receiving fixtures.
 
 Authoring extensions for future modules:

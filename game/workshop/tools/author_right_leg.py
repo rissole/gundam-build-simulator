@@ -122,7 +122,7 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
         trial["robot"]["security_slots"]["right_"+key]=list(trial["robot"]["security_slots"][key])
     # Mirror the hip work as an independent branch of the pelvis manual.
     original_slots=deepcopy(pelvis["slots"])
-    mirrored_pelvis=reflect_recipe(pelvis,"Pelvis · hip assembly")
+    mirrored_pelvis=reflect_recipe(pelvis,"Hip assembly · hip installation")
     slot_names={sid:"right_leg" if sid=="left_leg" else "right/"+sid for sid in original_slots}
     for sid,record in mirrored_pelvis["slots"].items():
         record["requires"]=[slot_names[required] for required in record["requires"]]
@@ -144,7 +144,7 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
                 kept.append(objective)
             page["objectives"]=kept
         pelvis["manual"].append(page)
-    pelvis["title"]="Pelvis · both hip installations"
+    pelvis["title"]="Hip assembly · both hip installations"
     pelvis["milestones"]["right_ring_secured"]=[slot_names[sid] for sid in pelvis["milestones"]["left_ring_secured"]]
     pelvis["milestones"]["right_leg_secured"]=list(slot_names.values())
     pelvis["milestones"]["structural_ready"]=list(pelvis["slots"])

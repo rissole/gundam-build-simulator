@@ -50,7 +50,7 @@ func controls() -> Array[Dictionary]:
 		if current.get("cycle_templates",false):
 			var next: String=spec.templates.keys()[(spec.templates.keys().find(template)+1)%spec.templates.size()]
 			current.action="template:"+next
-			current.label=manual_subject({"command":current.action})+": "+command_label(current.action)+" (now: "+template+")"
+			current.label=manual_subject({"command":current.action})+": "+command_label(current.action)+" (now: "+template_label(template)+")"
 		result.append(current)
 	for index in range(4):
 		var piece: Dictionary=blockout.pieces[jaw_groups[index]+"_handle"]
@@ -65,12 +65,14 @@ static func template_commands(names) -> Array:
 	var result: Array=[]
 	for name in names:result.append("template:"+str(name))
 	return result
+static func template_label(identity: String) -> String:
+	return "hip assembly" if identity=="pelvis" else identity.replace("_"," ")
 func manual_commands() -> Array:
 	var result: Array=MANUAL_COMMANDS.duplicate()
 	if spec is Dictionary and spec.has("templates"):result.append_array(template_commands(spec.templates.keys()))
 	return result
 func command_label(action: String, _task: String="") -> String:
-	if action.begins_with("template:"):return "Fit "+action.get_slice(":",1).replace("_"," ")+" contact inserts"
+	if action.begins_with("template:"):return "Fit "+template_label(action.get_slice(":",1))+" contact inserts"
 	match action:
 		"insert_pins":return "Insert both lock pins"
 		"close_jaws":return "Close the hold-down jaws"
@@ -121,17 +123,17 @@ func receiving_error(assembly: String, destination: String="pelvis_gantry") -> S
 		if not occupant.is_empty() and occupant!=assembly:return "The heavy module rig is occupied."
 		return ""
 	if assembly=="chest":
-		return "" if support_secured() else "Secure the pelvis on the gantry and insert both waist lock pins before chest delivery."
-	if assembly!="pelvis":return "These gantry bearings receive the pelvis bridge."
+		return "" if support_secured() else "Secure the hip assembly on the gantry and insert both waist lock pins before chest delivery."
+	if assembly!="pelvis":return "These gantry bearings receive the hip bridge."
 	if _location()=="support:"+spec.receiver_support:return ""
 	if not game.model.support_occupant(spec.receiver_support).is_empty():return "The gantry bearings are occupied."
-	if moving or not jaws.all(func(value):return is_equal_approx(value,1)):return "Open all four gantry jaws before lowering the pelvis."
+	if moving or not jaws.all(func(value):return is_equal_approx(value,1)):return "Open all four gantry jaws before lowering the hip assembly."
 	return ""
 
 func source_error(assembly: String="pelvis") -> String:
 	if template!=assembly:return "Fit the matching inserts before using this rig."
 	if moving or height!=0:return "Lower and stop the heavy module rig at its pickup stop."
-	if assembly=="pelvis" and not waist_ready():return "Insert both waist lock pins (twist and tilt) before lifting the pelvis."
+	if assembly=="pelvis" and not waist_ready():return "Insert both waist lock pins (twist and tilt) before lifting the hip assembly."
 	return ""
 
 func release_error(assembly: String="pelvis") -> String:
@@ -148,7 +150,7 @@ func reacquire_error(assembly: String="pelvis") -> String:
 	if assembly=="chest":
 		if game.model.assemblies.chest.slots.values().any(func(value):return not value.is_empty()):return "Remove dependent chest construction before lifting the chest."
 		return "" if support_secured() else "Keep the gantry jaws closed and both waist lock pins in."
-	if game.model.assemblies.pelvis.slots.values().any(func(uid):return not uid.is_empty()):return "Remove dependent gantry construction before lifting the pelvis."
+	if game.model.assemblies.pelvis.slots.values().any(func(uid):return not uid.is_empty()):return "Remove dependent gantry construction before lifting the hip assembly."
 	if not jaws.all(func(value):return is_equal_approx(value,1)):return "Attach all four magnetic connectors, then open the four gantry jaws before lifting."
 	return "" if waist_ready() else "Insert both waist lock pins before lifting."
 
@@ -165,9 +167,9 @@ func action_error(action: String) -> String:
 	if action.begins_with("lock:"):
 		var key=action.get_slice(":",1)
 		if not locks.has(key):return "Unknown waist lock."
-		if moving or _location() not in ["support:"+spec.source_support,"support:"+spec.receiver_support]:return "Seat the pelvis on a stationary rig before operating its locks."
+		if moving or _location() not in ["support:"+spec.source_support,"support:"+spec.receiver_support]:return "Seat the hip assembly on a stationary rig before operating its locks."
 		if locks[key] and game.model.assemblies.pelvis.slots.values().any(func(uid):return not uid.is_empty()):return "Keep the waist locked while dependent gantry construction is fitted."
-		if locks[key] and _location()=="support:"+spec.receiver_support:return "Keep both waist lock pins in while the pelvis is on the gantry."
+		if locks[key] and _location()=="support:"+spec.receiver_support:return "Keep both waist lock pins in while the hip assembly is on the gantry."
 		var crane=game.equipment.get_equipment("service_crane")
 		if crane!=null and crane.uid=="pelvis" and not crane.motion.is_empty():return "Finish the supported crane movement before changing a waist lock."
 		return game.hands.error(equipment_id)
@@ -175,7 +177,7 @@ func action_error(action: String) -> String:
 		var index=action.get_slice(":",1).to_int()
 		if index<0 or index>=4:return "Unknown gantry jaw."
 		if moving:return "Stop or finish the current support movement first."
-		if _location()!="support:"+spec.receiver_support:return "Seat the pelvis bridge on the gantry bearings first."
+		if _location()!="support:"+spec.receiver_support:return "Seat the hip bridge on the gantry bearings first."
 		if jaws[index]<.5:
 			var crane=game.equipment.get_equipment("service_crane")
 			if crane.uid!="pelvis" or crane.attached_count()!=4 or crane.station!="receiver" or crane.raised or not crane.motion.is_empty():return "Reattach all four magnetic connectors with the spreader down before opening a gantry jaw."
@@ -240,7 +242,7 @@ func motion_error(from_h: float,to_h: float,from_release: float,to_release: floa
 	if game.model.support_occupant("bulky_fixture")==template and from_h!=to_h:
 		var solids: Array[Dictionary]=[];var body=game.runtime.node(template)
 		Sweep.collect_shapes(body,body.global_transform.affine_inverse(),solids)
-		groups.append({"shapes":solids,"margin":.001,"error":"Clear the raised pelvis route ({collider})."})
+		groups.append({"shapes":solids,"margin":.001,"error":"Clear the raised hip assembly route ({collider})."})
 	return Sweep.sweep(get_world_3d().direct_space_state,groups,maxi(1,ceili(amount*30)),func(p: float)->Transform3D:return Layout.authored_pose(spec.templates[template]).translated(Vector3.UP*lerpf(from_h,to_h,p)*spec.height_travel),15,ignored,equipment_id).get("error","")
 
 func _pose() -> void:
@@ -249,7 +251,7 @@ func _pose() -> void:
 	if game.model.support_occupant("bulky_fixture")==template:game.runtime.node(template).global_transform=Layout.authored_pose(spec.templates[template]).translated(Vector3.UP*height*spec.height_travel)
 	for key in locks:lock_nodes[key].position=(Vector3.UP if key=="yaw" else Vector3.RIGHT)*(.10 if not locks[key] else 0)
 	var body: CollisionObject3D=game.runtime.node(template);body.force_update_transform();PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
-	label.text="HEAVY MODULE RIG / "+("Moving" if moving else "Locked height")+"\n"+(blocked_reason if not blocked_reason.is_empty() else "Inserts: "+template+" / crane pickup at lowest stop")
+	label.text="HEAVY MODULE RIG / "+("Moving" if moving else "Locked height")+"\n"+(blocked_reason if not blocked_reason.is_empty() else "Inserts: "+template_label(template)+" / crane pickup at lowest stop")
 
 func physics(delta: float) -> void:
 	if game.paused or not moving:return
@@ -264,7 +266,7 @@ func busy_reason(subject: String) -> String:
 	return ""
 
 func access_error(owner: String) -> String:
-	if owner=="pelvis" and not support_secured():return "Secure the pelvis on the gantry before fitting its external connections."
+	if owner=="pelvis" and not support_secured():return "Secure the hip assembly on the gantry before fitting its external connections."
 	return ""
 
 func capture() -> Dictionary:return {"version":1,"template":template,"height":height,"goal":goal,"moving":moving,"source_release":source_release,"jaws":jaws.duplicate(),"jaw_goals":jaw_goals.duplicate(),"locks":locks.duplicate()}
@@ -282,12 +284,12 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 	var occupant=model.support_occupant("bulky_fixture")
 	if not occupant.is_empty() and occupant!=data.template:return ["Occupied heavy module rig has the wrong contact inserts."]
 	var location=_location(model)
-	if location not in ["support:"+spec.source_support,"support:"+spec.receiver_support,"support:crane_rigging"]:return ["Pelvis has no declared workshop support."]
+	if location not in ["support:"+spec.source_support,"support:"+spec.receiver_support,"support:crane_rigging"]:return ["Hip assembly has no declared workshop support."]
 	if location!="support:"+spec.receiver_support and not data.jaws.all(func(value):return is_equal_approx(value,1)):return ["Empty gantry cannot have closed or moving hold-downs."]
 	if model.assemblies.pelvis.slots.values().any(func(uid):return not uid.is_empty()) and not support_secured("pelvis",model,data):return ["Robot construction requires clamped gantry support and waist locks."]
 	if world.has("fixtures") and location!="support:crane_rigging":
 		var expected=Layout.authored_pose(spec.source_pose).translated(Vector3.UP*data.height*spec.height_travel) if location=="support:"+spec.source_support else Layout.authored_pose(spec.receiver_pose)
-		if not Codec.to_pose(world.fixtures.pelvis).is_equal_approx(expected):return ["Pelvis pose disagrees with its current rig."]
+		if not Codec.to_pose(world.fixtures.pelvis).is_equal_approx(expected):return ["Hip assembly pose disagrees with its current rig."]
 	if world.has("equipment"):
 		var crane: Dictionary=world.equipment.service_crane
 		var expected_release=0.0 if not occupant.is_empty() else 1.0
@@ -303,7 +305,7 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 		var releasing=location=="support:"+spec.source_support and data.source_release>0
 		var unsecured=location=="support:"+spec.receiver_support and not support_secured("pelvis",model,data)
 		if suspended or releasing or unsecured:
-			if crane.task!="pelvis" or not waist_ready(data) or not crane.endpoints.values().all(func(end):return end.state=="attached"):return ["Unsecured pelvis requires all four magnetic connectors and waist locks."]
+			if crane.task!="pelvis" or not waist_ready(data) or not crane.endpoints.values().all(func(end):return end.state=="attached"):return ["Unsecured hip assembly requires all four magnetic connectors and waist locks."]
 	if world.has("fixtures"):
 		for identity in spec.templates:
 			if identity=="pelvis":continue

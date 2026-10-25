@@ -6,7 +6,7 @@ const Staging=preload("res://scripts/scenario_staging.gd")
 ## The left foot is built before the robot structure's first stage.
 const FOOT_STAGES = ["foot","actuator"]
 const STAGES = ["pelvis","left_leg_build","left_leg_dock","right_leg_build","right_leg_dock","chest","core","backpack","left_arm","right_arm","pauldrons","head","head_sensors","complete"]
-const TITLES = {"foot":"Left-foot heel pads","actuator":"Left-foot pitch actuator","pelvis":"Pelvis delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting","head":"Head fitting","head_sensors":"Head sensor fitting","complete":"Robot structure complete"}
+const TITLES = {"foot":"Left-foot heel pads","actuator":"Left-foot pitch actuator","pelvis":"Hip assembly delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting","head":"Head fitting","head_sensors":"Head sensor fitting","complete":"Robot structure complete"}
 var game: Node
 
 func _init(workshop: Node) -> void:game=workshop
@@ -56,7 +56,7 @@ func stage_errors(stage: String) -> Array[String]:
 			_need(errors,model.items.keys().all(func(uid):return not model.items[uid].owner.is_empty() or model.items[uid].location==game.part_defs[uid].get("location","bin")),"Fresh workshop stock must remain at its authored source.")
 		"left_leg_build":
 			_location(errors,"pelvis","support:pelvis_gantry")
-			_need(errors,fixture.support_secured(),"Secure the pelvis gantry and both waist pins.")
+			_need(errors,fixture.support_secured(),"Secure the gantry and both waist pins.")
 			_location(errors,"foot","support:foot_store")
 			_need(errors,rail.active_assembly=="left_leg" and rail.can_construct(),"Select the left leg at the construction station.")
 		"left_leg_dock","right_leg_dock":

@@ -14,9 +14,9 @@ A first-person mecha workshop built in Godot. Stock your pockets, follow illustr
 
 Three short films follow the equipment through the big assembly milestones. Click a preview to open its **10-second, 1080p MP4**.
 
-| Seat the pelvis | Dock the leg | Finish the robot |
+| Seat the hip assembly | Dock the leg | Finish the robot |
 | --- | --- | --- |
-| [![Pelvis suspended during delivery to the gantry](docs/images/workshop-pelvis-film.jpg)](docs/videos/pelvis.mp4) | [![Leg assembly approaching its mounting position](docs/images/workshop-leg-film.jpg)](docs/videos/leg.mp4) | [![Robot revealed after crown installation](docs/images/workshop-crown-film.jpg)](docs/videos/crown.mp4) |
+| [![Hip assembly suspended during delivery to the gantry](docs/images/workshop-pelvis-film.jpg)](docs/videos/pelvis.mp4) | [![Leg assembly approaching its mounting position](docs/images/workshop-leg-film.jpg)](docs/videos/leg.mp4) | [![Robot revealed after crown installation](docs/images/workshop-crown-film.jpg)](docs/videos/crown.mp4) |
 | [Watch the gantry delivery](docs/videos/pelvis.mp4) | [Watch the lift and docking](docs/videos/leg.mp4) | [Watch the crown and reveal](docs/videos/crown.mp4) |
 
 These are scripted progress films using the workshop's equipment controllers, with supplied earlier construction and accelerated motion. They predate the latest visual uplift. See the [recording guide](game/workshop/README.md#progress-videos) for camera edits and reproduction.
@@ -36,7 +36,7 @@ The satisfaction is in the sequence: find the right hardware, expose the connect
 - **Build at the bench.** Prepare two heel pads and a 91-piece pitch actuator, then secure them to the left foot. This opening build uses 135 physical identities from the 745-piece source model.
 - **Work from a living manual.** Illustrated chapters break the build into goals and checklists that tick themselves as you work. Ghost previews show valid placements.
 - **Handle the scale.** Turn the foot in its fixture, move heavy loads by crane, and ride personnel platforms to reach higher connections.
-- **Keep building.** Continue through the pelvis, both legs, chest, core, backpack, arms, pauldrons, head and crown. Save your workshop and return to it later.
+- **Keep building.** Continue through the hip assembly, both legs, chest, core, backpack, arms, pauldrons, head and crown. Save your workshop and return to it later.
 
 | Small parts, close attention | Room for the whole machine |
 | --- | --- |
@@ -84,7 +84,7 @@ Want to jump to the heavy machinery? Stage launches supply the earlier construct
 
 ```sh
 ./play.command -- --stage=actuator   # heel pads fitted; build the pitch actuator
-./play.command -- --stage=pelvis     # foot complete; begin the pelvis delivery
+./play.command -- --stage=pelvis     # foot complete; begin the hip assembly delivery
 ./play.command -- --stage=complete   # explore the completed structural robot
 ```
 

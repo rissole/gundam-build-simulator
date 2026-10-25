@@ -482,7 +482,7 @@ def delivery_inputs(layout, data):
             route_positions=[source["position"],[-7,5.8,source["position"][2]],[-7,5.8,6.3],[14,5.8,6.3],[14,2.08,6.3],[14,2,6.3]],
             approach=dict(axis=[0,-1,0],distance=.08),rig_clearance=1.5,up_y=6.9,
             rack_contacts=[],console_position=data["crane"]["console"],overhead_y=23.0,park_position=[8.4,0,18])
-    layout["crane"]["tasks"]["pelvis"]=dict(title="Pelvis and waist",payload="assembly",load_uid="pelvis",owner="pelvis",slot="",
+    layout["crane"]["tasks"]["pelvis"]=dict(title="Hip assembly",payload="assembly",load_uid="pelvis",owner="pelvis",slot="",
         source_support="bulky_fixture",source_equipment="module_supports",support="crane_rigging",receiver_support="pelvis_gantry",receiver_equipment="module_supports",
         secured=dict(milestone=""),endpoint_ids=["magnet_a","magnet_b","magnet_c","magnet_d"],
         magnetic_points={f"pelvis_eye_{i}":[x,.75,z] for i,(x,z) in enumerate([(x,z) for x in [-1.15,1.15] for z in [-.70,.70]],1)},

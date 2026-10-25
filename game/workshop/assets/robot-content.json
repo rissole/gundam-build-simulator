@@ -2542,7 +2542,7 @@
     {
       "id": "pelvis",
       "definition": "pelvis",
-      "label": "Prepared pelvis and waist",
+      "label": "Prepared hip assembly",
       "location": "support:bulky_fixture",
       "home": [
         3.25,

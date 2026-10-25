@@ -4,7 +4,7 @@
      "steps": [["pad_1", 0, "Prepare heel pad 1"], ["pad_2", 0, "Prepare heel pad 2"], ["foot", 1], ["foot", 2]]},
     {"id": "left_pitch_actuator", "title": "Left-foot pitch actuator", "after": [],
      "steps": [["pitch", 0], ["pitch", 1], ["pitch", 2], ["pitch", 3], ["pitch", 4], ["pitch", 5], ["pitch", 6], ["pitch", 7], ["pitch", 8], ["pitch", 9], ["pitch", 10], ["pitch", 11], ["pitch", 12], ["foot", 3], ["foot", 4], ["foot", 5]]},
-    {"id": "pelvis_delivery", "title": "Pelvis delivery", "after": ["left_heel_pads", "left_pitch_actuator"],
+    {"id": "pelvis_delivery", "title": "Hip assembly delivery", "after": ["left_heel_pads", "left_pitch_actuator"],
      "steps": [["pelvis", 0]]},
     {"id": "left_leg_build", "title": "Left-leg construction", "after": ["pelvis_delivery"],
      "steps": [["left_leg", 1], ["left_leg", 2], ["left_leg", 3], ["left_leg", 4], ["left_leg", 5], ["left_leg", 6], ["left_leg", 7], ["left_leg", 8], ["left_leg", 9], ["left_leg", 10], ["left_leg", 11]]},

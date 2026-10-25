@@ -20,7 +20,7 @@ All dimensions are in metres. This document owns shared landmarks, external enve
 | --- | --- | --- |
 | Height convention | Measure 18.0 m from the ground beneath the soles to the crest tips; helmet roof at 17.4 m | Give the complete silhouette a consistent total height |
 | Leg landmarks | Hip-ball centers at 9.2 m, knee-hinge axes at 5.1 m, and ankle-pivot intersections at 1.0 m above the ground | Equal 4.1 m hip-to-knee and knee-to-ankle spans, preserving the athletic humanlike direction |
-| Body widths | 5.6 m across the outer pauldrons in the reference pose; 4.0 m across the chest armor and 3.0 m across the fixed pelvis armor, excluding thigh armor and hinged hip guards | Establish broad shoulders and a narrower lower torso |
+| Body widths | 5.6 m across the outer pauldrons in the reference pose; 4.0 m across the chest armor and 3.0 m across the fixed hip assembly armor, excluding thigh armor and hinged hip guards | Establish broad shoulders and a narrower lower torso |
 | Reference pose | Stand upright with straight knees and parallel feet; arms held 15 degrees away from the torso, elbows straight, palms facing inward | Make the limb outlines and joint gaps easier to inspect |
 
 The leg heights describe joint centers, not removable-part lengths; sockets, forks, and armor overlap those boundaries. The 5.6 m shoulder width is measured across the pauldrons, not across the outward-angled arms and hands.
@@ -50,7 +50,7 @@ Working coordinate convention:
 | Knee-axis centers | ±1.10 | 5.10 | Vertical leg alignment |
 | Ankle-pivot intersections | ±1.10 | 1.00 | Sets a 2.20 m foot-center spacing |
 | Waist rotary-bearing center | 0 | 10.50 | Confirmed height |
-| Waist lean axis | 0 | 10.90 | Working transverse X axis at Y0; [pelvis interface](torso/pelvis-and-waist.md) |
+| Waist lean axis | 0 | 10.90 | Working transverse X axis at Y0; [hip assembly interface](torso/pelvis-and-waist.md) |
 | Chest receiving plane | 0 | 11.30 | Working neutral seat; distinct from the rotary-bearing centre |
 | Power cartridge axis | 0 | 11.95 | Working front–back Y axis, below the cockpit; [core interface](torso/backpack-and-power.md) |
 | Shoulder-ball centers | ±2.20 | 14.40 | Selected spacing; confirmed height |
@@ -83,8 +83,8 @@ Hip-to-knee and knee-to-ankle joint spans are both 4.10 m. Armor lengths and end
 
 | Component | Working dimensions or placement | Notes |
 | --- | --- | --- |
-| Waist outer envelope | 2.20 wide × 1.60 deep | Narrowest main torso region; neutral mechanical detail in [pelvis/waist](torso/pelvis-and-waist.md) |
-| Fixed pelvis armor | 3.00 wide × 1.80 deep | Width already confirmed; hinged hip guards excluded |
+| Waist outer envelope | 2.20 wide × 1.60 deep | Narrowest main torso region; neutral mechanical detail in [hip assembly](torso/pelvis-and-waist.md) |
+| Fixed hip assembly armor | 3.00 wide × 1.80 deep | Width already confirmed; hinged hip guards excluded |
 | Chest envelope placement | Front at Y = +1.20, rear at Y = −1.20 | Uses confirmed 2.40 m depth; shape tapers toward the waist |
 | Closed backpack | 2.40 wide × 2.80 high; top at Z = 14.10, bottom at Z = 11.30 | Envelope includes its nozzles; selected X-axis hinge at Y−1.20/Z14.10, opening 90° |
 | Backpack rear limit | Y = −2.20 | Uses the confirmed maximum 1.00 m projection beyond the rear torso armor |

@@ -6,7 +6,7 @@ Last updated: 2026-10-24
 [Proportions](../proportions.md#torso-and-backpack)
 
 Connected interfaces: [chest/cockpit](chest-and-cockpit.md),
-[pelvis/waist](pelvis-and-waist.md),
+[hip assembly](pelvis-and-waist.md),
 [shoulders](../arms/shoulder-and-upper-arm.md), [head](../head.md).
 The [final assembly plan](../game/final-assembly-plan.md) owns derived workshop
 dimensions; this document supplies its mechanical contracts.
@@ -199,7 +199,7 @@ Connect/disconnect with the cover independently locked open. These loops supply
 no lifting or core support.
 
 Fixed recessed vent strips stay visible at |X| 1.36…1.64, rear surface Y −1.20,
-upper extent Z 11.50…13.95. Aligned lower sections continue toward the pelvis
+upper extent Z 11.50…13.95. Aligned lower sections continue toward the hip assembly
 with a waist articulation break. Hinge-pin extraction at Z 14.10 passes above the
 upper strip; preserve a clear tool cylinder radius 0.04 m. Individual slats,
 lower-section mounts, and cooling internals remain later work.
@@ -326,11 +326,11 @@ their approach need fitted arm/pauldron/head geometry. No early-installation ord
 is used as a substitute for those future clearances.
 
 For waist lean ±10° about X at Z 10.90, the conservative low/rear corner
-(Y −2.20,Z 11.30) reaches Y −2.236,Z 10.912. The pelvis owner's fixed armor
+(Y −2.20,Z 11.30) reaches Y −2.236,Z 10.912. The hip assembly owner's fixed armor
 ends at Y ≥−0.90,Z ≤10.40; fixed lean supports Y ≥−0.70,Z ≤11.08.
 The moving waist cradle shares chest motion and has conservative rear/upper
 bounds Y ≥−1.12,Z ≤11.48 over its motion. At the limiting low rear corner,
-there is over 1 m fore/aft separation to the fixed pelvis. Full yaw ±25°/lean
+there is over 1 m fore/aft separation to the fixed hip assembly. Full yaw ±25°/lean
 solid clearance, including nozzles, guards, and gantry support arms, remains a
 source-geometry check. Opening/core service require neutral waist locks.
 
@@ -358,7 +358,7 @@ Before implementation:
    flange guide slots/counterbores; service mating; both crane handoffs.
 2. Check hinge/pin entry, source balance/all crane-line paths, strut articulation,
    overlap/locks, loop bends, locator/latch closure through 0…90°, with head,
-   arms/pauldrons, vents, and pelvis support arms fitted.
+   arms/pauldrons, vents, and hip assembly support arms fitted.
 3. Check reusable rail joints/supports, fixed handwheel/chain/brake, and continuous support through 5 m
    withdrawal; actual core and both lifting pads must clear Y −4.30 before lift.
 4. Author/check the ordinary-input initial build and supported local correction,

@@ -3426,7 +3426,7 @@
   },
   "assemblies": {
     "pelvis": {
-      "title": "Pelvis · both hip installations",
+      "title": "Hip assembly · both hip installations",
       "bounds": [
         4.02,
         4.1,
@@ -4815,10 +4815,10 @@
       },
       "manual": [
         {
-          "title": "Deliver the prepared pelvis and waist",
+          "title": "Deliver the prepared hip assembly",
           "view": "components",
           "slots": [],
-          "goal": "Lock the waist straight, crane the pelvis onto the gantry and close its jaws.",
+          "goal": "Lock the waist straight, crane the hip assembly onto the gantry and close its jaws.",
           "objectives": [
             {
               "op": "operate",
@@ -4882,7 +4882,7 @@
           }
         },
         {
-          "title": "Seat the leg in the pelvis",
+          "title": "Seat the leg in the hip assembly",
           "goal": "Drive the finished leg on its rig to the Final Assembly Bay and dock it into the left hip.",
           "slots": [
             "left_leg"
@@ -4933,7 +4933,7 @@
           },
           "diagram_views": [
             {
-              "title": "Seat the leg in the pelvis",
+              "title": "Seat the leg in the hip assembly",
               "sources": [
                 "PV-V-HIP-BALL"
               ],
@@ -5502,7 +5502,7 @@
           "body": "If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
-          "title": "Seat the leg in the pelvis",
+          "title": "Seat the leg in the hip assembly",
           "goal": "Drive the finished leg on its rig to the Final Assembly Bay and dock it into the right hip.",
           "slots": [
             "right_leg"
@@ -5553,7 +5553,7 @@
           },
           "diagram_views": [
             {
-              "title": "Seat the leg in the pelvis",
+              "title": "Seat the leg in the hip assembly",
               "sources": [
                 "R-PV-V-HIP-BALL"
               ],
@@ -10776,7 +10776,7 @@
           "title": "Prepared chest and cockpit",
           "view": "overview",
           "slots": [],
-          "body": "The chest frame, enclosed cockpit, fixed shoulder cups and neck spoke are supplied assembled. Use Chest to Heavy Module Bay at the shared crane to transfer it from the chest rig after selecting chest inserts on the empty heavy module rig. Keep the fitted cockpit upright. After checking the supported unit, lower the heavy module rig to its pickup stop and choose Chest to waist. The pelvis manual owns seating, retention and service connections."
+          "body": "The chest frame, enclosed cockpit, fixed shoulder cups and neck spoke are supplied assembled. Use Chest to Heavy Module Bay at the shared crane to transfer it from the chest rig after selecting chest inserts on the empty heavy module rig. Keep the fitted cockpit upright. After checking the supported unit, lower the heavy module rig to its pickup stop and choose Chest to waist. The hip assembly manual owns seating, retention and service connections."
         },
         {
           "title": "Bring the core to the heavy module rig",
@@ -16402,7 +16402,7 @@
           "title": "Prepared foot, empty leg rail",
           "view": "overview",
           "slots": [],
-          "body": "The complete 135-piece foot is supplied on its rig. The leg rig and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
+          "body": "The complete 135-piece foot is supplied on its rig. The leg rig and hip assembly connections are empty. Build the leg here, then open the hip assembly manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
         },
         {
           "title": "Deliver the foot",
@@ -17106,7 +17106,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the pelvis M24 × 140."
+            "text": "Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the hip assembly M24 × 140."
           },
           "diagram_views": [
             {
@@ -17144,7 +17144,7 @@
           "title": "Structural leg ready",
           "view": "prepared",
           "slots": [],
-          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the pelvis manual for delivery."
+          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the hip assembly manual for delivery."
         },
         {
           "title": "Supported construction recovery",
@@ -21145,7 +21145,7 @@
             "title": "Prepared foot, empty leg rail",
             "view": "overview",
             "slots": [],
-            "body": "The complete 135-piece foot is supplied on its rig. The leg rig and pelvis connections are empty. Build the leg here, then open the pelvis manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
+            "body": "The complete 135-piece foot is supplied on its rig. The leg rig and hip assembly connections are empty. Build the leg here, then open the hip assembly manual for rail travel, seating and retention. Knee and ankle transport braces are equipment, not loose parts."
           },
           {
             "title": "Deliver the foot",
@@ -21849,7 +21849,7 @@
             ],
             "note": {
               "at": 0,
-              "text": "Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the pelvis M24 × 140."
+              "text": "Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the hip assembly M24 × 140."
             },
             "diagram_views": [
               {
@@ -21887,7 +21887,7 @@
             "title": "Structural leg ready",
             "view": "prepared",
             "slots": [],
-            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the pelvis manual for delivery."
+            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the hip assembly manual for delivery."
           },
           {
             "title": "Supported construction recovery",

@@ -156,7 +156,7 @@ is its own chapter, placed before the step that seats it.
    labels/state/effects/counts (crane, foot rig, heavy module rig) and load-time
    validation (`scripts/manual_objectives.gd`, `manual_objectives_test`).
 2. **Pilot content — done 2026-10-25:** heel pads, pitch actuator and foot
-   installation; pelvis delivery (waist pins, crane trip, gantry jaws); the left
+   installation; hip assembly delivery (waist pins, crane trip, gantry jaws); the left
    and right leg's new **Deliver the foot** crane step (no page covered that
    trip before), foot docking, crane deliveries and fastening steps. Other pages
    still render `body`.
@@ -173,7 +173,7 @@ is its own chapter, placed before the step that seats it.
 5. **User playtest of the pilot.** Done 2026-10-25: "no notes, perfection"; key changes and the label rule followed. Record results in the
    [checklist](robot-workshop-playtest-checklist.md).
 6. **Review of unconverted steps (2026-10-25).** In play order:
-   - **Leg docking (pelvis pages):** rail Advance phases described in prose,
+   - **Leg docking (hip assembly pages):** rail Advance phases described in prose,
      "neutral lock" jargon for the hip cylinders, and the rig release/return has no
      step (only a summary page). Converting now (leg rig, hip cylinder lock pins).
    - **Chest, core, backpack, arms, pauldrons, head:** every crane page instructs

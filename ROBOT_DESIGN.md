@@ -12,7 +12,7 @@ The main construction concepts and proportions are established for all six body 
 
 **The foot-and-ankle reference-design detail pass is complete (FA-01).** Its linked packet records dimensions, numbered components, 258 fasteners with washers per foot, actuator internals, wiring, assembly order and bounded envelope checks. Three engineering-style reference sheets have been generated for review; see the [image register and prompts](design/legs/foot-and-ankle/images/README.md). Exact CAD validation and real engineering sizing remain outside this milestone. Other body assemblies still need their own detail passes.
 
-The current pass develops the final robot's major interfaces after the implemented leg-to-gantry prototype. The user authorized component owners to select details in the existing pelvis/hip, chest/cockpit, backpack/core, shoulder/arm and head specifications. These now define assembly boundaries, mating hardware, support handoffs and measured access requirements. The [final assembly plan](design/game/final-assembly-plan.md) integrates their workshop consequences; actual equipment geometry, solid sweeps and detailed internal workflows remain. This is design work, not authorization for a new gameplay milestone.
+The current pass develops the final robot's major interfaces after the implemented leg-to-gantry prototype. The user authorized component owners to select details in the existing hip assembly/hip, chest/cockpit, backpack/core, shoulder/arm and head specifications. These now define assembly boundaries, mating hardware, support handoffs and measured access requirements. The [final assembly plan](design/game/final-assembly-plan.md) integrates their workshop consequences; actual equipment geometry, solid sweeps and detailed internal workflows remain. This is design work, not authorization for a new gameplay milestone.
 
 ## 3D assembly work
 
@@ -33,7 +33,7 @@ Each file contains its confirmed design, selected working detail, remaining refi
 | Body section | Component specifications |
 | --- | --- |
 | Legs — mirrored | [Foot and ankle](design/legs/foot-and-ankle.md) · [Shin and calf](design/legs/shin-and-calf.md) · [Knee](design/legs/knee.md) · [Thigh and hip](design/legs/thigh-and-hip.md) |
-| Torso | [Pelvis and waist](design/torso/pelvis-and-waist.md) · [Chest, abdomen, and cockpit](design/torso/chest-and-cockpit.md) · [Backpack, power, and cooling](design/torso/backpack-and-power.md) |
+| Torso | [Hip assembly](design/torso/pelvis-and-waist.md) · [Chest, abdomen, and cockpit](design/torso/chest-and-cockpit.md) · [Backpack, power, and cooling](design/torso/backpack-and-power.md) |
 | Arms — mirrored | [Shoulder, upper arm, and elbow](design/arms/shoulder-and-upper-arm.md) · [Forearm and wrist](design/arms/forearm-and-wrist.md) · [Hand](design/arms/hand.md) |
 | Head | [Helmet, sensors, mounting, and assembly sequence](design/head.md) |
 

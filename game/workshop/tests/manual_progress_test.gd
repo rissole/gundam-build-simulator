@@ -115,11 +115,11 @@ func run() -> void:
 	var unlocked: Array[String] = []
 	for chapter in progress.chapters():
 		var title := str(chapter.title)
-		if title != "Pelvis delivery" and title != "Left-leg construction":continue
+		if title != "Hip assembly delivery" and title != "Left-leg construction":continue
 		for step in chapter.steps:
 			var state := progress.status(str(step.owner),int(step.page))
 			if state != "locked":unlocked.append(title+" / "+str(step.title)+"="+state)
-	expect(unlocked.is_empty(),"Pelvis delivery and left-leg steps are locked: "+joined(unlocked))
+	expect(unlocked.is_empty(),"Hip assembly delivery and left-leg steps are locked: "+joined(unlocked))
 	expect(progress.ready_count(tracked) >= 2,"other ready steps, got "+str(progress.ready_count(tracked)))
 	fit_slots(game.model,"pad_1",["sleeve_0","sleeve_1","sleeve_2","sleeve_3"])
 	progress.refresh()

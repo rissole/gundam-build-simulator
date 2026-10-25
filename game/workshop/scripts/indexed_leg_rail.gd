@@ -161,7 +161,7 @@ func action_error(action: String) -> String:
 	if action=="return" and engaged and game.model.assemblies[active_assembly].parent==receiver and retention_state()!="none":return "Remove hip retention before returning the loaded leg."
 	if action=="advance" and engaged:
 		var gantry=game.equipment.get_equipment("module_supports")
-		if gantry!=null and not gantry.support_secured():return "Deliver the pelvis, close all four gantry jaws and insert both waist lock pins before leg delivery."
+		if gantry!=null and not gantry.support_secured():return "Deliver the hip assembly, close all four gantry jaws and insert both waist lock pins before leg delivery."
 		if lane!=active_assembly.trim_suffix("_leg"):return "Select the "+active_assembly.trim_suffix("_leg")+" hip lane for this leg."
 		if not game.model.milestone(active_assembly,"structural_ready"):return "Complete the structural leg and every retaining connection before delivery."
 		if path==3 and retention_state()!="complete":return "Complete hip retention and the cylinder lock pins before releasing the leg rig."

@@ -13,7 +13,7 @@ Read this alongside the relevant component specification. These rules apply acro
 - **Current workshop design:** the [final gantry and assembly plan](game/final-assembly-plan.md) works backwards from the completed robot through major-section installation. Gameplay scope and authorization belong to the active task, not this robot specification.
 - **Long-term assembly ambition:** support a breakdown down to individual nuts, bolts, and other small components.
 - **Six major body sections:** left leg, right leg, torso, left arm, right arm, and head.
-- **Leg-to-torso boundary:** each hip ball belongs to its leg; the matching socket sits in the pelvis, which belongs to the torso.
+- **Leg-to-torso boundary:** each hip ball belongs to its leg; the matching socket sits in the hip assembly, which belongs to the torso.
 - **Arm-to-torso boundary:** each shoulder ball is integral to its upper-arm skeleton; the matching socket sits at the end of the torso's shoulder crossmember. The pauldron belongs to the arm.
 - **Head-to-torso boundary:** a fixed keyed neck spoke with a central wiring passage belongs to the torso skeleton; the head's baseplate bolts onto it and supports the head assembly.
 - **Current detail stage:** major-section interfaces and handling contracts are selected in the component documents; coordinated equipment geometry and each section's detailed internal workflow follow. Develop shared limb construction once, with explicitly handed interfaces where needed.

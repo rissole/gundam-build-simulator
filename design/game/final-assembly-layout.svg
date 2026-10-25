@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1540" viewBox="0 0 1800 1540" role="img" aria-labelledby="title desc">
 <title id="title">Full workshop fixture and route layout</title>
-<desc id="desc">Dimensioned floor layout, three elevated access plans and a rear side section. One shared limb bay, enlarged bulky fixture bay, passive limb parking, two rear side elevators, moving front and aft platforms, a low pelvis gantry and loaded crane routes. Design envelopes, not implemented geometry.</desc>
+<desc id="desc">Dimensioned floor layout, three elevated access plans and a rear side section. One shared limb bay, enlarged bulky fixture bay, passive limb parking, two rear side elevators, moving front and aft platforms, a low gantry and loaded crane routes. Design envelopes, not implemented geometry.</desc>
 <defs>
 <marker id="arrow-orange" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#b16b23"/></marker>
 <marker id="arrow-teal" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#277c72"/></marker>
@@ -355,7 +355,7 @@
 <text x="1208.00" y="1283.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Rear bypass cable / deck and load / column0.20 m.</text>
 <text x="1208.00" y="1310.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Rear hip headroom under support arms2.25 m.</text>
 <text x="1208.00" y="1337.00" font-family="Arial,sans-serif" font-size="14" fill="#203b43" text-anchor="start">Highest head hook21.58; overhead margin1.42 m.</text>
-<text x="42.00" y="1450.00" font-family="Arial,sans-serif" font-size="19" fill="#203b43" text-anchor="start" font-weight="700">BUILD   Pelvis / waist → both legs → chest / cockpit → core → backpack → both arms → head</text>
+<text x="42.00" y="1450.00" font-family="Arial,sans-serif" font-size="19" fill="#203b43" text-anchor="start" font-weight="700">BUILD   Hip assembly → both legs → chest / cockpit → core → backpack → both arms → head</text>
 <text x="42.00" y="1482.00" font-family="Arial,sans-serif" font-size="15" fill="#203b43" text-anchor="start">Four elevated levels: 8.4 / 11.2 / 14.0 / 16.4 m. One contextual delivery configuration moves the required bridges and gates.</text>
 <text x="42.00" y="1510.00" font-family="Arial,sans-serif" font-size="14" fill="#60767c" text-anchor="start">Authoritative dimensions, support states and remaining checks: final-assembly-plan.md. The drawing did not change the gameplay scene.</text>
 </svg>

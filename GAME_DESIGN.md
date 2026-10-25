@@ -258,7 +258,7 @@ The motor/gearbox estimates come from the primitive extents in the current [pitc
 | Thigh | 4.1 hip-to-knee joint span; up to 1.5 × 1.5 armor cross-section | Confirmed span, working cross-section; long supported fixture |
 | Upper arm / forearm | 3.0 shoulder-to-elbow / 2.6 elbow-to-wrist span; up to 0.9 × 1.0 / 1.1 × 1.1 armor cross-section | Confirmed spans, working cross-sections; limb fixtures and supported transfers |
 | Robot hand | 1.8 wrist-to-middle-fingertip; palm 0.9 wide × 0.45 thick excluding thumb | Confirmed length, working palm envelope; the whole robot hand needs a fixture even if its individual parts can be prepared on benches |
-| Pelvis / waist | 3.0 wide × 1.8 deep / 2.2 wide × 1.6 deep | Pelvis width confirmed, other extents working; frame fixture and access platforms |
+| Hip assembly | 3.0 wide × 1.8 deep / 2.2 wide × 1.6 deep | Hip assembly width confirmed, other extents working; frame fixture and access platforms |
 | Chest | 4.0 wide × 2.4 deep | Confirmed envelope dimensions; walk-around torso bay. Individual spine, cockpit and frame-member dimensions remain open |
 | Backpack | 2.4 wide × 2.8 high; up to 1.0 rear projection | Width/height working, maximum projection confirmed; assembly stand and supported installation |
 | Head | 2.0 high × 2.0 wide × 1.8 deep, excluding crest | Confirmed envelope; elevated construction access. Working crest width is 2.6 |
@@ -275,7 +275,7 @@ These stages describe work at increasing scales. Small preparation branches rema
 | 1. Stock and prepare small parts | Collect hardware into pockets; assemble eye bearings, drive modules, sensors or control-box contents where dimensions permit | Existing storage and small rotatable preparation fixtures | Prepared small components retain their constituent identities |
 | 2. Prepare carryable subassemblies | Fit pad sleeves; assemble slender actuators on a bench; prepare other modules once sized | Bench clamps/fixtures; ordinary one- or two-handed carrying where comfortable | Prepared child, ready for its receiving parent |
 | 3. Build supported components | Assemble the foot frame, joints, drives, sole, services and armor; later construct robot hands and other bulky modules | Open frame fixture, adjustable work height and access platforms; visibly supported, controlled repositioning | Secured component, with future interface hardware and access preserved |
-| 4. Integrate body sections | Join foot/shin/knee/thigh into a leg; hand/forearm/elbow/upper arm into an arm; build pelvis/waist/torso frame | Long fixtures, transfer pallets and assisted hoist alignment | Body section ready for final attachment; closing armor waits for covered work |
+| 4. Integrate body sections | Join foot/shin/knee/thigh into a leg; hand/forearm/elbow/upper arm into an arm; build hip assembly/torso frame | Long fixtures, transfer pallets and assisted hoist alignment | Body section ready for final attachment; closing armor waits for covered work |
 | 5. Assemble the robot in its bay | Seat hip and shoulder balls, fit retaining rings, connect services, complete head construction and remaining closures | Robot support gantry, lifting equipment, platforms/elevators, front/side/rear access | Seated, secured and connected sections; equipment releases only after retention is complete |
 
 Hand-carry suitability depends on shape, length, camera clearance and comfortable control, not just width or fictional mass. A slender actuator can stay manageable when a similarly long broad carrier plate does not. A long arm beam can require support despite being less than a metre wide. Assign handling per compatible type and assembly state, with gradual growth from handwork into fixture-supported work.
@@ -358,14 +358,14 @@ The next authorized milestone expands the workshop before integrating the new
 construction route. The default scenario has a 39.6 × 47 m hangar with a 22 m
 roof underside, the existing component stations and supported foot carrier, a
 structural-leg fixture with access on both sides, a clear transfer aisle, and a
-final bay containing a pelvis-supporting gantry. Overhead equipment moves large
+final bay containing a hip assembly-supporting gantry. Overhead equipment moves large
 pieces; three personnel lifts bring the player and supplies to actual fastening
 positions. Future torso and second-leg work has reserved space.
 
-The pelvis bridge and its two separately bolted socket housings start assembled
+The hip bridge and its two separately bolted socket housings start assembled
 and clamped in the gantry. This is a selected prototype starting arrangement;
-player construction of the pelvis is deferred. The robot's standing hip height
-remains 9.2 m. The gantry holds the pelvis at 10.6 m to provide handling clearance.
+player construction of the hip assembly is deferred. The robot's standing hip height
+remains 9.2 m. The gantry holds the hip assembly at 10.6 m to provide handling clearance.
 The complete leg approaches with its sole at 0.5 m, passing its ball crown below
 the socket skirt before rising into the socket.
 
@@ -375,7 +375,7 @@ existing foot-source hardware/harness identities promoted from context. The
 player joins the shin to the ankle flange and connects its main disconnect,
 assembles the knee bearings/spacers/fork/axle/cap, then bolts on the thigh spar
 with its integral hip ball. The hoist transfers the supported leg into the
-pelvis; the player installs the two retaining-ring halves through handling
+hip assembly; the player installs the two retaining-ring halves through handling
 controls and fits their washers and bolts from the hip lift.
 
 Seating, retention and releasing support are separate states. Both halves and
@@ -433,7 +433,7 @@ actuator/service connections and connection-area closures. Preserve the existing
 head-on-neck construction sequence; six major body sections do not imply six
 fully assembled crane loads.
 
-The first selected delivery is a prepared pelvis-and-waist unit: construct the
+The first selected delivery is a prepared hip assembly: construct the
 bridge, both hip socket housings and waist mechanism at an accessible workstation,
 then crane it into the gantry. Join the chest above it there. The chest module
 contains its prepared frame and fitted cockpit, assembled together at a workstation
@@ -441,7 +441,7 @@ and craned onto the waist with connection areas accessible. The component
 specifications now define their major mating geometry and support/access contracts;
 complete internal workflows and actual equipment geometry still follow.
 
-The selected manual route is pelvis/waist → both legs → chest/cockpit → power core
+The selected manual route is hip assembly → both legs → chest/cockpit → power core
 → backpack → both arms → head. Each stage includes its mounting and connections.
 Players may prepare components independently; alternative installation orders
 remain available wherever measured access permits. Each arm is
@@ -467,7 +467,7 @@ The [coordinated fixture/route plan](design/game/final-assembly-plan.md#1-measur
 and [updated layout](design/game/final-assembly-layout.svg) now specify an 11×12 m
 Heavy Module Bay, a 7×13 m Limb Bay with passive leg/arm parking, supported rail
 indexing and empty return, rear-positioned elevators, moving access bridges and
-a low pelvis gantry. A low outboard crane bypass, outboard lift/high crossing and central rear opening
+a low gantry. A low outboard crane bypass, outboard lift/high crossing and central rear opening
 deliver core and backpack; high routes serve head pieces and pauldrons. Four elevated levels
 remain8.4/11.2/14.0/16.4. These are checked design envelopes; actual solids,
 structural capacity and ordinary-control access remain implementation work.
@@ -481,7 +481,7 @@ one leg station; do not duplicate workshops by left/right side. Plan the common
 bay first, with appropriate support configurations and supported parking.
 
 Legs are built horizontally on their transport cradle and remain supported by it
-through rail delivery, tilt and upward docking to the pelvis. Arms are rigged and
+through rail delivery, tilt and upward docking to the hip assembly. Arms are rigged and
 picked up by the shared crane after construction, then delivered to the shoulders.
 Keep those departure methods distinct even when the work area is shared. Routing
 one leg bay to both hip destinations, fixture release to the crane, and parking
