@@ -50,7 +50,7 @@ def extend(trial, pelvis, layout):
     pelvis["context_sources"]=list(trial["context_sources"])
     pelvis.update(carry_class="equipment",work_locations=["support"],bounds=[4.02,4.1,2.0])
     pelvis["manual"].insert(0,dict(title="Deliver the prepared pelvis and waist",view="overview",slots=[],
-        body="The bulky fixture supplies the bridge, both socket housings and waist mechanism. Engage the captive yaw and lean locks, then select Pelvis and waist at the shared crane. Attach all four lifting adapters. Up takes weight before the source clamps open. Go to the gantry and Down seats the bridge on its two bearing patches. Close all four gantry jaws using their outboard handles, confirm both waist locks, then detach and stow the crane ends. The legs can dock only after this support is secure."))
+        body="The bulky fixture supplies the bridge, both socket housings and the waist. Insert both waist neutral pins on the pelvis before the crane will lift it. The yaw pin is on the front of the waist and the lean pin is on the right side; both start pulled out. Aim at each pin and press E. At the crane console, choose Move to pickup. Lower the crane, attach all four lifting adapters, then Raise crane. Choose Move to delivery and Lower crane to seat the bridge on the gantry bearings. Close all four gantry jaws with their handles, check that both pins are still in, then detach and stow the crane ends. The legs can dock only after this support is secure."))
     for parent in trial["parents"]:
         if parent["id"]=="pelvis":parent.update(label="Prepared pelvis and waist",location="support:bulky_fixture",home=[3.25,1.2,13])
     for name in ["bulky_fixture","pelvis_gantry"]:trial["supports"][name]=dict(assemblies=["pelvis"],assembly_ids=["pelvis"])

@@ -130,7 +130,7 @@ feedback separately from these mechanical results.
 
 Moved verbatim from the plan on 2026-10-24 after handoff tasks 01–10 finished.
 Its "Remaining work" list is complete; the deferred items are tracked in the
-[workshop state](../leg-workshop-next-steps.md).
+[workshop state](../workshop-state.md).
 
 - Task 09 resolves the stop recorded in `94d37c2` using the user's 2026-10-24
   shelf decision: both M3 shelves are 1.50 m wide with a 1.45 × 0.35 × 1.20 m

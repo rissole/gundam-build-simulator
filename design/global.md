@@ -9,7 +9,7 @@ Read this alongside the relevant component specification. These rules apply acro
 ## Scope and status
 
 - **Document scope:** shared robot construction concepts and boundaries; component packets develop the detailed geometry and references.
-- **Game context:** a 3D first-person workshop where the player assembles a giant piloted machine from scratch. Foot and structural-leg prototypes are implemented; see the [active workshop state](game/leg-workshop-next-steps.md).
+- **Game context:** a 3D first-person workshop where the player assembles a giant piloted machine from scratch. Foot and structural-leg prototypes are implemented; see the [active workshop state](game/workshop-state.md).
 - **Current workshop design:** the [final gantry and assembly plan](game/final-assembly-plan.md) works backwards from the completed robot through major-section installation. Gameplay scope and authorization belong to the active task, not this robot specification.
 - **Long-term assembly ambition:** support a breakdown down to individual nuts, bolts, and other small components.
 - **Six major body sections:** left leg, right leg, torso, left arm, right arm, and head.

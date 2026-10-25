@@ -1,6 +1,6 @@
 # Leg workshop: historical handoffs (M1–M2)
 
-Archived 2026-10-23 from [leg-workshop-next-steps.md](../leg-workshop-next-steps.md)
+Archived 2026-10-23 from [workshop-state.md](../workshop-state.md)
 during the pre-M3 architecture consolidation. These records are kept verbatim
 for context. File names, launch flags and test suites they mention may since
 have been retired or renamed. The hoist leg workshop, M1 trial and `m1_*`/`m2_*`

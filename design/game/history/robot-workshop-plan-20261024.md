@@ -4,7 +4,7 @@
 
 Agreed 2026-10-24. Implemented through the head crown; awaiting the user's playtest.
 
-[Active workshop state](../leg-workshop-next-steps.md) · [Fixture and route contract](../final-assembly-plan.md) · [Dimensioned layout](../final-assembly-layout.svg) · [Original M3 baseline (archived)](leg-workshop-m3-plan.md)
+[Active workshop state](../workshop-state.md) · [Fixture and route contract](../final-assembly-plan.md) · [Dimensioned layout](../final-assembly-layout.svg) · [Original M3 baseline (archived)](leg-workshop-m3-plan.md)
 
 ## Goal and settled decisions
 
@@ -48,7 +48,7 @@ same session. Profile `leg_bay_m3` keeps the prepared left foot for development.
 and evidence are archived in [history/m3-wide-evidence-20261024.md](m3-wide-evidence-20261024.md).
 Component-specific implementation detail lives in each component document's
 "Wider M3 … — 2026-10-24" section. Deferred items are listed in the
-[workshop state](../leg-workshop-next-steps.md#deferred-needs-a-decision).
+[workshop state](../workshop-state.md#deferred-needs-a-decision).
 
 The subsequent [equipment UI revision](equipment-ui-20261024.md) separates
 crane load selection from motion and gives the lifts explicit Up/Down controls.

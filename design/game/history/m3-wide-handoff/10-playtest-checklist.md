@@ -34,7 +34,7 @@ handoff"). Docs only: don't edit code or tests.
      finding | severity.
    - **A closing line:** mechanical test passes are separate from these playtest
      results.
-3. In `design/game/leg-workshop-next-steps.md`, below the paragraph that ends
+3. In `design/game/workshop-state.md`, below the paragraph that ends
    `they override older instructions in this document where they differ.`, add:
    `The playtest checklist for the complete wider workshop is [robot-workshop-playtest-checklist.md](robot-workshop-playtest-checklist.md); record results there and summarize them here.`
 4. In `design/game/handoff/README.md`, change the row for task 10 so its Notes

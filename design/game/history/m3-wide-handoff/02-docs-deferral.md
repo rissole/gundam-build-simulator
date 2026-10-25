@@ -94,7 +94,7 @@ and replace it with
 
 ## Edit D — active state document
 
-File: `design/game/leg-workshop-next-steps.md`.
+File: `design/game/workshop-state.md`.
 
 1. Under the heading `## Current work: implement the wider M3 workshop`, find the
    passage that **starts** with `The user requested an **intermediate human review on 2026-10-24**`

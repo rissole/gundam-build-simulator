@@ -1,7 +1,8 @@
-# Workshop: current state and next steps
+# Workshop: current state
 
 Updated 2026-10-25. Read this before continuing workshop development. Keep it short:
-current state, active rules, open decisions and player feedback. When a piece of
+current state, active rules and open decisions. Record player findings in the
+[playtest checklist](robot-workshop-playtest-checklist.md). When a piece of
 work finishes, move its narrative and evidence into [history/](history/) and leave
 a one-line summary here. Earlier versions of this file are
 [history/workshop-state-20261024.md](history/workshop-state-20261024.md) and
@@ -52,7 +53,7 @@ last version before consolidation.
   scenario and every save system were removed, with the tests that only covered
   them. `--stage=<name>` is the one game flag. Tests boot the same workshop and
   reach a stage with `boot_workshop("<stage>")`. `edit.command` was folded into
-  `./play.command --editor`. Mechanical checks only; see the feedback table.
+  `./play.command --editor`. Mechanical checks only. Player findings are in the playtest checklist.
 - **Robot workshop (2026-10-24):** the base foot build (two heel pads and the
   pitch actuator) happens in the final-assembly hangar, then the build continues
   in the same session: pelvis → both legs → chest → core → backpack → both arms
@@ -68,7 +69,7 @@ last version before consolidation.
 - **Equipment controls:** the crane console is movement only. There is no load
   list: the empty crane offers **Move to pickup** for the next load in
   `crane.order`, and a carried load offers **Move to delivery** or **Put back**
-  (2026-10-25, see the feedback table). Labelled physical buttons, elevator Up/Down and separate mobile
+  (2026-10-25). Labelled physical buttons, elevator Up/Down and separate mobile
   height controls and a single Move destination menu. Screenshots inspected.
   [Change and evidence](history/equipment-ui-20261024.md); use the
   [focused controls checklist](robot-workshop-playtest-checklist.md#focused-controls-check--2026-10-24).
@@ -124,8 +125,7 @@ last version before consolidation.
 
 1. The user playtests the robot workshop with the
    [playtest checklist](robot-workshop-playtest-checklist.md), from the foot build in the
-   hangar onward. Record results there and summarize them in the feedback table
-   below.
+   hangar onward. Record results there.
 2. Finish guarded equipment motion (see “Where things stand”): mark the mobile
    platform's route lane, then playtest the shared waiting/resuming behavior.
 3. Pick from the deferred items below only after a decision.
@@ -198,39 +198,6 @@ last version before consolidation.
 - Out of scope for now: detailed component internals, finished art, loose-chain or
   swing physics, detailed Blender leg assets, powered mechanisms, armor, more robot
   branches and AR.
-
-## Player feedback to retain
-
-| Feedback / positive finding | Current direction and open question |
-| --- | --- |
-| Pitch actuator step 12 (base eye) is available, but with the actuator on a preparation station there is no prompt to put the spherical eye bearing into the fitted base eye housing (2026-10-25) | The housing collides as a solid box around its bore, and closing the caps turns off open-station sightlines. The bearing center sat 66–81 mm behind the face a standing player looks at, past the 65 mm near-surface test, so the preview was dropped. The bearing now allows 120 mm, which still rejects a look along the closed barrel. Both bore openings, a standing view, a rotated station and the rod eye were checked headlessly. No rendered review. |
-| Generally low FPS, with much more component detail still to come; wants 60 FPS on entry gaming hardware and Apple Silicon. Explicitly rejects disabling shadows because it makes the world flat (2026-10-25) | Preserve shadows and approved brightness. Two-cascade shadows plus targeting improvements implemented and mechanically measured as above. This is a gain, not a 60 FPS pass. Remaining options: verify/control actual render resolution, reduce repeated geometry submissions, then measure later stages and component growth. Far-shadow detail needs the user's judgment. The initial focus-lost benchmark was rejected; subsequent normal rendering passed the frame-validity guard. |
-| Elevators can't be called because the game always thinks the player is in the way. With thousands of loose parts coming, movement must not need completely clear routes (2026-10-25) | Guarded motion as described under “Where things stand”. The user chose to point at loose parts rather than push them, provided the platform's path is very visibly marked, and chose the simplest elevator form: queued calls, no landing gates. The elevator, mobile platform, shelf cargo, loaded crane/rig and rail now share guarded-motion policy, mechanically checked. The mobile platform's visible lane and the user's ride/feedback checks remain. |
-| Regression verification took 10–15 minutes per change; agents kept running full suites despite documentation. Wants unit-style tests around one minute, separate named diagnostics, and a warning rather than a 60-second timeout (2026-10-25) | Default runner structurally selects routine tests only. Shared content, local crane/receiver/staging contracts and isolated chest/shoulder geometry replace routine journeys. Unique full-scene checks remain named-only diagnostics; never automatically selected. Warn and improve tests above 60 seconds; do not raise the budget. Existing fast model/physics tests were a positive baseline. See the coverage migration linked above. |
-| Wanted everything consolidated into a single play command (the full workshop) with flags such as `--stage=` to skip stages or support tests, and no milestone references outside history (2026-10-25) | Implemented as described under “Where things stand”. The user chose to remove the foot workshop with its save code, and to delete the leg-bay trials with their tests. Removed with them: the single/two-pad, trial and save suites, the broken walked-journey suites, the stale single-leg geometry review, and (at the user's request, who will verify the foot build by hand) the foot-room suites that depended on the old room's coordinates: jump, snap discovery, manual navigation, free-build targeting, interaction feedback, workshop geometry, supported fixture and crane console panel. Porting the foot suites found and fixed three robot-game bugs: the journey filter removed carry, station and mount targets (the pads and actuator could not be picked up, suspended or mounted); staging the supplied right foot consumed the left foot's own identities; and the foot carrier refused undo of the left foot while it was still in its fixture. The stock grid now also keeps a 1.6 m aisle clear in front of the preparation stations, tray and actuator start. Preparation-station rotation (hold R) is enabled, as it was in the foot workshop; the hangar had disabled it. Mechanically checked only; awaiting the user's check of the foot build. |
-| Workshop was ugly/crowded, lighting needed improvement, and overlapping surfaces flickered prolifically (2026-10-24) | Minimal practical engineering style implemented for the workshop only; robot models remain for later detail. 142 initial surface overlaps repaired, with moving equipment/alternate fixtures checked too. [Screenshots and evidence](history/workshop-visual-refresh-20261024.md); awaiting user judgment. |
-| Implementation took 6 h+; the user suspected poor architecture (2026-10-24) | Addressed by the handoff tasks: a generic staged receiver, an occupancy register and the shared stage sequence. Keep new sections as data. |
-| Saving and checkpoints keep adding work and are often wrong (2026-10-24) | Deferred until the structure exists; `--stage` replaces checkpoints. All save code is now removed. |
-| Wanted one command to launch the game, with the base foot build combined with the wider workshop, while flags still skip to progress points (2026-10-24) | Implemented with `foot` and `actuator` stages ahead of the structural stages. The combined game has no saves. The fixture's store position and raised work height (foot origin 2.0 m, previously 1.55 m) are an implementation choice; reaching the heel seats and upper fasteners there is untested. Walking from the rear-wall cabinets is untested. One grid drawer spills to (−10.8, 3.6), outside the authored stock bay. |
-| Rigging paths were already clear in the agreed plan; extra discovery iterations undermine its purpose | The core sweep first omitted the full spreader/cable envelope, and parked gates intruded into the bypass. That was an implementation/verification miss, not planning ambiguity. See the rigging rule above. |
-| The original leg-to-gantry build is “largely satisfying”, but implementation relied too much on in-game discovery (2026-10-24) | Preserve its physical handling. Define coordinates, load routes, work faces, standing areas and equipment clearances before implementing, working backwards through the [final assembly plan](final-assembly-plan.md). |
-| Prefer side elevators and walking onto shared front/rear work platforms | Selected for the full gantry. Keep the raised workshop datum; lowering is undecided. |
-| Hip and shoulder connections should remain accessible using shared elevators | Each side elevator serves every work level. Needs the user's playtest with arms fitted. |
-| Prefer shared left/right construction: one long-limb workshop, or separate arm and leg stations | One shared limb station. Legs leave on the rail cradle, arms by crane. No per-side workshops. |
-| Proposed workshop measurements look good, but unresolved interfaces could change them | Interfaces are now recorded in the component documents and the shared plan. Actual-solid checks happen per delivery. |
-| Overlapping, intricate leg-area controls and labels were hard to use | Local tactile rail/lift controls. Judge grouping, labels and explanations in ordinary play; targetability alone doesn't prove readability. |
-| Final-bay task buttons had the same clutter | Crane tasks use one central physical console; rail/lift operation stays local. |
-| Final-bay lift scale and onboard ascent were close to the intended experience | Preserve boarding, travel, reach and scale. Primitive art is not the visual target. Rails and elevators were praised at the corrected layout-trial acceptance. |
-| Large components appeared to float; transport and support were unclear | The leg rail, visible holder contact and individually attached crane magnets must show support through collection, travel, seating, fastening and release. |
-| PV-120 halves looked collectible but were static | Ordinary two-hand carrying and a finite lift shelf replace the rejected positioning arm. Small hardware stays in pockets. |
-| Initial crane-trial delivery and magnetic attachment broadly worked | Console captures mouse/look; arrows + E operate it and Q closes. Held magnets are centered. The trial replay was accepted 2026-10-23. |
-| The mobile work platform needs a stop button, and bonks the player around instead of carrying them while it moves (2026-10-25) | Added a STOP key under MOVE on the deck panel; the sign then says how to resume (MOVE resume/return, or UP/DOWN). Bonking had two causes, both shared: the player body also followed the deck's platform velocity on top of the registry's exact carry (now disabled, so stepping off no longer flings either), and Jolt applies a kinematic deck's new pose only at the next step, so the player moved against the stale deck. The player now moves before equipment each tick. The platform test now runs the rider's own move each tick. Mechanically checked only; awaiting the user's ride. Elevators and the lift shelf share the change but were not ridden in a test with the player's move. |
-| The mobile work platform (“bulky platform”) wouldn't move with the player on it; any moveable platform should carry the player, even when they're holding something, as a shared system (2026-10-24) | Ground transfers now accept a rider on the lowered deck; loose loads on the deck still block. Riding moved into the shared registry, and elevators and the lift shelf use it too. Mechanically checked only; awaiting the user's ride. |
-| Crane controls fill the screen; first asked for placement like pickup prompts, then chose the center of the screen | Centered placement and fixed view preserved. Movement stays visible on the main view. Screenshots inspected, awaiting the user's manual check. |
-| Crane menu is confusing/cluttered; simplify other inputs, especially elevators and the mobile lift. Prefer Up/Down without Stop (2026-10-24) | Elevator's third onboard button was Ground; replaced the onboard trio with labelled Up/Down, retaining separate landing Call buttons. Mobile lift separates Up/Down from travel; the follow-up replaces Dock/Move with one Move destination menu, including interrupted-trip recovery. Other physical equipment keys now carry labels. Screenshots and README refreshed. See the focused controls checklist. |
-| Too many crane load types, unclear; the crane should be generic with controls focused on movement. A place-picker draft still felt like "a million options" (2026-10-25) | Pickup/Deliver: at most Lower/Raise, Move to pickup · place, Move to delivery · place, Put back, Park. The next load is the first in `crane.order` still at its source. A blocked load explains why (receiver, prerequisite or source equipment) instead of the crane skipping ahead. An undo points the pickup at that connection. The 31 authored routes stay hidden. Places only name locations (`crane.places`). Out-of-order deliveries are no longer possible from the console. `crane_pickup_test` passes (mechanical); the screenshots still show the old chooser. Awaiting the user's check. |
-| Replace mobile platform Dock/Move with one Move button and a crane-style destination menu (2026-10-25) | Implemented: choose a destination to start travel; Q/Close cancels, and interrupted travel offers Resume/Return in the same menu. Screenshots refreshed. Hands-on verification remains pending. |
-| Workshop looks flat and bright; wanted improved lighting and workshop details, previewed in Blender before building in game (2026-10-25) | Blender preview of the live scene (exported from Godot) rendered; user: “a lot better… the rest of the workshop lighting is great.” Follow-ups applied in the preview: near-black ceiling replaced by a lighter ribbed deck with faint emission standing in for floor bounce; red fire points made small, matte and muted so they don't read as interactive; spotlights cut from 34 to 17 to stay within Compatibility's default 32 per frame / 8 spot per mesh without raising limits (general high-bay fixtures are emissive only; ambient + shadowed key carry general fill). Lighting: cool ambient ~0.11, AgX, light depth fog, key 0.5; 9 roof task beams pooled on bays (two on stock and leg parking); 4 column floods; 2 clerestory fills; 2 gantry under-deck downlights + LED strips. Details: 8 m slabs with joints, tonal epoxy bay pads, precast dado, ribbed cladding, window band, truss webs above the crane (23.8 m+), cable tray/duct, wall panels, hazard sleeves, north hangar door. Built in game 2026-10-25 with 4 m slabs (a cone-coverage estimate puts at most 8 spots on any slab, at most 2 on any wall panel) and the energy conversion from the preview's watts; **brightness is uncalibrated against Godot until the user's check.** Open: in-game brightness/contrast, AgX rendering in Compatibility, the dim green panel status lamps (asked whether they read as interactive, no answer yet), and the style audit on the new floor/wall layers. |
 
 ## Human checkpoints
 

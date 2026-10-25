@@ -1,8 +1,9 @@
 # Shared guarded equipment motion — 2026-10-25
 
 Implemented the “one shared version of this logic” follow-up from the elevator
-conversation. Current work and player feedback remain in
-[workshop next steps](../leg-workshop-next-steps.md).
+conversation. Current work remains in the
+[workshop state](../workshop-state.md). Player findings are in the
+[playtest checklist](../robot-workshop-playtest-checklist.md).
 
 ## Implementation
 

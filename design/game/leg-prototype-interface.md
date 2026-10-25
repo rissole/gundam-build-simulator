@@ -236,4 +236,4 @@ stdout was retained at `/tmp/leg-build-test.log`. No images were captured.
 The layout-trial and equipment-trial contracts that followed this structural
 leg (2026-10-23) are [archived](history/leg-prototype-trial-contracts.md). Those
 trials were removed when the workshop became one robot game; their accepted
-handling rules are kept in the [workshop state](leg-workshop-next-steps.md#active-rules).
+handling rules are kept in the [workshop state](workshop-state.md#active-rules).

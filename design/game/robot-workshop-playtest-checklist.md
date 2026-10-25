@@ -76,5 +76,6 @@ The pauldron route's tightest clearance is about 1 mm at seating.
 | Date | Stage | Issue or positive finding | Severity |
 | --- | --- | --- | --- |
 | 2026-10-24 | Any (mobile work platform) | Couldn't stay on the work platform while it moved between docks. Fixed: riding is now shared by every moving platform, hand load included. Re-check by riding it. | Blocking |
+| 2026-10-25 | Pelvis delivery | No manual step told the player to insert the waist pins. The delivery page said "engage the captive yaw and lean locks," and Suggested only hides that overview. The pins are the two controls on the pelvis; the crane will not lift until both are in. The page now says to aim at each pin and press E. It still does not appear while Suggested only is on. | Blocking |
 
 Mechanical test passes are separate from these playtest results.

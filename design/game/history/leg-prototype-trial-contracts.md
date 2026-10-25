@@ -5,7 +5,7 @@
 ## Provisional M1 layout and support contract — 2026-10-23
 
 This addendum describes the isolated M1 scale trial in the
-[active continuation plan](../leg-workshop-next-steps.md), pending the requested
+[active continuation plan](../workshop-state.md), pending the requested
 human playtest. The preceding sections remain the implemented normal workshop
 contract. M1 does not change the generator, recipes, physical stock, canonical
 source geometry or existing manuals. Its dedicated layout/controller/staging

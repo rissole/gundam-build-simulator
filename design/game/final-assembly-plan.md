@@ -9,7 +9,7 @@ That documentation pass did not change the workshop scene, saves or runtime. Sub
 implementation is tracked in the [implementation ledger](history/m3-wide-evidence-20261024.md#plan-implementation-ledger-through-task-09);
 its partial equipment checks do not establish full-workshop or human access approval.
 
-[Active workshop state](leg-workshop-next-steps.md) · [Layout drawing](final-assembly-layout.svg)
+[Active workshop state](workshop-state.md) · [Layout drawing](final-assembly-layout.svg)
 · [Robot dimensions](../proportions.md)
 
 ## Status and agreed direction

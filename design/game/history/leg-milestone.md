@@ -7,7 +7,7 @@ player feedback on 2026-10-23 identifies unresolved controls, handling affordanc
 and visible transport issues. The historical checks below establish mechanical
 behavior; they do not establish acceptance of the workshop experience.
 
-Continue from [playtest feedback and next steps](../leg-workshop-next-steps.md).
+Continue from the [workshop state](../workshop-state.md).
 The authorized [M3 implementation plan](leg-workshop-m3-plan.md) tracks completion
 of the current rail-based construction journey. Full teardown verification was
 stopped by request on 2026-10-24; existing undo remains for mistake correction.

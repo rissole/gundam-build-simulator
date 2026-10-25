@@ -4,7 +4,7 @@ Last updated: 2026-10-24
 
 This records the agreed game design from the workshop-loop discussion. Robot geometry, engineering detail, and part inventories remain in [ROBOT_DESIGN.md](ROBOT_DESIGN.md). Recommendations for reaching a playable foot build are recorded separately in the [foot prototype plan](design/game/foot-prototype-plan.md).
 
-**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) launches one robot game: the supported-foot build in the hangar, followed by the robot structure. The user finds the complete structural leg-to-gantry journey largely satisfying. The current [final assembly plan](design/game/final-assembly-plan.md) develops the full gantry and major-section workflow before further implementation. Historical increments below retain their original scope; use the [active workshop state](design/game/leg-workshop-next-steps.md) for current status.
+**Status:** the core experience and interaction rules below are agreed. The [playable project](game/workshop/README.md) launches one robot game: the supported-foot build in the hangar, followed by the robot structure. The user finds the complete structural leg-to-gantry journey largely satisfying. The current [final assembly plan](design/game/final-assembly-plan.md) develops the full gantry and major-section workflow before further implementation. Historical increments below retain their original scope; use the [active workshop state](design/game/workshop-state.md) for current status.
 
 ## Experience and purpose
 

@@ -16,7 +16,7 @@ preparation zone. Once the upright foot is complete, the build continues in the
 same session: pelvis → both legs → chest → core → backpack → both arms →
 pauldrons → head → crown. The right foot stays supplied complete.
 
-Read the [active plan and feedback](../../design/game/leg-workshop-next-steps.md)
+Read the [current workshop state](../../design/game/workshop-state.md)
 before continuing development. The workshop awaits playtest with the
 [checklist](../../design/game/robot-workshop-playtest-checklist.md).
 
@@ -275,7 +275,7 @@ routine runner. See [coverage migration and test contracts](tests/TESTING.md) fo
 retained assertions, isolated replacements and the exact diagnostic boundary.
 
 Current status and remaining human acceptance are recorded in the
-[workshop state](../../design/game/leg-workshop-next-steps.md).
+[workshop state](../../design/game/workshop-state.md).
 The earlier [structural milestone](../../design/game/history/leg-milestone.md#final-verification)
 records historical results for the retired hoist workflow.
 

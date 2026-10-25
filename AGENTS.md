@@ -1,10 +1,12 @@
 # Project skills
 
 When continuing the workshop prototype, read the current
-[playtest feedback and next steps](design/game/leg-workshop-next-steps.md) before
-planning changes. It records unresolved player-facing issues beyond the historical
-headless milestone results, and its document table says which other design
-documents a task needs. Files in `design/game/history/` are archives: open one
+[workshop state](design/game/workshop-state.md) before
+planning changes. It records current status, active rules and open decisions,
+and its document table says which other design documents a task needs. Player
+findings go in the
+[playtest checklist](design/game/robot-workshop-playtest-checklist.md).
+Files in `design/game/history/` are archives: open one
 only when a current document links to it for a specific fact.
 
 For taking a robot component from its high-level design Markdown through detailed
@@ -35,7 +37,8 @@ Make reasonable implementation choices and continue authorized work while resolv
 independent questions. This applies to all feedback, not only UI changes.
 
 When feedback is deferred, preserve every item, positive findings and unresolved
-options in the relevant state/next-steps document. Link it from the milestone so
+options in the [playtest checklist](design/game/robot-workshop-playtest-checklist.md).
+Link it from the milestone so
 the next session can resume without treating historical test passes as usability
 approval. Keep automated behavior, inspected presentation and player feedback
 distinct when reporting completion.

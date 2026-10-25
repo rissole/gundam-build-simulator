@@ -1,6 +1,6 @@
 # M3 wider workshop: restructure and finish — task handoff
 
-> **Archived 2026-10-24.** All tasks are done. The current state, rules and deferred items are in [the workshop state](../../leg-workshop-next-steps.md).
+> **Archived 2026-10-24.** All tasks are done. The current state, rules and deferred items are in [the workshop state](../../workshop-state.md).
 
 Written 2026-10-24 after reviewing the paused 6h20m Codex run on
 [robot-workshop-plan.md](../../robot-workshop-plan.md). Each numbered file is a
@@ -52,7 +52,7 @@ using Opus for any implementation task.
 3. **Check each agent's report** before starting the next task. Every task ends
    with a commit, so a bad task can be reverted with `git revert`.
 4. **Playtest** with `./play.command -- --m3-stage=<name>` once 06 is done. Record
-   findings in [leg-workshop-next-steps.md](../../leg-workshop-next-steps.md).
+   findings in the [playtest checklist](../../robot-workshop-playtest-checklist.md).
 
 ## Deferred and unassigned (do not start without a decision)
 

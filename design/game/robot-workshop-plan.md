@@ -2,7 +2,7 @@
 
 Agreed 2026-10-24. Implemented through the head crown; awaiting the user's playtest.
 
-[Active workshop state](leg-workshop-next-steps.md) · [Fixture and route contract](final-assembly-plan.md) · [Dimensioned layout](final-assembly-layout.svg) · [Original leg journey (archived)](history/leg-workshop-m3-plan.md) · [This plan as agreed (archived)](history/robot-workshop-plan-20261024.md)
+[Active workshop state](workshop-state.md) · [Fixture and route contract](final-assembly-plan.md) · [Dimensioned layout](final-assembly-layout.svg) · [Original leg journey (archived)](history/leg-workshop-m3-plan.md) · [This plan as agreed (archived)](history/robot-workshop-plan-20261024.md)
 
 ## Goal and settled decisions
 
@@ -32,7 +32,7 @@ Explicit user decisions:
 
 On 2026-10-25 the user consolidated everything into this one workshop: the
 foot-only workshop, the leg-bay equipment trials, the regression scenarios and
-all save code were removed (see the [workshop state](leg-workshop-next-steps.md)).
+all save code were removed (see the [workshop state](workshop-state.md)).
 
 ### Status — 2026-10-24
 
@@ -46,7 +46,7 @@ session. The per-increment implementation ledger
 and evidence are [archived](history/m3-wide-evidence-20261024.md).
 Component-specific implementation detail lives in each component document's
 "Robot workshop … — 2026-10-24" section. Deferred items are listed in the
-[workshop state](leg-workshop-next-steps.md#deferred-needs-a-decision).
+[workshop state](workshop-state.md#deferred-needs-a-decision).
 
 The subsequent [equipment UI revision](history/equipment-ui-20261024.md) separates
 crane load selection from motion and gives the lifts explicit Up/Down controls.

@@ -1,7 +1,7 @@
 # Workshop continuation state before consolidation completion
 
 Historical snapshot, retained in full on 2026-10-23. Resume from
-[the active continuation note](../leg-workshop-next-steps.md). Statements about
+[the active continuation note](../workshop-state.md). Statements about
 launches, completed consolidation or verification below describe that earlier
 state; they do not override the active note.
 

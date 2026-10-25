@@ -1,6 +1,6 @@
 # Workshop: active plan and playtest state
 
-> **Archived 2026-10-24.** Full text of the workshop state document before it was condensed. The [current version](../leg-workshop-next-steps.md) keeps the active rules and every feedback item.
+> **Archived 2026-10-24.** Full text of the workshop state document before it was condensed. The [current version](../workshop-state.md) keeps the active rules and open decisions. Player findings are in the playtest checklist.
 
 Updated 2026-10-24. Read this before continuing workshop development. The default
 base game is the supported-foot workshop: two heel pads and the pitch actuator.

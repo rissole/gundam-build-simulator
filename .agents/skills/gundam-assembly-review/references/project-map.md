@@ -8,9 +8,10 @@ or page inventory.
 
 - `GAME_DESIGN.md`: collecting/manual-focused gameplay, desktop first, future AR,
   comfortable carrying, current pockets and storage behavior.
-- `design/game/leg-workshop-next-steps.md`: current status, active rules, player
-  feedback, human checkpoints and a table of which design document to read when.
-  Read it before continuing workshop work. `design/game/history/` holds finished
+- `design/game/workshop-state.md`: current status, active rules, open decisions,
+  human checkpoints and a table of which design document to read when.
+  Read it before continuing workshop work. Record player findings in
+  `design/game/robot-workshop-playtest-checklist.md`. `design/game/history/` holds finished
   work orders, superseded plans and evidence; open those only when a current
   document links to a specific one.
 - `ROBOT_DESIGN.md` and `design/legs/foot-and-ankle/`: mechanical design and assembly
