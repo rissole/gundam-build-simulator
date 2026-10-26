@@ -42,12 +42,6 @@ func manual_control_entries(objective: Dictionary) -> Array[Dictionary]:
 		if action_error(str(entry.action)).is_empty():result.append(entry)
 	return result
 
-## Guided machines share the crane's real access console for console commands.
-func manual_console_entries(command: String) -> Array[Dictionary]:
-	var crane = game.equipment.get_equipment("service_crane")
-	if crane==null or crane._guide()!=self:return []
-	return crane.manual_control_entries({"op":"operate","command":"guide:"+command})
-
 func physics(_delta: float) -> void:pass
 func placement_error(_owner: String, _slot: String) -> String:return ""
 func access_error(_owner: String) -> String:return ""

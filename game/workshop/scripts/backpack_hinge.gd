@@ -109,7 +109,8 @@ func controls() -> Array[Dictionary]:
 const MANUAL_COMMANDS=["extend_struts","lock_struts","release_struts","take_weight","close","engage_latches","close_covers"]
 func manual_control_entries(objective: Dictionary) -> Array[Dictionary]:
 	var command := str(objective.get("command",""))
-	if command in ["take_weight","close"]:return manual_console_entries(command)
+	# Crane console commands get no cue.
+	if command in ["take_weight","close"]:return []
 	return super.manual_control_entries(objective)
 
 func manual_control_actions(objective: Dictionary) -> Array:

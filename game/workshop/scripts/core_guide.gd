@@ -83,7 +83,8 @@ func controls() -> Array[Dictionary]:
 const MANUAL_COMMANDS=["next:capture","next:seat","secure_bolts","connection"]
 func manual_control_actions(objective: Dictionary) -> Array:
 	var command := str(objective.get("command",""))
-	if command.begins_with("next:"):return ["advance"]
+	# Rig panel buttons get no cue.
+	if command.begins_with("next:"):return []
 	if command=="secure_bolts":
 		var result: Array = []
 		for i in bolts.size():

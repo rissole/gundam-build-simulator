@@ -69,17 +69,17 @@ func selected(machine: Node, command: String, op: String="operate") -> Array:
 	return machine.manual_control_entries({"op":op,"command":command}).map(func(item):return item.action)
 func mappings(node: Node3D) -> void:
 	var supports=Supports.new();game.add_child(supports)
-	for action in ["jaw:0","jaw:1","jaw:2","jaw:3","lock:yaw","lock:lean","template:core"]:supports.entries.append(entry(supports,action,node))
+	for action in ["jaw:0","jaw:1","jaw:2","jaw:3","lock:yaw","lock:lean","advance","template:core"]:supports.entries.append(entry(supports,action,node))
 	supports.jaws.assign([0.0,1.0,1.0,0.0]);supports.jaw_goals.assign([0.0,1.0,0.0,0.0]);supports.locks={"yaw":true,"lean":false}
 	expect(selected(supports,"close_jaws")==["jaw:1","jaw:2"],"Grouped gantry jaws include stopped pending handles and exclude closed jaws")
 	expect(selected(supports,"insert_pins")==["lock:lean"],"Grouped waist pins exclude the inserted pin")
 	supports.entries.back()["cycle_templates"]=true
-	expect(selected(supports,"template:head")==["template:core"],"Template objective resolves the physical cycle button through intermediate templates")
+	expect(selected(supports,"template:head").is_empty() and selected(supports,"advance").is_empty(),"Heavy module rig panel buttons have no cue")
 	var core=Core.new();game.add_child(core)
 	for action in ["bolt:0","bolt:1","bolt:2","bolt:3","advance","connection"]:core.entries.append(entry(core,action,node))
 	core.bolts.assign([true,false,true,false])
 	expect(selected(core,"secure_bolts")==["bolt:1","bolt:3"],"Core objective resolves every remaining captive bolt")
-	expect(selected(core,"next:capture")==["advance"] and selected(core,"next:seat")==["advance"],"Core abstract stops use the actual Next button")
+	expect(selected(core,"next:capture").is_empty() and selected(core,"next:seat").is_empty(),"Core guide panel buttons have no cue")
 	expect(selected(core,"connection")==["connection"],"Core rear interlock resolves its local control")
 	var backpack=Backpack.new();game.add_child(backpack);backpack.game=game
 	for action in ["strut:0","strut:1","lock:0","lock:1","latch:0","latch:1","cover:0","cover:1"]:backpack.entries.append(entry(backpack,action,node))
@@ -95,17 +95,15 @@ func mappings(node: Node3D) -> void:
 	expect(selected(receiver,"release:shipping")==["release:shipping"],"Shared guided receiver resolves its local shipping-restraint handle")
 	var foot=preload("res://scripts/foot_carrier.gd").new();game.add_child(foot)
 	var rail=preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail)
-	expect(foot.manual_control_actions({"command":"advance:2"})==["advance"] and foot.manual_control_actions({"command":"return:home"})==["return"],"Foot rig maps both travel directions to its physical buttons")
-	expect(rail.manual_control_actions({"command":"next:dock"})==["advance"] and rail.manual_control_actions({"command":"back:home"})==["return"] and rail.manual_control_actions({"command":"build"})==["build"] and rail.manual_control_actions({"command":"park"})==["park"],"Leg rig maps dock, home, build and park controls")
+	expect(foot.manual_control_actions({"command":"advance:2"}).is_empty() and foot.manual_control_actions({"command":"return:home"}).is_empty(),"Foot rig panel buttons have no cue")
+	expect(["next:dock","back:home","build","park"].all(func(command):return rail.manual_control_actions({"command":command}).is_empty()),"Leg rig panel buttons have no cue")
 	var captive=preload("res://scripts/captive_controls.gd").new();game.add_child(captive)
 	captive.specs={"left_hip_1":{},"right_hip_1":{}};captive.locked={"left_hip_1":false,"right_hip_1":true}
 	expect(captive.manual_control_actions({"command":"lock:left_hip_1"})==["left_hip_1"] and captive.manual_control_actions({"command":"lock:right_hip_1"}).is_empty(),"Cylinder mapping respects individual and mirrored lock state")
 	var crane=Crane.new();game.add_child(crane);crane.game=game;crane.equipment_id="service_crane";crane.console_node=node
 	game.equipment.register(crane)
 	crane.options.assign([{"action":"up"},{"action":"guide:take_weight"},{"action":"guide:transfer_weight"}])
-	expect(selected(crane,"up")==["open_console"] and selected(crane,"down").is_empty(),"Crane movement resolves the physical console only while offered")
-	crane.unavailable=["up"]
-	expect(selected(crane,"up").is_empty(),"An offered but interlocked console operation has no cue")
+	expect(selected(crane,"up").is_empty(),"Offered crane console operations have no cue")
 	for action in ["pick:a","pick:b","attach:front","detach:c","detach:d"]:crane.entries.append(entry(crane,action,node))
 	crane.endpoints={"c":{"point":"front"},"d":{"point":"aft"}}
 	crane.unavailable=["pick:b","detach:d"]
@@ -113,11 +111,10 @@ func mappings(node: Node3D) -> void:
 	expect(selected(crane,"","detach")==["detach:c"],"Detach objective excludes unavailable connectors")
 	expect(crane.manual_control_entries({"op":"detach","point":"aft"}).is_empty(),"Point-specific detach never cues another connector")
 	crane.guided_node=backpack
-	expect(selected(backpack,"take_weight")==["open_console"],"Backpack console operation resolves the real crane access control")
+	expect(selected(backpack,"take_weight").is_empty(),"Backpack crane console operation has no cue")
 	var shoulder=preload("res://scripts/shoulder_support.gd").new();game.add_child(shoulder);shoulder.game=game
-	expect(selected(shoulder,"transfer_weight").is_empty(),"Tracked shoulder never cues a different machine's live console operation")
 	crane.guided_node=shoulder
-	expect(selected(shoulder,"transfer_weight")==["open_console"],"Shoulder console operation resolves the real crane access control")
+	expect(selected(shoulder,"transfer_weight").is_empty(),"Shoulder crane console operation has no cue")
 
 func run() -> void:
 	game=World.new();root.add_child(game)

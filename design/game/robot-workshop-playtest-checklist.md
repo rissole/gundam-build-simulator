@@ -50,7 +50,13 @@ twisting or tilting…", including its pin locations) were removed; other author
 notes remain. Similar notes were also removed: the hip-cylinder note now keeps
 only "Keep the leg rig docked and engaged." (handle location and E prompt removed),
 and "The leg rig only lets go once all three cylinder lock pins are in." is gone.
-Warnings and fitting hints (orientation, insertion side, hardware size) remain.
+Warnings and fitting hints (orientation, insertion side, hardware size) remain. The crane console no longer glows
+(crane moves, backpack and shoulder console commands): the user wants the cue
+only on small on-rig controls such as pins, and liked it on the crane magnetic
+connectors. Rig panel buttons (leg/foot rig NEXT/BACK/BUILD/PARK,
+core guide, heavy module rig UP/DOWN and INSERT) no longer glow either: "rig
+controls don't get a glow". Glow remains on pins, captive bolts, latches, gantry
+jaws, brace handles, receiver handles and crane magnetic connectors.
 
 ### Focused left-leg recheck
 

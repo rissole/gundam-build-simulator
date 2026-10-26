@@ -76,11 +76,7 @@ func manual_control_actions(objective: Dictionary) -> Array:
 	elif command=="close_jaws":
 		for i in jaws.size():
 			if jaws[i]>.0001:result.append("jaw:"+str(i))
-	elif command.begins_with("template:"):
-		# The physical INSERT button cycles; every eligible press progresses to
-		# the authored target, even when the intermediate template differs.
-		for entry in controls():
-			if entry.get("cycle_templates",false):result.append(entry.action)
+	# Rig panel buttons (UP/STOP/DOWN, INSERT) get no cue.
 	return result
 
 func manual_commands() -> Array:
