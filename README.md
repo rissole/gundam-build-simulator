@@ -6,18 +6,17 @@ A first-person mecha workshop built in Godot. Stock your pockets, follow illustr
 
 [Play the prototype](#play-the-prototype) · [Watch the workshop](#watch-the-workshop) · [Concept & design](#concept--design) · [Development](#development)
 
-[![Completed robot standing between the gantry platforms, from the crown installation film](docs/images/workshop-crown-film.jpg)](docs/videos/crown.mp4)
+![Final crown installation and completed robot reveal between the gantry platforms](docs/videos/crown.gif)
 
-*The final crown installation and robot reveal. Click the image to open the film. This capture predates the current lighting and gantry detail pass.*
+*The final crown installation and robot reveal. This capture predates the current lighting and gantry detail pass.*
 
 ## Watch the workshop
 
-Three short films follow the equipment through the big assembly milestones. Click a preview to open its **10-second, 1080p MP4**.
+Three looping GIFs follow the equipment through the big assembly milestones. Each plays inline and shows the full **10-second** sequence.
 
 | Seat the hip assembly | Dock the leg | Finish the robot |
 | --- | --- | --- |
-| [![Hip assembly suspended during delivery to the gantry](docs/images/workshop-pelvis-film.jpg)](docs/videos/pelvis.mp4) | [![Leg assembly approaching its mounting position](docs/images/workshop-leg-film.jpg)](docs/videos/leg.mp4) | [![Robot revealed after crown installation](docs/images/workshop-crown-film.jpg)](docs/videos/crown.mp4) |
-| [Watch the gantry delivery](docs/videos/pelvis.mp4) | [Watch the lift and docking](docs/videos/leg.mp4) | [Watch the crown and reveal](docs/videos/crown.mp4) |
+| ![Hip assembly suspended during delivery to the gantry](docs/videos/pelvis.gif) | ![Leg assembly approaching its mounting position](docs/videos/leg.gif) | ![Robot revealed after crown installation](docs/videos/crown.gif) |
 
 These are scripted progress films using the workshop's equipment controllers, with supplied earlier construction and accelerated motion. They predate the latest visual uplift. See the [recording guide](game/workshop/README.md#progress-videos) for camera edits and reproduction.
 
@@ -25,9 +24,7 @@ These are scripted progress films using the workshop's equipment controllers, wi
 
 The FA-01 source model keeps every frame, shell, actuator and fastener individually identifiable. Its construction film shows how those pieces become a foot roughly **3.0 m long × 1.3 m wide**.
 
-[![FA-01 foot opening into an exploded assembly of its mechanisms, armor and hardware](models/foot-fa01/output/foot-fa01-exploding.gif)](models/foot-fa01/output/foot-fa01-build-and-explode.mp4)
-
-[Watch the full build-and-explode film →](models/foot-fa01/output/foot-fa01-build-and-explode.mp4)
+![FA-01 foot opening into an exploded assembly of its mechanisms, armor and hardware](models/foot-fa01/output/foot-fa01-exploding.gif)
 
 ## Inside the hangar
 

@@ -18,6 +18,7 @@ __pycache__/
 # Regenerable model exports and delivery archives; retain the game GLB and Blender scene.
 models/foot-fa01/output/*.glb
 models/foot-fa01/output/*.zip
+models/foot-fa01/output/*.mp4
 
 # Generated audits, captures, and galleries stay local. Keep Godot's ignore marker.
 /game/workshop/verification/*

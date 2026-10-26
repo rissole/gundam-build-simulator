@@ -6,7 +6,7 @@ The [design documents](../../design/legs/foot-and-ankle.md) and [build order](..
 
 ## Deliverables
 
-The repository includes the editable Blender scene, final film and images, manifests, and audit records. The model GLBs and ZIP archives listed below are local generated deliverables excluded from Git; regenerate the model exports with the [build instructions](#reproduce-the-build). The playable game retains its own assembled GLB in [game/workshop/assets](../../game/workshop/assets/).
+The repository includes the editable Blender scene, looping GIF and images, manifests, and audit records. The model GLBs, source MP4 and ZIP archives are local generated deliverables excluded from Git; regenerate them with the [build instructions](#reproduce-the-build). The playable game retains its own assembled GLB in [game/workshop/assets](../../game/workshop/assets/).
 
 | File | Use |
 | --- | --- |
@@ -14,14 +14,14 @@ The repository includes the editable Blender scene, final film and images, manif
 | [foot-fa01-animated.glb](output/foot-fa01-animated.glb) | Portable model with all 745 animated part nodes in one animation |
 | [foot-fa01-assembled.glb](output/foot-fa01-assembled.glb) | Assembled model with all 745 separate meshes and part metadata |
 | [individual-parts-745.zip](output/individual-parts-745.zip) | One centered OBJ file per inventory object, plus materials and assembly-position manifest |
-| [foot-fa01-build-and-explode.mp4](output/foot-fa01-build-and-explode.mp4) | Rendered construction → assembled hold → deconstruction/exploded view |
+| [foot-fa01-exploding.gif](output/foot-fa01-exploding.gif) | Looping preview of the foot opening into an exploded view |
 | [parts-manifest.csv](output/parts-manifest.csv) / [JSON](output/parts-manifest.json) | Part IDs, names, groups, assembly phases and positions |
 | [Scene audit](output/scene-audit.json) | Independent verification of the saved Blender scene |
 | [Export audit](output/export-audit.json) | GLB node/mesh counts, decoded animation poses and the individual OBJ archive |
 | [Assembled poster](output/foot-fa01-assembled.png) / [Exploded poster](output/foot-fa01-exploded.png) | Still frames from the final render |
 | [Skeleton inspection render](output/foot-fa01-skeleton.png) | Assembled mechanisms with armor hidden |
 
-**Verified delivery:** 745 independent meshes, 745 animated GLB nodes, 745 individual OBJ files, and a decoded 984-frame / 41-second MP4 at 1280 × 720 and 24 fps. The [video audit](output/video-audit.json) and [delivery audit](output/delivery-audit.json) record the checks. Construction paths are schematic; this is a visualization asset rather than fabrication geometry.
+**Verified source delivery:** 745 independent meshes, 745 animated GLB nodes, 745 individual OBJ files, and a decoded 984-frame / 41-second MP4 at 1280 × 720 and 24 fps. The [video audit](output/video-audit.json) and [delivery audit](output/delivery-audit.json) record those source checks; the repository retains the GIF preview, while the MP4 can be regenerated locally. Construction paths are schematic; this is a visualization asset rather than fabrication geometry.
 
 ## Open and inspect
 
