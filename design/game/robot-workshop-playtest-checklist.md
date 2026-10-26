@@ -21,6 +21,8 @@ plus a procedure link on repeats. The gantry gets gap fixes and symmetric fold
 states now. A "launch cage" v2 with a clear rear exit is approved as direction only (2026-10-27); building it waits for the crane operator view, less temporary robot parts and separate build approval.
 [Branches and tasks](handoff/operated-machines/README.md).
 
+**C5 design evidence (2026-10-27):** the [dimensioned plan, measurements and drawings](gantry-v2/README.md) exist; **build is still not approved**. The checker fails on parked/exit and return-path geometry, hip support clearances, asymmetric retained guide hardware, headroom and provisional crane heights; the rear wall has no door aperture and the core service kit is unimplemented. [All options and recommendations](gantry-v2/README.md#7-conflicts-and-decisions) remain open, with Y8.4 plus hip handoff recommended only after those blockers and separate approval. This is mechanical design evidence, not player acceptance; preserve the accepted finish and physical assembly challenge.
+
 - [x] C0 answered 2026-10-27: on the **lowest level**, left and right of the hip assembly, railings mismatch and the hip side is accessible on only one side.
 
 **C1 measurement (2026-10-27):** [runtime audit](handoff/operated-machines/C1-gap-audit.md) confirms symmetric 300 mm lift-landing slots, a separate unguarded hinge-apron edge and guard-handedness candidates. Ten fixed landing plates and outer hinge rails were specified for C2 and are now implemented and reviewed (2026-10-27). Retain open work/service edges and the accepted gantry appearance. Automated baseline: three focused suites pass; no rendered inspection or new player acceptance. Recheck landing catches, hinge edges and the named asymmetric spot after integration.

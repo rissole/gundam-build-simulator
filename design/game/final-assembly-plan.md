@@ -972,6 +972,8 @@ Evidence: `game/workshop/verification/regressions-20261025T101102.018689Z/`.
 
 **approved as direction 2026-10-27; build not approved**
 
+[C5 dimensioned candidate and conflicts](gantry-v2/README.md) — 2026-10-27, design only; checker fails at the documented stop, build still not approved.
+
 Construction waits for the crane operator view and less temporary robot parts.
 This proposal follows the
 [gantry access finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26)
