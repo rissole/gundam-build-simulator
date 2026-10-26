@@ -2,6 +2,36 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Gantry jaw hitch — 2026-10-26
+
+- Player reports that opening and closing the hip assembly gantry momentarily
+  freezes the whole game. The gantry may be redesigned before launch; avoid a
+  deep gantry-specific fix.
+- Player also reports severe lag moving the leg into the hip assembly. Code
+  inspection distinguishes the leg rig from the crane: rail movement recollects
+  the carried assembly's collision shapes every tick, samples the look-ahead
+  route at 0.025 m surface intervals, builds fresh holder query shapes per sample,
+  and rewrites holder shape dimensions during pose updates. These costs remain
+  after this cleanup. Surrounding access/gate motion uses the optimized blockout
+  helpers. Whether lag occurs throughout travel, during the upright turn, or
+  only at docking (which rebuilds assembly collision) is not yet established.
+- User would accept jaws clipping through obstacles if removing collision checks
+  solved the hitch; otherwise prefers the shared performance cleanup. Sweeps
+  remain enabled because removing them alone leaves broad physics updates.
+- Code inspection found a jaw's three colliders caused all 556 blockout bodies
+  to be published each tick, with nine full insert-selection scans and full
+  blockout scans for sweep membership. Shared updates now publish only changed
+  groups and descendants, skip unchanged insert settings, and index collision
+  membership. Crane anchor updates use the same selective path.
+- No game launch, engine tests, rendered review or performance timing was run,
+  respecting the user's code-only investigation constraint. Focused checks were
+  added to `gantry_dressing_test` but are unrun. The hitch's cause and resolution
+  are not yet measured; manual refresh at jaw-state changes remains another
+  candidate if a start/stop hitch persists.
+- [ ] Opening and closing each jaw stays responsive; confirm the hitch is gone.
+- [ ] When engine testing is authorized, run the routine gantry dressing and rail
+  gate cases to check selective updates and same-tick descendant physics poses.
+
 ## Progress video feedback — 2026-10-25
 
 - User rejected the foot-rotation film ("it's bad") and requested its deletion

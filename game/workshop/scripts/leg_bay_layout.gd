@@ -85,9 +85,11 @@ func crane_contract(task: String = "") -> Dictionary:
 
 func set_crane_anchor(point: Vector3) -> void:
 	if not is_instance_valid(crane_bridge):return
-	crane_bridge.position.z = point.z
-	blockout.groups.crane_trolley.position.x = point.x
-	blockout.publish()
+	var bridge: Transform3D = crane_bridge.transform
+	var trolley: Transform3D = blockout.groups.crane_trolley.transform
+	bridge.origin.z = point.z
+	trolley.origin.x = point.x
+	blockout.apply_frames({"crane_bridge":bridge,"crane_trolley":trolley})
 
 func _source_racks() -> void:
 	for task in layout().crane.tasks:

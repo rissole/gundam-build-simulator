@@ -7,6 +7,8 @@ var spec: Dictionary
 var groups: Dictionary = {}
 var pieces: Dictionary = {}
 var materials: Dictionary = {}
+## Authored membership is fixed after setup; collision enablement stays live.
+var group_pieces: Dictionary = {}
 
 func setup(workshop: Node3D, definition: Dictionary) -> void:
 	game = workshop;spec = definition
@@ -28,6 +30,7 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 			var shape = CollisionShape3D.new();var box = BoxShape3D.new();box.size = AssemblyRuntime.vec(entry.size)
 			shape.shape = box;body.add_child(shape);piece.body = body;piece.shape = shape
 		pieces[entry.id] = piece
+	_index_pieces()
 	for entry in spec.signs:
 		var at = AssemblyRuntime.vec(entry.position)
 		var width: float = minf(entry.width,2.4)
@@ -48,17 +51,33 @@ func _group(id: String) -> Node3D:
 static func authored_pose(entry: Dictionary) -> Transform3D:
 	return Transform3D(Basis.from_euler(AssemblyRuntime.vec(entry.rotation_degrees)*PI/180),AssemblyRuntime.vec(entry.position))
 
-func publish() -> void:
-	# Moving static fixtures must be visible to queries in this same physics tick.
+func _index_pieces() -> void:
+	group_pieces.clear()
+	for id in groups:group_pieces[id] = []
 	for piece in pieces.values():
+		if not piece.has("body"):continue
+		var id: String = piece.spec.parent
+		while not id.is_empty():
+			group_pieces[id].append(piece)
+			id = spec.groups[id].parent
+
+func _pieces_for_groups(ids: Array) -> Array:
+	var selected: Dictionary = {}
+	for id in ids:
+		for piece in group_pieces.get(id,[]):selected[piece.spec.id] = piece
+	return selected.values()
+
+func publish(ids: Array = []) -> void:
+	# Moving static fixtures must be visible to queries in this same physics tick.
+	# An empty selection is the explicit full publication used during setup.
+	for piece in (pieces.values() if ids.is_empty() else _pieces_for_groups(ids)):
 		if piece.has("body"):
 			piece.body.force_update_transform()
 			PhysicsServer3D.body_set_state(piece.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,piece.body.global_transform)
 
 func rids_for_groups(ids: Array) -> Array[RID]:
 	var result: Array[RID] = []
-	for piece in pieces.values():
-		if piece.has("body") and belongs_to(piece.spec.parent,ids):result.append(piece.body.get_rid())
+	for piece in _pieces_for_groups(ids):result.append(piece.body.get_rid())
 	return result
 
 func belongs_to(id: String, ancestors: Array) -> bool:
@@ -74,8 +93,8 @@ func frame_at(id: String, overrides: Dictionary) -> Transform3D:
 
 func shapes_at(ids: Array, overrides: Dictionary) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	for piece in pieces.values():
-		if not piece.has("body") or piece.body.collision_layer==0 or not belongs_to(piece.spec.parent,ids):continue
+	for piece in _pieces_for_groups(ids):
+		if piece.body.collision_layer==0:continue
 		var at = frame_at(piece.spec.parent,overrides)*Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(piece.spec.position))
 		# Telescoping guard dimensions are baked into the query shape, keeping
 		# physics transforms orthonormal even while the render hierarchy scales.
@@ -85,10 +104,14 @@ func shapes_at(ids: Array, overrides: Dictionary) -> Array[Dictionary]:
 	return result
 
 func apply_frames(frames: Dictionary) -> void:
-	for id in frames:groups[id].transform = frames[id]
-	publish()
+	var changed: Array = []
+	for id in frames:
+		if groups[id].transform == frames[id]:continue
+		groups[id].transform = frames[id]
+		changed.append(id)
+	if not changed.is_empty():publish(changed)
 
 func enable_group(id: String, enabled: bool) -> void:
+	if groups[id].visible == enabled:return
 	groups[id].visible=enabled
-	for piece in pieces.values():
-		if piece.has("body") and belongs_to(piece.spec.parent,[id]):piece.body.collision_layer=1 if enabled else 0
+	for piece in group_pieces[id]:piece.body.collision_layer=1 if enabled else 0

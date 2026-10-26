@@ -1,17 +1,22 @@
 extends "res://tests/kit/harness.gd"
 ## Isolated actual blockout/art integration, no robot stages or renderer.
 const Fixture = preload("res://tests/kit/equipment_fixture.gd")
-const Blockout = preload("res://scripts/workshop_blockout.gd")
 const Dressing = preload("res://scripts/gantry_dressing.gd")
 const Access = preload("res://scripts/workshop_access.gd")
 const Lift = preload("res://scripts/work_access_lift.gd")
+
+class TrackedBlockout extends "res://scripts/workshop_blockout.gd":
+	var publications: Array = []
+	func publish(ids: Array = []) -> void:
+		publications.append(ids.duplicate())
+		super.publish(ids)
 
 func _initialize() -> void:call_deferred("run")
 
 func run() -> void:
 	var game = Fixture.new();root.add_child(game)
 	var spec: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json")).workshop
-	var world = Blockout.new();game.add_child(world);world.setup(game,spec)
+	var world = TrackedBlockout.new();game.add_child(world);world.setup(game,spec)
 	var access = Access.new();game.add_child(access);access.setup(game,world)
 	var lifts: Array = []
 	for side in spec.elevators:
@@ -100,10 +105,53 @@ func run() -> void:
 				if not lift.is_ancestor_of(record.visual):continue
 				if record.visual.transform!=record.transform or record.visual.get_parent()!=record.parent:escaped.append(record.id)
 			expect(escaped.is_empty(),"lift detailing follows original carriage and guides at "+str(level))
+	_check_selective_motion(world)
 	var passed=checks.all(func(check):return check.passed)
 	write_evidence("res://verification/gantry-dressing.json",{"scope":"actual authored blockout; visual envelopes, recess geometry, collision identity and supplied intermediate equipment poses; no rendered or player acceptance","records":dressing.records.size(),"triangles":triangles,"unique_meshes":dressing.meshes.size(),"materials":dressing.materials.size(),"checks":checks})
 	print("GANTRY_DRESSING ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)
+
+func _check_selective_motion(world) -> void:
+	# Compare the index with the original ancestry walk for every authored group.
+	var mismatches: Array = []
+	for id in world.groups:
+		var expected: Array[RID] = []
+		for piece in world.pieces.values():
+			if piece.has("body") and world.belongs_to(piece.spec.parent,[id]):expected.append(piece.body.get_rid())
+		if world.rids_for_groups([id]) != expected:mismatches.append(id)
+	expect(mismatches.is_empty(),"indexed collision membership matches authored ancestry for every group: "+str(mismatches))
+	var jaw = "gantry_jaw_11.6_26.55"
+	var at: Transform3D = world.groups[jaw].transform
+	at.origin.y += .125
+	world.publications.clear()
+	world.apply_frames({jaw:at})
+	expect(world.publications == [[jaw]] and world.rids_for_groups([jaw]).size()==3,"one jaw publishes only its three colliders")
+	for piece in world.group_pieces[jaw]:
+		var actual: Transform3D = PhysicsServer3D.body_get_state(piece.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+		expect(actual.is_equal_approx(piece.body.global_transform),"jaw physics transform is current before the next physics tick: "+piece.spec.id)
+	world.publications.clear()
+	world.apply_frames({jaw:at})
+	expect(world.publications.is_empty(),"unchanged jaw poses do not publish any colliders")
+	# A parent move must include its descendants, even with an unchanged child override.
+	var parent_pose: Transform3D = world.groups.crane_bridge.transform
+	parent_pose.origin.z += .25
+	world.apply_frames({"crane_bridge":parent_pose,"crane_trolley":world.groups.crane_trolley.transform})
+	var parent_rids: Array = world.rids_for_groups(["crane_bridge"])
+	var union_rids: Array = world.rids_for_groups(["crane_bridge","crane_trolley"])
+	expect(parent_rids == union_rids,"overlapping parent and child selections do not duplicate colliders")
+	var stale: Array = []
+	for piece in world.group_pieces.crane_bridge:
+		var actual: Transform3D = PhysicsServer3D.body_get_state(piece.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+		if not actual.is_equal_approx(piece.body.global_transform):stale.append(piece.spec.id)
+	expect(stale.is_empty(),"moving a parent publishes all descendant colliders in the same tick: "+str(stale))
+	var insert = "bulky_insert_chest"
+	world.enable_group(insert,false)
+	expect(world.shapes_at([insert],{}).is_empty(),"indexed sweeps omit disabled inserts")
+	world.enable_group(insert,true)
+	var enabled: Array = world.shapes_at([insert],{})
+	expect(enabled.size()==world.group_pieces[insert].size(),"indexed sweeps see re-enabled inserts without rebuilding membership")
+	world.enable_group(insert,true)
+	expect(world.shapes_at([insert],{}).size()==enabled.size(),"repeated insert selection preserves enabled collision shapes")
 
 func _collision_state(root_node: Node) -> Dictionary:
 	var result={};var pending: Array[Node]=[root_node]

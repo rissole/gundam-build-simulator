@@ -11,6 +11,13 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Gantry hitch cleanup (2026-10-26):** player reports a momentary freeze on jaw
+  opening/closing. Shared blockout updates now publish changed groups and their
+  descendants, index collision membership and skip unchanged insert settings;
+  crane anchors use the selective path too. Collision guards remain. Code-only
+  review; engine checks and performance confirmation are pending under the
+  user's no-launch constraint. [Finding and follow-up](robot-workshop-playtest-checklist.md#gantry-jaw-hitch--2026-10-26).
+
 - **Visual uplift (2026-10-25, merged into main):**
   The accepted visual uplift uses Forward+, low-density volumetric
   fog, SSAO/SSR, two warm shadowed assembly lamps, a static room reflection probe
