@@ -353,9 +353,11 @@ def contract():
             root=group(f"wing_{side}_{tag}",at=[5 if left else 21,level,24],rotation=[0,0 if left else 180,0],joint="wing",side=side,level=level)
             data["groups"][root]["motion_contacts"]=[f"wing_hinge_{side}_{tag}_floor"]
             deck(root,.02,7.98,-.6,.6,0,["front","rear"],root)
-            # Local rear guard leaves gaps for the telescoping work patches.
+            # Keep the world-rear edge open to the work fingers on both sides.
+            # The right root's 180-degree yaw swaps local front and rear.
+            open_edge="rear" if left else "front"
             for record in data["solids"]:
-                if record["parent"]==root and "_rear_" in record["id"]:record["solid"]=False;record["hidden"]=True
+                if record["parent"]==root and f"_{open_edge}_" in record["id"]:record["solid"]=False;record["hidden"]=True
             if level in [8.4,11.2]:
                 fx=4.6 if level==8.4 else 5.35
                 length=1.2 if level==8.4 else 2.0
@@ -376,7 +378,8 @@ def contract():
                 deck(inner,0,1.44,-.6,.6,-.1,[],inner)
                 for parent in [outer,inner]:
                     guard=group(parent+"_guard",parent=parent,joint="rear_guard",level=level)
-                    box(guard,[.725,.55,.64],[1.45,1.1,.08],"yellow",guard)
+                    # Both guards face world rear, away from the hip work edge.
+                    box(guard,[.725,.55,.64 if left else -.64],[1.45,1.1,.08],"yellow",guard)
             else:
                 a,b=(7.9,9.7) if left else (16.3,18.1)
                 deck(f"rear_branch_{side}_{tag}",a,b,28.5,30,level,["front","rear"])

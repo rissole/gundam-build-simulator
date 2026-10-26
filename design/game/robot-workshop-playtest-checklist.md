@@ -21,16 +21,18 @@ plus a procedure link on repeats. The gantry gets gap fixes and symmetric fold
 states now. A "launch cage" v2 with a clear rear exit is design-only until approved.
 [Branches and tasks](handoff/operated-machines/README.md).
 
-- [ ] User: name where the gantry felt asymmetric (level and side). Deck endpoints mirror; the runtime audit found opposite fore/aft wing and rear-bridge guard edges. Confirm the reported spot before C3.
+- [x] C0 answered 2026-10-27: on the **lowest level**, left and right of the hip assembly, railings mismatch and the hip side is accessible on only one side.
 
-**C1 measurement (2026-10-27):** [runtime audit](handoff/operated-machines/C1-gap-audit.md) confirms symmetric 300 mm lift-landing slots, a separate unguarded hinge-apron edge and guard-handedness candidates. Ten fixed landing plates and outer hinge rails are specified for C2; no repair is implemented yet. Retain open work/service edges and the accepted gantry appearance. Automated baseline: three focused suites pass; no rendered inspection or new player acceptance. Recheck landing catches, hinge edges and the named asymmetric spot after integration.
+**C1 measurement (2026-10-27):** [runtime audit](handoff/operated-machines/C1-gap-audit.md) confirms symmetric 300 mm lift-landing slots, a separate unguarded hinge-apron edge and guard-handedness candidates. Ten fixed landing plates and outer hinge rails were specified for C2 and are now implemented and reviewed (2026-10-27). Retain open work/service edges and the accepted gantry appearance. Automated baseline: three focused suites pass; no rendered inspection or new player acceptance. Recheck landing catches, hinge edges and the named asymmetric spot after integration.
 
 - [ ] Crane operator view playtest (checkpoint A).
 - [ ] Leg rig jog slice playtest (checkpoint B), before converting the foot rig.
-- [ ] Gantry gap fixes recheck at the hip level after C2 integration.
+- [ ] Gantry gap fixes and C3 symmetry recheck at the lowest hip level: compare both finger entrances, rear pin/hold-down work, railing positions and access after folding/unfolding. Retain accepted appearance and assembly challenge.
+
+**C3 mechanical evidence (2026-10-27):** the right 180-degree copy put a wing rail across its extended hip-finger entrance and rear-leaf guards toward the hip. Corrected guard handedness; floors, finger lengths and fold channels already matched. No walkway extension. Generator and four requested routines pass (219/45/93/31 checks, 9.359 s); [review and evidence](handoff/operated-machines/README.md#c3-mirror-repair). No rendered inspection, walking/reach sweeps or new player acceptance.
 - [ ] Approve or revise the [launch cage v2 concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) (checkpoint C): two mirrored towers, swinging catwalks, independent hip-bearing arms and deferred lowering/transport. No v2 implementation yet.
 
-**Open choices retained:** identify the asymmetric level/side (C0); approve the v2 architecture and its prototype effort before building it; determine lowering and roll-out support separately. The accepted gantry appearance and physical assembly challenge remain constraints. Parts can continue at the existing hip datum/Y10.97 bearing caps while these equipment choices wait.
+**Open choices retained:** recheck the lowest-level repair with the player; approve the v2 architecture and its prototype effort before building it; determine lowering and roll-out support separately. The accepted gantry appearance and physical assembly challenge remain constraints. Parts can continue at the existing hip datum/Y10.97 bearing caps while these equipment choices wait.
 
 ## Left leg completed — 2026-10-26
 

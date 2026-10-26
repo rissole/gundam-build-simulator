@@ -26,6 +26,7 @@ func run() -> void:
 		lift.setup(game,side,AssemblyRuntime.vec(data.origin),Vector2(data.size[0],data.size[1]),stops,data)
 		lifts.append(lift)
 	_check_landing_fills(world,lifts,access)
+	_check_mirrored_access(world,access)
 	var before = _collision_state(game)
 	var original: Dictionary = {}
 	for id in world.pieces:
@@ -211,6 +212,76 @@ func _check_landing_fills(world, lifts: Array, access) -> void:
 		for id in expected:
 			if world.pieces.has(id) and not _piece_bounds(world.pieces[id]).is_equal_approx(expected[id]):moved.append(id)
 		expect(moved.is_empty(),"landing plates stay fixed in access mode "+mode+": "+str(moved))
+	world.apply_frames(access.frames_at(access.values()))
+
+# Compare actual box corners, not just AABBs: intermediate rotated leaves must
+# be reflections too. Names of local front/rear rails swap on the 180-degree copy.
+func _mirrored_box(left_at: Transform3D, left_box: AABB, right_at: Transform3D, right_box: AABB) -> bool:
+	for i in 8:
+		var point: Vector3 = left_at*left_box.get_endpoint(i)
+		point.x = 26-point.x
+		var matched = false
+		for j in 8:
+			if point.distance_to(right_at*right_box.get_endpoint(j))<.00002:matched = true;break
+		if not matched:return false
+	return true
+
+func _check_mirrored_access(world, access) -> void:
+	var pairs: Dictionary = {}
+	for id in world.pieces:
+		if not "left" in id or ("right" in id and id.find("right")<id.find("left")):continue
+		if not ["wing_","finger_","rear_outer_","rear_inner_","hip_apron_","outer_","access_gate_","hinge_front_guard_","rear_branch_","rear_flank_","aft_finger_"].any(func(prefix):return id.begins_with(prefix)):continue
+		var other: String = id.replace("left","SIDE").replace("right","left").replace("SIDE","right")
+		if id.begins_with("wing_left_"):
+			other = other.replace("_front_","_rear_") if "_front_" in other else other.replace("_rear_","_front_")
+		# Fixed fore/aft posts are numbered by increasing world X.
+		if world.pieces[id].spec.parent.is_empty() and ("_front_post" in id or "_rear_post" in id):
+			other = other.left(-1)+("1" if id.ends_with("0") else "0")
+		pairs[id] = other
+	var states: Dictionary = {}
+	for mode in access.spec.modes:states[mode] = access._goals(mode)
+	# Boundaries and partial poses cover guard collapse, inner fold, outer rise,
+	# finger retraction and wing swing, independently and together.
+	for phase in [.0,.07,.15,.22,.25,.37,.6,.63,.89,1.0]:
+		for channel in ["8.4","rear","all"]:
+			var values: Dictionary = access._goals("work")
+			for key in values:
+				if channel=="all" or key==channel:values[key] = phase
+			states[channel+"/"+str(phase)] = values
+	for stowed in [false,true]:
+		access.arm_services_stowed = stowed
+		for label in states:
+			world.apply_frames(access.frames_at(states[label]))
+			var bad: Array = []
+			for id in pairs:
+				if not world.pieces.has(pairs[id]):bad.append(id+" missing partner");continue
+				var a: Dictionary = world.pieces[id]
+				var b: Dictionary = world.pieces[pairs[id]]
+				if a.has("shape")!=b.has("shape") or a.visual.visible!=b.visual.visible:
+					bad.append(id+" collision/visibility");continue
+				if not _mirrored_box(a.visual.global_transform,a.visual.mesh.get_aabb(),b.visual.global_transform,b.visual.mesh.get_aabb()):bad.append(id+" visual")
+				if not a.has("shape"):continue
+				var at: Transform3D = PhysicsServer3D.body_get_state(a.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+				var bt: Transform3D = PhysicsServer3D.body_get_state(b.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+				if a.shape.disabled!=b.shape.disabled or a.body.collision_layer!=b.body.collision_layer or not _mirrored_box(at*a.shape.transform,AABB(-a.shape.shape.size/2,a.shape.shape.size),bt*b.shape.transform,AABB(-b.shape.shape.size/2,b.shape.shape.size)):bad.append(id+" physics")
+			expect(bad.is_empty(),"access decks and guards mirror about X13 at "+label+" services stowed="+str(stowed)+": "+str(bad))
+	access.arm_services_stowed = false
+	world.apply_frames(access.frames_at(access._goals("work")))
+	for side in ["left","right"]:
+		# Existing hip work patch stays 1.2 m long and flush to the wing. The
+		# standing-height entrance band must have no rail across it on either side.
+		var x: float = 9.6 if side=="left" else 15.2
+		var finger: AABB = _piece_bounds(world.pieces["finger_"+side+"_8.4_floor"])
+		expect(finger.is_equal_approx(AABB(Vector3(x,8.2,24.6),Vector3(1.2,.2,1.2))),"hip finger keeps its existing work patch: "+side)
+		var entrance = AABB(Vector3(x,8.41,24.35),Vector3(1.2,1.7,.5))
+		var blockers: Array = []
+		for id in world.pieces:
+			var piece: Dictionary = world.pieces[id]
+			if piece.has("shape") and not piece.shape.disabled and piece.body.collision_layer!=0 and _piece_bounds(piece).intersects(entrance):blockers.append(id)
+		expect(blockers.is_empty(),"hip finger entrance is open from the wing: "+side+" "+str(blockers))
+		for leaf in ["outer","inner"]:
+			var guard: AABB = _piece_bounds(world.pieces["rear_"+leaf+"_"+side+"_guard"])
+			expect(absf(guard.position.z-28.55)<.00002 and absf(guard.end.z-28.63)<.00002,"rear leaf guard faces away from hip work: "+leaf+" "+side)
 	world.apply_frames(access.frames_at(access.values()))
 
 func _collision_state(root_node: Node) -> Dictionary:

@@ -14043,7 +14043,8 @@
           0.07999999999999996
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_8.4_front_post0",
@@ -14059,7 +14060,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_8.4_front_post1",
@@ -14075,7 +14077,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_8.4_rear_rail",
@@ -14091,8 +14094,7 @@
           0.07999999999999996
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "wing_right_8.4_rear_post0",
@@ -14108,8 +14110,7 @@
           0.08
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "wing_right_8.4_rear_post1",
@@ -14125,8 +14126,7 @@
           0.08
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "finger_right_8.4_floor",
@@ -14256,7 +14256,7 @@
         "position": [
           0.725,
           0.55,
-          0.64
+          -0.64
         ],
         "size": [
           1.45,
@@ -14272,7 +14272,7 @@
         "position": [
           0.725,
           0.55,
-          0.64
+          -0.64
         ],
         "size": [
           1.45,
@@ -15326,7 +15326,8 @@
           0.07999999999999996
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_11.2_front_post0",
@@ -15342,7 +15343,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_11.2_front_post1",
@@ -15358,7 +15360,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_11.2_rear_rail",
@@ -15374,8 +15377,7 @@
           0.07999999999999996
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "wing_right_11.2_rear_post0",
@@ -15391,8 +15393,7 @@
           0.08
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "wing_right_11.2_rear_post1",
@@ -15408,8 +15409,7 @@
           0.08
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "finger_right_11.2_floor",
@@ -16578,7 +16578,8 @@
           0.07999999999999996
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_14_front_post0",
@@ -16594,7 +16595,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_14_front_post1",
@@ -16610,7 +16612,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_14_rear_rail",
@@ -16626,8 +16629,7 @@
           0.07999999999999996
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "wing_right_14_rear_post0",
@@ -16643,8 +16645,7 @@
           0.08
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "wing_right_14_rear_post1",
@@ -16660,8 +16661,7 @@
           0.08
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "rear_branch_right_14_floor",
@@ -17618,7 +17618,8 @@
           0.07999999999999996
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_16.4_front_post0",
@@ -17634,7 +17635,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_16.4_front_post1",
@@ -17650,7 +17652,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": false,
+        "hidden": true
       },
       {
         "id": "wing_right_16.4_rear_rail",
@@ -17666,8 +17669,7 @@
           0.07999999999999996
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "wing_right_16.4_rear_post0",
@@ -17683,8 +17685,7 @@
           0.08
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "wing_right_16.4_rear_post1",
@@ -17700,8 +17701,7 @@
           0.08
         ],
         "material": "yellow",
-        "solid": false,
-        "hidden": true
+        "solid": true
       },
       {
         "id": "rear_branch_right_16.4_floor",
