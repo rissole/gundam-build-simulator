@@ -17,6 +17,7 @@ class Game extends Fixture:
 	var zones = preload("res://scripts/zone_register.gd").new(["limb_station"])
 	var hud: Node
 	var interaction_outline: Node3D
+	var loose: Dictionary = {}
 class Layout extends Node3D:
 	var cradle: Node3D
 class Console extends CanvasLayer:
@@ -50,6 +51,10 @@ func run() -> void:
 	await shared_queries()
 	await linear_queries()
 	rigid_geometry_cache()
+	await authored_deck_cargo()
+	await loose_deck_cargo()
+	await deck_cargo_obstacles()
+	await mobile_deck_cargo()
 	await shelf_cargo()
 	await crane_motion()
 	await rail_motion()
@@ -144,6 +149,144 @@ func rigid_geometry_cache() -> void:
 	var other = StaticBody3D.new();root.add_child(other);shape(other,Vector3.ONE);other.set_meta("collision_revision",2);cache.read(other)
 	expect(cache.rids==[other.get_rid()] and cache.shapes.size()==1,"switching payload identity discards the old geometry and RIDs")
 	body.free();other.free()
+func loose_part(game: Game, uid: String, at: Vector3, size: Vector3) -> WorkshopPart:
+	var body = WorkshopPart.new();body.uid = uid;body.kind = uid;body.collision_layer = 2;body.collision_mask = 15
+	game.add_child(body);shape(body,size);body.global_position = at
+	game.loose[uid] = body;game.model.items[uid] = {"location":"loose","kind":uid}
+	return body
+
+func cargo_tick(game: Game, count: int, delta: float = .1) -> void:
+	for tick in range(count):
+		game.equipment.physics(delta);await frames(1)
+
+func authored_deck_cargo() -> void:
+	var content = preload("res://scripts/workshop_content.gd").load_workshop()
+	for uid in ["PV-120__001","PV-200__001"]:
+		var game = Game.new();root.add_child(game)
+		var lift = preload("res://scripts/work_access_lift.gd").new();game.add_child(lift)
+		lift.setup(game,"authored",Vector3.ZERO,Vector2(2,3),[.15,1.5] as Array[float]);game.equipment.register(lift)
+		var record: Dictionary = content.scenario.parts.filter(func(part):return part.instance_id == uid)[0]
+		var definition: Dictionary = content.data.parts[record.kind]
+		var mesh = LegSourceGeometry.make_mesh(content.content.sources[uid])
+		var body = WorkshopPart.new();body.uid=uid;body.kind=record.kind;body.collision_layer=2;body.collision_mask=15;game.add_child(body)
+		for entry in SolidHandling.authored_shapes(definition.get("collision_shapes",[]),mesh.get_aabb()):
+			var col = CollisionShape3D.new();col.shape=entry.shape;col.transform=entry.transform;body.add_child(col)
+		var bounds = SolidHandling.bounds(body)
+		body.position = Vector3(-bounds.get_center().x,.15-bounds.position.y,-bounds.get_center().z)
+		game.loose[uid]=body;game.model.items[uid]={"location":"loose","kind":record.kind}
+		await frames(30);await cargo_tick(game,3,0)
+		var offset = body.position-lift.deck.position
+		expect(lift.passengers().has(body),uid+" actual authored collision shape rests on the deck")
+		lift.request("up");await cargo_tick(game,25)
+		expect(not lift.moving and body.position.is_equal_approx(lift.deck.position+offset),uid+" actual shape rides upward through the registry")
+		lift.request("down");await cargo_tick(game,25)
+		expect(not lift.moving and body.position.is_equal_approx(lift.deck.position+offset) and game.loose[uid]==body,uid+" rides down with the same loose identity")
+		game.free();await frames(1)
+
+func loose_deck_cargo() -> void:
+	var game = Game.new();root.add_child(game)
+	var lift = preload("res://scripts/work_access_lift.gd").new();game.add_child(lift)
+	lift.setup(game,"cargo",Vector3.ZERO,Vector2(3,3),[.15,1.2,3.0] as Array[float]);game.equipment.register(lift)
+	var load = loose_part(game,"bracket",Vector3(0,.35,0),Vector3(1.5,.4,.6))
+	await frames(30);await cargo_tick(game,3,0)
+	expect(lift.passengers().has(load) and load.freeze,"stable loose cargo is detected through actual deck contact")
+	var offset = load.global_position-lift.deck.global_position
+	lift.request("up");await cargo_tick(game,5)
+	expect(lift.height>.15 and load.global_position.is_equal_approx(lift.deck.global_position+offset),"registry carries resting loose bracket through actual lift travel")
+	game.model.items[load.uid].location = "held";game.loose.erase(load.uid);game.components.held_body = load;load.held = true
+	load.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	var held_at = load.global_position;await cargo_tick(game,1)
+	expect(not lift.passengers().has(load) and load.global_position.is_equal_approx(held_at) and load.freeze_mode == RigidBody3D.FREEZE_MODE_KINEMATIC,"pickup during motion immediately releases loose support without overwriting hand physics")
+	# Supply a rider to exercise the other owner of this same physical body.
+	game.player = CharacterBody3D.new();game.player.collision_layer = 8;game.add_child(game.player)
+	shape(game.player,Vector3(.2,.2,.2));game.player.position = Vector3(1,lift.height+.1,.3)
+	await frames(2)
+	var grip = load.global_position-game.player.global_position;await cargo_tick(game,1)
+	expect((load.global_position-game.player.global_position).is_equal_approx(grip),"picked-up cargo follows a rider exactly once")
+	load.held = false;game.components.held_body = null;game.model.items[load.uid].location = "loose";game.loose[load.uid] = load
+	load.freeze = false;load.gravity_scale = 1;load.position = Vector3(0,lift.height+.201,0)
+	load.linear_velocity = Vector3.ZERO;load.angular_velocity = Vector3.ZERO
+	await cargo_tick(game,60)
+	expect(not lift.moving and is_equal_approx(lift.height,1.2) and game.loose[load.uid]==load and game.model.items[load.uid].location=="loose","drop while riding settles and arrives with one unchanged loose identity: "+str(lift.height)+" "+lift.blocked_reason+" "+str(load.position)+" passengers "+str(lift.passengers()))
+	game.player.free();game.player = null
+	# Support loss restores dynamic physics, rather than retaining a ghost ride.
+	load.position.x = 5;PhysicsServer3D.body_set_state(load.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,load.global_transform)
+	await cargo_tick(game,1,0)
+	expect(not load.freeze and not lift.passengers().has(load),"leaving the deck relinquishes support and restores dynamic physics")
+	game.loose.erase(load.uid);load.free()
+	var tall = loose_part(game,"upright_panel",Vector3(0,1.7,0),Vector3(.4,1,.4))
+	await frames(25);await cargo_tick(game,3,0)
+	expect(lift.passengers().has(tall),"A loose panel resting upright is a deck passenger")
+	offset = tall.global_position-lift.deck.global_position
+	lift.request("down");await cargo_tick(game,20)
+	expect(not lift.moving and tall.global_position.is_equal_approx(lift.deck.global_position+offset),"loose upright panel rides down without physics drift")
+	# A real loose shaft blocker remains an obstacle and resumes when removed.
+	var blocker = loose_part(game,"shaft_blocker",Vector3(.7,1.7,0),Vector3(.2,.2,.2));blocker.freeze = true
+	await frames(2);lift.request("up");await cargo_tick(game,20)
+	expect(lift.moving and lift.motion_obstruction.get("collider")==blocker and not lift.passengers().has(blocker),"unsupported loose shaft component holds the trip with its identity")
+	blocker.free();game.loose.erase("shaft_blocker");await cargo_tick(game,40)
+	expect(not lift.moving and lift.blocked_reason.is_empty(),"removing a shaft obstruction resumes the original cargo trip: "+str(lift.height)+" "+lift.blocked_reason+" cargo "+str(tall.position)+" passengers "+str(lift.passengers()))
+	game.free();await frames(1)
+
+func deck_cargo_obstacles() -> void:
+	var game = Game.new();root.add_child(game)
+	var lift = preload("res://scripts/work_access_lift.gd").new();game.add_child(lift)
+	lift.setup(game,"overhang",Vector3.ZERO,Vector2(3,3),[.15,1.5] as Array[float]);game.equipment.register(lift)
+	var load = loose_part(game,"long_panel",Vector3(0,.25,0),Vector3(4,.2,.4))
+	await frames(30);await cargo_tick(game,3,0)
+	var offset = load.position-lift.deck.position
+	var landing = obstacle(game,Vector3(1.9,1.1,0),Vector3(.3,.1,.5));landing.name="Landing rail"
+	await frames(2);lift.request("up");await cargo_tick(game,25)
+	expect(lift.moving and lift.height>.15 and lift.motion_obstruction.get("collider")==landing and lift.blocked_reason.contains("Landing rail"),"cargo overhang outside deck holds actual travel and names the fixed obstacle")
+	var at = load.position
+	expect(lift.request("ground").is_empty() and load.position.is_equal_approx(at),"held cargo trip accepts a new destination without moving the load twice")
+	await cargo_tick(game,20)
+	expect(not lift.moving and load.position.is_equal_approx(lift.deck.position+offset),"loose overhang reverses down with a stable deck pose")
+	lift.request("up");await cargo_tick(game,20);landing.free();await cargo_tick(game,25)
+	expect(not lift.moving and lift.blocked_reason.is_empty() and load.position.is_equal_approx(lift.deck.position+offset),"overhanging cargo automatically resumes after its genuine obstacle clears")
+	# Put the same loose body across two supports at the stopped deck height.
+	var fixed = obstacle(game,Vector3(1.9,lift.height-.06,0),Vector3(.8,.12,.6));await frames(2)
+	await cargo_tick(game,2,0)
+	expect(not lift.passengers().has(load) and not load.freeze,"straddling a fixed landing relinquishes deck support instead of dragging the load")
+	lift.request("down");await cargo_tick(game,2)
+	expect(lift.moving and lift.motion_obstruction.get("collider")==load,"a fixed-supported bridging load holds the lift as a loose obstruction")
+	fixed.free();game.free();await frames(1)
+
+func mobile_deck_cargo() -> void:
+	var game = Game.new();root.add_child(game)
+	var spec: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json")).workshop.mobile_platform
+	spec.docks = {"park":[0,0,0],"test":[3,0,0]};spec.routes = {"park":[],"test":[[3,0,0]]}
+	var platform = preload("res://scripts/mobile_work_platform.gd").new();game.add_child(platform);platform.setup(game,spec);game.equipment.register(platform)
+	var load = loose_part(game,"ordinary_bracket",Vector3(0,.30,0),Vector3(.3,.3,.3))
+	await frames(30);await cargo_tick(game,3,0)
+	var offset = load.position-platform.deck.global_position
+	expect(platform.passengers().has(load) and platform.request("dock:test").is_empty(),"ordinary resting loose cargo permits mobile platform ground transfer")
+	await cargo_tick(game,4)
+	var at = load.position;platform.request("stop");await cargo_tick(game,2)
+	expect(not platform.moving and load.position.is_equal_approx(at),"mobile Stop holds loose cargo without drift")
+	expect(platform.request("return").is_empty(),"stopped cargo platform accepts reversal")
+	await cargo_tick(game,20)
+	expect(platform.dock=="park" and load.position.is_equal_approx(platform.deck.global_position+offset),"reversed ground transfer returns the same loose passenger exactly once")
+	platform.request("up");await cargo_tick(game,40)
+	expect(not platform.moving and is_equal_approx(platform.height,spec.heights[1]) and load.position.is_equal_approx(platform.deck.global_position+offset),"shared cargo support also follows mobile vertical travel")
+	platform.request("down");await cargo_tick(game,2)
+	load.position.x = 8;PhysicsServer3D.body_set_state(load.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,load.global_transform)
+	await cargo_tick(game,1)
+	expect(platform.moving and not load.freeze and not platform.passengers().has(load),"support loss during mobile travel restores dynamic physics without stopping an empty deck")
+	var other = preload("res://scripts/work_access_lift.gd").new();game.add_child(other)
+	other.setup(game,"other",Vector3(8,0,0),Vector2(3,3),[.15,1.5] as Array[float]);game.equipment.register(other)
+	load.position = Vector3(8,.30,0);load.linear_velocity=Vector3.ZERO;load.angular_velocity=Vector3.ZERO
+	await frames(30);await cargo_tick(game,3,0)
+	expect(other.passengers().has(load) and not platform.passengers().has(load),"a loose component transfers support between machines without a second owner")
+	other.request("up");await cargo_tick(game,4)
+	expect(absf(load.position.y-other.height-.15)<.005 and game.model.items[load.uid].location=="loose","new supporting machine carries the transferred physical identity")
+	game.loose.erase(load.uid);load.free();await cargo_tick(game,1)
+	expect(other.passengers().is_empty(),"freed or consumed cargo leaves no stale passenger")
+	var hovering = loose_part(game,"hovering",Vector3(8,other.height+.115,0),Vector3(.2,.2,.2));hovering.freeze=true
+	await frames(2);await cargo_tick(game,3,0)
+	expect(not other.passengers().has(hovering),"a stable hovering component overlapping the deck query is never claimed")
+	game.free();await frames(1)
+
 func shelf_cargo() -> void:
 	var game = Game.new();root.add_child(game)
 	var lift = preload("res://scripts/work_access_lift.gd").new();game.add_child(lift)

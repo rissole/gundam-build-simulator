@@ -1,8 +1,8 @@
 extends "res://scripts/equipment.gd"
 ## One ground-transferred, stabilized personnel platform. Dock routes, occupied
 ## footprint and heights are authored in the shared workshop layout. The player may ride
-## height changes and ground transfers with a hand load; ground transfers require
-## a lowered deck clear of loose loads.
+## height changes and ground transfers with hand loads and resting loose cargo.
+## Ground transfers require a lowered deck.
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
 var spec: Dictionary
@@ -131,6 +131,11 @@ func position_at(value: float, path: Array[Vector3]) -> Vector3:
 func hardware() -> Array[RID]:
 	var result: Array[RID] = [];Sweep.collect_rids(self,result);return result
 
+func carries(body: CollisionObject3D) -> bool:return body == deck
+
+func cargo_decks() -> Array[Dictionary]:
+	return [{"body":deck,"bounds":AABB(Vector3(-spec.deck_size[0]/2,-.01,-spec.deck_size[1]/2),Vector3(spec.deck_size[0],.06,spec.deck_size[1]))}]
+
 func _deck_occupied() -> bool:
 	var shape = BoxShape3D.new();shape.size = Vector3(spec.deck_size[0],2.0,spec.deck_size[1])
 	return not EquipmentRegistry.Motion.overlap(self,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,height+1.01,0)),without_passengers(hardware()),0).is_empty()
@@ -232,16 +237,17 @@ func _travel_error(destination: Transform3D) -> String:
 
 func _height_error(next: float) -> String:
 	var excluded = without_passengers(hardware());var riders = passengers()
-	var clearance = 1.12 if riders.is_empty() else 1.76
+	var clearance = 1.76 if rider() != null else 1.12
 	var low = minf(height,next)-.115;var high = maxf(height,next)+clearance
 	var shape = BoxShape3D.new();shape.size = Vector3(spec.deck_size[0],high-low,spec.deck_size[1])
 	var hit = EquipmentRegistry.Motion.overlap(self,shape,global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0)),excluded,0)
 	if not hit.is_empty():return hit.error
-	# A hand load can overhang the deck; reserve its own vertical route.
+	# Payloads can overhang the deck; reserve their own vertical routes.
 	var shapes: Array[Dictionary] = []
-	for body in riders.slice(1):Sweep.collect_shapes(body,global_transform.affine_inverse(),shapes)
+	for body in riders:
+		if body != game.get("player"):Sweep.collect_shapes(body,global_transform.affine_inverse(),shapes)
 	if shapes.is_empty():return ""
-	return EquipmentRegistry.Motion.sweep(self,[{"shapes":shapes,"margin":.001}],Sweep.steps(global_transform,global_transform.translated(Vector3.UP*(next-height)),0,.025),func(p):return global_transform.translated(Vector3.UP*(next-height)*p),excluded).get("error","")
+	return EquipmentRegistry.Motion.sweep(self,[{"shapes":shapes,"linear":true,"margin":.001}],Sweep.steps(global_transform,global_transform.translated(Vector3.UP*(next-height)),0,.025),func(p):return global_transform.translated(Vector3.UP*(next-height)*p),excluded).get("error","")
 
 func _pose() -> void:
 	position = position_at(travel,_route()) if mode=="travel" else AssemblyRuntime.vec(spec.docks[dock])

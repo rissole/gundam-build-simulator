@@ -247,6 +247,9 @@ func _ahead(step: float) -> float:
 ## Only the deck rides; landings and ramps stay put.
 func carries(body: CollisionObject3D) -> bool:return body == deck
 
+func cargo_decks() -> Array[Dictionary]:
+	return [{"body":deck,"bounds":AABB(Vector3(-deck_size.x/2,-.01,-deck_size.y/2),Vector3(deck_size.x,.06,deck_size.y))}]
+
 ## Fixed and deck-mounted bodies that travel with, or guide, this lift.
 func hardware() -> Array[RID]:
 	var excluded: Array[RID] = _hardware.duplicate()
@@ -271,7 +274,6 @@ func _sweep_error(from: float, to: float) -> String:
 	box.size = Vector3(deck_size.x-0.006,high-low,deck_size.y-0.006)
 	var excluded: Array[RID] = without_passengers(hardware())
 	var riders = passengers()
-	var carried: CollisionObject3D = riders[1] if riders.size() > 1 else null
 	var route = global_transform*Transform3D(Basis.IDENTITY,Vector3(0,(high+low)/2,0))
 	var player = game.get("player") as CollisionObject3D
 	var others = excluded.duplicate()
@@ -282,15 +284,12 @@ func _sweep_error(from: float, to: float) -> String:
 		if not EquipmentRegistry.Motion.overlap(self,inset,route,excluded,0.002,EquipmentRegistry.Motion.PLAYER).is_empty():return "Step back out of the lift doorway."
 	var hit = EquipmentRegistry.Motion.overlap(self,box,route,others,0.002)
 	if not hit.is_empty():return hit.error
-	if carried != null:
-		# An actual rider's hand load travels with the platform. Reserve its own
-		# complete envelope, including overhang outside the platform footprint.
-		var load_bounds: AABB = carried.global_transform*SolidHandling.bounds(carried)
-		var destination_bounds = AABB(load_bounds.position+Vector3.UP*(to-from),load_bounds.size)
-		var swept = load_bounds.merge(destination_bounds)
-		var load_shape = BoxShape3D.new()
-		load_shape.size = swept.size.max(Vector3.ONE*0.004)
-		hit = EquipmentRegistry.Motion.overlap(self,load_shape,Transform3D(Basis.IDENTITY,swept.get_center()),excluded,0.002)
+	# Every payload reserves its actual solid, including overhang outside the deck.
+	var shapes: Array[Dictionary] = []
+	for body in riders:
+		if body != current_rider:Sweep.collect_shapes(body,Transform3D.IDENTITY,shapes)
+	if not shapes.is_empty():
+		hit = EquipmentRegistry.Motion.sweep(self,[{"shapes":shapes,"linear":true,"margin":.001}],1,func(p):return Transform3D(Basis.IDENTITY,Vector3.UP*(to-from)*p),excluded)
 		if not hit.is_empty():return hit.error
 	# Equipment riding the deck reserves its own cargo route.
 	var registry = game.get("equipment")

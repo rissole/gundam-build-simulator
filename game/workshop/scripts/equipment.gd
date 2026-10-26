@@ -58,14 +58,19 @@ func rider() -> CharacterBody3D:
 ## The component or build in the player's hands.
 func carried_body() -> CollisionObject3D:return EquipmentRegistry.carried_body(game)
 
-## The rider and their hand load: moving parts of this equipment's envelope,
+## Walking surfaces which can support loose cargo. Bounds are in the body frame.
+func cargo_decks() -> Array[Dictionary]:return []
+
+## The rider, their hand load and resting cargo: moving parts of this equipment's envelope,
 ## not obstacles to it.
 func passengers() -> Array[CollisionObject3D]:
 	var result: Array[CollisionObject3D] = []
-	if rider() == null:return result
-	result.append(game.player)
-	var carried = carried_body()
-	if carried != null:result.append(carried)
+	if rider() != null:
+		result.append(game.player)
+		var carried = carried_body()
+		if carried != null:result.append(carried)
+	var registry = game.get("equipment") if game != null else null
+	if registry != null:result.append_array(registry.loose_passengers(self))
 	return result
 
 ## `excluded` plus every passenger body.

@@ -6,6 +6,7 @@ extends RefCounted
 const Codec = preload("res://scripts/pose_codec.gd")
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Motion = preload("res://scripts/equipment_motion.gd")
+var _deck_cargo = preload("res://scripts/loose_deck_cargo.gd").new()
 ## How far above a deck a hopping player still counts as riding it.
 const RIDE_HOP = 0.6
 var _items: Array = []
@@ -65,12 +66,14 @@ func controls() -> Array[Dictionary]:
 func physics(delta: float) -> void:
 	var items = all()
 	var game: Node = items[0].game if not items.is_empty() else null
+	_deck_cargo.refresh(game,items)
 	var floor = rider_floor(game)
 	var before = floor.global_transform if floor != null else Transform3D.IDENTITY
 	for equipment in items:equipment.physics(delta)
+	_deck_cargo.move_cargo(game)
 	_remember_rest(items)
 	_detect_manual_changes(items)
-	if game == null:return
+	if game == null or not is_instance_valid(game.get("player")):return
 	if floor == null or not is_instance_valid(floor):
 		steady_player = game.player.global_transform
 		return
@@ -86,6 +89,10 @@ func physics(delta: float) -> void:
 	# pose only at the next step, so the player moves before equipment does.
 	for body in [floor,game.player,carried]:
 		if body != null:PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
+
+## Only still-loose cargo is excluded; pickup/shelf transfer takes effect immediately.
+func loose_passengers(equipment: Node) -> Array[CollisionObject3D]:
+	return _deck_cargo.passengers(equipment.game,equipment)
 
 ## The body under the player's feet, allowing a short hop, or null.
 static func rider_floor(game: Node) -> CollisionObject3D:
