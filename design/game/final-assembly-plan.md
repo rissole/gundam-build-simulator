@@ -970,7 +970,10 @@ Evidence: `game/workshop/verification/regressions-20261025T101102.018689Z/`.
 
 ## Launch cage v2 concept — 2026-10-27
 
-**Design only; awaiting human checkpoint C.** This proposal follows the
+**approved as direction 2026-10-27; build not approved**
+
+Construction waits for the crane operator view and less temporary robot parts.
+This proposal follows the
 [gantry access finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26)
 and [branch C brief](handoff/operated-machines/C-gantry-access.md). It does not
 replace the implemented layout above. C1 measured the current runtime seams;
@@ -1086,7 +1089,7 @@ that enlarge a mounted envelope or change lifting contacts through the existing
 component pipeline; tower beam artwork and final catwalk tips should follow
 those measured envelopes. Do not redesign the robot merely to fit this concept.
 
-After checkpoint C, first produce a dimensioned collision/support plan covering
+Once a v2 build is separately approved, first produce a dimensioned collision/support plan covering
 the table above and a representative hip-to-leg handling sequence. Prototype
 one mirrored level and the hip support handoff before expanding to all levels.
 Use the shared equipment/zone model, at-rest capture/apply, no save migrations,
@@ -1099,7 +1102,9 @@ suite; named expensive diagnostics require a separate explicit request. Rendered
 review is optional and requires a request. Walking, readability and assembly
 access remain the user's playtest, tracked in the linked checklist.
 
-**Stop at human checkpoint C:** approve or revise the two-tower/swing-catwalk
-concept, independent hip support arms and deferred lowering/transport boundary
-before any v2 build. C0 still separately requires the user to name the existing
-asymmetric spot before C3. Phase 1 ends with this proposal and the C2 task file.
+**Checkpoint C update — 2026-10-27:** the user approved the two-tower/swing-catwalk
+concept as direction only. Building it is not approved and waits for the crane
+operator view and less temporary robot parts. Lowering/transport remains deferred.
+C0 is answered: the lowest level beside the hip has mismatched railings and
+one-sided access; the separate C3 repair is recorded in the
+[phase 2 report](handoff/operated-machines/README.md#c3-mirror-repair).

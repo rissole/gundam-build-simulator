@@ -51,8 +51,8 @@ point. It never waits for Grok.
 | --- | --- |
 | A — crane operator view playtest | Before B3 (leg rig axes) starts |
 | B — leg rig jog slice playtest | Before B5 (foot rig) starts |
-| C0 — user names the asymmetric gantry spot | Before C3 |
-| C — v2 concept approval | Before any v2 build |
+| C0 — user names the asymmetric gantry spot | Answered 2026-10-27: lowest level beside the hip; C3 authorized and repaired below |
+| C — v2 concept approval | Direction approved 2026-10-27; build not approved, waiting for crane operator view and less temporary parts |
 
 ## Branch C phase 2 report — 2026-10-27
 
@@ -112,3 +112,19 @@ No diagnostics, rendered review or walking/reach sweeps. Automated geometry is
 verified; appearance, walking and fastening usability await the
 [player recheck](../../robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
 No new Grok task files or unresolved implementation questions for C2/C3.
+
+### C4 direction status and phase completion
+
+Changed the launch cage section status to **approved as direction 2026-10-27;
+build not approved**. Construction waits for the crane operator view and less
+temporary robot parts. Updated the checkpoint and player-finding records to keep
+that distinction explicit; no v2 construction is included.
+
+Task commits on `gantry-access`: `15154c6` (C2 review), `7d2ea40` (C3 mirror
+repair), followed by the C4 documentation commit containing this final report.
+All three task commits carry the requested Codex co-author trailer. The final
+code/layout verification is the four-suite 9.359 s pass above; C4 changes only
+documentation, checked with `git diff --check`. No extra suite was touched or
+created. Open items: player recheck of C2/C3 and separate future v2 build approval.
+No new Grok task files were written in phase 2; [C2](C2-fill-plates.md) remains
+the reviewed phase 1 specification. No work on another branch or worktree.
