@@ -225,6 +225,11 @@ last version before consolidation.
 
 ## Next
 
+**In progress (2026-10-27):** [operated machines and gantry access](handoff/operated-machines/README.md):
+three branches (crane operator view first, then operated rigs, plus gantry fixes and a
+design-only v2), from the
+[2026-10-26 machine-operation finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
+
 The nine [left-leg task repairs](handoff/left-leg-feedback/README.md) are implemented.
 Next is the [focused left-leg recheck](robot-workshop-playtest-checklist.md#focused-left-leg-recheck),
 then the wider workshop journey. Keep player acceptance separate from mechanical

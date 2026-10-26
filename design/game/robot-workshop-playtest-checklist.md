@@ -2,6 +2,30 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Machine operation and gantry access — 2026-10-26
+
+**Player evidence.** The foot building bay matches the vision: bays help build the
+part and assist access. The foot rig (dispatch → leg rig), the leg rig (Limb Bay →
+hip) and the crane console are unsatisfying because the player just presses Next or
+Move until the job is done. The fixed gantry is frustrating at the hip: it feels
+asymmetric, and it has small gaps that are easy to fall through. Its fixed rear
+catwalks and crosshead mean the robot can never leave through the hangar door.
+
+**Decisions:** the crane is redesigned first, as an operator view: a top-down CCTV
+camera, WASD to strafe, and descend enabled only over a confirmed target. The
+spreader then reshapes for the component, and connectors stay hand-attached.
+Auto-attach from the crane is a later power-up. The rigs get jog buttons, held with
+E with mouselook free; a ghost target; interlocks; and SEAT within tolerance. The
+manual teaches each procedure in detail the first time and gives only the goal
+plus a procedure link on repeats. The gantry gets gap fixes and symmetric fold
+states now. A "launch cage" v2 with a clear rear exit is design-only until approved.
+[Branches and tasks](handoff/operated-machines/README.md).
+
+- [ ] User: name where the gantry felt asymmetric (level and side). Static solids are mirrored; runtime fold states are the suspect.
+- [ ] Crane operator view playtest (checkpoint A).
+- [ ] Leg rig jog slice playtest (checkpoint B), before converting the foot rig.
+- [ ] Gantry gap fixes recheck at the hip level; approve or revise the v2 concept (checkpoint C).
+
 ## Left leg completed — 2026-10-26
 
 **Player evidence:** the user completed construction of the left leg. Finding
