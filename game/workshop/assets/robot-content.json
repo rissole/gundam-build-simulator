@@ -130,36 +130,36 @@
     {
       "instance_id": "LG-W12__001",
       "source_id": "LG-W12__001",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
       "instance_id": "LG-H12050__001",
       "source_id": "LG-H12050__001",
-      "part_id": "LG-H12050",
-      "kind": "lg-m12-50",
+      "part_id": "H-12050",
+      "kind": "h-12050",
       "location": "bin"
     },
     {
       "instance_id": "LG-W12__002",
       "source_id": "LG-W12__002",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
       "instance_id": "LG-H12050__002",
       "source_id": "LG-H12050__002",
-      "part_id": "LG-H12050",
-      "kind": "lg-m12-50",
+      "part_id": "H-12050",
+      "kind": "h-12050",
       "location": "bin"
     },
     {
       "instance_id": "LG-W24__001",
       "source_id": "LG-W24__001",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -172,8 +172,8 @@
     {
       "instance_id": "LG-W24__002",
       "source_id": "LG-W24__002",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -186,8 +186,8 @@
     {
       "instance_id": "LG-W24__003",
       "source_id": "LG-W24__003",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -200,8 +200,8 @@
     {
       "instance_id": "LG-W24__004",
       "source_id": "LG-W24__004",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -228,8 +228,8 @@
     {
       "instance_id": "LG-W24__005",
       "source_id": "LG-W24__005",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -242,8 +242,8 @@
     {
       "instance_id": "LG-W24__006",
       "source_id": "LG-W24__006",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -256,8 +256,8 @@
     {
       "instance_id": "LG-W24__007",
       "source_id": "LG-W24__007",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -270,8 +270,8 @@
     {
       "instance_id": "LG-W24__008",
       "source_id": "LG-W24__008",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -298,8 +298,8 @@
     {
       "instance_id": "LG-W12__003",
       "source_id": "LG-W12__003",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
@@ -312,8 +312,8 @@
     {
       "instance_id": "LG-W12__004",
       "source_id": "LG-W12__004",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
@@ -326,8 +326,8 @@
     {
       "instance_id": "LG-W12__005",
       "source_id": "LG-W12__005",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
@@ -340,8 +340,8 @@
     {
       "instance_id": "LG-W12__006",
       "source_id": "LG-W12__006",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
@@ -543,36 +543,36 @@
     {
       "instance_id": "R-LG-W12__001",
       "source_id": "R-LG-W12__001",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
       "instance_id": "R-LG-H12050__001",
       "source_id": "R-LG-H12050__001",
-      "part_id": "LG-H12050",
-      "kind": "lg-m12-50",
+      "part_id": "H-12050",
+      "kind": "h-12050",
       "location": "bin"
     },
     {
       "instance_id": "R-LG-W12__002",
       "source_id": "R-LG-W12__002",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
       "instance_id": "R-LG-H12050__002",
       "source_id": "R-LG-H12050__002",
-      "part_id": "LG-H12050",
-      "kind": "lg-m12-50",
+      "part_id": "H-12050",
+      "kind": "h-12050",
       "location": "bin"
     },
     {
       "instance_id": "R-LG-W24__001",
       "source_id": "R-LG-W24__001",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -585,8 +585,8 @@
     {
       "instance_id": "R-LG-W24__002",
       "source_id": "R-LG-W24__002",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -599,8 +599,8 @@
     {
       "instance_id": "R-LG-W24__003",
       "source_id": "R-LG-W24__003",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -613,8 +613,8 @@
     {
       "instance_id": "R-LG-W24__004",
       "source_id": "R-LG-W24__004",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -641,8 +641,8 @@
     {
       "instance_id": "R-LG-W24__005",
       "source_id": "R-LG-W24__005",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -655,8 +655,8 @@
     {
       "instance_id": "R-LG-W24__006",
       "source_id": "R-LG-W24__006",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -669,8 +669,8 @@
     {
       "instance_id": "R-LG-W24__007",
       "source_id": "R-LG-W24__007",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -683,8 +683,8 @@
     {
       "instance_id": "R-LG-W24__008",
       "source_id": "R-LG-W24__008",
-      "part_id": "LG-W24",
-      "kind": "lg-w24",
+      "part_id": "W-24",
+      "kind": "washer",
       "location": "bin"
     },
     {
@@ -711,8 +711,8 @@
     {
       "instance_id": "R-LG-W12__003",
       "source_id": "R-LG-W12__003",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
@@ -725,8 +725,8 @@
     {
       "instance_id": "R-LG-W12__004",
       "source_id": "R-LG-W12__004",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
@@ -739,8 +739,8 @@
     {
       "instance_id": "R-LG-W12__005",
       "source_id": "R-LG-W12__005",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
@@ -753,8 +753,8 @@
     {
       "instance_id": "R-LG-W12__006",
       "source_id": "R-LG-W12__006",
-      "part_id": "LG-W12",
-      "kind": "lg-w12",
+      "part_id": "W-12",
+      "kind": "w-12",
       "location": "bin"
     },
     {
@@ -6300,11 +6300,11 @@
       ]
     },
     "LG-W12__003": {
-      "family": "LG-W12",
+      "family": "W-12",
       "position": [
         -1.62,
         -0.77,
-        -0.03
+        -0.02925
       ],
       "primitives": [
         {
@@ -6314,9 +6314,9 @@
             0,
             0
           ],
-          "outer": 0.01104,
-          "inner": 0.0066,
-          "length": 0.004,
+          "outer": 0.012,
+          "inner": 0.0065,
+          "length": 0.0025,
           "axis": [
             0,
             0,
@@ -6335,7 +6335,7 @@
       "position": [
         -1.62,
         -0.77,
-        -0.032
+        -0.0305
       ],
       "primitives": [
         {
@@ -6378,11 +6378,11 @@
       ]
     },
     "LG-W12__004": {
-      "family": "LG-W12",
+      "family": "W-12",
       "position": [
         -1.62,
         -0.6499999999999999,
-        -0.03
+        -0.02925
       ],
       "primitives": [
         {
@@ -6392,9 +6392,9 @@
             0,
             0
           ],
-          "outer": 0.01104,
-          "inner": 0.0066,
-          "length": 0.004,
+          "outer": 0.012,
+          "inner": 0.0065,
+          "length": 0.0025,
           "axis": [
             0,
             0,
@@ -6413,7 +6413,7 @@
       "position": [
         -1.62,
         -0.6499999999999999,
-        -0.032
+        -0.0305
       ],
       "primitives": [
         {
@@ -6456,11 +6456,11 @@
       ]
     },
     "LG-W12__005": {
-      "family": "LG-W12",
+      "family": "W-12",
       "position": [
         -0.5800000000000001,
         -0.77,
-        -0.03
+        -0.02925
       ],
       "primitives": [
         {
@@ -6470,9 +6470,9 @@
             0,
             0
           ],
-          "outer": 0.01104,
-          "inner": 0.0066,
-          "length": 0.004,
+          "outer": 0.012,
+          "inner": 0.0065,
+          "length": 0.0025,
           "axis": [
             0,
             0,
@@ -6491,7 +6491,7 @@
       "position": [
         -0.5800000000000001,
         -0.77,
-        -0.032
+        -0.0305
       ],
       "primitives": [
         {
@@ -6534,11 +6534,11 @@
       ]
     },
     "LG-W12__006": {
-      "family": "LG-W12",
+      "family": "W-12",
       "position": [
         -0.5800000000000001,
         -0.6499999999999999,
-        -0.03
+        -0.02925
       ],
       "primitives": [
         {
@@ -6548,9 +6548,9 @@
             0,
             0
           ],
-          "outer": 0.01104,
-          "inner": 0.0066,
-          "length": 0.004,
+          "outer": 0.012,
+          "inner": 0.0065,
+          "length": 0.0025,
           "axis": [
             0,
             0,
@@ -6569,7 +6569,7 @@
       "position": [
         -0.5800000000000001,
         -0.6499999999999999,
-        -0.032
+        -0.0305
       ],
       "primitives": [
         {

@@ -465,29 +465,49 @@
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/lg-m24-100.svg"
     },
-    "lg-m12-50": {
-      "family": "LG-H12050",
-      "variant": "M12x50",
-      "title": "LG-H12050 · M12 × 50 axle-cap screw",
-      "short_title": "M12 × 50 axle-cap screw",
+    "h-12050": {
+      "family": "H-12050",
+      "variant": "standard",
+      "title": "H-12050 · M12 × 50 cap screw",
+      "short_title": "M12 × 50 cap screw",
       "carry_class": "pocket",
-      "catalogue_image": "res://assets/part-images/lg-m12-50.svg"
+      "standard_hardware": {
+        "form": "socket_cap_screw",
+        "thread": "M12",
+        "pitch": 1.75,
+        "length": 50,
+        "head_diameter": 18,
+        "head_height": 12,
+        "material": "steel"
+      }
     },
-    "lg-w24": {
-      "family": "LG-W24",
-      "variant": "M24",
-      "title": "LG-W24 · M24 washer",
+    "washer": {
+      "family": "W-24",
+      "variant": "standard",
+      "title": "W-24 · M24 washer",
       "short_title": "M24 washer",
       "carry_class": "pocket",
-      "catalogue_image": "res://assets/part-images/lg-w24.svg"
+      "standard_hardware": {
+        "form": "flat_washer",
+        "bore": 26,
+        "outside": 44,
+        "thickness": 4,
+        "material": "steel"
+      }
     },
-    "lg-w12": {
-      "family": "LG-W12",
-      "variant": "M12",
-      "title": "LG-W12 · M12 washer",
+    "w-12": {
+      "family": "W-12",
+      "variant": "standard",
+      "title": "W-12 · M12 washer",
       "short_title": "M12 washer",
       "carry_class": "pocket",
-      "catalogue_image": "res://assets/part-images/lg-w12.svg"
+      "standard_hardware": {
+        "form": "flat_washer",
+        "bore": 13,
+        "outside": 24,
+        "thickness": 2.5,
+        "material": "steel"
+      }
     },
     "pv-ring-half": {
       "family": "PV-120",
@@ -1478,12 +1498,12 @@
           ]
         },
         "cap/washer_1": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "LG-W12__001",
           "requires": [
             "cap"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "target_offset": [
             0.003,
             0,
@@ -1491,12 +1511,12 @@
           ]
         },
         "cap/screw_1": {
-          "accepts": "lg-m12-50",
+          "accepts": "h-12050",
           "pose_source": "LG-H12050__001",
           "requires": [
             "cap/washer_1"
           ],
-          "label": "LG-H12050 · M12 × 50 axle-cap screw",
+          "label": "H-12050 · M12 × 50 cap screw",
           "target_offset": [
             0.014,
             0,
@@ -1504,12 +1524,12 @@
           ]
         },
         "cap/washer_2": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "LG-W12__002",
           "requires": [
             "cap"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "target_offset": [
             0.003,
             0,
@@ -1517,12 +1537,12 @@
           ]
         },
         "cap/screw_2": {
-          "accepts": "lg-m12-50",
+          "accepts": "h-12050",
           "pose_source": "LG-H12050__002",
           "requires": [
             "cap/washer_2"
           ],
-          "label": "LG-H12050 · M12 × 50 axle-cap screw",
+          "label": "H-12050 · M12 × 50 cap screw",
           "target_offset": [
             0.014,
             0,
@@ -1546,12 +1566,12 @@
           ]
         },
         "fork/washer_1": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__001",
           "requires": [
             "spar"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             0.003,
@@ -1572,12 +1592,12 @@
           ]
         },
         "fork/washer_2": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__002",
           "requires": [
             "spar"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             0.003,
@@ -1598,12 +1618,12 @@
           ]
         },
         "fork/washer_3": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__003",
           "requires": [
             "spar"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             0.003,
@@ -1624,12 +1644,12 @@
           ]
         },
         "fork/washer_4": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__004",
           "requires": [
             "spar"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             0.003,
@@ -1990,7 +2010,7 @@
         },
         {
           "title": "Retain the knee axle",
-          "body": "Fit LG-150 on the exposed axle end. Fit two LG-W12 washers and two LG-H12050 screws from the right side into the axle end pad. Both screw heads remain outside the fork.",
+          "body": "Fit LG-150 on the exposed axle end. Fit two W-12 washers and two H-12050 cap screws from the right side into the axle end pad. Both screw heads remain outside the fork.",
           "slots": [
             "cap",
             "cap/washer_1",
@@ -2034,7 +2054,7 @@
         },
         {
           "title": "Join the thigh spar",
-          "body": "Use the service crane to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four LG-W24 washers and four LG-H24100 bolts downward through the exposed flange corners.",
+          "body": "Use the service crane to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four W-24 washers and four LG-H24100 bolts downward through the exposed flange corners.",
           "slots": [
             "spar",
             "fork/washer_1",
@@ -2197,12 +2217,12 @@
           "label": "PV-120 · Hip retaining ring half"
         },
         "ring/washer_1": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__005",
           "requires": [
             "ring_2"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -2223,12 +2243,12 @@
           ]
         },
         "ring/washer_2": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__006",
           "requires": [
             "ring_2"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -2249,12 +2269,12 @@
           ]
         },
         "ring/washer_3": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__007",
           "requires": [
             "ring_1"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -2275,12 +2295,12 @@
           ]
         },
         "ring/washer_4": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__008",
           "requires": [
             "ring_1"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -2410,7 +2430,7 @@
         },
         {
           "title": "Bolt the ring to the socket",
-          "body": "Fit four LG-W24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing rail support. To remove the leg, reacquire rail support first, then reverse the retention steps.",
+          "body": "Fit four W-24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing rail support. To remove the leg, reacquire rail support first, then reverse the retention steps.",
           "slots": [
             "ring/washer_1",
             "ring/bolt_1",

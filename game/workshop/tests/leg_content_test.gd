@@ -5,6 +5,21 @@ var sources: Dictionary = {}
 var model = AssemblyModel.new()
 var data: Dictionary
 var scenario: Dictionary
+var cross_build_swaps: Dictionary = {}
+
+class StockVisualWorkshop extends Node3D:
+	var model: AssemblyModel
+	var source: Dictionary
+	var runtime: AssemblyRuntime
+	func assembly_node(owner: String) -> Node3D:return runtime.node(owner)
+	func source_uid(uid: String) -> String:return model.source_uid(uid)
+	func slot_pose(owner: String, sid: String) -> Transform3D:return runtime.slot_pose(owner,sid)
+	func refresh_assembly_collision(_owner: String) -> void:pass
+	func _mesh(uid: String) -> MeshInstance3D:
+		var visual = MeshInstance3D.new()
+		visual.mesh = source[source_uid(uid)].mesh
+		visual.set_meta("source_uid",source_uid(uid))
+		return visual
 
 func document(path: String) -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string("res://assets/" + path))
@@ -58,6 +73,8 @@ func run() -> void:
 	expect(not model.milestone("pelvis", "left_leg_secured"), "Seated ball is distinct from retained leg")
 	complete("pelvis")
 	expect(model.milestone("pelvis", "left_leg_secured"), "Both ring halves and all bolts retain the leg")
+	for key in ["foot/washer", "left_leg/washer", "pelvis/washer", "pitch/w-12", "left_leg/w-12", "pitch/h-12050", "left_leg/h-12050"]:
+		expect(cross_build_swaps.has(key), "Cross-build compatible copies fit, undo and reinstall: " + key)
 	expect(model.items.values().all(func(item): return item.location == "installed"), "Every one of 175 physical identities is installed exactly once")
 	expect(model.integrity_errors().is_empty(), "Completed ownership tree has no inventory or support leaks")
 	# Reverse real parent history; hardware can return to pockets, large halves
@@ -74,6 +91,7 @@ func run() -> void:
 	expect(model.integrity_errors().is_empty(), "Undo and reinstallation preserve all physical identities")
 	Geometry.add_sources(sources, content)
 	geometry_checks()
+	visual_identity_checks()
 	var passed = checks.all(func(check): return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification")
 	write_evidence("res://verification/leg-content-audit.json",{"passed": passed, "checks": checks})
@@ -113,8 +131,23 @@ func complete(owner: String) -> void:
 					if model.items[uid].location != "pocket": model.transfer(definition.accepts, "bin", "pocket", uid)
 				else:
 					model.carry_item(uid)
+			# Wrong size must fail at a ready washer seat without consuming stock.
+			if definition.get("accepts", "") == "washer":
+				var wrong: String = model.find_item("w-12", "bin")
+				if not wrong.is_empty():
+					model.transfer("w-12", "bin", "pocket", wrong)
+					expect(not model.install(owner, sid, wrong).ok and model.items[wrong].location == "pocket", "Wrong-size washer rejected at ready seat without consumption: " + owner + "/" + sid)
+					model.transfer("w-12", "pocket", "bin", wrong)
 			var result = model.install_supported(owner, sid, uid, support) if not support.is_empty() else model.install(owner, sid, uid)
 			expect(result.ok, "Manual installs " + owner + "/" + sid + ": " + str(result.get("error", "")))
+			var kind: String = definition.get("accepts", "")
+			if result.ok and kind in ["washer", "w-12", "h-12050"] and uid != definition.pose_source:
+				var before: int = model.count_at(kind, "pocket")
+				expect(model.assemblies[owner].slots[sid] == uid and model.slot_definition(owner,sid).pose_source == definition.pose_source, "Cross-build fit separates consumed identity from source pose: " + owner + "/" + sid)
+				var undo: Dictionary = model.undo(owner)
+				expect(undo.ok and undo.step.uid == uid and model.items[uid].location == "pocket" and model.count_at(kind,"pocket") == before + 1, "Undo returns the exact cross-build copy once: " + owner + "/" + sid)
+				expect(model.install(owner,sid,uid).ok and model.count_at(kind,"pocket") == before, "Reinstall restores stock without duplication: " + owner + "/" + sid)
+				cross_build_swaps[owner + "/" + kind] = true
 
 func hits(uid: String, a: Vector3, b: Vector3) -> bool:
 	var inverse: Transform3D = sources[uid].transform.affine_inverse()
@@ -125,7 +158,64 @@ func hits(uid: String, a: Vector3, b: Vector3) -> bool:
 		if Geometry3D.segment_intersects_triangle(begin, end, faces[i] * 1000.0, faces[i + 1] * 1000.0, faces[i + 2] * 1000.0) != null: return true
 	return false
 
+func bounds_of(uid: String) -> AABB:
+	# Mesh.get_faces uses Godot's quantized TriangleMesh cache; inspect actual render vertices.
+	var faces: PackedVector3Array = sources[uid].mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var bounds = AABB(sources[uid].transform * faces[0], Vector3.ZERO)
+	for vertex in faces: bounds = bounds.expand(sources[uid].transform * vertex)
+	return bounds
+
+func washer_fit(uid: String, axis: int, bearing: float, head: float, outside: float, bore: float) -> void:
+	var bounds = bounds_of(uid)
+	var low: float = minf(bearing,head)
+	var high: float = maxf(bearing,head)
+	expect(absf(bounds.position[axis]-low) < .000001 and absf(bounds.end[axis]-high) < .000001, "Washer bears on receiver and screw head: %s (%.8f..%.8f expected %.8f..%.8f)" % [uid,bounds.position[axis],bounds.end[axis],low,high])
+	var radial: int = (axis+1)%3
+	expect(absf(bounds.size[radial]-outside) < .000001, "Standard washer outside diameter: " + uid)
+	var center = bounds.get_center()
+	var a = center; a[axis] = low-.002
+	var b = center; b[axis] = high+.002
+	var edge = Vector3.ZERO; edge[radial] = bore/2-.0002
+	expect(not hits(uid,a+edge,b+edge), "Standard washer clears the canonical bore: " + uid)
+	edge[radial] = bore/2+.001
+	expect(hits(uid,a+edge,b+edge), "Flat bearing annulus surrounds bore: " + uid)
+
+func visual_identity_checks() -> void:
+	var fixture = StockVisualWorkshop.new()
+	fixture.model = model
+	fixture.source = sources
+	fixture.runtime = AssemblyRuntime.new(model,sources)
+	root.add_child(fixture)
+	for owner in model.assemblies:
+		var body = Node3D.new();fixture.add_child(body)
+		fixture.runtime.register_node(owner,body)
+	var interaction = preload("res://scripts/component_interaction.gd").new(fixture)
+	fixture.add_child(interaction)
+	var compared = 0
+	for owner in ["foot", "pitch", "left_leg", "pelvis"]:
+		interaction.sync(owner)
+		for visual in fixture.assembly_node(owner).get_children():
+			if not visual is MeshInstance3D or not visual.has_meta("slot_id"):continue
+			var sid: String = visual.get_meta("slot_id")
+			var spec = model.slot_definition(owner,sid)
+			if not spec.get("accepts", "") in ["washer", "w-12", "h-12050"]:continue
+			var uid: String = model.assemblies[owner].slots[sid]
+			if uid == spec.pose_source:continue
+			expect(visual.mesh == sources[spec.pose_source].mesh and visual.get_meta("component_uid") == uid, "Installed cross-build visual pairs slot mesh with consumed identity: " + owner + "/" + sid)
+			expect(visual.global_transform.is_equal_approx(fixture.runtime.slot_pose(owner,sid)), "Installed cross-build geometry preserves destination pose: " + owner + "/" + sid)
+			compared += 1
+	expect(compared > 20, "Cross-build imported/procedural source swaps exercise real installed projection")
+	fixture.free()
+
 func geometry_checks() -> void:
+	var hip: Dictionary = document("robot-content.json")
+	var cage: Dictionary = {}
+	for n in range(3,7):cage["LG-W12__%03d"%n] = hip.sources["LG-W12__%03d"%n]
+	Geometry.add_sources(sources,{"sources":cage})
+	for n in range(3,7):washer_fit("LG-W12__%03d"%n,2,-.028,-.0305,.024,.013)
+	for n in range(1,3):washer_fit("LG-W12__%03d"%n,0,.570,.5725,.024,.013)
+	for n in range(1,5):washer_fit("LG-W24__%03d"%n,1,5.960,5.964,.044,.026)
+	for n in range(5,9):washer_fit("LG-W24__%03d"%n,1,-.430,-.434,.044,.026)
 	for uid in sources:
 		expect(sources[uid].mesh.get_faces().size() > 0, "Independent nonempty mesh: " + uid)
 	for x in [-.2, .2]:
@@ -176,6 +266,15 @@ func geometry_checks() -> void:
 		if not node is MeshInstance3D: continue
 		var sections = String(node.name).split("__")
 		var uid = sections[0] + "__" + sections[1]
+		sources[uid] = {"mesh":node.mesh,"transform":node.transform}
+		if uid in ["W-24__035", "W-12__001"]:
+			var mesh_bounds: AABB = node.transform * node.mesh.get_aabb()
+			var expected = Vector3(.044,.004,.044) if uid.begins_with("W-24") else Vector3(.024,.0025,.024)
+			expect(mesh_bounds.size.is_equal_approx(expected), "Actual FA-01 washer mesh matches shared catalogue dimensions: " + uid)
+			var center = mesh_bounds.get_center()
+			var radius: float = .013 if uid.begins_with("W-24") else .0065
+			expect(not hits(uid,center+Vector3(radius-.0002,-.005,0),center+Vector3(radius-.0002,.005,0)), "Actual FA-01 washer clears canonical bore: " + uid)
+			expect(hits(uid,center+Vector3(radius+.001,-.005,0),center+Vector3(radius+.001,.005,0)), "Actual FA-01 washer has flat bearing annulus: " + uid)
 		if uid.begins_with("H-36090") or uid in ["W-36__021", "W-36__022", "W-36__023", "W-36__024"]:
 			var definition = data.assemblies.left_leg.slots["ankle/" + uid]
 			var position = Geometry.vec(definition.snap_position)

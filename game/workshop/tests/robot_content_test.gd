@@ -134,7 +134,7 @@ func complete_leg(t: Dictionary, harness_first: bool) -> void:
 	expect(fill(model, "left_leg", fork_ready), "Knee branch builds independently of harness page order")
 	expect(stage_slot(model, "left_leg", "spar"), "Crane seats Upper-leg beam")
 	reject_variant(model, "left_leg", "fork/washer_1", "PV-H24140__001")
-	model.transfer("lg-w24", "bin", "pocket", "LG-W24__008")
+	model.transfer("washer", "bin", "pocket", "LG-W24__008")
 	expect(model.install("left_leg", "fork/washer_1", "LG-W24__008").ok, "Pooled pelvis-numbered washer fits fork")
 	expect(model.slot_definition("left_leg", "fork/washer_1").pose_source == "LG-W24__001" and model.assemblies.left_leg.slots["fork/washer_1"] == "LG-W24__008", "Consumed washer UID differs from canonical geometry source")
 	reject_variant(model, "left_leg", "fork/bolt_1", "PV-H24140__001")
@@ -215,8 +215,17 @@ func run() -> void:
 	for harness_first in [false, true]:
 		var t = robot_content()
 		expect(t.model.items.size() == 515 and t.content.parts.size() == 380, "Workshop supplies 135 base foot identities and the audited 380 robot identities")
-		expect(t.model.items.values().filter(func(record): return record.kind == "lg-w24").size() == 16, "Sixteen M24 washers share one stock type across both legs and hips")
-		if not harness_first: coverage(t)
+		expect(t.model.items.values().filter(func(record): return record.kind == "washer").size() == 40, "Forty M24 washers share one stock type across feet, legs and hips")
+		if not harness_first:
+			coverage(t)
+			for kind in ["washer", "w-12", "h-12050"]:
+				var total: int = {"washer":40, "w-12":80, "h-12050":20}[kind]
+				expect(t.model.count_at(kind, "bin") == total, "Canonical drawer retains every physical copy: " + kind)
+				var pocket: Dictionary = t.model.stock_pocket(kind)
+				expect(pocket.ok and pocket.taken == mini(total,AssemblyModel.STACK_LIMIT) and t.model.pocket_size(pocket.index) == mini(total,AssemblyModel.STACK_LIMIT), "One drawer supplies one shared pocket stack: " + kind)
+				t.model.clear_pocket(pocket.index)
+			for removed in ["lg-w24", "lg-w12", "lg-m12-50"]:
+				expect(not t.data.parts.has(removed) and not t.model.items.values().any(func(item): return item.kind == removed), "No hidden duplicate stock pool: " + removed)
 		prepared_foot(t)
 		complete_leg(t, harness_first)
 		complete_retention(t)

@@ -3503,12 +3503,12 @@
           "undo_to": "hands"
         },
         "ring/washer_1": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__005",
           "requires": [
             "ring_2"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -3531,12 +3531,12 @@
           "undo_requires_support": "leg_holder"
         },
         "ring/washer_2": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__006",
           "requires": [
             "ring_2"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -3559,12 +3559,12 @@
           "undo_requires_support": "leg_holder"
         },
         "ring/washer_3": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__007",
           "requires": [
             "ring_1"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -3587,12 +3587,12 @@
           "undo_requires_support": "leg_holder"
         },
         "ring/washer_4": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "LG-W24__008",
           "requires": [
             "ring_1"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -3655,13 +3655,13 @@
           "undo_to": "hands"
         },
         "stop/washer_1": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "LG-W12__003",
           "requires": [
             "stop_half_1",
             "stop_half_2"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "undo_requires_support": "leg_holder"
         },
         "stop/bolt_1": {
@@ -3679,13 +3679,13 @@
           ]
         },
         "stop/washer_2": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "LG-W12__004",
           "requires": [
             "stop_half_1",
             "stop_half_2"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "undo_requires_support": "leg_holder"
         },
         "stop/bolt_2": {
@@ -3703,13 +3703,13 @@
           ]
         },
         "stop/washer_3": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "LG-W12__005",
           "requires": [
             "stop_half_1",
             "stop_half_2"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "undo_requires_support": "leg_holder"
         },
         "stop/bolt_3": {
@@ -3727,13 +3727,13 @@
           ]
         },
         "stop/washer_4": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "LG-W12__006",
           "requires": [
             "stop_half_1",
             "stop_half_2"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "undo_requires_support": "leg_holder"
         },
         "stop/bolt_4": {
@@ -3949,12 +3949,12 @@
           "undo_to": "hands"
         },
         "right/ring/washer_1": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "R-LG-W24__005",
           "requires": [
             "right/ring_2"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -3977,12 +3977,12 @@
           "undo_requires_support": "leg_holder"
         },
         "right/ring/washer_2": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "R-LG-W24__006",
           "requires": [
             "right/ring_2"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -4005,12 +4005,12 @@
           "undo_requires_support": "leg_holder"
         },
         "right/ring/washer_3": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "R-LG-W24__007",
           "requires": [
             "right/ring_1"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -4033,12 +4033,12 @@
           "undo_requires_support": "leg_holder"
         },
         "right/ring/washer_4": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "R-LG-W24__008",
           "requires": [
             "right/ring_1"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             -0.003,
@@ -4101,13 +4101,13 @@
           "undo_to": "hands"
         },
         "right/stop/washer_1": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "R-LG-W12__003",
           "requires": [
             "right/stop_half_1",
             "right/stop_half_2"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "undo_requires_support": "leg_holder"
         },
         "right/stop/bolt_1": {
@@ -4125,13 +4125,13 @@
           ]
         },
         "right/stop/washer_2": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "R-LG-W12__004",
           "requires": [
             "right/stop_half_1",
             "right/stop_half_2"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "undo_requires_support": "leg_holder"
         },
         "right/stop/bolt_2": {
@@ -4149,13 +4149,13 @@
           ]
         },
         "right/stop/washer_3": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "R-LG-W12__005",
           "requires": [
             "right/stop_half_1",
             "right/stop_half_2"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "undo_requires_support": "leg_holder"
         },
         "right/stop/bolt_3": {
@@ -4173,13 +4173,13 @@
           ]
         },
         "right/stop/washer_4": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "R-LG-W12__006",
           "requires": [
             "right/stop_half_1",
             "right/stop_half_2"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "undo_requires_support": "leg_holder"
         },
         "right/stop/bolt_4": {
@@ -17121,12 +17121,12 @@
           "undo_to": "hands"
         },
         "cap/washer_1": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "R-LG-W12__001",
           "requires": [
             "cap"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "target_offset": [
             -0.003,
             0,
@@ -17135,12 +17135,12 @@
           "undo_requires_support": "crane_rigging"
         },
         "cap/screw_1": {
-          "accepts": "lg-m12-50",
+          "accepts": "h-12050",
           "pose_source": "R-LG-H12050__001",
           "requires": [
             "cap/washer_1"
           ],
-          "label": "LG-H12050 · M12 × 50 axle-cap screw",
+          "label": "H-12050 · M12 × 50 cap screw",
           "target_offset": [
             -0.014,
             0,
@@ -17149,12 +17149,12 @@
           "undo_requires_support": "crane_rigging"
         },
         "cap/washer_2": {
-          "accepts": "lg-w12",
+          "accepts": "w-12",
           "pose_source": "R-LG-W12__002",
           "requires": [
             "cap"
           ],
-          "label": "LG-W12 · M12 washer",
+          "label": "W-12 · M12 washer",
           "target_offset": [
             -0.003,
             0,
@@ -17163,12 +17163,12 @@
           "undo_requires_support": "crane_rigging"
         },
         "cap/screw_2": {
-          "accepts": "lg-m12-50",
+          "accepts": "h-12050",
           "pose_source": "R-LG-H12050__002",
           "requires": [
             "cap/washer_2"
           ],
-          "label": "LG-H12050 · M12 × 50 axle-cap screw",
+          "label": "H-12050 · M12 × 50 cap screw",
           "target_offset": [
             -0.014,
             0,
@@ -17423,12 +17423,12 @@
           ]
         },
         "fork/washer_1": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "R-LG-W24__001",
           "requires": [
             "spar"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             0.003,
@@ -17451,12 +17451,12 @@
           "undo_requires_support": "crane_rigging"
         },
         "fork/washer_2": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "R-LG-W24__002",
           "requires": [
             "spar"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             0.003,
@@ -17479,12 +17479,12 @@
           "undo_requires_support": "crane_rigging"
         },
         "fork/washer_3": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "R-LG-W24__003",
           "requires": [
             "spar"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             0.003,
@@ -17507,12 +17507,12 @@
           "undo_requires_support": "crane_rigging"
         },
         "fork/washer_4": {
-          "accepts": "lg-w24",
+          "accepts": "washer",
           "pose_source": "R-LG-W24__004",
           "requires": [
             "spar"
           ],
-          "label": "LG-W24 · M24 washer",
+          "label": "W-24 · M24 washer",
           "target_offset": [
             0,
             0.003,

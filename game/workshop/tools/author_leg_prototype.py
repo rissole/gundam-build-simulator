@@ -12,6 +12,7 @@ import argparse
 from copy import deepcopy
 from collections import Counter
 from pathlib import Path
+from standard_hardware import CATALOGUE, canonical_part, audit_standard_hardware
 
 ROOT = Path(__file__).resolve().parents[3]
 ASSETS = ROOT / "game/workshop/assets"
@@ -72,9 +73,9 @@ kind("lg-knee-thrust", "LG-135", "Knee thrust spacer")
 kind("lg-knee-axle", "LG-140", "Shouldered knee axle", "two_hand")
 kind("lg-knee-cap", "LG-150", "Knee axle retaining cap")
 kind("lg-m24-100", "LG-H24100", "M24 × 100 fork bolt", "pocket", "M24x100")
-kind("lg-m12-50", "LG-H12050", "M12 × 50 axle-cap screw", "pocket", "M12x50")
-kind("lg-w24", "LG-W24", "M24 washer", "pocket", "M24")
-kind("lg-w12", "LG-W12", "M12 washer", "pocket", "M12")
+# Reuse proven FA-01 stock types; source instance IDs stay unchanged.
+for standard in ("h-12050", "washer", "w-12"):
+    parts[standard] = canonical_part(standard)
 kind("pv-ring-half", "PV-120", "Hip retaining ring half", "two_hand", "semicircular")
 parts["pv-ring-half"]["handling"] = dict(distance=.85, rotation_degrees=[90, 0, 0])
 kind("pv-m24-140", "PV-H24140", "M24 × 140 ring bolt", "pocket", "M24x140")
@@ -187,7 +188,8 @@ item("LG-150__001", "lg-knee-cap")
 def hardware(family, key, n, position, diameter, length, washer=False, upward=False, axis="y"):
     uid = f"{family}__{n:03}"
     if washer:
-        shapes = [tube([0, 0, 0], diameter*.92, diameter*.55, .004, axis)]
+        spec = CATALOGUE[key]["specification"]
+        shapes = [tube([0, 0, 0], spec["outside"]/2000, spec["bore"]/2000, spec["thickness"]/1000, axis)]
     else:
         # Origin is the head-bearing face. Shank points down unless specified.
         sign = 1 if upward else -1
@@ -197,7 +199,7 @@ def hardware(family, key, n, position, diameter, length, washer=False, upward=Fa
         else:
             shapes = [tube([0, sign*length/2, 0], diameter/2, 0, length, axis),
                       tube([0, -sign*diameter/2, 0], diameter*.75, 0, diameter, axis)]
-    source(uid, family, position, shapes)
+    source(uid, parts[key]["family"], position, shapes)
     item(uid, key)
     return uid
 
@@ -292,20 +294,20 @@ page(leg_pages, "Fork and axle", "Use the fork rack to straddle the already fitt
 slot(leg_slots, "cap", "lg-knee-cap", "LG-150__001", ["axle"], target_offset=[.017, 0, 0])
 cap_slots = ["cap"]
 for n, z in enumerate((-.10, .10), 1):
-    w = hardware("LG-W12", "lg-w12", n, [.572, 5.1, z], .012, 0, True, axis="x")
-    b = hardware("LG-H12050", "lg-m12-50", n, [.574, 5.1, z], .012, .05, axis="x")
-    ws = slot(leg_slots, f"cap/washer_{n}", "lg-w12", w, ["cap"], target_offset=[.003, 0, 0])
-    cap_slots += [ws, slot(leg_slots, f"cap/screw_{n}", "lg-m12-50", b, [ws], target_offset=[.014, 0, 0])]
-page(leg_pages, "Retain the knee axle", "Fit LG-150 on the exposed axle end. Fit two LG-W12 washers and two LG-H12050 screws from the right side into the axle end pad. Both screw heads remain outside the fork.", cap_slots, ["LG-110__001", "LG-140__001"])
+    w = hardware("LG-W12", "w-12", n, [.57125, 5.1, z], .012, 0, True, axis="x")
+    b = hardware("LG-H12050", "h-12050", n, [.5725, 5.1, z], .012, .05, axis="x")
+    ws = slot(leg_slots, f"cap/washer_{n}", "w-12", w, ["cap"], target_offset=[.003, 0, 0])
+    cap_slots += [ws, slot(leg_slots, f"cap/screw_{n}", "h-12050", b, [ws], target_offset=[.014, 0, 0])]
+page(leg_pages, "Retain the knee axle", "Fit LG-150 on the exposed axle end. Fit two W-12 washers and two H-12050 cap screws from the right side into the axle end pad. Both screw heads remain outside the fork.", cap_slots, ["LG-110__001", "LG-140__001"])
 slot(leg_slots, "spar", "lg-thigh-spar", "LG-120__001", cap_slots,
      support_required=True, source_supports=[CRANE_SUPPORT])
 spar_slots = ["spar"]
 for n, (x, z) in enumerate(((x, z) for x in (-.25, .25) for z in (-.20, .20)), 1):
-    w = hardware("LG-W24", "lg-w24", n, [x, 5.962, z], .024, 0, True)
+    w = hardware("LG-W24", "washer", n, [x, 5.962, z], .024, 0, True)
     b = hardware("LG-H24100", "lg-m24-100", n, [x, 5.964, z], .024, .1)
-    ws = slot(leg_slots, f"fork/washer_{n}", "lg-w24", w, ["spar"], target_offset=[0, .003, 0])
+    ws = slot(leg_slots, f"fork/washer_{n}", "washer", w, ["spar"], target_offset=[0, .003, 0])
     spar_slots += [ws, slot(leg_slots, f"fork/bolt_{n}", "lg-m24-100", b, [ws], target_offset=[0, .026, 0])]
-page(leg_pages, "Join the thigh spar", "Use the service crane to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four LG-W24 washers and four LG-H24100 bolts downward through the exposed flange corners.", spar_slots, ["LG-110__001"])
+page(leg_pages, "Join the thigh spar", "Use the service crane to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four W-24 washers and four LG-H24100 bolts downward through the exposed flange corners.", spar_slots, ["LG-110__001"])
 leg_pages.append(dict(title="Structural leg ready", body="The load-bearing prototype is structurally ready. Use the leg rail to carry it to the gantry. Knee and ankle transport braces belong to the handling equipment; powered knee and hip actuators, services, armor and calf thrusters remain deferred. Open the hip assembly manual for seating and retention.", slots=list(leg_slots), view="prepared"))
 leg = dict(title="Left leg · structural prototype", carry_class="equipment", bounds=[1.4, 9.65, 3.0],
            work_locations=["support"], interaction="components", service_access="assisted",
@@ -358,12 +360,12 @@ for n in (1, 2):
 page(pelvis_pages, "Fit the split retaining ring", "Carry and fit both PV-120 semicircular halves around the already seated LG-120 neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.", ["ring_1", "ring_2"], ["PV-110__001", "LG-120__001"])
 ring_fasteners = []
 for n, (x, z, _) in enumerate(ring_holes, 1):
-    w = hardware("LG-W24", "lg-w24", n+4, [-1.1+x, -.432, z], .024, 0, True)
+    w = hardware("LG-W24", "washer", n+4, [-1.1+x, -.432, z], .024, 0, True)
     b = hardware("PV-H24140", "pv-m24-140", n, [-1.1+x, -.434, z], .024, .14, upward=True)
     ring_sid = "ring_1" if z < 0 else "ring_2"
-    ws = slot(pelvis_slots, f"ring/washer_{n}", "lg-w24", w, [ring_sid], target_offset=[0, -.003, 0])
+    ws = slot(pelvis_slots, f"ring/washer_{n}", "washer", w, [ring_sid], target_offset=[0, -.003, 0])
     ring_fasteners += [ws, slot(pelvis_slots, f"ring/bolt_{n}", "pv-m24-140", b, [ws], target_offset=[0, -.026, 0])]
-page(pelvis_pages, "Bolt the ring to the socket", "Fit four LG-W24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing rail support. To remove the leg, reacquire rail support first, then reverse the retention steps.", ring_fasteners, ["PV-110__001", "PV-120__001", "PV-120__002"])
+page(pelvis_pages, "Bolt the ring to the socket", "Fit four W-24 washers and four PV-H24140 bolts upward from the split ring's exposed underside into the left socket flange. Both halves must be fitted and all four bolts installed before releasing rail support. To remove the leg, reacquire rail support first, then reverse the retention steps.", ring_fasteners, ["PV-110__001", "PV-120__001", "PV-120__002"])
 pelvis_pages.append(dict(title="Left leg structurally mounted", body="The left ball is captured by both bolted ring halves. The gantry and mechanical transport braces support this unpowered prototype. This is structural readiness; hydraulic actuators, services and armor remain deferred.", slots=list(pelvis_slots), view="prepared"))
 pelvis = dict(title="Hip assembly · left leg installation", bounds=[3.6, 1.5, 1.5], work_locations=["fixture"],
               interaction="components", context_sources=context_sources, slots=pelvis_slots,
@@ -436,6 +438,8 @@ def catalogue_images(check=False, definitions=None, inventory=None, descriptors=
     """
     import html
     for key, definition in (parts if definitions is None else definitions).items():
+        if key in CATALOGUE:  # Existing canonical PNGs; no component-specific icons.
+            continue
         record = next(p for p in (stock if inventory is None else inventory) if p["kind"] == key)
         shapes = (sources if descriptors is None else descriptors).get(record["source_id"], {}).get("primitives", [])
         if not shapes:  # Existing source hardware keeps its physical FA-01 mesh.
@@ -494,6 +498,7 @@ def catalogue_images(check=False, definitions=None, inventory=None, descriptors=
 
 
 def audit():
+    audit_standard_hardware(parts)
     ids = [p["instance_id"] for p in stock]
     assert len(ids) == len(set(ids)) == 40, len(ids)
     assert len(leg_slots) == 31 and len(pelvis_slots) == 11
@@ -727,6 +732,7 @@ def robot_documents(check=False):
 
 def audit_robot(documents):
     overlay, trial = documents["robot-definitions.json"], documents["robot-content.json"]
+    audit_standard_hardware({**parts, **overlay["parts"]})
     recipes = materialize_overlay(dict(parts=parts, assemblies={"left_leg": leg, "pelvis": pelvis}), overlay)["assemblies"]
     assert set(overlay["assemblies"]) == {"pelvis","chest","core","backpack","arm_cassette","left_arm","right_arm","left_pauldron","right_pauldron","right_leg","right_foot","right_heel_pad","right_pitch_actuator","head_baseplate","head_left","head_right","head_top","head_crown"}
     for side in ["left","right"]:
@@ -738,7 +744,7 @@ def audit_robot(documents):
         assert mass==2033 and .75<moment/mass<4.40
     assert set(recipes["left_arm"]["context_sources"]).isdisjoint(recipes["right_arm"]["context_sources"])
     assert len(trial["parts"]) == len({p["instance_id"] for p in trial["parts"]}) == 380
-    assert Counter(p["kind"] for p in trial["parts"])["lg-w24"] == 16
+    assert Counter(p["kind"] for p in trial["parts"])["washer"] == 28
     playable={owner:recipes[owner] for owner in ["left_leg","right_leg","pelvis","chest"]}
     assert sum(len(r["slots"]) for r in playable.values()) == 261
     for owner, recipe in playable.items():

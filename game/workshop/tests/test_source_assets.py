@@ -15,11 +15,37 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'models/foot-fa01/src'))
+sys.path.insert(0, str(ROOT / 'game/workshop/tools'))
+from standard_hardware import CATALOGUE, canonical_part, audit_standard_hardware
 from source_identity import SourceRegistry
 from source_connections import pitch_pairs, pitch_instance_ids
 
 spec = importlib.util.spec_from_file_location('merge_pitch_meshes', ROOT / 'game/workshop/tools/merge_pitch_meshes.py')
 merge_tool = importlib.util.module_from_spec(spec); spec.loader.exec_module(merge_tool)
+
+
+class StandardHardwareTests(unittest.TestCase):
+    def test_prefixed_duplicate_rejected_even_without_canonical_overlay(self):
+        for key in CATALOGUE:
+            with self.subTest(kind=key):
+                duplicate = canonical_part(key)
+                duplicate['family'] = 'NEW-' + duplicate['family']
+                duplicate['standard_hardware'] = {name: float(value) if isinstance(value, int) else value
+                                                   for name, value in duplicate['standard_hardware'].items()}
+                with self.assertRaisesRegex(AssertionError, 'Duplicate standard hardware'):
+                    audit_standard_hardware({'new-component-hardware': duplicate})
+
+    def test_real_fit_difference_is_retained_and_duplicate_new_spec_rejected(self):
+        longer = canonical_part('h-12050')
+        longer['family'] = 'PV-H12060'
+        longer['standard_hardware']['length'] = 60
+        audit_standard_hardware({'pv-m12-60': longer})
+        with self.assertRaisesRegex(AssertionError, 'Duplicate standard hardware'):
+            audit_standard_hardware({'pv-m12-60': longer, 'other-m12-60': longer})
+        changed = canonical_part('w-12')
+        changed['standard_hardware']['thickness'] = 4
+        with self.assertRaisesRegex(AssertionError, 'Changed canonical specification'):
+            audit_standard_hardware({'w-12': changed})
 
 
 class StableSourceTests(unittest.TestCase):

@@ -4,6 +4,7 @@ Run from any directory. Prerequisites below follow access/closure, not animation
 import json
 import sys
 from pathlib import Path
+from standard_hardware import CATALOGUE, canonical_part, audit_standard_hardware
 ROOT = Path(__file__).resolve().parents[3]
 ASSETS = ROOT / 'game/workshop/assets'
 sys.path.insert(0, str(ROOT / 'models/foot-fa01/src'))
@@ -46,6 +47,9 @@ for p in source:
         parts[kind] = dict(family=family, variant=variant, title=family+' · '+title, short_title=title, carry_class='two_hand' if family in ['FA-510','FA-516','FA-518','FA-220'] else ('hand' if family in ['FA-511','FA-512','FA-513','FA-514','FA-517','FA-519','FA-521','FA-525','FA-526','FA-221'] else 'pocket'))
         if variant_label: parts[kind]['variant_label'] = variant_label
     instances.append(dict(instance_id=p['instance_id'],part_id=family,kind=kind))
+for standard in CATALOGUE:
+    parts[standard] = canonical_part(standard)
+audit_standard_hardware(parts)
 kinds = {p['instance_id']: p['kind'] for p in instances}
 slots = {}; pages = []; last = ['base']
 def slot(id, requires):

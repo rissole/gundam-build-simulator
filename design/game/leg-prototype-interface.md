@@ -1,6 +1,6 @@
 # Structural left leg and hip assembly prototype
 
-Revision: 2026-10-22. This is the playable structural subset selected for the
+Revision: 2026-10-26. This is the playable structural subset selected for the
 expanded workshop. It develops the existing confirmed shin, detachable knee fork,
 integral thigh ball and hip assembly split-ring concept. Dimensions below are selected
 prototype working interfaces, not a completed engineering design or a change to
@@ -48,10 +48,10 @@ preassembled structures and mechanisms retain their previous boundary.
 | Left leg | LG-150 axle retaining cap | 1 |
 | Left leg | Existing H-36090 and W-36 flange pairs | 4 + 4 |
 | Left leg | Existing FA-605 complete main harness, with both plugs | 1 |
-| Left leg | LG-H12050 cap screws and LG-W12 washers | 2 + 2 |
-| Left leg | LG-H24100 fork bolts and LG-W24 washers | 4 + 4 |
+| Left leg | Existing H-12050 cap screws and W-12 washers | 2 + 2 |
+| Left leg | LG-H24100 fork bolts and existing W-24 washers | 4 + 4 |
 | Hip assembly | PV-120 semicircular retaining halves | 2 |
-| Hip assembly | PV-H24140 ring bolts and shared LG-W24 washers | 4 + 4 |
+| Hip assembly | PV-H24140 ring bolts and existing W-24 washers | 4 + 4 |
 
 There are **40 new active physical identities**, including nine reused GLB
 hardware sources that were previously static context. Combined with the original
@@ -63,9 +63,64 @@ is context without a right leg or ring supplies.
 
 Numbered instances of LG-130, LG-135 and PV-120 are interchangeable within each
 type. The PV-120 rear destination rotates an identical semicircular half by 180°
-around Y; it is not a handed variant. All eight LG-W24 washers share one stock type
-across the fork and hip assembly. Compatible identity, source geometry and destination
+around Y; it is not a handed variant. All eight extension M24 washers share the existing W-24 stock type
+with the foot, fork and hip assembly. Compatible identity, source geometry and destination
 pose remain separate, including when these copies are swapped.
+
+## Standard hardware reuse — 2026-10-26
+
+The shared generation catalogue is
+[`standard_hardware.py`](../../game/workshop/tools/standard_hardware.py).
+Consult it before registering standard hardware. Component prefixes and baked
+mesh orientations do not define fit categories. `audit_standard_hardware` rejects
+explicitly equivalent specifications under another kind/family; it also guards
+the canonical specifications. This bounded check covers the demonstrated families
+below, rather than inferring equivalence across the entire robot catalogue.
+
+| Shared type | Established source fit (mm) | Accidental leg blockout fit (mm) | Resolution |
+| --- | --- | --- | --- |
+| W-24 / `washer` | OD44 / ID26 / thickness4 | OD44.16 / ID26.4 / thickness4 | Normalize leg geometry; share foot, fork and ring stock |
+| W-12 / `w-12` | OD24 / ID13 / thickness2.5 | OD22.08 / ID13.2 / thickness4 | Normalize knee-cap and hip-cage geometry; share actuator stock |
+| H-12050 / `h-12050` | M12×50, pitch1.75, cylindrical socket head OD18×12 | Same envelope, simplified shank/head | Share existing cap-screw stock; destination mesh preserves its representation |
+
+The source authority is FA-01 `geometry.hardware`, `geometry.screw_mesh` and
+`pitch_interfaces.fasteners` / `world_fastener`; the actual imported W-24 and
+W-12 meshes are checked against the catalogue. Washers have flat bearing faces
+and steel source material. Neither the leg interface nor the foot hardware
+schedule specifies a distinct alloy, strength grade, surface treatment or bearing
+requirement for the old prefixed copies. Those production choices remain a later
+detail obligation, alongside credible threads and sockets in simplified meshes.
+The existing leg M24×100, hip M24×140 and stop-cage M12×60 lengths serve different
+engagement depths and remain distinct, with functional length labels. This does
+not make an unreviewed fit claim for other hardware families.
+
+The knee cap's outer face stays at X570. Its corrected washer spans
+X570–572.5 and the cap-screw head bears at X572.5. The hip cage ear's front face
+stays at Z−28; its washer spans Z−30.5…−28 and screw-head datum is Z−30.5.
+The fork W-24 stays at Y5960–5964 with a downward bolt; the hip W-24 stays at
+Y−434…−430 with an upward bolt. Only the normalized W-12 thickness requires
+moving those washer centers and screw-head datums; receivers do not move.
+
+`LG-W24__*`, `LG-W12__*` and `LG-H12050__*` remain internal physical/source
+identities, including mirrored identities. Their `part_id`, kind, storage label
+and pocket stack use the canonical family. Slot `pose_source` continues to pair
+its own geometry with its pose, while the installed occupant/undo history keeps
+the consumed UID. Current whole-workshop stock is **40 W-24, 80 W-12 and
+20 H-12050**, including both feet, legs and hip interfaces; all 515 total physical
+identities remain. Each family has one drawer and one pocket type with the
+existing 20-piece stack limit. Existing catalogue PNGs are reused.
+
+Mechanical verification on 2026-10-26: generator `--check` passes;
+routine `part_variants_test` (414), `assembly_model_test` (52),
+`pockets_model_test` (26), `leg_content_test` (800), `robot_content_test` (454),
+`pitch_interface_test` (113), `source_assets` (13 Python cases) and
+`workshop_smoke_test` (29) pass. No diagnostics or rendered review ran.
+Focused checks cover swapped copies across foot/actuator, leg and hip,
+wrong-size rejection at ready seats, exact-identity undo/reinstallation, source
+geometry/seat contact, stock accounting and duplicate-spec rejection. Generator
+check mode audits current manual coverage and byte equality. Presentation remains
+unreviewed; the player recheck is to collect standard washers once and use them
+across foot, leg and hip without selecting component-specific duplicates.
 
 ## Ankle and shin
 

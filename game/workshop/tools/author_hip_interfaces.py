@@ -5,6 +5,7 @@ is rear; the pelvis origin is the hip-centre height, as in the inherited ring.
 This is external mounting work, not a cylinder-internals or articulation model.
 """
 import math
+from standard_hardware import CATALOGUE
 
 
 def extend(trial, kinds, leg, pelvis, diagram):
@@ -27,12 +28,12 @@ def extend(trial, kinds, leg, pelvis, diagram):
         sources[uid] = dict(family=family, position=at, primitives=shapes, rotation_degrees=list(rotation))
 
     def stock(uid, key):
-        family = kinds.get(key, {}).get("family", "LG-W12")
+        family = kinds.get(key, {}).get("family", "W-12")
         trial["parts"].append(dict(instance_id=uid, source_id=uid, part_id=family, kind=key, location="bin"))
 
     def connection(sid, key, uid, requires, **extra):
         slots[sid] = dict(accepts=key, pose_source=uid, requires=list(requires),
-                          label=kinds.get(key, {}).get("title", "LG-W12 · M12 washer"),
+                          label=kinds.get(key, {}).get("title", "W-12 · M12 washer"),
                           undo_requires_support=support, **extra)
         stock(uid, key)
         return sid
@@ -74,9 +75,12 @@ def extend(trial, kinds, leg, pelvis, diagram):
     fasteners = []
     for n,(x,y) in enumerate([(x,y) for x in (-.52,.52) for y in (-.06,.06)],1):
         w=f"LG-W12__{n+2:03}";b=f"PV-H12060__{n:03}"
-        source(w,"LG-W12",[hip_x+x,-.71+y,-.030],[tube([0,0,0],.01104,.0066,.004,[0,0,1])])
-        source(b,"PV-H12060",[hip_x+x,-.71+y,-.032],[tube([0,0,.03],.006,0,.06,[0,0,1]),tube([0,0,-.006],.009,0,.012,[0,0,1])])
-        ws=connection(f"stop/washer_{n}","lg-w12",w,cage)
+        spec = CATALOGUE["w-12"]["specification"]
+        # Keep the rear bearing face on the ear at Z=-.028.
+        thickness = spec["thickness"]/1000
+        source(w,"W-12",[hip_x+x,-.71+y,-.028-thickness/2],[tube([0,0,0],spec["outside"]/2000,spec["bore"]/2000,thickness,[0,0,1])])
+        source(b,"PV-H12060",[hip_x+x,-.71+y,-.028-thickness],[tube([0,0,.03],.006,0,.06,[0,0,1]),tube([0,0,-.006],.009,0,.012,[0,0,1])])
+        ws=connection(f"stop/washer_{n}","w-12",w,cage)
         fasteners += [ws,connection(f"stop/bolt_{n}","pv-m12-60",b,[ws],target_offset=[0,0,-.012])]
     pages.append(page("Secure the cage seams", fasteners,
         "Screw the cage seams together.",

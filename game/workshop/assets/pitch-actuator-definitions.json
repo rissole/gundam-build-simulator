@@ -149,7 +149,14 @@
       "variant": "standard",
       "title": "W-12 · M12 washer",
       "short_title": "M12 washer",
-      "carry_class": "pocket"
+      "carry_class": "pocket",
+      "standard_hardware": {
+        "form": "flat_washer",
+        "bore": 13,
+        "outside": 24,
+        "thickness": 2.5,
+        "material": "steel"
+      }
     },
     "fa-525__002": {
       "family": "FA-525",
@@ -201,7 +208,16 @@
       "variant": "standard",
       "title": "H-12050 · M12 × 50 cap screw",
       "short_title": "M12 × 50 cap screw",
-      "carry_class": "pocket"
+      "carry_class": "pocket",
+      "standard_hardware": {
+        "form": "socket_cap_screw",
+        "thread": "M12",
+        "pitch": 1.75,
+        "length": 50,
+        "head_diameter": 18,
+        "head_height": 12,
+        "material": "steel"
+      }
     },
     "fa-220__001": {
       "family": "FA-220",
@@ -223,7 +239,14 @@
       "variant": "standard",
       "title": "W-24 · M24 washer",
       "short_title": "M24 washer",
-      "carry_class": "pocket"
+      "carry_class": "pocket",
+      "standard_hardware": {
+        "form": "flat_washer",
+        "bore": 26,
+        "outside": 44,
+        "thickness": 4,
+        "material": "steel"
+      }
     },
     "fa-221-pitch": {
       "family": "FA-221",
