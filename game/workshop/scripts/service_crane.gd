@@ -686,7 +686,9 @@ func _sweep(from: Transform3D, to: Transform3D) -> String:
 	if assembly_payload:Sweep.collect_shapes(load_body,load_body.global_transform.affine_inverse(),solids)
 	else:solids=Sweep.body_shapes(load_body)
 	if config.spec.has("rig_adapter"):solids.append_array(game.equipment.get_equipment(config.spec.rig_adapter).transport_shapes())
-	var group = {"shapes":solids,"margin":.001}
+	# load poses below are explicitly interpolated along a straight segment.
+	# Articulated rig groups and receiver-dependent exclusions keep sampling.
+	var group = {"shapes":solids,"margin":.001,"linear":from.basis == to.basis}
 	var groups=[group]
 	if config.spec.has("rig_adapter"):
 		var adapter=game.equipment.get_equipment(config.spec.rig_adapter)

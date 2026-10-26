@@ -95,6 +95,14 @@ source dollies, removable guide beams and contact adapters are passive equipment
 The foot retains its existing foot rig and dispatch travel. These have
 different physical jobs and do not create a new permanent console for each part.
 
+**Motion query cost (2026-10-26):** retain live obstacle checks and the short
+look-ahead, but explicitly straight rigid groups use endpoint overlaps plus one
+continuous cast per shape. Equal endpoint orientations alone do not prove a
+straight path; articulated routes and pose-dependent mating exclusions retain
+sampling. Reuse revisioned rigid-load geometry and separate holder query boxes;
+invalidate when construction or articulation changes. Avoid rewriting unchanged
+live collision dimensions. [Rail-lag evidence and playtest](robot-workshop-playtest-checklist.md#rail-travel-lag--2026-10-26).
+
 ### Shared limb workshop with different departure routes
 
 **Leg support.** Raise the horizontal leg root from the leg journey's Y1.35 to **Y1.85** for

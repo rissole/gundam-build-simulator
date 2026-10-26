@@ -6,6 +6,25 @@ extends RefCounted
 ## Set WORKSHOP_SWEEP_DIAGNOSTIC to print every reported contact.
 const DIAGNOSTIC_ENV = "WORKSHOP_SWEEP_DIAGNOSTIC"
 
+## Reuse a rigid load's local geometry, never a collision result. Owners must
+## invalidate on articulation/model changes; collision rebuilds carry a revision.
+## Unversioned bodies deliberately fall back to live collection.
+class RigidGeometry extends RefCounted:
+	var shapes: Array[Dictionary] = []
+	var rids: Array[RID] = []
+	var _body: WeakRef
+	var _revision: int = -1
+	func invalidate() -> void:
+		_body = null
+		shapes.clear();rids.clear()
+	func read(body: Node3D) -> void:
+		var revision: int = body.get_meta("collision_revision",-1)
+		if revision >= 0 and _body != null and _body.get_ref() == body and revision == _revision:return
+		shapes = [];rids = []
+		MotionSweep.collect_shapes(body,body.global_transform.affine_inverse(),shapes)
+		MotionSweep.collect_rids(body,rids)
+		_body = weakref(body);_revision = revision
+
 ## First overlapping collider for one shape at one pose, or {}.
 static func overlap(space: PhysicsDirectSpaceState3D, shape: Shape3D, at: Transform3D, mask: int, exclude: Array[RID], margin: float) -> Dictionary:
 	var query = PhysicsShapeQueryParameters3D.new()
@@ -54,16 +73,23 @@ static func collect_rids(node: Node, output: Array[RID]) -> void:
 ## Samples `pose_at(fraction)` at steps+1 poses. At each pose every group is
 ## checked in order: {"shapes":[{shape,transform}], "frame":Callable(pose),
 ## "shapes_at":Callable(pose, fraction) -> [{shape,world,margin}], "margin",
-## "error", "cast", "cast_error"}. "{collider}" in an error names the hit body.
+## "error", "cast", "cast_error", "linear"}. An explicitly linear group has
+## constant shape dimensions/orientations and straight paths for every member:
+## endpoints plus a continuous cast suffice. Never infer this from equal endpoint
+## bases (an articulated route may curve), or skip pose-dependent exclusions.
+## "{collider}" in an error names the hit body.
 ## Returns {} when clear, else {"error","index","collider"}.
 static func sweep(space: PhysicsDirectSpaceState3D, groups: Array, sample_count: int, pose_at: Callable, mask: int, exclude: Array[RID], label: String = "", exclusions_at: Callable = Callable()) -> Dictionary:
 	var previous_shapes: Dictionary = {}
+	if not exclusions_at.is_valid() and groups.all(func(group):return group.get("linear",false) and group.get("cast",false)):
+		sample_count = 1
 	for index in range(sample_count+1):
 		var fraction = float(index)/sample_count
 		var pose: Transform3D = pose_at.call(fraction)
 		var ignored: Array[RID] = exclusions_at.call(pose) if exclusions_at.is_valid() else exclude
 		for group_index in groups.size():
 			var group: Dictionary = groups[group_index]
+			if index > 0 and index < sample_count and not exclusions_at.is_valid() and group.get("linear",false) and group.get("cast",false):continue
 			var frame: Transform3D = group.frame.call(pose) if group.has("frame") else pose
 			var shapes: Array = group.shapes_at.call(pose,fraction) if group.has("shapes_at") else group.shapes
 			for shape_index in shapes.size():

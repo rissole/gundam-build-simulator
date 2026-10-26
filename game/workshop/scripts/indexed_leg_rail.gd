@@ -26,6 +26,7 @@ var mode = ""
 var blocked_reason = ""
 var buttons: Array[Dictionary] = []
 var labels: Array[Label3D] = []
+var load_geometry = Sweep.RigidGeometry.new()
 
 func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 	game=workshop;layout=scene_layout;spec=layout.layout().workshop.rail;equipment_id="leg_rail"
@@ -170,6 +171,7 @@ func action_error(action: String) -> String:
 func request(action: String) -> String:
 	var error=action_error(action)
 	if not error.is_empty():return error
+	load_geometry.invalidate()
 	blocked_reason=""
 	motion_obstruction = {}
 	if action=="stop":moving=false;_refresh();return ""
@@ -344,7 +346,9 @@ func motion_error(from: Dictionary, to: Dictionary) -> String:
 	var body: Node3D=game.runtime.node(active_assembly)
 	var shapes: Array[Dictionary]=[]
 	var carried: bool=game.model.assemblies[active_assembly].parent.is_empty() and from.engaged
-	if carried:Sweep.collect_rids(body,excluded);Sweep.collect_shapes(body,body.global_transform.affine_inverse(),shapes)
+	if carried:
+		load_geometry.read(body)
+		excluded.append_array(load_geometry.rids);shapes = load_geometry.shapes
 	# Receiver support and a mated load are excluded only during their intentional
 	# contact withdrawal. Empty travel continues to collide with the mounted leg.
 	if from.release<3 and to.release<=3 and mode=="release":Sweep.collect_rids(body,excluded)
@@ -357,12 +361,12 @@ func motion_error(from: Dictionary, to: Dictionary) -> String:
 		for field in ["path","index_x","release","roll","roll_height","bolster"]:state[field]=lerpf(from[field],to[field],t)
 		return snapshot_pose(state)
 	var rig=func(_frame: Transform3D,t: float) -> Array:
-		var at: Dictionary=state_at.call(t);var result: Array=[]
-		for record in layout.cradle.geometry(at.frame,at.bogie_x,at.bogie_z,at.opening,at.compact,at.bolster):
-			var shape=BoxShape3D.new();shape.size=record.size
-			result.append({"shape":shape,"world":record.pose,"margin":-.003})
-		return result
-	var groups=[{"shapes":shapes,"margin":.001},{"shapes_at":rig}]
+		var at: Dictionary=state_at.call(t)
+		return layout.cradle.query_geometry(at.frame,at.bogie_x,at.bogie_z,at.opening,at.compact,at.bolster)
+	# Only these authored phases translate every holder member rigidly. The
+	# upright turn, docking mast, release and bolster still use sampled geometry.
+	var linear = mode == "index" or (mode == "path" and from.path >= 0 and from.path <= 1 and to.path >= 0 and to.path <= 1 and from.roll == 0 and to.roll == 0 and from.roll_height == 0 and to.roll_height == 0)
+	var groups=[{"shapes":shapes,"margin":.001,"linear":linear},{"shapes_at":rig,"linear":linear}]
 	return EquipmentRegistry.Motion.sweep(self,groups,samples,func(t):return state_at.call(t).frame,excluded).get("error","")
 
 func _pose() -> void:
@@ -381,7 +385,8 @@ func _refresh() -> void:
 	else:game.zones.claim("limb_station",equipment_id)
 	for label in labels:label.text=status_text()
 
-func _model_changed() -> void:_refresh()
+func _model_changed() -> void:
+	load_geometry.invalidate();_refresh()
 
 func status_text() -> String:
 	if not blocked_reason.is_empty():return blocked_reason
@@ -448,6 +453,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary 
 	return []
 
 func apply(data: Dictionary) -> void:
+	load_geometry.invalidate()
 	motion_obstruction = {}
 	active_assembly=data.assembly;receiver=data.receiver;receiver_slot=data.slot;lane=data.lane
 	for field in ["index_x","path","roll","roll_height","bolster","release","engaged","mode","goal","moving"]:set(field,data[field])

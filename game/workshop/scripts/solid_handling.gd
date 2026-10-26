@@ -60,7 +60,7 @@ static func sweep_error(body: CollisionObject3D, destination: Transform3D, exclu
 	var radius = envelope.get_center().length()+envelope.size.length()/2
 	var steps = sweep_steps(current,destination,radius,travel)
 	var angle = current.basis.get_rotation_quaternion().angle_to(destination.basis.get_rotation_quaternion())
-	var group = {"shapes":Sweep.body_shapes(body),"margin":0.001+radius*angle/steps*0.5,"cast":true,
+	var group = {"shapes":Sweep.body_shapes(body),"margin":0.001+radius*angle/steps*0.5,"cast":true,"linear":current.basis == destination.basis,
 		"error":"The assembly's approach is blocked by an obstacle. Pull it clear before placing it.",
 		"cast_error":"The assembly's approach is blocked by scenery. Reposition before placing it."}
 	return Sweep.sweep(body.get_world_3d().direct_space_state,[group],steps,func(weight: float) -> Transform3D:return current.interpolate_with(destination,weight),mask,excluded,"carried_body").get("error","")

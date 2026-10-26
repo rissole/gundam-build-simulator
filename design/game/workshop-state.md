@@ -14,9 +14,17 @@ last version before consolidation.
 - **Gantry hitch cleanup (2026-10-26):** player reports a momentary freeze on jaw
   opening/closing. Shared blockout updates now publish changed groups and their
   descendants, index collision membership and skip unchanged insert settings;
-  crane anchors use the selective path too. Collision guards remain. Code-only
-  review; engine checks and performance confirmation are pending under the
-  user's no-launch constraint. [Finding and follow-up](robot-workshop-playtest-checklist.md#gantry-jaw-hitch--2026-10-26).
+  crane anchors use the selective path too. Collision guards remain. Follow-up
+  isolated gantry/gate tests pass (63 + 16 checks); smoothness still awaits
+  playtest. [Finding and follow-up](robot-workshop-playtest-checklist.md#gantry-jaw-hitch--2026-10-26).
+
+- **Rail travel collision cleanup (2026-10-26):** user reports lag during rail
+  travel. Shared linear sweeps now use endpoint overlaps plus a continuous cast;
+  rail load geometry and holder boxes are reused, and unchanged live dimensions
+  are skipped. Crane loads and hand carrying also use the linear path. Curved
+  motion and contact-dependent exclusions retain sampling. Five isolated routine
+  suites pass (144 checks, 7.936 s); no workshop launch or measured gameplay FPS.
+  [Diagnosis, evidence and pending playtest](robot-workshop-playtest-checklist.md#rail-travel-lag--2026-10-26).
 
 - **Visual uplift (2026-10-25, merged into main):**
   The accepted visual uplift uses Forward+, low-density volumetric

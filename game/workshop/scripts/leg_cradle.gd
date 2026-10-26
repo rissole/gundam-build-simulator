@@ -5,6 +5,9 @@ var game: Node3D
 var spec: Dictionary
 var pieces: Dictionary = {}
 var hardware: Array[RID] = []
+## Query-only shapes are separate from live physics shapes: look-ahead must
+## never resize the actual holder. One reusable box per authored member.
+var query_boxes: Dictionary = {}
 
 func setup(workshop: Node3D, definition: Dictionary) -> void:
 	game = workshop;spec = definition
@@ -58,10 +61,25 @@ func geometry(frame: Transform3D, bogie_x: float, bogie_z: float, opening: float
 	add.call("CradlePivotBearing",frame,Vector3(0,spec.pivot,h.bearing.z),AssemblyRuntime.vec(h.bearing.size),true)
 	return records
 
+func query_geometry(frame: Transform3D, bogie_x: float, bogie_z: float, opening: float, compact: float, bolster: float) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for record in geometry(frame,bogie_x,bogie_z,opening,compact,bolster):
+		if not query_boxes.has(record.id):query_boxes[record.id] = BoxShape3D.new()
+		var shape: BoxShape3D = query_boxes[record.id]
+		if not shape.size.is_equal_approx(record.size):shape.size = record.size
+		result.append({"shape":shape,"world":record.pose,"margin":-.003})
+	return result
+
 func apply_geometry(records: Array[Dictionary]) -> void:
 	for record in records:
 		var piece: Dictionary = pieces[record.id]
-		piece.body.global_transform = record.pose;piece.shape.shape.size = record.size;piece.visual.scale = record.size
+		if piece.body.global_transform != record.pose:
+			piece.body.global_transform = record.pose
+			piece.body.force_update_transform();PhysicsServer3D.body_set_state(piece.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,piece.body.global_transform)
+		if piece.has("size") and piece.size.is_equal_approx(record.size):continue
+		piece.size = record.size
+		if not piece.shape.shape.size.is_equal_approx(record.size):piece.shape.shape.size = record.size
+		piece.visual.scale = record.size
 		# Give telescoping members distinct sections instead of coincident skins.
 		# Collision/query records continue to use the authored support envelope.
 		if record.id.begins_with("CradleSide_"):piece.visual.scale.z -= .008
@@ -70,4 +88,3 @@ func apply_geometry(records: Array[Dictionary]) -> void:
 		elif record.id.begins_with("BolsterOutrigger_"):piece.visual.scale.x -= .012;piece.visual.scale.z -= .018
 		elif record.id.begins_with("BolsterLink_"):piece.visual.scale.y -= .012;piece.visual.scale.x -= .012
 		elif record.id=="CradleLowCrossSlide":piece.visual.scale.y -= .012
-		piece.body.force_update_transform();PhysicsServer3D.body_set_state(piece.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,piece.body.global_transform)

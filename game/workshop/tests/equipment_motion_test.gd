@@ -29,6 +29,13 @@ class Crane extends "res://scripts/service_crane.gd":
 		PhysicsServer3D.body_set_state(load_body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,load_body.global_transform)
 class Equipment extends WorkshopEquipment:
 	var moving = true
+class Gates extends WorkshopEquipment:
+	func occupancy_error() -> String:return ""
+	func closed() -> bool:return true
+	func request_closed(_closed: bool) -> String:return ""
+class Access extends WorkshopEquipment:
+	func ready_for(_mode: String) -> bool:return true
+	func request_mode(_mode: String) -> String:return ""
 func _initialize() -> void:call_deferred("run")
 func shape(body: CollisionObject3D, size: Vector3) -> void:
 	var col = CollisionShape3D.new();var box = BoxShape3D.new();box.size = size;col.shape = box;body.add_child(col)
@@ -41,6 +48,8 @@ func until_held(equipment: Node) -> void:
 		if not equipment.moving or not equipment.blocked_reason.is_empty():return
 func run() -> void:
 	await shared_queries()
+	await linear_queries()
+	rigid_geometry_cache()
 	await shelf_cargo()
 	await crane_motion()
 	await rail_motion()
@@ -91,6 +100,50 @@ func shared_queries() -> void:
 	expect(is_equal_approx(Motion.path_ahead(route,1.1,0.0,1.09,0),.95),"reverse look-ahead follows the same corner")
 	expect(is_equal_approx(Motion.ahead(0,4,1),1) and is_equal_approx(Motion.ahead(2,0,-.01),1.75),"reservation covers long physics steps and reversed motion")
 	game.free();await frames(1)
+func linear_queries() -> void:
+	var game = Game.new();root.add_child(game)
+	var equipment = Equipment.new();game.add_child(equipment);equipment.game=game;equipment.equipment_id="linear_probe"
+	var box = BoxShape3D.new();box.size=Vector3(.002,.1,.1)
+	var samples: Array = []
+	var pose = func(p):samples.append(p);return Transform3D(Basis.IDENTITY,Vector3(p,0,0))
+	var group = {"shapes":[{"shape":box,"transform":Transform3D.IDENTITY}],"linear":true,"margin":0.0}
+	expect(Motion.sweep(equipment,[group],10,pose,[]).is_empty() and samples==[0.0,1.0],"straight rigid sweep evaluates only two endpoints, independent of sample count")
+	var thin = obstacle(game,Vector3(.5,0,0),Vector3(.002,.2,.2),Motion.PARTS);await frames(2)
+	expect(Motion.sweep(equipment,[group],10,pose,[]).get("collider")==thin,"linear fast path retains continuous thin-obstacle detection")
+	expect(Motion.sweep(equipment,[group],10,pose,[thin.get_rid()]).is_empty(),"linear fast path retains moving-body exclusions")
+	for x in [0.0,1.0]:
+		thin.position.x=x;PhysicsServer3D.body_set_state(thin.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,thin.global_transform)
+		expect(Motion.sweep(equipment,[group],10,pose,[]).get("collider")==thin,"linear fast path detects endpoint overlap at "+str(x))
+	thin.free();await frames(1)
+	samples.clear()
+	var changing_exclusions = func(_at):return [] as Array[RID]
+	expect(Motion.sweep(equipment,[group],10,pose,[],Motion.ALL,changing_exclusions).is_empty() and samples.size()==11,"pose-dependent contact exclusions retain every original sample")
+	var arc_blocker = obstacle(game,Vector3(0,1,0),Vector3(.1,.1,.1));await frames(2)
+	var curved = {"shapes_at":func(_at,p):return [{"shape":box,"world":Transform3D(Basis.IDENTITY,Vector3(sin(p*TAU),1-cos(p*TAU),0)*.5)}],"margin":0.0}
+	expect(Motion.sweep(equipment,[curved],10,func(_p):return Transform3D.IDENTITY,[]).get("collider")==arc_blocker,"articulated path with identical endpoint frames still checks its curved middle")
+	game.free();await frames(1)
+
+func rigid_geometry_cache() -> void:
+	var body = StaticBody3D.new();root.add_child(body)
+	var col = CollisionShape3D.new();col.shape=BoxMesh.new().create_trimesh_shape();body.add_child(col)
+	body.set_meta("collision_revision",0)
+	var cache = Motion.Sweep.RigidGeometry.new();cache.read(body)
+	var proxy: Shape3D = cache.shapes[0].shape
+	body.transform=Transform3D(Basis(Vector3.UP,.4),Vector3(3,2,1));cache.read(body)
+	expect(cache.shapes[0].shape==proxy and cache.shapes[0].transform.is_equal_approx(Transform3D.IDENTITY),"rigid load reuses its converted proxy through translation and rotation")
+	var child = StaticBody3D.new();body.add_child(child);shape(child,Vector3(.2,.2,.2));child.position.x=2
+	body.set_meta("collision_revision",1);cache.read(body)
+	expect(cache.shapes.size()==2 and child.get_rid() in cache.rids and cache.shapes[0].shape!=proxy,"collision revision rebuilds geometry and descendant exclusions together")
+	child.position.x=3;cache.invalidate();cache.read(body)
+	expect(cache.shapes[1].transform.origin.is_equal_approx(Vector3(3,0,0)),"explicit articulation invalidation refreshes local child poses")
+	col.disabled=true;body.set_meta("collision_revision",2);cache.read(body)
+	expect(cache.shapes.size()==1,"revision removes disabled collision geometry")
+	body.remove_meta("collision_revision");cache.read(body)
+	child.position.x=4;cache.read(body)
+	expect(cache.shapes[0].transform.origin.is_equal_approx(Vector3(4,0,0)),"unversioned bodies collect live geometry on every read")
+	var other = StaticBody3D.new();root.add_child(other);shape(other,Vector3.ONE);other.set_meta("collision_revision",2);cache.read(other)
+	expect(cache.rids==[other.get_rid()] and cache.shapes.size()==1,"switching payload identity discards the old geometry and RIDs")
+	body.free();other.free()
 func shelf_cargo() -> void:
 	var game = Game.new();root.add_child(game)
 	var lift = preload("res://scripts/work_access_lift.gd").new();game.add_child(lift)
@@ -157,4 +210,32 @@ func rail_motion() -> void:
 	expect(not rail.moving and is_equal_approx(rail.index_x,definition.station_x),"held rail returns to the station")
 	rail.request("park");until_held(rail);blocker.free();await frames(2);until_held(rail)
 	expect(not rail.moving and is_equal_approx(rail.index_x,definition.lanes.parking),"cleared rail resumes automatically to its original destination")
+	# Exercise the reported longitudinal rail phase, with the real holder and
+	# payload sweep. Only unrelated gate/access orchestration is supplied.
+	var gates=Gates.new();game.add_child(gates);gates.equipment_id="rail_gates";game.equipment.register(gates)
+	var access=Access.new();game.add_child(access);access.equipment_id="workshop_access";game.equipment.register(access)
+	rail.path=.2;rail.goal=1;rail.mode="path";rail.moving=true;rail._pose()
+	payload.set_meta("collision_revision",0)
+	var resize_events: Array = []
+	for piece in layout.cradle.pieces.values():piece.shape.shape.changed.connect(func():resize_events.append(true))
+	var forward=Vector3(0,0,signf(definition.bay_z-definition.home_z))
+	blocker=obstacle(game,payload.global_position+forward*.6,Vector3(.2,.2,.002),Motion.PARTS);await frames(2)
+	var start: float=rail.path;rail.physics(1.0/60.0)
+	expect(rail.path>start and rail.blocked_reason.is_empty(),"longitudinal rail starts along clear track")
+	until_held(rail)
+	expect(rail.moving and rail.motion_obstruction.get("collider")==blocker,"straight rail waits for a thin obstacle in the loaded leg's path")
+	expect(resize_events.is_empty(),"straight rail movement does not rebuild unchanged live holder dimensions")
+	var query_count: int=layout.cradle.query_boxes.size()
+	var saved_boxes: Dictionary=layout.cradle.query_boxes.duplicate()
+	blocker.free();await frames(2);until_held(rail)
+	expect(not rail.moving and rail.path==1,"longitudinal rail resumes to the next stop after the obstacle clears")
+	expect(query_count==layout.cradle.pieces.size() and layout.cradle.query_boxes==saved_boxes,"holder queries reuse one box per member across travel ticks")
+	var live_sizes: Dictionary={}
+	for id in layout.cradle.pieces:live_sizes[id]=layout.cradle.pieces[id].shape.shape.size
+	var holder_pose=rail.snapshot_pose(rail.capture())
+	layout.cradle.query_geometry(holder_pose.frame,holder_pose.bogie_x,holder_pose.bogie_z,1,1,1)
+	var unchanged=true
+	for id in layout.cradle.pieces:
+		if layout.cradle.pieces[id].shape.shape.size!=live_sizes[id]:unchanged=false
+	expect(unchanged,"articulated look-ahead never resizes the live holder colliders")
 	game.free();await frames(1)

@@ -7,14 +7,9 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
 - Player reports that opening and closing the hip assembly gantry momentarily
   freezes the whole game. The gantry may be redesigned before launch; avoid a
   deep gantry-specific fix.
-- Player also reports severe lag moving the leg into the hip assembly. Code
-  inspection distinguishes the leg rig from the crane: rail movement recollects
-  the carried assembly's collision shapes every tick, samples the look-ahead
-  route at 0.025 m surface intervals, builds fresh holder query shapes per sample,
-  and rewrites holder shape dimensions during pose updates. These costs remain
-  after this cleanup. Surrounding access/gate motion uses the optimized blockout
-  helpers. Whether lag occurs throughout travel, during the upright turn, or
-  only at docking (which rebuilds assembly collision) is not yet established.
+- Player also reports severe lag moving the leg into the hip assembly, clarified
+  as happening **while moving along the rails**. The separate rail cleanup and
+  remaining playtest are recorded below.
 - User would accept jaws clipping through obstacles if removing collision checks
   solved the hitch; otherwise prefers the shared performance cleanup. Sweeps
   remain enabled because removing them alone leaves broad physics updates.
@@ -23,14 +18,47 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
   blockout scans for sweep membership. Shared updates now publish only changed
   groups and descendants, skip unchanged insert settings, and index collision
   membership. Crane anchor updates use the same selective path.
-- No game launch, engine tests, rendered review or performance timing was run,
-  respecting the user's code-only investigation constraint. Focused checks were
-  added to `gantry_dressing_test` but are unrun. The hitch's cause and resolution
-  are not yet measured; manual refresh at jaw-state changes remains another
+- Initial cleanup was code-only. Follow-up isolated headless tests now pass:
+  `gantry_dressing_test` (63 checks) and `rail_gates_test` (16 checks), including
+  selective updates and same-tick descendant physics poses. No workshop launch,
+  rendered review or gameplay timing ran. The hitch's cause and resolution are
+  not yet measured; manual refresh at jaw-state changes remains another
   candidate if a start/stop hitch persists.
 - [ ] Opening and closing each jaw stays responsive; confirm the hitch is gone.
-- [ ] When engine testing is authorized, run the routine gantry dressing and rail
-  gate cases to check selective updates and same-tick descendant physics poses.
+
+## Rail travel lag — 2026-10-26
+
+- Player reports severe lag while the loaded leg travels along the rails and
+  requests a systemic fix. No approval of subsequent travel smoothness yet.
+- Code diagnosis: each tick recollected the leg's complete collision subtree,
+  allocated holder boxes for every sampled pose, and rewrote unchanged live
+  holder dimensions. A typical 0.25 m straight look-ahead used ten intervals:
+  eleven overlap queries and ten casts per shape, despite a straight rigid path.
+- Shared `MotionSweep` now accepts explicitly linear groups: two endpoint
+  overlaps plus one continuous cast per shape. The rail uses this for straight
+  track/index travel; crane loads and hand-carried bodies use it on straight
+  segments too. Curves, changing holder dimensions and pose-dependent contact
+  exclusions retain sampling. Obstruction results are always queried live.
+- Rail load geometry and excluded body IDs are cached together, keyed by payload
+  identity and collision revision, with explicit invalidation on model changes,
+  commands and restore. Unversioned bodies fall back to live collection. Holder
+  query boxes are reused separately from live colliders; unchanged live sizes
+  and transforms are not rewritten.
+- Mechanical evidence: five isolated headless routine cases pass, **144 checks**
+  in 7.936 s: equipment motion (51), centered carrying (8), rail endpoint (6),
+  gantry dressing (63), rail gates (16). Coverage includes thin obstacles,
+  endpoint overlaps, live waiting/resume, curved paths, contact exclusions,
+  changed/disabled/switched payload geometry and query/live shape separation.
+  Local evidence: `game/workshop/verification/regressions-20261026T064236.904199Z/`.
+  The first run caught a test-local variable redeclaration and sandbox-blocked
+  editor-settings writes; the corrected isolated run passed.
+- Analytical work reduction: about 21 to 3 queries per shape for clear straight
+  travel (630 to 90 for the 30-member holder, plus the payload). This is not a
+  measured FPS gain. No full workshop boot, rendered review or expensive
+  diagnostics ran; complete-scene performance remains unmeasured.
+- [ ] Loaded left and right legs travel smoothly along the rails in normal play.
+- [ ] Turning upright, docking, release and empty return remain responsive;
+  these articulated phases retain sampled collision checks.
 
 ## Progress video feedback — 2026-10-25
 
