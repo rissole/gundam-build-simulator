@@ -27,7 +27,10 @@ states now. A "launch cage" v2 with a clear rear exit is design-only until appro
 
 - [ ] Crane operator view playtest (checkpoint A).
 - [ ] Leg rig jog slice playtest (checkpoint B), before converting the foot rig.
-- [ ] Gantry gap fixes recheck at the hip level; approve or revise the v2 concept (checkpoint C).
+- [ ] Gantry gap fixes recheck at the hip level after C2 integration.
+- [ ] Approve or revise the [launch cage v2 concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) (checkpoint C): two mirrored towers, swinging catwalks, independent hip-bearing arms and deferred lowering/transport. No v2 implementation yet.
+
+**Open choices retained:** identify the asymmetric level/side (C0); approve the v2 architecture and its prototype effort before building it; determine lowering and roll-out support separately. The accepted gantry appearance and physical assembly challenge remain constraints. Parts can continue at the existing hip datum/Y10.97 bearing caps while these equipment choices wait.
 
 ## Left leg completed — 2026-10-26
 

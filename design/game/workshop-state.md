@@ -227,7 +227,7 @@ last version before consolidation.
 
 **In progress (2026-10-27):** [operated machines and gantry access](handoff/operated-machines/README.md):
 three branches (crane operator view first, then operated rigs, plus gantry fixes and a
-design-only v2), from the
+design-only v2). Branch C Phase 1: [runtime gap audit](handoff/operated-machines/C1-gap-audit.md) and [C2 task](handoff/operated-machines/C2-fill-plates.md) written; [launch cage concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) awaits checkpoint C. No repair/v2 implementation yet; C3 still awaits C0. Findings and open choices remain in the [playtest checklist](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26). Work follows the
 [2026-10-26 machine-operation finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
 
 The nine [left-leg task repairs](handoff/left-leg-feedback/README.md) are implemented.
