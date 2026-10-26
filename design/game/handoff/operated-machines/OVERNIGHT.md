@@ -28,8 +28,24 @@ review. Mechanical checks are listed separately from things only a playtest can 
 - A1 audit stopped as specified; you chose approach entry; A resumed from A2.
 - B1/B2 helpers and the B3 design committed on `operated-rigs`; paused at gate A.
 - Grok C2 committed `cd94428` (10 landing plates, 8 hinge-edge rails). Parent re-run: blockout `--check` byte-identical; gantry_dressing 137, wide_elevators 93, smoke 31, access_lift 45 checks pass (10.1 s). Mechanical only.
-- C phase 2 launched: review C2, C3 mirror fix, mark C4 approved-as-direction.
+- C phase 2 done: `15154c6` C2 review (no defects), `7d2ea40` C3 mirror repair, `f3b8ef2` C4 marked approved as direction.
+  Cause found: the right wing was a 180° copy, so its rail crossed the hip-finger entrance (Z24.68)
+  and the right rear-leaf guards faced the hip. Guards now mirror about X13 in all 7 modes and 30
+  fold poses (new assertions in `gantry_dressing_test`).
+- **Merged `gantry-access` into `main`** (`b42733f`). Checklist conflict resolved with the branch
+  version. Parent re-run on main: blockout `--check` passes; gantry_dressing 219, wide_elevators 93,
+  smoke 31, access_lift 45 checks pass. Mechanical only.
 
 ## Morning review steps
 
-(Filled in as work completes.)
+### Gantry (on `main` now): `./play.command --stage=pelvis` (or your normal save)
+
+1. Lowest level (Y8.4), both sides of the hip assembly: do the railings now match? Can you
+   reach the side of the hip assembly equally from left and right?
+2. Walk onto and off each elevator at every level: are the old 300 mm landing slots gone,
+   and does the car still run cleanly past the new plates (20 mm clearance)?
+3. Check the hinge-apron edges on the outer walkways: is there a new railing where you
+   could previously walk off?
+4. **Assumption to confirm:** C kept the 1.55 m opening between each hip finger (ends Z25.8)
+   and the hip apron (starts Z27.35) as a *deliberate* robot/leg work opening. If that is
+   one of the "gaps easy to fall through", say so; it needs a guard or a removable plate.
