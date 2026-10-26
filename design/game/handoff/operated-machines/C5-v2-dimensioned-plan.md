@@ -3,7 +3,7 @@
 Branch `gantry-v2-plan`, worktree `/private/tmp/gbs-gantry-v2`, from `main` at the
 gantry-access merge. Coordinator: Astra High. Read the [README](README.md) shared
 rules, the [launch cage concept](../../final-assembly-plan.md#launch-cage-v2-concept--2026-10-27)
-and [C1](C1-gap-audit.md) (its probe method) first.
+and the C1 probe method (`git show b42733f:design/game/handoff/operated-machines/C1-gap-audit.md`) first.
 
 Requested by the user on 2026-10-27: "can you make a dimensioned plan please". This is
 the concept's first build step: a dimensioned collision/support plan. It is
@@ -63,14 +63,12 @@ All in a new folder `design/game/gantry-v2/`:
      (`hangar_dressing.gd`)
 
    Record the stage, source and time for each envelope.
-5. **Crane envelopes** from the unmerged `crane-operator-view` branch, read-only via
-   `git show crane-operator-view:<path>`. Do not check it out or edit it. Record:
-   - per-task carry height, approach entry and authored approach path
-   - lowest carried solid and highest spreader/cable
-   - trolley underside Y22.875.
-
-   Mark these as **provisional (unmerged branch)** everywhere they constrain tower
-   height or parking. Combine them with the probe envelopes in `envelopes.json`.
+5. **Crane envelopes** from `main`'s authored crane routes (`workshop-layout.json`
+   `crane`, `service_crane.gd`): per-task route and via points, lowest carried solid,
+   highest spreader/cable and the trolley underside Y22.875. The crane operator view
+   (`crane-operator-view` branch) was **rejected on 2026-10-27**; do not use its
+   per-task carry heights or approach entries as constraints. Combine the crane data
+   with the probe envelopes in `envelopes.json`.
 6. **`README.md`**: the dimensioned plan itself. Sections:
    1. Datums and sources: a table of every number used and where it came from (file +
       id/line, or probe output).

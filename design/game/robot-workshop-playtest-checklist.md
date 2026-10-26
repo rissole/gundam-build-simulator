@@ -11,29 +11,35 @@ Move until the job is done. The fixed gantry is frustrating at the hip: it feels
 asymmetric, and it has small gaps that are easy to fall through. Its fixed rear
 catwalks and crosshead mean the robot can never leave through the hangar door.
 
-**Decisions:** the crane is redesigned first, as an operator view: a top-down CCTV
-camera, WASD to strafe, and descend enabled only over a confirmed target. The
-spreader then reshapes for the component, and connectors stay hand-attached.
-Auto-attach from the crane is a later power-up. The rigs get jog buttons, held with
-E with mouselook free; a ghost target; interlocks; and SEAT within tolerance. The
-manual teaches each procedure in detail the first time and gives only the goal
-plus a procedure link on repeats. The gantry gets gap fixes and symmetric fold
-states now. A "launch cage" v2 with a clear rear exit is approved as direction only (2026-10-27); building it waits for the crane operator view, less temporary robot parts and separate build approval.
-[Branches and tasks](handoff/operated-machines/README.md).
+**Rigs (decided, not yet implemented):** jog buttons held with E while mouselook
+stays free; a ghost target with per-axis readouts; interlocks instead of step
+order; SEAT within tolerance. The manual teaches each procedure in detail the
+first time and gives only the goal plus a procedure link on repeats.
+[Operated rigs brief](handoff/operated-machines/B-operated-rigs.md).
 
-- [x] C0 answered 2026-10-27: on the **lowest level**, left and right of the hip assembly, railings mismatch and the hip side is accessible on only one side.
+**Crane operator view: rejected (2026-10-27).** A top-down CCTV view (WASD strafe,
+held approach from a glowing entry point, reshaping spreader) was built on the
+unmerged `crane-operator-view` branch. The user playtested it: "crane view is bad
+and i wont merge". The crane keeps its console. What specifically failed is not yet
+recorded; ask before any further crane redesign. Auto-attach from the crane
+remains a possible later power-up.
 
-**C1 measurement (2026-10-27):** [runtime audit](handoff/operated-machines/C1-gap-audit.md) confirms symmetric 300 mm lift-landing slots, a separate unguarded hinge-apron edge and guard-handedness candidates. Ten fixed landing plates and outer hinge rails were specified for C2 and are now implemented and reviewed (2026-10-27). Retain open work/service edges and the accepted gantry appearance. Automated baseline: three focused suites pass; no rendered inspection or new player acceptance. Recheck landing catches, hinge edges and the named asymmetric spot after integration.
+**Gantry fixes: accepted (2026-10-27).** Ten fixed plates close the 300 mm
+lift-landing slots, eight rails guard the outer hinge-apron edges, and the
+lowest-level right wing and rear-leaf guards now mirror the left (the right side
+had been a 180° copy). The user: "the gantry changes are good". The 1.55 m opening
+between each hip finger and the hip apron is a deliberate robot/leg work opening.
 
-- [ ] Crane operator view playtest (checkpoint A).
-- [ ] Leg rig jog slice playtest (checkpoint B), before converting the foot rig.
-- [ ] Gantry gap fixes and C3 symmetry recheck at the lowest hip level: compare both finger entrances, rear pin/hold-down work, railing positions and access after folding/unfolding. Retain accepted appearance and assembly challenge.
+- [x] Lowest-level asymmetry and landing gaps fixed; player-accepted 2026-10-27.
+- [x] Crane operator view playtested; rejected 2026-10-27.
+- [ ] Leg rig jog slice playtest, before converting the foot rig.
+- [x] [Launch cage v2 concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) approved as direction only, 2026-10-27: two mirrored towers, swinging catwalks, independent hip-bearing arms and deferred lowering/transport.
+- [ ] Dimensioned v2 plan (in progress), then separate v2 build approval. No v2 construction is approved or implemented.
 
-**C3 mechanical evidence (2026-10-27):** the right 180-degree copy put a wing rail across its extended hip-finger entrance and rear-leaf guards toward the hip. Corrected guard handedness; floors, finger lengths and fold channels already matched. No walkway extension. Generator and four requested routines pass (219/45/93/31 checks, 9.359 s); [review and evidence](handoff/operated-machines/README.md#c3-mirror-repair). No rendered inspection, walking/reach sweeps or new player acceptance.
-- [x] Checkpoint C: [launch cage v2 concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) approved as direction only, 2026-10-27: two mirrored towers, swinging catwalks, independent hip-bearing arms and deferred lowering/transport.
-- [ ] Separate v2 build approval, after the crane operator view and less temporary robot parts. No v2 construction is approved or implemented.
-
-**Open choices retained:** recheck the lowest-level repair with the player; approve a v2 build and its prototype effort after the crane operator view and less temporary robot parts; determine lowering and roll-out support separately. The accepted gantry appearance and physical assembly challenge remain constraints. Parts can continue at the existing hip datum/Y10.97 bearing caps while these equipment choices wait.
+**Open choices retained:** what made the crane view bad; v2 build approval and
+prototype effort; lowering and roll-out support. The accepted gantry appearance and
+physical assembly challenge remain constraints. Parts can continue at the existing
+hip datum/Y10.97 bearing caps while these equipment choices wait.
 
 ## Left leg completed — 2026-10-26
 
