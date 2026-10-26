@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1160" viewBox="0 0 1560 1160">
+<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8L8 0" stroke="#b7bcc2" stroke-width="1"/></pattern><marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto-start-reverse"><path d="M6 0L0 3L6 6" fill="none" stroke="#ad442b"/></marker></defs>
+<rect width="100%" height="100%" fill="#faf9f5"/>
+<text x="28.00" y="34.00" font-family="sans-serif" font-size="22" fill="#263846">C5 tight clearances · sheet 9 · every positive pair below 0.30 m</text>
+<text x="28.00" y="61.00" font-family="sans-serif" font-size="14" fill="#263846">Red dimensions are true 3D separations; the selected projection contains all nonzero separation axes.</text>
+<rect x="20.00" y="92.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="30.00" y="162.00" width="104.74" height="43.64" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="30.00" y="263.36" width="480.00" height="43.64" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="73.64" y1="205.64" x2="73.64" y2="263.36" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="77.64" y="226.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.1984 m (min 0.100)</text>
+<text x="30.00" y="113.00" font-family="sans-serif" font-size="13" fill="#263846">T097: L_gantry_jaw_11.6_26.55_handle</text>
+<text x="30.00" y="133.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/35</text>
+<text x="30.00" y="152.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="30.00" y="327.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.1984, 0.0000</text>
+<rect x="535.00" y="92.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="545.00" y="162.00" width="104.74" height="43.64" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="545.00" y="263.36" width="480.00" height="43.64" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="588.64" y1="205.64" x2="588.64" y2="263.36" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="592.64" y="226.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.1984 m (min 0.100)</text>
+<text x="545.00" y="113.00" font-family="sans-serif" font-size="13" fill="#263846">T098: L_gantry_jaw_11.6_26.55_handle</text>
+<text x="545.00" y="133.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/36</text>
+<text x="545.00" y="152.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="545.00" y="327.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.1984, 0.0000</text>
+<rect x="1050.00" y="92.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="1060.00" y="162.00" width="93.18" height="38.82" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="1060.00" y="268.18" width="463.29" height="38.82" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="1098.82" y1="200.82" x2="1098.82" y2="268.18" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="1102.82" y="226.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2602 m (min 0.100)</text>
+<text x="1060.00" y="113.00" font-family="sans-serif" font-size="13" fill="#263846">T099: L_gantry_jaw_11.6_26.55_handle</text>
+<text x="1060.00" y="133.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/37</text>
+<text x="1060.00" y="152.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="1060.00" y="327.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.2602, 0.0000</text>
+<rect x="20.00" y="352.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="30.00" y="422.00" width="90.00" height="37.50" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="30.00" y="529.50" width="447.50" height="37.50" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="67.50" y1="459.50" x2="67.50" y2="529.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="71.50" y="486.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2800 m (min 0.100)</text>
+<text x="30.00" y="373.00" font-family="sans-serif" font-size="13" fill="#263846">T100: L_gantry_jaw_11.6_26.55_handle</text>
+<text x="30.00" y="393.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/48</text>
+<text x="30.00" y="412.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="30.00" y="587.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.2800, 0.0000</text>
+<rect x="535.00" y="352.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="545.00" y="422.00" width="100.38" height="41.83" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="545.00" y="525.17" width="480.00" height="41.83" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="586.83" y1="463.83" x2="586.83" y2="525.17" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="590.83" y="486.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2200 m (min 0.100)</text>
+<text x="545.00" y="373.00" font-family="sans-serif" font-size="13" fill="#263846">T101: L_gantry_jaw_11.6_26.55_handle</text>
+<text x="545.00" y="393.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/49</text>
+<text x="545.00" y="412.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="545.00" y="587.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.2200, 0.0000</text>
+<rect x="1050.00" y="352.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="1060.00" y="422.00" width="113.48" height="47.28" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="1060.00" y="519.72" width="480.00" height="47.28" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="1107.28" y1="469.28" x2="1107.28" y2="519.72" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="1111.28" y="486.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.1600 m (min 0.100)</text>
+<text x="1060.00" y="373.00" font-family="sans-serif" font-size="13" fill="#263846">T102: L_gantry_jaw_11.6_26.55_handle</text>
+<text x="1060.00" y="393.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/50</text>
+<text x="1060.00" y="412.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="1060.00" y="587.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.1600, 0.0000</text>
+<rect x="20.00" y="612.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="30.00" y="682.00" width="130.50" height="54.38" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="30.00" y="772.62" width="480.00" height="54.38" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="84.38" y1="736.38" x2="84.38" y2="772.62" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="88.38" y="746.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.1000 m (min 0.100)</text>
+<text x="30.00" y="633.00" font-family="sans-serif" font-size="13" fill="#263846">T103: L_gantry_jaw_11.6_26.55_handle</text>
+<text x="30.00" y="653.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/51</text>
+<text x="30.00" y="672.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="30.00" y="847.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.1000, 0.0000</text>
+<rect x="535.00" y="612.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="545.00" y="682.00" width="153.53" height="63.97" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="545.00" y="763.03" width="480.00" height="63.97" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="608.97" y1="745.97" x2="608.97" y2="763.03" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="612.97" y="746.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.0400 m (min 0.100)</text>
+<text x="545.00" y="633.00" font-family="sans-serif" font-size="13" fill="#263846">T104: L_gantry_jaw_11.6_26.55_handle</text>
+<text x="545.00" y="653.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/52</text>
+<text x="545.00" y="672.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="545.00" y="847.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.0400, 0.0000</text>
+<rect x="1050.00" y="612.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="1200.53" y="730.33" width="339.47" height="48.33" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="1060.00" y="682.00" width="72.50" height="145.00" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="1200.53" y1="754.50" x2="1132.50" y2="754.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="1170.51" y="746.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.1407 m (min 0.100)</text>
+<text x="1060.00" y="633.00" font-family="sans-serif" font-size="13" fill="#263846">T105: L_gantry_jaw_11.6_26.55_link</text>
+<text x="1060.00" y="653.00" font-family="sans-serif" font-size="13" fill="#263846">crane/left_arm/approach/7</text>
+<text x="1060.00" y="672.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_arm</text>
+<text x="1060.00" y="847.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.1407, 0.0000, 0.0000</text>
+<rect x="20.00" y="872.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="30.00" y="959.81" width="143.73" height="20.35" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="30.00" y="1048.84" width="293.82" height="38.16" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="68.16" y1="980.16" x2="68.16" y2="1048.84" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="72.16" y="1006.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2700 m (min 0.100)</text>
+<text x="30.00" y="893.00" font-family="sans-serif" font-size="13" fill="#263846">T106: L_gantry_jaw_11.6_26.55_link</text>
+<text x="30.00" y="913.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/58</text>
+<text x="30.00" y="932.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="30.00" y="1107.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.2700, 0.0000</text>
+<rect x="535.00" y="872.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="545.00" y="961.90" width="160.64" height="22.75" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="545.00" y="1044.35" width="328.38" height="42.65" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="587.65" y1="984.65" x2="587.65" y2="1044.35" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="591.65" y="1006.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2100 m (min 0.100)</text>
+<text x="545.00" y="893.00" font-family="sans-serif" font-size="13" fill="#263846">T107: L_gantry_jaw_11.6_26.55_link</text>
+<text x="545.00" y="913.00" font-family="sans-serif" font-size="13" fill="#263846">rail/left/59</text>
+<text x="545.00" y="932.00" font-family="sans-serif" font-size="11" fill="#263846">docked · delivery/left_leg</text>
+<text x="545.00" y="1107.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0000, 0.2100, 0.0000</text>
+<rect x="1050.00" y="872.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="1060.00" y="1034.03" width="52.97" height="28.25" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="1162.58" y="942.00" width="331.55" height="52.97" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="1112.97" y1="1034.03" x2="1162.58" y2="994.97" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="1141.78" y="1006.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.1788 m (min 0.100)</text>
+<text x="1060.00" y="893.00" font-family="sans-serif" font-size="13" fill="#263846">T108: L_gantry_jaw_11.6_26.55_link</text>
+<text x="1060.00" y="913.00" font-family="sans-serif" font-size="13" fill="#263846">robot/core</text>
+<text x="1060.00" y="932.00" font-family="sans-serif" font-size="11" fill="#263846">docked · lower_and_transfer</text>
+<text x="1060.00" y="1107.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.1405, 0.1106, 0.0000</text>
+</svg>

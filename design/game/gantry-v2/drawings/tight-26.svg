@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1160" viewBox="0 0 1560 1160">
+<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8L8 0" stroke="#b7bcc2" stroke-width="1"/></pattern><marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto-start-reverse"><path d="M6 0L0 3L6 6" fill="none" stroke="#ad442b"/></marker></defs>
+<rect width="100%" height="100%" fill="#faf9f5"/>
+<text x="28.00" y="34.00" font-family="sans-serif" font-size="22" fill="#263846">C5 tight clearances · sheet 26 · every positive pair below 0.30 m</text>
+<text x="28.00" y="61.00" font-family="sans-serif" font-size="14" fill="#263846">Red dimensions are true 3D separations; the selected projection contains all nonzero separation axes.</text>
+<rect x="20.00" y="92.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="30.00" y="265.96" width="41.04" height="41.04" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="79.25" y="186.62" width="16.42" height="16.42" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="71.04" y1="265.96" x2="79.25" y2="203.04" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="79.14" y="226.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2319 m (min 0.020)</text>
+<text x="30.00" y="113.00" font-family="sans-serif" font-size="13" fill="#263846">T301: L_outer_landing_11.2</text>
+<text x="30.00" y="133.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/02</text>
+<text x="30.00" y="152.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="30.00" y="327.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0300, 0.0000, 0.2300</text>
+<rect x="535.00" y="92.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="545.00" y="162.00" width="72.50" height="72.50" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="632.00" y="234.50" width="29.00" height="72.50" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="617.50" y1="234.50" x2="632.00" y2="234.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="628.75" y="226.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.0300 m (min 0.020)</text>
+<text x="545.00" y="113.00" font-family="sans-serif" font-size="13" fill="#263846">T302: L_outer_landing_11.2</text>
+<text x="545.00" y="133.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/03</text>
+<text x="545.00" y="152.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="545.00" y="327.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0300, 0.0000, 0.0000</text>
+<rect x="1050.00" y="92.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="1060.00" y="234.50" width="72.50" height="72.50" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="1147.00" y="162.00" width="29.00" height="72.50" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="1132.50" y1="234.50" x2="1147.00" y2="234.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="1143.75" y="226.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.0300 m (min 0.020)</text>
+<text x="1060.00" y="113.00" font-family="sans-serif" font-size="13" fill="#263846">T303: L_outer_landing_11.2</text>
+<text x="1060.00" y="133.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/04</text>
+<text x="1060.00" y="152.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="1060.00" y="327.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0300, 0.0000, 0.0000</text>
+<rect x="20.00" y="352.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="30.00" y="525.96" width="41.04" height="41.04" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="92.92" y="446.62" width="417.08" height="16.42" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="71.04" y1="525.96" x2="92.92" y2="463.04" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="85.98" y="486.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2435 m (min 0.020)</text>
+<text x="30.00" y="373.00" font-family="sans-serif" font-size="13" fill="#263846">T304: L_outer_landing_11.2</text>
+<text x="30.00" y="393.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/10</text>
+<text x="30.00" y="412.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="30.00" y="587.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0800, 0.0000, 0.2300</text>
+<rect x="535.00" y="352.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="545.00" y="422.00" width="72.50" height="145.00" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="627.17" y="422.00" width="397.83" height="145.00" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="617.50" y1="494.50" x2="627.17" y2="494.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="626.33" y="486.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.0200 m (min 0.020)</text>
+<text x="545.00" y="373.00" font-family="sans-serif" font-size="13" fill="#263846">T305: L_outer_landing_14</text>
+<text x="545.00" y="393.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/00</text>
+<text x="545.00" y="412.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="545.00" y="587.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0200, 0.0000, 0.0000</text>
+<rect x="1050.00" y="352.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="1060.00" y="525.96" width="41.04" height="41.04" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="1109.25" y="446.62" width="16.42" height="16.42" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="1101.04" y1="525.96" x2="1109.25" y2="463.04" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="1109.14" y="486.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2319 m (min 0.020)</text>
+<text x="1060.00" y="373.00" font-family="sans-serif" font-size="13" fill="#263846">T306: L_outer_landing_14</text>
+<text x="1060.00" y="393.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/02</text>
+<text x="1060.00" y="412.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="1060.00" y="587.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0300, 0.0000, 0.2300</text>
+<rect x="20.00" y="612.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="30.00" y="682.00" width="72.50" height="72.50" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="117.00" y="754.50" width="29.00" height="72.50" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="102.50" y1="754.50" x2="117.00" y2="754.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="113.75" y="746.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.0300 m (min 0.020)</text>
+<text x="30.00" y="633.00" font-family="sans-serif" font-size="13" fill="#263846">T307: L_outer_landing_14</text>
+<text x="30.00" y="653.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/03</text>
+<text x="30.00" y="672.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="30.00" y="847.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0300, 0.0000, 0.0000</text>
+<rect x="535.00" y="612.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="545.00" y="754.50" width="72.50" height="72.50" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="632.00" y="682.00" width="29.00" height="72.50" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="617.50" y1="754.50" x2="632.00" y2="754.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="628.75" y="746.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.0300 m (min 0.020)</text>
+<text x="545.00" y="633.00" font-family="sans-serif" font-size="13" fill="#263846">T308: L_outer_landing_14</text>
+<text x="545.00" y="653.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/04</text>
+<text x="545.00" y="672.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="545.00" y="847.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0300, 0.0000, 0.0000</text>
+<rect x="1050.00" y="612.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="1060.00" y="785.96" width="41.04" height="41.04" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="1122.92" y="706.62" width="417.08" height="16.42" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="1101.04" y1="785.96" x2="1122.92" y2="723.04" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="1115.98" y="746.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2435 m (min 0.020)</text>
+<text x="1060.00" y="633.00" font-family="sans-serif" font-size="13" fill="#263846">T309: L_outer_landing_14</text>
+<text x="1060.00" y="653.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/10</text>
+<text x="1060.00" y="672.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="1060.00" y="847.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0800, 0.0000, 0.2300</text>
+<rect x="20.00" y="872.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="30.00" y="942.00" width="72.50" height="145.00" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="112.17" y="942.00" width="397.83" height="145.00" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="102.50" y1="1014.50" x2="112.17" y2="1014.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="111.33" y="1006.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.0200 m (min 0.020)</text>
+<text x="30.00" y="893.00" font-family="sans-serif" font-size="13" fill="#263846">T310: L_outer_landing_16.4</text>
+<text x="30.00" y="913.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/00</text>
+<text x="30.00" y="932.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="30.00" y="1107.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0200, 0.0000, 0.0000</text>
+<rect x="535.00" y="872.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="545.00" y="1045.96" width="41.04" height="41.04" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="594.25" y="966.62" width="16.42" height="16.42" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="586.04" y1="1045.96" x2="594.25" y2="983.04" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="594.14" y="1006.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.2319 m (min 0.020)</text>
+<text x="545.00" y="893.00" font-family="sans-serif" font-size="13" fill="#263846">T311: L_outer_landing_16.4</text>
+<text x="545.00" y="913.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/02</text>
+<text x="545.00" y="932.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="545.00" y="1107.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0300, 0.0000, 0.2300</text>
+<rect x="1050.00" y="872.00" width="500.00" height="247.00" fill="#fffdf9" stroke="#c9cbc5" stroke-width="1.2"/>
+<rect x="1060.00" y="942.00" width="72.50" height="72.50" fill="#d7e2e7" stroke="#294f67" stroke-width="1.2"/>
+<rect x="1147.00" y="1014.50" width="29.00" height="72.50" fill="url(#hatch)" stroke="#848a88" stroke-width="1.2"/>
+<line x1="1132.50" y1="1014.50" x2="1147.00" y2="1014.50" stroke="#ad442b" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="1143.75" y="1006.50" font-family="sans-serif" font-size="13" fill="#9b3422">0.0300 m (min 0.020)</text>
+<text x="1060.00" y="893.00" font-family="sans-serif" font-size="13" fill="#263846">T312: L_outer_landing_16.4</text>
+<text x="1060.00" y="913.00" font-family="sans-serif" font-size="13" fill="#263846">lift/left/piece/03</text>
+<text x="1060.00" y="932.00" font-family="sans-serif" font-size="11" fill="#263846">fixed · roll_out_ready</text>
+<text x="1060.00" y="1107.00" font-family="sans-serif" font-size="12" fill="#263846">XYZ separation 0.0300, 0.0000, 0.0000</text>
+</svg>
