@@ -6,10 +6,13 @@ class Crane extends Node3D:
 	var motion = ""
 	var station = "park"
 	var options: Array[Dictionary] = [{"action":"pickup","label":"Move to Heavy Module Bay"}]
-	func status_text() -> String:return "Parking bay · Up"
+	var status_line := "Parking bay · Up"
+	var blocked := ""
+	func status_text() -> String:return status_line
 	func load_text() -> String:return "Next pickup: Hip assembly"
 	func menu_options() -> Array[Dictionary]:return options
-	func action_error(_action: String) -> String:return ""
+	func action_error(_action: String) -> String:return blocked
+	func request_console(action: String) -> String:return action_error(action)
 	func next_hint() -> String:return ""
 
 func _initialize() -> void:call_deferred("run")
@@ -36,6 +39,14 @@ func run() -> void:
 	expect(console.scroll.size.y <= 300 and console.panel.size.y < 900,"long command list is bounded")
 	crane.options.resize(1);console.refresh();await frames(8,false)
 	expect(absf(console.panel.size.y-compact_height)<2,"console shrinks when only one command remains")
+	crane.status_line="Limb Bay · Down\nMagnetic connectors attached: 2/2\nWaiting for the loose washer."
+	crane.blocked="Finish retaining the structural shin in the manual (M) before detaching a magnetic connector."
+	crane.options.clear();crane.options.append({"action":"up","label":"Raise crane"})
+	console.refresh();await frames(2,false)
+	expect(console.status.text==crane.status_line and not console.status.text.contains("Connection retention"),"console shows the shared status without a retention count")
+	expect(console.hint.text==crane.blocked,"selecting a blocked command explains what to finish")
+	console._command("up");await frames(2,false)
+	expect(console.feedback.text==crane.blocked and not console.feedback.text.contains("Connection retention"),"trying the blocked command repeats that explanation")
 	var passed = checks.all(func(check):return check.passed)
 	print("CRANE_CONSOLE ","PASS " if passed else "FAIL ",checks.size()," checks")
 	crane.free();hud.free();quit(0 if passed else 1)

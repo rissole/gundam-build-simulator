@@ -370,7 +370,7 @@ func action_error(action: String) -> String:
 			if config.spec.has("source_equipment"):
 				var support_error: String=game.equipment.get_equipment(config.spec.source_equipment).release_error(uid)
 				if not support_error.is_empty():return support_error
-			if _installed() and not secured():return "Complete this connection’s retaining hardware before detaching a magnetic connector."
+			if _installed() and not secured():return _retention_block(false)
 		return _interaction_error(end_nodes[id].global_position,[load_body,game.runtime.node(load_owner)])
 	if action.begins_with("attach:"):
 		var point = action.get_slice(":",1)
@@ -400,7 +400,7 @@ func action_error(action: String) -> String:
 			if station=="source" and config.spec.has("source_equipment"):
 				var source_error: String=game.equipment.get_equipment(config.spec.source_equipment).source_error(uid)
 				if not source_error.is_empty():return source_error
-			if hardware_count()>0:return "Undo all of this connection’s retaining hardware before lifting the component."
+			if hardware_count()>0:return _retention_block(true)
 			if _installed():return _beam_undo_error()
 			if not game.model.support_occupant(support).is_empty():return "The crane support is occupied."
 		return ""
@@ -554,7 +554,7 @@ func drop() -> Dictionary:
 
 func _beam_undo_error() -> String:
 	if raised or not motion.is_empty() or station != "receiver" or attached_count()!=required_ends:return "Keep all required magnets engaged with the crane down before undoing seating."
-	if hardware_count()>0:return "Undo all of this connection’s retaining hardware before lifting the component."
+	if hardware_count()>0:return _retention_block(true)
 	if config.spec.has("source_equipment"):return game.equipment.get_equipment(config.spec.source_equipment).reacquire_error(uid)
 	if config.spec.get("receiver_equipment","")=="module_supports":return game.equipment.get_equipment("module_supports").reacquire_error(uid)
 	return ""
@@ -836,9 +836,28 @@ func status_text() -> String:
 	if not motion.is_empty():label += " · "+("Moving" if moving else "Stopped")
 	if attached_count()>0:label += "\nMagnetic connectors attached: %d/%d"%[attached_count(),required_ends]
 	if _installed() and not receiver_support.is_empty():label+="\nReceiving support has taken the load."
-	elif _installed():label += ("\nConnection retention: %d/%d")%[hardware_count(),fastener_slots.size()]
 	if not blocked_reason.is_empty():label += "\n"+blocked_reason
 	return label
+
+## Player name of the seated connection. A catalog code is not the name, and the
+## wording stays generic: bolts, pins, jaws and guides are all retaining work.
+func _connection_name() -> String:
+	var label := ""
+	if not slot.is_empty() and game.model.assemblies.has(load_owner):
+		label = str(game.model.slot_definition(load_owner,slot).get("label",""))
+		var mark := " · "
+		var cut := label.find(mark)
+		if cut >= 0:label = label.substr(cut+mark.length())
+	if label.is_empty() and tasks.has(task):label = _load_title(task)
+	if label.is_empty():return "this connection"
+	return "the "+label.substr(0,1).to_lower()+label.substr(1)
+
+## One refusal for a blocked release or lift. The manual already lists the work;
+## this does not add a second progress count or change who may release.
+func _retention_block(lifting: bool) -> String:
+	var name := _connection_name()
+	if lifting:return "Undo retaining hardware for %s in the manual (M) before lifting the component."%name
+	return "Finish retaining %s in the manual (M) before detaching a magnetic connector."%name
 
 ## Console header: the load being carried, or the next one to collect.
 func load_text() -> String:

@@ -18,6 +18,7 @@ class ModelRuntime extends RefCounted:
 	func _init(value: AssemblyModel) -> void:model=value
 	func definition(owner: String) -> Dictionary:return model.definitions.assemblies[model.assemblies[owner].definition]
 	func mount(_owner: String, _slot: String, _child: String) -> void:pass
+	func node(_owner: String):return null # detach lists the seated body; this fixture has no scene nodes
 class Stations extends RefCounted:
 	var model: AssemblyModel
 	func _init(value: AssemblyModel) -> void:model=value
