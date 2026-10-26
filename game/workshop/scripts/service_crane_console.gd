@@ -31,6 +31,7 @@ func _make_panel() -> void:
 	# reach its HUD or physical interactions behind the console.
 	backdrop = Control.new();backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);add_child(backdrop)
+	backdrop.resized.connect(_queue_fit)
 	panel = PanelContainer.new();panel.custom_minimum_size.x = PANEL_WIDTH;backdrop.add_child(panel)
 	panel.add_theme_stylebox_override("panel",crane.game.hud.style(Color("101b23"),Color("a6bac344"),16))
 	var column = VBoxContainer.new();column.add_theme_constant_override("separation",8);panel.add_child(column)
@@ -42,6 +43,7 @@ func _make_panel() -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL;column.add_child(scroll)
 	choices = VBoxContainer.new();choices.add_theme_constant_override("separation",6)
 	choices.size_flags_horizontal = Control.SIZE_EXPAND_FILL;scroll.add_child(choices)
+	choices.minimum_size_changed.connect(_queue_fit)
 	hint = _label(column,14)
 	hint.add_theme_color_override("font_color",crane.game.hud.muted)
 	feedback = _label(column,14)
@@ -54,6 +56,7 @@ func _make_panel() -> void:
 func _label(parent: Control, font_size: int) -> Label:
 	var label: Label = crane.game.hud.label("",font_size)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;parent.add_child(label)
+	label.minimum_size_changed.connect(_queue_fit)
 	return label
 
 func open() -> String:
@@ -133,8 +136,13 @@ func refresh() -> void:
 		var key: Array = [backdrop.size,status.text,load_label.text,hint.text,feedback.text,order.duplicate()]
 		if key != layout_key:
 			layout_key = key
-			if not layout_queued:
-				layout_queued = true;_fit_panel.call_deferred()
+			_queue_fit()
+
+func _queue_fit() -> void:
+	# Wrapped text can settle after the first fit. Shrink again when its actual
+	# minimum changes, even if the text and available commands are unchanged.
+	if is_open and not layout_queued:
+		layout_queued = true;_fit_panel.call_deferred()
 
 func _fit_panel() -> void:
 	layout_queued = false

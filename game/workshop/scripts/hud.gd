@@ -589,9 +589,6 @@ func refresh() -> void:
 	var carrying: String = ""
 	if not held.is_empty():
 		carrying = "Carrying "+game.components.title(game.model.items[held].kind)
-		if game.manual_progress != null:
-			var for_step: Dictionary = game.manual_progress.step_for_part(game.model.items[held].kind)
-			if not for_step.is_empty():carrying += "\nFor: %s · %s"%[str(for_step.title),str(for_step.chapter.title)]
 	elif not build.is_empty():carrying = "Carrying "+game.build_label(build)
 	if game.hands.payload_holder() != null:carrying = "Holding magnetic connector · aim at a marked point and click · Q stow"
 	carry_label.text = carrying
