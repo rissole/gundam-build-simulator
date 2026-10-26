@@ -21,6 +21,7 @@ ROUTINE = (
     'mobile_platform_test',
     'nested_runtime_test',
     'part_variants_test',
+    'pickup_surfaces_test',
     'pitch_interface_test',
     'pitch_model_test',
     'pockets_model_test',

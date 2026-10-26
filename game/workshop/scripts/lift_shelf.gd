@@ -59,7 +59,7 @@ func controls() -> Array[Dictionary]:
 			if uid.is_empty():continue
 			var body: Node3D = cargo[uid]
 			var bounds: AABB = game.source[game.source_uid(uid)].mesh.get_aabb()
-			result.append(control_entry(body,"take:"+str(index),"Pick up "+game.components.title(game.model.items[uid].kind)+" · E",.3,{"point":body.global_transform*bounds.get_center(),"input":"pickup","allowed":[body,lift.deck],"allow_body_hit":true}))
+			result.append(control_entry(body,"take:"+str(index),"Pick up "+game.components.title(game.model.items[uid].kind)+" · E",.3,{"point":body.global_transform*bounds.get_center(),"pickup_body":body,"input":"pickup","allowed":[body,lift.deck],"allow_body_hit":true}))
 	return result
 
 func action_error(action: String) -> String:

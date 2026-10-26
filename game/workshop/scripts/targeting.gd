@@ -1,12 +1,15 @@
 extends RefCounted
 ## Aim scoring, sightlines, discovery, access, prompts and placement previews.
 var game: Node
+var pickup_surfaces = preload("res://scripts/pickup_surfaces.gd").new()
+var pickup_bodies: Dictionary = {}
 
 func _init(workshop: Node) -> void:
 	game = workshop
 
 func update_target() -> void:
 	game.target = {}
+	pickup_bodies.clear()
 	var best: float = INF
 	var candidates: Array[Dictionary] = []
 	var held = game.held_build()
@@ -31,7 +34,7 @@ func update_target() -> void:
 		if game.camera.global_position.distance_squared_to(point) <= game.SNAP_DISCOVERY_RANGE*game.SNAP_DISCOVERY_RANGE:
 			candidates.append({"type":"bin","kind":kind,"point":point,"radius":0.35})
 	for uid in game.loose:
-		if is_instance_valid(game.loose[uid]):candidates.append({"type":"loose","uid":uid,"point":game.loose[uid].global_position,"radius":0.12})
+		if is_instance_valid(game.loose[uid]):candidates.append({"type":"loose","uid":uid,"pickup_body":game.loose[uid],"point":game.loose[uid].global_position,"radius":0.12})
 	if game.journey != null:candidates = game.journey.filter_candidates(candidates)
 	candidates.append_array(game.equipment.controls())
 	if held.is_empty():
@@ -39,13 +42,23 @@ func update_target() -> void:
 			# Fixed/mounted builds have no competing pickup action; retain their
 			# connection inspection even when no pocket is selected.
 			if fitting_part or not game.builds.has(game.model.top_level(candidate.owner)):candidates.append(candidate)
+	for candidate in candidates:
+		if candidate.has("pickup_body"):pickup_bodies[candidate.pickup_body] = true
 	var scored: Array[Dictionary] = []
 	var focused_connections: Dictionary = {}
 	var discovery_hits: Dictionary = {}
 	var precise_snap = false
 	for candidate in candidates:
-		if game.camera.global_position.distance_to(candidate.point) > game.SNAP_DISCOVERY_RANGE: continue
-		var score = aim_score(candidate.point,candidate.radius)
+		var score: float
+		if candidate.has("pickup_body"):
+			var surface = pickup_surfaces.aim_hit(candidate.pickup_body,game.camera,game.SNAP_DISCOVERY_RANGE)
+			if surface.is_empty():continue
+			candidate.point = surface.point
+			score = surface.score
+			if not can_see(candidate.point,[candidate.pickup_body]):continue
+		else:
+			if game.camera.global_position.distance_to(candidate.point) > game.SNAP_DISCOVERY_RANGE:continue
+			score = aim_score(candidate.point,candidate.radius)
 		if score == INF:
 			if not snap_candidate_valid(candidate):continue
 			var owner: String = game.model.top_level(candidate.get("owner",candidate.get("build","")))
@@ -106,7 +119,19 @@ func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, 
 			for body in game.bodies.values():
 				if receiver.is_ancestor_of(body):excluded.append(body.get_rid())
 	query.exclude = excluded
-	var hit = game.get_world_3d().direct_space_state.intersect_ray(query)
+	var hit = {}
+	# A coarse pickup collider may cover a real opening. Refine only known
+	# collectible bodies against their visible mesh, keeping scenery solid.
+	for attempt in range(16):
+		hit = game.get_world_3d().direct_space_state.intersect_ray(query)
+		if hit.is_empty() or not pickup_bodies.has(hit.collider):break
+		var surface = pickup_surfaces.ray_hit(hit.collider,game.camera.global_position,(point-game.camera.global_position).normalized(),game.camera.global_position.distance_to(point)+0.002)
+		if not surface.is_empty():
+			hit.position = surface.point
+			break
+		excluded.append(hit.collider.get_rid())
+		query.exclude = excluded
+		if attempt == 15:return false
 	if hit.is_empty(): return true
 	if allowed.has(hit.collider):
 		if allow_body_hit:return true
@@ -191,11 +216,12 @@ func present_target(access_error: String) -> void:
 	match game.target.type:
 		"equipment":
 			caption = game.target.label
+			pickup_target = game.target.get("input","") == "pickup"
 			detail = game.target.controller.action_error(game.target.action)
 			usable = detail.is_empty()
 			if usable:
 				action_key = "Click" if game.target.get("input","") == "place" else "E"
-				action_label = "Place" if game.target.get("input","") == "place" else "Use"
+				action_label = "Carry" if pickup_target else ("Place" if game.target.get("input","") == "place" else "Use")
 		"bin":
 			pickup_target = true
 			var count: int = game.model.count_at(game.target.kind,"bin")
@@ -260,6 +286,7 @@ func target_sight_depth() -> float:
 	return game.components.sight_depth(game.target.owner,game.target.sid)
 
 func target_allows_body_hit() -> bool:
+	if game.target.has("pickup_body"):return false
 	if game.target.get("type","") == "equipment":return game.target.get("allow_body_hit",false)
 	if game.target.get("type","") == "component":return game.components.service_access(game.target.owner,game.target.sid)
 	if game.target.get("type","") == "mount":return game.components.service_access(game.target.get("owner",game.default_parent_id()),game.target.mount)
