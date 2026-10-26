@@ -1,6 +1,6 @@
 # Workshop: current state
 
-Updated 2026-10-25. Read this before continuing workshop development. Keep it short:
+Updated 2026-10-26. Read this before continuing workshop development. Keep it short:
 current state, active rules and open decisions. Record player findings in the
 [playtest checklist](robot-workshop-playtest-checklist.md). When a piece of
 work finishes, move its narrative and evidence into [history/](history/) and leave
@@ -10,6 +10,14 @@ a one-line summary here. Earlier versions of this file are
 last version before consolidation.
 
 ## Where things stand
+
+- **Left-leg feedback implemented (2026-10-26):** all nine repairs integrated:
+  explicit captive braces, crane wording, shared standard hardware, surface pickup,
+  supported shelf poses, carry recovery, loose deck riding, manual control cues
+  and connection discovery. The 45-suite routine run exposed one shelf-cache
+  defect; corrected affected suites pass. No rendered review or new player
+  acceptance. [Evidence and task record](handoff/left-leg-feedback/README.md#implementation-evidence--2026-10-26);
+  [focused player recheck](robot-workshop-playtest-checklist.md#focused-left-leg-recheck).
 
 - **Gantry hitch cleanup (2026-10-26):** player reports a momentary freeze on jaw
   opening/closing. Shared blockout updates now publish changed groups and their
@@ -208,6 +216,11 @@ last version before consolidation.
 
 ## Next
 
+The nine [left-leg task repairs](handoff/left-leg-feedback/README.md) are implemented.
+Next is the [focused left-leg recheck](robot-workshop-playtest-checklist.md#focused-left-leg-recheck),
+then the wider workshop journey. Keep player acceptance separate from mechanical
+checks; retain the broader playtest and lane-marking obligations below.
+
 1. The user playtests the robot workshop with the
    [playtest checklist](robot-workshop-playtest-checklist.md), from the foot build in the
    hangar onward. Record results there.
@@ -257,7 +270,9 @@ last version before consolidation.
 - **Riding is shared.** Anything the player stands on carries them and the load in
   their hands as it moves (`EquipmentRegistry.physics`). Equipment treats its rider
   and hand load as part of its moving envelope (`WorkshopEquipment.passengers()`),
-  not as obstacles. Don't add per-platform rider code.
+  not as obstacles. Stable loose components resting on declared moving decks
+  also ride, retaining loose ownership; their full envelopes still stop for real
+  obstacles. Shelf-owned cargo stays separate. Don't add per-platform rider code.
 - **Handling rules kept from the leg-bay trials:** the lift shelf holds two one-hand
   parts or one two-hand part, on the side opposite the hip working corner. Keep
   the accepted boarding and hip approach clear. Source and receiver support stay

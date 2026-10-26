@@ -54,13 +54,18 @@ func stow_basis(uid: String) -> Basis:
 	return Basis.from_euler(AssemblyRuntime.vec(profile.get("shelf_rotation_degrees",[0,0,0]))*PI/180)
 
 func stow_bounds(uid: String) -> AABB:
-	if _stow_bounds.has(uid):return _stow_bounds[uid]
 	var source_bounds: AABB = game.source[game.source_uid(uid)].mesh.get_aabb()
+	var basis = stow_basis(uid)
+	var profile: Array = game.model.definitions.parts[game.model.items[uid].kind].get("collision_shapes",[])
+	var signature = hash(profile)
+	var cached: Dictionary = _stow_bounds.get(uid,{})
+	if cached.get("source") == source_bounds and cached.get("basis") == basis and cached.get("collision") == signature:return cached.bounds
 	var envelope = source_bounds
-	for record in SolidHandling.authored_shapes(game.model.definitions.parts[game.model.items[uid].kind].get("collision_shapes",[]),source_bounds):
+	for record in SolidHandling.authored_shapes(profile,source_bounds):
 		envelope = envelope.merge(record.transform*record.shape.get_debug_mesh().get_aabb())
-	_stow_bounds[uid] = Transform3D(stow_basis(uid),Vector3.ZERO)*envelope
-	return _stow_bounds[uid]
+	var bound = Transform3D(basis,Vector3.ZERO)*envelope
+	_stow_bounds[uid] = {"source":source_bounds,"basis":basis,"collision":signature,"bounds":bound}
+	return bound
 
 func _pose(uid: String, index: int) -> Transform3D:
 	var bound = stow_bounds(uid)

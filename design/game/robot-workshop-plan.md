@@ -1,10 +1,38 @@
 # Robot workshop: whole-robot blockout
 
-Agreed 2026-10-24. Implemented through the head crown; awaiting the user's playtest.
+Agreed 2026-10-24. Implemented through the head crown; partial left-leg playtest
+received 2026-10-26, with the wider journey still awaiting acceptance.
 
 [Active workshop state](workshop-state.md) · [Fixture and route contract](final-assembly-plan.md) · [Dimensioned layout](final-assembly-layout.svg) · [Original leg journey (archived)](history/leg-workshop-m3-plan.md) · [This plan as agreed (archived)](history/robot-workshop-plan-20261024.md)
 
 ## Goal and settled decisions
+
+### Left-leg feedback follow-up — 2026-10-26
+
+The user completed one leg and found the physical access challenge partly
+satisfying. Preserve that finding alongside every reported issue in the
+[playtest checklist](robot-workshop-playtest-checklist.md#left-leg-completed--2026-10-26).
+The [nine discrete task plans](handoff/left-leg-feedback/README.md) cover systemic
+repairs and identify obligations for later component detailing. All nine are now
+implemented; their [mechanical evidence](handoff/left-leg-feedback/README.md#implementation-evidence--2026-10-26)
+is separate from the pending player recheck and wider workshop acceptance.
+
+Confirmed direction: attached transport braces with local engagement handles;
+loose components resting on moving decks ride with them while genuine obstacles
+still stop motion; notes and a current-control guidance glow apply across the
+class of manual-directed local operations. Existing compatible hardware must be
+reused. Preserve the actual supported assembly sequence and useful access
+challenge while improving pickup, carrying, shelf use and target explanations.
+
+Stable loose components on equipment decks ride through the shared passenger
+system, retaining loose ownership. Their full collision envelopes stop for real
+obstacles; pickup, shelf transfer and support loss change handling immediately.
+Shelf cargo remains separately support-owned. A snagged held part or nested
+assembly may recover to a bounded clear hand pose without losing its identity;
+if no pose is clear it stays held and asks the player to move clear. This recovery
+exception never bypasses final placement reach, access or approach checks.
+
+### Original milestone scope
 
 Replace the original leg-to-robot journey in place with a playable, simplified
 whole-robot workshop. Preserve its existing structural leg construction, extend it to both legs, and add dimensioned

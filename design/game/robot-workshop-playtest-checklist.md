@@ -2,6 +2,49 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Left leg completed — 2026-10-26
+
+**Player evidence:** the user completed construction of the left leg. Finding
+ways to access connections and fit screws was challenging “in a somewhat good
+way”. Preserve that physical assembly challenge. This is partial workshop
+playtest evidence, not acceptance of the entire robot journey.
+
+The user first requested discrete task plans and subsequently authorized their
+implementation. All nine are now integrated; see the
+[task index and current mechanical evidence](handoff/left-leg-feedback/README.md#implementation-evidence--2026-10-26).
+No rendered review or new player acceptance has been supplied.
+
+| Finding | Scope / implementation | Status |
+| --- | --- | --- |
+| Supports instantly appear after some completed steps, breaking immersion; engaging them should precede transport. | [01 — Explicit braces](handoff/left-leg-feedback/01-explicit-transport-braces.md): replaced milestone-triggered appearances with persistent attached braces, local engagement and manual/interlock state. | Implemented attached sliders and local handles; player recheck pending |
+| “Connection retention” in the crane console is unexplained and appears irrelevant. | [02 — Crane wording](handoff/left-leg-feedback/02-crane-retention-wording.md): the underlying hardware prevents premature crane release. Remove the redundant count and keep actionable blocked-command feedback. | Implemented; release/lift interlocks retained; player recheck pending |
+| LG-W24 seems functionally identical to W24; avoid build-specific duplicates and always check existing stock. | [03 — Standard hardware](handoff/left-leg-feedback/03-reuse-standard-hardware.md): compared actual interfaces, corrected prototype discrepancies and pooled proven interchangeable W-24, W-12 and H-12050 copies. | Measured and merged W-24/W-12/H-12050; player recheck pending |
+| PV-120 pickup seems to require aiming in its empty gap; PV-200 has the same problem. | [04 — Pickup surfaces](handoff/left-leg-feedback/04-pickup-surfaces.md): use visible part surfaces and faithful shapes for shared pickup targeting. | Implemented; player recheck pending |
+| PV-120 cannot be secured to the lift shelf; the same applies to PV-200. | [05 — Shelf cargo](handoff/left-leg-feedback/05-shelf-cargo.md): measure fit and author supported stow orientations with correct capacity and transfer checks. | Implemented; player recheck pending |
+| Workaround: drop a part on the lift, press Up, then pick it up to clear the obstruction. Initial suggestion was that the lift knock the part off. | [07 — Deck cargo](handoff/left-leg-feedback/07-loose-deck-cargo.md): carry genuinely resting loose cargo through shared deck motion and include it in the moving envelope. | Implemented “Carry deck parts; stop for obstructions”; knock-aside superseded; player recheck pending |
+| Carried parts can catch on the world and be lost; excessive separation should return them to the hands. | [06 — Carry recovery](handoff/left-leg-feedback/06-carry-recovery.md): retain ownership and recover to a clear hand pose, with a bounded fallback if the intended pose is obstructed. | Implemented bounded recovery; original loss not replayed; player recheck pending |
+| At least the first cylinder lock-pin step needs “After fitting both end pins, aim at the small gold handle near the cylinder’s lower end”; even the game's author could not find it. A glow may help. | [08 — Manual control guidance](handoff/left-leg-feedback/08-manual-control-guidance.md): verify the note against the actual handle and use a shared current-objective glow for this entire class of control task. | Implemented note plus glow across machine classes; actual handle is at midpoint; player recheck pending |
+| Line of sight feels too strict; sometimes not even a yellow highlight appears and the reason is unclear. | [09 — Connection discovery](handoff/left-leg-feedback/09-connection-discovery.md): improve discovery, bounded surface tolerance and blocked-action explanations while retaining physical placement checks. | Implemented shared discovery/feedback; exact original targets unknown; player recheck pending |
+
+**Detail-pass constraint:** substantial model, part and step detail remains.
+The shared handling/guidance repairs are implemented;
+preserve obligations for credible brace stow geometry, shelf support, pickup
+surfaces, control placement, connection access and catalogue reuse in subsequent
+component detailing. Current tests or these task plans do not approve unfinished
+presentation. Record positive and negative recheck findings here after each fix.
+
+### Focused left-leg recheck
+
+- [ ] Notice stowed braces on source members, engage both local handles when prompted, transport/dock the leg, and confirm braces remain after rig release.
+- [ ] Attempt early crane release, finish the named connection, and release; confirm the new refusal explains what to do.
+- [ ] Use standard washer/screw stacks across compatible foot, leg and hip slots.
+- [ ] Aim at PV-120/PV-200 material after dropping/rotating; verify gaps and nearby parts do not steal pickup.
+- [ ] Store each bulky part, ride either lift, retrieve and fit it; assess the shelf support/clamp appearance.
+- [ ] Snag a held part, walk clear and recover it; deliberately drop and re-collect it.
+- [ ] Drop cargo on a deck, ride, pick up/drop during travel, and verify a genuine obstacle still pauses/resumes movement.
+- [ ] Find a cylinder lock and another machine control from the current-step note/glow, including with the manual hidden.
+- [ ] Fasten from imperfect plausible angles; preserve the enjoyable access challenge and record exact targets/positions for confusing failures.
+
 ## Gantry jaw hitch — 2026-10-26
 
 - Player reports that opening and closing the hip assembly gantry momentarily
