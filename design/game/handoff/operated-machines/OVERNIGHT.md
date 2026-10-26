@@ -38,7 +38,7 @@ review. Mechanical checks are listed separately from things only a playtest can 
 
 ## Morning review steps
 
-### Gantry (on `main` now): `./play.command --stage=pelvis` (or your normal save)
+### Gantry (on `main` now): `./play.command -- --stage=pelvis` (or your normal save)
 
 1. Lowest level (Y8.4), both sides of the hip assembly: do the railings now match? Can you
    reach the side of the hip assembly equally from left and right?
