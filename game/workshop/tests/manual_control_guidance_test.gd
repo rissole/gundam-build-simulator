@@ -134,6 +134,7 @@ func run() -> void:
 	var cue=Guidance.new();game.add_child(cue);cue.setup(game);cue.update()
 	expect(cue.visible_controls==[node],"Brace metadata contract resolves the actual handle without English parsing")
 	var material=cue.outlines[0].outline_material
+	expect(material.shader.resource_path.ends_with("manual_control_glow.gdshader") and material.next_pass.shader==game.interaction_outline.outline_material.shader and game.interaction_outline.outline_material.next_pass==null,"Control cues glow over a thin contour while pickup focus keeps its plain contour")
 	var contour=cue.outlines[0].copies[node.get_instance_id()].outline
 	for i in range(120):cue.update()
 	expect(cue.outlines[0].copies[node.get_instance_id()].outline==contour and cue.outlines.all(func(outline):return outline.outline_material==material),"120 stable cue updates reuse contours and one shared material")
@@ -157,7 +158,7 @@ func run() -> void:
 	game.paused=false;cue.update()
 	expect(cue.visible_controls==[node],"Resume retains the tracked objective and restores guidance")
 	node.hide();cue.update();expect(cue.visible_controls.is_empty(),"Hidden handles cannot leave a stale cue")
-	node.show();game.camera.position=Vector3(0,0,5);cue.update();expect(cue.visible_controls.is_empty(),"Distant controls have no waypoint-like cue")
+	node.show();game.camera.position=Vector3(0,0,Guidance.RANGE);cue.update();expect(cue.visible_controls.is_empty(),"Distant controls have no waypoint-like cue")
 	game.camera.position=Vector3.ZERO;game.camera.rotation.y=PI;cue.update();expect(cue.visible_controls.is_empty(),"Offscreen controls have no cue")
 	game.camera.rotation.y=0
 	game.interaction_outline.focus(node);cue.update();expect(cue.visible_controls.is_empty(),"Meaningful interaction focus takes priority over guidance")
@@ -169,7 +170,7 @@ func run() -> void:
 	blocker.queue_free();await frames(2);cue.update()
 	expect(cue.visible_controls==[node],"Removing the obstruction restores the retained cue")
 	game.manual_progress._queued=true;cue.update();expect(cue.visible_controls.is_empty(),"Queued manual changes clear stale cues before deferred recomputation")
-	expect(Objectives.note({"objectives":[{"op":"operate"}],"note":{"at":0,"text":"Fit both end pins first."}},0).begins_with("Fit both end pins first.") and Objectives.note({"objectives":[{"op":"connect"}]},0).contains("gold outline"),"Machine notes retain authored details and explain control guidance across operations")
+	expect(Objectives.note({"objectives":[{"op":"operate"}],"note":{"at":0,"text":"Fit both end pins first."}},0)=="Fit both end pins first." and Objectives.note({"objectives":[{"op":"connect"}]},0).is_empty(),"Machine notes show only authored details")
 	var passed=checks.all(func(check):return check.passed)
 	print("MANUAL_CONTROL_GUIDANCE ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)

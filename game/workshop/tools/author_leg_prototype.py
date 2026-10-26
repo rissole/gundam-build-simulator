@@ -656,8 +656,7 @@ def robot_documents(check=False):
             dict(op="operate", machine="leg_rail", command="back:home"),
             dict(op="operate", machine="foot_carrier", command="return:home"),
             dict(op="operate", machine="leg_rail", command="build"),
-        ],
-        note=dict(at=0, text="The leg rig only lets go once all three cylinder lock pins are in.")))
+        ]))
     pages.append(dict(title="Reacquire support and recover", view="overview", slots=[], body="If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."))
     trial_pelvis["manual"] = pages
     for definition in (trial_leg, trial_pelvis):

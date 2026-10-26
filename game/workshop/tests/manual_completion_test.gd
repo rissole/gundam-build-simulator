@@ -122,8 +122,8 @@ func run() -> void:
 	pins.locked.left_hip_1=true;progress.refresh()
 	expect(progress.complete() and progress.evaluation("pelvis",8).current == -1,"completion uses the same resolved ticks as objectives")
 	var note: Dictionary=page("pelvis",8).note
-	expect(note.at==2 and str(note.text).contains("gold handle") and str(note.text).contains("press E"),"PV-200 instruction locates the captive control at the lock objective")
-	expect(page("pelvis",20).note.at==2 and str(page("pelvis",20).note.text).contains("press E"),"mirrored cylinder receives the same lock guidance")
+	expect(note.at==2 and note.text=="Keep the leg rig docked and engaged.","PV-200 lock objective keeps only the leg rig warning; the control cue locates the handle")
+	expect(page("pelvis",20).note==note,"mirrored cylinder receives the same lock note")
 	# Guided receivers have an arrival before the actual mounting operation.
 	var guide=machine(preload("res://scripts/core_guide.gd"),"core_guide")
 	guide.spec={"capture":0.85,"travel":2.2};guide.travel=0.85

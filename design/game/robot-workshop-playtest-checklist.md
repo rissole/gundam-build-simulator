@@ -23,7 +23,7 @@ No rendered review or new player acceptance has been supplied.
 | PV-120 cannot be secured to the lift shelf; the same applies to PV-200. | [05 — Shelf cargo](handoff/left-leg-feedback/05-shelf-cargo.md): measure fit and author supported stow orientations with correct capacity and transfer checks. | Implemented; player recheck pending |
 | Workaround: drop a part on the lift, press Up, then pick it up to clear the obstruction. Initial suggestion was that the lift knock the part off. | [07 — Deck cargo](handoff/left-leg-feedback/07-loose-deck-cargo.md): carry genuinely resting loose cargo through shared deck motion and include it in the moving envelope. | Implemented “Carry deck parts; stop for obstructions”; knock-aside superseded; player recheck pending |
 | Carried parts can catch on the world and be lost; excessive separation should return them to the hands. | [06 — Carry recovery](handoff/left-leg-feedback/06-carry-recovery.md): retain ownership and recover to a clear hand pose, with a bounded fallback if the intended pose is obstructed. | Implemented bounded recovery; original loss not replayed; player recheck pending |
-| At least the first cylinder lock-pin step needs “After fitting both end pins, aim at the small gold handle near the cylinder’s lower end”; even the game's author could not find it. A glow may help. | [08 — Manual control guidance](handoff/left-leg-feedback/08-manual-control-guidance.md): verify the note against the actual handle and use a shared current-objective glow for this entire class of control task. | Implemented note plus glow across machine classes; actual handle is at midpoint; player recheck pending |
+| At least the first cylinder lock-pin step needs “After fitting both end pins, aim at the small gold handle near the cylinder’s lower end”; even the game's author could not find it. A glow may help. | [08 — Manual control guidance](handoff/left-leg-feedback/08-manual-control-guidance.md): verify the note against the actual handle and use a shared current-objective glow for this entire class of control task. | Implemented glow across machine classes; actual handle is at midpoint. The handle-location note was later removed at the user's request (glow carries it); player recheck pending |
 | Line of sight feels too strict; sometimes not even a yellow highlight appears and the reason is unclear. | [09 — Connection discovery](handoff/left-leg-feedback/09-connection-discovery.md): improve discovery, bounded surface tolerance and blocked-action explanations while retaining physical placement checks. | Implemented shared discovery/feedback; exact original targets unknown; player recheck pending |
 
 **Detail-pass constraint:** substantial model, part and step detail remains.
@@ -33,14 +33,24 @@ surfaces, control placement, connection access and catalogue reuse in subsequent
 component detailing. Current tests or these task plans do not approve unfinished
 presentation. Record positive and negative recheck findings here after each fix.
 
-**Control cue follow-up (2026-10-26):** the user requested the familiar game
-highlight that oscillates from bright to dim, rather than a contour-only outline.
-The control surface now has an additive gold emissive glow with a smooth
-1.8-second pulse, using the existing bloom. Objective eligibility, occlusion,
-range, clearing and pickup/obstruction priority are unchanged. Brightness and
-attention/readability await player recheck; no rendered review requested.
-Guidance, manual-panel, outline and startup routines pass (107 checks, 9.295 s);
-local evidence: `game/workshop/verification/regressions-20261026T083601.589069Z/`.
+**Control cue follow-up (2026-10-26):** the user asked for the familiar game
+highlight that oscillates from bright to dim. Rejected so far: an additive
+full-surface glow (0.35–5× energy; reverted) and a thick pulsing/blooming outline
+("looks terrible close and far"). Current version: an alpha-blended gold tint
+over the control's own faces pulses smoothly from 12% to 55% on a 1.4-second
+cycle, with a fresnel rim so the silhouette reads, plus the original steady
+1.25 px gold outline so small parts stay visible at range. Cue range is 10 m
+(was 5 m). The pickup/obstruction contour is unchanged. Eligibility, occlusion,
+clearing and pickup priority are unchanged. Look up close and far awaits player
+recheck; no rendered review requested. Guidance, outline, manual-panel and
+startup routines pass (108 checks, 9.457 s; headless, so the shader isn't
+compiled there). At the user's request, the generated "Nearby available controls
+… glow gold" sentence and the pelvis waist-pin note ("The pins stop the waist
+twisting or tilting…", including its pin locations) were removed; other authored
+notes remain. Similar notes were also removed: the hip-cylinder note now keeps
+only "Keep the leg rig docked and engaged." (handle location and E prompt removed),
+and "The leg rig only lets go once all three cylinder lock pins are in." is gone.
+Warnings and fitting hints (orientation, insertion side, hardware size) remain.
 
 ### Focused left-leg recheck
 

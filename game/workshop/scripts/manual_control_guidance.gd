@@ -3,7 +3,7 @@ extends Node3D
 ## checks stay live, so undo, equipment motion and occlusion cannot leave a cue.
 const Outline = preload("res://scripts/interaction_outline.gd")
 const MAX_CONTROLS = 8
-const RANGE = 5.0
+const RANGE = 10.0
 var game: Node
 var objective: Dictionary = {}
 var machine: Node
@@ -12,10 +12,15 @@ var visible_controls: Array[Node3D] = []
 
 func setup(workshop: Node) -> void:
 	game = workshop
+	# Pulsing face tint, then a steady thin contour that keeps small parts
+	# readable at range. One override renders both passes on each mesh copy.
+	var contour = ShaderMaterial.new()
+	contour.shader = preload("res://scripts/interaction_outline.gdshader")
+	contour.set_shader_parameter("outline_color",Color("d6ad59"))
+	contour.set_shader_parameter("width_pixels",1.25)
 	var material = ShaderMaterial.new()
-	material.shader = preload("res://scripts/interaction_outline.gdshader")
-	material.set_shader_parameter("outline_color",Color("d6ad59"))
-	material.set_shader_parameter("width_pixels",1.25)
+	material.shader = preload("res://scripts/manual_control_glow.gdshader")
+	material.next_pass = contour
 	for i in MAX_CONTROLS:
 		var outline = Outline.new()
 		outline.outline_material = material

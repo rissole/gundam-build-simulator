@@ -62,8 +62,7 @@ def extend(trial, pelvis, layout):
             dict(op="operate",machine="module_supports",command="close_jaws"),
             dict(op="detach",machine="service_crane"),
             dict(op="operate",machine="service_crane",command="up"),
-            dict(op="operate",machine="service_crane",command="go:park")],
-        note=dict(at=0,text="The pins stop the waist twisting or tilting while it hangs from the crane. Twist pin: front of the waist. Tilt pin: its right side.")))
+            dict(op="operate",machine="service_crane",command="go:park")]))
     for parent in trial["parents"]:
         if parent["id"]=="pelvis":parent.update(label="Prepared hip assembly",location="support:bulky_fixture",home=[3.25,1.2,13])
     for name in ["bulky_fixture","pelvis_gantry"]:trial["supports"][name]=dict(assemblies=["pelvis"],assembly_ids=["pelvis"])
