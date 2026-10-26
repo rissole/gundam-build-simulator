@@ -21,7 +21,10 @@ plus a procedure link on repeats. The gantry gets gap fixes and symmetric fold
 states now. A "launch cage" v2 with a clear rear exit is design-only until approved.
 [Branches and tasks](handoff/operated-machines/README.md).
 
-- [ ] User: name where the gantry felt asymmetric (level and side). Static solids are mirrored; runtime fold states are the suspect.
+- [ ] User: name where the gantry felt asymmetric (level and side). Deck endpoints mirror; the runtime audit found opposite fore/aft wing and rear-bridge guard edges. Confirm the reported spot before C3.
+
+**C1 measurement (2026-10-27):** [runtime audit](handoff/operated-machines/C1-gap-audit.md) confirms symmetric 300 mm lift-landing slots, a separate unguarded hinge-apron edge and guard-handedness candidates. Ten fixed landing plates and outer hinge rails are specified for C2; no repair is implemented yet. Retain open work/service edges and the accepted gantry appearance. Automated baseline: three focused suites pass; no rendered inspection or new player acceptance. Recheck landing catches, hinge edges and the named asymmetric spot after integration.
+
 - [ ] Crane operator view playtest (checkpoint A).
 - [ ] Leg rig jog slice playtest (checkpoint B), before converting the foot rig.
 - [ ] Gantry gap fixes recheck at the hip level; approve or revise the v2 concept (checkpoint C).
