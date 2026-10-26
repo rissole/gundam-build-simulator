@@ -17899,7 +17899,7 @@
         },
         {
           "title": "Secure the ankle flange",
-          "goal": "Bolt the shin flange to the foot adapter, then release and park the crane.",
+          "goal": "Bolt the shin flange, engage both ankle braces, then release and park the crane.",
           "slots": [
             "ankle/W-36__021",
             "ankle/H-36090__001",
@@ -17923,6 +17923,16 @@
                 "ankle/W-36__024",
                 "ankle/H-36090__004"
               ]
+            },
+            {
+              "op": "operate",
+              "machine": "joint_restraints",
+              "command": "engage:right_leg:ankle:outboard"
+            },
+            {
+              "op": "operate",
+              "machine": "joint_restraints",
+              "command": "engage:right_leg:ankle:inboard"
             },
             {
               "op": "detach",
@@ -18005,6 +18015,18 @@
                 "machine": "service_crane",
                 "task": "right_shin",
                 "phase": "parked"
+              },
+              {
+                "machine": "joint_restraints",
+                "state": {
+                  "right_leg:ankle:outboard": true
+                }
+              },
+              {
+                "machine": "joint_restraints",
+                "state": {
+                  "right_leg:ankle:inboard": true
+                }
               }
             ]
           }
@@ -18253,7 +18275,7 @@
         },
         {
           "title": "Retain the knee axle",
-          "goal": "Cap the axle end, then release and park the crane.",
+          "goal": "Cap the axle, engage both knee braces, then release and park the crane.",
           "slots": [
             "cap",
             "cap/washer_1",
@@ -18276,6 +18298,16 @@
                 "cap/washer_2",
                 "cap/screw_2"
               ]
+            },
+            {
+              "op": "operate",
+              "machine": "joint_restraints",
+              "command": "engage:right_leg:knee:outboard"
+            },
+            {
+              "op": "operate",
+              "machine": "joint_restraints",
+              "command": "engage:right_leg:knee:inboard"
             },
             {
               "op": "detach",
@@ -18355,6 +18387,18 @@
                 "machine": "service_crane",
                 "task": "right_fork",
                 "phase": "parked"
+              },
+              {
+                "machine": "joint_restraints",
+                "state": {
+                  "right_leg:knee:outboard": true
+                }
+              },
+              {
+                "machine": "joint_restraints",
+                "state": {
+                  "right_leg:knee:inboard": true
+                }
               }
             ]
           }
@@ -18449,7 +18493,7 @@
         },
         {
           "title": "Fasten the Upper-leg beam flange",
-          "goal": "Bolt the beam flange to the fork, then release and park the crane.",
+          "goal": "Bolt the beam flange, engage both flange braces, then release and park the crane.",
           "slots": [
             "fork/washer_1",
             "fork/bolt_1",
@@ -18473,6 +18517,16 @@
                 "fork/washer_4",
                 "fork/bolt_4"
               ]
+            },
+            {
+              "op": "operate",
+              "machine": "joint_restraints",
+              "command": "engage:right_leg:beam:outboard"
+            },
+            {
+              "op": "operate",
+              "machine": "joint_restraints",
+              "command": "engage:right_leg:beam:inboard"
             },
             {
               "op": "detach",
@@ -18555,6 +18609,18 @@
                 "machine": "service_crane",
                 "task": "right_spar",
                 "phase": "parked"
+              },
+              {
+                "machine": "joint_restraints",
+                "state": {
+                  "right_leg:beam:outboard": true
+                }
+              },
+              {
+                "machine": "joint_restraints",
+                "state": {
+                  "right_leg:beam:inboard": true
+                }
               }
             ]
           }
@@ -22830,7 +22896,7 @@
           },
           {
             "title": "Secure the ankle flange",
-            "goal": "Bolt the shin flange to the foot adapter, then release and park the crane.",
+            "goal": "Bolt the shin flange, engage both ankle braces, then release and park the crane.",
             "slots": [
               "ankle/W-36__021",
               "ankle/H-36090__001",
@@ -22854,6 +22920,16 @@
                   "ankle/W-36__024",
                   "ankle/H-36090__004"
                 ]
+              },
+              {
+                "op": "operate",
+                "machine": "joint_restraints",
+                "command": "engage:left_leg:ankle:outboard"
+              },
+              {
+                "op": "operate",
+                "machine": "joint_restraints",
+                "command": "engage:left_leg:ankle:inboard"
               },
               {
                 "op": "detach",
@@ -22936,6 +23012,18 @@
                   "machine": "service_crane",
                   "task": "shin",
                   "phase": "parked"
+                },
+                {
+                  "machine": "joint_restraints",
+                  "state": {
+                    "left_leg:ankle:outboard": true
+                  }
+                },
+                {
+                  "machine": "joint_restraints",
+                  "state": {
+                    "left_leg:ankle:inboard": true
+                  }
                 }
               ]
             }
@@ -23184,7 +23272,7 @@
           },
           {
             "title": "Retain the knee axle",
-            "goal": "Cap the axle end, then release and park the crane.",
+            "goal": "Cap the axle, engage both knee braces, then release and park the crane.",
             "slots": [
               "cap",
               "cap/washer_1",
@@ -23207,6 +23295,16 @@
                   "cap/washer_2",
                   "cap/screw_2"
                 ]
+              },
+              {
+                "op": "operate",
+                "machine": "joint_restraints",
+                "command": "engage:left_leg:knee:outboard"
+              },
+              {
+                "op": "operate",
+                "machine": "joint_restraints",
+                "command": "engage:left_leg:knee:inboard"
               },
               {
                 "op": "detach",
@@ -23286,6 +23384,18 @@
                   "machine": "service_crane",
                   "task": "fork",
                   "phase": "parked"
+                },
+                {
+                  "machine": "joint_restraints",
+                  "state": {
+                    "left_leg:knee:outboard": true
+                  }
+                },
+                {
+                  "machine": "joint_restraints",
+                  "state": {
+                    "left_leg:knee:inboard": true
+                  }
                 }
               ]
             }
@@ -23380,7 +23490,7 @@
           },
           {
             "title": "Fasten the Upper-leg beam flange",
-            "goal": "Bolt the beam flange to the fork, then release and park the crane.",
+            "goal": "Bolt the beam flange, engage both flange braces, then release and park the crane.",
             "slots": [
               "fork/washer_1",
               "fork/bolt_1",
@@ -23404,6 +23514,16 @@
                   "fork/washer_4",
                   "fork/bolt_4"
                 ]
+              },
+              {
+                "op": "operate",
+                "machine": "joint_restraints",
+                "command": "engage:left_leg:beam:outboard"
+              },
+              {
+                "op": "operate",
+                "machine": "joint_restraints",
+                "command": "engage:left_leg:beam:inboard"
               },
               {
                 "op": "detach",
@@ -23486,6 +23606,18 @@
                   "machine": "service_crane",
                   "task": "spar",
                   "phase": "parked"
+                },
+                {
+                  "machine": "joint_restraints",
+                  "state": {
+                    "left_leg:beam:outboard": true
+                  }
+                },
+                {
+                  "machine": "joint_restraints",
+                  "state": {
+                    "left_leg:beam:inboard": true
+                  }
                 }
               ]
             }

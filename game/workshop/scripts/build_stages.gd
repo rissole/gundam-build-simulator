@@ -63,6 +63,7 @@ func stage_errors(stage: String) -> Array[String]:
 			var owner="left_leg" if stage=="left_leg_dock" else "right_leg"
 			var foot="foot" if stage=="left_leg_dock" else "right_foot"
 			_need(errors,model.milestone(owner,"structural_ready"),"Complete "+owner+" structural construction.")
+			_need(errors,_equipment("joint_restraints").required_error(owner).is_empty(),"Engage every transport brace on "+owner+".")
 			_need(errors,model.assemblies[foot].parent==owner,"Mount the prepared foot on "+owner+".")
 			_need(errors,rail.active_assembly==owner and rail.can_construct(),"Return the active "+owner+" leg rig to its construction pose.")
 		"right_leg_build":
@@ -187,6 +188,7 @@ func _carrier_home(errors: Array[String]) -> void:
 	_need(errors,carrier.path==0 and carrier.withdrawal==0 and not carrier.carrying() and not carrier.moving and carrier.handoff.is_empty(),"Return the empty foot carrier home.")
 func _leg_secured(errors: Array[String], side: String) -> void:
 	_need(errors,game.model.assemblies[side+"_leg"].parent=="pelvis","Mount the "+side+" leg at its hip.")
+	_need(errors,_equipment("joint_restraints").required_error(side+"_leg").is_empty(),"Keep the "+side+" leg transport braces engaged.")
 	var locks=_equipment("captive_controls")
 	_need(errors,locks.locked.keys().filter(func(id):return id.begins_with(side+"_")).all(func(id):return locks.locked[id]),"Engage every "+side+" hip captive lock.")
 func _commands(controller: Node, actions: Array) -> String:
@@ -230,6 +232,11 @@ func _leg_build(side: String) -> String:
 		if not error.is_empty():return error
 		Staging.fill(game,owner,game.runtime.definition(owner).slots.keys().filter(func(sid):return sid not in ["shin","fork","spar"]))
 		if not crane.secured():return owner+" "+task+": Supplied structural fastening did not secure the load."
+		var braces=_equipment("joint_restraints")
+		for fixture in braces.fixtures:
+			if fixture.owner!=owner or fixture.spec.milestone!=task+"_secured":continue
+			error=command(braces,"engage:"+fixture.id)
+			if not error.is_empty():return error
 		error=_park()
 		if not error.is_empty():return error
 	return ""

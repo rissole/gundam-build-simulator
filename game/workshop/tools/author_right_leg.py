@@ -59,6 +59,8 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
             if "note" in page:page["note"]["text"]=page["note"]["text"].replace("Left","Right").replace("left","right")
             for objective in page.get("objectives",[]):
                 if "task" in objective:objective["task"]="right_"+objective["task"]
+                if objective.get("machine")=="joint_restraints":
+                    objective["command"]=objective["command"].replace(":left_leg:",":right_leg:")
             for field in ["context_sources"]:
                 if field in page:page[field]=[mirrored(uid) for uid in page[field]]
             for diagram in page.get("diagram_views",[]):

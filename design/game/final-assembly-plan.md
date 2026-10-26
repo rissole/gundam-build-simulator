@@ -113,11 +113,58 @@ X≈±0.80/Z2.80 and Z6.10; they avoid the central calf thrusters, knee axle Z5.
 and fork flange Z6.30. Permanent exposed frame pads avoid a late inaccessible
 armor closure. Upper holder extent is robot Z6.30, not the former high contact.
 
-Build contacts engage as their receiving frames are retained. A removable foot
-receiving bolster supports the prepared foot before shin frames exist. A temporary
-spar rest may guide a crane-held spar, but the crane releases only after its actual
-fasteners are secured. The finished frame then supplies both transport hardpoints.
-Neither ankle drives nor knee rods carry the transport load.
+Frame contacts become available as their receiving frames are retained. A removable
+foot receiving bolster supports the prepared foot before shin frames exist. Keep
+that bolster and the stationary rig engaged during construction and local brace
+correction. The crane continues supporting each shin, fork or beam until both of
+that connection's captive transport braces reach their engaged stops. Retention
+makes the handles available; it never operates them. Neither ankle drives nor
+knee rods carry the transport load.
+
+**Explicit captive braces (2026-10-26).** Each leg has independently operated
+outboard and inboard ankle, knee and beam-flange bridges. The ankle bridge joins
+the foot side pad at leg Y0.40 to the shin at Y1.80; the knee bridge joins the
+shin at Y4.50 to the fork cheek at Y5.56; the beam bridge joins the fork cheek at
+Y5.56 to the beam at Y6.30. These are Godot leg-local coordinates (Y follows the
+leg's length). Ankle/knee equipment starts attached to the actual shin stock;
+beam equipment starts attached to the actual fork stock. On installation the same
+nodes follow the leg, including intermediate rotations, hip mounting and rig
+withdrawal. They never become loose inventory or appear on an empty leg.
+
+The prototype uses captive sliding shoes and telescoping links, one handle on
+each side; paired operation is deliberately independent. Handles sit at
+X±0.74, Z−0.50 beside each fixed contact and remain within X±0.80. The measured
+solid stow/deployment bounds below include both sides. Z is depth in this table.
+The telescoping path is monotonic, so the full swept bounds equal the deployed
+bounds. Handles stay inside that cross-section. No rail/crane route was changed.
+
+| Bridge | Persistent attachment | Parked Y | Deployed / swept Y | X / Z in every pose |
+| --- | --- | --- | --- | --- |
+| Ankle | Shin upper contact | 1.520..1.920 | 0.280..1.920 | ±0.710 / −0.530..0.625 |
+| Knee | Shin lower contact | 4.380..4.780 | 4.380..5.680 | ±0.710 / −0.530..0.130 |
+| Beam flange | Fork cheek | 5.440..5.740 | 5.440..6.420 | ±0.710 / −0.530..0.130 |
+
+Source poses use the inverse receiving-member transform, keeping each parked
+bridge attached to its physical shin/fork through pickup and delivery; source
+load sweeps include those captive solids. Their stowed cross-section fits the
+existing ±0.80 / ±0.75 structural transport envelope. Before indexing, parking,
+rolling or delivery, lock every brace whose joint has been retained. This permits
+unfinished-leg parking and foot-only work without demanding a future fork/beam.
+Before stowing the foot bolster, lock all retained joints. Crane connector release
+requires the matching joint's locks, retaining crane support through engagement.
+
+Only a neutral, stationary leg rig at construction height, with its foot bolster
+engaged, permits local stowing. A bare fork does not reach the upper yoke at
+Y6.10 (its flange ends at Y5.92), so stowing knee braces before beam retention
+also requires both crane connectors reacquired at the stationary fork. Once the
+retained beam reaches the upper yoke, the rig supports that joint. Locked or
+partly deployed braces block undo of
+their attachments and joint retention. Guarded motion uses the actual animated
+boxes and waits for obstacles; a waiting handle can reverse its partial stroke.
+Snapshots restore explicit engaged/parked stops; construction completion never
+recreates an engagement. Stage preparation operates the same handle commands.
+Final slide construction, materials and manufacture remain a component detail
+pass; handle visibility/reach and the full transfer remain player rechecks.
 
 The sweep uses these leg-local **robot-axis** transport bounds; later internal
 workflows must preserve them or reopen the affected route explicitly:

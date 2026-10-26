@@ -8,6 +8,7 @@ var crane
 var rail
 var foot
 var pins
+var braces
 
 func _initialize() -> void:call_deferred("run")
 
@@ -41,6 +42,10 @@ func run() -> void:
 	for id in pins.specs:pins.locked[id]=false
 	var supports=machine(preload("res://scripts/module_supports.gd"),"module_supports")
 	supports.locks={"yaw":true,"lean":true};supports.jaws.resize(4);supports.jaws.fill(0.0);supports.jaw_goals.resize(4);supports.jaw_goals.fill(0.0)
+	braces=machine(preload("res://scripts/passive_joint_restraints.gd"),"joint_restraints")
+	for owner in ["left_leg","right_leg"]:
+		for group in ["ankle","knee","beam"]:
+			for side in ["outboard","inboard"]:braces.fixtures.append({"id":owner+":"+group+":"+side,"locked":false})
 	var progress=Progress.new(game)
 	expect(not progress.complete(),"fresh workshop is not complete")
 	expect(evaluate("left_leg",1).current == 0,"initial parked crane does not tick a delivery")
@@ -94,6 +99,9 @@ func run() -> void:
 	crane.task="shin";crane.station="receiver";crane.raised=false
 	expect(evaluate("left_leg",4).current != -1,"retention still needs the crane raised and parked")
 	crane.station="park";crane.raised=true
+	expect(evaluate("left_leg",4).current != -1,"retention and parked crane still require deliberate ankle brace locks")
+	for fixture in braces.fixtures:
+		if fixture.id.begins_with("left_leg:ankle:"):fixture.locked=true
 	expect(evaluate("left_leg",4).current == -1,"retained shin and parked empty crane complete release")
 	crane.task="fork";crane.station="source"
 	var retained=evaluate("left_leg",4)
@@ -147,6 +155,7 @@ func run() -> void:
 		var receiver=machine(preload("res://scripts/staged_receiver.gd"),str(id))
 		receiver.spec=game.leg_content.equipment.receivers[id]
 		for operation in receiver.spec.get("operations",[]):receiver.released_operations[str(operation.id)]=true
+	for fixture in braces.fixtures:fixture.locked=true
 	progress=Progress.new(game)
 	var unfinished: Array[String]=[]
 	for chapter in progress.chapters():

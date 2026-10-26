@@ -5228,7 +5228,13 @@
             0.06
           ]
         }
-      ]
+      ],
+      "key": "ankle",
+      "attachment": "shin",
+      "fixed_y": 1.8,
+      "moving_y": 0.4,
+      "parked_y": 1.64,
+      "label": "Ankle brace"
     },
     {
       "id": "KneeServiceBrace",
@@ -5420,7 +5426,13 @@
             0.06
           ]
         }
-      ]
+      ],
+      "key": "knee",
+      "attachment": "shin",
+      "fixed_y": 4.5,
+      "moving_y": 5.56,
+      "parked_y": 4.66,
+      "label": "Knee brace"
     },
     {
       "id": "BeamServiceBrace",
@@ -5612,7 +5624,13 @@
             0.06
           ]
         }
-      ]
+      ],
+      "key": "beam",
+      "attachment": "fork",
+      "fixed_y": 5.56,
+      "moving_y": 6.3,
+      "parked_y": 5.62,
+      "label": "Beam flange brace"
     }
   ],
   "workshop": {

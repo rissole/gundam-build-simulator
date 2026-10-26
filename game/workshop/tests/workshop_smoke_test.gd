@@ -13,6 +13,10 @@ func run() -> void:
 	expect(["pad_1","pad_2","pitch"].all(func(id):return game.model.assemblies[id].parent.is_empty()),"left foot children remain available to build")
 	expect(game.hud.manual_id=="pad_1" and game.model.integrity_errors().is_empty(),"initial manual and ownership are valid")
 	expect(game.save != null and not game.save.enabled(),"automated boots never read or write the human save")
+	var braces=game.equipment.get_equipment("joint_restraints")
+	var crane=game.equipment.get_equipment("service_crane")
+	expect(braces.fixtures.size()==12 and braces.fixtures.all(func(fixture):return fixture.node.is_visible_in_tree() and not fixture.locked),"all attached braces start visibly parked on source stock")
+	expect(braces.fixtures.all(func(fixture):return fixture.node.get_parent()==crane.stock_bodies[game.model.slot_definition(fixture.owner,fixture.spec.attachment).pose_source]),"fresh braces attach to physical members instead of empty logical legs")
 	expect(preload("res://scripts/build_stages.gd").new(game).stage_errors("foot").is_empty(),"actual startup satisfies fresh stage boundary")
 	var key=InputEventKey.new();key.physical_keycode=KEY_ESCAPE;key.pressed=true
 	game.handle_desktop_input(key)

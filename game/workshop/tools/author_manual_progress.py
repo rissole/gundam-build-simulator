@@ -68,6 +68,8 @@ def bind(recipes, chapters):
                     proofs.append(state(machine, pins=2))
                 elif machine == "module_supports" and command == "close_jaws":
                     proofs.append(state(machine, jaws_closed=4))
+                elif machine == "joint_restraints" and command.startswith("engage:"):
+                    proofs.append(state(machine, **{command.removeprefix("engage:"): True}))
                 elif machine == "core_guide" and command == "secure_bolts":
                     proofs.append(state(machine, **{f"bolt:{i}": True for i in range(4)}))
                 elif machine == "core_guide" and command == "connection":

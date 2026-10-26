@@ -342,6 +342,9 @@ func _can_return() -> bool:
 
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the crane."
+	if action in ["up","down","pickup","resume","return"] or action.begins_with("go:"):
+		var braces=game.equipment.get_equipment("joint_restraints")
+		if braces!=null and braces.moving:return "Wait for the transport brace to reach its stop."
 	if action.begins_with("guide:"):
 		return _guide().action_error(action.trim_prefix("guide:")) if _guided_live() else "Lower the matching crane at the supported connection first."
 	if action.begins_with("task:"):
@@ -371,6 +374,10 @@ func action_error(action: String) -> String:
 				var support_error: String=game.equipment.get_equipment(config.spec.source_equipment).release_error(uid)
 				if not support_error.is_empty():return support_error
 			if _installed() and not secured():return _retention_block(false)
+			var braces=game.equipment.get_equipment("joint_restraints")
+			if braces!=null and _installed() and load_owner in ["left_leg","right_leg"]:
+				var brace_error: String=braces.required_error(load_owner,secured_milestone)
+				if not brace_error.is_empty():return brace_error
 		return _interaction_error(end_nodes[id].global_position,[load_body,game.runtime.node(load_owner)])
 	if action.begins_with("attach:"):
 		var point = action.get_slice(":",1)
@@ -724,8 +731,8 @@ func _sweep(from: Transform3D, to: Transform3D) -> String:
 		ignored.append_array(receiver.hardware)
 	if config.spec.has("source_equipment"):ignored.append_array(game.equipment.get_equipment(config.spec.source_equipment).hardware)
 	var solids: Array[Dictionary]=[]
-	if assembly_payload:Sweep.collect_shapes(load_body,load_body.global_transform.affine_inverse(),solids)
-	else:solids=Sweep.body_shapes(load_body)
+	# Captive source equipment is a real part of the moving stock envelope.
+	Sweep.collect_shapes(load_body,load_body.global_transform.affine_inverse(),solids)
 	if config.spec.has("rig_adapter"):solids.append_array(game.equipment.get_equipment(config.spec.rig_adapter).transport_shapes())
 	# load poses below are explicitly interpolated along a straight segment.
 	# Articulated rig groups and receiver-dependent exclusions keep sampling.
@@ -777,6 +784,8 @@ func _line(mesh: MeshInstance3D, from: Vector3, to: Vector3, width: float) -> vo
 
 func _refresh() -> void:
 	if not is_instance_valid(load_body):return
+	var braces=game.equipment.get_equipment("joint_restraints")
+	if braces!=null:braces.sync()
 	for spec in tasks.values():
 		if spec.load_uid == uid:continue
 		var body: AnimatableBody3D = stock_bodies[spec.load_uid]
@@ -794,6 +803,7 @@ func _refresh() -> void:
 		for owner in game.runtime.descendants(uid):
 			var body: CollisionObject3D=game.runtime.node(owner)
 			body.force_update_transform();PhysicsServer3D.body_set_state(body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,body.global_transform)
+	if braces!=null:braces.sync_pose()
 	beam.global_transform = _beam_pose()
 	for id in end_nodes:end_nodes[id].visible=id in END_IDS;cables[id].visible=id in END_IDS
 	for id in markers:markers[id].visible=false

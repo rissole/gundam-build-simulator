@@ -141,6 +141,11 @@ func action_error(action: String) -> String:
 	if not mode.is_empty() and action not in ["advance","return"]:return "Complete or reverse the interrupted motion first."
 	var peer: String=game.equipment.busy_reason("rail",equipment_id)
 	if not peer.is_empty():return peer
+	if engaged and action in ["advance","roll","park","return"]:
+		var braces=game.equipment.get_equipment("joint_restraints")
+		if braces!=null:
+			var brace_error: String=braces.required_error(active_assembly)
+			if not brace_error.is_empty():return brace_error
 	if action=="build":
 		if path!=0 or not is_equal_approx(index_x,spec.station_x) or roll!=0 or roll_height!=0 or release!=0:return "Return the empty leg rig to the Limb Bay before selecting another leg."
 		var current: Dictionary=game.model.assemblies[active_assembly]
@@ -378,6 +383,8 @@ func _pose() -> void:
 		var node: CollisionObject3D=game.runtime.node(id)
 		if node is AnimatableBody3D:PhysicsServer3D.body_set_mode(node.get_rid(),PhysicsServer3D.BODY_MODE_STATIC)
 		node.force_update_transform();PhysicsServer3D.body_set_state(node.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,node.global_transform)
+	var braces=game.equipment.get_equipment("joint_restraints")
+	if braces!=null:braces.sync_pose()
 	_refresh()
 
 func _refresh() -> void:

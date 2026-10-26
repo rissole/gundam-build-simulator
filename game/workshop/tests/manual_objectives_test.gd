@@ -128,6 +128,7 @@ func run() -> void:
 	var rig_commands: Array = supports_script.MANUAL_COMMANDS.duplicate()
 	rig_commands.append_array(supports_script.template_commands(layout.workshop.bulky_fixture.templates.keys()))
 	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS,"foot_carrier":preload("res://scripts/foot_carrier.gd").MANUAL_COMMANDS,"module_supports":rig_commands,"leg_rail":preload("res://scripts/indexed_leg_rail.gd").MANUAL_COMMANDS,"captive_controls":preload("res://scripts/captive_controls.gd").lock_commands(lock_ids),"core_guide":preload("res://scripts/core_guide.gd").MANUAL_COMMANDS,"backpack_hinge":preload("res://scripts/backpack_hinge.gd").MANUAL_COMMANDS}
+	commands["joint_restraints"] = preload("res://scripts/passive_joint_restraints.gd").command_ids(layout.restraints)
 	var shoulder_commands = preload("res://scripts/shoulder_support.gd").MANUAL_COMMANDS
 	commands["left_shoulder"] = shoulder_commands
 	commands["right_shoulder"] = shoulder_commands
@@ -183,7 +184,7 @@ func run() -> void:
 	expect(cartridge_text == "Fasten 4 × W-12 + H-12040 · upper holes","drive cartridge fasteners, got "+cartridge_text)
 	var ankle := page_named(definitions[left_definition].manual,"Secure the ankle flange")
 	var ankle_text: Array[String] = []
-	for index in [1,2,3]:ankle_text.append(Objectives.text(game,"left_leg",ankle.objectives[index]))
+	for index in [3,4,5]:ankle_text.append(Objectives.text(game,"left_leg",ankle.objectives[index]))
 	expect(ankle_text == ["Crane: Detach and stow magnetic connectors","Crane console: Raise crane","Crane console: Move to Parking bay"],"ankle release text, got "+str(ankle_text))
 	crane.task = "pelvis";crane.uid = "pelvis";crane.config = {"spec":crane.tasks.pelvis};crane.reacquire = ""
 	crane.station = "park";crane.raised = true;crane.motion = "";crane.moving = false

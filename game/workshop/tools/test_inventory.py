@@ -14,6 +14,7 @@ ROUTINE = (
     'geometry_surface_audit_test',
     'interaction_outline_test',
     'leg_content_test',
+    'joint_restraints_test',
     'manual_diagram_cache_test',
     'manual_completion_test',
     'manual_objectives_test',

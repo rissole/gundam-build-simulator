@@ -31,8 +31,17 @@ to the robot's proportions.
 `structural_ready` means all structural pieces and connection hardware in this
 prototype are fitted. Hydraulic knee/hip actuators, electrical and hydraulic
 services beyond the main ankle disconnect, armor, calf thrusters and functional articulation are deferred. The
-ankle and knee remain mechanically braced by handling equipment. Braces are
-equipment context and are not false robot inventory. The original foot's other
+ankle and knee remain mechanically braced by captive handling equipment. Each leg's
+ankle, knee and beam-flange bridges have separate outboard/inboard handles.
+Retaining a connection leaves its bridges parked; operate both local handles
+before releasing the matching crane support or moving the loaded rig. Partial
+travel is unlocked. Ankle/knee equipment is physically captive on the shin before
+pickup; beam equipment is captive on the fork. The same braces remain on the
+mounted leg when the rig withdraws. They save explicit stop states and are not
+robot inventory. Local correction requires the neutral stationary rig with its
+foot bolster engaged; stow the affected braces before undoing their attachments
+or retaining hardware. See the measured stow and swept envelopes in the
+[leg support contract](final-assembly-plan.md). The original foot's other
 preassembled structures and mechanisms retain their previous boundary.
 
 ## Physical parts and ownership
