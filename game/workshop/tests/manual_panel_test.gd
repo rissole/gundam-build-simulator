@@ -35,9 +35,12 @@ func run() -> void:
 	expect(game.hud.browser.visible,"M opens the manual")
 	game.hud.handle_manual_browser_input(key(KEY_M))
 	expect(not game.hud.browser.visible and not game.paused,"M closes the manual again")
+	var guidance_objective: Dictionary = game.manual_control_guidance.objective.duplicate(true)
+	var guidance_tracked: Dictionary = game.manual_progress.tracked()
 	var panel_shown: bool = game.hud.manual.visible
 	game.handle_desktop_input(key(KEY_TAB))
 	expect(game.hud.manual.visible != panel_shown,"Tab toggles the current step panel")
+	expect(game.manual_progress.tracked()==guidance_tracked and game.manual_control_guidance.objective==guidance_objective,"Hiding the panel preserves manual tracking and its physical-control objective")
 	game.manual_progress.unpin()
 	game.manual_progress._data={"chapters":[{"id":"blocked","title":"Blocked","after":["unfinished"],"steps":[["pelvis",8]]}]}
 	game.manual_progress.refresh();game.hud._refresh_step_panel()

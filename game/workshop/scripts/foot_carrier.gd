@@ -90,6 +90,10 @@ func controls() -> Array[Dictionary]:
 		var entry = button.duplicate();entry.point = entry.node.global_position;result.append(entry)
 	return result
 
+func manual_control_actions(objective: Dictionary) -> Array:
+	var command := str(objective.get("command",""))
+	return ["advance"] if command.begins_with("advance:") else ["return"] if command=="return:home" else []
+
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String = "") -> String:
 	match action:

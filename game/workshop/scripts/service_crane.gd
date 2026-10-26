@@ -202,6 +202,23 @@ func _interaction_error(point: Vector3, allowed: Array = []) -> String:
 	if not game._visible(point,allowed,true):return "The magnetic connection is obstructed."
 	return ""
 
+func manual_control_entries(objective: Dictionary) -> Array[Dictionary]:
+	var op := str(objective.get("op",""))
+	var command := str(objective.get("command",""))
+	var result: Array[Dictionary] = []
+	if op=="operate":
+		# Access console is useful only when it actually offers this action.
+		if not menu_options().any(func(option):return option.action==command) or not action_error(command).is_empty():return result
+		result.append(control_entry(console_node,"open_console","Crane console",.28,{"point":console_node.global_position}))
+		return result
+	for entry in controls():
+		var action := str(entry.action)
+		var matches := (op=="connect" and (action.begins_with("pick:") or action.begins_with("attach:"))) or (op=="detach" and action.begins_with("detach:"))
+		if not matches:continue
+		if op=="detach" and objective.has("point") and endpoints[action.get_slice(":",1)].point!=str(objective.point):continue
+		if action_error(action).is_empty():result.append(entry)
+	return result
+
 func manual_commands() -> Array:return MANUAL_COMMANDS
 
 ## The single player wording for a crane command. Places come from the route:

@@ -79,6 +79,7 @@ var type_sources: Dictionary = {}
 var ghost: MeshInstance3D
 var ghost_material: StandardMaterial3D
 var ghost_assembly_signature: String = ""
+var manual_control_guidance: Node3D
 var interaction_outline: Node3D
 var foot: AnimatableBody3D
 var prep: Node3D
@@ -197,6 +198,9 @@ func _ready() -> void:
 	add_child(interaction_outline)
 	components.make_markers()
 	manual_progress = preload("res://scripts/manual_progress.gd").new(self)
+	manual_control_guidance = preload("res://scripts/manual_control_guidance.gd").new()
+	add_child(manual_control_guidance)
+	manual_control_guidance.setup(self)
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
@@ -301,6 +305,7 @@ func set_paused(value: bool) -> void:
 	paused = value
 	jump_requested = false
 	if value and is_instance_valid(interaction_outline):interaction_outline.clear()
+	if value and is_instance_valid(manual_control_guidance):manual_control_guidance.clear()
 	rotate_held = false
 	rotation_station = ""
 	last_rotate_tap = -1000
@@ -336,9 +341,13 @@ func _physics_process(delta: float) -> void:
 			bodies[id].linear_velocity = Vector3.ZERO
 
 func _process(_delta: float) -> void:
-	if not started or paused or desktop_input.modal_active(): return
+	if not started:return
+	if paused or desktop_input.modal_active():
+		manual_control_guidance.clear()
+		return
 	_update_target()
 	_update_markers()
+	manual_control_guidance.update()
 
 func bind_build_views(scenario: Dictionary) -> void:
 	builds.clear()

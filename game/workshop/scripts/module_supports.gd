@@ -67,6 +67,22 @@ static func template_commands(names) -> Array:
 	return result
 static func template_label(identity: String) -> String:
 	return "hip assembly" if identity=="pelvis" else identity.replace("_"," ")
+func manual_control_actions(objective: Dictionary) -> Array:
+	var command := str(objective.get("command",""))
+	var result: Array = []
+	if command=="insert_pins":
+		for key in locks:
+			if not locks[key]:result.append("lock:"+str(key))
+	elif command=="close_jaws":
+		for i in jaws.size():
+			if jaws[i]>.0001:result.append("jaw:"+str(i))
+	elif command.begins_with("template:"):
+		# The physical INSERT button cycles; every eligible press progresses to
+		# the authored target, even when the intermediate template differs.
+		for entry in controls():
+			if entry.get("cycle_templates",false):result.append(entry.action)
+	return result
+
 func manual_commands() -> Array:
 	var result: Array=MANUAL_COMMANDS.duplicate()
 	if spec is Dictionary and spec.has("templates"):result.append_array(template_commands(spec.templates.keys()))

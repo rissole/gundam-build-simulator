@@ -81,6 +81,16 @@ func controls() -> Array[Dictionary]:
 	return result
 
 const MANUAL_COMMANDS=["next:capture","next:seat","secure_bolts","connection"]
+func manual_control_actions(objective: Dictionary) -> Array:
+	var command := str(objective.get("command",""))
+	if command.begins_with("next:"):return ["advance"]
+	if command=="secure_bolts":
+		var result: Array = []
+		for i in bolts.size():
+			if not bolts[i]:result.append("bolt:"+str(i))
+		return result
+	return [command]
+
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String="") -> String:
 	if action.begins_with("next:"):return "Next"

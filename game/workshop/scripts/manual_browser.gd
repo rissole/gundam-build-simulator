@@ -419,10 +419,9 @@ func _show_detail() -> void:
 			var status = hud.label(word,13,hud.tone if kind == "current" else hud.muted)
 			line.add_child(status)
 			detail_box.add_child(row)
-	var note = definition.get("note",null)
-	var show_note: bool = note is Dictionary and int(note.get("at",-1)) == current
-	note_row.visible = show_note
-	if show_note:note_label.text = str(note.get("text",""))
+	var control_note := Objectives.note(definition,current)
+	note_row.visible = not control_note.is_empty()
+	if note_row.visible:note_label.text = control_note
 	var reference := bool(_selected.get("reference",false))
 	var step_state: String = "" if reference else hud.game.manual_progress.status(owner,at)
 	var tracking := _is_tracked(_selected)

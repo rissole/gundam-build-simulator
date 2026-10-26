@@ -850,10 +850,9 @@ func _fill_step_panel(step: Dictionary) -> void:
 		page_body.text = str(definition.get("body",""))
 		var height := page_body.get_combined_minimum_size().y
 		body_scroll.custom_minimum_size.y = minf(maxf(height,1.0),260.0)
-	var note = definition.get("note",null)
-	var show_note := note is Dictionary and int(note.get("at",-1)) == current
-	note_row.visible = show_note
-	if show_note:note_label.text = str(note.get("text",""))
+	var control_note := ManualObjectives.note(definition,current)
+	note_row.visible = not control_note.is_empty()
+	if note_row.visible:note_label.text = control_note
 	var ready: int = game.manual_progress.ready_count(step)
 	ready_label.visible = ready > 0
 	ready_label.text = "%d more ready to start"%ready

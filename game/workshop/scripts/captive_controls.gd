@@ -45,6 +45,10 @@ static func lock_commands(ids) -> Array:
 	var result: Array=[]
 	for id in ids:result.append("lock:"+str(id))
 	return result
+func manual_control_actions(objective: Dictionary) -> Array:
+	var id := str(objective.get("command","")).trim_prefix("lock:")
+	return [id] if specs.has(id) and not locked[id] else []
+
 func manual_commands() -> Array:return lock_commands(specs.keys())
 func command_label(_action: String, _task: String="") -> String:return "Insert lock pin"
 func manual_subject(objective: Dictionary) -> String:

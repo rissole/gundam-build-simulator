@@ -107,6 +107,28 @@ func controls() -> Array[Dictionary]:
 	return result
 
 const MANUAL_COMMANDS=["extend_struts","lock_struts","release_struts","take_weight","close","engage_latches","close_covers"]
+func manual_control_entries(objective: Dictionary) -> Array[Dictionary]:
+	var command := str(objective.get("command",""))
+	if command in ["take_weight","close"]:return manual_console_entries(command)
+	return super.manual_control_entries(objective)
+
+func manual_control_actions(objective: Dictionary) -> Array:
+	var command := str(objective.get("command",""))
+	var result: Array = []
+	for i in range(2):
+		match command:
+			"extend_struts":
+				if not _strut_extended(i) and strut_goals[i]<=struts[i]:result.append("strut:"+str(i))
+			"lock_struts":
+				if not locks[i]:result.append("lock:"+str(i))
+			"release_struts":
+				if locks[i]:result.append("lock:"+str(i))
+			"engage_latches":
+				if not latches[i]:result.append("latch:"+str(i))
+			"close_covers":
+				if not covers[i]:result.append("cover:"+str(i))
+	return result
+
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String="") -> String:
 	match action:

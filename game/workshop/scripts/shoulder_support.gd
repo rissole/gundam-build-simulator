@@ -78,6 +78,9 @@ func crane_options() -> Array[Dictionary]:
 	if not motion.is_empty():return [{"action":"guide:stop" if moving else "guide:resume","label":"Stop load transfer" if moving else "Resume load transfer"}]
 	return [{"action":"guide:check_brakes","label":command_label("check_brakes")},{"action":"guide:transfer_weight","label":command_label("transfer_weight")},{"action":"guide:take_weight","label":command_label("take_weight")}]
 const MANUAL_COMMANDS=["check_brakes","transfer_weight"]
+func manual_control_entries(objective: Dictionary) -> Array[Dictionary]:
+	return manual_console_entries(str(objective.get("command","")))
+
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func _side_name() -> String:return "right" if str(equipment_id).begins_with("right") else "left"
 func command_label(action: String, _task: String="") -> String:

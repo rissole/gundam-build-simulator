@@ -8,6 +8,20 @@ static func machine_text(machine, objective: Dictionary, action: String) -> Stri
 	var hint: String = machine.manual_hint(objective)
 	return (subject+": " if not subject.is_empty() else "")+machine.command_label(action,str(objective.get("task","")))+(" — "+hint if not hint.is_empty() else "")
 
+## Notes retain authored assembly details and explain the bounded physical cue
+## for every current machine action, in both manual views.
+static func note(page: Dictionary, current: int) -> String:
+	var result := ""
+	var authored = page.get("note",{})
+	if authored is Dictionary and int(authored.get("at",-1))==current:result = str(authored.get("text",""))
+	var objectives: Array = page.get("objectives",[])
+	if current>=0 and current<objectives.size():
+		var objective: Dictionary = objectives[current]
+		if objective.get("op","") in MACHINE_OPS or (objective.get("op","")=="seat" and objective.has("via")):
+			if not result.is_empty():result += " "
+			result += "Nearby available controls for this action have a gold outline. Aim at a highlighted control to see its action."
+	return result
+
 static func text(game, owner: String, objective: Dictionary) -> String:
 	var op := str(objective.get("op",""))
 	if op == "fit":

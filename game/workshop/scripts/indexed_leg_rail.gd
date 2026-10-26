@@ -62,6 +62,10 @@ func controls() -> Array[Dictionary]:
 		result.append(entry)
 	return result
 
+func manual_control_actions(objective: Dictionary) -> Array:
+	var command := str(objective.get("command",""))
+	return ["advance"] if command.begins_with("next:") else ["return"] if command=="back:home" else [command]
+
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String = "") -> String:
 	if action.begins_with("next:"):return "Next"

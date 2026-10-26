@@ -29,6 +29,25 @@ func manual_state() -> Dictionary:return {}
 func manual_effect(_objective: Dictionary) -> Dictionary:return {}
 func manual_count(_objective: Dictionary) -> Vector2i:return Vector2i(-1,-1)
 func manual_proves(_condition: Dictionary) -> bool:return false
+## Physical controls for one typed manual objective. Machines map grouped or
+## abstract commands to their existing local actions; English labels are never IDs.
+func manual_control_actions(objective: Dictionary) -> Array:
+	return [str(objective.get("command",""))]
+
+func manual_control_entries(objective: Dictionary) -> Array[Dictionary]:
+	var actions := manual_control_actions(objective)
+	var result: Array[Dictionary] = []
+	for entry in controls():
+		if not actions.has(str(entry.get("manual_command",entry.action))):continue
+		if action_error(str(entry.action)).is_empty():result.append(entry)
+	return result
+
+## Guided machines share the crane's real access console for console commands.
+func manual_console_entries(command: String) -> Array[Dictionary]:
+	var crane = game.equipment.get_equipment("service_crane")
+	if crane==null or crane._guide()!=self:return []
+	return crane.manual_control_entries({"op":"operate","command":"guide:"+command})
+
 func physics(_delta: float) -> void:pass
 func placement_error(_owner: String, _slot: String) -> String:return ""
 func access_error(_owner: String) -> String:return ""
@@ -81,6 +100,6 @@ func without_passengers(excluded: Array[RID]) -> Array[RID]:
 
 ## The registry finds the controller of any targeted entry through "controller".
 func control_entry(node: Node3D, action: String, label: String, radius: float, extra: Dictionary = {}) -> Dictionary:
-	var entry = {"type":"equipment","controller":self,"node":node,"action":action,"label":label,"radius":radius}
+	var entry = {"type":"equipment","controller":self,"node":node,"action":action,"label":label,"radius":radius,"control_id":action}
 	entry.merge(extra,true)
 	return entry

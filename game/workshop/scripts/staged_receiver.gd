@@ -48,6 +48,14 @@ func controls() -> Array[Dictionary]:
 		result.append(control_entry(nodes.handle,action,manual_subject({"command":action})+": "+command_label(action),.12,{"point":nodes.handle.global_position,"allowed":[nodes.owner],"allow_body_hit":true}))
 	return result
 
+func manual_control_actions(objective: Dictionary) -> Array:
+	if str(objective.get("command",""))=="fasten":
+		var result: Array = []
+		for sid in spec.get("captive_slots",[]):
+			if not _has([sid]):result.append("fasten:"+str(sid))
+		return result
+	return super.manual_control_actions(objective)
+
 func manual_commands() -> Array:
 	var result: Array=[]
 	if not spec.get("captive_slots",[]).is_empty():result.append("fasten")
