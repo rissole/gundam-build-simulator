@@ -1,8 +1,10 @@
 extends "res://scripts/equipment.gd"
 ## Shared delivery configuration. Fingers retract before wing swing; rear
 ## guards collapse, inner leaves fold upward, then outer leaves rise. Every
-## intermediate phase is stopped/resumed and serialized, with occupancy checks.
-const Sweep = preload("res://scripts/motion_sweep.gd")
+## intermediate phase is stopped/resumed and serialized. The gantry's access
+## platforms deliberately clip through loose parts and players instead of
+## sweeping for clearance (user decision, 2026-10-26): a whole-route sweep
+## stalled each delivery for ~0.4 s. A rider still moves with a deck.
 const Codec = preload("res://scripts/pose_codec.gd")
 var blockout: Node3D
 var spec: Dictionary
@@ -66,8 +68,6 @@ func request_mode(mode: String) -> String:
 	if game.paused:return "Resume the workshop before moving access platforms."
 	if moving and mode!=requested_mode:return "Stop the platforms before selecting another delivery."
 	var goals = _goals(mode)
-	var error = motion_error(values(),goals)
-	if not error.is_empty():blocked_reason = error;return error
 	requested_mode = mode
 	for key in channels:channels[key].goal = goals[key]
 	moving = not ready_for(mode)
@@ -89,45 +89,9 @@ func physics(delta: float) -> void:
 	if game.paused or not moving:return
 	var next = values()
 	for key in channels:next[key] = move_toward(channels[key].value,channels[key].goal,delta/spec.duration)
-	blocked_reason = motion_error(values(),next)
-	if not blocked_reason.is_empty():moving = false;return
 	for key in channels:channels[key].value = next[key]
 	_pose()
 	moving = channels.values().any(func(channel):return not is_equal_approx(channel.value,channel.goal))
-
-func motion_error(from: Dictionary, to: Dictionary) -> String:
-	var roots: Array = []
-	for id in blockout.spec.groups:
-		var record: Dictionary = blockout.spec.groups[id]
-		if record.get("joint","") in ["wing","gate","rear_outer"]:roots.append(id)
-	# Deliberate hinged joints and shared floor contacts are excluded only from
-	# each other. Loads, workers, stock, elevators and static world remain solid.
-	var excluded: Array[RID] = blockout.rids_for_groups(roots)
-	for id in roots:
-		for contact in blockout.spec.groups[id].get("motion_contacts",[]):excluded.append(blockout.pieces[contact].body.get_rid())
-	var span = 0.0
-	for key in channels:span = maxf(span,absf(to[key]-from[key]))
-	if span<.000001:return ""
-	# Outer wing tip travel bounds the sampling distance, including a full turn.
-	var samples = maxi(1,ceili(span*spec.wing_length*PI/.025))
-	var space = get_world_3d().direct_space_state
-	for index in range(samples+1):
-		var interpolated = {}
-		for key in channels:interpolated[key] = lerpf(from[key],to[key],float(index)/samples)
-		for shape in blockout.shapes_at(roots,frames_at(interpolated)):
-			# Stationary channels do not reserve their occupied working platforms.
-			var parent: String = blockout.pieces[shape.id].spec.parent
-			while not parent.is_empty() and not blockout.spec.groups[parent].has("level"):parent = blockout.spec.groups[parent].parent
-			var record: Dictionary = blockout.spec.groups.get(parent,{})
-			var key = "rear" if parent.begins_with("rear_") else str(record.get("level",0))
-			if not from.has(key) or is_equal_approx(from[key],to[key]):continue
-			var hit = Sweep.overlap(space,shape.shape,shape.world,15,excluded,-.004)
-			if not hit.is_empty():
-				if OS.has_environment(Sweep.DIAGNOSTIC_ENV):
-					var target=hit.collider.shape_owner_get_owner(hit.collider.shape_find_owner(hit.shape))
-					print("ACCESS_CONTACT ",shape.id," at=",shape.world.origin," collider=",hit.collider," source=",target.get_meta("source_uid","") if target!=null else "")
-				return "Clear the access platform sweep: "+str(hit.collider.name)+" blocks "+shape.id+"."
-	return ""
 
 func _pose() -> void:
 	blockout.apply_frames(frames_at(values()))

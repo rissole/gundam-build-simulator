@@ -128,6 +128,53 @@ jaws, brace handles, receiver handles and crane magnetic connectors.
 - [ ] Turning upright, docking, release and empty return remain responsive;
   these articulated phases retain sampled collision checks.
 
+## Leg docking lag — 2026-10-26
+
+- Player reports rail travel and lane changes are now fast, but lag remains
+  the first time the gantry opens and during the leg's final ascent into the
+  hip assembly. User asked for a systemic fix: the gantry will be rebuilt and
+  more moving equipment added.
+- Measured (user-authorised, headless CPU only, scratch driver pressing Next
+  through live 60 Hz physics from `--stage=left_leg_dock`, per-machine timing):
+  - Both stalls were `workshop_access.request_mode()` sweeping the platforms'
+    whole travel before moving: 1,006 poses × 54 shapes, ~360–380 ms. It runs
+    when travel starts (gantry opens) and again at dock arrival.
+  - Turn upright and dock rise: the rail's sampled sweep cost 13.7 ms and
+    15.6 ms per tick (169 leg shapes + 30 rig shapes, 8–11 poses, overlap + cast).
+- Changes:
+  - **User decision:** the gantry's access platforms clip through loose parts
+    and players; they no longer sweep for clearance (request or per tick). A
+    rider still moves with a deck.
+  - Shared `MotionSweep.sweep` bounds each shape over its whole sweep and
+    queries once; shapes in clear space skip detailed queries. Reported
+    contacts are unchanged. Every sweeping machine benefits without opting in.
+  - The loaded leg's dock rise is a straight lift, so its load uses the
+    linear path; the telescoping rig stays sampled.
+- After (same driver, left and right legs): travel press 384 → 8 ms; arrival
+  stall gone; rail tick p50 upright 6.2 ms, dock rise 4.4 ms; travel 2.6 ms.
+  The dock-arrival frame remains ~25–36 ms (install, mount, collision rebuild).
+  Isolated one-off spikes moved between runs (OS noise). No rendered frame
+  timing, windowed run or FPS measurement; rendering cost is not included.
+- Routine regressions: 45 cases pass (47.7 s). `wide_access_test` was updated
+  for clipping platforms but is a diagnostic and was not run; nor was
+  `indexed_leg_rail_test`.
+- Observed while measuring, unchanged: lowering a **loaded** leg back out of
+  the dock holds on the closed rear deck floor, because Return does not reopen
+  the platforms. Players release the rig instead; unclear if reachable.
+- **Open decision — machines shoving loose parts.** User likes the idea.
+  Tradeoffs presented: machines are teleported static bodies today, so true
+  shoving needs kinematic bodies with velocity (one shared posing change);
+  pinch points against structure/build eject or bury parts; parts can be lost
+  in unreachable places (needs a return-home rule); the player is not pushed by
+  physics (keep a hold); fitted assemblies should still make machines wait. It
+  reverses the 2026-10-25 "pointed at, never pushed" choice and would drop the
+  lane-marking condition. Suggested hybrid: push loose parts, hold for player
+  and assemblies, skip checks against fixed structure. Not started.
+- **Player acceptance (2026-10-26):** "performance looked good"; the user
+  accepted the docking performance fix. No FPS figure was supplied.
+- [x] Gantry opening and the final ascent stay smooth in normal play.
+- [ ] Platforms clipping through parts/players looks acceptable.
+
 ## Progress video feedback — 2026-10-25
 
 - User rejected the foot-rotation film ("it's bad") and requested its deletion

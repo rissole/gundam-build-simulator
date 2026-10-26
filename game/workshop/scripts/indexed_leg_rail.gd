@@ -375,7 +375,10 @@ func motion_error(from: Dictionary, to: Dictionary) -> String:
 	# Only these authored phases translate every holder member rigidly. The
 	# upright turn, docking mast, release and bolster still use sampled geometry.
 	var linear = mode == "index" or (mode == "path" and from.path >= 0 and from.path <= 1 and to.path >= 0 and to.path <= 1 and from.roll == 0 and to.roll == 0 and from.roll_height == 0 and to.roll_height == 0)
-	var groups=[{"shapes":shapes,"margin":.001,"linear":linear},{"shapes_at":rig,"linear":linear}]
+	# The engaged dock rise lifts the upright leg straight up (no turn or
+	# lowering above path 2); only the telescoping mast changes the rig.
+	var load_linear = linear or (mode == "path" and from.path >= 2 and to.path >= 2 and from.engaged and to.engaged and from.release == 0 and to.release == 0)
+	var groups=[{"shapes":shapes,"margin":.001,"linear":load_linear},{"shapes_at":rig,"linear":linear}]
 	return EquipmentRegistry.Motion.sweep(self,groups,samples,func(t):return state_at.call(t).frame,excluded).get("error","")
 
 func _pose() -> void:

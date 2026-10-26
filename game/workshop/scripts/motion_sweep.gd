@@ -79,23 +79,46 @@ static func collect_rids(node: Node, output: Array[RID]) -> void:
 ## bases (an articulated route may curve), or skip pose-dependent exclusions.
 ## "{collider}" in an error names the hit body.
 ## Returns {} when clear, else {"error","index","collider"}.
+## Every shape is first bounded over its whole sweep (all sampled poses and the
+## casts between them) and queried once. A shape whose swept bounds touch nothing
+## cannot report a contact, so it skips its detailed queries; the first reported
+## contact is unchanged. Callers never opt in: every sweep pays per detailed
+## shape only near obstacles, however many members or samples it has.
 static func sweep(space: PhysicsDirectSpaceState3D, groups: Array, sample_count: int, pose_at: Callable, mask: int, exclude: Array[RID], label: String = "", exclusions_at: Callable = Callable()) -> Dictionary:
 	var previous_shapes: Dictionary = {}
 	if not exclusions_at.is_valid() and groups.all(func(group):return group.get("linear",false) and group.get("cast",false)):
 		sample_count = 1
+	var plan: Array[Dictionary] = []
 	for index in range(sample_count+1):
 		var fraction = float(index)/sample_count
 		var pose: Transform3D = pose_at.call(fraction)
 		var ignored: Array[RID] = exclusions_at.call(pose) if exclusions_at.is_valid() else exclude
+		var posed: Array = []
 		for group_index in groups.size():
 			var group: Dictionary = groups[group_index]
-			if index > 0 and index < sample_count and not exclusions_at.is_valid() and group.get("linear",false) and group.get("cast",false):continue
-			var frame: Transform3D = group.frame.call(pose) if group.has("frame") else pose
-			var shapes: Array = group.shapes_at.call(pose,fraction) if group.has("shapes_at") else group.shapes
+			if index > 0 and index < sample_count and not exclusions_at.is_valid() and group.get("linear",false) and group.get("cast",false):
+				posed.append(null);continue
+			posed.append(_posed_shapes(group,pose,fraction))
+		plan.append({"pose":pose,"fraction":fraction,"ignored":ignored,"groups":posed})
+	var clear: Dictionary = _clear_shapes(space,groups,plan,mask)
+	for index in range(plan.size()):
+		var step: Dictionary = plan[index]
+		var ignored: Array[RID] = step.ignored
+		for group_index in groups.size():
+			var group: Dictionary = groups[group_index]
+			var shapes = step.groups[group_index]
+			if shapes == null:continue
+			var pending := false
 			for shape_index in shapes.size():
+				if not clear.has(Vector2i(group_index,shape_index)):pending = true;break
+			if not pending:continue
+			# shapes_at may reuse and resize its query shapes; pose them again here.
+			if group.has("shapes_at"):shapes = _posed_shapes(group,step.pose,step.fraction)
+			for shape_index in shapes.size():
+				if clear.has(Vector2i(group_index,shape_index)):continue
 				var entry: Dictionary = shapes[shape_index]
-				var at: Transform3D = entry.world if entry.has("world") else frame*entry.transform
-				var margin: float = entry.get("margin",group.get("margin",0.001))
+				var at: Transform3D = entry.at
+				var margin: float = entry.margin
 				var hit = overlap(space,entry.shape,at,mask,ignored,margin)
 				if not hit.is_empty():
 					if OS.has_environment(DIAGNOSTIC_ENV):
@@ -115,6 +138,81 @@ static func sweep(space: PhysicsDirectSpaceState3D, groups: Array, sample_count:
 						return _report(group.get("cast_error",group.error),blocker.get("collider"),index,label)
 				if group.get("cast",false):previous_shapes[key] = at
 	return {}
+
+static func _posed_shapes(group: Dictionary, pose: Transform3D, fraction: float) -> Array[Dictionary]:
+	var frame: Transform3D = group.frame.call(pose) if group.has("frame") else pose
+	var shapes: Array = group.shapes_at.call(pose,fraction) if group.has("shapes_at") else group.shapes
+	var result: Array[Dictionary] = []
+	for entry in shapes:
+		var at: Transform3D = entry.world if entry.has("world") else frame*entry.transform
+		result.append({"shape":entry.shape,"at":at,"margin":float(entry.get("margin",group.get("margin",0.001))),"bounds":local_bounds(entry.shape)})
+	return result
+
+## Shape keys whose complete swept bounds overlap nothing outside the RIDs
+## excluded at every sample. Bounds cover each sampled pose and, for cast
+## groups, the translation from the previous checked pose that the cast tests.
+static func _clear_shapes(space: PhysicsDirectSpaceState3D, groups: Array, plan: Array[Dictionary], mask: int) -> Dictionary:
+	var swept: Dictionary = {}
+	var padding: Dictionary = {}
+	var unbounded: Dictionary = {}
+	var previous: Dictionary = {}
+	var common: Array[RID] = plan[0].ignored
+	for step in plan:
+		if step.ignored == common:continue
+		var kept: Array[RID] = []
+		for rid in common:
+			if step.ignored.has(rid):kept.append(rid)
+		common = kept
+	for step in plan:
+		for group_index in groups.size():
+			var shapes = step.groups[group_index]
+			if shapes == null:continue
+			var cast: bool = groups[group_index].get("cast",false)
+			for shape_index in shapes.size():
+				var key = Vector2i(group_index,shape_index)
+				var entry: Dictionary = shapes[shape_index]
+				if entry.bounds == null:unbounded[key] = true;continue
+				var local: AABB = entry.bounds
+				var at: Transform3D = entry.at
+				var box: AABB = at*local
+				if cast and previous.has(key):
+					var from: Transform3D = previous[key]
+					box = box.merge(from*local).merge(Transform3D(from.basis,at.origin)*local)
+				if cast:previous[key] = at
+				swept[key] = swept[key].merge(box) if swept.has(key) else box
+				padding[key] = maxf(padding.get(key,0.0),entry.margin)
+	var clear: Dictionary = {}
+	var probe := BoxShape3D.new()
+	for key in swept:
+		if unbounded.has(key):continue
+		# The detail check queries again with margin+0.001 at a cast contact.
+		var box: AABB = swept[key].grow(maxf(padding[key],0.0)+.003)
+		probe.size = box.size
+		if overlap(space,probe,Transform3D(Basis.IDENTITY,box.get_center()),mask,common,0.0).is_empty():clear[key] = true
+	return clear
+
+static var _hull_bounds: Dictionary = {}
+
+## Local bounds of a query shape, or null when it has no cheap bound (such a
+## shape is always checked in detail).
+static func local_bounds(shape: Shape3D) -> Variant:
+	if shape is BoxShape3D:return AABB(-shape.size/2,shape.size)
+	if shape is SphereShape3D:return AABB(-Vector3.ONE*shape.radius,Vector3.ONE*2*shape.radius)
+	if shape is CapsuleShape3D or shape is CylinderShape3D:
+		var radius: float = shape.radius;var height: float = shape.height
+		return AABB(Vector3(-radius,-height/2,-radius),Vector3(2*radius,height,2*radius))
+	if shape is ConvexPolygonShape3D:
+		var points: PackedVector3Array = shape.points
+		if points.is_empty():return null
+		var signature := hash(points)
+		var cached = _hull_bounds.get(shape.get_instance_id())
+		if cached != null and cached[0] == signature:return cached[1]
+		var bounds := AABB(points[0],Vector3.ZERO)
+		for point in points:bounds = bounds.expand(point)
+		if _hull_bounds.size() > 4096:_hull_bounds.clear()
+		_hull_bounds[shape.get_instance_id()] = [signature,bounds]
+		return bounds
+	return null
 
 static func _report(error: String, collider: Object, index: int, label: String) -> Dictionary:
 	var name = str(collider.name) if collider is Node else ""

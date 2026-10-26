@@ -23,15 +23,16 @@ func run() -> void:
 		expect(access.validate(saved).is_empty(),mode+" save validates")
 		access.apply(saved)
 		expect(access.ready_for(mode),mode+" restore preserves locked pose")
-	# Supplied blocker checks actual solid interlocks, without a player journey.
+	# The access platforms clip through cargo by design (no clearance sweep).
 	var blocker = StaticBody3D.new();game.add_child(blocker);blocker.name = "SuppliedCargo"
 	var collision = CollisionShape3D.new();var shape = BoxShape3D.new();shape.size=Vector3(.5,1,.5)
 	collision.shape=shape;blocker.add_child(collision);blocker.position=Vector3(9,8.8,24)
 	await frames(3)
-	expect(not access.request_mode("leg").is_empty(),"occupied wing blocks delivery configuration")
+	expect(access.request_mode("leg").is_empty() and access.moving,"cargo in a wing's swing never refuses the delivery configuration")
+	access.physics(1.5)
+	expect(access.moving and access.blocked_reason.is_empty(),"wings swing through cargo without holding")
 	blocker.free();await frames(2)
-	expect(access.request_mode("leg").is_empty(),"clearing cargo permits motion")
-	access.physics(1.5);access.request("stop")
+	access.request("stop")
 	var interrupted: Dictionary = JSON.parse_string(JSON.stringify(access.capture()))
 	expect(not access.moving and not access.ready_for("leg"),"Stop holds intermediate configuration")
 	expect(access.validate(interrupted).is_empty(),"stopped intermediate snapshot accepted")
