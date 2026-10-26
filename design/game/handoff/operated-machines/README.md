@@ -16,6 +16,7 @@ eventually be AR, so controls stay physical and in sight.
 | `crane-operator-view` | `/private/tmp/gbs-crane` | [A — Crane operator view](A-crane-operator-view.md) | 2nd |
 | `operated-rigs` | `/private/tmp/gbs-rigs` | [B — Operated rigs](B-operated-rigs.md) | 3rd, rebased on A |
 | `gantry-access` | `/private/tmp/gbs-gantry` | [C — Gantry access](C-gantry-access.md) | Fixes 1st; v2 doc anytime |
+| `gantry-v2-plan` | `/private/tmp/gbs-gantry-v2` | [C5 — v2 dimensioned plan](C5-v2-dimensioned-plan.md) | Design only; anytime |
 
 Each branch has one Astra High coordinator (Codex). The coordinator does the
 judgment work and writes **Grok task files** for unambiguous pieces into this folder
