@@ -20,8 +20,12 @@ first time and gives only the goal plus a procedure link on repeats.
 **Crane operator view: rejected (2026-10-27).** A top-down CCTV view (WASD strafe,
 held approach from a glowing entry point, reshaping spreader) was built on the
 unmerged `crane-operator-view` branch. The user playtested it: "crane view is bad
-and i wont merge". The crane keeps its console. What specifically failed is not yet
-recorded; ask before any further crane redesign. Auto-attach from the crane
+and i wont merge". Reasons (user, 2026-10-27): the camera view was flat and you
+couldn't tell what anything was; holding Space did all the interesting work, so it
+was no more satisfying than the console; and the workshop's silhouette reads poorly
+from above, so a top-down view is unlikely to work at all. The crane keeps its
+console. Any future crane redesign must keep the player's own in-world viewpoint and
+make them drive the motions rather than hold one key. Auto-attach from the crane
 remains a possible later power-up.
 
 **Gantry fixes: accepted (2026-10-27).** Ten fixed plates close the 300 mm
@@ -36,7 +40,7 @@ between each hip finger and the hip apron is a deliberate robot/leg work opening
 - [x] [Launch cage v2 concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) approved as direction only, 2026-10-27: two mirrored towers, swinging catwalks, independent hip-bearing arms and deferred lowering/transport.
 - [ ] Dimensioned v2 plan (in progress), then separate v2 build approval. No v2 construction is approved or implemented.
 
-**Open choices retained:** what made the crane view bad; v2 build approval and
+**Open choices retained:** whether to redesign the crane (for example, an in-world pendant using the rigs' hold-E jog pattern); v2 build approval and
 prototype effort; lowering and roll-out support. The accepted gantry appearance and
 physical assembly challenge remain constraints. Parts can continue at the existing
 hip datum/Y10.97 bearing caps while these equipment choices wait.
