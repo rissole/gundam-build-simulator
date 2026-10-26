@@ -13,7 +13,16 @@ if [[ ! -x "$workshop_godot" ]]; then
     exit 1
   fi
 fi
-if [[ ! -d "$workshop_project/.godot/imported" ]]; then
+# A pull can add global script classes while leaving an existing cache stale.
+# Let the editor scan scripts and incrementally import changed assets before play.
+workshop_refresh=true
+for workshop_arg in "$@"; do
+  [[ "$workshop_arg" == -- ]] && break
+  case "$workshop_arg" in
+    --editor|-e|--import) workshop_refresh=false ;;
+  esac
+done
+if [[ "$workshop_refresh" == true ]]; then
   "$workshop_godot" --headless --path "$workshop_project" --editor --import
 fi
 exec "$workshop_godot" --path "$workshop_project" "$@"

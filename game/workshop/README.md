@@ -108,7 +108,7 @@ python3 game/workshop/tools/run_regressions.py --only stage_contract_test
 Godot options go before `--`; game options such as `--stage` go after it. You can
 also open [project.godot](project.godot) in Godot 4.7.2.
 
-The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tools/Godot-4.7.2/Godot.app/Contents/MacOS/Godot`. It also accepts `GODOT_BIN` and can find a `godot` command or `/Applications/Godot.app`. The official macOS download was checked against its published SHA-512 manifest before installation. The launcher imports assets automatically when the import cache is absent.
+The launcher uses the task-local Godot installation at `$HOME/.cache/gundam-tools/Godot-4.7.2/Godot.app/Contents/MacOS/Godot`. It also accepts `GODOT_BIN` and can find a `godot` command or `/Applications/Godot.app`. The official macOS download was checked against its published SHA-512 manifest before installation. Before each game launch, it refreshes the script-class cache and incrementally imports changed assets, including after a pull. Editor and explicit import commands run directly. To refresh manually, run `./play.command --headless --editor --import --quit`.
 
 ## Stages
 
