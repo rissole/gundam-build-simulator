@@ -35,6 +35,10 @@ review. Mechanical checks are listed separately from things only a playtest can 
 - **Merged `gantry-access` into `main`** (`b42733f`). Checklist conflict resolved with the branch
   version. Parent re-run on main: blockout `--check` passes; gantry_dressing 219, wide_elevators 93,
   smoke 31, access_lift 45 checks pass. Mechanical only.
+- A phase 1 done on `crane-operator-view`: `49772cf` A2 guarded travel at per-task carry
+  heights, `688a342` A3 CCTV view, `1a6edc0` A4 capture gate + held approaches + spreader
+  deploy, `45fc7f3` A6 first-use/repeat manual. A reports 13 routine suites passing.
+- Grok chain launched sequentially in the crane worktree: A5 automation → A7 tests → A8 records.
 
 ## Morning review steps
 
