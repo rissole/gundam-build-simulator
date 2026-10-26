@@ -21,7 +21,10 @@ plus a procedure link on repeats. The gantry gets gap fixes and symmetric fold
 states now. A "launch cage" v2 with a clear rear exit is design-only until approved.
 [Branches and tasks](handoff/operated-machines/README.md).
 
-- [ ] User: name where the gantry felt asymmetric (level and side). Static solids are mirrored; runtime fold states are the suspect.
+- [x] User named the asymmetry (2026-10-27): **the lowest level, both sides of the hip
+  assembly**. The railings are mismatched, and the side of the hip assembly can be reached
+  from that level on one side but not the other. Static solids are mirrored, so check the
+  runtime fold states and guards. This is the input for C3.
 - [ ] Crane operator view playtest (checkpoint A).
 - [ ] Leg rig jog slice playtest (checkpoint B), before converting the foot rig.
 - [ ] Gantry gap fixes recheck at the hip level; approve or revise the v2 concept (checkpoint C).

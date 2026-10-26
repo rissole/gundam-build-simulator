@@ -55,4 +55,8 @@ Stop and report after 1–3.
 
 - I launch Grok for C2; then a coordinator integration run reviews it and runs
   `gantry_dressing_test`, the access/lift suites and the startup smoke.
-- **C3 Mirror fold states** after the user names the asymmetry (C0).
+- **C3 Mirror fold states.** C0 answered on 2026-10-27: on the **lowest level, left and
+  right of the hip assembly**, the railings don't match, and the side of the hip assembly
+  can be reached from that level on one side but not the other. Find the runtime cause
+  (fold/leaf state, guard, finger length, apron vs. landing), then make both sides offer
+  the same access and matching railings.
