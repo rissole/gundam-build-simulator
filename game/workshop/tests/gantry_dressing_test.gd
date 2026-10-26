@@ -25,6 +25,7 @@ func run() -> void:
 		var stops: Array[float]=[];stops.assign(data.levels)
 		lift.setup(game,side,AssemblyRuntime.vec(data.origin),Vector2(data.size[0],data.size[1]),stops,data)
 		lifts.append(lift)
+	_check_landing_fills(world,lifts,access)
 	var before = _collision_state(game)
 	var original: Dictionary = {}
 	for id in world.pieces:
@@ -152,6 +153,65 @@ func _check_selective_motion(world) -> void:
 	expect(enabled.size()==world.group_pieces[insert].size(),"indexed sweeps see re-enabled inserts without rebuilding membership")
 	world.enable_group(insert,true)
 	expect(world.shapes_at([insert],{}).size()==enabled.size(),"repeated insert selection preserves enabled collision shapes")
+
+func _piece_bounds(piece: Dictionary) -> AABB:
+	var shape: CollisionShape3D = piece.shape
+	return shape.global_transform*AABB(-shape.shape.size/2,shape.shape.size)
+
+func _check_landing_fills(world, lifts: Array, access) -> void:
+	var expected: Dictionary = {}
+	for entry in [[8.4,"8.4"],[11.2,"11.2"],[14.0,"14"],[16.4,"16.4"]]:
+		var level: float = entry[0]
+		var tag: String = entry[1]
+		for side in ["left","right"]:
+			var left: bool = side=="left"
+			var x: float = 5.14 if left else 20.86
+			expected["outer_"+side+"_"+tag+"_landing_fill"] = AABB(Vector3(x-.14,level-.2,28.5),Vector3(.28,.2,1.5))
+			var edge: String = "left" if left else "right"
+			var rail: String = "wing_hinge_"+side+"_"+tag+"_"+edge+"_rail"
+			expect(world.pieces.has(rail),"fixed hinge apron has an outboard rail: "+rail)
+			if world.pieces.has(rail):
+				var bounds: AABB = _piece_bounds(world.pieces[rail])
+				var wanted = AABB(Vector3(3.42 if left else 22.5,level+1.02,23.4),Vector3(.08,.08,1.3))
+				expect(bounds.is_equal_approx(wanted),"hinge guard stays outside walk and wing sweep: "+rail)
+	for side in ["left","right"]:
+		var x: float = 8.06 if side=="left" else 17.94
+		expected["hip_apron_"+side+"_landing_fill"] = AABB(Vector3(x-.14,8.2,28.5),Vector3(.28,.2,1.5))
+	var actual: Array = world.pieces.keys().filter(func(id):return id.ends_with("_landing_fill"))
+	expect(actual.size()==10,"exactly ten fixed landing plates")
+	for id in expected:
+		expect(world.pieces.has(id),"landing plate exists: "+id)
+		if not world.pieces.has(id):continue
+		var piece: Dictionary = world.pieces[id]
+		var bounds: AABB = _piece_bounds(piece)
+		expect(piece.body.get_parent()==world and bounds.is_equal_approx(expected[id]),"plate has fixed parent, flush top and doorway bounds: "+id)
+		var left: bool = "_left_" in id
+		var lift = lifts[0] if left else lifts[1]
+		var deck_shape: CollisionShape3D = null
+		for child in lift.deck.get_children():
+			if child is CollisionShape3D and child.shape is BoxShape3D and child.shape.size.is_equal_approx(Vector3(2.6,.12,2.6)):deck_shape=child
+		expect(deck_shape!=null,"real lift deck collision is available: "+id)
+		if deck_shape==null:continue
+		var car: AABB = deck_shape.global_transform*AABB(-deck_shape.shape.size/2,deck_shape.shape.size)
+		var gap: float = maxf(car.position.x-bounds.end.x,bounds.position.x-car.end.x)
+		expect(absf(gap-.02)<.00002,"plate reduces landing slot to 20 mm without touching car: "+id)
+		# Include closed doors and guide shoes; test their complete vertical
+		# travel envelopes, not just a parked empty car or JSON dimensions.
+		var collisions: Array = []
+		for child in lift.deck.get_children():
+			if not child is CollisionShape3D or not child.shape is BoxShape3D:continue
+			var swept: AABB = child.global_transform*AABB(-child.shape.size/2,child.shape.size)
+			swept.position.y += lift.stops[0]-lift.height
+			swept.size.y += lift.stops[-1]-lift.stops[0]
+			if bounds.grow(.001).intersects(swept):collisions.append(str(child.name))
+		expect(collisions.is_empty(),"plate clears all car hardware for full lift travel: "+id+" "+str(collisions))
+	for mode in access.spec.modes:
+		world.apply_frames(access.frames_at(access._goals(mode)))
+		var moved: Array = []
+		for id in expected:
+			if world.pieces.has(id) and not _piece_bounds(world.pieces[id]).is_equal_approx(expected[id]):moved.append(id)
+		expect(moved.is_empty(),"landing plates stay fixed in access mode "+mode+": "+str(moved))
+	world.apply_frames(access.frames_at(access.values()))
 
 func _collision_state(root_node: Node) -> Dictionary:
 	var result={};var pending: Array[Node]=[root_node]

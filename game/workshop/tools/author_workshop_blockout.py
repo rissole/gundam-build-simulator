@@ -342,7 +342,7 @@ def contract():
             # The root apron is the wing's bearing interface. Keep it a
             # separately identified solid, never exclude the full outer walk
             # from moving-equipment collision queries.
-            deck(f"wing_hinge_{side}_{tag}",x0,x1,23.4,24.7,level,[])
+            deck(f"wing_hinge_{side}_{tag}",x0,x1,23.4,24.7,level,["left" if left else "right"])
             box(f"hinge_front_guard_{side}_{tag}",[(x0+x1)/2+(-.35 if left else .35),level+1.06,23.32],[.8,.08,.08],"yellow")
             # Split inner guard around the elevator's side doorway and wing root.
             for n,(z0,z1) in enumerate([(24.7,28.5),(30,35.8)]):
@@ -384,6 +384,17 @@ def contract():
                 deck(f"rear_flank_{side}_{tag}",a,b,27.4,30.1,level,[])
                 if level==11.2:deck("aft_finger_"+side,a,b,31.7,35.8,level,["left","right","front"])
         deck("rear_crossover_"+tag,5,21,35.8,37.3,level,["rear"])
+
+    # Fixed landing lips stop 20 mm short of the moving car. Keep the full
+    # doorway width and stay between the shaft's corner guide bands.
+    for level in data["access"]["levels"]:
+        tag=str(level)
+        for side,x in [("left",5.14),("right",20.86)]:
+            box(f"outer_{side}_{tag}_landing_fill",[x,level-.1,29.25],
+                [.28,.20,1.50],"deck")
+    for side,x in [("left",8.06),("right",17.94)]:
+        box(f"hip_apron_{side}_landing_fill",[x,8.30,29.25],
+            [.28,.20,1.50],"deck")
 
     # Rendered joints have distinct sections while physics retains the authored
     # envelopes. Telescoping plates must not share their host's top/side planes.
