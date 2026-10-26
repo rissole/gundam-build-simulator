@@ -33,6 +33,15 @@ surfaces, control placement, connection access and catalogue reuse in subsequent
 component detailing. Current tests or these task plans do not approve unfinished
 presentation. Record positive and negative recheck findings here after each fix.
 
+**Control cue follow-up (2026-10-26):** the user requested the familiar game
+highlight that oscillates from bright to dim, rather than a contour-only outline.
+The control surface now has an additive gold emissive glow with a smooth
+1.8-second pulse, using the existing bloom. Objective eligibility, occlusion,
+range, clearing and pickup/obstruction priority are unchanged. Brightness and
+attention/readability await player recheck; no rendered review requested.
+Guidance, manual-panel, outline and startup routines pass (107 checks, 9.295 s);
+local evidence: `game/workshop/verification/regressions-20261026T083601.589069Z/`.
+
 ### Focused left-leg recheck
 
 - [ ] Notice stowed braces on source members, engage both local handles when prompted, transport/dock the leg, and confirm braces remain after rig release.

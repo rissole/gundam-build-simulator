@@ -14,7 +14,8 @@ last version before consolidation.
 - **Left-leg feedback implemented (2026-10-26):** all nine repairs integrated:
   explicit captive braces, crane wording, shared standard hardware, surface pickup,
   supported shelf poses, carry recovery, loose deck riding, manual control cues
-  and connection discovery. The 45-suite routine run exposed one shelf-cache
+  and connection discovery. Control cues now pulse a full-surface gold glow
+  (1.8-second cycle), per player follow-up; four relevant routines pass. The 45-suite routine run exposed one shelf-cache
   defect; corrected affected suites pass. No rendered review or new player
   acceptance. [Evidence and task record](handoff/left-leg-feedback/README.md#implementation-evidence--2026-10-26);
   [focused player recheck](robot-workshop-playtest-checklist.md#focused-left-leg-recheck).

@@ -1,6 +1,7 @@
 extends Node3D
 ## The tracked objective selects controls only on manual updates. View/availability
 ## checks stay live, so undo, equipment motion and occlusion cannot leave a cue.
+# Reuse the retained mesh-copy pool with a full-surface emissive shader.
 const Outline = preload("res://scripts/interaction_outline.gd")
 const MAX_CONTROLS = 8
 const RANGE = 5.0
@@ -13,9 +14,7 @@ var visible_controls: Array[Node3D] = []
 func setup(workshop: Node) -> void:
 	game = workshop
 	var material = ShaderMaterial.new()
-	material.shader = preload("res://scripts/interaction_outline.gdshader")
-	material.set_shader_parameter("outline_color",Color("d6ad59"))
-	material.set_shader_parameter("width_pixels",1.25)
+	material.shader = preload("res://scripts/manual_control_glow.gdshader")
 	for i in MAX_CONTROLS:
 		var outline = Outline.new()
 		outline.outline_material = material

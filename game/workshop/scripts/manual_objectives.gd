@@ -19,7 +19,7 @@ static func note(page: Dictionary, current: int) -> String:
 		var objective: Dictionary = objectives[current]
 		if objective.get("op","") in MACHINE_OPS or (objective.get("op","")=="seat" and objective.has("via")):
 			if not result.is_empty():result += " "
-			result += "Nearby available controls for this action have a gold outline. Aim at a highlighted control to see its action."
+			result += "Nearby available controls for this action pulse with a gold glow. Aim at a glowing control to see its action."
 	return result
 
 static func text(game, owner: String, objective: Dictionary) -> String:

@@ -41,7 +41,9 @@ not use "quest" or "quest log" in the game; that was only the user's analogy
 ## Physical control guidance — 2026-10-26
 
 The current actionable machine objective supplies a short control note and a
-subtle gold outline on its available physical control. This bounded guidance
+gold glow across its available physical control, smoothly pulsing from dim to
+bright over 1.8 seconds. Emission uses the existing bloom settings; the original
+control material remains beneath the additive glow. This bounded guidance
 covers captive lock pins, each transport-brace handle, grouped jaws/pins/bolts,
 rig buttons, crane connectors and the relevant console access point. A grouped
 operation cues only unfinished eligible controls. Commands and control IDs are
