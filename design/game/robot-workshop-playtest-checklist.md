@@ -188,6 +188,24 @@ rope status without a success toast, and added a 0.6→4.5 m/s ramp over about
 challenge; lowering and final exit are undesigned. Pull-in lanyards remain
 accepted as a mechanic. No change here grants acceptance to the wider journey.
 
+### Operated rigs open questions — Phase 1
+
+B1/B2 helpers have isolated mechanical checks; the rigs are not converted and no
+new presentation or player acceptance is claimed. The [B3/B5 design](robot-workshop-plan.md#operated-rigs--phase-1-design-2026-10-27)
+keeps the accepted foot building bay and physical access challenge. At checkpoint B:
+
+- [ ] Judge initial jog speeds and correction while looking away from the panel;
+  constant rates are proposed, a slower final-approach mode remains an option.
+- [ ] Choose service taps versus individual arrows for the holder's jaw, lower,
+  withdraw, compact and outboard motions. The proposed first slice retains the
+  constrained RELEASE/REACQUIRE sequence alongside independently jogged delivery.
+- [ ] Review delivery/construction button grouping on the existing panels:
+  ROLL/LIFT/BOLSTER in a labelled bank is proposed; no panel relocation is approved.
+- [ ] Before B5, confirm the foot's final 1° guide turn (.5 s, green 1.1° capture
+  window) versus another lead-in. Preserve its existing sole pivot and support.
+- [ ] Check per-axis green marks, signed readouts, ghost pulse and first-use/repeat
+  guidance in play. Helper tests establish none of their readability or usability.
+
 ## Left leg completed — 2026-10-26
 
 **Player evidence:** the user completed construction of the left leg. Finding

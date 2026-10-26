@@ -216,10 +216,290 @@ front wings swing. Rear hip bridges fold upward without crossing the held cradle
 Gates and occupancy interlocks prevent movement through occupied areas. Restore
 working platforms only after payloads and rigging clear their moving envelopes.
 
-Retain Up/Down/Go and Advance/Stop/Return. Show contextual destinations and specific
+Existing equipment retains Up/Down/Go and Advance/Stop/Return until its operated
+conversion below. Show contextual destinations and specific
 blocking reasons; do not add a permanent console for each component. Preserve
 ordinary collection, manual targeting and fastening. The user's access playtest
 is not a reason to allow remote fastening or disable obstruction handling.
+
+### Operated rigs — Phase 1 design, 2026-10-27
+
+**Design only for B3/B5.** B1 supplies an opt-in Hold E callback on a physical
+button; B2 supplies `scripts/rig_target.gd`. Neither rig uses them yet. This section
+supersedes the NEXT-driven delivery design when those later tasks are implemented.
+Follow the [branch handoff](handoff/operated-machines/B-operated-rigs.md): merge A
+and complete **human checkpoint A before B3**; complete **checkpoint B before B5**.
+Preserve the successful foot *building* bay and the useful physical access challenge
+recorded in the [machine-operation finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
+
+#### Input, target and panel contract
+
+Keep the existing `spec.panels`: leg `(8.78,0,14.5)` and `(8.5,0,24)`, facing
+−X, and foot `spec.panel = (11.1,0,7)`. Reflow buttons on these panels; do not move
+panels or claim sightline acceptance without the user. Each delivery axis has
+physical minus/plus arrow keys, an axis name and one signed readout. The keyboard
+binding for every arrow is **hold E while aimed at that button**, not an extra
+letter key. Only one arrow can be latched; release E to choose another. Mouselook
+remains free. E release, pause, manual/modal opening or STOP ends the jog. No
+queued movement survives a new press. Existing tap actions remain taps.
+
+`equipment_button.set_hold_handler(button, callback)` receives `(held, delta)`;
+controllers can bind their action after those arguments. `targeting.latch_control`
+checks normal reach, sightline and `action_error` on press. Each held tick must
+recheck the machine interlocks, clamp displacement to the real joint limits and
+use the existing guarded-motion policy. A new obstacle **pauses**, names the
+player/loose part/hand load, and resumes only while E remains held. Looking away
+does not release the latch. Mechanical prerequisite refusals name the correction;
+they never teleport, drop ownership or consume a manual step.
+
+Create one `rig_target` outside the carried assembly, using the shared runtime.
+`show_target(assembly_id, world_transform)` reuses its mesh copies; `clear()` hides
+at idle. Model changes invalidate it; explicit articulation changes must call
+`invalidate()` before showing again. Copies include nested assemblies and captive
+hardware, exclude render proxies/outlines, and have no collisions or targeting.
+For each axis supply `target - current`, tolerance and unit to `axis_readout`.
+Assign each returned row's text/color to a separate Label3D: **each** matching
+axis turns green. Keep the name/sign/number, so color is not the only cue. Readout
+values and the ghost derive from the same target record, never an independent
+pose guess. During final alignment the ghost is the exact runtime install pose.
+
+#### Leg joints and pose
+
+Baseline: `indexed_leg_rail.gd::snapshot_pose`, `action_error`, `_travel_scale`,
+and `assets/workshop-layout.json::workshop.rail`; geometry and clearance rationale
+remain in [the shared limb workshop](final-assembly-plan.md#shared-limb-workshop-with-different-departure-routes).
+Coordinates below are Godot world metres, angles in degrees. Speeds are initial
+values derived from today's `.12` path units/s, `.8` index m/s, `20` roll deg/s
+and `.3` bolster/roll-height units/s; they are not player-approved tuning.
+
+| Joint / saved field | Range and speed | Panel arrows (internal actions) | Alignment tolerance |
+| --- | --- | --- | --- |
+| INDEX / `index_x` | X11.9..22.0; 0.8 m/s. Home 14.0, left 11.9, right 14.1, parking 22.0 | INDEX − / + (`index-`, `index+`) | ±0.02 m at the selected lane/home/parking target |
+| TRAVEL / `travel_z` | Bogie Z14.5..26.0; 1.38 m/s (=11.5×.12) | TRAVEL − / + (`travel-`, `travel+`) | ±0.02 m |
+| TILT / `tilt_deg` | 0° lying..90° upright; 10.8°/s | TILT − / + (`tilt-`, `tilt+`) | ±0.10° |
+| RISE / `rise_m` | 0..1.20 m; 0.144 m/s. Loaded jog ceiling 1.17 m; last 0.03 m belongs to SEAT | RISE − / + (`rise-`, `rise+`) | Final target 1.20 m, ±0.04 m capture window, plus connection-space check below |
+| Construction ROLL / `roll_deg` | Cyclic 0..360°; 20°/s; work detents 0/90/180/270° | ROLL − / + (`roll-`, `roll+`) | ±0.5° at a work detent; exact neutral required before departure |
+| Construction LIFT / `roll_height_m` | 0..1.25 m above Y1.85; 0.375 m/s (=1.25×.3) | LIFT − / + (`lift-`, `lift+`) | ±0.01 m at ends |
+| Foot BOLSTER / `bolster` | 0 supported..1 stowed; 0.3 stroke/s; retain authored spread/lift linkage | BOLSTER − / + (`bolster-`, `bolster+`) | Exact end stop; never release support at an approximate stop |
+
+The delivery and construction coordinates are independent state, not aliases for `path`.
+For an engaged, neutral-roll delivery let `theta = deg_to_rad(90 - tilt_deg)`:
+
+```
+lower = spec.delivery_lower * clamp(tilt_deg / (90 * spec.lower_during_turn), 0, 1)
+root = (index_x,
+        spec.base_y + spec.lying_lift*sin(theta) - lower + rise_m,
+        travel_z - spec.pivot*sin(theta))
+basis = Basis(RIGHT, theta)
+```
+
+This retains the physical tilt's coupled translation: `base_y=.5`,
+`lying_lift=1.35`, `pivot=5.1`, `delivery_lower=.30`, `lower_during_turn=.25`.
+Do not replace it with a rotation about the root or move the lowering into travel.
+At the home construction pose, `root.y = 1.85 + roll_height_m` and multiply the
+lying basis by `Basis(UP, deg_to_rad(roll_deg))`, as the existing source roll does.
+Only the selected joint changes on a jog tick. Endpoint clamps establish exact
+mechanical stops; capture tolerances do not silently snap a loaded travel axis.
+
+Targets are records rather than automatic moves:
+
+| Target | INDEX / TRAVEL / TILT / RISE | Assembly root (neutral source roll) |
+| --- | --- | --- |
+| Build home | 14 / 14.5 / 0° / 0 | (14,1.85,9.4), X rotation 90° |
+| Selected hip track | lane X / 14.5 / 0° / 0 | (lane,1.85,9.4), X rotation 90° |
+| Clear turn position | lane X / 26 / 0° / 0 | (lane,1.85,20.9), X rotation 90° |
+| Upright below hip | lane X / 26 / 90° / 0 | (lane,.20,26), identity basis |
+| Seated | lane X / 26 / 90° / 1.20 | (lane,1.40,26), identity basis; must equal `runtime.mount_pose(receiver, receiver_slot, active_assembly)` |
+| Passive parking | 22 / 14.5 / 0° / 0 | (22,1.85,9.4), X rotation 90° |
+
+Target selection describes the next unmet physical condition, not permission to
+press NEXT. Restore construction roll/lift, stow bolster, align track, move to
+turn clearance, stand upright, then align to the seated ghost. Reversing a joint
+selects the corresponding correction target; right-leg targets use X14.1 and the
+right receiving slot. No second set of hardcoded installed transforms is allowed.
+
+#### Leg interlocks and named refusals
+
+Keep `busy_reason("rail")`, `busy_reason("source_roll")`, explicit captive
+`joint_restraints.required_error(active_assembly)`, and the model's support and
+retention checks. Apply relevant checks each tick, including reverse motion.
+Use a small positional epsilon only for exact physical detents; use the table's
+tolerances for player alignment. Being inside a tolerance never bypasses a sweep.
+
+| Requested motion | Required physical condition / refusal |
+| --- | --- |
+| Any motion while paused | “Resume the workshop before moving the leg rig.” |
+| Index, park or depart with construction roll/lift active | “Restore neutral roll and construction height before indexing.” |
+| INDEX away from transverse table | Bogie at home, tilt lying, rise zero. “Return the leg rig to the transverse table first.” |
+| INDEX with bolster supporting foot | Stow only after retained joints are braced. “Stow the foot bolster before indexing.” Keep unfinished-leg parking available once its retained joints are locked. |
+| Loaded departure toward hip | Matching lane, `structural_ready`, engaged holder, complete required braces, secured gantry. Preserve “Select the left/right hip lane for this leg.”, “Complete the structural leg and every retaining connection before delivery.” and “Deliver the hip assembly, close all four gantry jaws and insert both waist lock pins before leg delivery.” |
+| TRAVEL off a track / with nonneutral delivery pose | At matching lane within 0.02 m, lying, rise zero. “Align INDEX with the selected hip track.” / “Lower and lay the leg down before travelling.” Parking X22 has no longitudinal track. |
+| TRAVEL/TILT/RISE with access unavailable | Request existing `rail_gates.request_closed(true)` and `workshop_access.request_mode("leg")`; hold motion until ready. “Waiting for the ground crossing gates to close.” / “Waiting for the hip access platforms to clear.” Preserve the gate occupancy message “Leave the ground rail corridor before moving the leg rig.” |
+| TILT near the transverse table | At selected lane, bogie at Z26 within 0.02 m, rise zero. “Travel to the clear turn position before tilting.” / “Lower the leg before tilting.” The known-clear Z26 pose is the first slice's turn envelope; do not infer a safe earlier turn from table bounds alone. |
+| RISE while misaligned | Upright within 0.10°, selected lane and Z26 within 0.02 m. “Stand the leg upright under the selected hip before raising.” |
+| Roll/lift away from construction home | Engaged at station, foot received, bolster supports it; `source_roll` zone clear. “Roll only with the leg rig occupied in the Limb Bay.” / “Transfer the prepared foot onto the leg rig first.” Lift fully before nonneutral roll; restore roll before lowering: “Raise the construction axis before rolling.” / “Restore neutral roll before lowering the construction axis.” |
+| Any load motion after seating | Require explicit UNSEAT/reacquisition and no hip retention. “Remove hip retention before returning the loaded leg.” Do not move a parented load with the holder. |
+| RELEASE before receiver retention | “Complete hip retention and the cylinder lock pins before releasing the leg rig.” Keep `retention_state() == complete`, including neutral locks. |
+| BUILD while away or occupied | Preserve home/neutral/empty checks and existing occupied-rig refusal; never switch identity while supporting an unfinished leg. |
+
+STOP cancels the latched input and any guided lead-in/service request. Gates stay
+closed at intermediate coordinates; open only at a stable home or dock with no
+pending motion. Obstacle waiting is distinct from a prerequisite refusal and must
+remain reversible. Do not port today's foot-carrier behavior that clears `moving`
+on contact into either new jog controller.
+
+#### SEAT, retention and empty return
+
+**SEAT is a tap, only while all jog inputs are released.** Recheck axis tolerances,
+matching assembly/slot, engaged support, gantry/access readiness, model placement
+error and current mount pose. In addition to axis tolerances, require the mating
+connection's positional residual ≤0.05 m and angular residual ≤0.10° against the
+actual receiving frame. Otherwise say “Align the green axis marks before seating.”
+This limits the long leg's angular tip displacement; a generous angle at the root
+would exceed the promised few-centimetre guide capture.
+
+On a valid tap, guide the last 3 cm upward at 0.06 m/s (nominal 0.5 s), blending
+remaining in-tolerance lateral/angular error to the exact runtime mount pose.
+Sweep the payload, holder and passengers through the lead-in with existing
+intentional-contact exclusions only. Contact pauses with named feedback; STOP
+or pause leaves the current supported pose, and another SEAT tap revalidates and
+resumes the remaining short lead-in. If the receiver changes, halt and revalidate.
+Only on actual arrival call `install_supported` once, then `runtime.mount` and
+refresh collision. Simply reaching a jog tolerance never installs or releases.
+Retain `leg_holder` engagement throughout hip fastening. A seated state is model
+ownership plus exact mounted pose, not a remembered button press or stop number.
+
+Retain separate tap **RELEASE / REACQUIRE / UNSEAT / BUILD / PARK target** controls.
+PARK selects the X22 target; INDEX drives there. UNSEAT performs the supported undo
+only after the holder has reacquired the load and retention is absent. It then
+permits reverse RISE, TILT, TRAVEL and INDEX; it does not auto-return to the bay.
+For the first leg slice, propose retaining the existing constrained support-head
+service linkage (`release` 0..5 at .6 units/s) behind RELEASE/REACQUIRE, with STOP
+and named guarded pauses. It opens jaws .15 m, lowers .30 m, withdraws 1.40 m,
+compacts to 2.00 m, then shifts the head 2.00 m outboard. This is an explicit
+support handoff, not another delivery NEXT sequence. Whether the player should
+jog these service joints too is an open question below.
+
+Empty return keeps the bogie on the selected rail and the released head outboard
+(left X9.9/right X16.1). Use today's empty-root formula
+`y = 1.1 + 2.25*sin(theta)` with withdrawal/outboard transforms; do not apply the
+loaded rise formula to an empty head. Jog empty TILT back to lying at Z26, then
+TRAVEL home, then INDEX to station. Empty longitudinal travel requires release=5,
+rise=0 and lying tilt; no return alongside the robot with an unwithdrawn fork.
+Re-centre/extend at home only, before BUILD or a new pickup. Reacquiring at the hip
+reverses this service sequence with the same contact exclusions. The existing
+head return envelope remains the constraint for all new joint combinations.
+
+#### At-rest save fields and manual evidence
+
+Proposed leg `capture()` shape: `version`, `assembly`, `receiver`, `slot`, `lane`,
+`index_x`, `travel_z`, `tilt_deg`, `rise_m`, `roll_deg`, `roll_height_m`, `bolster`,
+`release`, `engaged`. `release` is the physical support-head linkage coordinate;
+`engaged` is the support relationship. Model ownership is authoritative for seated
+and retained states. Do not persist the E latch, axis direction, goals, motion mode,
+lead-in timer, target ghost, refusal text or manual stop number. On `apply`, restore
+coordinates and supported pose, reset input/motion, rebuild support geometry and
+sync mounted children. A later explicit SEAT/RELEASE/REACQUIRE request derives its
+remaining movement from the stopped geometry and ownership.
+
+Every released jog position is a legitimate braked rest position. Pause releases
+input before saving. During an active service move or lead-in, use the shared
+registry's last at-rest snapshot; advance the rest snapshot at ownership handoff
+before starting withdrawal so model and support cannot disagree. Preserve the
+shared rider snapshot behavior. B3/B5 must check those transitions through real
+`save_capture`/`apply`, not add per-machine save validators or store in-flight
+commands. Changed save shapes are incompatible: invalidate/delete through the
+shared save format policy, with **no migrations** from `path`/`goal` saves.
+
+B3 exposes axis-in-tolerance, braked/home, bolster-stowed, seated, retained and
+holder-released evidence through `manual_state()`, scoped by active assembly and
+receiving slot. Construction/return evidence must not depend on floor(path).
+B4 uses A's first-use/repeat mechanism: teach the left leg one axis at a time with
+exact panel names and Hold E; right leg gets the goal plus procedure link. Design
+the manual and stage driver with the same axis commands and explicit SEAT, not a
+test-only shortcut to `install_supported`. No shared manual files change in Phase 1.
+
+#### Foot rig — B5 design after checkpoint B
+
+Use `foot_carrier.gd::pose_at`, `action_error` and its actual `spec.sole_route`, not
+the legacy `route` root positions as independent joint coordinates. Let
+`sole = (14, 1.20 + raise_m, 7 + travel_m)`, `basis = Basis(RIGHT, deg_to_rad(turn_deg))`, and
+`frame = Transform3D(basis, sole) * Transform3D(IDENTITY, spec.root_offset)`;
+`root_offset=(0,.8,-.7)`. This preserves the rotating sole datum and mast bearing.
+
+| Axis / arrows | Range, initial speed | Target and tolerance |
+| --- | --- | --- |
+| RAISE − / + (`raise-`, `raise+`) | 0..0.65 m, 0.1625 m/s (=.65/4) | .65 m, ±.02 m |
+| TRAVEL − / + (`travel-`, `travel+`) | 0..2.40 m, .48 m/s (=2.4/5) | 2.40 m, ±.02 m |
+| TURN − / + (`turn-`, `turn+`) | 0..90°, 11.25°/s (=90/8) | 90°, ±1.1° capture tolerance; jog ceiling 89° reserves the final guide turn |
+
+Targets: dispatch root `(14,2.0,6.3)` upright; raised root `(14,2.65,6.3)`;
+travel root `(14,2.65,8.7)`; final root `(14,2.55,10.2)` with X rotation 90°.
+All derive from sole frames; final ghost must match
+`runtime.mount_pose(receiving_assembly, "foot", assembly_id)` on either leg.
+The final 1° about the sole datum moves the root about 1.9 cm. Use **1.1° for
+both TURN's green readout and SEAT capture**, so all green marks can be achieved
+before SEAT. This proposed tolerance and guide motion need player confirmation.
+Use the same ≤.05 m connection-space capture bound. Guide 89°→90° in .5 s
+(2°/s, proportionally shorter for a resumed arc), correct residual raise/travel,
+sweep, then `install_supported` exactly once. Do not invent a new translating
+slide merely to obtain a linear lead-in; the existing real joint is the turn.
+
+Preserve matching active-leg/engaged-home checks: “Select the matching leg and
+return its engaged leg rig home before transferring this foot.” Preserve “Crane
+the prepared foot onto the empty foot rig first.” Require `busy_reason("foot_transfer")`
+to clear. TRAVEL requires full raised height and upright foot: “Raise the foot
+and restore upright before travelling.” TURN requires raised height and receiver
+travel position: “Raise and travel to the leg rig before turning.” Lower only at
+dispatch and upright: “Return upright to dispatch before lowering.” The receiving
+bolster stays engaged; ownership changes only at SEAT. Guarded obstacles wait
+and resume, with reverse jog available after E release. After seating, retain the
+existing 0..1 withdrawal stroke (.45 m, 2 s) as a guarded support service action.
+No leg motion until withdrawal is complete. BACK/UNSEAT may reacquire and undo
+only at the matching home leg rig and while foot is still the last history entry;
+otherwise name the retained structural work that blocks reversal.
+
+Foot save fields: `version`, `assembly`, `receiver`, `raise_m`, `travel_m`,
+`turn_deg`, `withdrawal`; mounted state derives from model ownership. Use the
+same at-rest/ownership-boundary rules as the leg. Remove persisted `path`, `goal`,
+`moving`, `blocked_reason`, `handoff` from the new shape; no migration. B6 teaches
+the left foot RAISE/TRAVEL/TURN/SEAT and gives the right foot a goal/procedure link.
+
+#### Later verification and open questions
+
+B3/B4's isolated mechanical tests must cover both signs and limits of every joint,
+wrong-lane rejection, prerequisites and named refusals, required braces, gates and
+access waiting, obstruction hold/resume/reverse, and carried/nested geometry through
+intermediate rotations. Compare the new pose function with today's `snapshot_pose`
+at home, lane, travel, upright, dock and empty-return endpoints. Test “within
+tolerance without SEAT” leaves ownership unchanged; interrupted/blocked SEAT keeps
+support; arrival matches both ghost and actual install pose; no duplicate install;
+retention gates release and reversal. Exercise real desktop press/look/release on
+one small controller fixture. Verify stopped intermediate coordinates, lead-in and
+ownership-boundary saves through the shared snapshot system, including mounted
+children. B5/B6 repeat these for sole-frame turns, both foot identities, receiver
+matching and withdrawal. Classify new isolated suites in `test_inventory.py` and
+run only touched routine suites with `--jobs 4`. Do not run diagnostic journeys,
+walking/reach sweeps or rendered reviews as automatic verification.
+
+The user owns the representative journey: approach the existing panel, find the
+axis, hold E and look at the target, correct in both directions, SEAT, reach and
+retain the connection, release the holder and return. First-use/repeat instruction
+clarity, green marks, ghost pulse/readability, panel grouping and jog feel are
+**unreviewed**, not established by the helper tests. Preserve these questions in
+the [playtest checklist](robot-workshop-playtest-checklist.md#operated-rigs-open-questions--phase-1):
+
+- Are the initial speeds comfortable while looking away from the panel, or is a
+  slower final-approach rate needed? Proposed default: one constant jog rate per
+  axis; tune from checkpoint B before adding another mode.
+- Should RELEASE/REACQUIRE retain the constrained support-head service sequence,
+  or should jaw/lower/withdraw/compact/outboard joints also get arrows? Proposed
+  first slice: service taps, delivery axes fully jogged; do not silently expand B3.
+- Do construction ROLL/LIFT/BOLSTER need all arrow pairs on the same face, or a
+  clearly labelled construction bank? Proposed grouping: delivery and construction
+  banks on the existing panels, with no relocated panel or hidden modal.
+- Is the final foot guide turn acceptable as the short lead-in? Proposed default:
+  1.1° green capture window and 0.5 s guide, preserving the existing sole pivot.
 
 ### Saves and checkpoints
 
