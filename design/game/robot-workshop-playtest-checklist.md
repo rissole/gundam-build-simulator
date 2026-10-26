@@ -161,7 +161,8 @@ jaws, brace handles, receiver handles and crane magnetic connectors.
 - Observed while measuring, unchanged: lowering a **loaded** leg back out of
   the dock holds on the closed rear deck floor, because Return does not reopen
   the platforms. Players release the rig instead; unclear if reachable.
-- **Open decision — machines shoving loose parts.** User likes the idea.
+- **Deferred (user, 2026-10-26: "lets ignore the shoving for now") — machines
+  shoving loose parts.** User likes the idea.
   Tradeoffs presented: machines are teleported static bodies today, so true
   shoving needs kinematic bodies with velocity (one shared posing change);
   pinch points against structure/build eject or bury parts; parts can be lost
@@ -169,11 +170,13 @@ jaws, brace handles, receiver handles and crane magnetic connectors.
   physics (keep a hold); fitted assemblies should still make machines wait. It
   reverses the 2026-10-25 "pointed at, never pushed" choice and would drop the
   lane-marking condition. Suggested hybrid: push loose parts, hold for player
-  and assemblies, skip checks against fixed structure. Not started.
+  and assemblies, skip checks against fixed structure. Not started; the
+  2026-10-25 "pointed at, never pushed" rule stays in force.
 - **Player acceptance (2026-10-26):** "performance looked good"; the user
   accepted the docking performance fix. No FPS figure was supplied.
 - [x] Gantry opening and the final ascent stay smooth in normal play.
-- [ ] Platforms clipping through parts/players looks acceptable.
+- [x] Platforms clipping through parts/players looks acceptable (user, 2026-10-26:
+  "gantry parts clipping is fine").
 
 ## Progress video feedback — 2026-10-25
 

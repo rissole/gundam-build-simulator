@@ -32,7 +32,8 @@ last version before consolidation.
   sweeping (user decision); shared sweeps skip shapes whose swept bounds are clear;
   the dock rise lifts the leg linearly. Measured headless CPU: 384 ms stalls removed,
   ascent tick 15.6→~4.5 ms. 45 routine cases pass. **Player accepted the
-  performance** ("performance looked good"). Shoving loose parts is an open decision. [Evidence and tradeoffs](robot-workshop-playtest-checklist.md#leg-docking-lag--2026-10-26).
+  performance** ("performance looked good") and the clipping platforms. Shoving
+  loose parts is deferred by the user. [Evidence and tradeoffs](robot-workshop-playtest-checklist.md#leg-docking-lag--2026-10-26).
 
 - **Rail travel collision cleanup (2026-10-26):** user reports lag during rail
   travel. Shared linear sweeps now use endpoint overlaps plus a continuous cast;
