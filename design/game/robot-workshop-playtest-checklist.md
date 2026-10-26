@@ -27,7 +27,9 @@ states now. A "launch cage" v2 with a clear rear exit is design-only until appro
   runtime fold states and guards. This is the input for C3.
 - [ ] Crane operator view playtest (checkpoint A).
 - [ ] Leg rig jog slice playtest (checkpoint B), before converting the foot rig.
-- [ ] Gantry gap fixes recheck at the hip level; approve or revise the v2 concept (checkpoint C).
+- [x] v2 "launch cage" concept approved **as direction** (2026-10-27, checkpoint C). Building it is not
+  approved yet: it waits for the crane operator view (branch A) and for less temporary parts.
+- [ ] Recheck the gantry gap fixes (C2) and mirrored railings (C3) at the hip.
 
 ## Left leg completed — 2026-10-26
 
