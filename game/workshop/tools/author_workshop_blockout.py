@@ -342,7 +342,7 @@ def contract():
             # The root apron is the wing's bearing interface. Keep it a
             # separately identified solid, never exclude the full outer walk
             # from moving-equipment collision queries.
-            deck(f"wing_hinge_{side}_{tag}",x0,x1,23.4,24.7,level,[])
+            deck(f"wing_hinge_{side}_{tag}",x0,x1,23.4,24.7,level,["left" if left else "right"])
             box(f"hinge_front_guard_{side}_{tag}",[(x0+x1)/2+(-.35 if left else .35),level+1.06,23.32],[.8,.08,.08],"yellow")
             # Split inner guard around the elevator's side doorway and wing root.
             for n,(z0,z1) in enumerate([(24.7,28.5),(30,35.8)]):
@@ -353,9 +353,11 @@ def contract():
             root=group(f"wing_{side}_{tag}",at=[5 if left else 21,level,24],rotation=[0,0 if left else 180,0],joint="wing",side=side,level=level)
             data["groups"][root]["motion_contacts"]=[f"wing_hinge_{side}_{tag}_floor"]
             deck(root,.02,7.98,-.6,.6,0,["front","rear"],root)
-            # Local rear guard leaves gaps for the telescoping work patches.
+            # Keep the world-rear edge open to the work fingers on both sides.
+            # The right root's 180-degree yaw swaps local front and rear.
+            open_edge="rear" if left else "front"
             for record in data["solids"]:
-                if record["parent"]==root and "_rear_" in record["id"]:record["solid"]=False;record["hidden"]=True
+                if record["parent"]==root and f"_{open_edge}_" in record["id"]:record["solid"]=False;record["hidden"]=True
             if level in [8.4,11.2]:
                 fx=4.6 if level==8.4 else 5.35
                 length=1.2 if level==8.4 else 2.0
@@ -376,7 +378,8 @@ def contract():
                 deck(inner,0,1.44,-.6,.6,-.1,[],inner)
                 for parent in [outer,inner]:
                     guard=group(parent+"_guard",parent=parent,joint="rear_guard",level=level)
-                    box(guard,[.725,.55,.64],[1.45,1.1,.08],"yellow",guard)
+                    # Both guards face world rear, away from the hip work edge.
+                    box(guard,[.725,.55,.64 if left else -.64],[1.45,1.1,.08],"yellow",guard)
             else:
                 a,b=(7.9,9.7) if left else (16.3,18.1)
                 deck(f"rear_branch_{side}_{tag}",a,b,28.5,30,level,["front","rear"])
@@ -384,6 +387,17 @@ def contract():
                 deck(f"rear_flank_{side}_{tag}",a,b,27.4,30.1,level,[])
                 if level==11.2:deck("aft_finger_"+side,a,b,31.7,35.8,level,["left","right","front"])
         deck("rear_crossover_"+tag,5,21,35.8,37.3,level,["rear"])
+
+    # Fixed landing lips stop 20 mm short of the moving car. Keep the full
+    # doorway width and stay between the shaft's corner guide bands.
+    for level in data["access"]["levels"]:
+        tag=str(level)
+        for side,x in [("left",5.14),("right",20.86)]:
+            box(f"outer_{side}_{tag}_landing_fill",[x,level-.1,29.25],
+                [.28,.20,1.50],"deck")
+    for side,x in [("left",8.06),("right",17.94)]:
+        box(f"hip_apron_{side}_landing_fill",[x,8.30,29.25],
+            [.28,.20,1.50],"deck")
 
     # Rendered joints have distinct sections while physics retains the authored
     # envelopes. Telescoping plates must not share their host's top/side planes.
