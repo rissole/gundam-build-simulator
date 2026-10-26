@@ -38,7 +38,25 @@ review. Mechanical checks are listed separately from things only a playtest can 
 - A phase 1 done on `crane-operator-view`: `49772cf` A2 guarded travel at per-task carry
   heights, `688a342` A3 CCTV view, `1a6edc0` A4 capture gate + held approaches + spreader
   deploy, `45fc7f3` A6 first-use/repeat manual. A reports 13 routine suites passing.
-- Grok chain launched sequentially in the crane worktree: A5 automation → A7 tests → A8 records.
+- Grok chain (sequential, crane worktree): `dd85790` A5 staging/save fixtures drive the crane
+  through `crane_drive`; `dddc326` A7 new routine `crane_operator_test`; `1771456` A8 deferred
+  auto-attach power-up recorded beside the open PDA decision.
+- A phase 2: `741c47a` fixes held input not being released after a refused automated
+  approach; `b937dec` playtest guide + report. Stopped at checkpoint A.
+- Parent re-run on `crane-operator-view`: 12 suites pass (crane_operator 78, crane_console 8,
+  crane_policy 26, manual objectives/progress/completion/panel/control-guidance
+  109/33/38/14/40, stage_contract 12, equipment_motion 83, save_roundtrip 29, smoke 31;
+  21.2 s). Mechanical only; no rendered review, no walking.
+- Backed up your save to `~/Library/Application Support/Godot/app_userdata/Gundam Build
+  Simulator/workshop-save.main-backup-20261027.json` (see the crane warning below).
+
+## Where everything is
+
+| Branch | State | Merged? |
+| --- | --- | --- |
+| `gantry-access` | C1–C3 done, C4 approved as direction | **Yes** (`b42733f`) |
+| `crane-operator-view` | A1–A8 done, integration reviewed | No: waiting for your checkpoint A |
+| `operated-rigs` | B1/B2 helpers + B3 design | No: B3 waits for checkpoint A |
 
 ## Morning review steps
 
@@ -53,3 +71,38 @@ review. Mechanical checks are listed separately from things only a playtest can 
 4. **Assumption to confirm:** C kept the 1.55 m opening between each hip finger (ends Z25.8)
    and the hip apron (starts Z27.35) as a *deliberate* robot/leg work opening. If that is
    one of the "gaps easy to fall through", say so; it needs a guard or a removable plate.
+
+### Crane view (branch only): checkpoint A
+
+**Save warning:** both checkouts use the same save file, and the crane branch changes
+the crane's save data. Invalid saves are deleted, not migrated. Saving on the crane branch
+(Save, Save & quit, or closing the window after a build change) can therefore make `main`
+delete that save later. Your current save is backed up (path above). To restore it, copy the
+backup over `workshop-save.json`.
+
+```sh
+cd /private/tmp/gbs-crane
+./play.command -- --stage=pelvis
+```
+
+1. Press **M** for the hip assembly delivery page (first use: detailed steps).
+2. Aim at the crane console, press **E** to enter the CCTV view. Use **WASD** to strafe,
+   **Shift** for fine movement. Is the view readable? Can you tell the target, the drop line
+   and the carry height apart?
+3. Move the reticle away from the gold approach-entry ring: does it explain why you
+   can't descend? Then align it.
+4. **Hold Space** to run the approach and release it to pause. Watch the spreader reshape for
+   the load. Does holding feel good, or tedious on long approaches (chest, arms)?
+5. The view exits after the descent. Walk over and hand-attach the connectors. Re-enter,
+   hold Space to lift, strafe to the delivery entry and hold Space again. **R** switches
+   between delivery and Put back. **Esc/Q** leaves the view.
+6. On a later crane trip, the manual should give only the goal plus a working
+   **Procedure: p.N** link.
+7. **Assumption to confirm:** each load travels at its own carry height. That doesn't
+   guarantee it can pass over every part of the robot, so it may stop with a named
+   obstruction. Say if those stops are annoying.
+
+After the crane playtest, say "go" for B3 (operated leg rig) or list changes first. B's
+open questions for checkpoint B (jog speeds, panel grouping, foot lead-in) are in the
+checklist on the `operated-rigs` branch.
+
