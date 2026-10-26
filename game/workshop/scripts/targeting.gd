@@ -26,7 +26,6 @@ func update_target() -> void:
 			for sid in game.model.assemblies[owner].slots:
 				var slot: Dictionary = game.model.slot_definition(owner,sid)
 				if slot.get("assembly","") != game.model.assemblies[held].definition or not game.model.assemblies[owner].slots[sid].is_empty():continue
-				if not game.model.assembly_access_error(owner,sid).is_empty():continue
 				candidates.append({"type":"mount","owner":owner,"build":held,"mount":sid,"point":game.mount_point(sid,owner,held),"radius":0.30})
 
 	for kind in game.bins:
@@ -59,26 +58,28 @@ func update_target() -> void:
 		else:
 			if game.camera.global_position.distance_to(candidate.point) > game.SNAP_DISCOVERY_RANGE:continue
 			score = aim_score(candidate.point,candidate.radius)
-		if score == INF:
-			if not snap_candidate_valid(candidate):continue
+			if score == INF and candidate.type == "component":score = aim_score(candidate.point,candidate.radius+minf(0.02,candidate.radius*0.25))
+		var connection = candidate.type in ["component","mount"]
+		var connection_visible = true
+		if candidate.type == "component" and score != INF:
+			connection_visible = can_see(candidate.point,game.components.receiving_bodies(candidate.owner,candidate.sid),game.components.service_access(candidate.owner,candidate.sid),game.components.sight_depth(candidate.owner,candidate.sid))
+		if score == INF or not connection_visible:
+			if not connection:continue
 			var owner: String = game.model.top_level(candidate.get("owner",candidate.get("build","")))
 			if not discovery_hits.has(owner):discovery_hits[owner] = assembly_discovery_hit(owner)
 			if discovery_hits[owner] == null:continue
 			candidate["discovery_only"] = true
 			candidate["discovery_hit"] = discovery_hits[owner]
-			# Precise compatible aim wins; otherwise reveal the closest compatible
-			# connection on the workpiece intersected by the view ray.
+			candidate["discovery_obstructed"] = not connection_visible
+			# Inspection needs a visible workpiece, not placement permission.
+			# Precise ready connections still win over broad workpiece context.
 			var offset: Vector3 = candidate.point-game.camera.global_position
 			var perpendicular = (offset+game.camera.global_basis.z*offset.dot(-game.camera.global_basis.z)).length()
 			score = 0.75+minf(perpendicular,10.0)*0.01
-		var connection_visible = true
 		if candidate.type == "component":
 			score -= 1.0 if candidate.get("compatible",false) else 0.12
-			connection_visible = can_see(candidate.point,game.components.receiving_bodies(candidate.owner,candidate.sid),game.components.service_access(candidate.owner,candidate.sid),game.components.sight_depth(candidate.owner,candidate.sid))
-			if not connection_visible:score += 1.0
-		if connection_visible and candidate.type == "component":
-			var owner: String = candidate.get("owner",candidate.get("build",""))
-			focused_connections[game.model.top_level(owner)] = true
+			if not snap_candidate_valid(candidate):score += 0.2
+			focused_connections[game.model.top_level(candidate.owner)] = true
 		if connection_visible and not candidate.get("discovery_only",false) and snap_candidate_valid(candidate):precise_snap = true
 		scored.append({"candidate":candidate,"score":score})
 	for entry in scored:
@@ -133,6 +134,14 @@ func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, 
 		query.exclude = excluded
 		if attempt == 15:return false
 	if hit.is_empty(): return true
+	if allowed.has(hit.collider) and not allow_body_hit and hit.position.distance_to(point) >= depth and hit.position.distance_to(point) <= depth+0.025:
+		# A small proxy mismatch is forgiven only when actual receiver material
+		# leaves the connection exposed. Deep/back-side body hits stay blocked.
+		var surface = pickup_surfaces.ray_hit(hit.collider,game.camera.global_position,(point-game.camera.global_position).normalized(),game.camera.global_position.distance_to(point))
+		if surface.is_empty() or surface.point.distance_to(point) < depth:
+			excluded.append(hit.collider.get_rid())
+			query.exclude = excluded
+			return game.get_world_3d().direct_space_state.intersect_ray(query).is_empty()
 	if allowed.has(hit.collider):
 		if allow_body_hit:return true
 		# A surface at the destination is expected; hitting the back/side far
@@ -143,15 +152,12 @@ func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, 
 	return hit.position.distance_to(point) < 0.025
 
 func assembly_discovery_hit(owner: String) -> Variant:
-	var body: CollisionObject3D = game.assembly_node(owner)
-	var inverse = body.global_transform.affine_inverse()
-	var hit: Variant = SolidHandling.bounds(body).intersects_ray(inverse*game.camera.global_position,inverse.basis*(-game.camera.global_basis.z))
-	if hit == null:return null
-	var point: Vector3 = body.global_transform*hit
-	if game.camera.global_position.distance_to(point) > game.SNAP_DISCOVERY_RANGE:return null
-	# The cheap box belongs to the workpiece, not its stand or scaffold. Test
-	# scenery along the view ray as well as the eventual connection's sightline.
-	return point if can_see(point,[body],true) else null
+	var body: Node3D = game.assembly_node(owner)
+	var hit = pickup_surfaces.ray_hit(body,game.camera.global_position,-game.camera.global_basis.z,game.SNAP_DISCOVERY_RANGE)
+	if hit.is_empty():return null
+	# Refine the visible workpiece, including hollow gaps, before ignoring its
+	# receiver collider. Unrelated stands, equipment and scenery remain solid.
+	return hit.point if can_see(hit.point,[body],true) else null
 
 func snap_candidate_valid(candidate: Dictionary) -> bool:
 	# Stock, pickups and controls cannot become attachment previews. Avoid
@@ -201,9 +207,10 @@ func present_target(access_error: String) -> void:
 		_present_outline()
 		return
 	var receivers = target_receivers()
+	var presentation_point: Vector3 = game.target.get("discovery_hit",game.target.point)
 	# A prompt should not disclose a connection through unrelated scenery. Keep
 	# the target itself so attempting the action can still explain an obstruction.
-	if game.camera.is_position_behind(game.target.point) or not can_see(game.target.point,receivers,target_allows_body_hit(),target_sight_depth()):
+	if game.camera.is_position_behind(presentation_point) or not can_see(presentation_point,receivers,true if game.target.has("discovery_hit") else target_allows_body_hit(),target_sight_depth()):
 		game.hud.present_target("")
 		_present_outline()
 		return
@@ -265,7 +272,7 @@ func present_target(access_error: String) -> void:
 			detail = game.components.placement_error(game.target.owner,game.target.sid,game.components.selected_uid(game.selected_kind))
 			usable = detail.is_empty()
 	if not access_error.is_empty():
-		detail = snap_guidance_message() if snap_guidance_available() else ("" if game.camera.global_position.distance_to(game.target.point) > game.REACH else access_error)
+		detail = snap_guidance_message() if game.target.get("type","") in ["component","mount"] and (game.target.get("discovery_only",false) or game.camera.global_position.distance_to(game.target.point) > game.REACH) else access_error
 		usable = false
 	if not usable:
 		action_key = ""
@@ -279,7 +286,7 @@ func present_target(access_error: String) -> void:
 		game.hud.present_target("")
 		return
 	if not detail.is_empty():caption += "\n"+detail
-	game.hud.present_target(caption,action_key,action_label,game.camera.unproject_position(game.target.point),usable)
+	game.hud.present_target(caption,action_key,action_label,game.camera.unproject_position(presentation_point),usable)
 
 func target_sight_depth() -> float:
 	if game.target.get("type","") != "component":return 0.065
@@ -340,7 +347,7 @@ func update_ghost(access_result: Variant = null) -> void:
 	if game.paused:return
 	var distant = snap_guidance_available()
 	game.ghost_material.albedo_color = game.SNAP_DISTANT_COLOR if distant else game.SNAP_READY_COLOR
-	game.ghost_material.no_depth_test = game.target.get("type","") == "component" and game.components.slot_presentation(game.target.owner,game.target.sid).get("ghost_no_depth_test",true)
+	game.ghost_material.no_depth_test = not game.target.get("discovery_only",false) and game.target.get("type","") == "component" and game.components.slot_presentation(game.target.owner,game.target.sid).get("ghost_no_depth_test",true)
 	if game.target.get("type","") == "component":
 		if not game.components.placement_error(game.target.owner,game.target.sid,game.components.selected_uid(game.selected_kind)).is_empty():return
 		if not distant and not (game.components.access() if access_result == null else access_result).is_empty():return
@@ -359,12 +366,19 @@ func update_ghost(access_result: Variant = null) -> void:
 	show_assembly_ghost(owner)
 
 func snap_guidance_message() -> String:
-	return "Move closer to attach" if game.camera.global_position.distance_to(game.target.point) > game.REACH else "Aim at the highlighted connection to attach"
+	if game.target.get("type","") == "component":
+		var reason: String = game.components.placement_error(game.target.owner,game.target.sid,game.components.selected_uid(game.selected_kind))
+		if not reason.is_empty():return reason
+	var equipment_error: String = game.equipment_access_error(game.target.get("owner",game.target.get("build","")))
+	if not equipment_error.is_empty():return equipment_error
+	if game.camera.global_position.distance_to(game.target.point) > game.REACH:return "Move closer to attach"
+	if game.target.get("discovery_obstructed",false) or not can_see(game.target.point,target_receivers(),target_allows_body_hit(),target_sight_depth()):return "Connection is obstructed. Approach its exposed side."
+	return "Aim at the highlighted connection to attach"
 
 func snap_guidance_available() -> bool:
 	# Discovery is feedback only. Placement keeps its normal reach, carrying
 	# sweep and access checks; no physics or recipe rule is relaxed here.
-	if game.paused or game.target.is_empty():return false
+	if game.paused or game.target.is_empty() or game.target.get("discovery_obstructed",false):return false
 	var distance = game.camera.global_position.distance_to(game.target.point)
 	if (distance <= game.REACH and not game.target.get("discovery_only",false)) or distance > game.SNAP_DISCOVERY_RANGE:return false
 	if game.camera.is_position_behind(game.target.point):return false

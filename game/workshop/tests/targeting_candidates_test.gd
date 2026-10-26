@@ -27,8 +27,7 @@ func exhaustive(game: Fixture, components: Node) -> Array[Dictionary]:
 		for sid in a.slots:
 			var d: Dictionary = game.model.slot_definition(owner,sid)
 			if d.has("assembly") or sid == components.definition(owner).get("root_slot","") or not a.slots[sid].is_empty():continue
-			if not game.model.assembly_access_error(owner,sid).is_empty():continue
-			if not d.get("requires",[]).all(func(r):return not a.slots[r].is_empty()):continue
+			if d.has("target_child") and a.slots.get(d.target_child,"").is_empty():continue
 			var point: Vector3 = components.slot_point(owner,sid)
 			if game.camera.global_position.distance_to(point)>game.SNAP_DISCOVERY_RANGE:continue
 			result.append({"type":"component","owner":owner,"sid":String(sid),"point":point,"radius":components.slot_presentation(owner,sid).get("target_radius",0.24),"compatible":d.accepts==game.selected_kind})
@@ -75,7 +74,7 @@ func run():
 	expect(game.model.install("frame0","first","bolt0").ok,"install through actual model")
 	compare(game,components,"installation removes occupied slot and exposes dependent target")
 	expect(game.model.undo("frame0").ok,"undo through actual model")
-	compare(game,components,"undo restores prerequisite target and hides dependent target")
+	compare(game,components,"undo restores prerequisite target while keeping blocked dependent context")
 	game.model.assemblies.frame0.location="held"
 	compare(game,components,"live ownership access hides unavailable assembly")
 	game.model.assemblies.frame0.location="fixture"

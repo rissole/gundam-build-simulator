@@ -100,8 +100,10 @@ func candidates() -> Array[Dictionary]:
 			var sid: String = record.sid
 			var d: Dictionary = record.spec
 			if not a.slots[sid].is_empty():continue
-			if not game.model.assembly_access_error(owner,sid).is_empty():continue
-			if not d.get("requires",[]).all(func(r):return not a.slots[r].is_empty()):continue
+			# Empty connections remain discoverable when construction is blocked.
+			# A forwarded child target has no physical receiver until it is mounted.
+			var child_target: String = d.get("target_child",slot_presentation(owner,sid).get("target_child",""))
+			if not child_target.is_empty() and a.slots.get(child_target,"").is_empty():continue
 			var point: Vector3 = slot_point(owner,sid) if record.dynamic else pose*record.point
 			if eye.distance_squared_to(point) > range_squared:continue
 			# Preserve feedback for a wrong variant; selection only affects ranking.

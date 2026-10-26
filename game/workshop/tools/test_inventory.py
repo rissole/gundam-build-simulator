@@ -5,6 +5,7 @@ ROUTINE = (
     'assembly_model_test',
     'centered_carry_test',
     'chest_content_test',
+    'connection_discovery_test',
     'crane_console_test',
     'crane_policy_test',
     'equipment_motion_test',
