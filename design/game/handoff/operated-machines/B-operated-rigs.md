@@ -44,6 +44,10 @@ in `design/game/robot-workshop-plan.md`, with its open questions in the checklis
 
 ## Phase 2 — leg rig (now)
 
+**Lesson from the rejected crane view:** it failed partly because holding Space ran
+every interesting motion. Do not add a hold-to-run sequence or an auto-align. The
+player drives each axis, and the SEAT lead-in only covers the last few centimetres.
+
 The crane operator view (branch A) was **rejected and will not merge**. Nothing in
 B waits for it any more, and B now owns the shared manual mechanism.
 
