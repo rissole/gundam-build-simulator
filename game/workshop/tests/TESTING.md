@@ -103,3 +103,9 @@ isolated physics fixture. It checks latched callbacks, free look, release throug
 pause/modal/consumed input, destroyed controls, initial reach/sightline/interlock
 refusals, and unchanged tap dispatch. `workshop_smoke` covers the startup integration;
 these checks do not establish panel visibility or player acceptance.
+
+`rig_target` exercises the reusable ghost/readout helper with nested assembly and
+captive-hardware meshes. It checks world poses, reuse across target movement and
+idle, model invalidation, absence of collision/target metadata, and independent
+axis tolerances. Shader configuration is checked headlessly; pulse appearance,
+readability and rig integration remain unreviewed until their later phases.

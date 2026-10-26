@@ -35,6 +35,7 @@ ROUTINE = (
     'rail_gates_test',
     'rail_endpoint_test',
     'receiver_contract_test',
+    'rig_target_test',
     'robot_content_test',
     'runner_contracts',
     'rope_access_test',
