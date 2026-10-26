@@ -169,7 +169,7 @@ func run() -> void:
 	blocker.queue_free();await frames(2);cue.update()
 	expect(cue.visible_controls==[node],"Removing the obstruction restores the retained cue")
 	game.manual_progress._queued=true;cue.update();expect(cue.visible_controls.is_empty(),"Queued manual changes clear stale cues before deferred recomputation")
-	expect(Objectives.note({"objectives":[{"op":"operate"}],"note":{"at":0,"text":"Fit both end pins first."}},0).begins_with("Fit both end pins first.") and Objectives.note({"objectives":[{"op":"connect"}]},0).contains("gold glow"),"Machine notes retain authored details and explain control guidance across operations")
+	expect(Objectives.note({"objectives":[{"op":"operate"}],"note":{"at":0,"text":"Fit both end pins first."}},0).begins_with("Fit both end pins first.") and Objectives.note({"objectives":[{"op":"connect"}]},0).contains("gold outline"),"Machine notes retain authored details and explain control guidance across operations")
 	var passed=checks.all(func(check):return check.passed)
 	print("MANUAL_CONTROL_GUIDANCE ","PASS" if passed else "FAIL"," ",checks.size()," checks")
 	quit(0 if passed else 1)
