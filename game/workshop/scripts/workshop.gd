@@ -331,7 +331,7 @@ func _physics_process(delta: float) -> void:
 			loose[uid].global_position = Vector3(-0.4,1.2,0.6)
 			loose[uid].linear_velocity = Vector3.ZERO
 	for id in bodies:
-		if bodies[id].global_position.y < -3:
+		if model.assemblies[id].location == "loose" and bodies[id].global_position.y < -3:
 			bodies[id].global_position = home_position(id)+Vector3.UP*0.06
 			bodies[id].linear_velocity = Vector3.ZERO
 
@@ -423,7 +423,10 @@ func apply_carry_intent(body: WorkshopPart, delta: float) -> void:
 	body.carry_target = camera.global_position+camera.global_basis*SolidHandling.carry_offset(body,camera.global_basis,profile)
 	body.carry_basis = camera.global_basis*grip_basis
 	body.max_surface_travel = float(profile.get("rotation_step_travel",0.025))
+	var was_waiting = body.recovery_waiting
 	body.update_grip(delta)
+	if body.recovery_waiting and not was_waiting:
+		hud.toast("Your held component is caught. Move into clear space to bring it back to your hands.")
 
 func refresh_assembly_collision(owner: String) -> void:
 	if not runtime or not runtime.nodes.has(owner):return

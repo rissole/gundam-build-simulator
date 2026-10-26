@@ -96,6 +96,35 @@ func run() -> void:
 	expect(Vector2(centered.x,centered.y).length()<0.001,"A frontal obstacle limits forward travel without introducing a lateral grip offset")
 	var excluded: Array[RID] = [hand.get_rid()]
 	expect(not SolidHandling.sweep_error(hand,Transform3D(hand.carry_basis,hand.carry_target),excluded,1).is_empty(),"Placement sweep still rejects the obstructed centered destination")
+	# A long snag must recover the same off-origin physical body, while an
+	# ordinary near-wall carry above remains solid and never triggers recovery.
+	hand.uid = "retained-copy"
+	hand.global_position += Vector3(8,0,0)
+	var identity = hand.get_instance_id()
+	hand.update_grip(1.0/60)
+	expect(hand.get_instance_id()==identity and hand.uid=="retained-copy" and hand.held,"Recovery keeps the same physical UID and held body")
+	expect(hand.global_transform.is_equal_approx(Transform3D(hand.carry_basis,hand.carry_target)) and not hand.recovery_waiting,"Excessive grip separation returns an off-origin part to its clear intended pose")
+	expect(hand.linear_velocity==Vector3.ZERO and hand.angular_velocity==Vector3.ZERO,"Recovery clears stale linear and angular velocity")
+	# A wall filling every nearby destination leaves the item held, then clearing
+	# the destination recovers immediately without needing another long walk.
+	wall.position = camera.origin+Vector3(0,0,-1.1)
+	wall_shape.shape.size = Vector3(4,4,4)
+	hand.global_position = Vector3(8,4,0)
+	await physics_frame
+	await physics_frame
+	var stuck = hand.global_transform
+	hand.update_grip(1.0/60)
+	expect(hand.recovery_waiting and hand.held and hand.global_transform==stuck,"Blocked recovery retains ownership and waits without teleporting into scenery")
+	wall.position.x = 20
+	await physics_frame
+	await physics_frame
+	hand.update_grip(1.0/60)
+	expect(not hand.recovery_waiting and hand.global_transform.is_equal_approx(Transform3D(hand.carry_basis,hand.carry_target)),"Recovery resumes as soon as a nearby destination becomes clear")
+	hand.held = false
+	hand.global_position = Vector3(8,4,0)
+	var dropped = hand.global_transform
+	hand.update_grip(1.0/60)
+	expect(hand.global_transform==dropped and not hand.recovery_waiting,"Explicit drop cancels recovery")
 	var passed = checks.all(func(check):return check.passed)
 	DirAccess.make_dir_recursive_absolute("res://verification/centered-carry")
 	write_evidence("res://verification/centered-carry/audit.json",{"passed":passed,"checks":checks,"engine":Engine.get_version_info().string})

@@ -273,6 +273,16 @@ func run() -> void:
 	game.target = {"type":"assembly","build":"carrier_a","point":carried.global_position}
 	game.interact()
 	expect(game.model.assemblies.carrier_a.location == "held" and carried.held,"Workshop pickup retains the entire three-level prepared child tree")
+	var retained_tree = game.model.assemblies.duplicate(true)
+	carried.carry_target = Vector3(0,30,0)
+	carried.carry_basis = Basis.from_euler(Vector3(.2,.4,.1))
+	carried.update_grip(1.0/60)
+	var recovered_tree = carried.global_position.is_equal_approx(carried.carry_target)
+	for member in ["carrier_a","frame_a","core_a","core_b"]:
+		var member_body: CollisionObject3D = game.assembly_node(member)
+		var physics_pose: Transform3D = PhysicsServer3D.body_get_state(member_body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+		recovered_tree = recovered_tree and physics_pose.is_equal_approx(member_body.global_transform)
+	expect(recovered_tree and game.model.assemblies==retained_tree,"Carry recovery synchronizes all mounted descendants between physics ticks without changing ownership")
 	bay.global_transform = Transform3D(Basis.IDENTITY,Vector3(0,12,0))
 	game.assembly_node("bay_b").position = Vector3(12,12,0)
 	var point: Vector3 = game.mount_point("carrier","bay_a","carrier_a")
