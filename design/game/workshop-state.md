@@ -69,7 +69,15 @@ last version before consolidation.
   panel. Waist yaw/lean neutral pins are now twist/tilt lock pins. New steps cover
   crane trips that had no page. All 35 routine cases pass (`stage_contract_test`'s
   fixture now supplies the `save` that commit 0721744 started calling). No diagnostics or rendered review ran. **Awaiting the
-  user's playtest of the converted chapters.** [Manual plan](manual-plan.md).
+  user's playtest of the converted chapters.** **2026-10-26 playtest finds blocking
+  progression defects:** unclear PV-200 lock operation, premature Done/reset
+  statuses and false robot completion. Shared progression and PV-200 guidance
+  repaired: explicit physical completion evidence, build-scoped machine checks,
+  consistent objective/sidebar ticks and a separate blocked state. All 40 routine
+  suites passed before the final core/backpack refinements; focused follow-ups
+  passed (197 checks, then 146 checks). No rendered review; player re-check pending.
+  [Findings and repair plan](robot-workshop-playtest-checklist.md#pv-200-and-leg-reset-progression-failures--2026-10-26).
+  [Manual plan](manual-plan.md).
 
 - **Workshop save (2026-10-25):** saving is manual: pause-menu **Save**,
   **Save & quit**, or closing the window. **Quit without saving** confirms when

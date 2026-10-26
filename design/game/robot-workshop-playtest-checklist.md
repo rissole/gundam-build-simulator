@@ -181,6 +181,103 @@ progress or a relevant earlier stage to operate the gantry during assembly.
 
 ## Manual redesign check — 2026-10-25
 
+### PV-200 and leg-reset progression failures — 2026-10-26
+
+**Repair implemented, awaiting player re-check:** shared progression now uses
+actual mounted slots, cumulative state across machines, load/build scope and
+explicit physical completion evidence. Starting another page cannot complete
+an omitted lock or reset. Completed deliveries remain Done after equipment
+reuse, and both manual views share the resolved ticks. A blocked manual reports
+“Assembly work remains”; robot completion requires every action step Done.
+All six PV-200 pages now locate the amber captive handle and say to press E at
+the lock objective. Eye-pin insertion directions remain on their fitting line.
+
+Mechanical evidence for this repair:
+
+- All 40 routine suites passed in 43.357 s before the final guided-receiver and
+  backpack-reacquisition refinements. Local report:
+  `game/workshop/verification/regressions-20261026T073607.440541Z/`.
+- After distinguishing crane arrival from guided mounting, manual completion,
+  objectives, progress, panel and crane policy passed: five suites, 197 checks,
+  8.500 s (`regressions-20261026T073853.121584Z`).
+- After preserving the backpack strut step during intentional crane
+  reacquisition, completion and objective suites passed: 37 + 109 checks,
+  4.115 s (`regressions-20261026T074029.392009Z`). The completion suite includes
+  every chapter in a completed-robot state fixture, omitted/undone locks,
+  other-leg rig poses, partial resets, subsequent foot delivery, returned stock,
+  crane reuse, blocked tracking, core capture/seating and backpack closure.
+- The content generator audit and byte comparison pass. Save format and physical
+  interaction rules are unchanged. No diagnostics or rendered review ran.
+
+Player re-check: skip one cylinder lock and work on another cylinder; verify
+the first stays unfinished in both views. Use the new handle instruction,
+complete all locks, then watch each rig reset objective tick only as its work
+finishes. Continue into right-foot delivery and docking; confirm completed
+left-leg work stays Done and “Robot structure complete” does not appear early.
+Handle visibility/reach and the full player journey remain unreviewed.
+
+**Player report:** the PV-200 “Insert lock pin” instruction did not explain how
+to operate it. After moving on and completing only the first two objectives for
+other cylinders, the sidebar said Done while the detailed lock objective still
+said In progress. Finishing the PV-200 installation produced “Robot structure
+complete”. Leg reset steps also said Done despite unfinished preparation for the
+right leg. These findings block acceptance of manual progression; the earlier
+positive response to the checklist layout remains a constraint.
+
+**Original source diagnosis (before the repair):**
+
+- `tools/author_hip_interfaces.py` gives cylinder pages a note only at objective
+  1 (eye-pin insertion). Objective 2 is a captive-control operation with no
+  location/interaction hint. `scripts/captive_controls.gd` creates a 6 × 2.5 ×
+  2.5 cm amber handle beside the cylinder's midpoint. It requires both eye pins
+  fitted and the matching leg rig docked and engaged. The intended interaction
+  is aim at that handle and press E; no loose lock pin is collected. Actual
+  visibility/reach from the player's position has not been established.
+- `ManualObjectives.done_states()` accepts all fit/seat objectives plus *any*
+  progress on the next page as completion, even with the current machine
+  objective unfinished. Starting cylinder 2 can therefore mark cylinder 1 Done
+  with its lock still out. Sidebar status uses that inferred completion, while
+  objective rows use `evaluate()`'s live ticks, causing the contradiction.
+- `evaluate()` overwrites a `seat` objective's actual occupied-slot check with
+  the result of its `via` machine sequence. Both leg-docking pages use the same
+  foot rig and phases without a build identity. With the foot rig at stop 3,
+  the right-foot seat can tick despite its slot being empty. `done_states()`
+  then propagates completion backward through “Deliver the foot” and “Release
+  the leg rig”, even while right-leg preparation is unfinished. This is a
+  source-derived failure path, not a replay of the player's saved state.
+- Machine-sequence matching checks only the machine for the current objective,
+  then ticks the earlier prefix across all machines. A foot rig already at home
+  can tick the preceding leg-rig release and return without those states being
+  satisfied. The final Build objective likewise does not require the foot rig's
+  home state to match.
+- `ManualProgress.tracked()` returns an empty result when only Done/Locked steps
+  remain. `HUD._fill_step_panel()` treats that as “Robot structure complete”
+  without checking actual completion. A blocked progression can thus display
+  success while the robot is unfinished.
+
+**Repair rationale:** keep persistent requirements (mounted child, captive locks and
+required reset states) authoritative; scope shared-machine state to the relevant
+build and check the cumulative state across machines. Later-page progress alone
+must not erase required work. Preserve completed transport history only through
+specific downstream evidence, so later crane movement does not reopen genuinely
+finished trips. Derive sidebar and objective presentation from consistent
+completion semantics, distinguish blocked tracking from robot completion, and
+add a lock-specific location/interaction hint. Do not solve this by forcing all
+cylinders to be built in order; their independent work is valid.
+
+**Original verification plan:** isolated regressions for skipping a cylinder lock and
+starting the next cylinder; a left foot at docking stop with the right-foot slot
+empty; each partial reset state with the other rig already home; starting later
+work before release finishes; and a manual with unfinished but locked steps.
+Also cover genuine completed deliveries after crane reuse and undo/relock.
+The existing three manual suites ran before these specific reports: 144
+assertions passed, but the runner failed because its launcher could not save
+Godot editor settings outside the sandbox. They do not cover the failure paths
+above. Local evidence: `game/workshop/verification/regressions-20261026T070844.281111Z/`.
+No additional tests, diagnostics, gameplay replay or rendered review ran during
+that source diagnosis. The implementation evidence above supersedes its testing
+status; player re-check remains pending.
+
 Mechanical checks only: no rendered review. Start with `./play.command` (fresh
 workshop) and later `./play.command -- --stage=pelvis`.
 

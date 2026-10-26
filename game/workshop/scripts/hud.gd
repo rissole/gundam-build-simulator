@@ -735,7 +735,7 @@ func diagram_entries(owner: String, page_index: int) -> Array:
 	return [entries,views]
 
 func _step_signature(step: Dictionary) -> String:
-	if step.is_empty():return "complete"
+	if step.is_empty():return "complete" if game.manual_progress.complete() else "blocked"
 	var owner := str(step.owner)
 	var page_index := int(step.page)
 	var definition: Dictionary = step.definition if step.get("definition") is Dictionary else {}
@@ -786,8 +786,10 @@ func _fill_step_panel(step: Dictionary) -> void:
 	if step.is_empty():
 		chapter_line.visible = false
 		chapter_line.text = ""
-		page_title.text = "Robot structure complete"
-		goal_label.visible = false
+		var complete: bool = game.manual_progress.complete()
+		page_title.text = "Robot structure complete" if complete else "Assembly work remains"
+		goal_label.visible = not complete
+		goal_label.text = "Open the manual (M) to review unfinished steps." if not complete else ""
 		goal_rule.visible = false
 		objective_rows.visible = false
 		body_scroll.visible = false

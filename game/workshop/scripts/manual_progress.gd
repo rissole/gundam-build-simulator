@@ -112,6 +112,9 @@ func tracked() -> Dictionary:
 			if status(str(row.owner),int(row.page)) == want:return _public(row)
 	return {}
 
+func complete() -> bool:
+	return not _order.is_empty() and _status.values().all(func(state):return state == "done")
+
 func pin(owner: String, page: int) -> void:
 	pinned = {"owner":owner,"page":page}
 	_update()

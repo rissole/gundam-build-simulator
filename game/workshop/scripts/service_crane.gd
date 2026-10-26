@@ -271,6 +271,47 @@ func manual_effect(objective: Dictionary) -> Dictionary:
 func manual_count(objective: Dictionary) -> Vector2i:
 	return Vector2i(attached_count(),required_ends) if objective.get("op","")=="connect" else Vector2i(-1,-1)
 
+## Transport evidence is derived from the actual load and route graph. A different
+## selected task alone proves nothing: the old load must still be delivered.
+func manual_proves(condition: Dictionary) -> bool:
+	var route := str(condition.get("task",""))
+	var phase := str(condition.get("phase",""))
+	if not tasks.has(route):return false
+	# Some receivers (the core guide) finish mounting after the crane lowers.
+	if phase == "arrived" and task == route and station == "receiver" and not raised:return true
+	if not _manual_delivered(route,[]):return false
+	if phase == "arrived":return true
+	if phase == "delivered":return true
+	if phase not in ["released","parked"]:return false
+	if task != route:return true
+	if attached_count() != 0 or not hand_payload().is_empty():return false
+	if phase == "released":return true
+	return station == "park" and raised and motion.is_empty()
+
+func _manual_delivered(route: String, visited: Array) -> bool:
+	if route in visited:return false
+	visited = visited.duplicate();visited.append(route)
+	var spec: Dictionary = tasks[route]
+	var owner := str(spec.get("owner",""))
+	var slot := str(spec.get("slot",""))
+	if not slot.is_empty():
+		return game.model.assemblies.has(owner) and not str(game.model.assemblies[owner].slots.get(slot,"")).is_empty()
+	var load := str(spec.get("load_uid",""))
+	if not game.model.assemblies.has(load):return false
+	var assembly: Dictionary = game.model.assemblies[load]
+	var receiver := str(spec.get("receiver_support",""))
+	if not receiver.is_empty() and str(assembly.location) == "support:"+receiver:return true
+	# The foot progresses from its dispatch rig into its specific leg.
+	var follow := str(spec.get("follow_owner",""))
+	if not follow.is_empty() and str(assembly.parent) == follow:return true
+	# A load can have consecutive crane trips, e.g. store -> module rig -> robot.
+	for next in tasks:
+		var successor: Dictionary = tasks[next]
+		if str(successor.get("load_uid","")) != load or receiver.is_empty() or str(successor.get("source_support","")) != receiver:continue
+		if str(next) == task and (station != "park" or attached_count() > 0):return true
+		if _manual_delivered(str(next),visited):return true
+	return false
+
 func menu_options() -> Array[Dictionary]:
 	var options: Array[Dictionary] = []
 	if _guided_live() and _guide().has_method("crane_options"):options.append_array(_guide().crane_options())

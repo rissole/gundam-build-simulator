@@ -716,6 +716,9 @@ def robot_documents(check=False):
     pauldrons=pauldrons_content(trial,chest,arms,trial_parts,workshop_layout,diagram)
     from author_head import extend as head_content
     head=head_content(trial,chest,trial_parts,workshop_layout,diagram)
+    from author_manual_progress import bind
+    bind({"left_leg": trial_leg, "pelvis": trial_pelvis, "chest": chest, **mirrored},
+         json.loads((ASSETS / "manual-chapters.json").read_text())["chapters"])
     for task in workshop_layout["crane"]["tasks"].values():
         if task.get("payload")!="assembly":trial["equipment"]["parts"][task["load_uid"]]["stock_position"]=list(task["source_pose"]["position"])
     catalogue_images(check, {key: value for key,value in trial_parts.items() if key not in parts and "catalogue_image" not in value},trial["parts"],trial["sources"])

@@ -103,7 +103,7 @@ func manual_hint(objective: Dictionary) -> String:
 		"advance:2":return "moves it to the leg rig"
 		"return:home":return "repeat until it is back at dispatch"
 	return ""
-func manual_state() -> Dictionary:return {"stop":int(floorf(path+.0001))}
+func manual_state() -> Dictionary:return {"stop":int(floorf(path+.0001)),"receiver":receiving_assembly}
 func manual_effect(objective: Dictionary) -> Dictionary:
 	var action: String=objective.get("command","")
 	if action=="return:home":return {"stop":0}

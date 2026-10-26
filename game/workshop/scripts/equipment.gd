@@ -28,6 +28,7 @@ func manual_hint(_objective: Dictionary) -> String:return ""
 func manual_state() -> Dictionary:return {}
 func manual_effect(_objective: Dictionary) -> Dictionary:return {}
 func manual_count(_objective: Dictionary) -> Vector2i:return Vector2i(-1,-1)
+func manual_proves(_condition: Dictionary) -> bool:return false
 func physics(_delta: float) -> void:pass
 func placement_error(_owner: String, _slot: String) -> String:return ""
 func access_error(_owner: String) -> String:return ""

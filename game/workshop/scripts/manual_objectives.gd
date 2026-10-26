@@ -97,11 +97,14 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 		if not objectives[i] is Dictionary:continue
 		var op := str(objectives[i].get("op",""))
 		if MACHINE_OPS.has(op) or (op == "seat" and objectives[i].has("via")):sequence.append(i)
-	var cumulative: Dictionary = {}
+	var cumulative: Dictionary = page.get("machine_scope",{}).duplicate(true)
 	var blind: Dictionary = {}
 	var latest := -1
+	var guards: Array = []
+	if page.has("requires_state"):guards.append(page.requires_state)
 	for k in sequence.size():
 		var objective: Dictionary = objectives[sequence[k]]
+		if objective.has("requires_state"):guards.append(objective.requires_state)
 		var op := str(objective.get("op",""))
 		var machine_id := ""
 		var effect_objective := objective
@@ -116,9 +119,12 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 			blind[machine_id] = true
 			continue
 		var expected: Dictionary = cumulative.get(machine_id,{}).duplicate()
-		expected.merge(machine.manual_effect(effect_objective),true)
+		# A later physical state can retire a temporary requirement (for example
+		# latched backpack hinges no longer need crane tension).
+		if not proves(game,objective.get("completed_by",{})):
+			expected.merge(machine.manual_effect(effect_objective),true)
 		cumulative[machine_id] = expected
-		if _state_matches(expected,machine.manual_state()):latest = k
+		if blind.is_empty() and _machines_match(game,cumulative) and guards.all(func(guard):return proves(game,guard)):latest = k
 	for k in sequence.size():
 		if k > latest:break
 		var index := sequence[k]
@@ -129,7 +135,17 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 			var via: Dictionary = objective.via if objective.get("via") is Dictionary else {}
 			machine_id = str(via.get("machine",""))
 		if blind.get(machine_id,false):continue
-		ticked[index] = true
+		# A matching rig stop never substitutes for the physical installation.
+		if op != "seat" and not objective.get("slots") is Array:ticked[index] = true
+	var physical_complete := true
+	for i in objectives.size():
+		if objectives[i] is Dictionary and not _objective_slots(objectives[i]).is_empty() and not ticked[i]:physical_complete = false
+	if physical_complete and proves(game,page.get("completed_by",{})):
+		# Use the same resolved ticks in the sidebar and both objective panels.
+		ticked.fill(true)
+		for index in sequence:
+			if _objective_slots(objectives[index]).is_empty():counts[index] = ""
+		latest = sequence.size()-1
 	var fits_complete := true
 	var started := false
 	var current := -1
@@ -148,27 +164,38 @@ static func done_states(game, steps: Array, evals: Array = []) -> Array[bool]:
 		for step in steps:evals.append(evaluate(game,str(step.owner),step.page))
 	var done: Array[bool] = []
 	done.resize(steps.size())
-	for i in range(steps.size()-1,-1,-1):
+	for i in steps.size():
 		var page: Dictionary = steps[i].page
-		var started_next := false
-		if i+1 < steps.size():
-			var next: Dictionary = steps[i+1].page
-			if next.has("objectives"):started_next = bool(evals[i+1].started) or done[i+1]
-			else:
-				var began := false
-				for sid in next.get("slots",[]):
-					if _filled(game,str(steps[i+1].owner),str(sid)):began = true
-				started_next = began or done[i+1]
-		if page.has("objectives"):done[i] = bool(evals[i].fits_complete) and (bool(evals[i].machine_complete) or started_next)
+		if page.has("objectives"):done[i] = int(evals[i].current) == -1 and not page.objectives.is_empty()
 		else:
 			var slots: Array = page.get("slots",[]) if page.get("slots") is Array else []
-			if slots.is_empty():done[i] = started_next
+			if slots.is_empty():done[i] = false
 			else:
 				var filled := true
 				for sid in slots:
 					if not _filled(game,str(steps[i].owner),str(sid)):filled = false
 				done[i] = filled
 	return done
+
+## Declarative physical evidence, never page order or remembered UI progress.
+static func proves(game, condition: Dictionary) -> bool:
+	if condition.is_empty():return false
+	if condition.has("all"):
+		return not condition.all.is_empty() and condition.all.all(func(item):return proves(game,item))
+	if condition.has("any"):
+		return condition.any.any(func(item):return proves(game,item))
+	if condition.has("slot"):
+		return game.model.assemblies.has(str(condition.owner)) and _filled(game,str(condition.owner),str(condition.slot))
+	var machine = game.equipment.get_equipment(str(condition.get("machine","")))
+	if machine == null:return false
+	if condition.has("state"):return _state_matches(condition.state,machine.manual_state())
+	return machine.manual_proves(condition)
+
+static func _machines_match(game, expected: Dictionary) -> bool:
+	for id in expected:
+		var machine = game.equipment.get_equipment(str(id))
+		if machine == null or not _state_matches(expected[id],machine.manual_state()):return false
+	return true
 
 static func errors(definitions: Dictionary, machines: Dictionary) -> Array[String]:
 	var found: Array[String] = []
@@ -183,7 +210,38 @@ static func errors(definitions: Dictionary, machines: Dictionary) -> Array[Strin
 			var page = manual[index]
 			if not page is Dictionary or not page.has("objectives"):continue
 			_check_page(str(def_id),index,page,slots,machines,used,found)
+			var prefix := "%s page %d: "%[def_id,index+1]
+			for field in ["completed_by","requires_state"]:
+				if page.has(field):_check_proof(page[field],definitions,machines,prefix,found)
+			for objective in page.get("objectives",[]):
+				if not objective is Dictionary:continue
+				for field in ["completed_by","requires_state"]:
+					if objective.has(field):_check_proof(objective[field],definitions,machines,prefix,found)
+			if page.has("machine_scope"):
+				if not page.machine_scope is Dictionary:found.append(prefix+"invalid machine scope")
+				else:
+					for id in page.machine_scope:
+						if not machines.has(id) or not page.machine_scope[id] is Dictionary or page.machine_scope[id].is_empty():found.append(prefix+"invalid machine scope for "+str(id))
 	return found
+
+static func _check_proof(value, definitions: Dictionary, machines: Dictionary, prefix: String, found: Array[String]) -> void:
+	if not value is Dictionary or value.is_empty():
+		found.append(prefix+"empty or invalid completion evidence")
+		return
+	for key in ["all","any"]:
+		if not value.has(key):continue
+		if value.size()!=1 or not value[key] is Array or value[key].is_empty():found.append(prefix+"invalid completion evidence group")
+		else:
+			for child in value[key]:_check_proof(child,definitions,machines,prefix,found)
+		return
+	if value.has("slot"):
+		var owner := str(value.get("owner",""))
+		if value.size()!=2 or not definitions.assemblies.has(owner) or not definitions.assemblies.get(owner,{}).get("slots",{}).has(str(value.slot)):found.append(prefix+"unknown completion slot "+owner+"/"+str(value.slot))
+		return
+	if not machines.has(str(value.get("machine",""))):found.append(prefix+"unknown completion machine")
+	if value.has("state"):
+		if value.size()!=2 or not value.state is Dictionary or value.state.is_empty():found.append(prefix+"invalid completion state")
+	elif value.size()!=3 or value.get("machine")!="service_crane" or str(value.get("task","")).is_empty() or value.get("phase") not in ["arrived","delivered","released","parked"]:found.append(prefix+"invalid transport evidence")
 
 static func _seat_label(game, owner: String, objective: Dictionary) -> Dictionary:
 	var spec: Dictionary = game.model.slot_definition(owner,str(objective.get("slot","")))

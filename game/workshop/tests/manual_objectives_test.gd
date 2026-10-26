@@ -88,8 +88,12 @@ func run() -> void:
 	expect(same_ticks(delivered,[true,true,true,true,true,false]),"delivery ticks five, got "+str(delivered.ticked))
 	crane.raised = false
 	var seated = Objectives.evaluate(game,"left_leg",page)
+	expect(not seated.ticked[5],"lowered crane alone does not install the shin")
+	game.model.assemblies.left_leg.slots.shin = "LG-100__001"
+	seated = Objectives.evaluate(game,"left_leg",page)
 	expect(same_ticks(seated,[true,true,true,true,true,true]) and seated.machine_complete,"lowered at delivery completes the machine sequence, got "+str(seated.ticked)+" complete "+str(seated.machine_complete))
 	crane.raised = true
+	game.model.assemblies.left_leg.slots.shin = ""
 	var lifted_off = Objectives.evaluate(game,"left_leg",page)
 	expect(same_ticks(lifted_off,[true,true,true,true,true,false]),"lifting off the seat steps the checklist back, got "+str(lifted_off.ticked))
 	var texts: Array[String] = []
@@ -246,6 +250,9 @@ func run() -> void:
 	expect(same_ticks(at_leg,[true,true,false]),"foot rig at 2 ticks the leg approach, got "+str(at_leg.ticked))
 	rig.path = 3.0
 	var at_seat = Objectives.evaluate(game,"left_leg",dock)
+	expect(not at_seat.ticked[2],"docking stop alone does not mount the foot")
+	game.model.assemblies.left_leg.slots.foot = "foot"
+	at_seat = Objectives.evaluate(game,"left_leg",dock)
 	expect(same_ticks(at_seat,[true,true,true]) and at_seat.machine_complete,"foot rig at 3 completes docking, got "+str(at_seat.ticked)+" complete "+str(at_seat.machine_complete))
 	var dock_text: Array[String] = []
 	for objective in dock.objectives:dock_text.append(Objectives.text(game,"left_leg",objective))
@@ -285,6 +292,9 @@ func run() -> void:
 	expect(same_ticks(upright,[true,true,true,true,false]),"upright ticks four, got "+str(upright.ticked))
 	rail.path=3.0
 	var docked = Objectives.evaluate(game,"pelvis",seat)
+	expect(not docked.ticked[4],"leg rig dock stop alone does not mount the leg")
+	game.model.assemblies.pelvis.slots.left_leg = "left_leg"
+	docked = Objectives.evaluate(game,"pelvis",seat)
 	expect(same_ticks(docked,[true,true,true,true,true]) and docked.machine_complete,"dock completes seating, got "+str(docked.ticked)+" complete "+str(docked.machine_complete))
 	var cylinders: Array = []
 	var releases: Array = []

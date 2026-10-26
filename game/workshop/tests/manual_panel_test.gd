@@ -38,6 +38,10 @@ func run() -> void:
 	var panel_shown: bool = game.hud.manual.visible
 	game.handle_desktop_input(key(KEY_TAB))
 	expect(game.hud.manual.visible != panel_shown,"Tab toggles the current step panel")
+	game.manual_progress.unpin()
+	game.manual_progress._data={"chapters":[{"id":"blocked","title":"Blocked","after":["unfinished"],"steps":[["pelvis",8]]}]}
+	game.manual_progress.refresh();game.hud._refresh_step_panel()
+	expect(game.hud.page_title.text == "Assembly work remains" and game.hud.goal_label.visible,"blocked tracking explains unfinished work instead of robot completion")
 	var passed: bool = checks.all(func(check):return check.passed)
 	print("MANUAL_PANEL ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free()

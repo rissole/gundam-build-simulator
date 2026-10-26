@@ -4854,7 +4854,12 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "pelvis",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
@@ -4863,22 +4868,63 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "pelvis",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "pelvis",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "pelvis",
+                "phase": "arrived"
+              }
             }
           ],
           "note": {
             "at": 0,
             "text": "The pins stop the waist twisting or tilting while it hangs from the crane. Twist pin: front of the waist. Tilt pin: its right side."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "pelvis"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "pelvis",
+                "phase": "parked"
+              },
+              {
+                "machine": "module_supports",
+                "state": {
+                  "pins": 2
+                }
+              },
+              {
+                "machine": "module_supports",
+                "state": {
+                  "jaws_closed": 4
+                }
+              }
+            ]
           }
         },
         {
@@ -4959,7 +5005,20 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "leg_rail": {
+              "active_assembly": "left_leg"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "pelvis",
+                "slot": "left_leg"
+              }
+            ]
+          }
         },
         {
           "title": "Carry retaining half 1",
@@ -5293,7 +5352,8 @@
               "slots": [
                 "cylinder_1/upper_pin",
                 "cylinder_1/lower_pin"
-              ]
+              ],
+              "where": "from the front"
             },
             {
               "op": "operate",
@@ -5326,8 +5386,8 @@
             }
           ],
           "note": {
-            "at": 1,
-            "text": "The front two cylinders pin from the front, the rear one from the rear."
+            "at": 2,
+            "text": "Aim at the small amber handle beside the middle of this cylinder and press E to insert its captive lock pin. Keep the leg rig docked and engaged."
           }
         },
         {
@@ -5350,7 +5410,8 @@
               "slots": [
                 "cylinder_2/upper_pin",
                 "cylinder_2/lower_pin"
-              ]
+              ],
+              "where": "from the front"
             },
             {
               "op": "operate",
@@ -5383,8 +5444,8 @@
             }
           ],
           "note": {
-            "at": 1,
-            "text": "The front two cylinders pin from the front, the rear one from the rear."
+            "at": 2,
+            "text": "Aim at the small amber handle beside the middle of this cylinder and press E to insert its captive lock pin. Keep the leg rig docked and engaged."
           }
         },
         {
@@ -5407,7 +5468,8 @@
               "slots": [
                 "cylinder_3/upper_pin",
                 "cylinder_3/lower_pin"
-              ]
+              ],
+              "where": "from the rear"
             },
             {
               "op": "operate",
@@ -5440,8 +5502,8 @@
             }
           ],
           "note": {
-            "at": 1,
-            "text": "The front two cylinders pin from the front, the rear one from the rear."
+            "at": 2,
+            "text": "Aim at the small amber handle beside the middle of this cylinder and press E to insert its captive lock pin. Keep the leg rig docked and engaged."
           }
         },
         {
@@ -5493,7 +5555,29 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "requires_state": {
+            "owner": "pelvis",
+            "slot": "left_leg"
+          },
+          "machine_scope": {
+            "leg_rail": {
+              "active_assembly": "left_leg"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "right_foot",
+                "phase": "delivered"
+              },
+              {
+                "owner": "pelvis",
+                "slot": "left_leg"
+              }
+            ]
+          }
         },
         {
           "title": "Reacquire support and recover",
@@ -5579,7 +5663,20 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "leg_rail": {
+              "active_assembly": "right_leg"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "pelvis",
+                "slot": "right_leg"
+              }
+            ]
+          }
         },
         {
           "title": "Carry retaining half 1",
@@ -5913,7 +6010,8 @@
               "slots": [
                 "right/cylinder_1/upper_pin",
                 "right/cylinder_1/lower_pin"
-              ]
+              ],
+              "where": "from the front"
             },
             {
               "op": "operate",
@@ -5946,8 +6044,8 @@
             }
           ],
           "note": {
-            "at": 1,
-            "text": "The front two cylinders pin from the front, the rear one from the rear."
+            "at": 2,
+            "text": "Aim at the small amber handle beside the middle of this cylinder and press E to insert its captive lock pin. Keep the leg rig docked and engaged."
           }
         },
         {
@@ -5970,7 +6068,8 @@
               "slots": [
                 "right/cylinder_2/upper_pin",
                 "right/cylinder_2/lower_pin"
-              ]
+              ],
+              "where": "from the front"
             },
             {
               "op": "operate",
@@ -6003,8 +6102,8 @@
             }
           ],
           "note": {
-            "at": 1,
-            "text": "The front two cylinders pin from the front, the rear one from the rear."
+            "at": 2,
+            "text": "Aim at the small amber handle beside the middle of this cylinder and press E to insert its captive lock pin. Keep the leg rig docked and engaged."
           }
         },
         {
@@ -6027,7 +6126,8 @@
               "slots": [
                 "right/cylinder_3/upper_pin",
                 "right/cylinder_3/lower_pin"
-              ]
+              ],
+              "where": "from the rear"
             },
             {
               "op": "operate",
@@ -6060,8 +6160,8 @@
             }
           ],
           "note": {
-            "at": 1,
-            "text": "The front two cylinders pin from the front, the rear one from the rear."
+            "at": 2,
+            "text": "Aim at the small amber handle beside the middle of this cylinder and press E to insert its captive lock pin. Keep the leg rig docked and engaged."
           }
         },
         {
@@ -6108,7 +6208,42 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "requires_state": {
+            "owner": "pelvis",
+            "slot": "right_leg"
+          },
+          "machine_scope": {
+            "leg_rail": {
+              "active_assembly": "right_leg"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "machine": "leg_rail",
+                    "state": {
+                      "active_assembly": "right_leg",
+                      "engaged": false,
+                      "parked": true
+                    }
+                  },
+                  {
+                    "machine": "foot_carrier",
+                    "state": {
+                      "stop": 0
+                    }
+                  }
+                ]
+              },
+              {
+                "owner": "pelvis",
+                "slot": "right_leg"
+              }
+            ]
+          }
         },
         {
           "title": "Reacquire support and recover",
@@ -6156,23 +6291,57 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "chest_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "chest_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "chest_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "chest_store",
+                "phase": "arrived"
+              }
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "chest_store"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "chest_store",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Seat the prepared chest",
@@ -6315,7 +6484,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "chest"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "pelvis",
+                "slot": "chest"
+              },
+              {
+                "machine": "service_crane",
+                "task": "chest",
+                "phase": "delivered"
+              }
+            ]
+          }
         },
         {
           "title": "Retain the chest on the waist",
@@ -6347,17 +6534,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "chest",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "chest",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "chest",
+                "phase": "arrived"
+              }
             }
           ],
           "note": {
@@ -6481,7 +6683,21 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "chest"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "chest",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Connect chest services",
@@ -10818,23 +11034,57 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "arrived"
+              }
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "core_store"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "core_store",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Deliver and guide the core",
@@ -10873,7 +11123,12 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
@@ -10883,7 +11138,12 @@
             {
               "op": "detach",
               "machine": "service_crane",
-              "point": "core_front"
+              "point": "core_front",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "arrived"
+              }
             },
             {
               "op": "seat",
@@ -10952,7 +11212,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "core"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "core"
+              },
+              {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "delivered"
+              }
+            ]
+          }
         },
         {
           "title": "Retain and connect the core",
@@ -10972,19 +11250,63 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "arrived"
+              }
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "core"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "core",
+                "phase": "parked"
+              },
+              {
+                "machine": "core_guide",
+                "state": {
+                  "bolt:0": true,
+                  "bolt:1": true,
+                  "bolt:2": true,
+                  "bolt:3": true
+                }
+              },
+              {
+                "machine": "core_guide",
+                "state": {
+                  "connected": true
+                }
+              }
+            ]
+          }
         },
         {
           "title": "Bring the backpack to the heavy module rig",
@@ -11026,23 +11348,57 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack_store",
+                "phase": "arrived"
+              }
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "backpack_store"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "backpack_store",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Seat the open backpack",
@@ -11258,7 +11614,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "backpack"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "backpack"
+              },
+              {
+                "machine": "service_crane",
+                "task": "backpack",
+                "phase": "delivered"
+              }
+            ]
+          }
         },
         {
           "title": "Retain both backpack hinges",
@@ -11318,12 +11692,101 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack",
+                "phase": "arrived"
+              }
             }
           ],
           "note": {
             "at": 3,
             "text": "Leave the crane lowered at the backpack: it closes the backpack later."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "backpack"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "machine": "service_crane",
+                    "task": "backpack",
+                    "phase": "released"
+                  },
+                  {
+                    "all": [
+                      {
+                        "owner": "chest",
+                        "slot": "backpack"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/hinge_pin_1"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/hinge_keeper_1"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/hinge_pin_2"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/hinge_keeper_2"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/strut_pin_1"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/strut_keeper_1"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/strut_pin_2"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/strut_keeper_2"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/service_1"
+                      },
+                      {
+                        "owner": "chest",
+                        "slot": "backpack/service_2"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "machine": "backpack_hinge",
+                    "state": {
+                      "struts": 2,
+                      "locks": 2
+                    }
+                  },
+                  {
+                    "machine": "backpack_hinge",
+                    "state": {
+                      "closed": true,
+                      "latches": 2
+                    }
+                  }
+                ]
+              }
+            ]
           }
         },
         {
@@ -11352,12 +11815,24 @@
           "objectives": [
             {
               "op": "connect",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "backpack_hinge",
-              "command": "take_weight"
+              "command": "take_weight",
+              "completed_by": {
+                "machine": "backpack_hinge",
+                "state": {
+                  "closed": true,
+                  "latches": 2
+                }
+              }
             },
             {
               "op": "operate",
@@ -11376,24 +11851,62 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "backpack",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "backpack_hinge",
               "command": "close_covers"
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "backpack"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "backpack",
+                "phase": "parked"
+              },
+              {
+                "machine": "backpack_hinge",
+                "state": {
+                  "closed": true,
+                  "latches": 2,
+                  "covers": 2,
+                  "locks": 0
+                }
+              }
+            ]
+          }
         },
         {
           "title": "Bring the arm rig to the Limb Bay",
@@ -11434,24 +11947,64 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "cassette",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "cassette",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "cassette",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "cassette",
+                "phase": "arrived"
+              }
             }
           ],
-          "view": "components"
+          "view": "components",
+          "machine_scope": {
+            "service_crane": {
+              "task": "cassette"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "cassette",
+                "phase": "parked"
+              },
+              {
+                "machine": "leg_rail",
+                "state": {
+                  "parked": true
+                }
+              }
+            ]
+          }
         },
         {
           "title": "Left shoulder: deliver the retained arm",
@@ -11520,6 +12073,24 @@
           "note": {
             "at": 2,
             "text": "Keep all four connectors attached until the arm's services are connected."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "left_arm"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "left_arm"
+              },
+              {
+                "machine": "service_crane",
+                "task": "left_arm",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -11836,17 +12407,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "left_arm",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "left_arm",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "left_arm",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -11874,6 +12460,32 @@
           "note": {
             "at": 3,
             "text": "Leave the shoulder brace and the arm's joint restraints engaged."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "left_arm"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "left_arm",
+                "phase": "parked"
+              },
+              {
+                "machine": "left_shoulder",
+                "state": {
+                  "brakes": true
+                }
+              },
+              {
+                "machine": "left_shoulder",
+                "state": {
+                  "transferred": true
+                }
+              }
+            ]
           }
         },
         {
@@ -11910,24 +12522,58 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_arm_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_arm_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_arm_store",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_arm_store",
+                "phase": "arrived"
+              }
             }
           ],
-          "view": "components"
+          "view": "components",
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_arm_store"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "right_arm_store",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Right shoulder: deliver the retained arm",
@@ -11996,6 +12642,24 @@
           "note": {
             "at": 2,
             "text": "Keep all four connectors attached until the arm's services are connected."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_arm"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "right_arm"
+              },
+              {
+                "machine": "service_crane",
+                "task": "right_arm",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -12312,17 +12976,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_arm",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_arm",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_arm",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -12350,6 +13029,32 @@
           "note": {
             "at": 3,
             "text": "Leave the shoulder brace and the arm's joint restraints engaged."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_arm"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "right_arm",
+                "phase": "parked"
+              },
+              {
+                "machine": "right_shoulder",
+                "state": {
+                  "brakes": true
+                }
+              },
+              {
+                "machine": "right_shoulder",
+                "state": {
+                  "transferred": true
+                }
+              }
+            ]
           }
         },
         {
@@ -12419,6 +13124,24 @@
           "note": {
             "at": 2,
             "text": "Keep both connectors attached until the carrier is bolted."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "left_pauldron"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "left_pauldron"
+              },
+              {
+                "machine": "service_crane",
+                "task": "left_pauldron",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -12442,17 +13165,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "left_pauldron",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "left_pauldron",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "left_pauldron",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -12483,6 +13221,20 @@
           "note": {
             "at": 0,
             "text": "The long bolts go in the bosses nearest the shoulder, the short ones farther along the arm."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "left_pauldron"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "left_pauldron",
+                "phase": "parked"
+              }
+            ]
           }
         },
         {
@@ -12644,6 +13396,24 @@
           "note": {
             "at": 2,
             "text": "Keep both connectors attached until the carrier is bolted."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_pauldron"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "right_pauldron"
+              },
+              {
+                "machine": "service_crane",
+                "task": "right_pauldron",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -12667,17 +13437,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_pauldron",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_pauldron",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_pauldron",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -12708,6 +13493,20 @@
           "note": {
             "at": 0,
             "text": "The long bolts go in the bosses nearest the shoulder, the short ones farther along the arm."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_pauldron"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "right_pauldron",
+                "phase": "parked"
+              }
+            ]
           }
         },
         {
@@ -12841,24 +13640,58 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_baseplate_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_baseplate_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_baseplate_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_baseplate_to_fixture",
+                "phase": "arrived"
+              }
             }
           ],
-          "view": "components"
+          "view": "components",
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_baseplate_to_fixture"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_baseplate_to_fixture",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Head baseplate: deliver",
@@ -12927,6 +13760,24 @@
           "note": {
             "at": 5,
             "text": "Lower 24 cm; the front key rejects a reversed piece."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_baseplate"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "head_baseplate"
+              },
+              {
+                "machine": "service_crane",
+                "task": "head_baseplate",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -13006,17 +13857,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_baseplate",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_baseplate",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_baseplate",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -13044,6 +13910,20 @@
           "note": {
             "at": 0,
             "text": "Clip the strain relief up the right portal."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_baseplate"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_baseplate",
+                "phase": "parked"
+              }
+            ]
           }
         },
         {
@@ -13085,24 +13965,58 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_left_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_left_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_left_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_left_to_fixture",
+                "phase": "arrived"
+              }
             }
           ],
-          "view": "components"
+          "view": "components",
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_left_to_fixture"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_left_to_fixture",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Left wraparound side: deliver",
@@ -13171,6 +14085,24 @@
           "note": {
             "at": 5,
             "text": "Lower 22 cm into the open side pockets."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_left"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "head_left"
+              },
+              {
+                "machine": "service_crane",
+                "task": "head_left",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -13190,17 +14122,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_left",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_left",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_left",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -13229,6 +14176,20 @@
           "note": {
             "at": 0,
             "text": "Insert both bolts from the open side, rearward."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_left"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_left",
+                "phase": "parked"
+              }
+            ]
           }
         },
         {
@@ -13270,24 +14231,58 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_right_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_right_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_right_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_right_to_fixture",
+                "phase": "arrived"
+              }
             }
           ],
-          "view": "components"
+          "view": "components",
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_right_to_fixture"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_right_to_fixture",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Right wraparound side: deliver",
@@ -13356,6 +14351,24 @@
           "note": {
             "at": 5,
             "text": "Lower 22 cm into the open side pockets."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_right"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "head_right"
+              },
+              {
+                "machine": "service_crane",
+                "task": "head_right",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -13375,17 +14388,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_right",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_right",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_right",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -13414,6 +14442,20 @@
           "note": {
             "at": 0,
             "text": "Insert both bolts from the open side, rearward."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_right"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_right",
+                "phase": "parked"
+              }
+            ]
           }
         },
         {
@@ -13455,24 +14497,58 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_top_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_top_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_top_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_top_to_fixture",
+                "phase": "arrived"
+              }
             }
           ],
-          "view": "components"
+          "view": "components",
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_top_to_fixture"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_top_to_fixture",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Structural head top: deliver",
@@ -13541,6 +14617,24 @@
           "note": {
             "at": 5,
             "text": "Lower 22 cm onto the roof ledges."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_top"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "head_top"
+              },
+              {
+                "machine": "service_crane",
+                "task": "head_top",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -13564,17 +14658,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_top",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_top",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_top",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -13605,6 +14714,20 @@
           "note": {
             "at": 0,
             "text": "Rear bolts enter from the rear flanks; front bolts from the front landing."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_top"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_top",
+                "phase": "parked"
+              }
+            ]
           }
         },
         {
@@ -13948,24 +15071,58 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_crown_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_crown_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_crown_to_fixture",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_crown_to_fixture",
+                "phase": "arrived"
+              }
             }
           ],
-          "view": "components"
+          "view": "components",
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_crown_to_fixture"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_crown_to_fixture",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Decorative head crown: deliver",
@@ -14034,6 +15191,24 @@
           "note": {
             "at": 5,
             "text": "Lower 18 cm onto the two unequal keyed prongs."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_crown"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "chest",
+                "slot": "head_crown"
+              },
+              {
+                "machine": "service_crane",
+                "task": "head_crown",
+                "phase": "delivered"
+              }
+            ]
           }
         },
         {
@@ -14053,17 +15228,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_crown",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_crown",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "head_crown",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -14092,6 +15282,20 @@
           "note": {
             "at": 0,
             "text": "Insert both bolts from the front."
+          },
+          "machine_scope": {
+            "service_crane": {
+              "task": "head_crown"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "head_crown",
+                "phase": "parked"
+              }
+            ]
           }
         }
       ]
@@ -16438,21 +17642,41 @@
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "down"
+              "command": "down",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_foot",
+                "phase": "arrived"
+              }
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_foot",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_foot",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_foot",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -16475,7 +17699,21 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_foot"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "right_foot",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Dock the prepared foot",
@@ -16529,7 +17767,20 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "foot_carrier": {
+              "receiver": "right_leg"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "right_leg",
+                "slot": "foot"
+              }
+            ]
+          }
         },
         {
           "title": "Deliver the structural shin",
@@ -16599,7 +17850,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_shin"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "right_leg",
+                "slot": "shin"
+              },
+              {
+                "machine": "service_crane",
+                "task": "right_shin",
+                "phase": "delivered"
+              }
+            ]
+          }
         },
         {
           "title": "Secure the ankle flange",
@@ -16630,17 +17899,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_shin",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_shin",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_shin",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -16682,7 +17966,21 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_shin"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "right_shin",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Connect the shin disconnect",
@@ -16860,7 +18158,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_fork"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "right_leg",
+                "slot": "fork"
+              },
+              {
+                "machine": "service_crane",
+                "task": "right_fork",
+                "phase": "delivered"
+              }
+            ]
+          }
         },
         {
           "title": "Insert the knee axle",
@@ -16936,17 +18252,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_fork",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_fork",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_fork",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -16985,7 +18316,21 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_fork"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "right_fork",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Deliver the Upper-leg beam",
@@ -17055,7 +18400,25 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_spar"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "owner": "right_leg",
+                "slot": "spar"
+              },
+              {
+                "machine": "service_crane",
+                "task": "right_spar",
+                "phase": "delivered"
+              }
+            ]
+          }
         },
         {
           "title": "Fasten the Upper-leg beam flange",
@@ -17086,17 +18449,32 @@
             },
             {
               "op": "detach",
-              "machine": "service_crane"
+              "machine": "service_crane",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_spar",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "up"
+              "command": "up",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_spar",
+                "phase": "arrived"
+              }
             },
             {
               "op": "operate",
               "machine": "service_crane",
-              "command": "go:park"
+              "command": "go:park",
+              "requires_state": {
+                "machine": "service_crane",
+                "task": "right_spar",
+                "phase": "arrived"
+              }
             }
           ],
           "view": "components",
@@ -17138,7 +18516,21 @@
               ],
               "context_padding": 0.08
             }
-          ]
+          ],
+          "machine_scope": {
+            "service_crane": {
+              "task": "right_spar"
+            }
+          },
+          "completed_by": {
+            "all": [
+              {
+                "machine": "service_crane",
+                "task": "right_spar",
+                "phase": "parked"
+              }
+            ]
+          }
         },
         {
           "title": "Structural leg ready",
@@ -21181,21 +22573,41 @@
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "down"
+                "command": "down",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "foot",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "detach",
-                "machine": "service_crane"
+                "machine": "service_crane",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "foot",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "up"
+                "command": "up",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "foot",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "go:park"
+                "command": "go:park",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "foot",
+                  "phase": "arrived"
+                }
               }
             ],
             "view": "components",
@@ -21218,7 +22630,21 @@
                 ],
                 "context_padding": 0.08
               }
-            ]
+            ],
+            "machine_scope": {
+              "service_crane": {
+                "task": "foot"
+              }
+            },
+            "completed_by": {
+              "all": [
+                {
+                  "machine": "service_crane",
+                  "task": "foot",
+                  "phase": "parked"
+                }
+              ]
+            }
           },
           {
             "title": "Dock the prepared foot",
@@ -21272,7 +22698,20 @@
                 ],
                 "context_padding": 0.08
               }
-            ]
+            ],
+            "machine_scope": {
+              "foot_carrier": {
+                "receiver": "left_leg"
+              }
+            },
+            "completed_by": {
+              "all": [
+                {
+                  "owner": "left_leg",
+                  "slot": "foot"
+                }
+              ]
+            }
           },
           {
             "title": "Deliver the structural shin",
@@ -21342,7 +22781,25 @@
                 ],
                 "context_padding": 0.08
               }
-            ]
+            ],
+            "machine_scope": {
+              "service_crane": {
+                "task": "shin"
+              }
+            },
+            "completed_by": {
+              "all": [
+                {
+                  "owner": "left_leg",
+                  "slot": "shin"
+                },
+                {
+                  "machine": "service_crane",
+                  "task": "shin",
+                  "phase": "delivered"
+                }
+              ]
+            }
           },
           {
             "title": "Secure the ankle flange",
@@ -21373,17 +22830,32 @@
               },
               {
                 "op": "detach",
-                "machine": "service_crane"
+                "machine": "service_crane",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "shin",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "up"
+                "command": "up",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "shin",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "go:park"
+                "command": "go:park",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "shin",
+                  "phase": "arrived"
+                }
               }
             ],
             "view": "components",
@@ -21425,7 +22897,21 @@
                 ],
                 "context_padding": 0.08
               }
-            ]
+            ],
+            "machine_scope": {
+              "service_crane": {
+                "task": "shin"
+              }
+            },
+            "completed_by": {
+              "all": [
+                {
+                  "machine": "service_crane",
+                  "task": "shin",
+                  "phase": "parked"
+                }
+              ]
+            }
           },
           {
             "title": "Connect the shin disconnect",
@@ -21603,7 +23089,25 @@
                 ],
                 "context_padding": 0.08
               }
-            ]
+            ],
+            "machine_scope": {
+              "service_crane": {
+                "task": "fork"
+              }
+            },
+            "completed_by": {
+              "all": [
+                {
+                  "owner": "left_leg",
+                  "slot": "fork"
+                },
+                {
+                  "machine": "service_crane",
+                  "task": "fork",
+                  "phase": "delivered"
+                }
+              ]
+            }
           },
           {
             "title": "Insert the knee axle",
@@ -21679,17 +23183,32 @@
               },
               {
                 "op": "detach",
-                "machine": "service_crane"
+                "machine": "service_crane",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "fork",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "up"
+                "command": "up",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "fork",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "go:park"
+                "command": "go:park",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "fork",
+                  "phase": "arrived"
+                }
               }
             ],
             "view": "components",
@@ -21728,7 +23247,21 @@
                 ],
                 "context_padding": 0.08
               }
-            ]
+            ],
+            "machine_scope": {
+              "service_crane": {
+                "task": "fork"
+              }
+            },
+            "completed_by": {
+              "all": [
+                {
+                  "machine": "service_crane",
+                  "task": "fork",
+                  "phase": "parked"
+                }
+              ]
+            }
           },
           {
             "title": "Deliver the Upper-leg beam",
@@ -21798,7 +23331,25 @@
                 ],
                 "context_padding": 0.08
               }
-            ]
+            ],
+            "machine_scope": {
+              "service_crane": {
+                "task": "spar"
+              }
+            },
+            "completed_by": {
+              "all": [
+                {
+                  "owner": "left_leg",
+                  "slot": "spar"
+                },
+                {
+                  "machine": "service_crane",
+                  "task": "spar",
+                  "phase": "delivered"
+                }
+              ]
+            }
           },
           {
             "title": "Fasten the Upper-leg beam flange",
@@ -21829,17 +23380,32 @@
               },
               {
                 "op": "detach",
-                "machine": "service_crane"
+                "machine": "service_crane",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "spar",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "up"
+                "command": "up",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "spar",
+                  "phase": "arrived"
+                }
               },
               {
                 "op": "operate",
                 "machine": "service_crane",
-                "command": "go:park"
+                "command": "go:park",
+                "requires_state": {
+                  "machine": "service_crane",
+                  "task": "spar",
+                  "phase": "arrived"
+                }
               }
             ],
             "view": "components",
@@ -21881,7 +23447,21 @@
                 ],
                 "context_padding": 0.08
               }
-            ]
+            ],
+            "machine_scope": {
+              "service_crane": {
+                "task": "spar"
+              }
+            },
+            "completed_by": {
+              "all": [
+                {
+                  "machine": "service_crane",
+                  "task": "spar",
+                  "phase": "parked"
+                }
+              ]
+            }
           },
           {
             "title": "Structural leg ready",

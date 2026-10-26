@@ -32,9 +32,8 @@ not use "quest" or "quest log" in the game; that was only the user's analogy
 - Remove the full-screen browser's **Suggested only** filter, **C** build
   cycling and the nested tree. The manual has two levels: chapter → step.
 - **Tracked step:** the first unfinished step in chapter order unless the
-  player pins another from the manual. Context never switches it. Holding or
-  aiming at a part for another step adds a passive hint beside "Carrying…"
-  ("For: Ring clevis · Foot").
+  player pins another from the manual. Context never switches it. The passive
+  carried-part step hint was removed with the 2026-10-26 console cleanup.
 - **Out of scope:** location objectives and in-world waypoints (a future
   milestone) and the clevis refusal during foot assembly (de-scoped by the
   user, still recorded in the checklist).
@@ -61,23 +60,45 @@ command has on a few keys of its existing `capture()` state, plus derived counts
 (for example the crane's `attached`). For the crane, `pickup` gives
 `task=T, station=source`; `down` gives `raised=false`; `up` gives `raised=true`;
 and `go:X` gives `station=X`. The expected state after objective *k* is the
-cumulative effect of objectives 1…*k*. The objectives ticked are 1…*k*, where *k*
-is the **latest** objective whose expected state matches the live machine. The
+cumulative effect of objectives 1…*k*, checked across **all** involved machines.
+The objectives ticked are 1…*k*, where *k* is the **latest** matching prefix. The
 crane changes `station` and `raised` only on arrival, so a move in progress keeps
 the previous objective ticked. A crane that is raised again steps the list back
 cleanly instead of flickering. A `seat` with `via` belongs to the machine sequence
-too. This adds no machine flags: everything reads state that `capture()` already
+too, but its mounting tick always requires the actual occupied slot. Machine
+scope identifies the crane task or the foot/leg rig's receiving build. Delivery
+guards distinguish an initial parked crane from a finished trip, and arrival
+at a guided receiver from final mounting. This adds no machine flags: everything reads state that `capture()` already
 saves (active rule: no new crane-contract flags). The same machine function
 supplies both the console menu label and the objective text.
 
 ### When a step is done
 
-Later steps move the machines on, so a finished step's machine sequence stops
-matching. A step is **done** when all its `fit`/`seat` objectives are satisfied
-and either its machine sequence is complete or the next step (in manual order)
-has started. A step has started when any of its objectives is ticked or it is
-done. Evaluate from the last step backwards. No completion is stored, so saves
-are unaffected.
+A step is **done** only when every resolved objective is ticked. Starting the
+next page never completes earlier work. Sidebar status and objective rows use
+the same evaluation.
+
+Later machine reuse is handled by explicit `completed_by` physical evidence,
+authored through `tools/author_manual_progress.py`. Predicates combine `all`/`any`
+groups, occupied owner/slot pairs, machine states, and crane task phases
+(`arrived`, `delivered`, `released`, `parked`). `requires_state` guards constrain
+sequence prefixes; `machine_scope` binds a sequence to its load/build.
+
+Installed parts prove their preceding delivery. A released/parked transport
+requires its load still at the receiver or further along its authored route
+graph; changing the selected task alone proves nothing. Persistent pins, jaws,
+brakes, interlocks and restraints remain required. The next foot's actual
+delivery proves that both shared rigs were reset. Explicit later physical
+states can supersede temporary support instructions: latched backpack hinges
+retire crane tension, and connected services allow the same crane to be
+reacquired for closure without reopening the strut step. Missing retention
+still reopens work.
+
+These predicates resolve completed objective ticks as well as step status;
+historical transport counts are omitted instead of showing Done beside 0/2.
+No completion history is stored and the save format is unchanged. When no step
+can be tracked, the HUD checks all steps before declaring the robot complete;
+otherwise it says work remains and directs the player to the manual.
 
 ### Load-time validation
 
@@ -88,6 +109,8 @@ are unaffected.
 - No objective precedes a slot it requires.
 - Every `operate` command exists on that machine, and every machine has effect
   data for the commands used.
+- Completion predicates reference existing slots/machines and valid predicate
+  shapes; machine scopes name registered manual machines.
 - Text is generated: part names come from the part registry, control labels from
   the machine's `menu_options()` and `controls()` labels.
 
@@ -151,6 +174,16 @@ is its own chapter, placed before the step that seats it.
   placeholder text, not content.
 
 ## Migration
+
+**Repaired; player re-check pending, 2026-10-26:** player reports unclear PV-200 lock-pin
+operation, premature Done statuses, unfinished leg resets marked Done and false
+robot completion. Source diagnosis and the repair/verification plan are in the
+[playtest finding](robot-workshop-playtest-checklist.md#pv-200-and-leg-reset-progression-failures--2026-10-26).
+The shared completion rules above replace the premature next-page inference.
+PV-200 pages now explain the captive handle at the lock objective and retain
+eye-pin insertion direction on the fitting objective. The approved checklist
+layout and independent cylinder assembly order are preserved. Automated evidence
+is in the linked finding; visibility/reach and player acceptance remain separate.
 
 1. **Engine — done 2026-10-25:** objective schema, generated text, machine
    labels/state/effects/counts (crane, foot rig, heavy module rig) and load-time

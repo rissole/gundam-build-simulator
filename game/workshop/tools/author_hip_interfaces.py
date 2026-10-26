@@ -151,7 +151,8 @@ def extend(trial, kinds, leg, pelvis, diagram):
             [dict(op="fit", slots=[sid]),
              dict(op="fit", slots=list(pins)),
              dict(op="operate", machine="captive_controls", command=f"lock:left_hip_{n}")],
-            note=dict(at=1, text="The front two cylinders pin from the front, the rear one from the rear.")))
+            note=dict(at=2, text="Aim at the small amber handle beside the middle of this cylinder and press E to insert its captive lock pin. Keep the leg rig docked and engaged.")))
+        pages[-1]["objectives"][1]["where"] = "from the front" if n < 3 else "from the rear"
         lock_id=f"left_hip_{n}"
         lock_ids.append(lock_id)
         controls[lock_id]=dict(owner="pelvis",slot=sid,label=f"Hip cylinder {n}",
