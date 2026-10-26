@@ -33,6 +33,7 @@ ROUTINE = (
     'runner_contracts',
     'save_roundtrip_test',
     'shoulder_content_test',
+    'shelf_storage_test',
     'source_assets',
     'stage_contract_test',
     'staging_policy_test',

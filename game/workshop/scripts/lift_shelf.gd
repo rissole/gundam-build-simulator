@@ -7,6 +7,9 @@ var shelf: Dictionary
 var lift: Node3D
 var surface: MeshInstance3D
 var cargo: Dictionary = {}
+var _clamps: Array[Node3D] = []
+var _stow_bounds: Dictionary = {}
+var _clamp_occupants: Array = []
 
 func setup(workshop: Node3D, platform: Node3D, options: Dictionary) -> void:
 	game = workshop;lift = platform;shelf = options
@@ -17,6 +20,11 @@ func setup(workshop: Node3D, platform: Node3D, options: Dictionary) -> void:
 	surface = game.box(self,Vector3.ZERO,size,steel,true)
 	for x in [-size.x/2+.12,size.x/2-.12]:game.box(self,Vector3(x,-.31,0),Vector3(.07,.58,size.z*.6),steel,true)
 	game.sign_panel(self,"COMPONENT SHELF\n2 × one-hand / 1 × two-hand",Vector3(0,.18,size.z/2+.03),Vector2(size.x-.1,.30),28,.002)
+	# Captive adjustable jaws stay on the shelf, parked when it is empty.
+	for i in 4:
+		var jaw = Node3D.new();add_child(jaw);_clamps.append(jaw)
+		game.box(jaw,Vector3.ZERO,Vector3(.035,1,.035),steel,true)
+		game.box(jaw,Vector3.ZERO,Vector3(.05,.035,.09),game.material(Color("bc9447"),.3),true)
 	sync()
 
 func occupants(model: AssemblyModel = null) -> Array[String]:
@@ -36,16 +44,53 @@ func capacity_error(uid: String) -> String:
 	for occupant in occupants():
 		if not occupant.is_empty():used += size_of(occupant)
 	if used+size_of(uid)>2:return "Shelf full: it holds two one-hand components or one two-hand component."
-	if size_of(uid)==2 and shelf.has("two_hand_capacity"):
-		var bound: AABB=game.source[game.source_uid(uid)].mesh.get_aabb()
-		var limit: Array=shelf.two_hand_capacity
-		if bound.size.x>float(limit[0])+.00001 or bound.size.z>float(limit[1])+.00001 or bound.size.y>float(limit[2])+.00001:return "This component exceeds the shelf's upright panel capacity."
+	var bound = stow_bounds(uid)
+	var limit = AssemblyRuntime.vec(shelf.get("two_hand_capacity",[shelf.size[0],shelf.size[2],1.2]))
+	if size_of(uid)==2 and (bound.size.x>limit.x+.00001 or bound.size.z>limit.y+.00001 or bound.size.y>limit.z+.00001):return "This component does not fit the shelf in its supported storage orientation."
 	return ""
 
+func stow_basis(uid: String) -> Basis:
+	var profile: Dictionary = game.model.definitions.parts[game.model.items[uid].kind].get("handling",{})
+	return Basis.from_euler(AssemblyRuntime.vec(profile.get("shelf_rotation_degrees",[0,0,0]))*PI/180)
+
+func stow_bounds(uid: String) -> AABB:
+	if _stow_bounds.has(uid):return _stow_bounds[uid]
+	var source_bounds: AABB = game.source[game.source_uid(uid)].mesh.get_aabb()
+	var envelope = source_bounds
+	for record in SolidHandling.authored_shapes(game.model.definitions.parts[game.model.items[uid].kind].get("collision_shapes",[]),source_bounds):
+		envelope = envelope.merge(record.transform*record.shape.get_debug_mesh().get_aabb())
+	_stow_bounds[uid] = Transform3D(stow_basis(uid),Vector3.ZERO)*envelope
+	return _stow_bounds[uid]
+
 func _pose(uid: String, index: int) -> Transform3D:
-	var bound: AABB = game.source[game.source_uid(uid)].mesh.get_aabb()
+	var bound = stow_bounds(uid)
 	var places: Array = shelf.places
-	return global_transform*Transform3D(Basis.IDENTITY,Vector3(0 if size_of(uid)==2 else places[index],.04,0)-Vector3(bound.get_center().x,bound.position.y,bound.get_center().z))
+	return global_transform*Transform3D(stow_basis(uid),Vector3(0 if size_of(uid)==2 else places[index],float(shelf.size[1])/2,0)-Vector3(bound.get_center().x,bound.position.y,bound.get_center().z))
+
+func _pose_clamps() -> void:
+	var stored = occupants()
+	if _clamps.is_empty() or _clamp_occupants == stored:return
+	_clamp_occupants = stored.duplicate()
+	var contacts: Array[Vector3] = []
+	for index in 2:
+		var uid = occupants()[index]
+		if uid.is_empty():continue
+		var pose = global_transform.affine_inverse()*_pose(uid,index)
+		for point in game.model.definitions.parts[game.model.items[uid].kind].get("handling",{}).get("shelf_clamps",[]):contacts.append(pose*AssemblyRuntime.vec(point))
+	for i in _clamps.size():
+		var point = contacts[i] if i<contacts.size() else Vector3(-.55 if i<2 else .55,.10,-.12 if i%2==0 else .12)
+		var side = signf(point.z)
+		var upright = _clamps[i].get_child(0) as MeshInstance3D
+		var pad = _clamps[i].get_child(2) as MeshInstance3D
+		var height = maxf(.04,point.y-.04)
+		upright.position = Vector3(point.x,.04+height/2,point.z+side*.065)
+		(upright.mesh as BoxMesh).size.y = height
+		var post_body = _clamps[i].get_child(1) as StaticBody3D
+		post_body.position = upright.position
+		(post_body.get_child(0).shape as BoxShape3D).size.y = height
+		pad.position = point+Vector3(0,0,side*.045)
+		_clamps[i].get_child(3).position = pad.position
+
 
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -107,6 +152,7 @@ func sync() -> void:
 				var shape = CollisionShape3D.new();shape.shape = record.shape;shape.transform = record.transform;body.add_child(shape)
 		cargo[uid].global_transform = _pose(uid,index)
 		cargo[uid].force_update_transform();PhysicsServer3D.body_set_state(cargo[uid].get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,cargo[uid].global_transform)
+	_pose_clamps()
 
 func travel_error(carrier_id: String, from: float, to: float) -> String:
 	if carrier_id != lift.equipment_id:return ""

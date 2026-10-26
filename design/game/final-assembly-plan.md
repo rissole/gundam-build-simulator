@@ -261,6 +261,20 @@ walking clearance is 2.20 m; car roof/gear must fit within 2.10 m above its deck
 | Rear work flanks, upper levels | X9.7..11.4 /14.6..16.3; Z27.4..30.1 at all three upper levels |
 | Aft core fingers, only level 11.2 | Same X bounds, Z31.7..35.8, reached from rear crossover; worker centre ≥Z31.96. |
 
+Shelf storage uses authored `handling.shelf_rotation_degrees` for both the fit
+check and the actual pose. PV-120 stands upright (90° about X), with combined
+visual/collision bounds **1.36 × 0.68 × 0.08 m** (width/height/depth). PV-200 leans
+50° about Z: the three cartridge bounds are at most **1.320 × 1.166 × 0.240 m**.
+Both fit the existing 1.45 × 1.20 × 0.35 m cargo volume without widening either
+shelf, entering the side-door zone, or changing the landing/hip approach.
+Four captive adjustable shelf clamps stay parked on the empty shelf and contact
+authored surfaces of stored bulky cargo. Their stems run down to the shelf;
+future components must author a supported orientation and truthful contact points,
+rather than increasing the universal allowance. Capacity remains one two-hand
+part or two one-hand parts. Store, actual upward/downward lift travel, exact-UID
+retrieval and full-capacity rejection pass in the isolated `shelf_storage_test`;
+visual support/readability and player use remain unreviewed.
+
 No inner head-level shortcut passes beside the shoulder. It would obstruct the
 arm's vertical crane lines. Walk from the front to the rear via the **outer
 perimeter and elevator landings**, keeping the central body and cable wells open.

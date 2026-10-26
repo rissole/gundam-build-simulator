@@ -77,7 +77,8 @@ kind("lg-m24-100", "LG-H24100", "M24 × 100 fork bolt", "pocket", "M24x100")
 for standard in ("h-12050", "washer", "w-12"):
     parts[standard] = canonical_part(standard)
 kind("pv-ring-half", "PV-120", "Hip retaining ring half", "two_hand", "semicircular")
-parts["pv-ring-half"]["handling"] = dict(distance=.85, rotation_degrees=[90, 0, 0])
+parts["pv-ring-half"]["handling"] = dict(distance=.85, rotation_degrees=[90, 0, 0], shelf_rotation_degrees=[90, 0, 0],
+    shelf_clamps=[[x, y, -.1] for x in (-.5, .5) for y in (-.04, .04)])
 kind("pv-m24-140", "PV-H24140", "M24 × 140 ring bolt", "pocket", "M24x140")
 kind("lg-m36-90", "H-36090", "M36 × 90 shin bolt", "pocket", "M36x90")
 kind("lg-w36", "W-36", "M36 washer", "pocket", "M36")

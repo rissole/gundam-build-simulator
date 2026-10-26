@@ -521,6 +521,33 @@
           90,
           0,
           0
+        ],
+        "shelf_rotation_degrees": [
+          90,
+          0,
+          0
+        ],
+        "shelf_clamps": [
+          [
+            -0.5,
+            -0.04,
+            -0.1
+          ],
+          [
+            -0.5,
+            0.04,
+            -0.1
+          ],
+          [
+            0.5,
+            -0.04,
+            -0.1
+          ],
+          [
+            0.5,
+            0.04,
+            -0.1
+          ]
         ]
       },
       "catalogue_image": "res://assets/part-images/pv-ring-half.svg"

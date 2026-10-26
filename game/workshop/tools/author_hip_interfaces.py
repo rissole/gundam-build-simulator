@@ -48,7 +48,8 @@ def extend(trial, kinds, leg, pelvis, diagram):
     part("pv-stop-half", "PV-130", "Hip stop-cage half", "hand")
     part("pv-m12-60", "PV-H12060", "M12 × 60 stop-cage screw", "pocket")
     part("pv-cylinder", "PV-200", "Complete hip cylinder cartridge", "two_hand",
-         handling=dict(distance=.9), collision_shapes=[
+         handling=dict(distance=.9, shelf_rotation_degrees=[0,0,50],
+                       shelf_clamps=[[0,y,z] for y in (-.3,-.7) for z in (-.07,.07)]), collision_shapes=[
              dict(type="box", position=[0,-.66,0], size=[.24,1.49,.24])])
     part("pv-eye-pin", "PV-P60220", "Hip eye pin with captive keeper", "hand",
          collision_shapes=[dict(type="box", position=[0,0,0], size=[.09,.09,.25])])

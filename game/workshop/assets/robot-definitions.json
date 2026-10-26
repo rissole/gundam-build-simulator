@@ -650,7 +650,34 @@
       "short_title": "Complete hip cylinder cartridge",
       "carry_class": "two_hand",
       "handling": {
-        "distance": 0.9
+        "distance": 0.9,
+        "shelf_rotation_degrees": [
+          0,
+          0,
+          50
+        ],
+        "shelf_clamps": [
+          [
+            0,
+            -0.3,
+            -0.07
+          ],
+          [
+            0,
+            -0.3,
+            0.07
+          ],
+          [
+            0,
+            -0.7,
+            -0.07
+          ],
+          [
+            0,
+            -0.7,
+            0.07
+          ]
+        ]
       },
       "collision_shapes": [
         {
