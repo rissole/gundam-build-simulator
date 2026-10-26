@@ -11,3 +11,16 @@ static func make(game: Node, parent: Node3D, at: Vector3, caption: String, yaw: 
 	label.text = caption;label.font_size = 32;label.pixel_size = .0013
 	label.modulate = Color("f2f4ec");label.outline_size = 0
 	return key
+
+## Opt in explicitly. The handler receives (held: bool, delta: float), with true
+## once per physics tick and false once on release (delta = 0). Bind an action
+## after those arguments if a controller shares one handler across its buttons.
+## Controllers recheck motion interlocks on each tick; aim is checked only at latch.
+static func set_hold_handler(button: MeshInstance3D, handler: Callable) -> void:
+	button.set_meta("hold_handler",handler)
+
+static func hold_handler(target: Dictionary) -> Callable:
+	if target.get("type","") != "equipment" or target.get("input","") in ["place","pickup"]:return Callable()
+	var button = target.get("node")
+	if not is_instance_valid(button):return Callable()
+	return button.get_meta("hold_handler",Callable())

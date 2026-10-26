@@ -7,6 +7,16 @@ var pickup_bodies: Dictionary = {}
 func _init(workshop: Node) -> void:
 	game = workshop
 
+## Snapshot only the button and callback, never the mutable aiming target.
+func latch_control() -> Dictionary:
+	var handler = preload("res://scripts/equipment_button.gd").hold_handler(game.target)
+	if not handler.is_valid():return {}
+	var error = access(target_receivers())
+	if not error.is_empty():
+		game.hud.toast(error)
+		return {}
+	return {"node":game.target.node,"handler":handler}
+
 func update_target() -> void:
 	game.target = {}
 	pickup_bodies.clear()
@@ -227,7 +237,7 @@ func present_target(access_error: String) -> void:
 			detail = game.target.controller.action_error(game.target.action)
 			usable = detail.is_empty()
 			if usable:
-				action_key = "Click" if game.target.get("input","") == "place" else "E"
+				action_key = "Click" if game.target.get("input","") == "place" else ("Hold E" if preload("res://scripts/equipment_button.gd").hold_handler(game.target).is_valid() else "E")
 				action_label = "Carry" if pickup_target else ("Place" if game.target.get("input","") == "place" else "Use")
 		"bin":
 			pickup_target = true

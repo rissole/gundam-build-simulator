@@ -97,3 +97,9 @@ Local machine-readable evidence: `verification/fast-suite-warm-benchmark.json`
 and the three report paths it records (ignored verification artifacts).
 The earlier failed worker-exhaustion run is also retained locally; final timings
 include the lift fixture's scheduling fix and are not automatic retries.
+
+`held_control` uses the production desktop adapter and targeting access in an
+isolated physics fixture. It checks latched callbacks, free look, release through
+pause/modal/consumed input, destroyed controls, initial reach/sightline/interlock
+refusals, and unchanged tap dispatch. `workshop_smoke` covers the startup integration;
+these checks do not establish panel visibility or player acceptance.

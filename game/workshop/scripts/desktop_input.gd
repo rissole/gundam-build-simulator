@@ -3,12 +3,16 @@ extends RefCounted
 ## every event, and movement, look, targeting and world actions are suppressed.
 var game: Node
 var _modals: Array[Object] = []
+const EquipmentButton = preload("res://scripts/equipment_button.gd")
+var _held_control: Dictionary = {}
+var _interact_held = false
 
 func _init(workshop: Node) -> void:
 	game = workshop
 
 ## A modal handler implements `handle_modal_input(event: InputEvent)`.
 func push_modal(handler: Object) -> void:
+	release_control()
 	if not _modals.has(handler):_modals.append(handler)
 
 func pop_modal(handler: Object) -> void:
@@ -19,7 +23,34 @@ func modal_active() -> bool:
 		if not is_instance_valid(handler):_modals.erase(handler)
 	return not _modals.is_empty()
 
+## Called before equipment physics so releasing never leaves one extra jog tick.
+func physics(delta: float) -> void:
+	# GUI controls may consume key-up before _unhandled_input sees it.
+	if not game.automated_test and _interact_held and not Input.is_physical_key_pressed(KEY_E):
+		_interact_held = false
+		release_control()
+	if not game.started or game.paused or modal_active():
+		release_control()
+		return
+	if _held_control.is_empty():return
+	if not is_instance_valid(_held_control.node) or not _held_control.handler.is_valid():
+		release_control()
+		return
+	_held_control.handler.call(true,delta)
+
+func release_control() -> void:
+	var previous = _held_control
+	_held_control = {}
+	if not previous.is_empty() and previous.handler.is_valid():previous.handler.call(false,0.0)
+
 func handle(event: InputEvent) -> void:
+	# Track E before any menu consumes it. Closing a menu while E is still down
+	# must not reacquire a control; only release followed by a fresh press can.
+	var fresh_interact = false
+	if event is InputEventKey and event.physical_keycode == KEY_E:
+		fresh_interact = event.pressed and not event.echo and not _interact_held
+		_interact_held = event.pressed
+		if not event.pressed:release_control()
 	if game.started and modal_active():
 		_modals.back().handle_modal_input(event)
 		return
@@ -59,7 +90,11 @@ func handle(event: InputEvent) -> void:
 			KEY_8: game.model.select_pocket(7)
 			KEY_9: game.model.select_pocket(8)
 			KEY_0: game.model.select_pocket(9)
-			KEY_E: game.interact(event.shift_pressed)
+			KEY_E:
+				if fresh_interact:
+					if EquipmentButton.hold_handler(game.target).is_valid():
+						_held_control = game.targeting.latch_control()
+					else:game.interact(event.shift_pressed)
 			KEY_Q:
 				var rope = game.equipment.get_equipment("rope_access")
 				if rope!=null and rope.attached():

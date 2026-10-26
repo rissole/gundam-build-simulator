@@ -305,6 +305,7 @@ func _make_audio() -> void:
 
 func set_paused(value: bool) -> void:
 	paused = value
+	if value and desktop_input != null:desktop_input.release_control()
 	jump_requested = false
 	if value and is_instance_valid(interaction_outline):interaction_outline.clear()
 	if value and is_instance_valid(manual_control_guidance):manual_control_guidance.clear()
@@ -324,6 +325,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not automated_test:handle_desktop_input(event)
 
 func _physics_process(delta: float) -> void:
+	if desktop_input != null:desktop_input.physics(delta)
 	if not started: return
 	# The player moves against equipment poses Jolt has already stepped; the
 	# equipment then moves and carries any rider exactly.
