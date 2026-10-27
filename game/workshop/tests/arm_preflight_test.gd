@@ -4,6 +4,7 @@ extends "res://tests/kit/harness.gd"
 const Sweep=preload("res://scripts/motion_sweep.gd")
 const Layout=preload("res://scripts/leg_bay_layout.gd")
 const Geometry=preload("res://scripts/arm_delivery_geometry.gd")
+const Stages=preload("res://scripts/build_stages.gd")
 var game: Node
 var arm: Node3D
 var mass: Dictionary
@@ -14,18 +15,19 @@ func _initialize() -> void:call_deferred("run")
 func run() -> void:
 	game=await boot_workshop("pelvis")
 	var rail=game.equipment.get_equipment("leg_rail")
-	expect(rail.request("park").is_empty(),"park the actual leg cradle before using the common limb station")
-	var index_error: String=preload("res://scripts/build_stages.gd").new(game).index_to(rail,rail.spec.lanes.parking)
-	expect(index_error.is_empty(),"held INDEX + reaches parking: "+index_error)
+	var stages=Stages.new(game)
+	expect(stages.pull_support(rail,1.0).is_empty(),"pull the actual foot support clear before parking the leg rig")
+	var index_error: String=stages.index_to(rail,rail.spec.lanes.parking)
+	expect(index_error.is_empty(),"transfer table lever reaches parking: "+index_error)
+	set_front("upper",true)
+	set_front("lower",true)
 	expect(is_equal_approx(rail.index_x,22) and not rail.moving,"parked leg cradle remains a live obstacle at X22: "+str(rail.capture()))
 	game.set_paused(true) # Geometry staging below deliberately supplies poses.
 	await cassette_preflight()
 	stage_torso()
 	stage_legs()
 	var access=game.equipment.get_equipment("workshop_access")
-	var state: Dictionary=access.capture();state.mode="arm";state.moving=false
-	for key in state.channels:state.channels[key]={"value":0.0 if key=="rear" else 1.0,"goal":0.0 if key=="rear" else 1.0}
-	access.apply(state)
+	expect(access.front_open("upper") and access.front_open("lower"),"both explicitly opened fronts remain open for measured arm paths")
 	await frames(3)
 	for side in [-1,1]:
 		var id="left_arm" if side<0 else "right_arm"
@@ -69,16 +71,25 @@ func run() -> void:
 		expect(not bad_result.is_empty(),id+" negative check catches upper suspension anchors routed inward through the fixed cup")
 		set_arm(path[-1]);await frames(2)
 		# An unopened front level must actually obstruct the measured approach.
-		var closed: Dictionary=access.capture();closed.mode="work"
-		for key in closed.channels:closed.channels[key]={"value":0.0,"goal":0.0}
-		access.apply(closed);await frames(2)
+		set_front("lower",false);await frames(2)
 		var obstructed=Sweep.sweep(game.get_world_3d().direct_space_state,groups,163,func(p: float)->Transform3D:return path[7].interpolate_with(path[8],p),15,ignored)
 		expect(not obstructed.is_empty(),id+" preflight detects closed front decks in the delivery corridor")
-		access.apply(state);await frames(2)
+		set_front("lower",true);await frames(2)
 	var passed=checks.all(func(check):return check.passed)
 	write_evidence("res://verification/arm-preflight.json",{"scope":"source/full-rig geometry preflight; staged torso, both legs and opposite arm; no walking, reach or installation gameplay","checks":checks})
 	print("ARM_PREFLIGHT ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)
+
+## Geometry staging remains paused, but front motion uses the player's panel
+## action and the real settling path before returning to the supplied setup.
+func set_front(front: String, open: bool) -> void:
+	var paused: bool=game.paused
+	game.set_paused(false)
+	var error: String=Stages.new(game).gantry_front(front,open)
+	var access=game.equipment.get_equipment("workshop_access")
+	var reached: bool=access.front_open(front) if open else access.front_closed(front)
+	expect(error.is_empty() and reached,"explicit "+front+" front "+("OPEN" if open else "CLOSE")+" completes: "+error)
+	game.set_paused(paused)
 
 func cassette_preflight() -> void:
 	var blockout=game.leg_layout.blockout;var cassette=game.runtime.node("arm_cassette")

@@ -5,6 +5,7 @@ import io
 import importlib.util
 import json
 from pathlib import Path
+import re
 import sys
 import tempfile
 import unittest
@@ -35,6 +36,47 @@ class ProgressVideoTests(unittest.TestCase):
                 for shot in plan:
                     self.assertEqual(shot["samples"][0], shot["first"])
                     self.assertEqual(shot["samples"][-1], shot["last"])
+
+    def test_leg_uses_support_lever_travel_and_explicit_lower_front(self):
+        leg = self.document["sequences"]["leg"]
+        layout = json.loads((video.PROJECT / "assets" / "workshop-layout.json").read_text())
+        self.assertEqual(leg["setup"], [
+            {"equipment": "leg_rail", "call": "pull_support", "value": 1, "settle": True},
+            {"equipment": "leg_rail", "call": "throw_lever",
+             "value": layout["workshop"]["rail"]["lanes"]["left"], "settle": True},
+        ])
+        operations = [operation for shot in leg["shots"]
+                      for field in ("before", "start") for operation in shot.get(field, [])]
+        self.assertEqual([op["jog"] for op in operations if "jog" in op], ["travel+", "rise+"])
+        self.assertEqual([op for op in operations if "front" in op], [
+            {"equipment": "workshop_access", "front": "lower", "open": True},
+        ])
+        for sequence in self.document["sequences"].values():
+            entries = sequence["setup"] + [op for shot in sequence["shots"]
+                                         for field in ("before", "start") for op in shot.get(field, [])]
+            for op in entries:
+                self.assertNotIn("mode", op)
+                self.assertNotIn("then", op)  # RISE seats itself; there is no SEAT tap.
+                if "front" in op:
+                    self.assertIn(op["front"], ("upper", "lower"))
+                    self.assertIsInstance(op["open"], bool)
+
+    def test_leg_rise_crosses_the_docking_cut_and_finishes_inside_the_edit(self):
+        rail = json.loads((video.PROJECT / "assets" / "workshop-layout.json").read_text())["workshop"]["rail"]
+        source = (video.PROJECT / "scripts" / "indexed_leg_rail.gd").read_text()
+        rates = {name: float(re.search(rf"^const {name} = ([\d.]+)$", source, re.M)[1])
+                 for name in ("TILT_SPEED", "RISE_SPEED")}
+        tilt_seconds = 90 / rates["TILT_SPEED"]
+        rise_seconds = rail["dock_rise"] / rates["RISE_SPEED"]
+        tilt, dock = self.document["sequences"]["leg"]["shots"][2:]
+        cut_seconds = tilt["seconds"] * tilt["speed"]
+        self.assertGreater(cut_seconds, tilt_seconds)
+        self.assertLess(cut_seconds, tilt_seconds + rise_seconds)
+        self.assertGreaterEqual(cut_seconds + dock["seconds"] * dock["speed"], tilt_seconds + rise_seconds)
+        # Settling or starting another RISE at the cut would finish offscreen or
+        # request an already seated leg. The same held input crosses this cut.
+        self.assertFalse(dock.get("before"))
+        self.assertFalse(dock.get("start"))
 
     def test_rejects_edit_drift_and_static_shots(self):
         for field, value in (("seconds", 2.51), ("speed", 1.5), ("target", [float("nan"), 0, 0])):

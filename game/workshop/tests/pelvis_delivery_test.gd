@@ -29,12 +29,13 @@ func deliver_pelvis() -> bool:
 		if not command(fixture,"lock:"+key):return false
 	if not command(crane,"task:pelvis") or not command(crane,"go:source") or not command(crane,"down"):return false
 	supply_rig(crane,true)
+	if not gantry_front("upper",true):return false
 	if not crane.request("up").is_empty():return false
 	crane.physics(.1);settle(game.equipment.get_equipment("workshop_access"));crane.physics(.3);crane.request("stop")
 	expect(fixture.source_release>0 and fixture.source_release<1 and game.model.assemblies.pelvis.location=="support:bulky_fixture","four ends take weight while source clamps open before ownership changes")
 	if not command(crane,"resume") or not command(crane,"go:receiver") or not command(crane,"down"):return false
 	var access=game.equipment.get_equipment("workshop_access")
-	expect(settle(access) and access.ready_for("work"),"upper work platforms restore after pelvis seating: "+access.blocked_reason)
+	expect(access.front_open("upper"),"upper leaves stay explicitly open through pelvis seating")
 	expect(game.model.assemblies.pelvis.location=="support:pelvis_gantry" and not fixture.support_secured(),"bearing contact seats pelvis without automatic hold-down retention")
 	expect(crane.action_error("detach:"+crane.END_IDS[0]).contains("four"),"unclamped gantry rejects crane release")
 	for index in range(4):
@@ -45,4 +46,4 @@ func deliver_pelvis() -> bool:
 		if not command(fixture,"jaw:"+str(index)):return false
 	expect(fixture.support_secured(),"four closed jaws and both waist pins secure the pelvis")
 	supply_rig(crane,false)
-	return command(crane,"up") and command(crane,"go:park")
+	return command(crane,"up") and command(crane,"go:park") and gantry_front("upper",false)
