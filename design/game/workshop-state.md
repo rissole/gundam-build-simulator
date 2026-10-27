@@ -1,6 +1,6 @@
 # Workshop: current state
 
-Updated 2026-10-26. Read this before continuing workshop development. Keep it short:
+Updated 2026-10-27. Read this before continuing workshop development. Keep it short:
 current state, active rules and open decisions. Record player findings in the
 [playtest checklist](robot-workshop-playtest-checklist.md). When a piece of
 work finishes, move its narrative and evidence into [history/](history/) and leave
@@ -10,6 +10,12 @@ a one-line summary here. Earlier versions of this file are
 last version before consolidation.
 
 ## Where things stand
+
+- **Fast elevator calls (2026-10-27):** landing CALL trips now arrive in 0.9 seconds
+  with cubic deceleration; onboard Up/Down retain 0.75 m/s. Guarded motion and
+  rider/cargo transport remain active; waits and pauses preserve arrival time.
+  Four focused routine suites pass (228 checks, 17.256 s). No rendered review;
+  arrival feel awaits [player re-check](robot-workshop-playtest-checklist.md#findings).
 
 - **Left-leg feedback implemented (2026-10-26):** all nine repairs integrated:
   explicit captive braces, crane wording, shared standard hardware, surface pickup,

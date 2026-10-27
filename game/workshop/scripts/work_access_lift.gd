@@ -2,6 +2,7 @@ class_name WorkAccessLift
 extends "res://scripts/equipment.gd"
 ## Powered personnel platform. Heights describe the top of the walking deck.
 const SPEED = 0.75
+const CALL_DURATION = 0.9
 const THICKNESS = 0.12
 ## Each tick reserves only the next stretch of travel. Anything further along
 ## the route holds the car when it gets there, not when it is called.
@@ -18,6 +19,8 @@ var stops: Array[float] = []
 var height = 0.15
 var destination = 0.15
 var moving = false
+## Only landing calls use a timed ease-out. Obstruction/pause time is excluded.
+var _call_remaining = 0.0
 var blocked_reason = ""
 var _buttons: Array[Dictionary] = []
 var _gate_mesh: MeshInstance3D
@@ -221,6 +224,7 @@ func request(action: String) -> String:
 	motion_obstruction = {}
 	destination = _target(action)
 	moving = not is_equal_approx(destination,height)
+	_call_remaining = CALL_DURATION if moving and (action == "ground" or action.begins_with("stop")) else 0.0
 	blocked_reason = _sweep_error(height,_ahead(0.0)) if moving else ""
 	_pose()
 	return ""
@@ -232,12 +236,22 @@ func status_text() -> String:
 func physics(delta: float) -> void:
 	if not moving or game.paused:return
 	motion_obstruction = {}
-	blocked_reason = _sweep_error(height,_ahead(SPEED*delta))
+	var next = move_toward(height,destination,SPEED*delta)
+	if _call_remaining > 0.0:
+		# Cubic ease-out reaches zero speed at the landing in a fixed duration,
+		# regardless of distance. Rebase on the current pose after a held tick.
+		var remaining_fraction = maxf(0.0,1.0-delta/_call_remaining)
+		next = destination+(height-destination)*pow(remaining_fraction,3)
+	blocked_reason = _sweep_error(height,_ahead(absf(next-height)))
 	if not blocked_reason.is_empty():
 		_label.text = status_text()
 		return
-	height = move_toward(height,destination,SPEED*delta)
-	if is_equal_approx(height,destination):moving = false
+	height = next
+	_call_remaining = maxf(0.0,_call_remaining-delta)
+	if is_equal_approx(height,destination):
+		height = destination
+		moving = false
+		_call_remaining = 0.0
 	_pose()
 
 ## The end of the stretch reserved this tick, covering at least one step.
@@ -308,7 +322,7 @@ func _pose() -> void:
 	if registry != null:registry.carrier_moved(equipment_id)
 
 func capture() -> Dictionary:
-	return {"height":height,"destination":destination,"moving":moving}
+	return {"height":height,"destination":destination,"moving":moving,"call_remaining":_call_remaining}
 
 func validate(snapshot: Variant, _candidate: AssemblyModel = null, _world: Dictionary = {}) -> Array[String]:
 	var errors: Array[String] = []
@@ -318,6 +332,9 @@ func validate(snapshot: Variant, _candidate: AssemblyModel = null, _world: Dicti
 		elif not is_finite(float(snapshot[key])) or float(snapshot[key]) < stops[0]-0.001 or float(snapshot[key]) > stops[-1]+0.001:
 			errors.append("Lift %s has out-of-range %s." % [lift_name,key])
 	if not snapshot.get("moving") is bool:errors.append("Lift %s requires a motion flag." % lift_name)
+	var call_remaining: Variant = snapshot.get("call_remaining",0.0)
+	if not (call_remaining is float or call_remaining is int) or not is_finite(float(call_remaining)) or float(call_remaining) < 0.0 or float(call_remaining) > CALL_DURATION:
+		errors.append("Lift call time must be within its arrival duration.")
 	if errors.is_empty():
 		var target_is_stop = false
 		for stop in stops:target_is_stop = target_is_stop or is_equal_approx(float(snapshot.destination),stop)
@@ -331,5 +348,6 @@ func apply(snapshot: Dictionary) -> void:
 	height = float(snapshot.height)
 	destination = float(snapshot.destination)
 	moving = snapshot.moving
+	_call_remaining = float(snapshot.get("call_remaining",0.0)) if moving else 0.0
 	blocked_reason = ""
 	_pose()

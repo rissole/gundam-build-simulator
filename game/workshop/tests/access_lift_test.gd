@@ -14,6 +14,7 @@ class Harness extends Node3D:
 	var components: Node
 	var paused = false
 	var lift: Node3D
+	var equipment = EquipmentRegistry.new()
 	func material(color: Color, _metal = 0.0) -> StandardMaterial3D:
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = color
@@ -29,13 +30,10 @@ class Harness extends Node3D:
 		return mesh
 	func _physics_process(delta: float) -> void:
 		if not is_instance_valid(lift):return
-		# The workshop registry carries a rider's hand load with the deck.
-		var held: Node3D = components.held_body if is_instance_valid(components) and lift.rider() != null else null
-		var before: float = lift.height
-		lift.physics(delta)
-		if is_instance_valid(held):held.position.y += lift.height-before
 		player.velocity.y = -0.1 if player.is_on_floor() else player.velocity.y-14*delta
 		player.move_and_slide()
+		# Match the workshop: player collision first, then shared rider transport.
+		equipment.physics(delta)
 var game: Harness
 var lift: Node3D
 func _initialize() -> void:run.call_deferred()
@@ -74,6 +72,9 @@ func run() -> void:
 	game.player = CharacterBody3D.new()
 	game.player.collision_layer = 8
 	game.player.collision_mask = 15
+	game.player.platform_floor_layers = 0
+	game.player.platform_wall_layers = 0
+	game.player.platform_on_leave = CharacterBody3D.PLATFORM_ON_LEAVE_DO_NOTHING
 	var col = CollisionShape3D.new()
 	var capsule = CapsuleShape3D.new()
 	capsule.height = 1.7
@@ -87,6 +88,7 @@ func run() -> void:
 	game.add_child(lift)
 	lift.setup(game,"test",Vector3.ZERO,Vector2(2,5),[0.15,1.2,3.8,5.2,8.7] as Array[float])
 	game.lift = lift
+	game.equipment.register(lift)
 	var guide_bounds: AABB = SolidHandling.bounds(lift.get_node("FloorAnchoredLiftGuides"))
 	expect(absf(guide_bounds.position.y)<0.001 and guide_bounds.end.y >= 10.0,"Solid guide structure reaches floor and spans maximum passenger travel")
 	expect(connected_to_guides(),"Both ground-level carriage shoes engage solid vertical guides")
@@ -154,14 +156,20 @@ func run() -> void:
 	ceiling.queue_free()
 	await frames(3)
 	expect(lift.request("stop2").is_empty(),"Clear route can move again")
-	await frames(40)
+	await frames(4)
 	var blocker = obstacle(Vector3(0,2.9,0),Vector3(0.5,0.12,0.5))
 	await until_held()
 	var blocked_height: float = lift.height
+	var held_call: Dictionary = lift.capture()
 	await frames(15)
 	expect(lift.moving and not lift.blocked_reason.is_empty() and is_equal_approx(lift.height,blocked_height) and blocked_height+1.72 < 2.84,"New midmotion obstacle holds platform safely below it")
+	expect(lift.capture() == held_call,"Waiting for an obstruction preserves the call's remaining arrival time")
 	blocker.queue_free()
-	await frames(310)
+	game.paused = true
+	await frames(4)
+	expect(lift.capture() == held_call,"Pause preserves a fast call's pose and remaining arrival time")
+	game.paused = false
+	await frames(60)
 	expect(absf(lift.height-3.8)<0.001 and absf(game.player.position.y-3.8)<0.06,"Clearing obstruction resumes carrying")
 	expect(lift.request("up").is_empty(),"Next stop selects 5.2 m work height")
 	await frames(125)
@@ -171,7 +179,7 @@ func run() -> void:
 	expect(absf(lift.height-8.7)<0.001 and absf(game.player.position.y-8.7)<0.06,"Rider reaches highest work height")
 	expect(connected_to_guides(),"Both carriage shoes remain physically engaged at highest stop")
 	expect(lift.request("ground").is_empty(),"Ground call selects baseline from highest stop")
-	await frames(710)
+	await frames(60)
 	expect(absf(lift.height-0.15)<0.001 and absf(game.player.position.y-0.15)<0.06 and lift.gate.disabled,"Full-height return preserves rider and opens entrance")
 	var own_control = StaticBody3D.new()
 	lift.deck.add_child(own_control)
@@ -222,7 +230,7 @@ func run() -> void:
 		await until_held()
 		expect(lift.blocked_reason == lean[1],"Leaning %.2f m: '%s', got '%s'" % [lean[0],lean[1],lift.blocked_reason])
 		if lean[1].is_empty():expect(not lift.moving and game.player.position.x > 1.25 and game.player.is_on_floor(),"Arriving car nudges the leaning player back onto the landing")
-	expect(lift.height > 0.15+1.72,"A player in the doorway holds the car above their head")
+	expect(lift.height-lift.THICKNESS > game.player.position.y+col.position.y+capsule.height/2,"A player in the doorway holds the car above their head")
 	print("ACCESS LIFT ","PASS" if checks.all(func(c):return c.passed) else "FAIL", " ",checks.size()," checks")
 	game.queue_free()
 	await process_frame

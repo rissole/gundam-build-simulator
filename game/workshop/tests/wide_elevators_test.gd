@@ -53,14 +53,28 @@ func run() -> void:
 			var error: String = lift.request("stop"+str(stop))
 			expect(error.is_empty(),side+" lift route to stop "+str(stop)+": "+error)
 			if not error.is_empty():continue
-			lift.physics(.5)
+			var previous_step = INF
+			var decelerating = true
+			var elapsed = 0.0
+			for tick in range(3):
+				var before: float = lift.height
+				lift.physics(.1);elapsed += .1
+				var step = absf(lift.height-before)
+				decelerating = decelerating and step > 0.0 and step < previous_step
+				previous_step = step
 			var snapshot: Dictionary = JSON.parse_string(JSON.stringify(game.equipment.capture()))
 			expect(game.equipment.validate(snapshot,game.model,{}).is_empty(),side+" interrupted carriage and cargo snapshot validates")
 			game.equipment.apply(snapshot)
-			for tick in range(230):
+			for tick in range(7):
 				if not lift.moving:break
-				lift.physics(.1)
+				var before: float = lift.height
+				lift.physics(.1);elapsed += .1
+				var step = absf(lift.height-before)
+				decelerating = decelerating and step <= previous_step+.00001
+				previous_step = step
 			expect(not lift.moving and is_equal_approx(lift.height,lift.stops[stop]),side+" restored lift reaches stop "+str(stop)+": "+lift.blocked_reason)
+			expect(elapsed <= 1.0 and not lift.moving,side+" landing call arrives within one second")
+			expect(decelerating and previous_step < .03,side+" landing call decelerates smoothly into its stop")
 			expect(other.capture()==other_state,side+" movement leaves other elevator independent")
 			expect(lift.side_gates.all(func(gate):return gate.disabled),side+" both doors open at stopped landing")
 			var shelf: Node3D = shelves[side]
@@ -71,6 +85,13 @@ func run() -> void:
 			var excluded: Array[RID]=[body.get_rid(),lift.deck.get_rid()]
 			preload("res://scripts/motion_sweep.gd").collect_rids(shelf,excluded);query.exclude=excluded
 			expect(game.get_world_3d().direct_space_state.intersect_shape(query).is_empty(),side+" full panel clears shaft guides and landings at stop "+str(stop))
+		for action in ["up","down"]:
+			var start: float = lift.stops[0] if action == "up" else lift.stops[-1]
+			lift.apply({"height":start,"destination":start,"moving":false})
+			expect(lift.request(action).is_empty(),side+" accepts onboard "+action)
+			lift.physics(.2)
+			expect(lift.moving and is_equal_approx(absf(lift.height-start),.15),side+" onboard "+action+" retains 0.75 m/s travel")
+		lift.apply({"height":lift.stops[0],"destination":lift.stops[0],"moving":false})
 	var bad: Dictionary = game.equipment.capture();bad.left_shelf.occupants=["right_panel",""]
 	expect(not game.equipment.validate(bad,game.model,{}).is_empty(),"cross-elevator cargo substitution rejected")
 	expect(game.model.integrity_errors().is_empty(),"all physical cargo identities conserved")

@@ -82,6 +82,11 @@ Screenshots were inspected; the user requested no regression run for that revisi
 Its [focused verification checklist](robot-workshop-playtest-checklist.md#focused-controls-check--2026-10-24)
 remains pending alongside the wider workshop playtest.
 
+Landing **CALL** buttons use a 0.9-second arrival with cubic deceleration,
+independent of travel distance (2026-10-27). Onboard **Up/Down** keep their
+0.75 m/s ride speed. Calls retain guarded motion, rider/cargo transport and
+automatic resume; obstruction and pause time do not consume the arrival time.
+
 ## 1. Build the workshop and adapt the leg journey
 
 Implement these stages in order. Use internal integration checks rather than
