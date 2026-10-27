@@ -128,12 +128,16 @@ func physics(delta: float) -> void:
 	_pose()
 	moving = channels.values().any(func(channel):return not is_equal_approx(channel.value,channel.goal))
 
-## A pending trip waits and resumes after free front lines are recalled.
+## Check current occupancy before moving the leaves, independent of the crane's
+## later physics tick. A stopped crane can still have cables through the opening.
 func rope_motion_error() -> String:
 	var channel: Dictionary = channels.get("20.6",{})
 	if channel.is_empty() or is_equal_approx(channel.value,channel.goal):return ""
 	var rope = game.equipment.get_equipment("rope_access")
 	if rope!=null and not rope.front_ropes_clear():return rope.LEAF_REASON
+	var crane=game.equipment.get_equipment("service_crane")
+	if channel.goal<channel.value and crane!=null and crane.has_method("upper_crossing_occupied") and crane.upper_crossing_occupied():
+		return "Wait for the crane cables to clear the upper access leaves."
 	var floor=EquipmentRegistry.rider_floor(game)
 	if floor!=null:
 		for side in ["left","right"]:

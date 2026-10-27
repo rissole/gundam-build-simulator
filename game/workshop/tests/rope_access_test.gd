@@ -54,6 +54,10 @@ class Work extends "res://scripts/equipment.gd":
 	func controls() -> Array[Dictionary]:return [control_entry(handle,"fasten","Fasten",.12,{"point":handle.global_position})]
 	func action_error(_action: String) -> String:return ""
 	func request(_action: String) -> String:operated+=1;return ""
+class CraneOccupancy extends "res://scripts/equipment.gd":
+	var occupied=true
+	var moving=false
+	func upper_crossing_occupied() -> bool:return occupied
 var game: World
 var rope: Node
 var blockout: Node
@@ -145,6 +149,14 @@ func run() -> void:
 	expect(access.upper_ready(false) and access.channels["8.4"].value==1 and access.channels.rear.value==1,"Independent upper request preserves both lower access goals")
 	access.request_upper(true);access.request_lower_mode("work");access.physics(1)
 	expect(access.upper_ready(true) and access.lower_ready("work") and access.validate(access.capture()).is_empty(),"Lower request preserves upper crossing and its snapshot is valid independently of mode")
+	var crane=CraneOccupancy.new();game.add_child(crane);crane.equipment_id="service_crane";game.equipment.register(crane)
+	access.request_lower_mode("leg");access.request_upper(false);access.physics(.2)
+	expect(access.channels["20.6"].value==1 and access.blocked_reason=="Wait for the crane cables to clear the upper access leaves." and access.channels["8.4"].value>0,"Stopped crane occupancy holds upper closing before the crane tick while lower access moves")
+	crane.occupied=false;access.physics(1)
+	expect(access.upper_ready(false) and access.lower_ready("leg"),"Pending upper close finishes once the crane is clear")
+	crane.occupied=true;access.request_upper(true);access.physics(1)
+	expect(access.upper_ready(true),"Crane occupancy never prevents upper leaves opening")
+	crane.free()
 	access.request("stop");access.request_mode("work");access.physics(1)
 	place(Vector3(9.3,20.6,24.1));await frames(1)
 	var work=Work.new();game.add_child(work);work.game=game;work.equipment_id="work";game.equipment.register(work)
