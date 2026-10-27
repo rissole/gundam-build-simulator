@@ -97,6 +97,10 @@ func loose_passengers(equipment: Node) -> Array[CollisionObject3D]:
 ## The body under the player's feet, allowing a short hop, or null.
 static func rider_floor(game: Node) -> CollisionObject3D:
 	if game == null:return null
+	# A suspended descender just above a deck is not that deck's passenger.
+	var registry = game.get("equipment")
+	var rope = registry.get_equipment("rope_access") if registry!=null else null
+	if rope!=null and rope.attached() and rope.hanging:return null
 	var player = game.get("player") as CharacterBody3D
 	if not is_instance_valid(player) or not player.is_inside_tree():return null
 	var excluded: Array[RID] = [player.get_rid()]

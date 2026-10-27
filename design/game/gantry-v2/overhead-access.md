@@ -1,6 +1,6 @@
 # Overhead rope access — concept, 2026-10-27
 
-**Design only; build not approved. Branch-only until playtested and approved.**
+**Prototype implementation authorized 2026-10-27. Branch-only until playtested and approved.**
 Replaces C6's upper catwalk levels (11.2/14/16.4) and tower hip beams. The robot,
 hip datum (13,10.6,26), bearing caps, jaws and today's low rear hip frame stay.
 
@@ -27,11 +27,9 @@ https://claude.ai/artifact/5TYsCiNM2vnjYYn9znaRTd.
 - **Exit-side walkway: fixed**, X5..18, Z30.3..31.7, standing on posts (west post
   from the floor near X4.8, east end on the right lift's structure). Nothing may hang
   from the roof: the crane bridge travels the whole hall at Y22.65..23.4. It sits
-  at Z31 so the core's lifting cables (about Z29.2 during insertion) clear it. The
-  core and backpack stores are west of the robot, so those loads come in sideways
-  behind the robot, west of this walkway. **Superseded for the build:** core and
-  backpack come from the front over the chest instead (see the build brief), so no
-  delivery crosses this walkway.
+  at Z31 so the core's lifting cables (about Z29.2 during insertion) clear it.
+  Core and backpack deliveries approach from the workshop side over the chest;
+  no delivery crosses this walkway. The crane console stays in use.
 - **Rappel points:** davits along each walkway's robot-side edge swing out up to
   2.0 m toward the robot at Y21.8, below the crane bridge. Controlled descender, no
   swinging. Pull-in lanyards reach up to about 1.6 m (user-accepted). No rappelling
@@ -69,9 +67,9 @@ coarse indications only.
 
 ## Costs and follow-ups
 
-- Current front crane routes stay; only the core and backpack come in sideways
-  behind the robot. Head pieces and pauldrons travel high (bottoms Y18–19): keep
-  the trolley near X13 while passing the open leaves.
+- Every delivery approaches from the workshop side. Core and backpack routes
+  change to pass over the chest. Head pieces and pauldrons travel high (bottoms
+  Y18–19): keep the trolley near X13 while passing the open leaves.
 - Each upper leaf is an 8 m cantilever at 20.6 m from a tall post; structure is a
   budget, not engineered.
 - The right shaft is 0.1 m from the hip frame's right foot (coarse).
