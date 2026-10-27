@@ -644,7 +644,7 @@ def robot_documents(check=False):
              objectives=[dict(op="fit", slots=["ring_" + str(half)])],
              note=dict(at=0, text="Take it up on the lift shelf, one half per trip. Either half fits either side."))
         ids = [sid for n in pairs for sid in ("ring/washer_" + str(n), "ring/bolt_" + str(n))]
-        fasten_note = "Insert each washer and bolt upward from the underside." if half == 1 else "Stand at the hip end of the lift's working corner to see the far washer seats."
+        fasten_note = "Insert each washer and bolt upward from the underside." if half == 1 else "Work from the 8.4 m hip decks and front wings; insert each washer and bolt upward from the underside."
         page(pages, "Fasten retaining half " + str(half), "", ids, ["PV-110__001", "PV-120__%03d" % half],
              goal=f"Bolt the {ordinal} half to the socket flange from underneath.",
              objectives=[dict(op="fit", slots=list(ids))],

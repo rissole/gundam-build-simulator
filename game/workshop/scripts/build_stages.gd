@@ -389,7 +389,7 @@ func _shelf_item(sid: String, side: String = "left") -> String:
 	game.components.hold_at(uid,shelf._pose(uid,0).translated(Vector3.UP*.10))
 	error=shelf.request("store")
 	if not error.is_empty():return sid+" shelf: "+error
-	error=command(lift,"stop4")
+	error=command(lift,"stop"+str(lift.stops.size()-1))
 	if not error.is_empty():return error
 	error=shelf.request("take:0")
 	if not error.is_empty():return error

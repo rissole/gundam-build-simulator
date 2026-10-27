@@ -327,7 +327,8 @@ func interact(all_stock: bool = false) -> void:
 		if target.get("input","") == "place":game.hud.toast("Aim and click to seat this supported component.");return
 		var error: String = game.targeting.access(game.targeting.target_receivers())
 		if error.is_empty():error = target.controller.request(target.action)
-		game.hud.toast(error if not error.is_empty() else target.controller.status_text(),error.is_empty());return
+		if not error.is_empty() or target.get("success_toast",true):game.hud.toast(error if not error.is_empty() else target.controller.status_text(),error.is_empty())
+		return
 	if target.type == "component":
 		var owner: String = game.model.top_level(target.owner)
 		if not game.builds.has(owner):game.hud.toast("This fixture stays at its work station.");return
@@ -363,7 +364,8 @@ func attach_target() -> void:
 		if target.get("input","") == "pickup":game.hud.toast("Use E to pick up this equipment payload.");return
 		var error: String = game.targeting.access(game.targeting.target_receivers())
 		if error.is_empty():error = target.controller.request(target.action)
-		game.hud.toast(error if not error.is_empty() else target.controller.status_text(),error.is_empty());return
+		if not error.is_empty() or target.get("success_toast",true):game.hud.toast(error if not error.is_empty() else target.controller.status_text(),error.is_empty())
+		return
 	if target.get("type","") == "component":attach();return
 	var error: String = game.targeting.access(game.targeting.target_receivers())
 	if not error.is_empty():game.hud.toast(error);return

@@ -37,12 +37,156 @@ between each hip finger and the hip apron is a deliberate robot/leg work opening
 - [x] Lowest-level asymmetry and landing gaps fixed; player-accepted 2026-10-27.
 - [x] Crane operator view playtested; rejected 2026-10-27.
 - [ ] Leg rig jog slice playtest, before converting the foot rig.
-- [ ] Gantry v2 (design only, no build approved) is on the `gantry-v2` branch (worktree `/private/tmp/gantry-v2`), kept off main until playtested and approved.
+- [x] [Launch cage v2 concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) approved as direction only, 2026-10-27: two mirrored towers, swinging catwalks, independent hip-bearing arms and deferred lowering/transport.
+- **Superseded by rope access (2026-10-27):** the branch prototype is integrated, with player checks below. C6 remains a design record.
+- **2026-10-27 — C6 design only:** [Aft-tower coarse plan](gantry-v2/README.md) clears the proposed parked exit but retains blocking hip-support/route/headroom overlaps; larger building, carrier-at-current-height and alternate support topology remain open choices. Keep accepted finish, gap/mirror repairs and assembly challenge; no new player acceptance.
 
-**Open choices retained:** whether to redesign the crane (for example, an in-world pendant using the rigs' hold-E jog pattern); v2 build approval and
-prototype effort; lowering and roll-out support. The accepted gantry appearance and
+**Open choices retained:** whether to redesign the crane (for example, an in-world pendant using the rigs' hold-E jog pattern); rope-access player approval; lowering and roll-out support. The accepted gantry appearance and
 physical assembly challenge remain constraints. Parts can continue at the existing
 hip datum/Y10.97 bearing caps while these equipment choices wait.
+
+## Left-leg docking renderer errors — 2026-10-27
+
+**Player report:** many `BUG, indexing did not unpair geometries from light.`
+errors while docking the left leg, accompanied by substantial lag. The captured
+Godot 4.7.2 Metal/Forward+ gameplay log contained 30 occurrences. Earlier positive
+leg-performance feedback remains a constraint; it does not dismiss this report.
+
+**Repair:** assembly batching changed live source meshes' render layers to zero,
+triggering [Godot issue #121989](https://github.com/godotengine/godot/issues/121989).
+The workaround withdraws each affected render instance before changing its mask
+and immediately restores its visibility. Node visibility, child outlines, original
+meshes and component identities are preserved. Docking/undocking now retains
+local render batches and outstanding CPU work across reparenting; it no longer
+waits for compilation and discards batches on every tree exit. Final destruction
+still joins outstanding work and restores surviving source meshes.
+
+**Evidence:** five focused routine suites pass, 116 checks in 9.697 s, covering
+render lifecycle, outlines, nested assemblies, rail endpoints and startup.
+`game/workshop/verification/regressions-20261027T111610.647045Z/results.json`.
+A separate tiny renderer reproduction on Godot 4.7.2 / Metal / Apple M2 produced
+two light-unpair errors with the old mask change and zero errors with the helper.
+Script and both logs: `game/workshop/verification/light-unpair-repro/`.
+This was an isolated renderer experiment, not a visual review or a full gameplay
+performance measurement. No expensive diagnostic suites ran.
+
+- [ ] Restart the game to load the fix, dock and release the left leg, and confirm
+  the errors and hitch are gone. Full-scene smoothness still needs this recheck.
+
+## Gantry v2 rope access — 2026-10-27
+
+**Merge into main approved by the user (2026-10-27); detailed rope-access checks remain open.** The prototype replaces
+11.2/14/16.4 decks with 20.6 rope access, relocates both lifts and preserves the
+8.4 hip working geometry and low hip frame. Rope work, physical upper-leaf controls,
+manual cues and crane routes are integrated. [Implementation and mechanical evidence](gantry-v2/overhead-access.md).
+No rendered inspection or player acceptance is claimed by the fixture tests.
+
+Keep the accepted finish ("looks great"), gap/mirror repairs ("the gantry changes
+are good"), leg-delivery performance and physical assembly challenge. Passing
+mechanical tests do not approve the relocated paths or the new rope experience.
+
+**Player finding — walkway posts and floating lights (2026-10-27).** A tall pole
+obstructs the route from the workshop-side elevator. Remove that through-post
+and make the elevator shaft support that corner; move the opposite post to the
+far outer corner. Replace the floating lights between walkways with strips
+under the upper walkways. Implemented directly on `gantry-v2`: under-deck shaft
+brackets, relocated opposite column, flush hinge bearings and deck-mounted
+lighting that follows the leaves. Six selected routine cases pass in 10.803 s;
+[geometry and evidence](gantry-v2/overhead-access.md#walkway-support-and-lighting-correction--2026-10-27).
+The player responded "Really great!" to this correction; specific rechecks and
+the broader rope-access journey remain open.
+
+**Follow-up — plain decks and an upper loop (2026-10-27).** The player still sees
+the old pole-shaped cap and four rectangular fillers at the walkway hinge. They
+asked to remove that geometry, remove floating rappel instructions because hover
+tooltips suffice, and connect the upper walkways into a square perimeter (an
+elevator gap is acceptable). Implemented plain landing/leaf plates at both
+levels, tooltip-only station labels, and fixed upper side runs with a short
+bypass in front of the rear elevator. The existing front leaves still open for
+the crane. The new lighting continues beneath the added decks. Six selected
+routine cases pass in 12.308 s; player rechecks remain open.
+[Layout and mechanical evidence](gantry-v2/overhead-access.md#upper-perimeter-and-deck-cleanup--2026-10-27).
+
+**Player response — "Near perfect" (2026-10-27).** Preserve the upper loop and
+plain decks. The player reports flashing/clipping at walkway corners, especially
+the upper workshop-side elevator, and requests Q to unclip, removal of the
+temporary duplicate clip-in message, and quick held ascent/descent acceleration
+with slow taps. Removed the two overlapping rear landing-extension plates,
+implemented Q unclip while attached (normal set-down otherwise), kept permanent
+rope status without a success toast, and added a 0.6→4.5 m/s ramp over about
+0.6 seconds. Five selected routine cases pass in 7.938 s.
+[Diagnosis and mechanical evidence](gantry-v2/overhead-access.md#corner-flashing-and-rope-control-follow-up--2026-10-27).
+
+- [ ] Walk over the corners, particularly the workshop-side elevator at both
+  heights, and confirm the floor no longer flashes.
+- [ ] Clip at a station and a hanging end: only the permanent rope status should
+  appear on success. Check that failed operations still explain the problem.
+- [ ] Q unclips on a floor without dropping a carried part; G operates the
+  pull-in lanyard. Once unclipped, Q still sets down carried parts.
+- [ ] Tap Space/Ctrl for small height adjustments, hold for fast travel, reverse
+  direction and release. Confirm the ramp and instant stop feel controllable
+  near decks, booms and connections.
+
+- [ ] Inspect both hinge landings: plain deck sections, no old pole cap or four
+  isolated filler blocks, and a narrow seam into the long leaf.
+- [ ] Walk the upper circuit with the front leaves closed, including the turn
+  around the rear elevator with its car downstairs. Check joins, guard edges and
+  carrying space. With the leaves open, use the fixed route via the rear.
+- [ ] Confirm rappel stations have no floating instructions and their existing
+  hover tooltips still make clipping and recall clear.
+
+- [ ] Exit the workshop-side elevator at both heights and pass the former pole
+  position. Check the opposite corner and that neither support obstructs walking.
+- [ ] Inspect the shaft-supported corner and relocated opposite column. Check
+  the under-deck strips with the upper leaves closed and open: attached fixtures,
+  useful light and no floating remnants between the former levels.
+- [ ] Ride both lifts with shelf cargo: east exits at 8.4, then left east/right
+  west exits at 20.6. Check calls, labels, doorway nudge, turning space and the
+  sliding guide support near the top.
+- [ ] Walk the retained 8.4 fingers, outer walks, new fixed hip links and rear
+  hip decks. Confirm the left landing joins its outer walk and the offset right
+  link reads clearly; recheck the unchanged hip work openings and jaw access.
+- [ ] Inspect the 20.6 leaf aprons and rear walkway landing, guard edges, mast/tie
+  supports, booms and accepted finish. Level signs should read HIP / ROPE ACCESS.
+- [ ] Check clipping, protected gates, recall and the leaf
+  interlock, especially adjacent front stations with overlapping openings.
+  Confirm the jamb-supported davits allow the intended hang/return movement.
+- [ ] Play the front deliveries and restore the leaves
+  while the crane holds the part. Head/crown access and both rappel sides need
+  real player feedback; automated geometry is not connection-access approval.
+
+- [ ] Use both physical UPPER LEAVES panels beside the left lift (ground and
+  fixed upper landing). Aim and press E for OPEN/CLOSE; confirm the panel stays
+  clear through the swing. A stopped crane in the crossing holds Close, but a
+  crane over the robot permits it. Manual glow leads to Close, then a rope station.
+
+- [ ] Find a station from the tracked manual's control glow. Read **Clip in** and
+  **Recall rope** at the gate/reel; E works at normal reach. Unclipped gates block
+  passage and only the attached station's gate opens.
+- [ ] Step off the front leaf and rear walkway without a fall. Check the rear
+  boom's top traverse, return boarding, and the small outward clearance adjustment
+  as the capsule passes a front deck edge. Height locks on release; Space rises,
+  Ctrl lowers, mouselook remains free, and WASD slack feels useful without swing.
+- [ ] G clips a visible nearby robot surface, draws to working distance, and G
+  releases toward plumb. Check that collisions feel like resting against the robot.
+- [ ] Use normal E/placement and existing hand carrying for hip lifting eyes,
+  waist, core, shoulders, pauldrons and head/crown connections. Do not treat the
+  automated collision fixture as proof of reach, visibility or connection access.
+- [ ] Descend to an 8.4 m deck and ground, unclip with Q, and clip the hanging end
+  with E for another ascent. Return to the upper walkway and unclip there.
+- [ ] Request leaf motion with a front rope occupied and then free/deployed.
+  Read the named recall reason; return through the still-open occupied gate,
+  unclip and recall the line. The waiting trip resumes. Rear ropes do not block
+  the front leaves. A grounded clipped platform rider must unclip before travel.
+- [ ] Save/reload while hanging and pulled in; confirm position, view, locked
+  height, line length and lanyard state. Check the HUD line alongside carry/manual UI.
+- [ ] Inspect station/gate presentation and crane/rope
+  coexistence in the actual layout. Backpack hinge access is still unresolved;
+  this work does not choose a solution for that challenge.
+
+**Open choices retained:** backpack hinge access remains the deliberately open
+challenge; lowering and final exit are undesigned. Pull-in lanyards remain
+accepted as a mechanic. No change here grants acceptance to the wider journey.
 
 ## Left leg completed — 2026-10-26
 
@@ -333,7 +477,7 @@ Use `./play.command -- --stage=complete` for the complete structure; use normal
 progress or a relevant earlier stage to operate the gantry during assembly.
 
 - [ ] From ground level, inspect both foundations and columns. Do recessed anchors, covers, bevels and restrained wear read as fixed machinery? Does the crosshead lettering sit naturally on the face?
-- [ ] Ride both elevators and walk the 8.4, 11.2, 14.0 and 16.4 m levels. Check tread contrast, edge strips and level labels; note texture repetition or shimmer.
+- [ ] Ride both elevators and inspect tread contrast, edge strips and level labels; note texture repetition or shimmer. The old 11.2/14/16.4 checks are superseded on gantry v2 by the 8.4/20.6 recheck above.
 - [ ] Open/fold access wings, fingers and rear bridge as the build requires. Watch joints and guards for visible clipping, seams or drifting detail through motion.
 - [ ] Aim at and operate the four gantry jaw handles. Their shapes, outlines and prompts should remain easy to distinguish from decorative fasteners.
 - [ ] Inspect the rear core/backpack opening and aft lifting well. Check that existing approach, connection sight lines and cable routes remain visually understandable.

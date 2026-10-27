@@ -10,7 +10,7 @@ const Content = preload("res://scripts/workshop_content.gd")
 const Stages = preload("res://scripts/build_stages.gd")
 const Save = preload("res://scripts/workshop_save.gd")
 ## Interaction and physics order; earlier equipment answers aggregate queries first.
-const EQUIPMENT_ORDER = ["workshop_access","rail_gates","mobile_platform","module_supports","core_guide","backpack_hinge","captive_controls","joint_restraints","foot_carrier","leg_rail","arm_cassette","left_shoulder","right_shoulder","left_shelf","right_shelf","service_crane","foot_fixture","left_lift","right_lift"]
+const EQUIPMENT_ORDER = ["rope_access","workshop_access","rail_gates","mobile_platform","module_supports","core_guide","backpack_hinge","captive_controls","joint_restraints","foot_carrier","leg_rail","arm_cassette","left_shoulder","right_shoulder","left_shelf","right_shelf","service_crane","foot_fixture","left_lift","right_lift"]
 const FOOT_CENTER = Vector3(0,0.8,-0.7)
 const PREP_POSITION = Vector3(-2.3,1.35,-1.2)
 const FOOT_POSITION = Vector3(2.3,2.0,-1.8)
@@ -28,7 +28,7 @@ const INTRO = "Build the left foot first: prepare both heel pads and the pitch a
 ## Foot, pitch-actuator and pad families that keep their own collision proxies.
 const FOOT_COLLIDER_FAMILIES = ["FA-100","FA-101","FA-102","FA-103","FA-104","FA-105","FA-106","FA-200","FA-201","FA-300","FA-301","FA-302","FA-303","FA-304","FA-400","FA-401","FA-402","FA-403","FA-404"]
 ## Equipment created by _build_equipment, in dependency order.
-const EQUIPMENT = ["foot_fixture","module_supports","core_guide","backpack_hinge","arm_cassette","left_shoulder","right_shoulder","leg_rail","left_lift","right_lift","left_shelf","right_shelf","service_crane","foot_carrier","joint_restraints","workshop_access","mobile_platform","captive_controls","rail_gates"]
+const EQUIPMENT = ["foot_fixture","module_supports","core_guide","backpack_hinge","arm_cassette","left_shoulder","right_shoulder","leg_rail","left_lift","right_lift","left_shelf","right_shelf","service_crane","foot_carrier","joint_restraints","workshop_access","mobile_platform","captive_controls","rail_gates","rope_access"]
 ## Between the preparation stations and the foot bay, facing the stock wall.
 const SPAWN = [-2.6,.03,4.2,PI/2]
 
@@ -239,6 +239,8 @@ func _build_equipment(ids: Array) -> void:
 				item = preload("res://scripts/captive_controls.gd").new();add_child(item);item.setup(self,leg_content.equipment.captive_controls)
 			"mobile_platform":
 				item = preload("res://scripts/mobile_work_platform.gd").new();add_child(item);item.setup(self,leg_layout.layout().workshop.mobile_platform)
+			"rope_access":
+				item = preload("res://scripts/rope_access.gd").new();add_child(item);item.setup(self,leg_layout.blockout)
 			"workshop_access":
 				item = preload("res://scripts/workshop_access.gd").new();add_child(item);item.setup(self,leg_layout.blockout)
 			"foot_fixture":

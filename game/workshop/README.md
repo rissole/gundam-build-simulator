@@ -215,18 +215,55 @@ machine's `capture()`/`apply()` must round-trip its at-rest state, including its
 supported load; see [Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints).
 Equipment still captures and restores its own state, which the stage runner uses.
 
+## Rope access (gantry v2 branch)
+
+The upper walkways form a loop around the robot. Fixed side runs connect the
+front landings to the rear walkway, passing around the rear elevator even when
+its car is downstairs. The front leaves open for crane deliveries; the route
+around the sides and rear remains available. Rappel controls use hover tooltips.
+
+The physical **UPPER LEAVES** panels beside the left lift, at ground and on its
+fixed upper landing, provide **OPEN / CLOSE** through normal E interaction.
+Close the leaves after delivery before using a front rope. Leaf movement waits for
+riders and deployed front ropes; closing also waits for crane cables in the
+crossing. Lower access stays independent. The tracked manual cues Close first
+when it is a rope prerequisite.
+
+At a 20.6 m walkway station, aim at **Clip in** and press **E**; its guard gate
+opens only for the attached player. Step through to hang. **Space** rises and
+**Ctrl** lowers: short taps move slowly; holding accelerates to 4.5 m/s in about
+0.6 seconds. Releasing locks your height immediately. **WASD** adjusts up to
+0.35 m of slack, with normal collision. At the top, move back toward the walkway.
+The rear boom allows a supported traverse between its tip and the walkway.
+Boarding automatically uses the normal crouch capsule beneath the davit/boom;
+normal carrying and collision rules remain active.
+
+While hanging, aim at supported robot structure within 1.6 m horizontally of
+your line and press **G** to pull in; G again releases toward plumb. Normal E
+interaction and carrying still apply. Land on a floor, then press **Q** to unclip.
+While attached, Q operates the rope; after unclipping, Q sets down carried parts.
+Clipping shows the permanent rope status without a duplicate temporary message.
+The rope end stays there for another ascent: aim and E to clip in from below.
+**Recall rope** at the station reel retrieves a free line. Front leaves wait with
+“Recall the ropes on the workshop-side leaves” until every front line is stowed.
+
+This branch prototype awaits the user's [playtest](../../design/game/robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27);
+mechanical fixture checks do not establish usability or visual acceptance.
+Backpack hinge access remains an open design challenge.
+
 ## Controls
 
 | Input | Action |
 | --- | --- |
 | WASD / mouse | Move / look |
 | Shift while moving | Move faster |
-| Space | Jump from the floor or platform; release before jumping again |
-| Hold Ctrl | Crouch for a lower inspection view; release to stand when there is headroom |
+| Space | Jump; while clipped to a rope, hold to ascend |
+| Hold Ctrl | Crouch; while clipped to a rope, descend |
+| G | While hanging: clip/release pull-in lanyard |
 | E | Stock/refill a pocket, carry a component/assembly, or operate a bay control |
 | 1 2 3 4 5 6 7 8 9 0 | Select one of the ten pockets |
 | Left click | Attach the selected small part, or place the carried component/assembly |
-| Q | Set down the carried component or assembly |
+| Q | While clipped, unclip on a floor; otherwise set down the carried component or assembly |
 | B | Clear the selected pocket anywhere; its stack returns to storage |
 | Hold R + move mouse | Rotate the preparation station you are looking at |
 | Double-tap R | Restore that preparation station's working orientation (F remains an alternate binding) |

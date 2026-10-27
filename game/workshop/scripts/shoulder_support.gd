@@ -59,7 +59,6 @@ func accept() -> String:
 	var result: Dictionary=game.model.install_supported(spec.owner,spec.slot,spec.uid,"crane_rigging")
 	if not result.ok:active=false;tension=0;goal=0;return result.error
 	game.runtime.mount(spec.owner,spec.slot,spec.uid);game.refresh_assembly_collision(spec.owner)
-	game.equipment.get_equipment("workshop_access").arm_services_stowed=true
 	return ""
 func departure_error() -> String:
 	if not motion.is_empty():return "Finish the shoulder load transfer first."

@@ -3,10 +3,11 @@ extends RefCounted
 ## A dim cool ambient and one shadowed key leave contrast to narrow roof beams
 ## pooled on each work bay. Everything here is visual: the blockout floor and
 ## wall solids keep their collision, and nothing enters a bay, route or the
-## crane envelope (fittings sit at walls, on the floor surface or above 23.8 m).
+## crane envelope (fittings sit at walls, on the floor, below access decks or
+## above 23.8 m).
 ## Compatibility draws unshadowed lights in one pass but limits them to 32 per
 ## frame and 8 spots per mesh, so the floor is split into 4 m slabs and the
-## walls into panels. This spike has 19 spots, two with Forward+ shadows.
+## walls into panels. Only two assembly spots have Forward+ shadows.
 ## General high-bay fixtures only glow.
 const AMBIENT = 0.24
 const KEY = 0.35
@@ -314,12 +315,7 @@ func _lights(bays: Array) -> void:
 	# Cool clerestory daylight: broad and shadowless from each long wall.
 	for side in [[-13.0,1.0],[25.0,-1.0]]:
 		_spot(Vector3(side[0],19,13),Vector3(side[1],-.8,0),55,11000,Color("cfe0f0"),32,1.0,20)
-	# Gantry: LED strips under each deck, downlights under the lower two.
-	var strips: Array = []
-	for y in [8.3,11.1,13.9]:
-		for x in [4.25,21.75]:strips.append(_scaled(Vector3(x,y-.11,31),Vector3(.08,.02,12)))
-		if y < 13:_spot(Vector3(13,y-.15,31),Vector3.DOWN,75,5500,Color("e3eeff"),16,1.0,8)
-	_multi(BoxMesh.new(),strips,mats.led)
+	_gantry_lights(game.leg_layout.blockout)
 	# Two shadowed roof lamps give the final assembly a warm silhouette and
 	# occluded shafts. Keep the other lamps shadowless to bound caster work.
 	for x in [10.0,16.0]:
@@ -332,6 +328,31 @@ func _lights(bays: Array) -> void:
 		hero.light_volumetric_fog_energy = .65 if forward_plus else 0.0
 		_box(at+Vector3(0,.16,0),Vector3(.7,.28,.7),mats.fixture)
 		_box(at,Vector3(.6,.025,.6),mats.lens)
+
+func _gantry_lights(blockout: Node3D) -> void:
+	# Attach to real deck visuals, including their authored thickness and moving
+	# parent. No fixed-height remnants of the removed 11.2/14 m walkways.
+	for id in ["wing_left_20.6_floor","wing_right_20.6_floor","rope_exit_floor",
+		"rope_exit_landing_floor","rope_side_left_floor","rope_side_right_floor",
+		"rope_corner_right_floor","rope_link_right_floor",
+		"outer_left_8.4_floor","outer_right_8.4_floor"]:
+		var deck: MeshInstance3D = blockout.pieces[id].visual
+		var box: AABB = deck.mesh.get_aabb()
+		var along_x: bool = box.size.x >= box.size.z
+		var length: float = maxf(box.size.x,box.size.z)-.4
+		var at = Vector3(box.get_center().x,box.position.y-.03,box.get_center().z)
+		var size = Vector3(length,.06,.16) if along_x else Vector3(.16,.06,length)
+		var housing: MeshInstance3D = game.box(deck,at,size,mats.fixture)
+		housing.name = "WalkwayStripHousing"
+		housing.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var lens_size = Vector3(length-.08,.01,.10) if along_x else Vector3(.10,.01,length-.08)
+		var lens: MeshInstance3D = game.box(housing,Vector3(0,-.035,0),lens_size,mats.led)
+		lens.name = "WalkwayStripLens"
+		lens.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if id in ["wing_left_20.6_floor","wing_right_20.6_floor","rope_exit_floor"]:
+			# Three broad shadowless pools share the former two downlights' budget.
+			var light = _spot(Vector3(0,-.045,0),Vector3.DOWN,75,11000.0/3.0,Color("e3eeff"),24,1.0,12,housing)
+			light.name = "WalkwayDownlight"
 
 func _reflections() -> void:
 	if not forward_plus:return
@@ -355,7 +376,7 @@ func _reflections() -> void:
 
 ## Spot sized from the Blender preview's watts, compensating Godot's range
 ## window at the distance the beam is meant to land.
-func _spot(at: Vector3, direction: Vector3, half_angle: float, watts: float, color: Color, reach: float, edge: float, landing: float) -> SpotLight3D:
+func _spot(at: Vector3, direction: Vector3, half_angle: float, watts: float, color: Color, reach: float, edge: float, landing: float, parent: Node3D = null) -> SpotLight3D:
 	var light = SpotLight3D.new()
 	var up = Vector3.FORWARD if absf(direction.normalized().y) > .9 else Vector3.UP
 	light.transform = Transform3D(Basis.looking_at(direction,up),at)
@@ -369,5 +390,5 @@ func _spot(at: Vector3, direction: Vector3, half_angle: float, watts: float, col
 	# lamp at full strength into fog would wash out the working bays.
 	light.light_volumetric_fog_energy = .08 if forward_plus else 0.0
 	light.distance_fade_enabled = false
-	root.add_child(light)
+	(parent if parent != null else root).add_child(light)
 	return light

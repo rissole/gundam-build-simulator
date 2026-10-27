@@ -70,8 +70,8 @@ def contract():
         core_storage=pose([-7,1.3,31.3]),
         backpack_storage=pose([-7,.85,35]),
         backpack=dict(hinge_seat=[13,15.5,27.2],closed_rotation=[90,0,0],
-                      route_positions=[[3.25,.85,13],[3.25,5.5,13],[23.7,5.5,13],[23.7,5.5,31.8],
-                                       [24,5.5,31.8],[24,18,31.8],[13,18,31.8],[13,15.7,31.8],[13,15.7,27.2],[13,15.5,27.2]]),
+                      route_positions=[[3.25,.85,13],[3.25,17.6,13],[13,17.6,13],
+                                       [13,17.6,27.2],[13,15.7,27.2],[13,15.5,27.2]]),
         cassette=dict(size=[2,.2,9], source_shoulder=[14,1.55,9.9],
                       parked_shoulder=[14,1.55,-6.3], saddles=[1.35,4.05,6.05],
                       transfer_bottom=4.8, folded_clamp_top=1.7),
@@ -111,25 +111,46 @@ def contract():
                    head_transit_bottom=19, pauldron_transit_bottom=18,
                    rear_well_bounds=[22.8,25.2,31.7,34.7],
                    arm_upend_y=9.6, arm_spreader_allowance=1.8),
-        access=dict(levels=[8.4,11.2,14,16.4], floor_depth=.2, guard_height=1.1,
+        access=dict(levels=[8.4,20.6], floor_depth=.2, guard_height=1.1,
                     wing_roots=[[5,24],[21,24]], wing_length=8, wing_width=1.2,
                     rear_roots=[[10.1,27.95],[15.9,27.95]], rear_leaf=1.45,
-                    modes={"work":[],"pelvis":[11.2,14,16.4],"leg":[8.4],
-                           "chest":[14,16.4],"arm":[8.4,11.2,14,16.4],
-                           "rear":[],"head":[]},
+                    modes={"work":[],"pelvis":[20.6],"leg":[8.4],
+                           "chest":[20.6],"arm":[8.4,20.6],
+                           "rear":[],"head":[20.6],"core":[20.6],"backpack":[20.6]},
                     duration=6.0),
         zones=["limb_station"], elevators={}, groups={}, solids=[], signs=[],
     )
-    for side, x in [("left",6.6),("right",19.4)]:
+    for side, x, z in [("left",1.9,24.05),("right",19.6,31.0)]:
         data["elevators"][side] = dict(
-            name=side, origin=[x,0,29], size=[2.6,2.6], levels=[.15,8.4,11.2,14,16.4],
+            name=side, origin=[x,0,z], size=[2.6,2.6], levels=[.15,8.4,20.6],
             yaw_degrees=0, side_doors=True, shaft_size=[3.2,3.2],
+            door_sides=[1,1,1] if side=="left" else [1,1,-1],
+            door_center_z=0, door_width=1.5, door_call_margin=.06, guide_top=20.2,
             panel_position=[1.1 if side=="left" else -1.1,1.1,-1.12],
-            guide_positions=[[-1.45,-1.45],[1.45,1.45]],
+            # Left rear shoe stays inboard of the outer-walk guard. Both
+            # right guides sit west of the car: the east shaft band overlaps
+            # the retained 8.4 outer walk, so it cannot contain a through rail.
+            guide_positions=[[-1.4,-1.45],[1.4,1.45]] if side=="left" else [[-1.45,-1.45],[-1.45,1.45]],
             shelf=dict(id=side+"_shelf",supports=[side+"_shelf_0",side+"_shelf_1"],
                        # Surface at +.65; the full panel tops out at +1.85.
                        position=[-.25 if side=="left" else .25,.61,-1],yaw_degrees=0,size=[1.5,.08,.4],
                        two_hand_capacity=[1.45,.35,1.20],places=[-.35,.35]))
+
+    # Fixed cross-task contract. Parentless rear anchors are world coordinates.
+    data["rope_stations"] = [
+        dict(id="front_l_9.3", parent="wing_left_20.6", anchor=[4.3,1.2,.75], edge="front"),
+        dict(id="front_l_10.8", parent="wing_left_20.6", anchor=[5.8,1.2,.75], edge="front"),
+        dict(id="front_l_11.9", parent="wing_left_20.6", anchor=[6.9,1.2,.75], edge="front"),
+        dict(id="front_l_12.6", parent="wing_left_20.6", anchor=[7.6,1.2,.75], edge="front"),
+        dict(id="front_r_13.4", parent="wing_right_20.6", anchor=[7.6,1.2,-.75], edge="front"),
+        dict(id="front_r_14.1", parent="wing_right_20.6", anchor=[6.9,1.2,-.75], edge="front"),
+        dict(id="front_r_15.2", parent="wing_right_20.6", anchor=[5.8,1.2,-.75], edge="front"),
+        dict(id="front_r_16.7", parent="wing_right_20.6", anchor=[4.3,1.2,-.75], edge="front"),
+        dict(id="rear_11.0", parent="", anchor=[11.0,21.8,28.3], edge="rear"),
+        dict(id="rear_12.4", parent="", anchor=[12.4,21.8,28.3], edge="rear"),
+        dict(id="rear_13.6", parent="", anchor=[13.6,21.8,28.3], edge="rear"),
+        dict(id="rear_15.0", parent="", anchor=[15.0,21.8,28.3], edge="rear"),
+    ]
 
     def group(name, parent="", at=(0,0,0), rotation=(0,0,0), **extra):
         data["groups"][name] = dict(parent=parent, **pose(at,rotation), **extra)
@@ -332,44 +353,99 @@ def contract():
             box(key+"_rod",[0,-.02,0],[.04,.50,.04],parent=key)
             box(key+"_contact",[dx,.18,0],[.18,.1,.16],"yellow",key)
 
-    for level in data["access"]["levels"]:
-        tag=str(level)
-        for side in ["left","right"]:
-            left=side=="left"
+    def guard_segments(name, x0, x1, z, y, openings=(), parent=""):
+        # Union overlapping 0.9 m station openings (the two innermost stations
+        # are only 0.7 m apart). A2 supplies the clipped-player gate barriers.
+        cursor=x0
+        spans=[]
+        for x in sorted(openings):
+            start,end=max(x0,x-.45),min(x1,x+.45)
+            if start>cursor:spans.append((cursor,start))
+            cursor=max(cursor,end)
+        if cursor<x1:spans.append((cursor,x1))
+        for i,(start,end) in enumerate(spans):
+            bounds(f"{name}_rail_{i}",start,end,y+1.02,y+1.1,z-.04,z+.04,"yellow",parent)
+            for j,x in enumerate([start+.04,end-.04]):
+                box(f"{name}_post_{i}_{j}",[x,y+.51,z],[.08,1.02,.08],"yellow",parent)
+
+    for side in ["left","right"]:
+        left=side=="left"
+        hx=5 if left else 21
+        # The hinge axes stay fixed, but no full-height post passes through
+        # either walking surface. The left is carried by the lift's rear guide;
+        # the opposite column stands outside the far apron corner.
+        if not left:
+            box("wing_corner_right",[22.64,10.2,23.26],[.24,20.4,.24])
+        for level in data["access"]["levels"]:
+            tag=str(level)
+            # Fixed brackets meet the underside, below the complete leaf swing.
+            # Left bracket touches the back of the shaft guide at (3.3,25.5),
+            # beyond the sliding shoes (which end at Z25.53).
+            if left:
+                bounds("wing_support_left_"+tag+"_shaft",3.25,5.12,level-.5,level-.2,25.57,25.77)
+                bounds("wing_support_left_"+tag+"_arm",4.88,5.12,level-.5,level-.2,23.88,25.77)
+            else:
+                bounds("wing_support_right_"+tag+"_corner",22.52,22.76,level-.5,level-.2,23.14,24.12)
+                bounds("wing_support_right_"+tag+"_arm",20.88,22.76,level-.5,level-.2,23.88,24.12)
             x0,x1=(3.5,5) if left else (21,22.5)
-            # Front landing joins a gate at 24.7, rear portion always connected.
-            deck(f"outer_{side}_{tag}",x0,x1,24.7,37.3,level,["left" if left else "right","rear"])
-            # The root apron is the wing's bearing interface. Keep it a
-            # separately identified solid, never exclude the full outer walk
-            # from moving-equipment collision queries.
-            deck(f"wing_hinge_{side}_{tag}",x0,x1,23.4,24.7,level,["left" if left else "right"])
-            box(f"hinge_front_guard_{side}_{tag}",[(x0+x1)/2+(-.35 if left else .35),level+1.06,23.32],[.8,.08,.08],"yellow")
-            # Split inner guard around the elevator's side doorway and wing root.
-            for n,(z0,z1) in enumerate([(24.7,28.5),(30,35.8)]):
-                gx=x1+.04 if left else x0-.04
-                box(f"outer_inner_{side}_{tag}_{n}",[gx,level+1.06,(z0+z1)/2],[.08,.08,z1-z0],"yellow")
-            gate=group(f"access_gate_{side}_{tag}",at=[(x0+x1)/2,level,24.85],joint="gate",level=level,stow_x=1.6 if left else -1.6)
-            box(gate,[0,.65,0],[1.5,.10,.08],"yellow",gate)
-            root=group(f"wing_{side}_{tag}",at=[5 if left else 21,level,24],rotation=[0,0 if left else 180,0],joint="wing",side=side,level=level)
-            data["groups"][root]["motion_contacts"]=[f"wing_hinge_{side}_{tag}_floor"]
-            deck(root,.02,7.98,-.6,.6,0,["front","rear"],root)
-            # Keep the world-rear edge open to the work fingers on both sides.
-            # The right root's 180-degree yaw swaps local front and rear.
-            open_edge="rear" if left else "front"
-            for record in data["solids"]:
-                if record["parent"]==root and f"_{open_edge}_" in record["id"]:record["solid"]=False;record["hidden"]=True
-            if level in [8.4,11.2]:
-                fx=4.6 if level==8.4 else 5.35
-                length=1.2 if level==8.4 else 2.0
-                finger=group(f"finger_{side}_{tag}",parent=root,at=[fx,0,0],joint="finger",extension=length,side=side,level=level)
-                # Telescopes rearward in world Z (local sign differs on right).
-                # At 11.2 the socket crown rises through the floor's elevation.
-                # Leave .05 m lateral clearance to its real spherical shell.
-                deck(finger,0,1.2 if level==8.4 else 1.15,-.6,.6,0,[],finger)
-                if level==11.2:
-                    middle=group(f"finger_middle_{side}_{tag}",parent=root,at=[fx,0,0],joint="finger",extension=.8,side=side,level=level)
-                    deck(middle,0,1.3,-.6,.6,-.025,[],middle)
+            apron=f"wing_hinge_{side}_{tag}"
+            # A plain landing meets the plain leaf across a 20 mm seam. The
+            # old through-post, cap and four small notch fillers are gone.
+            # Hinge support stays below the walking surface.
+            deck(apron,x0,x1,23.4,24.7,level,[])
+            if not left:
+                box(apron+"_right_rail",[22.54,level+1.06,24.05],[.08,.08,1.3],"yellow")
+                for z in [23.44,24.66]:box(apron+"_right_post_"+str(z),[22.54,level+.51,z],[.08,1.02,.08],"yellow")
+            if left:
+                # The lift replaces the west guard. Guard the two ends of its
+                # full-width landing instead, with the doorway unobstructed.
+                guard_segments(f"hinge_front_guard_{side}_{tag}",3.22,4.8,z=23.26,y=level)
+            else:
+                box(f"hinge_front_guard_{side}_{tag}",[(x0+x1)/2+.35,level+1.06,23.32],[.8,.08,.08],"yellow")
             if level==8.4:
+                deck(f"outer_{side}_{tag}",x0,x1,24.7,37.3,level,["rear"] if left else ["right","rear"])
+                if left:
+                    # The new lift doorway extends to Z24.8. Start its adjacent
+                    # walk guard beyond that opening, with the deck unchanged.
+                    bounds(f"outer_{side}_{tag}_left_rail",3.42,3.5,level+1.02,level+1.10,24.8,37.3,"yellow")
+                    for i,z in enumerate([24.84,37.26]):
+                        box(f"outer_{side}_{tag}_left_post{i}",[3.46,level+.51,z],[.08,1.02,.08],"yellow")
+                # Retain the hip entrance through the vacated old lift footprint.
+                link_front,link_rear=(28.5,30) if left else (27.6,29.1)
+                inner_spans=[(24.7,link_front),(link_rear,37.3)] if left else [(24.7,link_front),(link_rear,30.25),(31.75,37.3)]
+                for n,(z0,z1) in enumerate(inner_spans):
+                    gx=x1+.04 if left else x0-.04
+                    box(f"outer_inner_{side}_{tag}_{n}",[gx,level+1.06,(z0+z1)/2],[.08,.08,z1-z0],"yellow")
+                deck("hip_link_"+side,5 if left else 17.8,8.2 if left else 21,link_front,link_rear,level,["front","rear"])
+                # Retain the original lower outer-walk barrier.
+                gate=group(f"access_gate_{side}_{tag}",at=[(x0+x1)/2,level,24.85],joint="gate",level=level,stow_x=1.6 if left else -1.6)
+                box(gate,[0,.65,0],[1.5,.10,.08],"yellow",gate)
+            root=group(f"wing_{side}_{tag}",at=[hx,level,24],rotation=[0,0 if left else 180,0],joint="wing",side=side,level=level)
+            data["groups"][root]["motion_contacts"]=[apron+"_floor"]
+            deck(root,.02,7.98,-.6,.6,0,[],root)
+            open_edge="rear" if left else "front"
+            # Guards keep their historic 8.4 width, but the upper rails sit
+            # within the leaf's 1.2 m width (short davits protrude by .15 m).
+            sign=1 if left else -1
+            guard_segments(root+("_front" if left else "_rear"),.02,7.98,-sign*(.64 if level==8.4 else .56),0,parent=root)
+            if level==20.6:
+                stations=[s for s in data["rope_stations"] if s["parent"]==root]
+                guard_segments(root+"_"+open_edge,.02,7.98,sign*.56,0,[s["anchor"][0] for s in stations],root)
+                for station in stations:
+                    x,_,z=station["anchor"]
+                    box("rope_davit_"+station["id"],[x,1.2,(sign*.45+z)/2],[.10,.10,.30],"yellow",root)
+                    # Jamb-mounted arms: the innermost overlapping openings
+                    # share the last pier, leaving their entire 0.9 m clear.
+                    pier=3.80 if x==4.3 else 5.30 if x==5.8 else 6.35
+                    box("rope_davit_arm_"+station["id"],[(pier+x)/2,1.2,sign*.50],[x-pier+.10,.10,.10],"yellow",root)
+                for i,x in enumerate([3.80,5.30,6.35]):
+                    box(root+"_davit_pier_"+str(i),[x,.6,sign*.50],[.10,1.2,.10],"yellow",root)
+                box(root+"_mast",[.30,.825,-sign*.50],[.12,1.65,.12],parent=root)
+                tie=group(root+"_tie",parent=root,at=[3.90,1.40,-sign*.50],rotation=[0,0,math.degrees(math.atan2(-.50,7.2))])
+                box(root+"_tie_member",[0,0,0],[math.hypot(7.2,.50),.08,.08],parent=tie)
+            else:
+                finger=group(f"finger_{side}_{tag}",parent=root,at=[4.6,0,0],joint="finger",extension=1.2,side=side,level=level)
+                deck(finger,0,1.2,-.6,.6,0,[],finger)
                 a,b=(8.2,10.1) if left else (15.9,17.8)
                 deck(f"hip_apron_{side}",a,b,27.35,30.1,level,["rear"])
                 outer=group("rear_outer_"+side,at=[10.1 if left else 15.9,level,27.95],rotation=[0,0 if left else 180,0],joint="rear_outer",side=side,level=level)
@@ -378,26 +454,66 @@ def contract():
                 deck(inner,0,1.44,-.6,.6,-.1,[],inner)
                 for parent in [outer,inner]:
                     guard=group(parent+"_guard",parent=parent,joint="rear_guard",level=level)
-                    # Both guards face world rear, away from the hip work edge.
                     box(guard,[.725,.55,.64 if left else -.64],[1.45,1.1,.08],"yellow",guard)
-            else:
-                a,b=(7.9,9.7) if left else (16.3,18.1)
-                deck(f"rear_branch_{side}_{tag}",a,b,28.5,30,level,["front","rear"])
-                a,b=(9.7,11.4) if left else (14.6,16.3)
-                deck(f"rear_flank_{side}_{tag}",a,b,27.4,30.1,level,[])
-                if level==11.2:deck("aft_finger_"+side,a,b,31.7,35.8,level,["left","right","front"])
-        deck("rear_crossover_"+tag,5,21,35.8,37.3,level,["rear"])
 
-    # Fixed landing lips stop 20 mm short of the moving car. Keep the full
-    # doorway width and stay between the shaft's corner guide bands.
+    # Rear walkway: posts from the floor, never roof hangers. Shift the west
+    # support just inboard of the retained 8.4 walk/guard (X<=5.08).
+    deck("rope_exit",5,16.5,30.3,31.7,20.6,[])
+    guard_segments("rope_exit_front",5,16.5,30.26,20.6,[11,12.4,13.6,15])
+    guard_segments("rope_exit_rear",5,16.5,31.74,20.6)
+    box("rope_exit_west_post",[5.24,10.2,31],[.24,20.4,.24])
+    # 1.5 m square landing at the east end, from X16.5 to the shaft X18.
+    deck("rope_exit_landing",16.5,18,30.25,31.75,20.6,["rear"])
+    for z in [29.55,32.45]:box("rope_exit_lift_post_"+str(z),[17.90,10.1,z],[.20,20.2,.20])
+    box("rope_exit_lift_header",[17.90,20.1,31],[.20,.20,3.10])
+    box("rope_exit_support",[17.3,20.3,31],[1.8,.2,.8])
+
+    # Fixed upper sides close the perimeter. At the rear-right corner the
+    # route turns in front of the elevator shaft, so it stays connected while
+    # the car is on a lower floor. Keep the existing rear rappel anchors.
+    deck("rope_side_left",3.5,5,24.7,31.7,20.6,["rear"])
+    bounds("rope_side_left_outer_rail",3.42,3.5,21.62,21.7,24.8,31.7,"yellow")
+    for i,z in enumerate([24.84,28.25,31.66]):
+        box("rope_side_left_outer_post_"+str(i),[3.46,21.11,z],[.08,1.02,.08],"yellow")
+    bounds("rope_side_left_inner_rail",5,5.08,21.62,21.7,24.7,30.3,"yellow")
+    for i,z in enumerate([24.74,27.5,30.26]):
+        box("rope_side_left_inner_post_"+str(i),[5.04,21.11,z],[.08,1.02,.08],"yellow")
+    deck("rope_side_right",21,22.5,24.7,29.2,20.6,["right"])
+    bounds("rope_side_right_inner_rail",20.92,21,21.62,21.7,24.7,27.7,"yellow")
+    for i,z in enumerate([24.74,27.66]):
+        box("rope_side_right_inner_post_"+str(i),[20.96,21.11,z],[.08,1.02,.08],"yellow")
+    deck("rope_corner_right",16.5,21,27.7,29.2,20.6,["front"])
+    deck("rope_link_right",16.5,18,29.2,30.25,20.6,[])
+    bounds("rope_corner_right_inner_rail",16.42,16.5,21.62,21.7,27.7,30.3,"yellow")
+    for i,z in enumerate([27.74,30.26]):
+        box("rope_corner_right_inner_post_"+str(i),[16.46,21.11,z],[.08,1.02,.08],"yellow")
+    guard_segments("rope_corner_right_shaft",17.9,22.5,29.24,20.6)
+    # Inset this guard 0.1 m to clear the lift's projecting sliding sleeve.
+    bounds("rope_link_right_shaft_rail",17.9,17.98,21.62,21.7,29.24,30.25,"yellow")
+    for i,z in enumerate([29.28,30.21]):
+        box("rope_link_right_shaft_post_"+str(i),[17.94,21.11,z],[.08,1.02,.08],"yellow")
+    # Longitudinal girders connect the new runs to the supported front and
+    # rear landings, all beneath the deck and clear of lift-car travel.
+    bounds("rope_side_left_support",4.8,5.2,20.1,20.4,24,31.7)
+    bounds("rope_side_right_support",21,21.4,20.1,20.4,24,28.7)
+    bounds("rope_corner_right_support",17.6,21.4,20.1,20.4,28.5,28.9)
+    bounds("rope_link_right_support",17.6,18,20.1,20.4,28.5,31.4)
+    for station in data["rope_stations"]:
+        if station["edge"]=="rear":
+            x=station["anchor"][0]
+            box("rope_boom_"+station["id"],[x,21.8,29.3],[.12,.12,2],"yellow")
+            box("rope_boom_pier_"+station["id"],[x-.52,21.2,30.36],[.12,1.2,.12],"yellow")
+            box("rope_boom_arm_"+station["id"],[x-.26,21.8,30.3],[.64,.12,.12],"yellow")
+
+    # Fixed flush thresholds stop .02 m short of each car. Landing width is
+    # 1.5 m, including .1 m extensions at the narrower left hinge aprons.
     for level in data["access"]["levels"]:
-        tag=str(level)
-        for side,x in [("left",5.14),("right",20.86)]:
-            box(f"outer_{side}_{tag}_landing_fill",[x,level-.1,29.25],
-                [.28,.20,1.50],"deck")
-    for side,x in [("left",8.06),("right",17.94)]:
-        box(f"hip_apron_{side}_landing_fill",[x,8.30,29.25],
-            [.28,.20,1.50],"deck")
+        deck("lift_left_"+str(level)+"_landing",3.22,3.5,23.30,24.80,level,[])
+        # The side walkway already covers the rear extension at both levels.
+        # A second plate there creates overlapping coplanar walking surfaces.
+        deck("lift_left_"+str(level)+"_landing_front",3.5,4.8,23.30,23.4,level,[])
+    deck("lift_right_8.4_landing",20.92,21,30.25,31.75,8.4,[])
+    deck("lift_right_20.6_landing",18,18.28,30.25,31.75,20.6,[])
 
     # Rendered joints have distinct sections while physics retains the authored
     # envelopes. Telescoping plates must not share their host's top/side planes.
@@ -535,9 +651,12 @@ def delivery_inputs(layout, data):
     layout["crane"]["tasks"]["core"]=dict(**deepcopy(core_common),title="Core to rear dock",owner="chest",slot="core",
         source_support="bulky_fixture",source_equipment="module_supports",guided_receiver="core_guide",receiver_equipment="core_guide",
         secured=dict(milestone="core_seated"),source_pose=pose([3.25,1.3,13]),receiver_pose=pose([13,13.35,28.2]),
-        route_positions=[[3.25,1.3,13],[3.25,6,13],[23.7,6,13],[23.7,6,32.4],[24,6,32.4],[24,18.47,32.4],
-                         [13,18.47,32.4],[13,13.35,32.4],[13,13.35,28.2],[13,13.35,28.2]],
-        approach=dict(axis=[0,0,-1],distance=0))
+        # Prepared chest top is Y16.98, including its neck. Core bottom at
+        # Y17.53 clears it by .55; the bridge/spreader stay below Y20.3.
+        # Descend .5 m behind the chest before the existing guided approach.
+        route_positions=[[3.25,1.3,13],[3.25,18,13],[13,18,13],[13,18,28.6],
+                         [13,13.35,28.6],[13,13.35,28.2],[13,13.35,28.2]],
+        approach=dict(axis=[0,0,-1],distance=0),access_mode="core")
     layout["crane"]["tasks"]["backpack_store"]=dict(payload="assembly",load_uid="backpack",support="crane_rigging",
         title="Backpack to Heavy Module Bay",owner="backpack",slot="",source_support="backpack_store",receiver_support="bulky_fixture",
         receiver_equipment="module_supports",receiver_contact=True,secured=dict(milestone=""),
@@ -552,7 +671,7 @@ def delivery_inputs(layout, data):
     backpack.update(title="Backpack to hinges",owner="chest",slot="backpack",source_support="bulky_fixture",source_equipment="module_supports",
         receiver_equipment="backpack_hinge",guided_receiver="backpack_hinge",secured=dict(milestone="backpack_retained"),
         source_pose=pose([3.25,.85,13]),receiver_pose=pose(data["backpack"]["hinge_seat"]),route_positions=data["backpack"]["route_positions"],
-        approach=dict(axis=[0,-1,0],distance=.2))
+        approach=dict(axis=[0,-1,0],distance=.2),access_mode="backpack")
     backpack.pop("receiver_support");backpack.pop("receiver_contact")
     layout["crane"]["tasks"]["backpack"]=backpack
     layout["crane"]["tasks"]["cassette"]=dict(payload="assembly",load_uid="arm_cassette",support="crane_rigging",

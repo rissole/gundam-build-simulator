@@ -7,8 +7,8 @@ const Geometry = preload("res://scripts/gantry_mesh.gd")
 const Surfaces = preload("res://scripts/hangar_surfaces.gd")
 const FINISH = preload("res://scripts/gantry_finish.gdshader")
 const PREFIXES = ["gantry_","outer_left_","outer_right_","outer_inner_","wing_",
-	"hinge_front_guard_","access_gate_","finger_","hip_apron_","rear_outer_",
-	"rear_inner_","rear_crossover_","rear_branch_","rear_flank_","aft_finger_"]
+	"hinge_front_guard_","hinge_rear_guard_","access_gate_","finger_","hip_apron_","rear_outer_",
+	"rear_inner_","hip_link_","rope_","lift_left_","lift_right_"]
 var records: Array[Dictionary] = []
 var additions: Array[MeshInstance3D] = []
 var labels: Array[Label3D] = []
@@ -133,8 +133,8 @@ func _stencils(blockout: Node3D) -> void:
 	var crosshead: MeshInstance3D=blockout.pieces.gantry_crosshead.visual
 	_label(crosshead,"02  /  FINAL ASSEMBLY",Vector3(0,0,-crosshead.mesh.get_aabb().size.z/2-.001),.0038)
 	for side in ["left","right"]:
-		for pair in [["8.4","HIP"],["11.2","WAIST"],["14","SHOULDER"],["16.4","HEAD"]]:
-			var id = "outer_"+side+"_"+pair[0]+"_floor"
+		for pair in [["8.4","HIP"],["20.6","ROPE ACCESS"]]:
+			var id = ("outer_" if pair[0]=="8.4" else "wing_hinge_")+side+"_"+pair[0]+"_floor"
 			var deck: MeshInstance3D=blockout.pieces[id].visual
 			var half = deck.mesh.get_aabb().size/2
 			_label(deck,pair[0]+" m  /  "+pair[1],Vector3(0,0,-half.z-.001),.0011)

@@ -32,7 +32,7 @@ func refresh() -> void:
 		# Unsupported individual effects remain separate. Authored visibility is
 		# maintained by enclosure logic, not overridden by the batching system.
 		if not child.visible or child.material_overlay != null or child.material_override != null or _has_surface_overrides(child):
-			child.layers = child.get_meta("unbatched_layers")
+			_set_layers(child,child.get_meta("unbatched_layers"))
 			continue
 		var center: Vector3 = child.transform * child.mesh.get_aabb().get_center()
 		var cell := Vector3i((center / CELL_SIZE).floor())
@@ -45,7 +45,7 @@ func refresh() -> void:
 		for start in range(0,members.size(),MAX_MEMBERS):
 			var pieces: Array = members.slice(start,start+MAX_MEMBERS)
 			if pieces.size() < 2:
-				for piece in pieces:piece.layers = piece.get_meta("unbatched_layers")
+				for piece in pieces:_set_layers(piece,piece.get_meta("unbatched_layers"))
 				continue
 			var key: String = cell+":"+str(start/MAX_MEMBERS)
 			var signature: Array = []
@@ -61,6 +61,17 @@ func refresh() -> void:
 	for id in inputs.keys():
 		if not live.has(id):inputs.erase(id)
 
+static func _set_layers(piece: MeshInstance3D, layers: int) -> void:
+	if piece.layers == layers:return
+	# Godot 4.7.2 Forward+ does not unpair lights when changing live geometry
+	# masks (godotengine/godot#121989, fixed upstream in #122064). Temporarily
+	# withdraw this render instance before changing its mask, then restore it.
+	# Do not hide the Node: enclosure visibility and child outlines must survive.
+	var live := piece.is_inside_tree()
+	if live:RenderingServer.instance_set_visible(piece.get_instance(),false)
+	piece.layers = layers
+	if live:RenderingServer.instance_set_visible(piece.get_instance(),piece.is_visible_in_tree())
+
 static func _has_surface_overrides(mesh: MeshInstance3D) -> bool:
 	for surface in mesh.get_surface_override_material_count():
 		if mesh.get_surface_override_material(surface) != null:return true
@@ -70,7 +81,7 @@ func _discard(key: String) -> void:
 	if not groups.has(key):return
 	var group: Dictionary = groups[key]
 	for piece in group.pieces:
-		if is_instance_valid(piece):piece.layers = piece.get_meta("unbatched_layers")
+		if is_instance_valid(piece):_set_layers(piece,piece.get_meta("unbatched_layers"))
 	if is_instance_valid(group.proxy):
 		group.proxy.hide()
 		group.proxy.queue_free()
@@ -94,7 +105,7 @@ func _process(_delta: float) -> void:
 			proxy.cast_shadow = group.pieces[0].cast_shadow
 			frame.add_child(proxy)
 			group.proxy = proxy
-			for piece in group.pieces:piece.layers = 0
+			for piece in group.pieces:_set_layers(piece,0)
 		job = {}
 	while not pending.is_empty():
 		var key: String = pending.pop_front()
@@ -131,8 +142,10 @@ static func _compile(work: Dictionary) -> void:
 func busy() -> bool:
 	return task >= 0 or not pending.is_empty()
 
-func _exit_tree() -> void:
-	# Reparenting also exits the tree; a waited task id is invalid afterwards.
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_PREDELETE:return
+	# Docking/releasing reparents the entire rigid frame. Keep local batches and
+	# CPU work across tree exits; joining here only blocks final destruction.
 	if task >= 0:WorkerThreadPool.wait_for_task_completion(task)
 	task = -1
 	job = {}

@@ -234,10 +234,35 @@ last version before consolidation.
 
 ## Next
 
+**Gantry v2 (2026-10-27; merge into main approved):** developed on `gantry-v2`, worktree
+`/private/tmp/gantry-v2`: 20.6 m rope walkways, relocated lifts, collision-resolved
+rope/lanyard work, physical upper-leaf controls and crossing-based crane routes.
+The low hip frame and 8.4 m work remain. [Implementation and mechanical evidence](gantry-v2/overhead-access.md)
+are separate from the [pending player recheck](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
+The user explicitly approved merging into main after the docking renderer fix.
+Detailed player checks remain open; backpack hinge access and eventual
+lowering/departure remain open design work.
+Player-reported walkway posts and floating lights are corrected: shaft-supported
+left hinges, opposite column beyond the outer corner and deck-mounted strips.
+Player response: "Really great!" Follow-up adds plain hinge decks, removes floating
+rappel labels and joins the upper floor into a perimeter with a rear-elevator
+bypass. [Player recheck pending](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
+Player calls the loop "Near perfect"; the next correction removes duplicate corner
+floor plates, uses Q to unclip, keeps only permanent clip-in status and accelerates
+held rappelling while preserving slow taps. Five selected routine cases pass;
+corner appearance and movement feel await the player recheck.
+Left-leg docking exposed a Godot 4.7.2 light-pairing bug: batched sources now
+withdraw safely before render-mask changes, and docking retains batches/CPU jobs
+across reparenting. Five focused routines pass; a tiny Forward+ reproduction
+changes from two engine errors to zero. Full-scene smoothness needs a restart and
+[player recheck](robot-workshop-playtest-checklist.md#left-leg-docking-renderer-errors--2026-10-27).
+
 **In progress (2026-10-27):** [machine operation](handoff/operated-machines/README.md).
 Gantry gap and mirror fixes are merged and player-accepted. The crane operator view
 was rejected and not merged; the crane keeps its console. Operated rig controls are
-next. Gantry v2 design work is on the `gantry-v2` branch (worktree `/private/tmp/gantry-v2`), kept off main until playtested and approved. Findings and open choices:
+tracked separately from the authorized gantry v2 rope-access branch build above.
+The earlier [launch cage concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27)
+and C6 remain design records. Findings and open choices:
 [playtest checklist](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
 
 The nine [left-leg task repairs](handoff/left-leg-feedback/README.md) are implemented.
@@ -268,7 +293,10 @@ checks; retain the broader playtest and lane-marking obligations below.
   and tests reach later progress through `--stage` / `boot_workshop(stage)`.
 - **Saves are snapshots at rest.** A normal launch saves each set component; a
   machine's `capture()`/`apply()` must round-trip its at-rest state, including its
-  supported load. No migrations, mid-motion state or per-machine validators.
+  supported load. No migrations or serialized mid-motion state. Keep shared
+  schema checks; rope attachment is the narrow exception requiring station,
+  line-length and player/leaf consistency checks before any live restore. Do not
+  expand that safeguard into a wider per-machine validation framework.
   `--stage=<name>` gives supplied progress and is not playtest evidence. It never
   loads the save, but Save overwrites the slot with the stage plus the player's
   progress (user decision, 2026-10-25); closing the window saves only after a build
@@ -347,6 +375,7 @@ Read only what the task needs. Specific sections are linked from the rules above
 | [manual-plan.md](manual-plan.md) | Changing manual steps, the current-step panel or the manual view |
 | [robot-workshop-plan.md](robot-workshop-plan.md) | Changing the robot workshop's stages, equipment or verification scope |
 | [final-assembly-plan.md](final-assembly-plan.md) and [layout](final-assembly-layout.svg) | You need coordinates, routes, equipment dimensions or the assembly order |
+| [gantry-v2/README.md](gantry-v2/README.md) | Reviewing the gantry v2 design and its superseded C6 study |
 | Component documents (`design/torso/`, `design/arms/`, `design/head.md`, `design/legs/`) | You need mounting interfaces. Each one's “Robot workshop … — 2026-10-24” section records what was built |
 | [leg-prototype-interface.md](leg-prototype-interface.md) | Touching structural-leg parts, ownership or manual dependencies |
 | [foot-prototype-plan.md](foot-prototype-plan.md) | Changing the shared assembly architecture, or doing a requested rendered review |

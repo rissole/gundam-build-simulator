@@ -185,7 +185,7 @@ def extend(trial, chest, arms, kinds, layout, diagram):
                 [dict(op="fit", slots=list(bolts))]+park(),
                 dict(at=0, text="The long bolts go in the bosses nearest the shoulder, the short ones farther along the arm.")),
             page("front closure","Fit the front panel.",[panels[0]],
-                [dict(op="fit", slots=[panels[0]])], dict(at=0, text="Carry it up on the lift shelf with two hands.")),
+                [dict(op="fit", slots=[panels[0]])], dict(at=0, text="Take it on the left lift's shelf to ROPE ACCESS, then carry it with two hands while descending a workshop-side rope.")),
             page("rear closure","Fit the rear strip, then release the arm's joint restraints.",[panels[1]],
                 [dict(op="fit", slots=[panels[1]])]+releases,
                 dict(at=1, text="Re-engage the restraints before reopening a panel."))]

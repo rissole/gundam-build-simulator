@@ -24,7 +24,6 @@ func run() -> void:
 	stage_torso()
 	stage_legs()
 	var access=game.equipment.get_equipment("workshop_access")
-	access.arm_services_stowed=true
 	var state: Dictionary=access.capture();state.mode="arm";state.moving=false
 	for key in state.channels:state.channels[key]={"value":0.0 if key=="rear" else 1.0,"goal":0.0 if key=="rear" else 1.0}
 	access.apply(state)

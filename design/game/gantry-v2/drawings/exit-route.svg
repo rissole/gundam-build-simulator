@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="950" viewBox="0 0 1200 950">
+<style>text{font:14px sans-serif;fill:#162a38}.small{font-size:12px}.dim{stroke:#334155;stroke-width:1;fill:none}.shape{stroke-width:1.5}</style>
+<rect width="1200" height="950" fill="#fafafa"/>
+<text x="35.0" y="32.0" style="font-size:20px">Exit route — +Z roll-out, all roots/supports stowed</text>
+<text x="35.0" y="56.0" style="font-size:14px">C6 · DESIGN ONLY · BUILD NOT APPROVED · metres · mirror X13</text>
+<text x="35.0" y="79.0" style="font-size:14px">Blue: tower/pocket · green: work path · amber: unresolved support envelope · red: exit reservation</text>
+<rect x="237.0" y="121.0" width="176.0" height="512.0" fill="#bd4343" fill-opacity="0.08" stroke="#bd4343" class="shape"/>
+<text x="240.0" y="137.0" style="font-size:12px">11.00 ×32.00 reservation</text>
+<rect x="125.0" y="265.0" width="104.0" height="80.0" fill="#24639a" fill-opacity="0.22" stroke="#24639a" class="shape"/>
+<text x="128.0" y="281.0" style="font-size:12px">L</text>
+<rect x="421.0" y="265.0" width="104.0" height="80.0" fill="#24639a" fill-opacity="0.22" stroke="#24639a" class="shape"/>
+<text x="424.0" y="281.0" style="font-size:12px">R</text>
+<rect x="245.0" y="497.0" width="160.0" height="128.0" fill="#19805d" fill-opacity="0.22" stroke="#19805d" class="shape"/>
+<text x="248.0" y="513.0" style="font-size:12px">10 ×8 carrier</text>
+<rect x="93.0" y="209.0" width="120.0" height="16.0" fill="#bd4343" fill-opacity="0.22" stroke="#bd4343" class="shape"/>
+<text x="96.0" y="225.0" style="font-size:12px">open leaf</text>
+<rect x="437.0" y="209.0" width="120.0" height="16.0" fill="#bd4343" fill-opacity="0.22" stroke="#bd4343" class="shape"/>
+<text x="440.0" y="225.0" style="font-size:12px">open leaf</text>
+<rect x="213.0" y="212.2" width="224.0" height="9.6" fill="#bd4343" fill-opacity="0.03" stroke="#bd4343" class="shape"/>
+<text x="216.0" y="228.2" style="font-size:12px">door Z48</text>
+<path d="M325.0,505.0 L325.0,121.0" stroke="#19805d" fill="none"/>
+<path d="M237.0,153.0 L413.0,153.0" stroke="#475569" fill="none"/>
+<text x="328.0" y="143.0" style="font-size:12px">11.00 lane</text>
+<path d="M233.0,149 l8,8" class="dim"/>
+<path d="M409.0,149 l8,8" class="dim"/>
+<path d="M213.0,201.0 L437.0,201.0" stroke="#475569" fill="none"/>
+<text x="328.0" y="191.0" style="font-size:12px">14.00 aperture</text>
+<path d="M209,197 l8,8" class="dim"/>
+<path d="M433,197 l8,8" class="dim"/>
+<text x="735.0" y="125.0" style="font-size:13px">Lane X7.5..18.5, Y0..21, Z22..54</text>
+<text x="735.0" y="150.0" style="font-size:13px">Carrier X8..18, Z22.5..30.5</text>
+<text x="735.0" y="175.0" style="font-size:13px">Chassis with adjustable sole pads</text>
+<text x="735.0" y="200.0" style="font-size:13px">Raised robot retained: no datum move</text>
+<text x="735.0" y="225.0" style="font-size:13px">Carrier takes weight before jaw release</text>
+<text x="735.0" y="250.0" style="font-size:13px">Hip supports retract completely</text>
+<text x="735.0" y="275.0" style="font-size:13px">All eight work arms/roots inside towers</text>
+<text x="735.0" y="300.0" style="font-size:13px">Door leaves in outboard pockets</text>
+<text x="735.0" y="325.0" style="font-size:13px">Door opens only with clear local motion</text>
+<text x="735.0" y="350.0" style="font-size:13px">Flush floor; no guide rail at threshold</text>
+<text x="735.0" y="375.0" style="font-size:13px">No fixed steel crosses the exit</text>
+<text x="735.0" y="400.0" style="font-size:13px">Carrier/transfer not yet engineered</text>
+</svg>
