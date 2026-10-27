@@ -234,10 +234,19 @@ last version before consolidation.
 
 ## Next
 
+**Gantry v2 branch build (2026-10-27):** A1 layout is complete on `gv2/layout`:
+20.6 rope-access leaves/rear walkway, relocated lifts and preserved 8.4 hip work.
+Eleven selected routines pass (728 checks, 19.307 s); no rendered review or new
+player acceptance. [Implemented dimensions](gantry-v2/overhead-access.md#implemented-a1-layout--2026-10-27)
+and [pending player recheck](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
+Codex owns integration with A2 ropes/A3 crane routes; main remains untouched.
+
 **In progress (2026-10-27):** [machine operation](handoff/operated-machines/README.md).
 Gantry gap and mirror fixes are merged and player-accepted. The crane operator view
 was rejected and not merged; the crane keeps its console. Operated rig controls are
-next. Gantry v2 design work is on the `gantry-v2` branch (worktree `/private/tmp/gantry-v2`), kept off main until playtested and approved. Findings and open choices:
+tracked separately from the authorized gantry v2 rope-access branch build above.
+The earlier [launch cage concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27)
+and C6 remain design records. Findings and open choices:
 [playtest checklist](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
 
 The nine [left-leg task repairs](handoff/left-leg-feedback/README.md) are implemented.

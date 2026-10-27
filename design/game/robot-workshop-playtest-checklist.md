@@ -37,12 +37,45 @@ between each hip finger and the hip apron is a deliberate robot/leg work opening
 - [x] Lowest-level asymmetry and landing gaps fixed; player-accepted 2026-10-27.
 - [x] Crane operator view playtested; rejected 2026-10-27.
 - [ ] Leg rig jog slice playtest, before converting the foot rig.
-- [ ] Gantry v2 (design only, no build approved) is on the `gantry-v2` branch (worktree `/private/tmp/gantry-v2`), kept off main until playtested and approved.
+- [x] [Launch cage v2 concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) approved as direction only, 2026-10-27: two mirrored towers, swinging catwalks, independent hip-bearing arms and deferred lowering/transport.
+- **Superseded by rope access (2026-10-27):** branch construction is authorized; A1 layout is complete, with integration/player checks below. C6 remains a design record.
+- **2026-10-27 — C6 design only:** [Aft-tower coarse plan](gantry-v2/README.md) clears the proposed parked exit but retains blocking hip-support/route/headroom overlaps; larger building, carrier-at-current-height and alternate support topology remain open choices. Keep accepted finish, gap/mirror repairs and assembly challenge; no new player acceptance.
 
-**Open choices retained:** whether to redesign the crane (for example, an in-world pendant using the rigs' hold-E jog pattern); v2 build approval and
-prototype effort; lowering and roll-out support. The accepted gantry appearance and
+**Open choices retained:** whether to redesign the crane (for example, an in-world pendant using the rigs' hold-E jog pattern); rope-access integration/player approval; lowering and roll-out support. The accepted gantry appearance and
 physical assembly challenge remain constraints. Parts can continue at the existing
 hip datum/Y10.97 bearing caps while these equipment choices wait.
+
+## Gantry v2 rope access — 2026-10-27
+
+**Branch implementation; no new player acceptance.** A1 replaces the upper
+11.2/14/16.4 decks with 20.6 rope access, relocates both lifts and preserves the
+8.4 hip working geometry and low hip frame. The user-authorized continuation
+includes asset imports; the earlier import checkpoint is resolved. Parent Codex
+owns integration with A2 rope behavior and A3 crane routes.
+[Implemented dimensions and mechanical evidence](gantry-v2/overhead-access.md#implemented-a1-layout--2026-10-27).
+
+Keep the accepted finish ("looks great"), gap/mirror repairs ("the gantry changes
+are good"), leg-delivery performance and physical assembly challenge. Passing
+mechanical tests do not approve the relocated paths or the new rope experience.
+
+- [ ] Ride both lifts with shelf cargo: east exits at 8.4, then left east/right
+  west exits at 20.6. Check calls, labels, doorway nudge, turning space and the
+  sliding guide support near the top.
+- [ ] Walk the retained 8.4 fingers, outer walks, new fixed hip links and rear
+  hip decks. Confirm the left landing joins its outer walk and the offset right
+  link reads clearly; recheck the unchanged hip work openings and jaw access.
+- [ ] Inspect the 20.6 leaf aprons and rear walkway landing, guard edges, mast/tie
+  supports, booms and accepted finish. Level signs should read HIP / ROPE ACCESS.
+- [ ] After A2 integration, check clipping, protected gates, recall and the leaf
+  interlock, especially adjacent front stations with overlapping openings.
+  Confirm the jamb-supported davits allow the intended hang/return movement.
+- [ ] After A3 integration, play the front deliveries and restore the leaves
+  while the crane holds the part. Head/crown access and both rappel sides need
+  real player feedback; automated geometry is not connection-access approval.
+
+**Open choices retained:** backpack hinge access remains the deliberately open
+challenge; lowering and final exit are undesigned. Pull-in lanyards remain
+accepted as a mechanic. No change here grants acceptance to the wider journey.
 
 ## Left leg completed — 2026-10-26
 
@@ -333,7 +366,7 @@ Use `./play.command -- --stage=complete` for the complete structure; use normal
 progress or a relevant earlier stage to operate the gantry during assembly.
 
 - [ ] From ground level, inspect both foundations and columns. Do recessed anchors, covers, bevels and restrained wear read as fixed machinery? Does the crosshead lettering sit naturally on the face?
-- [ ] Ride both elevators and walk the 8.4, 11.2, 14.0 and 16.4 m levels. Check tread contrast, edge strips and level labels; note texture repetition or shimmer.
+- [ ] Ride both elevators and inspect tread contrast, edge strips and level labels; note texture repetition or shimmer. The old 11.2/14/16.4 checks are superseded on gantry v2 by the 8.4/20.6 recheck above.
 - [ ] Open/fold access wings, fingers and rear bridge as the build requires. Watch joints and guards for visible clipping, seams or drifting detail through motion.
 - [ ] Aim at and operate the four gantry jaw handles. Their shapes, outlines and prompts should remain easy to distinguish from decorative fasteners.
 - [ ] Inspect the rear core/backpack opening and aft lifting well. Check that existing approach, connection sight lines and cable routes remain visually understandable.
