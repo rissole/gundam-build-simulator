@@ -215,6 +215,16 @@ func run() -> void:
 	refusal("travel+","LEFT HIP","travel needs this leg's hip notch")
 	var notches: Array=rail.notches()
 	expect(notches.map(func(n):return n.x)==[float(spec.lanes.left),float(spec.station_x),float(spec.lanes.parking)],"lever has left, build/right and park notches")
+	# The small fixture's ankle/toe misses head-end obstacles. Supply the actual
+	# LG-120 hip-ball dimensions for this full loaded table sweep (Y9.2, R0.45).
+	var hip_ball=CollisionShape3D.new();hip_ball.shape=SphereShape3D.new();hip_ball.shape.radius=.45
+	game.runtime.node("left_leg").add_child(hip_ball);hip_ball.position=Vector3(0,9.2,0)
+	var table_from=rail._state();table_from.index_x=float(spec.lanes.left)
+	var table_to=table_from.duplicate();table_to.index_x=float(spec.lanes.parking)
+	rail.load_geometry.invalidate()
+	var table_error: String=rail.motion_error(table_from,table_to)
+	expect(table_error.is_empty(),"loaded hip ball clears physical controls across every table notch: "+table_error)
+	hip_ball.free();rail.load_geometry.invalidate()
 	game.manual_control_guidance={"machine":rail,"objective":{"command":"travel:bay"}}
 	rail._refresh();var table_ghost: Transform3D=rail.ghost.global_transform
 	lever(spec.lanes.parking,false);tick(2)
