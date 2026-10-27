@@ -300,6 +300,12 @@ more satisfying." Findings and decisions:
 - Third round, 2026-10-28: the stick's floating lamp text is removed (the E
   prompt still explains a locked stick). The ghost now moves to the next
   objective's target as soon as that step is current, with no control input.
+- Fourth round, 2026-10-28 (routine checks; no rendered review): the leg rig
+  ghost is dimmer and more translucent (lower alpha, less bright tint). Both
+  gantry banks are now panels hung from the yellow front guard rail of each
+  hinge apron at (3.92, 8.4/20.6, 23.30), facing the apron, so nothing stands
+  on the walkway. The earlier visibility figures were not re-measured.
+- [x] Accepted by the player on 2026-10-28: dimmer ghost and rail-hung panels.
 
 ### Operated rigs open questions — Phase 1
 

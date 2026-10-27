@@ -197,14 +197,17 @@ new circuit and deck presentation await the player's recheck.
 
 ## Rope operation and guidance — 2026-10-27
 
-Physical **LOWER GANTRY / OPEN / CLOSE** is on the fixed left lift hinge apron
-at **(4.80, 8.4, 24.40), yaw −90°**; **UPPER GANTRY / OPEN / CLOSE** is on its
-fixed upper apron at **(4.55, 20.6, 24.35), yaw −75°**. Each bank has only its
-own row; the ground bank is removed. Lower moves the 8.4 m wings/fingers and rear
+Physical **LOWER GANTRY / OPEN / CLOSE** and **UPPER GANTRY / OPEN / CLOSE**
+are panels hung from the yellow front guard rail of each fixed left lift hinge
+apron, at **(3.92, 8.4, 23.30)** and **(3.92, 20.6, 23.30)**, facing +Z onto the
+apron (2026-10-28; the earlier pedestals on the aprons obstructed walking). The
+panels stay outside the apron and west of X 4.3, where the open lower wing's side
+rail lies. Each bank has only its own row; the ground bank is removed. Lower moves the 8.4 m wings/fingers and rear
 guards/leaves; upper moves the 20.6 m leaves. Independent tap/reversal behavior,
 manual wording, machine waits and the crane console remain unchanged.
 
-A temporary real-scene probe used the standing **1.63 m** eye, **75°** vertical
+The visibility figures below were measured from the earlier pedestal banks and
+have not been re-measured for the rail panels. A temporary real-scene probe used the standing **1.63 m** eye, **75°** vertical
 FOV and **1440×900** viewport, aiming at both buttons from (3.90, 8.4, 25.22) /
 (3.80, 20.6, 25.25). Minimum **in-frustum and unoccluded** fractions at
 closed / half / open were **85 / 85 / 63.75%** for the nearer lower wing,

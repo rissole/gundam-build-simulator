@@ -15,9 +15,10 @@ func _init(shared: AssemblyRuntime) -> void:
 	runtime = shared
 	material.shader = GLOW
 	material.set_shader_parameter("glow_color",Color("80cdd9"))
-	material.set_shader_parameter("dim_alpha",.10)
-	material.set_shader_parameter("bright_alpha",.30)
-	material.set_shader_parameter("rim_alpha",.15)
+	material.set_shader_parameter("brightness",.85)
+	material.set_shader_parameter("dim_alpha",.06)
+	material.set_shader_parameter("bright_alpha",.18)
+	material.set_shader_parameter("rim_alpha",.10)
 	runtime.model.changed.connect(invalidate)
 	visible = false
 

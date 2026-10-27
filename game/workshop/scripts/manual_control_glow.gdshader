@@ -9,6 +9,7 @@ uniform float pulse_seconds = 1.4;
 uniform float dim_alpha = 0.12;
 uniform float bright_alpha = 0.55;
 uniform float rim_alpha = 0.35;
+uniform float brightness = 1.4;
 
 void vertex() {
 	// Separate the duplicate surface just enough to avoid coplanar flicker.
@@ -18,6 +19,6 @@ void vertex() {
 void fragment() {
 	float pulse = 0.5 - 0.5 * cos(TIME * 6.28318530718 / pulse_seconds);
 	float rim = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 2.0);
-	ALBEDO = glow_color.rgb * 1.4;
+	ALBEDO = glow_color.rgb * brightness;
 	ALPHA = clamp(mix(dim_alpha, bright_alpha, pulse) + rim * rim_alpha, 0.0, 1.0);
 }

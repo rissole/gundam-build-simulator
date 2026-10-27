@@ -99,8 +99,12 @@ func _check_panels() -> void:
 		var tag="8.4" if lower else "20.6"
 		var front="lower" if lower else "upper"
 		var apron=bounds("wing_hinge_left_"+tag+"_floor")
-		var foot=bank.global_transform*AABB(Vector3(-.04,0,-.04),Vector3(.08,.01,.08))
-		expect(is_equal_approx(bank.position.y,float(tag)) and apron.grow(.011).encloses(foot) and bank.get_parent()==access,"bank stands on its fixed left lift hinge apron at "+tag)
+		var rail=bounds("hinge_front_guard_left_"+tag+"_rail_0")
+		var panel=panel_bounds(bank)
+		var walkway=AABB(apron.position+Vector3(0,apron.size.y,0),Vector3(apron.size.x,2,apron.size.z))
+		var hung=panel.any(func(box):return box.grow(.005).intersects(rail))
+		var clear=panel.all(func(box):return not box.intersects(walkway.grow(-.03)))
+		expect(is_equal_approx(bank.position.y,float(tag)) and hung and clear and bank.get_parent()==access,"bank hangs on its hinge front guard rail, off the apron walkway at "+tag)
 		var entries=access.controls().filter(func(entry):return bank.is_ancestor_of(entry.node))
 		expect(entries.map(func(entry):return entry.action)==[front+"_open",front+"_close"],"bank row matches its level at "+tag)
 		var envelopes=panel_bounds(bank)

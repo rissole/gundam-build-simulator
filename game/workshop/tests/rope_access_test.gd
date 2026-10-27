@@ -199,7 +199,7 @@ func run() -> void:
 	access.request("upper_close");access.request("lower_close");access.physics(1)
 	# Real E/targeting route at the two fixed banks; supplied poses isolate the
 	# control contract rather than asserting workshop walking or readability.
-	place(Vector3(3.9,8.4,25.22));game.player_controller.update_crouch(false,1);await frames(1)
+	place(Vector3(3.92,8.4,24.2));game.player_controller.update_crouch(false,1);await frames(1)
 	expect(access.controls().size()==4 and rope.on_floor() and aim_panel("lower_open"),"Lower Open is targetable from its supported 8.4 m landing at normal reach")
 	key(KEY_E,true);key(KEY_E,false);access.physics(1)
 	expect(access.front_open("lower") and access.front_closed("upper"),"E at the 8.4 m panel opens only the lower front")
@@ -208,7 +208,7 @@ func run() -> void:
 	expect(access.front_open("lower") and access.request("lower_close").contains("Resume"),"Paused E and direct requests cannot move the lower front")
 	game.paused=false;key(KEY_E,true);key(KEY_E,false);access.physics(1)
 	expect(access.front_closed("lower") and access.front_closed("upper"),"Lower Close preserves the upper front")
-	place(Vector3(3.8,20.6,25.25));await frames(1)
+	place(Vector3(3.92,20.6,24.2));await frames(1)
 	expect(rope.on_floor() and aim_panel("upper_open"),"Upper panel stands beside a supported fixed landing and is normally targetable")
 	rope.ropes[FRONT].deployed=true
 	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
@@ -225,7 +225,7 @@ func run() -> void:
 	expect(access.request("upper_open").is_empty(),"Upper Open accepts a pending trip with a leaf rider")
 	access.physics(.1)
 	expect(access.blocked_reason.contains("Step off") and access.channels["20.6"].value==0,"Upper rider still holds the accepted trip")
-	place(Vector3(3.8,20.6,25.25));await frames(1);access.physics(1)
+	place(Vector3(3.92,20.6,24.2));await frames(1);access.physics(1)
 	expect(access.front_open("upper"),"Moving onto the fixed landing releases the pending upper swing")
 	aim_panel("upper_close");key(KEY_E,true);key(KEY_E,false);access.physics(1)
 	place(Vector3(9.3,20.6,24.1));await frames(1)

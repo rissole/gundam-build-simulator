@@ -24,24 +24,27 @@ func setup(workshop: Node3D, geometry: Node3D) -> void:
 	_make_upper_controls()
 	_pose()
 
-## Single-row banks on the fixed left hinge aprons. The low fascia and measured
-## facing angles keep the near wing/leaf in view without blocking the lift route.
+## Single-row panels hung from the yellow front guard of each fixed left hinge
+## apron. They sit outside the apron edge, so nothing stands on the walkway, and
+## face the apron with the robot and the near wing beyond them.
 func _make_upper_controls() -> void:
 	if not blockout.spec.has("elevators"):return
 	var origin=Codec.to_vector(blockout.spec.elevators.left.origin)
 	var steel=game.material(Color("485f68"),.6)
-	for row in [["lower","LOWER GANTRY",8.4,Vector2(2.9,.35),-90.0],["upper","UPPER GANTRY",20.6,Vector2(2.65,.30),-75.0]]:
+	for row in [["lower","LOWER GANTRY",8.4],["upper","UPPER GANTRY",20.6]]:
 		var bank=StaticBody3D.new();add_child(bank)
-		bank.position=Vector3(origin.x+row[3].x,row[2],origin.z+row[3].y)
-		bank.rotation.y=deg_to_rad(row[4])
-		for member in [[Vector3(0,.25,0),Vector3(.08,.50,.08)],[Vector3(0,.74,0),Vector3(.64,.48,.08)]]:
+		# The guard's top rail runs at X+2.11, Z-.79 from the lift, 1.06 m up.
+		# Panel back meets its apron-side face; the clamp wraps the rail. It stays
+		# west of X4.3, where the open lower wing's side rail lies along the guard.
+		bank.position=Vector3(origin.x+2.02,row[2],origin.z-.75)
+		for member in [[Vector3(0,1.02,-.04),Vector3(.30,.12,.16)],[Vector3(0,.78,0),Vector3(.64,.48,.04)]]:
 			game.box(bank,member[0],member[1],steel)
 			var shape=CollisionShape3D.new();shape.shape=BoxShape3D.new();shape.shape.size=member[1];shape.position=member[0];bank.add_child(shape)
-		var label=Label3D.new();bank.add_child(label);label.position=Vector3(0,.83,.05)
+		var label=Label3D.new();bank.add_child(label);label.position=Vector3(0,.87,.03)
 		label.text=row[1];label.font_size=32;label.pixel_size=.0018;label.outline_size=0
 		for control in [["open","OPEN",-.17],["close","CLOSE",.17]]:
 			var action: String=row[0]+"_"+control[0]
-			var key=preload("res://scripts/equipment_button.gd").make(game,bank,Vector3(control[2],.65,.075),control[1],0,control[0]=="close")
+			var key=preload("res://scripts/equipment_button.gd").make(game,bank,Vector3(control[2],.69,.055),control[1],0,control[0]=="close")
 			upper_controls.append(control_entry(key,action,manual_subject({"command":action})+" · "+control[1].capitalize(),.13,{"point":key.global_position}))
 
 func controls() -> Array[Dictionary]:return upper_controls
