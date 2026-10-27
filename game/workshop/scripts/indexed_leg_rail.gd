@@ -76,6 +76,13 @@ func setup(workshop: Node3D, scene_layout: Node3D) -> void:
 	ghost=RigTarget.new(game.runtime);game.add_child(ghost)
 	game.model.changed.connect(_model_changed)
 	_pose()
+	_follow_guidance.call_deferred()
+
+## The manual guidance is built after equipment. A new objective re-aims the
+## ghost at once, before any control moves.
+func _follow_guidance() -> void:
+	var guide=game.get("manual_control_guidance")
+	if guide is Object and guide.has_signal("objective_changed"):guide.objective_changed.connect(_refresh);_refresh()
 
 ## Physical controls, each beside its mechanism (layout `rail.controls`).
 func build_controls() -> void:
@@ -123,7 +130,7 @@ func _key(panel: Node3D, action: String, caption: String, at: Vector3) -> void:
 	buttons.append(control_entry(key,action,action,.11))
 
 ## A stick in an open gate. From the sole (+Z view), +X is screen-left:
-## PARK, a long gap, BUILD, a short gap, LEFT HIP. Only interlock lamps carry text.
+## PARK, a long gap, BUILD, a short gap, LEFT HIP. No text: the E prompt explains a lock.
 func _lever(at: Vector3) -> void:
 	var base=Node3D.new();base.name="TransferStick";add_child(base);base.position=at
 	base.rotation.y=deg_to_rad(float(spec.controls.lever_yaw))
@@ -149,11 +156,6 @@ func _lever(at: Vector3) -> void:
 	var knob=game.box(lever_pivot,Vector3(0,1.02,0),Vector3(.14,.14,.14),game.material(Color("e8b46b"),.3))
 	EquipmentButton.set_hold_handler(knob,_hold.bind("lever"))
 	buttons.append(control_entry(knob,"lever","lever",.2))
-	lamps["lever"]=[]
-	for row in range(4):
-		var lamp=Label3D.new();base.add_child(lamp);lamp.position=Vector3(.50,.66-row*.09,-.23)
-		lamp.rotation.y=PI;lamp.font_size=18;lamp.pixel_size=.0013;lamp.outline_size=0
-		lamp.horizontal_alignment=HORIZONTAL_ALIGNMENT_LEFT;lamps.lever.append(lamp)
 
 ## Single source for slot offsets, stick angles and destination X. Slot gaps
 ## are exactly 1:2; the stick intersects the gate at each corresponding offset.

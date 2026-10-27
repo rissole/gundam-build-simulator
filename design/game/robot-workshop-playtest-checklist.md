@@ -208,6 +208,9 @@ unmerged, and the questions below still apply to whatever replaces it.
 
 ### Operated leg rig v2 and gantry fronts — ready to play 2026-10-28
 
+**Accepted by the user and merged to main, 2026-10-28.** Unticked rechecks below
+stay open as usability notes, not blockers.
+
 Built on gantry v2 (`operated-rigs`). Automated: 28 routine suites; the leg, arm,
 cassette, preflight and chest diagnostics pass; `head_crane_test` fails the same
 15 stale "Parts for this step" HUD checks as `main`. A real-scene probe docks and
@@ -294,6 +297,9 @@ more satisfying." Findings and decisions:
   "the right end (LEFT HIP)".
 - [ ] Recheck all of the above: panel and stick reach, the view of the
   machinery while operating, and whether "right end (LEFT HIP)" reads clearly.
+- Third round, 2026-10-28: the stick's floating lamp text is removed (the E
+  prompt still explains a locked stick). The ghost now moves to the next
+  objective's target as soon as that step is current, with no control input.
 
 ### Operated rigs open questions — Phase 1
 

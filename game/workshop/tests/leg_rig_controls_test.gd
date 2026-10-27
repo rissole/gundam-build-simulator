@@ -162,7 +162,7 @@ func run() -> void:
 	expect(is_zero_approx(stick.rotation.y) and spec.controls.lever[2]<9.4,"stick faces the sole from the foot end with +X to the viewer's left")
 	expect(stick.get_node_or_null("Gate")!=null,"stick has a physical gate plate")
 	var stick_text=stick.find_children("*","Label3D",true,false)
-	expect(stick_text.size()==rail.lamps.lever.size() and stick_text.all(func(label):return label in rail.lamps.lever),"lever text consists only of interlock lamps: no destination plates or sign")
+	expect(stick_text.is_empty() and not rail.lamps.has("lever"),"the stick carries no text: no plates, sign or lamps")
 	expect(rail.manual_control_actions({"command":"table:park"}).is_empty(),"transfer stick never receives a manual glow")
 	for side in [-1,1]:
 		expect(rail.buttons.any(func(entry):return entry.action=="support" and entry.node==holder.cradle.pieces["BolsterPad_"+str(side)].visual),"support drag is attached to pad "+str(side))
@@ -304,6 +304,15 @@ func run() -> void:
 	game.manual_control_guidance.machine=access;rail._refresh()
 	expect(not rail.ghost.visible,"another machine's objective hides the leg ghost")
 	game.manual_control_guidance.machine=rail
+	# The real guidance announces each new objective; the ghost follows with no control input.
+	var fake_guide=game.manual_control_guidance
+	var guide=preload("res://scripts/manual_control_guidance.gd").new();game.add_child(guide)
+	guide.machine=rail;guide.objective={"command":"support:away"}
+	game.manual_control_guidance=guide;rail._follow_guidance()
+	expect(not rail.ghost.visible,"a support objective shows no ghost")
+	guide.objective={"command":"travel:bay"};guide.objective_changed.emit()
+	expect(rail.ghost.visible and rail.ghost.global_transform.is_equal_approx(rail.objective_target()),"the next objective's ghost appears as soon as it is current")
+	guide.objective_changed.disconnect(rail._refresh);game.manual_control_guidance=fake_guide;guide.free()
 	rail.set_jog("travel+");tick()
 	expect(rail.travel_z>spec.home_z and rail.blocked_reason.is_empty(),"travel starts immediately without crossing gates")
 	expect(rail.ghost.global_transform.is_equal_approx(ghost_pose),"ghost stays fixed while travel moves")
@@ -389,12 +398,13 @@ func run() -> void:
 	finish()
 
 ## Check each condition against both the box's data and its actual label color.
+## The stick has no lamps: its conditions are data behind its E prompt.
 func lamp(box: String, label: String, ok: bool) -> void:
 	rail._refresh()
 	var needs: Array=rail._box_needs(box)
 	var row: int=needs.find_custom(func(need):return need.label==label)
 	var matches: bool=row>=0 and needs[row].ok==ok
-	if row>=0:
+	if row>=0 and rail.lamps.has(box):
 		var light: Label3D=rail.lamps[box][row]
 		matches=matches and light.visible and light.text=="● "+label and light.modulate.is_equal_approx(Rail.GREEN if ok else Rail.RED)
 	expect(matches,box+" lamp "+label+" is "+("green" if ok else "red"))

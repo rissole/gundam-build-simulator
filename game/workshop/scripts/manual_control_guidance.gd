@@ -4,6 +4,8 @@ extends Node3D
 const Outline = preload("res://scripts/interaction_outline.gd")
 const MAX_CONTROLS = 8
 const RANGE = 10.0
+## Emitted when the tracked objective changes, so a machine's ghost can follow it.
+signal objective_changed
 var game: Node
 var objective: Dictionary = {}
 var machine: Node
@@ -31,6 +33,11 @@ func setup(workshop: Node) -> void:
 	refresh()
 
 func refresh() -> void:
+	var previous: Array = [objective,machine]
+	_select()
+	if [objective,machine]!=previous:objective_changed.emit()
+
+func _select() -> void:
 	clear()
 	objective = {}
 	machine = null

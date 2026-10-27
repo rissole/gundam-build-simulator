@@ -257,6 +257,13 @@ across reparenting. Five focused routines pass; a tiny Forward+ reproduction
 changes from two engine errors to zero. Full-scene smoothness needs a restart and
 [player recheck](robot-workshop-playtest-checklist.md#left-leg-docking-renderer-errors--2026-10-27).
 
+**Accepted and merged (2026-10-28):** the operated leg rig v2 and the split
+gantry controls (LOWER GANTRY at 8.4 m, UPPER GANTRY at 20.6 m, beside the left
+lift). The crane waits for the player to open each gantry. The user accepted it
+after two playtest rounds
+([notes](robot-workshop-playtest-checklist.md#operated-leg-rig-v2-and-gantry-fronts--ready-to-play-2026-10-28)).
+The foot rig and the other machines are not converted yet.
+
 **In progress (2026-10-27):** [machine operation](handoff/operated-machines/README.md).
 Gantry gap and mirror fixes are merged and player-accepted. The crane operator view
 was rejected and not merged; the crane keeps its console. Operated rig controls are
@@ -279,6 +286,13 @@ checks; retain the broader playtest and lane-marking obligations below.
 
 ## Active rules
 
+- **Operated machines (user, 2026-10-27/28):** one control operates one mechanism;
+  no machine operates another, and nothing enters the gantry unless the player has
+  opened it (machines query and wait). Looking at a control, the player should see
+  the machinery it operates. The manual's gold glow marks only small on-rig
+  controls (pins, latches, handles, the foot support, the leg clamps switch). Panel
+  buttons, consoles and the transfer stick never glow, and a control's glow rests
+  while E holds it. E reports a refusal only for an action its prompt offered.
 - **Player language:** the component is **Hip assembly** (lowercase in prose); `pelvis` remains its internal ID. A bay is a crane destination (Heavy Module Bay, Limb Bay, Foot Bay, Final Assembly Bay, Parking bay). Every holder except the gantry is a rig. The gantry is the only named machine. Crane lines are crane cables; the ends are magnetic connectors. Internal ids stay as they are.
 - **The user owns playtesting** of walking, visibility, reach and connection access.
   Automated checks cover content, equipment movement, support ownership and
