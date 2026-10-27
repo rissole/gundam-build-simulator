@@ -12,7 +12,6 @@ var channels: Dictionary = {}
 var requested_mode = "work"
 var moving = false
 var blocked_reason = ""
-var arm_services_stowed = false
 
 func setup(workshop: Node3D, geometry: Node3D) -> void:
 	game = workshop;blockout = geometry;spec = geometry.spec.access
@@ -33,7 +32,6 @@ func frames_at(values: Dictionary) -> Dictionary:
 			"wing":frame.basis *= Basis(Vector3.UP,deg_to_rad(90)*clampf((p-.25)/.75,0,1)*(1 if record.side=="left" else -1))
 			"finger":
 				var extended = 1-clampf(p/.25,0,1)
-				if record.level==11.2 and arm_services_stowed:extended = 0
 				frame.origin.z += record.extension*extended*(1 if record.side=="left" else -1)
 			"gate":
 				# Stow inboard behind the closed wing, preserving the measured
@@ -104,11 +102,11 @@ func status_text() -> String:
 	return "Access / "+requested_mode+(" · moving" if moving else " · stopped")
 
 func capture() -> Dictionary:
-	return {"version":1,"channels":channels.duplicate(true),"mode":requested_mode,"moving":moving,"arm_services_stowed":arm_services_stowed}
+	return {"version":1,"channels":channels.duplicate(true),"mode":requested_mode,"moving":moving}
 
 func validate(data: Variant, _candidate: AssemblyModel = null, _world: Dictionary = {}) -> Array[String]:
-	if not Codec.same_keys(data,["version","channels","mode","moving","arm_services_stowed"]) or data.version!=1:return ["Invalid access-platform snapshot."]
-	if not data.mode is String or not data.mode in spec.modes or not data.moving is bool or not data.arm_services_stowed is bool:return ["Invalid access-platform mode."]
+	if not Codec.same_keys(data,["version","channels","mode","moving"]) or data.version!=1:return ["Invalid access-platform snapshot."]
+	if not data.mode is String or not data.mode in spec.modes or not data.moving is bool:return ["Invalid access-platform mode."]
 	if not Codec.same_keys(data.channels,channels.keys()):return ["Access-platform identities changed."]
 	var goals = _goals(data.mode)
 	for key in channels:
@@ -122,4 +120,4 @@ func validate(data: Variant, _candidate: AssemblyModel = null, _world: Dictionar
 func apply(data: Dictionary) -> void:
 	if not validate(data).is_empty():return
 	channels = data.channels.duplicate(true);requested_mode = data.mode;moving = data.moving
-	arm_services_stowed = data.arm_services_stowed;blocked_reason = "";_pose()
+	blocked_reason = "";_pose()
