@@ -4846,6 +4846,10 @@
           "view": "components",
           "slots": [],
           "goal": "Lock the waist straight, crane the hip assembly onto the gantry and close its jaws.",
+          "note": {
+            "at": 8,
+            "text": "Close the workshop-side leaves, take the left lift to ROPE ACCESS and descend to the lifting eyes. Land, unclip and recall the rope before moving the crane."
+          },
           "objectives": [
             {
               "op": "operate",
@@ -5223,7 +5227,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Stand at the hip end of the lift's working corner to see the far washer seats."
+            "text": "Work from the 8.4 m hip decks and front wings; insert each washer and bolt upward from the underside."
           },
           "diagram_views": [
             {
@@ -5877,7 +5881,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Stand at the hip end of the lift's working corner to see the far washer seats."
+            "text": "Work from the 8.4 m hip decks and front wings; insert each washer and bolt upward from the underside."
           },
           "diagram_views": [
             {
@@ -6579,7 +6583,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "The bolts go downward into the waist threads."
+            "text": "Use workshop-side ropes for the front bolts and exit-side ropes for the rear bolts; insert them downward. Recall front ropes before parking the crane."
           },
           "diagram_views": [
             {
@@ -11107,7 +11111,7 @@
           "slots": [
             "core"
           ],
-          "goal": "Crane the core to the chest's rear dock and guide it in.",
+          "goal": "Crane the core to the chest's rear dock, then guide it in from an exit-side rope.",
           "objectives": [
             {
               "op": "operate",
@@ -11171,7 +11175,7 @@
           ],
           "note": {
             "at": 7,
-            "text": "Keep the aft connector attached."
+            "text": "Take the right lift to ROPE ACCESS for the exit-side ropes; keep the aft connector attached."
           },
           "diagram_views": [
             {
@@ -12178,7 +12182,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "The seam keys only fit one way round."
+            "text": "Use a workshop-side rope from the left lift's ROPE ACCESS stop. The seam keys only fit one way round."
           }
         },
         {
@@ -12747,7 +12751,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "The seam keys only fit one way round."
+            "text": "Use a workshop-side rope from the left lift's ROPE ACCESS stop. The seam keys only fit one way round."
           }
         },
         {
@@ -13290,7 +13294,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Carry it up on the lift shelf with two hands."
+            "text": "Take it on the left lift's shelf to ROPE ACCESS, then carry it with two hands while descending a workshop-side rope."
           }
         },
         {
@@ -13562,7 +13566,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Carry it up on the lift shelf with two hands."
+            "text": "Take it on the left lift's shelf to ROPE ACCESS, then carry it with two hands while descending a workshop-side rope."
           }
         },
         {
@@ -13854,7 +13858,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Work from the open front: the rear pair uses the deeper tool lane."
+            "text": "Descend a workshop-side rope from the left lift's ROPE ACCESS stop; the rear pair uses the deeper tool lane."
           }
         },
         {
@@ -14728,7 +14732,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Rear bolts enter from the rear flanks; front bolts from the front landing."
+            "text": "Use exit-side ropes for the rear bolts and workshop-side ropes for the front bolts."
           },
           "machine_scope": {
             "service_crane": {
@@ -14783,7 +14787,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Carry it up on the lift shelf. From 1 m forward, slide straight back."
+            "text": "Take it on the left lift's shelf to ROPE ACCESS, then carry it down a workshop-side rope. From 1 m forward, slide straight back."
           }
         },
         {
@@ -14917,7 +14921,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Carry it up on the lift shelf. From 18 cm forward, slide straight back."
+            "text": "Take it on the left lift's shelf to ROPE ACCESS, then carry it down a workshop-side rope. From 18 cm forward, slide straight back."
           }
         },
         {
@@ -15004,7 +15008,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Carry it up on the lift shelf, then lower it onto the two hooks."
+            "text": "Take it on the left lift's shelf to ROPE ACCESS, then carry it down a workshop-side rope. Lower it onto the two hooks."
           }
         },
         {
