@@ -206,10 +206,40 @@ arrows) is "awful". Findings, in the user's terms:
 Status: [control interface v2](robot-workshop-plan.md#leg-rig-control-interface-v2-2026-10-27-approved) was agreed in discussion (drag the foot support, a transfer table lever, a combined RISE, E taps on the clamps, a simple gantry front, no crossing gates). The user approved it on 2026-10-27. The branch controller stays
 unmerged, and the questions below still apply to whatever replaces it.
 
+### Operated leg rig v2 and gantry fronts — ready to play 2026-10-28
+
+Built on gantry v2 (`operated-rigs`). Automated: 28 routine suites; the leg, arm,
+cassette, preflight and chest diagnostics pass; `head_crane_test` fails the same
+15 stale "Parts for this step" HUD checks as `main`. A real-scene probe docks and
+returns both legs. No presentation or player acceptance is claimed. Launch
+`./play.command -- --stage=left_leg_dock`.
+
+- [ ] Leg rig controls, one mechanism each: drag the foot support (hold E on its
+  pad and walk), throw the transfer table lever (LEFT HIP · RIGHT HIP/BUILD ·
+  PARK), the bogie box (TO BAY / TO TABLE, RISE / LOWER, NEXT LEG), the turnover
+  box (now at X19.5 Z19.8, moved out of the table's path to PARK) and the LEG
+  CLAMPS switch by the foot. Are the lamps enough to know what is still needed?
+- [ ] The ghost shows only the current manual objective's target. Does it stay
+  put while you work other controls?
+- [ ] Gantry fronts: LOWER FRONT is a new OPEN/CLOSE row under UPPER LEAVES on
+  both panel banks beside the left lift (ground and 20.6 m). RISE needs it open;
+  CLOSE refuses while the leg is tilted up but not yet seated.
+- [ ] Decision taken for you (reversible): **the crane never opens the gantry.**
+  It waits with "Open the upper leaves (UPPER LEAVES panel beside the left
+  lift)" before every crossing, including the empty return to park, and arm
+  deliveries wait for the lower front. The manual adds OPEN/CLOSE steps to every
+  crane delivery page. Is that worth the extra trips to the panel, or should the
+  crane keep v2's automatic opening?
+- [ ] Clearances are tight but measured: the bogie box clears the rig's travel by
+  40 mm and the turnover box clears the table by 150 mm (conservative bounds).
+
 ### Operated rigs open questions — Phase 1
 
-The leg rig is converted on the `operated-rigs` branch (2026-10-27) and has
-routine mechanical checks only. The foot rig is not converted, and no presentation
+These questions were written for the rejected v1 rig. Items about the 2 m
+panels, INDEX stops, REACQUIRE, BOLSTER grouping and per-axis readouts are
+superseded by v2 (above); the jog speed, foot guide turn and ghost visibility
+questions still apply. The leg rig is converted on the `operated-rigs` branch
+(2026-10-27) and has routine mechanical checks only. The foot rig is not converted, and no presentation
 or player acceptance is claimed. The [B3/B5 design](robot-workshop-plan.md#operated-rigs--phase-1-design-2026-10-27)
 keeps the accepted foot building bay and physical access challenge. To play it,
 launch `./play.command -- --stage=left_leg_dock`. At checkpoint B:

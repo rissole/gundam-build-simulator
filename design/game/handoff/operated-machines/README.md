@@ -157,3 +157,18 @@ Astra for non-spatial work, per the user):
 Merge order R1, R3, R4; then remove the leg rig's temporary `has_method("front_open")`
 guard, rerun the dock probe for both legs and the routine suites, then the approved
 diagnostics, then the user's playtest (`./play.command -- --stage=left_leg_dock`).
+
+### Re-plan merged — 2026-10-28
+
+R1 (`8ef5e82`), R3 (`bce5a1f`), R4 (`472dda7`) and R5 (`a8a2bb8`, turnover box moved
+to X19.5 Z19.8 because it blocked the loaded table's path to PARK) are merged.
+Integration fixes: front OPEN/CLOSE effects set both end-state keys; the leg
+rig's `at_hip` state no longer requires the bogie on the table; the stage driver
+moves the rope gates with the leaves while settling (in play they follow every
+frame); the chest and head diagnostics open the upper leaves. Results: 28 routine
+suites pass; `indexed_leg_rail_test`, `arm_delivery_test`, `arm_cassette_test`,
+`arm_preflight_test` and `chest_delivery_test` pass; `head_crane_test` fails the
+same 15 HUD checks as `main`. Real-scene probe: both legs dock and return; both
+fronts end closed. Next: the user's playtest
+([checklist](../../robot-workshop-playtest-checklist.md#operated-leg-rig-v2-and-gantry-fronts--ready-to-play-2026-10-28)).
+Not yet converted: the foot rig (B5) and the remaining operated machines.
