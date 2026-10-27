@@ -90,7 +90,7 @@ static func run(h) -> void:
 				h.expect(Objectives.display_indices(page,procedure).all(func(i):return page.objectives[i].get("machine",page.objectives[i].get("via",{}).get("machine","")) not in ["service_crane","workshop_access"]),row.title+" hides repeated machine controls and retains independent work")
 			pages.append({"owner":row.owner,"page_index":row.page,"title":row.title,"goal":page.goal,"note":page.get("note",{}),"slots":page.slots,"objectives":page.objectives,"rendered_objective_text":texts,"displayed_objective_text":displayed,"procedure":procedure.get("label","") if procedure.get("repeat",false) else ""})
 			sequence(h,game,crane,front,row.owner,page,task)
-	h.write_evidence("res://verification/r3-gantry-pages.json",{"rendered_visual_review":false,"fronts":"R1 manual API stub; complementary effect keys clear the opposite state","routes":routes,"pages":pages})
+	h.write_evidence("res://verification/r3-gantry-pages.json",{"rendered_visual_review":false,"fronts":"manual API double kept identical to workshop_access by gantry_fronts_test","routes":routes,"pages":pages})
 	game.free()
 
 static func sequence(h, game, crane, front, owner: String, authored: Dictionary, task: String) -> void:

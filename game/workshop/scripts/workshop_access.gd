@@ -111,7 +111,10 @@ func manual_state() -> Dictionary:
 func manual_effect(objective: Dictionary) -> Dictionary:
 	var command: String=objective.get("command","")
 	if command not in MANUAL_COMMANDS:return {}
-	return {command+"d" if command.ends_with("_close") else command:true}
+	# Opening and closing are opposite end states; each clears the other so a
+	# page that opens then closes a front never expects both at once.
+	var front: String=command.get_slice("_",0)
+	return {front+"_open":command.ends_with("_open"),front+"_closed":command.ends_with("_close")}
 
 func physics(delta: float) -> void:
 	if game.paused or not moving:return

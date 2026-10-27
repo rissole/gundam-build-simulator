@@ -1,6 +1,6 @@
 extends "res://scripts/equipment.gd"
-## R1 contract stand-in for isolated manual tests only. No geometry or motion
-## integration is claimed. Replace with workshop_access when R1 is merged.
+## Manual-API double of workshop_access for isolated manual tests, with no
+## geometry or motion. gantry_fronts_test keeps it identical to the real fronts.
 const MANUAL_COMMANDS = ["upper_open","upper_close","lower_open","lower_close"]
 var fronts = {"upper":{"value":0.0,"goal":0.0,"moving":false},"lower":{"value":0.0,"goal":0.0,"moving":false}}
 var entries: Array[Dictionary] = []

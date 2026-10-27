@@ -73,9 +73,13 @@ func run() -> void:
 	occupant.free();operate("upper_close");operate("lower_close")
 	expect(access.manual_commands()==["upper_open","upper_close","lower_open","lower_close"],"manual commands follow panel order")
 	for action in access.manual_commands():
-		var key: String=action+"d" if action.ends_with("close") else action
+		var front: String=action.get_slice("_",0);var open=action.ends_with("_open")
 		var objective={"command":action}
-		expect(access.manual_effect(objective)=={key:true},action+" declares its matching completion state")
+		expect(access.manual_effect(objective)=={front+"_open":open,front+"_closed":not open},action+" declares its end state and clears the opposite one")
+		# Isolated manual tests stand in a stub for the fronts; keep its manual API identical.
+		var stub=preload("res://tests/kit/manual_fronts.gd").new()
+		expect(stub.manual_effect(objective)==access.manual_effect(objective) and stub.manual_subject(objective)==access.manual_subject(objective) and stub.manual_hint(objective)==access.manual_hint(objective) and stub.command_label(action)==access.command_label(action),action+" manual stub matches the real fronts")
+		stub.free()
 		expect(access.manual_control_actions(objective)==[action] and access.manual_control_entries(objective).size()==2,action+" cues either physical bank")
 		expect(access.manual_subject(objective)==("Upper leaves" if action.begins_with("upper") else "Lower front") and access.manual_hint(objective)==access.manual_subject(objective).to_upper()+" panel beside the left lift",action+" names the panel")
 		expect(access.command_label(action)==("Open" if action.ends_with("open") else "Close"),action+" uses the panel's verb")

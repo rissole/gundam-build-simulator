@@ -272,7 +272,7 @@ func manual_state() -> Dictionary:
 	var load: Dictionary=game.model.assemblies.get(active_assembly,{})
 	var mounted: bool=load.get("parent","")==receiver and load.get("parent_slot","")==receiver_slot
 	return {"active_assembly":active_assembly,"engaged":engaged,"support_away":foot_support>=1-EPS,
-		"at_hip":on_table() and absf(index_x-_lane_x())<=EPS,"at_bay":absf(travel_z-float(spec.bay_z))<=EPS,
+		"at_hip":absf(index_x-_lane_x())<=EPS,"at_bay":absf(travel_z-float(spec.bay_z))<=EPS,
 		"seated":mounted and _at_dock(),"lying":tilt_deg<=EPS,"on_table":on_table(),"at_station":at_station(),"home":at_home(),"parked":parked()}
 func _parking_x() -> float:
 	var lanes = spec.get("lanes",{})
@@ -334,7 +334,7 @@ func _needs(action: String) -> Array:
 	var braces=game.equipment.get_equipment("joint_restraints")
 	var brace_error: String=braces.required_error(active_assembly) if braces!=null and carrying else ""
 	var access=game.equipment.get_equipment("workshop_access")
-	var front_open: bool=access==null or not access.has_method("front_open") or access.front_open("lower")
+	var front_open: bool=access==null or access.front_open("lower")
 	var gantry=game.equipment.get_equipment("module_supports")
 	var at_build=_need("AT BUILD POSITION",carrying and at_station(),"Bring the leg to the build position first: transfer table lever to RIGHT HIP · BUILD.")
 	var under=_need("FOOT SUPPORT UNDER FOOT",foot_support==0,"Push the foot support back under the foot first (at the foot end of the rig).")

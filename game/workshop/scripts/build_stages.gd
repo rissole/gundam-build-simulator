@@ -201,7 +201,6 @@ func pull_support(rail: Node, goal: float) -> String:
 ## Nothing opens or closes either automatically.
 func gantry_front(front: String, open: bool) -> String:
 	var access=_equipment("workshop_access")
-	if not access.has_method("front_open"):return ""
 	if (access.front_open(front) if open else access.front_closed(front)):return ""
 	return command(access,front+("_open" if open else "_close"))
 
