@@ -227,8 +227,9 @@ is not a reason to allow remote fastening or disable obstruction handling.
 **Design only for B3/B5.** B1 supplies an opt-in Hold E callback on a physical
 button; B2 supplies `scripts/rig_target.gd`. Neither rig uses them yet. This section
 supersedes the NEXT-driven delivery design when those later tasks are implemented.
-Follow the [branch handoff](handoff/operated-machines/B-operated-rigs.md): merge A
-and complete **human checkpoint A before B3**; complete **checkpoint B before B5**.
+Follow the [branch handoff](handoff/operated-machines/B-operated-rigs.md): implement
+the leg slice now; complete **checkpoint B before B5**. B owns the shared manual
+first-use/repeat mechanism.
 Preserve the successful foot *building* bay and the useful physical access challenge
 recorded in the [machine-operation finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
 
@@ -414,7 +415,7 @@ shared save format policy, with **no migrations** from `path`/`goal` saves.
 B3 exposes axis-in-tolerance, braked/home, bolster-stowed, seated, retained and
 holder-released evidence through `manual_state()`, scoped by active assembly and
 receiving slot. Construction/return evidence must not depend on floor(path).
-B4 uses A's first-use/repeat mechanism: teach the left leg one axis at a time with
+B4 uses the shared first-use/repeat mechanism: teach the left leg one axis at a time with
 exact panel names and Hold E; right leg gets the goal plus procedure link. Design
 the manual and stage driver with the same axis commands and explicit SEAT, not a
 test-only shortcut to `install_supported`. No shared manual files change in Phase 1.
