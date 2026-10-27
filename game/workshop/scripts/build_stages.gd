@@ -157,11 +157,18 @@ func run_to(stage: String, progress: Callable = Callable()) -> String:
 func settle(controller: Node, limit: int = 1600) -> String:
 	for tick in range(limit):
 		if not controller.moving:return controller.blocked_reason
-		_equipment("workshop_access").physics(.1)
+		_access_physics()
 		controller.physics(.1)
 	# A held lift waits for its obstruction instead of refusing the request.
 	var held: String = str(controller.get("blocked_reason")) if controller.get("blocked_reason") != null else ""
 	return "Motion did not settle within "+str(limit)+" ticks."+("" if held.is_empty() else " "+held)
+
+## The gantry fronts, plus the rope gates that ride on the upper leaves; in play
+## both follow every frame, so a front opened mid-stage must move its gates too.
+func _access_physics() -> void:
+	_equipment("workshop_access").physics(.1)
+	var rope=_equipment("rope_access")
+	if rope!=null:rope.physics(.1)
 
 func command(controller: Node, action: String) -> String:
 	var step: String=controller.equipment_id+" "+action
@@ -177,7 +184,7 @@ func jog(controller: Node, action: String, limit: int = 1600) -> String:
 	if not error.is_empty():return step+": "+error
 	controller.set_jog(action)
 	for tick in range(limit):
-		_equipment("workshop_access").physics(.1)
+		_access_physics()
 		controller.physics(.1)
 		if controller.jog_settled():break
 	var settled: bool=controller.jog_settled();var held: String=controller.blocked_reason
