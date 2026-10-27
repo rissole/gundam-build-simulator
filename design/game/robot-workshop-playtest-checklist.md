@@ -155,8 +155,8 @@ rope status without a success toast, and added a 0.6→4.5 m/s ramp over about
   while the crane holds the part. Head/crown access and both rappel sides need
   real player feedback; automated geometry is not connection-access approval.
 
-- [ ] Use both physical UPPER LEAVES panels beside the left lift (ground and
-  fixed upper landing). Aim and press E for OPEN/CLOSE; confirm the panel stays
+- [ ] Use the UPPER GANTRY panel on the 20.6 m landing beside the left lift
+  (the ground bank was removed on 2026-10-28). Aim and press E for OPEN/CLOSE; confirm the panel stays
   clear through the swing. A stopped crane in the crossing holds Close, but a
   crane over the robot permits it. Manual glow leads to Close, then a rope station.
 
@@ -221,12 +221,12 @@ returns both legs. No presentation or player acceptance is claimed. Launch
   CLAMPS switch by the foot. Are the lamps enough to know what is still needed?
 - [ ] The ghost shows only the current manual objective's target. Does it stay
   put while you work other controls?
-- [ ] Gantry fronts: LOWER FRONT is a new OPEN/CLOSE row under UPPER LEAVES on
-  both panel banks beside the left lift (ground and 20.6 m). RISE needs it open;
+- [ ] Gantry: LOWER GANTRY OPEN/CLOSE stands on the 8.4 m landing and UPPER
+  GANTRY on the 20.6 m landing, both beside the left lift. RISE needs the lower open;
   CLOSE refuses while the leg is tilted up but not yet seated.
 - [ ] Decision taken for you (reversible): **the crane never opens the gantry.**
-  It waits with "Open the upper leaves (UPPER LEAVES panel beside the left
-  lift)" before every crossing, including the empty return to park, and arm
+  It waits with "Open the upper gantry (UPPER GANTRY panel at 20.6 m beside
+  the left lift)" before every crossing, including the empty return to park, and arm
   deliveries wait for the lower front. The manual adds OPEN/CLOSE steps to every
   crane delivery page. Is that worth the extra trips to the panel, or should the
   crane keep v2's automatic opening?
@@ -283,7 +283,17 @@ more satisfying." Findings and decisions:
   ("|____|__|"). The TRANSFER TABLE sign goes, and the stick moves down by the
   sole so you look at the rails while operating it. It starts in the detent
   matching the table, which begins at RIGHT HIP · BUILD.
-- [ ] Recheck all of the above after the panel and lever moves land.
+- Landed 2026-10-28 (routine checks plus the leg rail and arm rig diagnostics;
+  no rendered review). The LOWER GANTRY bank is at (4.80, 8.4, 24.40) and the
+  UPPER GANTRY bank at (4.55, 20.6, 24.35). From each bank, most of the nearer
+  wing or leaf is in the camera view at every phase. The rear leaves are not
+  visible (behind the robot), and a completed robot's arms may hide the closed
+  lower finger. The transfer stick is at (16.8, 0, 7.0) in front of the sole,
+  with detents 0.56 m / 0.28 m apart. Most of the rails and table stay in view
+  from every detent. Manual text names detents from the foot end, for example
+  "the right end (LEFT HIP)".
+- [ ] Recheck all of the above: panel and stick reach, the view of the
+  machinery while operating, and whether "right end (LEFT HIP)" reads clearly.
 
 ### Operated rigs open questions — Phase 1
 
