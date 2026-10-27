@@ -125,10 +125,12 @@ def contract():
             name=side, origin=[x,0,z], size=[2.6,2.6], levels=[.15,8.4,20.6],
             yaw_degrees=0, side_doors=True, shaft_size=[3.2,3.2],
             door_sides=[1,1,1] if side=="left" else [1,1,-1],
-            door_center_z=0, door_width=1.5, guide_top=20.2,
-            guide_carriage_y=-.6, guide_carriage_height=.8,
+            door_center_z=0, door_width=1.5, door_call_margin=.06, guide_top=20.2,
             panel_position=[1.1 if side=="left" else -1.1,1.1,-1.12],
-            guide_positions=[[-1.45,-1.45],[1.45,1.45]],
+            # Left rear shoe stays inboard of the outer-walk guard. Both
+            # right guides sit west of the car: the east shaft band overlaps
+            # the retained 8.4 outer walk, so it cannot contain a through rail.
+            guide_positions=[[-1.4,-1.45],[1.4,1.45]] if side=="left" else [[-1.45,-1.45],[-1.45,1.45]],
             shelf=dict(id=side+"_shelf",supports=[side+"_shelf_0",side+"_shelf_1"],
                        # Surface at +.65; the full panel tops out at +1.85.
                        position=[-.25 if side=="left" else .25,.61,-1],yaw_degrees=0,size=[1.5,.08,.4],
@@ -377,27 +379,41 @@ def contract():
             x0,x1=(3.5,5) if left else (21,22.5)
             apron=f"wing_hinge_{side}_{tag}"
             # Split the apron around the axle; the left lift landing stays open.
-            deck(apron,x0,hx-.20 if left else x1,23.4,24.7,level,[]) if left else deck(apron,hx+.20,x1,23.4,24.7,level,[])
+            deck(apron,x0 if left else hx+.20,hx-.20 if left else x1,23.4,24.7,level,[])
             for label,z0,z1 in [("front",23.4,23.8),("rear",24.2,24.7)]:
                 deck(apron+"_"+label,hx-.20 if left else hx,hx if left else hx+.20,z0,z1,level,[])
             if not left:
                 box(apron+"_right_rail",[22.54,level+1.06,24.05],[.08,.08,1.3],"yellow")
                 for z in [23.44,24.66]:box(apron+"_right_post_"+str(z),[22.54,level+.51,z],[.08,1.02,.08],"yellow")
-            box(f"hinge_front_guard_{side}_{tag}",[(x0+x1)/2+(-.35 if left else .35),level+1.06,23.32],[.8,.08,.08],"yellow")
+            if left:
+                # The lift replaces the west guard. Guard the two ends of its
+                # full-width landing instead, with the doorway unobstructed.
+                for edge,z in [("front",23.26),("rear",24.84)]:
+                    if edge=="rear" and level==8.4:continue # route onto retained outer walk
+                    guard_segments(f"hinge_{edge}_guard_{side}_{tag}",3.22,4.8,z,level)
+            else:
+                box(f"hinge_front_guard_{side}_{tag}",[(x0+x1)/2+.35,level+1.06,23.32],[.8,.08,.08],"yellow")
+                if level==20.6:
+                    guard_segments(f"hinge_rear_guard_{side}_{tag}",21,22.5,24.74,level)
             if level==8.4:
-                deck(f"outer_{side}_{tag}",x0,x1,24.7,37.3,level,["left" if left else "right","rear"])
+                deck(f"outer_{side}_{tag}",x0,x1,24.7,37.3,level,["rear"] if left else ["right","rear"])
+                if left:
+                    # The new lift doorway extends to Z24.8. Start its adjacent
+                    # walk guard beyond that opening, with the deck unchanged.
+                    bounds(f"outer_{side}_{tag}_left_rail",3.42,3.5,level+1.02,level+1.10,24.8,37.3,"yellow")
+                    for i,z in enumerate([24.84,37.26]):
+                        box(f"outer_{side}_{tag}_left_post{i}",[3.46,level+.51,z],[.08,1.02,.08],"yellow")
                 # Retain the hip entrance through the vacated old lift footprint.
-                for n,(z0,z1) in enumerate([(24.7,28.5),(30,37.3)]):
+                link_front,link_rear=(28.5,30) if left else (27.6,29.1)
+                inner_spans=[(24.7,link_front),(link_rear,37.3)] if left else [(24.7,link_front),(link_rear,30.25),(31.75,37.3)]
+                for n,(z0,z1) in enumerate(inner_spans):
                     gx=x1+.04 if left else x0-.04
                     box(f"outer_inner_{side}_{tag}_{n}",[gx,level+1.06,(z0+z1)/2],[.08,.08,z1-z0],"yellow")
-                deck("hip_link_"+side,5 if left else 17.8,8.2 if left else 21,28.5,30,level,["front","rear"])
-                # New right lift boards the inner edge at X21/Z31.
-                if not left:
-                    data["solids"]=[r for r in data["solids"] if not r["id"].startswith(f"outer_inner_{side}_{tag}_1")]
-                    for n,(z0,z1) in enumerate([(30,30.25),(31.75,37.3)],1):
-                        box(f"outer_inner_{side}_{tag}_{n}",[20.96,level+1.06,(z0+z1)/2],[.08,.08,z1-z0],"yellow")
-            gate=group(f"access_gate_{side}_{tag}",at=[(x0+x1)/2,level,24.85],joint="gate",level=level,stow_x=1.6 if left else -1.6)
-            box(gate,[0,.65,0],[1.5,.10,.08],"yellow",gate)
+                deck("hip_link_"+side,5 if left else 17.8,8.2 if left else 21,link_front,link_rear,level,["front","rear"])
+                # Retain the original lower outer-walk barrier. There is no
+                # upper outer walk to gate: those apron ends are fixed guards.
+                gate=group(f"access_gate_{side}_{tag}",at=[(x0+x1)/2,level,24.85],joint="gate",level=level,stow_x=1.6 if left else -1.6)
+                box(gate,[0,.65,0],[1.5,.10,.08],"yellow",gate)
             root=group(f"wing_{side}_{tag}",at=[hx,level,24],rotation=[0,0 if left else 180,0],joint="wing",side=side,level=level)
             data["groups"][root]["motion_contacts"]=[apron+"_floor"]
             deck(root,.20,7.98,-.6,.6,0,[],root)
@@ -414,6 +430,12 @@ def contract():
                 for station in stations:
                     x,_,z=station["anchor"]
                     box("rope_davit_"+station["id"],[x,1.2,(sign*.45+z)/2],[.10,.10,.30],"yellow",root)
+                    # Jamb-mounted arms: the innermost overlapping openings
+                    # share the last pier, leaving their entire 0.9 m clear.
+                    pier=3.80 if x==4.3 else 5.30 if x==5.8 else 6.35
+                    box("rope_davit_arm_"+station["id"],[(pier+x)/2,1.2,sign*.50],[x-pier+.10,.10,.10],"yellow",root)
+                for i,x in enumerate([3.80,5.30,6.35]):
+                    box(root+"_davit_pier_"+str(i),[x,.6,sign*.50],[.10,1.2,.10],"yellow",root)
                 box(root+"_mast",[.30,.825,-sign*.50],[.12,1.65,.12],parent=root)
                 tie=group(root+"_tie",parent=root,at=[3.90,1.40,-sign*.50],rotation=[0,0,math.degrees(math.atan2(-.50,7.2))])
                 box(root+"_tie_member",[0,0,0],[math.hypot(7.2,.50),.08,.08],parent=tie)
@@ -432,30 +454,30 @@ def contract():
 
     # Rear walkway: posts from the floor, never roof hangers. Shift the west
     # support just inboard of the retained 8.4 walk/guard (X<=5.08).
-    deck("rope_exit",5,18,30.3,31.7,20.6,[])
+    deck("rope_exit",5,16.5,30.3,31.7,20.6,[])
     guard_segments("rope_exit_front",5,16.5,30.26,20.6,[11,12.4,13.6,15])
     guard_segments("rope_exit_rear",5,16.5,31.74,20.6)
     box("rope_exit_west_guard",[4.96,21.15,31],[.08,1.1,1.4],"yellow")
     box("rope_exit_west_post",[5.24,10.2,31],[.24,20.4,.24])
     # 1.5 m square landing at the east end, from X16.5 to the shaft X18.
     deck("rope_exit_landing",16.5,18,30.25,31.75,20.6,["front","rear"])
-    for z in [29.55,32.45]:box("rope_exit_lift_post_"+str(z),[18.10,10.1,z],[.20,20.2,.20])
-    box("rope_exit_lift_header",[18.10,20.1,31],[.20,.20,3.10])
+    for z in [29.55,32.45]:box("rope_exit_lift_post_"+str(z),[17.90,10.1,z],[.20,20.2,.20])
+    box("rope_exit_lift_header",[17.90,20.1,31],[.20,.20,3.10])
     box("rope_exit_support",[17.3,20.3,31],[1.8,.2,.8])
     for station in data["rope_stations"]:
         if station["edge"]=="rear":
             x=station["anchor"][0]
             box("rope_boom_"+station["id"],[x,21.8,29.3],[.12,.12,2],"yellow")
+            box("rope_boom_pier_"+station["id"],[x-.52,21.2,30.36],[.12,1.2,.12],"yellow")
+            box("rope_boom_arm_"+station["id"],[x-.26,21.8,30.3],[.64,.12,.12],"yellow")
 
     # Fixed flush thresholds stop .02 m short of each car. Landing width is
     # 1.5 m, including .1 m extensions at the narrower left hinge aprons.
     for level in data["access"]["levels"]:
-        deck("lift_left_"+str(level)+"_landing",3.22,5,23.30,24.80,level,[])
-        # Cut the landing at the shared axle too: it joins the notched apron,
-        # and must never silently fill that notch back in.
-        data["solids"][-1]["position"][0]=(3.22+4.80)/2
-        data["solids"][-1]["size"][0]=4.80-3.22
-    deck("lift_right_8.4_landing",20.92,21.2,30.25,31.75,8.4,[])
+        deck("lift_left_"+str(level)+"_landing",3.22,3.5,23.30,24.80,level,[])
+        for edge,z0,z1 in [("front",23.30,23.4),("rear",24.7,24.80)]:
+            deck("lift_left_"+str(level)+"_landing_"+edge,3.5,4.8,z0,z1,level,[])
+    deck("lift_right_8.4_landing",20.92,21,30.25,31.75,8.4,[])
     deck("lift_right_20.6_landing",18,18.28,30.25,31.75,20.6,[])
 
     # Rendered joints have distinct sections while physics retains the authored

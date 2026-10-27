@@ -7,7 +7,7 @@ const Geometry = preload("res://scripts/gantry_mesh.gd")
 const Surfaces = preload("res://scripts/hangar_surfaces.gd")
 const FINISH = preload("res://scripts/gantry_finish.gdshader")
 const PREFIXES = ["gantry_","outer_left_","outer_right_","outer_inner_","wing_",
-	"hinge_front_guard_","access_gate_","finger_","hip_apron_","rear_outer_",
+	"hinge_front_guard_","hinge_rear_guard_","access_gate_","finger_","hip_apron_","rear_outer_",
 	"rear_inner_","hip_link_","rope_","lift_left_","lift_right_"]
 var records: Array[Dictionary] = []
 var additions: Array[MeshInstance3D] = []
