@@ -127,4 +127,40 @@ nearby equipment boxes, save roundtrip, rider/nudge policy and startup. The
 layout generator verifies 591 solids / 79 frames. No diagnostics, rendered review
 or automated walking/reach/visibility campaign ran. This is not player acceptance;
 [the player recheck remains open](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
-Parent integration still owns A2's rope/gate behavior and A3's crane routing.
+The crane routes and crossing interlocks are recorded below.
+
+## Crane route implementation — 2026-10-27
+
+The actual prepared chest source, including its neck, tops out at **Y16.98**
+(chest seat 12.7 + local 4.28). The earlier crane brief's approximate 18.7 m chest
+height did not match that source. The front route uses the current geometry:
+
+- **Core:** horizontal cartridge root at Y18.0, bottom 17.53, clearing the chest by
+  about 0.55 m. The removable lifting bridge is included. The spreader is at 19.75
+  (top 19.84). Travel along X13 to root Z28.6, descend behind the chest, then retain
+  the existing root (13,13.35,28.2) guided approach. The mast stays at X13/Z29.2
+  during rear descent; the complete lower rig remains below the fixed booms.
+- **Backpack:** retain the open 90° source orientation; hinge datum travels at
+  Y17.6, with its lowest hinge surface 17.535, about 0.55 m above the chest. The
+  spreader is at 19.68 (top 19.77). Travel along X13 to the existing Z27.2 hinge
+  approach, then lower through Y15.7 to the unchanged hinge seat (13,15.5,27.2).
+  The mast is at X13/Z28.6, with the wide lower rig beneath the booms.
+- **Other deliveries:** their existing front routes remain; upper leaf crossing
+  uses the cable/contact/spreader envelope. Head pieces and pauldrons stay inside
+  the open-leaf corridor. The upper leaves are requested only for the next
+  crossing segment, including reverse and empty travel. At the robot they can
+  close while the crane still supports the component. A deployed front rope or
+  a worker standing on a leaf holds the trip with its named reason; clearing the
+  condition resumes it. A Close request also waits while crane cables already
+  occupy the band, including a manually stopped crane; leaf physics checks that
+  hold before moving. The arm's 8.4 m needs remain a separate lower configuration.
+- **Empty crane:** the old direct diagonal from parking to rear stock crossed
+  the relocated left lift. All empty pickup, parking, return and receiver-reacquire
+  paths now lift the beam to at least 20.6 m, travel fore to the Z13 transfer lane,
+  change X/height there, and descend at the destination. Stowed ends clear the
+  eventual head before moving over it. Start pose and progress reconstruct the
+  same symmetric path after stopping or saving; console controls are unchanged.
+
+These are coarse source/rig bounds and mechanical checks. The backpack hinge
+**worker access remains the user's open challenge**. No walking, reach, visibility
+or rendered review is implied by the crane delivery implementation.

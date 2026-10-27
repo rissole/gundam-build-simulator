@@ -7,6 +7,10 @@ const Sweep = preload("res://scripts/motion_sweep.gd")
 const Layout = preload("res://scripts/leg_bay_layout.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
 const VERSION = 2
+const UPPER_LEAF_BAND = AABB(Vector3(4.4,0,23.4),Vector3(17.2,25,1.2))
+const UPPER_WAIT = "Waiting for the upper access leaves to open."
+const EMPTY_TRAVEL_Y = 20.6
+const FRONT_TRANSFER_Z = 13.0
 var END_IDS: Array = []
 var POINT_IDS: Array = []
 var points: Array[Vector3] = []
@@ -641,7 +645,8 @@ func _station_beam(at: String, up: bool) -> Transform3D:
 	return Transform3D(Basis.IDENTITY,origin)
 
 func _beam_at(at: String, up: bool, action: String, p: float) -> Transform3D:
-	if travel_from != null and action.begins_with("go:"):return travel_from.interpolate_with(_station_beam(action.get_slice(":",1),true),p)
+	if action.begins_with("go:") and attached_count()==0:
+		return _empty_beam_at(at,up,action,p)
 	if at=="receiver" and _guide()!=null and _guide().active and not action.begins_with("go:"):
 		var lift=.2*p if action=="up" else .2*(1-p) if action=="down" else .2 if up else 0.0
 		return _guide().beam_pose().translated(Vector3.UP*lift)
@@ -656,6 +661,104 @@ func _beam_at(at: String, up: bool, action: String, p: float) -> Transform3D:
 			return from.interpolate_with(_station_beam(at,true),(p-.1)/.9)
 		return from.interpolate_with(_station_beam(at,false),p)
 	return from
+
+## All empty journeys share the front transfer lane, including a newly selected
+## task and reacquiring a receiver. Lift clear of the robot before moving fore;
+## change lateral lane/height at Z13, then descend only at the destination.
+## The path is symmetric so an interrupted same-task return retraces it.
+static func empty_route(from: Transform3D, to: Transform3D) -> Array[Transform3D]:
+	var a=from.origin;var b=to.origin
+	var high_a=maxf(EMPTY_TRAVEL_Y,a.y);var high_b=maxf(EMPTY_TRAVEL_Y,b.y)
+	var result: Array[Transform3D]=[from]
+	for at in [Vector3(a.x,high_a,a.z),Vector3(a.x,high_a,FRONT_TRANSFER_Z),
+		Vector3(b.x,high_b,FRONT_TRANSFER_Z),Vector3(b.x,high_b,b.z),b]:
+		var frame=Transform3D(Basis.IDENTITY,at)
+		if not frame.is_equal_approx(result.back()):result.append(frame)
+	return result
+
+static func route_pose(frames: Array[Transform3D], weight: float) -> Transform3D:
+	if frames.size()==1:return frames[0]
+	var at=clampf(weight,0,1)*(frames.size()-1)
+	var index=mini(floori(at),frames.size()-2)
+	return frames[index].interpolate_with(frames[index+1],at-index)
+
+func _empty_route(at: String, up: bool, action: String) -> Array[Transform3D]:
+	var from: Transform3D=travel_from if travel_from!=null else _station_beam(at,up)
+	return empty_route(from,_station_beam(action.get_slice(":",1),true))
+
+func _empty_beam_at(at: String, up: bool, action: String, weight: float) -> Transform3D:
+	return route_pose(_empty_route(at,up,action),weight)
+
+## Project the actual cable anchors and contacts into the leaf's plan band.
+## Include the spreader thickness; its mast is always in this envelope. The
+## .15 m allowance starts the hold before cable/leaf contact, in either direction.
+func _upper_envelope(frame: Transform3D, head: Transform3D, loaded: bool) -> AABB:
+	var low=head.origin;var high=low
+	var center=Vector3.ZERO
+	for point in points:center+=point
+	center/=maxi(1,points.size())
+	for index in points.size():
+		var offset=Vector3(points[index].x,0,points[index].y)
+		if config.spec.has("rig_clearance"):
+			offset=frame.basis*(points[index]-center)
+			if config.spec.has("spreader_points"):offset=AssemblyRuntime.vec(config.spec.spreader_points[index])
+			if _guide()!=null and _guide().active and _guide().spec.get("rig",{}).has("aft_anchors"):
+				offset=offset.lerp(AssemblyRuntime.vec(_guide().spec.rig.aft_anchors[index]),_guide().rig)
+		var anchor=head.origin+Vector3(offset.x,0,offset.z)
+		low=low.min(anchor-Vector3(.14,0,.17));high=high.max(anchor+Vector3(.14,0,.17))
+		if loaded:
+			var contact=_cable_position(frame,index)
+			low=low.min(contact);high=high.max(contact)
+	low.y=0;high.y=25
+	return AABB(low,high-low).grow(.15)
+
+func _upper_crossing(next: float) -> bool:
+	var loaded=attached_count()==required_ends
+	# Split at authored corners so even a large physics step cannot shortcut a
+	# dogleg or miss the band between its endpoints.
+	var weights: Array[float]=[progress]
+	if not loaded and motion.begins_with("go:"):
+		var count=_empty_route(station,raised,motion).size()-1
+		for index in range(1,count):
+			var weight=float(index)/count
+			if weight>progress and weight<next:weights.append(weight)
+	else:
+		var begin=_path(station,raised,motion,progress);var end=_path(station,raised,motion,next)
+		if not is_equal_approx(begin,end):
+			for index in range(ceili(minf(begin,end)),floori(maxf(begin,end))+1):
+				var weight=lerpf(progress,next,(index-begin)/(end-begin))
+				if weight>progress and weight<next:weights.append(weight)
+	weights.append(next);weights.sort()
+	var previous: AABB
+	for index in weights.size():
+		var weight=weights[index]
+		var frame=load_pose(_path(station,raised,motion,weight))
+		var bounds=_upper_envelope(frame,_beam_at(station,raised,motion,weight),loaded)
+		if index>0 and previous.merge(bounds).intersects(UPPER_LEAF_BAND):return true
+		previous=bounds
+	return false
+
+## Access physics runs before crane physics. A direct Close request must hold
+## while cables already occupy the band, even if the crane is manually stopped.
+func upper_crossing_occupied() -> bool:
+	if config.is_empty():return false
+	var frame=load_pose(path)
+	if _guide()!=null and _guide().active:frame=_guide().load_pose()
+	return _upper_envelope(frame,_beam_pose(),attached_count()>0).intersects(UPPER_LEAF_BAND)
+
+func _access_error(next: float) -> String:
+	var access=game.equipment.get_equipment("workshop_access")
+	if access==null:return ""
+	if attached_count()==required_ends and config.spec.has("access_mode"):
+		var mode: String=config.spec.access_mode
+		if not access.lower_ready(mode):
+			var error: String=access.request_lower_mode(mode)
+			return error if not error.is_empty() else "Waiting for the lower access platforms to lock."
+	if _upper_crossing(next) and not access.upper_ready(true):
+		var error: String=access.request_upper(true)
+		if not error.is_empty():return error
+		return access.blocked_reason if not access.blocked_reason.is_empty() else UPPER_WAIT
+	return ""
 
 func _load_beam(frame: Transform3D) -> Transform3D:
 	if config.spec.has("rig_adapter"):
@@ -678,14 +781,9 @@ func physics(delta: float) -> void:
 	if moving:
 		motion_obstruction = {}
 		var next = minf(1,progress+delta/5.0)
+		var access_error=_access_error(next)
+		if not access_error.is_empty():blocked_reason=access_error;_refresh();return
 		if attached_count()==required_ends:
-			if config.spec.has("access_mode"):
-				var access=game.equipment.get_equipment("workshop_access")
-				if not access.ready_for(config.spec.access_mode):
-					if not access.moving:
-						var access_error: String=access.request_mode(config.spec.access_mode)
-						if not access_error.is_empty():blocked_reason=access_error;moving=false
-					return
 			if station=="source" and config.spec.has("source_equipment") and motion in ["up","down"]:
 				var release=clampf(next/.1,0,1) if motion=="up" else 1-clampf((next-.9)/.1,0,1)
 				var contact_error: String=game.equipment.get_equipment(config.spec.source_equipment).source_contact(release,uid)
@@ -713,7 +811,7 @@ func physics(delta: float) -> void:
 				else:
 					var error=_seat()
 					if not error.is_empty():blocked_reason=error;moving=false;return
-					if config.spec.get("restore_access",false):game.equipment.get_equipment("workshop_access").request_mode("work")
+					if config.spec.get("restore_access",false):game.equipment.get_equipment("workshop_access").request_lower_mode("work")
 			if motion.begins_with("go:"):station = motion.get_slice(":",1);travel_from = null
 			else:raised = motion == "up"
 			motion = "";progress = 0;moving = false
