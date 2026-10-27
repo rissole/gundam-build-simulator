@@ -128,3 +128,32 @@ branch: generators pass; startup and the gantry v2 suites pass (10 cases, 952
 checks). A real-content probe docks up to RISE, which stops at 46° against the
 closed rear leaf, because nothing yet lets the player open the 8.4 m front. The
 re-plan awaits the user's decisions on crane access and the lower-front control.
+
+## Re-plan on gantry v2 — 2026-10-27
+
+The user said to begin without choosing, so the recommended options were taken
+(both are easy to reverse):
+
+- **The crane never opens the gantry.** It waits with "Open the upper leaves
+  (UPPER LEAVES panel beside the left lift)" before every crossing, loaded, empty
+  or reverse, and arm deliveries wait for the lower front. v2's automatic opening
+  and `restore_access` reset are removed.
+- **Two fronts, one mechanism each**, both on the panel banks beside the left lift:
+  the existing UPPER LEAVES row (20.6 m) and a new LOWER FRONT row (8.4 m wings plus
+  rear leaves). Closing refuses while something is in that front's swing
+  (`gantry_occupant(front)`).
+
+The shared contract for all three tasks is kept with the coordinator's
+scratchpad briefs and summarised here once merged. Tasks (Sol xhigh replaces
+Astra for non-spatial work, per the user):
+
+| Task | Agent | Branch | Scope |
+| --- | --- | --- | --- |
+| R1 | Astra High | `rigs-r1-access` | Fronts API and LOWER FRONT row, crane waits, occupancy bands, crane stage driver, access/crane tests, leg-dock spatial check |
+| R2 | Coordinator | `operated-rigs` `c7756f8` | Leg rig checks `front_open("lower")`; `gantry_front(front, open)`; occupant per front |
+| R3 | Sol xhigh | `rigs-r3-manual` | Leg v2 manual pages (port of `5a3e0d5`) and crane-page front objectives |
+| R4 | Sol xhigh | `rigs-r4-tests` | Leg rig routine tests, diagnostics conversion, recorder |
+
+Merge order R1, R3, R4; then remove the leg rig's temporary `has_method("front_open")`
+guard, rerun the dock probe for both legs and the routine suites, then the approved
+diagnostics, then the user's playtest (`./play.command -- --stage=left_leg_dock`).
