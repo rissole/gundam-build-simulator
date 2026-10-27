@@ -8,6 +8,7 @@ const SPEED = 1.0
 const SLACK = 0.35
 const PULL_REACH = 1.6
 const PULL_GAP = 0.45
+const BOARDING_DUCK = 0.75
 const LEAF_REASON = "Recall the ropes on the workshop-side leaves"
 var blockout: Node3D
 var stations: Dictionary = {}
@@ -75,9 +76,29 @@ func front_available(id: String) -> bool:
 func on_floor() -> bool:
 	if not is_instance_valid(game.get("player")):return false
 	var collision = KinematicCollision3D.new()
-	return game.player.test_move(game.player.global_transform,Vector3.DOWN*.06,collision) and collision.get_normal().y>.65
+	# At the top limit feet are .05 m above deck, plus .01 m capsule clearance.
+	# Leave a small tolerance so that boarding pose can settle onto the deck.
+	return game.player.test_move(game.player.global_transform,Vector3.DOWN*.08,collision) and collision.get_normal().y>.65
 
 func gate_passable(id: String) -> bool:return attachment==id
+
+## Neighbouring 0.9 m openings overlap. Remove the selected opening from every
+## barrier it overlaps, so a closed neighbour cannot narrow the active passage.
+func gate_span(id: String) -> Vector2:
+	if gate_passable(id):return Vector2.ZERO
+	var span=Vector2(-.45,.45)
+	if not attached() or stations[id].edge!=stations[attachment].edge:return span
+	var toward=deck_direction(id)
+	var side=Vector3(toward.z,0,-toward.x)
+	var offset=gate_point(attachment)-gate_point(id)
+	if absf(offset.dot(toward))>.1:return span
+	var centre=offset.dot(side)
+	if centre>0:span.y=minf(span.y,maxf(span.x,centre-.45))
+	else:span.x=maxf(span.x,minf(span.y,centre+.45))
+	return span
+
+func boarding_duck(feet_y: float) -> bool:
+	return attached() and feet_y>=deck_height(attachment)-BOARDING_DUCK
 
 func _build_station(id: String) -> void:
 	var node = Node3D.new();add_child(node)
@@ -94,7 +115,7 @@ func _build_station(id: String) -> void:
 	var lanyard = _box(node,Vector3.ZERO,Vector3(.014,1,.014),line_material)
 	var label = Label3D.new();node.add_child(label);label.font_size=24;label.pixel_size=.003;label.billboard=BaseMaterial3D.BILLBOARD_ENABLED
 	label.text="E · Clip in\nRecall rope · E at reel\nG · Unclip on a floor"
-	fixtures[id]={"root":node,"gate":gate,"bar":bar,"clip":clip,"recall":recall,"end":end,"line":line,"lanyard":lanyard,"label":label}
+	fixtures[id]={"root":node,"gate":gate,"shape":shape,"bar":bar,"clip":clip,"recall":recall,"end":end,"line":line,"lanyard":lanyard,"label":label}
 
 func _box(parent: Node3D, at: Vector3, size: Vector3, material: Material) -> MeshInstance3D:
 	var node=MeshInstance3D.new();node.mesh=BoxMesh.new();node.mesh.size=size;node.material_override=material;parent.add_child(node);node.position=at
@@ -112,7 +133,13 @@ func physics(_delta: float) -> void:
 	for id in stations:
 		var f: Dictionary=fixtures[id]
 		var toward=deck_direction(id)
-		f.gate.global_position=gate_point(id)
+		var side=Vector3(toward.z,0,-toward.x)
+		var span=gate_span(id)
+		var width=maxf(.001,span.y-span.x)
+		if not is_equal_approx(f.shape.shape.size.x,width):
+			f.shape.shape.size.x=width
+			f.bar.mesh.size.x=width
+		f.gate.global_position=gate_point(id)+side*(span.x+span.y)*.5
 		f.gate.global_rotation.y=atan2(toward.x,toward.z)
 		f.gate.collision_layer=0 if gate_passable(id) else 1
 		f.bar.visible=not gate_passable(id)
@@ -120,7 +147,6 @@ func physics(_delta: float) -> void:
 		PhysicsServer3D.body_set_state(f.gate.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,f.gate.global_transform)
 		# Controls sit at the gate's side, reachable from the walkway even with
 		# the rear davit tip two metres beyond it.
-		var side=Vector3(toward.z,0,-toward.x)
 		f.clip.global_position=gate_point(id)+side*.34+Vector3.UP*.45+toward*.12
 		f.recall.global_position=f.clip.global_position+Vector3.UP*.25
 		f.label.global_position=f.clip.global_position+Vector3.UP*.55
@@ -172,6 +198,7 @@ func request(action: String) -> String:
 		attachment=id;hanging=false;pull_in=null;slack=Vector3.ZERO
 		ropes[id].deployed=true
 		ropes[id].length=clampf(anchor(id).y-game.player.global_position.y-HARNESS,MIN_LENGTH,max_length(id))
+		if boarding_duck(game.player.global_position.y):game.player_controller.update_crouch(true,1.0)
 	physics(0)
 	return ""
 
@@ -207,7 +234,7 @@ func attach_lanyard(point: Vector3, body: Node) -> String:
 
 func status_text() -> String:
 	if not attached():return ""
-	return "Rope · %s · %.1f m%s\n%s" % ["hanging" if hanging else "clipped",ropes[attachment].length," · pull-in" if pull_in!=null else "", "Space ↑ / Ctrl ↓ · WASD slack · G lanyard" if hanging else "Step through your gate · G unclip"]
+	return "Rope · %s · %.1f m%s%s\n%s" % ["hanging" if hanging else "clipped",ropes[attachment].length," · pull-in" if pull_in!=null else "", " · ducking under davit" if boarding_duck(game.player.global_position.y) else "", "Space ↑ / Ctrl ↓ · WASD slack · G lanyard" if hanging else "Step through your gate · G unclip"]
 
 func capture() -> Dictionary:
 	return {"version":1,"ropes":ropes.duplicate(true),"attachment":attachment,"hanging":hanging,"pull_in":[] if pull_in==null else Codec.vector(pull_in),"slack":Codec.vector(slack)}
@@ -253,6 +280,10 @@ func apply(data: Dictionary) -> void:
 	ropes=data.ropes.duplicate(true);attachment=data.attachment;hanging=data.hanging
 	pull_in=null if data.pull_in.is_empty() else Codec.to_vector(data.pull_in)
 	slack=Codec.to_vector(data.slack)
+	# Equipment restores before the saved player pose. Derive the boarding shape
+	# from line length, so a reload never starts standing inside a boom.
+	if attached() and boarding_duck(anchor(attachment).y-HARNESS-float(ropes[attachment].length)):
+		game.player_controller.update_crouch(true,1.0)
 	physics(0)
 
 ## Resolve the tracked objective's real connection points; no recipe-name list
