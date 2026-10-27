@@ -972,6 +972,8 @@ Evidence: `game/workshop/verification/regressions-20261025T101102.018689Z/`.
 
 **approved as direction 2026-10-27; build not approved**
 
+**C6, 2026-10-27:** [Coarse aft-tower plan](gantry-v2/README.md) supersedes this concept’s fixed shell/shaft assumptions; hip support remains unresolved and the build is not approved.
+
 Construction waits for less temporary robot parts and separate build approval.
 This proposal follows the
 [gantry access finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).

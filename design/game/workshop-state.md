@@ -339,7 +339,7 @@ Read only what the task needs. Specific sections are linked from the rules above
 | [manual-plan.md](manual-plan.md) | Changing manual steps, the current-step panel or the manual view |
 | [robot-workshop-plan.md](robot-workshop-plan.md) | Changing the robot workshop's stages, equipment or verification scope |
 | [final-assembly-plan.md](final-assembly-plan.md) and [layout](final-assembly-layout.svg) | You need coordinates, routes, equipment dimensions or the assembly order |
-| [gantry-v2/README.md](gantry-v2/README.md) | Reviewing the dimensioned two-tower candidate, measured envelopes, collision conflicts or proposed Y8.4 support-handoff slice; design only, build not approved |
+| [gantry-v2/README.md](gantry-v2/README.md) | Reviewing C6’s coarse aft-tower layout, enlarged shell/door, rebuilt lifts, growth envelopes and unresolved hip-support gates before a Y8.4 slice; design only, build not approved |
 | Component documents (`design/torso/`, `design/arms/`, `design/head.md`, `design/legs/`) | You need mounting interfaces. Each one's “Robot workshop … — 2026-10-24” section records what was built |
 | [leg-prototype-interface.md](leg-prototype-interface.md) | Touching structural-leg parts, ownership or manual dependencies |
 | [foot-prototype-plan.md](foot-prototype-plan.md) | Changing the shared assembly architecture, or doing a requested rendered review |

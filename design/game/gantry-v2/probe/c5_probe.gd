@@ -2,7 +2,7 @@ extends "res://tests/kit/harness.gd"
 ## Supplied stage/geometry measurement only. No walking, captures or acceptance.
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Stages = preload("res://scripts/build_stages.gd")
-const BranchCrane = preload("res://verification/c5/branch_crane.gd")
+const MainCrane = preload("res://verification/c6/main_crane.gd")
 var game: Node
 var report = {"schema":1,"runs":[],"robot":[],"equipment":[],"layout_solids":[],"crane":[]}
 var stage = ""
@@ -98,13 +98,53 @@ func measure_backpack() -> void:
 		pack.angle=float(i)/40;pack._pose()
 		add_equipment("backpack/%02d"%i,node_box(game.runtime.node("backpack")),"backpack_hinge.gd:_pose",{"angle_fraction":pack.angle,"sampling":"0.025 angle fraction; collector inflates 0.10 m"})
 	pack.apply(saved)
-func crane_rig(crane: Node, frame: Transform3D) -> Array:
+func crane_rig(crane: Node, frame: Transform3D, index: int) -> Array:
 	if crane.config.spec.has("rig_adapter"):
 		return game.equipment.get_equipment(crane.config.spec.rig_adapter).rig_solids(frame,0)
-	return crane.rig_solids(frame)
+	if crane.config.spec.has("spreader_points"):
+		return crane.rig_solids(frame)
+	# Main's legacy two-point and foot rigs have no spreader_points and cannot
+	# call rig_solids(). Reconstruct their visible _configure_rig_bar/_refresh
+	# geometry, with authored station beam heights for legacy route endpoints.
+	var spec: Dictionary=crane.config.spec
+	var head: Transform3D
+	var center=Vector3.ZERO
+	for point in crane.points:center+=point
+	center/=crane.points.size()
+	var anchors: Array=[]
+	var low=Vector3(INF,INF,INF);var high=-low
+	var bar_center=Vector3.ZERO
+	if spec.has("rig_clearance"):
+		head=crane._load_beam(frame)
+		for point in crane.points:
+			var world: Vector3=crane.source_pose*point;low=low.min(world);high=high.max(world)
+			var offset: Vector3=frame.basis*(point-center)
+			anchors.append(head.origin+Vector3(offset.x,0,offset.z))
+	else:
+		head=Transform3D(Basis.IDENTITY,frame.origin)
+		head.origin.y=frame.origin.y+.8 if index==0 else float(spec.up_y) if index<=crane.route.size()-3 else frame.origin.y+.88
+		for point in crane.points:
+			var at=Vector3(point.x,0,point.y);low=low.min(at);high=high.max(at)
+			anchors.append(head.origin+at)
+		bar_center.z=(low.z+high.z)/2
+	var bar=BoxShape3D.new();bar.size=Vector3(high.x-low.x+.28,.18,high.z-low.z+.34)
+	var result: Array=[{"shape":bar,"world":head.translated(bar_center),"rig_kind":"bar"}]
+	var eye: Vector3=head.origin+bar_center
+	var pairs=[[eye,Vector3(eye.x,float(spec.get("overhead_y",20.6)),eye.z),.035]]
+	for i in crane.points.size():
+		var contact: Vector3=crane._cable_position(frame,i)
+		pairs.append([anchors[i],contact,.025])
+		var end=BoxShape3D.new();end.size=Vector3(.12,.09,.12)
+		result.append({"shape":end,"world":crane._end_transform(frame,i),"rig_kind":"contact"})
+	for pair in pairs:
+		var direction: Vector3=pair[1]-pair[0]
+		var line=BoxShape3D.new();line.size=Vector3(pair[2],maxf(.001,direction.length()),pair[2])
+		var basis=Basis(Quaternion(Vector3.UP,direction.normalized())) if direction.length()>.0001 else Basis.IDENTITY
+		result.append({"shape":line,"world":Transform3D(basis,(pair[0]+pair[1])/2),"rig_kind":"line"})
+	return result
 func measure_crane() -> void:
-	var data=JSON.parse_string(FileAccess.get_file_as_string("res://verification/c5/branch-layout.json"))
-	var crane=BranchCrane.new();crane.game=game;crane.layout=game.leg_layout;crane.equipment_id="service_crane"
+	var data=JSON.parse_string(FileAccess.get_file_as_string("res://verification/c6/main-layout.json"))
+	var crane=MainCrane.new();crane.game=game;crane.layout=game.leg_layout;crane.equipment_id="service_crane"
 	var previous=game.equipment.get_equipment("service_crane");var registry_index=game.equipment._items.find(previous)
 	game.equipment._items[registry_index]=crane
 	for key in data.crane.tasks:
@@ -123,22 +163,15 @@ func measure_crane() -> void:
 			var mesh=game.source[spec.load_uid];local=mesh.mesh.get_aabb()
 		if spec.has("rig_adapter") and key!="cassette":
 			for part in game.equipment.get_equipment(spec.rig_adapter).transport_shapes():local=local.merge(part.transform*shape_box(part.shape))
-		var entry: int=crane.APPROACH_ENTRY.get(key,maxi(1,route.size()-3))
-		if key=="cassette":entry=2
-		var row=stamp("git show crane-operator-view:game/workshop/scripts/service_crane.gd carry_height/_operator_route/rig_solids + branch workshop-layout.json:crane.tasks/"+key)
-		row.id=key;row.provisional="provisional (unmerged branch)";row.carry_head_y=crane.carry_height();row.trolley_underside_y=22.875
-		row.approach_entry=entry;row.authored_positions=spec.route_positions;row.authored_rotations=spec.get("route_rotations",[]);row.approach=[]
-		row.payload_local=bounds(local);row.carry=[]
-		for index in [1,entry]:
-			var frame=crane._carry_pose(route[index]);var load=frame*local;var rig=AABB();var first=true;var parts: Array=[]
-			for solid in crane_rig(crane,frame):
-				var b: AABB=solid.world*shape_box(solid.shape);rig=b if first else rig.merge(b);first=false
-				parts.append({"kind":solid.get("rig_kind","unknown"),"bounds":bounds(b)})
-			row.carry.append({"index":index,"origin":xyz(frame.origin),"load":bounds(load),"rig":bounds(rig),"lowest_solid":load.position.y,"highest_rig":rig.end.y,"rig_parts":parts})
-		for index in range(entry,route.size()):
-			var frame=route[index];var box: AABB=frame*local
-			for solid in crane_rig(crane,frame):box=box.merge(solid.world*shape_box(solid.shape))
-			row.approach.append({"index":index,"bounds":bounds(box)})
+		var row=stamp("main service_crane.gd authored route + baseline runtime payload/adapter")
+		row.id=key;row.authored_positions=spec.route_positions;row.authored_rotations=spec.get("route_rotations",[])
+		row.payload_local=bounds(local);row.poses=[]
+		for index in range(route.size()):
+			var frame=route[index];var box: AABB=frame*local;var parts: Array=[]
+			for solid in crane_rig(crane,frame,index):
+				var rb: AABB=solid.world*shape_box(solid.shape)
+				box=box.merge(rb);parts.append({"kind":solid.get("rig_kind","adapter"),"bounds":bounds(rb)})
+			row.poses.append({"index":index,"bounds":bounds(box),"rig_parts":parts})
 		report.crane.append(row)
 	game.equipment._items[registry_index]=previous
 	crane.free()
@@ -160,10 +193,10 @@ func run() -> void:
 					var p=game.leg_layout.blockout.pieces[id]
 					if p.has("shape") and not p.shape.disabled:add_equipment("core_fixture/"+stage+"/"+id,node_box(p.body),"workshop-layout.json:workshop.solids/"+id)
 		report.runs.append({"stage":stage,"outcome":"stage contract reached; supplied geometry measured","time_utc":Time.get_datetime_string_from_system(true)+"Z"})
-		print("C5 STAGE ",stage," PASS")
+		print("FINE PROBE STAGE ",stage," PASS")
 		if stage=="complete":break
 		var error=stages.complete(stage)
 		if not error.is_empty():push_error(error);quit(1);return
 		await process_frame
-	write_evidence("res://verification/c5/runtime.json",report)
+	write_evidence("res://verification/c6/runtime.json",report)
 	game.free();quit(0)

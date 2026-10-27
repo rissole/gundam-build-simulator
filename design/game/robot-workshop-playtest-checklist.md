@@ -38,7 +38,8 @@ between each hip finger and the hip apron is a deliberate robot/leg work opening
 - [x] Crane operator view playtested; rejected 2026-10-27.
 - [ ] Leg rig jog slice playtest, before converting the foot rig.
 - [x] [Launch cage v2 concept](final-assembly-plan.md#launch-cage-v2-concept--2026-10-27) approved as direction only, 2026-10-27: two mirrored towers, swinging catwalks, independent hip-bearing arms and deferred lowering/transport.
-- [ ] Dimensioned v2 plan (in progress), then separate v2 build approval. No v2 construction is approved or implemented.
+- [ ] Review the coarse v2 plan and resolve support, then separate v2 build approval. No v2 construction is approved or implemented.
+- **2026-10-27 — C6 design only:** [Aft-tower coarse plan](gantry-v2/README.md) clears the proposed parked exit but retains blocking hip-support/route/headroom overlaps; larger building, carrier-at-current-height and alternate support topology remain open choices. Keep accepted finish, gap/mirror repairs and assembly challenge; no new player acceptance.
 
 **Open choices retained:** whether to redesign the crane (for example, an in-world pendant using the rigs' hold-E jog pattern); v2 build approval and
 prototype effort; lowering and roll-out support. The accepted gantry appearance and
