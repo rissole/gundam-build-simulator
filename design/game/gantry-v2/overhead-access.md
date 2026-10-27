@@ -107,7 +107,9 @@ height did not match that source. The front route uses the current geometry:
   crossing segment, including reverse and empty travel. At the robot they can
   close while the crane still supports the component. A deployed front rope or
   a worker standing on a leaf holds the trip with its named reason; clearing the
-  condition resumes it. The arm's 8.4 m needs remain a separate lower configuration.
+  condition resumes it. A Close request also waits while crane cables already
+  occupy the band, including a manually stopped crane; leaf physics checks that
+  hold before moving. The arm's 8.4 m needs remain a separate lower configuration.
 - **Empty crane:** the old direct diagonal from parking to rear stock crossed
   the relocated left lift. All empty pickup, parking, return and receiver-reacquire
   paths now lift the beam to at least 20.6 m, travel fore to the Z13 transfer lane,

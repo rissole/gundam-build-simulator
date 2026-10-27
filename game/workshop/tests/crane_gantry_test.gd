@@ -126,6 +126,21 @@ func interlocks() -> void:
 	expect(not crane._access_error(.01).is_empty(),"arm still requests its lower8.4 configuration")
 	access.physics(7)
 	expect(access.lower_ready("arm") and access.upper_ready(false),"lower arm configuration preserves closed upper leaves away from crossing")
+	# Access ticks first: closing must not get a one-frame head start into a
+	# currently occupied band, including when the operator stopped the crane.
+	for loaded in [true,false]:
+		select("pelvis",loaded)
+		if loaded:crane.progress=.9
+		else:crane.station="receiver";crane.motion="go:park";crane.progress=.23
+		crane.moving=false
+		access.request_upper(true);access.physics(7)
+		expect(crane.upper_crossing_occupied(),"current "+str(loaded)+" loaded/empty cable envelope occupies crossing")
+		access.request_upper(false);access.physics(.1)
+		expect(is_equal_approx(access.channels["20.6"].value,1) and access.blocked_reason.contains("crane cables"),"Close holds before any leaf movement into stopped crane cables")
+		crane.station="receiver";crane.motion="down";crane.progress=0
+		expect(not crane.upper_crossing_occupied(),"current rig at Z26 releases upper close hold")
+		access.physics(7)
+		expect(access.upper_ready(false),"pending Close finishes after crane clears the band")
 
 func empty_journeys() -> void:
 	var lift=AABB(Vector3(.3,0,22.45),Vector3(3.2,22,3.2))

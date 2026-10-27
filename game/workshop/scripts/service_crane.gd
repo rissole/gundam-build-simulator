@@ -738,6 +738,14 @@ func _upper_crossing(next: float) -> bool:
 		previous=bounds
 	return false
 
+## Access physics runs before crane physics. A direct Close request must hold
+## while cables already occupy the band, even if the crane is manually stopped.
+func upper_crossing_occupied() -> bool:
+	if config.is_empty():return false
+	var frame=load_pose(path)
+	if _guide()!=null and _guide().active:frame=_guide().load_pose()
+	return _upper_envelope(frame,_beam_pose(),attached_count()>0).intersects(UPPER_LEAF_BAND)
+
 func _access_error(next: float) -> String:
 	var access=game.equipment.get_equipment("workshop_access")
 	if access==null:return ""
