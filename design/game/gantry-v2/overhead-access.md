@@ -1,6 +1,8 @@
 # Overhead rope access — concept, 2026-10-27
 
-**Design only; build not approved. Branch-only until playtested and approved.**
+**Branch build authorized (2026-10-27); integration and player approval pending.**
+A1 layout is complete on `gv2/layout`; rope behavior and crane routes are separate
+work. This concept is followed by the implemented A1 dimensions below.
 Replaces C6's upper catwalk levels (11.2/14/16.4) and tower hip beams. The robot,
 hip datum (13,10.6,26), bearing caps, jaws and today's low rear hip frame stay.
 
@@ -86,3 +88,46 @@ coarse indications only.
    The rear hip frame and 8.4 m rear decks/aprons sit behind it. Use whatever is
    simplest yet satisfying; not designed yet. The robot passes under the exit-side
    walkway (underside 20.3 m vs grown top 20.16 m, more once lowered).
+
+
+## Implemented A1 layout — 2026-10-27
+
+The branch implementation supersedes the concept's preliminary 0.3 m deck depth:
+upper decks are **0.2 m**, top Y20.6 / underside Y20.4. Shared 0.24 m square
+hinge posts at X5/X21, Z24 end at Y22.3; deck notches clear them throughout the
+swing. Mast/tie and boom members remain below the crane bridge. Both upper
+leaves keep the 8.4 swing and split at X13, with no upper fingers. Low hip frame,
+jaws, bearing datums and the retained hip finger work patches are unchanged.
+
+Lifts sit at (1.9,24.05) and (19.6,31), with stops 0.15, 8.4 and 20.6. The left
+opens east at every stop; the right opens east at ground/8.4 and west at 20.6.
+Open-topped cars retain their 2.6 m size and shelves. Fixed guides end at Y20.2;
+sliding carriage masts maintain support through the final 0.6 m of car travel
+without pushing the ground-level shoes through the floor. Both right guides
+are west of the car, clear of the retained right outer walk.
+
+The rear walkway spans X5..18, Z30.3..31.7, widening to 1.5 m at its east landing.
+Its west support stands at **X5.24**, clear of the 8.4 walk and inner guard;
+X4.8 would intersect that walk. The east support posts/header sit alongside the
+right lift at X17.9 and end at Y20.2. There are no roof hangers. Four 2 m fixed
+booms end at Z28.3/Y21.8. Eight fixed front davits end at Z24.75/Y21.8. Adjacent
+front stations only 0.7 m apart share the union of their 0.9 m guard openings;
+rope equipment owns the protective barriers. Jamb piers carry the davits/booms.
+
+Removing the old shafts would disconnect the rear hip aprons. Fixed 1.5 m links
+replace that path: left Z28.5..30; right Z27.6..29.1 to clear the new shaft.
+Left lift landings extend the hinge apron's depth by 0.1 m at each end. Fixed
+thresholds leave a 20 mm car gap. The right car's east face X20.9 is 0.1 m from
+the retained X21 outer walk, so its flush plate spans X20.92..21 without a
+coplanar overlap. Lower sliding access gates remain; upper apron ends are guarded
+because there is no upper outer walkway. New/retained members keep the accepted
+finish and the signs read **8.4 HIP / 20.6 ROPE ACCESS**.
+
+Mechanical evidence: eleven selected routine suites pass, **728 checks in
+19.307 s**, including full-height shelf cargo, guide engagement/hardware travel,
+station transforms, post clearance at every swing angle, coarse grown-robot and
+nearby equipment boxes, save roundtrip, rider/nudge policy and startup. The
+layout generator verifies 591 solids / 79 frames. No diagnostics, rendered review
+or automated walking/reach/visibility campaign ran. This is not player acceptance;
+[the player recheck remains open](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
+Parent integration still owns A2's rope/gate behavior and A3's crane routing.
