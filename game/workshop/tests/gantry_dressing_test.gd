@@ -68,7 +68,7 @@ func run() -> void:
 	expect(outside.is_empty(),"every replacement vertex and recessed fastener stays inside its original visual envelope: "+str(outside))
 	expect(bad_faces.is_empty(),"all generated faces have clockwise front winding, nonzero area and outward normals: "+str(bad_faces))
 	expect(triangles<30000,"complete gantry/access/lift treatment stays below 30000 triangles: "+str(triangles))
-	expect(dressing.materials.size()==6 and dressing.additions.size()==4 and dressing.labels.size()==11,"six shared finishes, four combined fastener meshes and eleven stencils; no per-fastener nodes")
+	expect(dressing.materials.size()==6 and dressing.additions.size()==4 and dressing.labels.size()==7,"six shared finishes, four combined fastener meshes and seven stencils; no per-fastener nodes")
 	for node in dressing.labels:
 		var h: Vector3=node.get_parent().mesh.get_aabb().size/2
 		expect(is_equal_approx(absf(node.position.z),h.z+.001) and not node.no_depth_test and node.shaded,"stencil remains 1 mm off its existing face and receives lighting")
@@ -100,7 +100,7 @@ func run() -> void:
 	for i in lifts.size():
 		var lift: Node3D=lifts[i]
 		expect(lift.capture()==states[i],"art pass leaves lift state and stops unchanged")
-		for level in [8.4,11.2,14.0,16.4]:
+		for level in [8.4,20.6]:
 			lift.height=level;lift._pose()
 			var escaped: Array=[]
 			for record in dressing.records:
@@ -161,25 +161,11 @@ func _piece_bounds(piece: Dictionary) -> AABB:
 
 func _check_landing_fills(world, lifts: Array, access) -> void:
 	var expected: Dictionary = {}
-	for entry in [[8.4,"8.4"],[11.2,"11.2"],[14.0,"14"],[16.4,"16.4"]]:
-		var level: float = entry[0]
-		var tag: String = entry[1]
-		for side in ["left","right"]:
-			var left: bool = side=="left"
-			var x: float = 5.14 if left else 20.86
-			expected["outer_"+side+"_"+tag+"_landing_fill"] = AABB(Vector3(x-.14,level-.2,28.5),Vector3(.28,.2,1.5))
-			var edge: String = "left" if left else "right"
-			var rail: String = "wing_hinge_"+side+"_"+tag+"_"+edge+"_rail"
-			expect(world.pieces.has(rail),"fixed hinge apron has an outboard rail: "+rail)
-			if world.pieces.has(rail):
-				var bounds: AABB = _piece_bounds(world.pieces[rail])
-				var wanted = AABB(Vector3(3.42 if left else 22.5,level+1.02,23.4),Vector3(.08,.08,1.3))
-				expect(bounds.is_equal_approx(wanted),"hinge guard stays outside walk and wing sweep: "+rail)
-	for side in ["left","right"]:
-		var x: float = 8.06 if side=="left" else 17.94
-		expected["hip_apron_"+side+"_landing_fill"] = AABB(Vector3(x-.14,8.2,28.5),Vector3(.28,.2,1.5))
-	var actual: Array = world.pieces.keys().filter(func(id):return id.ends_with("_landing_fill"))
-	expect(actual.size()==10,"exactly ten fixed landing plates")
+	for entry in [["left",8.4,3.22,4.80,23.30],["left",20.6,3.22,4.80,23.30],["right",8.4,20.92,21.2,30.25],["right",20.6,18.0,18.28,30.25]]:
+		var id = "lift_"+entry[0]+"_"+str(entry[1])+"_landing_floor"
+		expected[id]=AABB(Vector3(entry[2],entry[1]-.2,entry[4]),Vector3(entry[3]-entry[2],.2,1.5))
+	var actual: Array = world.pieces.keys().filter(func(id):return id.begins_with("lift_") and id.ends_with("_landing_floor"))
+	expect(actual.size()==4,"four fixed thresholds connect only the new raised landings")
 	for id in expected:
 		expect(world.pieces.has(id),"landing plate exists: "+id)
 		if not world.pieces.has(id):continue
@@ -230,7 +216,7 @@ func _check_mirrored_access(world, access) -> void:
 	var pairs: Dictionary = {}
 	for id in world.pieces:
 		if not "left" in id or ("right" in id and id.find("right")<id.find("left")):continue
-		if not ["wing_","finger_","rear_outer_","rear_inner_","hip_apron_","outer_","access_gate_","hinge_front_guard_","rear_branch_","rear_flank_","aft_finger_"].any(func(prefix):return id.begins_with(prefix)):continue
+		if not ["wing_left_","finger_","rear_outer_","rear_inner_","hip_apron_","hip_link_","access_gate_"].any(func(prefix):return id.begins_with(prefix)):continue
 		var other: String = id.replace("left","SIDE").replace("right","left").replace("SIDE","right")
 		if id.begins_with("wing_left_"):
 			other = other.replace("_front_","_rear_") if "_front_" in other else other.replace("_rear_","_front_")
@@ -248,24 +234,21 @@ func _check_mirrored_access(world, access) -> void:
 			for key in values:
 				if channel=="all" or key==channel:values[key] = phase
 			states[channel+"/"+str(phase)] = values
-	for stowed in [false,true]:
-		access.arm_services_stowed = stowed
-		for label in states:
-			world.apply_frames(access.frames_at(states[label]))
-			var bad: Array = []
-			for id in pairs:
-				if not world.pieces.has(pairs[id]):bad.append(id+" missing partner");continue
-				var a: Dictionary = world.pieces[id]
-				var b: Dictionary = world.pieces[pairs[id]]
-				if a.has("shape")!=b.has("shape") or a.visual.visible!=b.visual.visible:
-					bad.append(id+" collision/visibility");continue
-				if not _mirrored_box(a.visual.global_transform,a.visual.mesh.get_aabb(),b.visual.global_transform,b.visual.mesh.get_aabb()):bad.append(id+" visual")
-				if not a.has("shape"):continue
-				var at: Transform3D = PhysicsServer3D.body_get_state(a.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
-				var bt: Transform3D = PhysicsServer3D.body_get_state(b.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
-				if a.shape.disabled!=b.shape.disabled or a.body.collision_layer!=b.body.collision_layer or not _mirrored_box(at*a.shape.transform,AABB(-a.shape.shape.size/2,a.shape.shape.size),bt*b.shape.transform,AABB(-b.shape.shape.size/2,b.shape.shape.size)):bad.append(id+" physics")
-			expect(bad.is_empty(),"access decks and guards mirror about X13 at "+label+" services stowed="+str(stowed)+": "+str(bad))
-	access.arm_services_stowed = false
+	for label in states:
+		world.apply_frames(access.frames_at(states[label]))
+		var bad: Array = []
+		for id in pairs:
+			if not world.pieces.has(pairs[id]):bad.append(id+" missing partner");continue
+			var a: Dictionary = world.pieces[id]
+			var b: Dictionary = world.pieces[pairs[id]]
+			if a.has("shape")!=b.has("shape") or a.visual.visible!=b.visual.visible:
+				bad.append(id+" collision/visibility");continue
+			if not _mirrored_box(a.visual.global_transform,a.visual.mesh.get_aabb(),b.visual.global_transform,b.visual.mesh.get_aabb()):bad.append(id+" visual")
+			if not a.has("shape"):continue
+			var at: Transform3D = PhysicsServer3D.body_get_state(a.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+			var bt: Transform3D = PhysicsServer3D.body_get_state(b.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
+			if a.shape.disabled!=b.shape.disabled or a.body.collision_layer!=b.body.collision_layer or not _mirrored_box(at*a.shape.transform,AABB(-a.shape.shape.size/2,a.shape.shape.size),bt*b.shape.transform,AABB(-b.shape.shape.size/2,b.shape.shape.size)):bad.append(id+" physics")
+		expect(bad.is_empty(),"access decks and guards mirror about X13 at "+label+": "+str(bad))
 	world.apply_frames(access.frames_at(access._goals("work")))
 	for side in ["left","right"]:
 		# Existing hip work patch stays 1.2 m long and flush to the wing. The
