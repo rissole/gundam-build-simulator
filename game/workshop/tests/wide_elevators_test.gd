@@ -93,7 +93,7 @@ func run() -> void:
 			expect(lift.moving and is_equal_approx(absf(lift.height-start),.15),side+" onboard "+action+" retains 0.75 m/s travel")
 			var interrupted_height: float = lift.height
 			expect(not lift.request("down" if action == "up" else "up").is_empty(),side+" onboard controls still wait during an active trip")
-			var call = "ground" if action == "up" else "stop4"
+			var call = "ground" if action == "up" else "stop"+str(lift.stops.size()-1)
 			expect(lift.action_error(call).is_empty() and lift.request(call).is_empty(),side+" CALL interrupts active "+action+" travel")
 			expect(is_equal_approx(lift.height,interrupted_height) and is_equal_approx(lift.destination,start),side+" CALL replaces the destination without jumping the deck")
 			lift.physics(.3)
@@ -101,7 +101,7 @@ func run() -> void:
 			lift.physics(.6)
 			expect(not lift.moving and is_equal_approx(lift.height,start),side+" interrupting CALL arrives in 0.9 seconds")
 		lift.apply({"height":lift.stops[0],"destination":lift.stops[0],"moving":false})
-		expect(lift.request("stop4").is_empty(),side+" starts a full-height landing call")
+		expect(lift.request("stop"+str(lift.stops.size()-1)).is_empty(),side+" starts a full-height landing call")
 		lift.physics(.2)
 		var interrupted_height: float = lift.height
 		expect(lift.request("stop0").is_empty() and is_equal_approx(lift.height,interrupted_height),side+" another landing CALL interrupts a fast call without jumping")
