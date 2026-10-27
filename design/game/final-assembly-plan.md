@@ -968,6 +968,145 @@ Integration verification: all 36 routine cases pass in 29.141 s, including the
 merged stage fixture, manual tests, gantry audit, startup and save round-trip.
 Evidence: `game/workshop/verification/regressions-20261025T101102.018689Z/`.
 
-## Gantry v2
+## Launch cage v2 concept — 2026-10-27
 
-Gantry v2 design work lives on the `gantry-v2` branch (worktree `/private/tmp/gantry-v2`), kept off main until playtested and approved.
+**Current direction: overhead rope access; prototype implementation authorized 2026-10-27.**
+
+The [rope-access plan](gantry-v2/overhead-access.md) supersedes the C6 aft towers
+and the earlier two-tower proposal below. Work remains on `gantry-v2` until the
+user playtests and explicitly approves integration into main. The low hip frame,
+robot datum and 8.4 m access remain; upper connection work uses ropes from 20.6 m
+walkways. The accepted gantry finish, physical crane console and existing lift
+handling rules are retained. Backpack hinge access and eventual lowering/departure
+remain open; this prototype does not implement them.
+
+This follows the
+[gantry access finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
+The 2026-10-27 fixed landing plates, hinge-edge rails and mirrored lowest-level
+guards are merged and player-accepted. The two-tower details below describe the
+superseded proposal, not the current build contract.
+
+### Two towers, removable work paths, unchanged robot interfaces
+
+Build two genuinely mirrored side towers around the existing shafts, centred
+at **X6.6 and19.4, Z29**, reflected about X13. Keep their 3.20 m square shaft
+reservations, 2.60 m cars, side doors, shelves and ground/8.4/11.2/14/16.4 stops.
+Tower structure wraps the shafts rather than occupying their car/guide volumes.
+Member sections, foundation pads and arm pivots need a dimensioned envelope
+study before implementation; a tower centre is not a sufficient clearance proof.
+Avoid a 180° copy that reverses fore/aft guard placement, as C1 found on the
+current wings and rear hip bridges.
+
+At each work level, tower-mounted **swing-arm catwalks dock flush to the robot's
+work patches**, then retract any short docking tongues and swing outboard into
+measured tower parking pockets. Use positive dock locks and one flush floor
+height, with small running seams at moving joints. Mirror the hinge directions,
+work edges and controls. The dock targets are stable work-patch datums; no
+catwalk fastens to placeholder armor. Retain at least1.20 m continuous clear
+paths (1.50 m at primary landings), useful access from both car doors and a route
+back to the same elevator when an arm is stowed. Eliminate blind gaps at the
+finger/flank/branch/apron interfaces. Do not fill the robot's service openings
+merely to shorten a walk. Work-edge guards must clear the downward hip work.
+
+**Remove the fixed rear crossover on every level and the rear support crosshead.**
+No permanent tower brace, overhead tie, utility run or replacement walkway may
+recreate their obstruction across the robot's exit. Cross-side walking can use
+the ground route while upper paths are stowed; front cross-connections, if
+retained, must themselves swing clear. A worker should never have to cross an
+open shaft or strand themselves on a catwalk to operate it. Controls remain
+physical, visible from a supported stance and consistent with future AR.
+
+Carry the hip with a separate pair of **load-bearing tower arms**, reaching the
+existing bearing patches at X12.35/13.65, Z26.52..26.78, cap top **Y10.97**.
+Keep the hip datum **(13,10.6,26)**, the four hold-downs and waist locks. The
+longer lateral/diagonal cantilevers need explicit load-path and deflection design;
+catwalk hinges cannot double as the robot's structural support. Model each
+bearing contact and its retention before allowing crane release. The support
+arms remain engaged throughout the raised assembly sequence; parking the work
+catwalks must not move or release the hip.
+
+### Work, delivery and eventual exit states
+
+| State | Work catwalks | Hip support / release condition |
+| --- | --- | --- |
+| Assembly | Required levels docked flush and positively locked; both sides equivalent | Hip on tower bearing caps at Y10.97; four hold-downs and appropriate waist locks engaged |
+| Delivery/service | Only paths intersecting that measured load/rig route stow; useful tower landings remain available | Hip support remains engaged; load receiver takes weight before crane release |
+| Prepare for exit (deferred) | Workers return to landings; all work arms, tongues and services withdraw from the exit envelope | Keep hip supported while tooling is removed and lowering support is established |
+| Lower and transfer (deferred) | Catwalks remain clear | Synchronized support lowers the robot as one assembly onto verified foot/ground or transport support; do not open the loaded bearing arms |
+| Roll-out ready (deferred) | **All arms clear**, including unloaded hip supports; no fixed rear crossover | **Robot lowered**, weight transfer confirmed, clamps released, crane/rigging parked; route is toward +Z through the door |
+
+The hangar door is directly aft at **Z38.78**, opening X2.25..23.75. Reserve a
+continuous route from the robot to that opening, including the full robot,
+arm/hand pose, backpack, feet and any roll-out carrier. Door height, threshold,
+frame, actual collision aperture and the carrier's turning/stopping envelope all
+need measurement. The current soles are atY1.40; their eventual lowering distance
+and mechanism remain deferred. Lowering alone does not create rolling capability:
+a supported transport cradle/dolly or a later locomotion design needs its own
+approval. Never simulate departure by deleting supports under a hanging robot.
+This concept reserves a possible exit; it does not claim the current robot can
+leave the hangar.
+
+### Clearances a build must re-audit
+
+Use actual solids plus adapters, spreaders, magnetic connectors and every cable,
+including intermediate arm rotations, parked equipment, loaded returns and
+support handoffs. Earlier route passes cannot approve a new tower or catwalk.
+
+| Delivery / system | Required renewed audit |
+| --- | --- |
+| Hip delivery | Full prepared hip and lifting rig, tower support insertion, bearing/jaw operation and crane release at unchanged hip datum |
+| Leg corridor | X10.5..15.5/Z20.5..30.6; both loaded travel/tilt/rise paths, cradle top7.7 against hip-deck underside8.2, calf clearance, empty-holder withdrawal and mirrored docking. No new floor-level tower braces in these routes |
+| Chest | Front approach, waist access, supported seat, all four lifting lines and upper catwalk parking; preserve the waist/chest mating datum |
+| Core rails and crossframes | Removable pads at X11.1/14.9, Z29.5/32.1; two crossframes, guide upstands, 5.0 m service withdrawal, re-rig and fixture storage. Replace any support lost with the old flanks/crossover; no floating rail ends |
+| Core/backpack delivery wells | Upper service opening X11.4..14.6/Z27.2..35.3 and aft well Z31.7..35.3 stay open. Recheck low X23.7 bypass, outboard X24 lift, X22.8..25.2/Z31.7..34.7 cable/rig envelope and high crossing above all new parked arms/guards |
+| Backpack sweep | Closed pack toZ28.2, normal sweep toZ30.173 (allowanceZ30.3/Y16.6), open struts/locks, crane-assisted closure and return; no tower arm through hinge or strut lanes |
+| Arm routes | Horizontal source and cassette transfer, upend/yaw/splay, 1.13 m lower/outboard pre-seat approach, opposite installed arm, cable planesZ25.23..26.77 and both shoulder work positions |
+| Pauldron routes | Lowest loadY18.0 baseline, shoulder descent and final approach, rig spread and upper-level guard/parked-arm clearance on both sides |
+| Head routes | Lowest loadY19.0 baseline, baseplate/shell/sensor/crown approaches, neck connection work and tallest hook/spreader under the23.0 m obstruction limit |
+| Mobile platform | Existing park (6.7,0,19.3), all routes/docks, raising with riders/hand loads and its still-pending visible route markings; tower bases and parked work arms cannot consume these lanes |
+| Elevators and workers | Entire car/door/guide/shelf travel and payload envelopes; 1.50 m landing doors, local calls, at least2.20 m interlevel headroom, stopped-car nudge and held-trip return. No new landing gates implied |
+| Exit | Whole lowered robot and transport support to door, all support/work arm parking pockets, cables/services, floor/door collision and threshold; load-transfer interlocks |
+
+**Crane dependency:** the crane operator view was rejected on 2026-10-27, so the
+current authored crane routes and their loaded rig envelopes constrain tower-top
+heights and catwalk parking. The Y18/Y19 route values above are that baseline. Reconcile every component's lowest carried solid
+and highest spreader/cable, including outboard raising, before a v2 build
+claims route clearance.
+
+### Scope, effort and review gate
+
+Estimate **8–13 focused development days**, plus player review time, for an
+approved raised-pose cage prototype: 1–2 for dimensioned envelopes and support
+layout, 2–3 for tower bearing arms/retention, 2–3 for mirrored catwalk motion and
+controls, 2–3 for delivery/fixture integration, and1–2 for focused mechanical
+verification and documentation. This excludes detailed art, structural
+certification and the separate whole-robot lowering/transport/exit feature;
+allow a further3–5 days of investigation before estimating that deferred feature.
+This is a planning estimate, not a commitment or evidence of feasibility.
+
+It **does not block** detailing feet, legs, hip sockets/waist, chest, core,
+backpack, arms, pauldrons or head; those components mount to the existing hip
+and downstream robot datums, with gantry bearing caps held atY10.97. Their part
+interfaces, source models, recipes and manuals can progress. Coordinate changes
+that enlarge a mounted envelope or change lifting contacts through the existing
+component pipeline; tower beam artwork and final catwalk tips should follow
+those measured envelopes. Do not redesign the robot merely to fit this concept.
+
+Once a v2 build is separately approved, first produce a dimensioned collision/support plan covering
+the table above and a representative hip-to-leg handling sequence. Prototype
+one mirrored level and the hip support handoff before expanding to all levels.
+Use the shared equipment/zone model, at-rest capture/apply, no save migrations,
+and the current pause/resume obstruction policy; do not reintroduce the rejected
+whole-route access sweep. Review supported mounting through intermediate poses
+and downstream child transforms if the support implementation changes them.
+Audit affected manual steps and support ownership together. Extend focused
+routine geometry/access/lift/receiver tests as appropriate and classify any new
+suite; named expensive diagnostics require a separate explicit request. Rendered
+review is optional and requires a request. Walking, readability and assembly
+access remain the user's playtest, tracked in the linked checklist.
+
+**Checkpoint C update — 2026-10-27:** the user approved the two-tower/swing-catwalk
+concept as direction only. Building it is not approved and waits for less
+temporary robot parts. Lowering/transport remains deferred. The lowest-level
+railing/access asymmetry came from the right wing being a 180° copy of the left;
+it was mirrored about X13 and is covered by `gantry_dressing_test`.

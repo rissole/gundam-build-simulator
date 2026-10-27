@@ -85,11 +85,20 @@ func request(action: String) -> String:
 
 func physics(delta: float) -> void:
 	if game.paused or not moving:return
+	blocked_reason = rope_motion_error()
+	if not blocked_reason.is_empty():return
 	var next = values()
 	for key in channels:next[key] = move_toward(channels[key].value,channels[key].goal,delta/spec.duration)
 	for key in channels:channels[key].value = next[key]
 	_pose()
 	moving = channels.values().any(func(channel):return not is_equal_approx(channel.value,channel.goal))
+
+## A pending trip waits and resumes after free front lines are recalled.
+func rope_motion_error() -> String:
+	var channel: Dictionary = channels.get("20.6",{})
+	if channel.is_empty() or is_equal_approx(channel.value,channel.goal):return ""
+	var rope = game.equipment.get_equipment("rope_access")
+	return rope.LEAF_REASON if rope!=null and not rope.front_ropes_clear() else ""
 
 func _pose() -> void:
 	blockout.apply_frames(frames_at(values()))
