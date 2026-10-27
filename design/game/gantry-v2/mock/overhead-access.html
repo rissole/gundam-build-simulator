@@ -1,0 +1,462 @@
+<title>Overhead Rope Access</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one-screen tool. Scene fills the right; a scrolling work panel on the left.
+   Single deliberate look: dim workshop steel with safety-yellow access equipment. */
+:root{
+  --bg:#13161b; --panel:#1a1e25; --raise:#222731; --line:#2e3542;
+  --fg:#e4e7ec; --muted:#8e97a6; --accent:#f2b53a; --rope:#ff6fae;
+  --ok:#5cc98a; --warn:#eb9a3c; --bad:#e5534b;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;overflow:hidden}
+.app{display:grid;grid-template-columns:minmax(300px,380px) 1fr;height:100%}
+.panel{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;
+  padding-block:16px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px;
+  display:flex;flex-direction:column;gap:18px;min-width:0}
+h1{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.02em;margin:0;line-height:1.05;text-wrap:balance}
+h1 small{display:block;font-family:var(--body);font-weight:400;font-size:12.5px;color:var(--muted);letter-spacing:0;margin-top:6px;line-height:1.45}
+h2{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.stages{display:flex;flex-wrap:wrap;gap:4px}
+.stages button,.views button,.toggles button{font:500 12px var(--body);color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:3px;padding:5px 8px;cursor:pointer}
+.stages button[aria-pressed="true"],.views button[aria-pressed="true"],.toggles button[aria-pressed="true"]{background:var(--accent);color:#1a1405;border-color:var(--accent)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.points{display:flex;flex-direction:column;gap:4px}
+.pt{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:start;text-align:left;width:100%;
+  font:inherit;color:inherit;background:transparent;border:1px solid transparent;border-radius:3px;padding:7px 8px;cursor:pointer}
+.pt:hover{background:var(--raise)}
+.pt[aria-current="true"]{background:var(--raise);border-color:var(--line)}
+.pt .n{font:500 11px var(--mono);color:#1a1405;background:var(--accent);border-radius:2px;text-align:center;line-height:18px;height:18px}
+.pt .t{font-weight:500;line-height:1.3}
+.pt .m{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+.pill{font:500 10.5px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:2px;white-space:nowrap}
+.pill.ok{background:color-mix(in srgb,var(--ok) 22%,transparent);color:var(--ok)}
+.pill.warn{background:color-mix(in srgb,var(--warn) 22%,transparent);color:var(--warn)}
+.pill.bad{background:color-mix(in srgb,var(--bad) 22%,transparent);color:var(--bad)}
+.note{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0}
+.readout{display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:12.5px;align-items:center}
+.readout .v{font:500 12px var(--mono);font-variant-numeric:tabular-nums}
+.sliders{display:flex;flex-direction:column;gap:9px}
+.sl{display:grid;grid-template-columns:118px 1fr 52px;gap:8px;align-items:center;font-size:12.5px}
+.sl output{font:500 12px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.sl input{width:100%;accent-color:var(--accent)}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:12px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.stage-wrap{position:relative;min-width:0}
+canvas{display:block;width:100%;height:100%}
+.views{position:absolute;top:12px;right:max(12px,env(safe-area-inset-right,0px));display:flex;gap:4px}
+.hud{position:absolute;left:12px;bottom:12px;right:max(12px,env(safe-area-inset-right,0px));pointer-events:none;
+  font:500 11.5px var(--mono);color:var(--muted)}
+.detail{background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.detail h3{font-family:var(--display);font-size:19px;font-weight:600;margin:0;line-height:1.1}
+.detail p{margin:0;font-size:12.5px;line-height:1.5;color:var(--fg)}
+.detail p.m{color:var(--muted)}
+.toggles{display:flex;flex-wrap:wrap;gap:4px}
+@media (max-width:760px){
+  body{overflow:auto}
+  .app{grid-template-columns:1fr;grid-template-rows:58vh auto;height:auto}
+  .stage-wrap{order:-1;height:58vh}
+  .panel{border-right:0;border-top:1px solid var(--line);overflow:visible;padding-right:max(16px,env(safe-area-inset-right,0px))}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <aside class="panel">
+    <h1>Overhead rope access
+      <small>Gantry v2 mock. Two walkways at 20.6 m, each with its own lift. The workshop-side walkway is two hinged leaves on the same posts as the 8.4 m wings, split at the centreline, so they swing open for the crane like the wings below. The exit-side walkway is fixed. You walk out, swing a davit over the robot, clip in and lower yourself to the connection. Coloured blocks only; sizes are coarse.</small>
+    </h1>
+
+    <section>
+      <h2>Connections</h2>
+      <div class="points" id="points"></div>
+    </section>
+
+    <section class="detail" id="detail"></section>
+
+    <section>
+      <h2>Build stage</h2>
+      <div class="stages" id="stages"></div>
+    </section>
+
+    <section>
+      <h2>Adjust</h2>
+      <div class="toggles" style="margin-bottom:10px">
+        <button id="wF" aria-pressed="true">Workshop-side walkway</button>
+        <button id="wR" aria-pressed="false">Exit-side walkway</button>
+      </div>
+      <div class="sliders" id="sliders"></div>
+      <div class="toggles" style="margin-top:10px">
+        <button id="tCrane" aria-pressed="true">Crane holding load</button>
+        <button id="tOpen" aria-pressed="false">Workshop-side leaves open</button>
+        <button id="tGrow" aria-pressed="false">Growth envelopes</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Checks</h2>
+      <div class="readout" id="readout"></div>
+      <p class="note" style="margin-top:8px">Reach is measured from the worker's shoulders: up to 0.85 m is fine, up to 1.6 m works with a pull-in lanyard clipped to the robot, beyond that it's out of reach. The rope must stay clear of the robot blocks and at least 0.6 m from the crane's cables.</p>
+    </section>
+
+    <section>
+      <h2>Key</h2>
+      <div class="legend">
+        <span style="--c:#7d8fa8">Robot (fitted)</span>
+        <span style="--c:#f2b53a">Walkways and decks</span>
+        <span style="--c:#d9643a">Crane and its approach</span>
+        <span style="--c:#ff6fae">Rope and worker</span>
+        <span style="--c:#4f5a6b">Hip frame</span>
+        <span style="--c:#5aa7c9">Lifts</span>
+      </div>
+    </section>
+  </aside>
+
+  <div class="stage-wrap" id="wrap">
+    <canvas id="c" aria-label="3D workshop mock"></canvas>
+    <div class="views" id="views"></div>
+    <div class="hud" id="hud">Drag to orbit · right-drag to pan · scroll to zoom · metres, Y up, +Z toward the exit door</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(() => {
+// ---------- Data (world metres, from workshop-layout.json and C5 measured boxes) ----------
+const STAGES = ['Hip','Legs','Chest','Core','Backpack','Arms','Head'];
+const ROBOT = [ // measured own-mesh boxes, not grown
+  {id:'hip',  st:0, min:[10.96,8.67,25.18], max:[15.04,12.85,26.82], c:0x8a9bb3},
+  {id:'legs', st:1, min:[11.09,1.68,25.33], max:[12.71,11.06,26.63], c:0x6f819b},
+  {id:'legsR',st:1, min:[13.29,1.68,25.33], max:[14.91,11.06,26.63], c:0x6f819b},
+  {id:'feet', st:1, min:[11.23,1.40,23.80], max:[14.77,2.88,26.81], c:0x5d6d85},
+  {id:'chest',st:2, min:[10.05,12.23,24.87],max:[15.95,18.70,27.91], c:0x9aaac0},
+  {id:'pack', st:4, min:[11.80,12.70,27.13],max:[14.20,15.57,28.20], c:0x7a8aa0},
+  {id:'armL', st:5, min:[8.66,8.52,25.25],  max:[11.39,16.46,26.69], c:0x8193ad},
+  {id:'armR', st:5, min:[14.61,8.52,25.25], max:[17.34,16.46,26.69], c:0x8193ad},
+  {id:'head', st:6, min:[11.69,16.80,25.21],max:[14.31,19.41,26.90], c:0xa9b8cc},
+];
+const GROW = {hip:.5,legs:.5,legsR:.5,feet:.5,chest:.75,pack:.75,armL:1,armR:1,head:.75};
+
+const DECK_Y = 20.6, DECK_UNDER = 20.3, CRANE_Y = 23.15, RUNWAY_Y = 23.4, DAVIT_Y = 21.8, DAVIT_MAX = 2.0;
+// Fixed walkways: deck Z band, X span, the lift that serves it, and which way its davits reach.
+const WALKS = { // F is two hinged leaves on the 8.4 m wing axles (X5/X21, Z24), split at X13
+  F:{name:'Workshop side', z0:23.4, z1:24.6, x0:5.0, x1:21.0, edge:24.6, dir:+1},
+  R:{name:'Exit side',     z0:30.3, z1:31.7, x0:5.0, x1:18.0, edge:30.3, dir:-1},
+};
+const LIFTS = [ // shaft bounds X,Z. Left moved forward to serve the front walkway; right moved aft for the rear one.
+  {id:'L', cx:1.9,  cz:24.05, walk:'F'},
+  {id:'R', cx:19.6, cz:31.0, walk:'R'},
+];
+const ropeZ = (w,off) => WALKS[w].edge + WALKS[w].dir*off;
+
+// Work points. mode 'rope' hangs from a walkway davit; 'deck' stands on a fixed deck.
+const POINTS = [
+ {id:'board', st:0, t:'Get onto the walkways', m:'Each lift\'s top stop opens onto its own walkway',
+  mode:'deck', stance:[4.25,20.6,24.0], p:[4.25,20.6,24.0], set:{w:'F',off:0,ax:9,hy:9.4,cz:18,crane:false,open:false},
+  why:'Lift stops are ground, 8.4 m and 20.6 m. The left lift moves outboard of the left hinge post and opens onto the hinge apron at both 8.4 m and 20.6 m, like the lifts beside today\'s wings. The right lift stands aft and opens onto the exit-side walkway. To cross between them you go down and back up.',
+  open:'The crane bridge passes over both lifts, so each shaft\'s fixed structure ends at Y20.2 and the car is open-topped.'},
+ {id:'deliver', st:0, t:'Crane delivery from the workshop', m:'Both levels of leaves swing open toward the workshop',
+  mode:'deck', stance:[4.25,20.6,24.0], p:[13,19.5,22], set:{w:'F',off:0,ax:9,hy:9.4,cz:24,crane:true,open:true},
+  why:'Like the 8.4 m wings, both upper leaves swing 90° toward the workshop about the shared posts and park along the hall at X5 and X21. The crane then comes straight down the middle on its current routes. Once the part hangs over the robot at Z26, the leaves can close under the crane bridge: the cables drop at Z26, clear of the leaves.',
+  open:'Interlock: nobody on a leaf while it swings, and the leaves must be open before the crane crosses Z23.4–24.6. Keep the trolley near X13 while passing: the open leaves sit at X4.4–5.6 and X20.4–21.6.'},
+ {id:'jaws', st:0, t:'Hip onto frame', m:'Four jaws and waist locks, from the rear hip deck',
+  mode:'deck', stance:[11.6,8.4,27.75], p:[11.6,10.8,26.65], set:{w:'R',off:0,ax:12,hy:9.4,cz:26,crane:true},
+  why:'Unchanged from today. The jaw handles are worked standing on the 8.4 m rear deck while the crane holds the hip.',
+  open:''},
+ {id:'eyes', st:0, t:'Hip lifting adapters off', m:'Four lifting eyes at Y11.35, previously from the 11.2 m level',
+  mode:'rope', p:[11.85,11.35,25.3], set:{w:'F',off:0.3,ax:11.85,hy:10.8,cz:26,crane:true},
+  why:'Drop from the closed workshop-side leaf with the davit out 0.3 m. The crane stays hooked over the robot at Z26; the leaves closed underneath its bridge after it arrived.',
+  open:'The rear eyes at Z26.7 use the exit-side walkway the same way.'},
+ {id:'leg', st:1, t:'Leg → hip', m:'Ring halves, 4 upward bolts, cylinders and pins',
+  mode:'deck', stance:[11.9,8.4,24.3], p:[11.9,10.0,25.5], set:{w:'F',off:0,ax:12,hy:9.4,cz:18,crane:false},
+  why:'Stays on the 8.4 m landing: front swing wings and rear hip decks, as in the game now.',
+  open:'Rope is an optional extra for the outboard side of each socket.'},
+ {id:'waistF', st:2, t:'Chest → waist (front)', m:'Waist bolts and locks while the crane holds the chest',
+  mode:'rope', p:[13,12.5,25.2], set:{w:'F',off:0,ax:13,hy:11.9,cz:26,crane:true},
+  why:'Hang just in front of the chest, straight off the leaf edge. The chest came down the hall with the leaves open; they closed once it was over the robot.',
+  open:''},
+ {id:'waistR', st:2, t:'Chest → waist (rear)', m:'Rear waist bolts under the chest overhang',
+  mode:'rope', p:[13,12.5,26.8], set:{w:'R',off:2.0,ax:13,hy:11.9,cz:26,crane:true},
+  why:'Davit fully out from the exit-side walkway, then a pull-in lanyard to the hip bridge to get under the chest overhang.',
+  open:''},
+ {id:'core', st:3, t:'Core → chest', m:'Rear flange, 4 captive bolts and interlock',
+  mode:'rope', p:[12.6,13.35,27.95], set:{w:'R',off:2.0,ax:12.0,hy:12.85,cz:29.2,crane:true},
+  why:'The crane holds the core\'s rear end at about Z29.2. That is why the fixed exit-side walkway sits at Z31: further forward, the core\'s lifting cables would hit it. The core comes from the front over the chest and descends behind it, so no crane cable crosses the exit-side walkway. The rope drops beside the core\'s path.',
+  open:''},
+ {id:'pack', st:4, t:'Backpack hinge', m:'2 hinge pins and 2 strut pins, pack open 90°',
+  mode:'rope', p:[12.1,15.5,27.3], set:{w:'R',off:2.0,ax:11.3,hy:14.6,cz:28.7,crane:true},
+  challenge:true,
+  why:'Open challenge, left for a fun solution later. The block here is the closed pack, so these numbers ignore the open pack\'s sweep behind the chest.',
+  open:''},
+ {id:'shoulder', st:5, t:'Arm → shoulder', m:'Ball seat, split ring and restraint (left; right mirrors)',
+  mode:'rope', p:[10.8,15.8,25.4], set:{w:'F',off:0,ax:10.8,hy:15.2,cz:26,crane:true},
+  why:'Hang in front of the shoulder while the crane holds the arm. The arm keeps its current route: tipped upright in front of the robot, then brought in with the leaves open.',
+  open:'The back of the shoulder is done from the exit-side walkway with a pull-in.'},
+ {id:'pauldron', st:5, t:'Pauldron', m:'Shoulder armour onto the fitted arm',
+  mode:'rope', p:[9.6,16.9,25.6], set:{w:'F',off:0.1,ax:9.25,hy:16.6,cz:26,crane:true},
+  why:'Hang forward of and outboard of the shoulder; the crane lowers the pauldron from above.',
+  open:''},
+ {id:'neck', st:6, t:'Head → neck', m:'Baseplate, wraps and connectors on the fixed neck',
+  mode:'rope', p:[13,17.0,25.3], set:{w:'F',off:0,ax:13,hy:16.4,cz:26,crane:true},
+  why:'Front hang at neck height. Each head piece is retained before the crane\'s magnets release.',
+  open:''},
+ {id:'crown', st:6, t:'Head top and crown', m:'Top of the head, about Y19.4',
+  mode:'rope', p:[13,19.2,25.4], set:{w:'F',off:0,ax:13,hy:18.6,cz:26,crane:true},
+  why:'Short drop from the workshop-side walkway.',
+  open:''},
+];
+
+// ---------- Scene ----------
+const canvas = document.getElementById('c'), wrap = document.getElementById('wrap');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x13161b);
+scene.fog = new THREE.Fog(0x13161b, 70, 140);
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 400);
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.enableDamping = true;
+scene.add(new THREE.HemisphereLight(0xcfd8e6, 0x2a2f38, 0.85));
+const sun = new THREE.DirectionalLight(0xffffff, 0.55); sun.position.set(-20,40,-10); scene.add(sun);
+
+const mat = (c,o={}) => new THREE.MeshLambertMaterial(Object.assign({color:c},o));
+function box(min,max,c,o){ const g=new THREE.BoxGeometry(max[0]-min[0],max[1]-min[1],max[2]-min[2]);
+  const m=new THREE.Mesh(g, c instanceof THREE.Material?c:mat(c,o)); m.position.set((min[0]+max[0])/2,(min[1]+max[1])/2,(min[2]+max[2])/2); return m; }
+function edges(mesh,c,op=1){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({color:c,transparent:op<1,opacity:op})); e.position.copy(mesh.position); return e; }
+function add(min,max,c,o,group=scene){ group=group||scene; const m=box(min,max,c,o); group.add(m); group.add(edges(m,0x0d0f13,.5)); return m; }
+const mir = (min,max) => [[26-max[0],min[1],min[2]],[26-min[0],max[1],max[2]]];
+function addM(min,max,c,o,g){ add(min,max,c,o,g); const [a,b]=mir(min,max); add(a,b,c,o,g); }
+
+// Floor, shell outline, aft door opening
+const grid = new THREE.GridHelper(60,60,0x2e3542,0x20252e); grid.position.set(6,0,15); scene.add(grid);
+scene.add(edges(box([-14,0,-9],[26,25,39],0),0x3a4352,.7));
+scene.add(edges(box([2.25,0,38.7],[23.75,22,38.9],0),0x6b7689,.9));
+
+// Crane runways
+add([-12.8,RUNWAY_Y-.4,-8],[-12.2,RUNWAY_Y,38],0x3d4452);
+add([25.0,RUNWAY_Y-.4,-8],[25.6,RUNWAY_Y,38],0x3d4452);
+
+// Hip frame (today's low rear portal)
+const FR = 0x4f5a6b;
+for (const x of [12.35,13.65]) { add([x-.18,10.65,26.5],[x+.18,10.95,31.1],FR); add([x-.18,10.95,26.52],[x+.18,10.97,26.78],0xf2b53a); }
+add([8.5,10.5,30.8],[17.5,11.1,31.4],FR);
+addM([8.5,0,30.8],[9.1,10.5,31.4],FR);
+addM([8.1,0,30.9],[9.5,0.3,32.5],FR);
+for (let i=0;i<4;i++) addM([8.625,.175+i*.65,32.54-i*.32],[8.975,.825+i*.65,32.86-i*.32],FR);
+
+// 8.4 m landing (kept): outer walkways, hip aprons, rear hip decks, front swing wings. Rear crossover removed.
+const ACC = 0xf2b53a, accMat = mat(ACC), guardMat = mat(0xb8862a);
+addM([3.5,8.2,24.7],[5.0,8.4,37.3],accMat);
+addM([8.2,8.2,27.35],[10.1,8.4,30.1],accMat);
+addM([10.1,8.2,27.35],[12.99,8.4,28.55],accMat);
+addM([5.0,8.2,23.4],[12.98,8.4,24.6],accMat);
+
+// Fixed walkways at 20.6 m, hung from roof steel, with guards and a davit rail along the robot-side edge
+for (const k of ['R']) { const W=WALKS[k];
+  add([W.x0,DECK_UNDER,W.z0],[W.x1,DECK_Y,W.z1],accMat);
+  add([W.x0,DECK_Y,W.z0],[W.x1,DECK_Y+1.1,W.z0+.06],guardMat);
+  add([W.x0,DECK_Y,W.z1-.06],[W.x1,DECK_Y+1.1,W.z1],guardMat);
+  add([4.65,0,30.85],[4.95,DECK_UNDER,31.15],0x8a6a22); // west post; east end rests on the right lift. No roof hangers: the crane bridge travels the hall.
+}
+
+// Workshop-side upper leaves: same vertical axles as the 8.4 m wings, split at X13
+const leaves=[];
+for (const [hx,base] of [[5,0],[21,Math.PI]]) {
+  const g=new THREE.Group(); g.position.set(hx,0,24); g.rotation.y=base; scene.add(g); leaves.push({g,base});
+  add([.02,DECK_UNDER,-.6],[7.98,DECK_Y,.6],accMat,null,g);
+  add([.02,DECK_Y,-.6],[7.98,DECK_Y+1.1,-.54],guardMat,null,g);
+  add([.02,DECK_Y,.54],[7.98,DECK_Y+1.1,.6],guardMat,null,g);
+  add([.1,DECK_Y+1.1,-.05],[.2,22.3,.05],0x8a6a22,null,g); // short mast for the leaf's tie
+  const tie=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(.15,22.3,0),new THREE.Vector3(7.5,DECK_Y+1.1,0)]),new THREE.LineBasicMaterial({color:0x8a6a22})); g.add(tie);
+}
+for (const hx of [5,21]) add([hx-.2,0,23.8],[hx+.2,22.3,24.2],0x8a6a22); // shared hinge posts, floor to below the crane bridge
+addM([3.5,DECK_UNDER,23.4],[5.0,DECK_Y,24.7],accMat); // hinge aprons at 20.6, as at 8.4
+// Crane approach down the hall, usable only with the leaves open
+const approach = box([8,12,14],[18,22.5,26],mat(0xd9643a,{transparent:true,opacity:.07,depthWrite:false}));
+const approachEdges = edges(approach,0xd9643a,.35); scene.add(approach, approachEdges);
+
+// Lifts: open-topped cars, shafts end below the deck underside; top stop is the walkway
+const liftMat = mat(0x5aa7c9,{transparent:true,opacity:.18,depthWrite:false});
+const liftCars=[];
+for (const L of LIFTS) {
+  const x0=L.cx-1.6,x1=L.cx+1.6,z0=L.cz-1.6,z1=L.cz+1.6;
+  const s=box([x0,0,z0],[x1,20.2,z1],liftMat); scene.add(s); scene.add(edges(s,0x5aa7c9,.9));
+  for (const dx of [x0,x1-.2]) for (const dz of [z0,z1-.2]) add([dx,0,dz],[dx+.2,20.2,dz+.2],0x3f88ad);
+  for (const y of [8.2,20.0]) { add([x0,y,z0],[x1,y+.2,z0+.2],0x3f88ad); add([x0,y,z1-.2],[x1,y+.2,z1],0x3f88ad); }
+  const car=new THREE.Group();
+  car.add(box([L.cx-1.3,-.2,L.cz-1.3],[L.cx+1.3,0,L.cz+1.3],0x5aa7c9));
+  car.add(box([L.cx-1.3,0,L.cz-1.3],[L.cx+1.3,1.1,L.cz-1.24],0x5aa7c9), box([L.cx-1.3,0,L.cz+1.24],[L.cx+1.3,1.1,L.cz+1.3],0x5aa7c9));
+  scene.add(car); liftCars.push(car);
+}
+
+
+// Robot
+const robotMeshes = {}, growMeshes = {};
+for (const r of ROBOT) {
+  const m = box(r.min,r.max,r.c); const grp = new THREE.Group(); grp.add(m, edges(m,0x0d0f13,.6)); scene.add(grp); robotMeshes[r.id]=grp;
+  const g=GROW[r.id]; const ge=edges(box(r.min.map(v=>v-g),r.max.map(v=>v+g),0),0x9fb0c8,.35); ge.visible=false; scene.add(ge); growMeshes[r.id]=ge;
+}
+
+// Crane bridge + trolley + cable
+const crane = new THREE.Group(); scene.add(crane);
+crane.add(box([-12.5,CRANE_Y-.5,-.6],[25.3,CRANE_Y+.25,.6],0xd9643a));
+crane.add(box([12.2,CRANE_Y-.9,-.7],[13.8,CRANE_Y-.4,.7],0xb24e2a));
+const hook = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(13,CRANE_Y-.9,0),new THREE.Vector3(13,19.5,0)]),new THREE.LineBasicMaterial({color:0xd9643a})); crane.add(hook);
+
+// Davit, rope, worker, target, reach line
+const davit = new THREE.Mesh(new THREE.BoxGeometry(.12,.12,1), mat(0xffd36b)); scene.add(davit);
+const rope = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]), new THREE.LineBasicMaterial({color:0xff6fae})); scene.add(rope);
+const worker = new THREE.Group(); scene.add(worker);
+worker.add(box([-.25,-1.0,-.2],[.25,.8,.2],0xff6fae));
+const headM = new THREE.Mesh(new THREE.SphereGeometry(.14,16,12), mat(0xffb3d3)); headM.position.y=.95; worker.add(headM);
+const reachLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]), new THREE.LineDashedMaterial({color:0xffffff,dashSize:.15,gapSize:.1})); scene.add(reachLine);
+const target = new THREE.Mesh(new THREE.SphereGeometry(.16,16,12), new THREE.MeshBasicMaterial({color:0xffffff})); scene.add(target);
+
+function badge(n){ const c=document.createElement('canvas'); c.width=c.height=64; const x=c.getContext('2d');
+  x.fillStyle='#f2b53a'; x.beginPath(); x.arc(32,32,28,0,7); x.fill(); x.fillStyle='#1a1405'; x.font='600 30px IBM Plex Mono, monospace'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(n,32,34);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true})); s.scale.set(.7,.7,.7); return s; }
+const markers = POINTS.map((p,i)=>{ const s=badge(i+1); s.position.set(...p.p); scene.add(s); return s; });
+
+// ---------- State and checks ----------
+const S = {stage:0, sel:'eyes', w:'F', off:.3, ax:11.85, hy:10.8, cz:26, crane:true, grow:false, open:false};
+const D = {cz:26, wx:0, wy:0, wz:0, off:0, car:8.4, open:0};
+const installed = () => ROBOT.filter(r=>r.st<=S.stage);
+function segBoxDist(x,z,y0,y1,b){ const dx=Math.max(b.min[0]-x,0,x-b.max[0]), dz=Math.max(b.min[2]-z,0,z-b.max[2]), dy=Math.max(b.min[1]-y1,0,y0-b.max[1]); return Math.hypot(dx,dy,dz); }
+const boxOverlap = (a0,a1,b) => [0,1,2].every(i=>a0[i]<b.max[i]&&a1[i]>b.min[i]);
+const clampX = (w,x) => Math.min(WALKS[w].x1-.3, Math.max(WALKS[w].x0+.3, x));
+
+function evaluate(){
+  const P = POINTS.find(p=>p.id===S.sel); const out=[];
+  let shoulder, rope=null, bodyHit=null;
+  const deck = P.mode==='deck';
+  if (deck) shoulder=[P.stance[0],P.stance[1]+1.45,P.stance[2]];
+  else {
+    const az=ropeZ(S.w,S.off), ax=clampX(S.w,S.ax); shoulder=[ax,S.hy+.55,az];
+    let best=1e9, who='';
+    for (const b of installed()){ const d=segBoxDist(ax,az,S.hy+.8,DAVIT_Y,b); if(d<best){best=d;who=b.id;} }
+    rope={d:best,who,ax,az};
+    for (const b of installed()) if (boxOverlap([ax-.25,S.hy-1,az-.2],[ax+.25,S.hy+.8,az+.2],b)) bodyHit=b.id;
+  }
+  const noReach = P.id==='board' || P.id==='deliver';
+  const reach = noReach ? 0 : Math.hypot(...P.p.map((v,i)=>v-shoulder[i]));
+  const lvl = (v,a,b)=> v<=a?'ok':v<=b?'warn':'bad';
+  out.push([deck?'Overhead reach from deck':'Reach to connection', noReach?'—':reach.toFixed(2)+' m', noReach?'ok':deck?lvl(reach,1.5,1.8):lvl(reach,.85,1.6)]);
+  if (rope){
+    out.push(['Rope clearance to robot', isFinite(rope.d)?rope.d.toFixed(2)+' m':'no parts', rope.d>=.1?'ok':'bad']);
+    out.push(['Worker body vs robot', bodyHit?'hits '+bodyHit:'clear', bodyHit?'bad':'ok']);
+    if (S.crane){ const c=Math.hypot(rope.ax-13, rope.az-S.cz); out.push(['Rope to crane cable', c.toFixed(2)+' m', c>=.6?'ok':'bad']); }
+    if (S.w==='F') out.push(['Workshop-side leaves', S.open?'open — can\'t rappel':'closed and locked', S.open?'bad':'ok']);
+  }
+  if (S.crane){
+    const inF = S.cz>WALKS.F.z0-.3 && S.cz<WALKS.F.z1+.3, inR = S.cz>WALKS.R.z0-.3 && S.cz<WALKS.R.z1+.3;
+    const bad = inR || (inF && !S.open);
+    out.push(['Crane cables vs walkways', inR?'cross the exit-side walkway':inF&&!S.open?'cross the closed leaves':inF?'pass between open leaves':'clear', bad?'bad':'ok']);
+  }
+  out.push(['Walkway underside over head top', (DECK_UNDER-19.41).toFixed(2)+' m', 'ok']);
+  const worst = out.some(o=>o[2]==='bad')?'bad':out.some(o=>o[2]==='warn')?'warn':'ok';
+  return {rows:out, worst, shoulder, P};
+}
+const LABEL = {ok:'works',warn:'pull-in',bad:'blocked'};
+const tag = (P,r) => P.challenge?'open challenge':P.id==='board'?'lift top stops':P.id==='deliver'?(r.worst==='ok'?'leaves open':'blocked'):P.mode==='deck'?'8.4 deck':LABEL[r.worst];
+
+// ---------- UI ----------
+const $ = id => document.getElementById(id);
+STAGES.forEach((s,i)=>{ const b=document.createElement('button'); b.textContent=(i?'+ ':'')+s; b.onclick=()=>{S.stage=i;sync();}; b.dataset.i=i; $('stages').appendChild(b); });
+const SL = [['off','Davit reach',0,DAVIT_MAX,.05],['ax','Anchor X',5,21,.05],['hy','Worker height Y',8.4,20,.05],['cz','Crane bridge Z',-8,38,.1]];
+SL.forEach(([k,label,min,max,step])=>{ const row=document.createElement('label'); row.className='sl';
+  row.innerHTML=`<span>${label}</span><input id="s-${k}" type="range" min="${min}" max="${max}" step="${step}"><output id="o-${k}"></output>`;
+  row.querySelector('input').oninput=e=>{S[k]=+e.target.value; draw();}; $('sliders').appendChild(row); });
+$('wF').onclick=()=>{S.w='F'; sync();}; $('wR').onclick=()=>{S.w='R'; sync();};
+$('tCrane').onclick=()=>{S.crane=!S.crane; sync();};
+$('tOpen').onclick=()=>{S.open=!S.open; sync();};
+$('tGrow').onclick=()=>{S.grow=!S.grow; sync();};
+
+function pickPoint(id){ const P=POINTS.find(p=>p.id===id); const keepCz=S.cz;
+  S.sel=id; S.stage=P.st; S.open=false; Object.assign(S,P.set); S.crane=P.set.crane; if (!P.set.crane) S.cz=keepCz;
+  sync(); focus(P.p); }
+
+function renderPoints(){
+  $('points').innerHTML='';
+  POINTS.forEach((P,i)=>{
+    const saved={...S}; Object.assign(S,P.set,{sel:P.id,stage:P.st}); const r=evaluate(); Object.assign(S,saved);
+    const b=document.createElement('button'); b.className='pt'; b.setAttribute('aria-current',S.sel===P.id);
+    b.innerHTML=`<span class="n">${i+1}</span><span class="t">${P.t}<span class="m">${P.m}</span></span><span class="pill ${r.worst}">${tag(P,r)}</span>`;
+    b.onclick=()=>pickPoint(P.id); $('points').appendChild(b);
+  });
+}
+
+function sync(){
+  [...$('stages').children].forEach(b=>b.setAttribute('aria-pressed', +b.dataset.i===S.stage));
+  $('wF').setAttribute('aria-pressed',S.w==='F'); $('wR').setAttribute('aria-pressed',S.w==='R');
+  $('tCrane').setAttribute('aria-pressed',S.crane); $('tOpen').setAttribute('aria-pressed',S.open); $('tGrow').setAttribute('aria-pressed',S.grow);
+  SL.forEach(([k])=>{ $('s-'+k).value=S[k]; });
+  renderPoints(); draw();
+}
+
+function draw(){
+  SL.forEach(([k])=>{ $('o-'+k).textContent=(+S[k]).toFixed(k==='ax'?2:1); });
+  for (const r of ROBOT){ robotMeshes[r.id].visible=r.st<=S.stage; growMeshes[r.id].visible=S.grow&&r.st<=S.stage; }
+  hook.visible=S.crane;
+  const R=evaluate(), P=R.P;
+  target.position.set(...P.p);
+  reachLine.visible = P.id!=='board' && P.id!=='deliver';
+  markers.forEach((m,i)=>{ m.visible = POINTS[i].st<=S.stage; m.material.opacity = POINTS[i].id===S.sel?1:.55; });
+  $('readout').innerHTML = R.rows.map(([k,v,s])=>`<span>${k}</span><span class="v"><span class="pill ${s}">${v}</span></span>`).join('');
+  const i=POINTS.indexOf(P);
+  $('detail').innerHTML = `<h3>${i+1}. ${P.t}</h3><div><span class="pill ${R.worst}">${tag(P,R)}</span></div><p>${P.why}</p>${P.open?`<p class="m">${P.open}</p>`:''}`;
+}
+
+// Moving parts (crane, worker, davit, lift cars) ease toward the chosen state.
+function place(snap){
+  const P = POINTS.find(p=>p.id===S.sel), roped = P.mode==='rope';
+  const W = WALKS[S.w], ax = clampX(S.w,S.ax);
+  const goal = {cz:S.cz, off:roped?S.off:0, car:S.sel==='board'?DECK_Y:8.4, open:S.open?1:0};
+  if (roped) Object.assign(goal,{wx:ax,wy:S.hy,wz:ropeZ(S.w,S.off)}); else Object.assign(goal,{wx:P.stance[0],wy:P.stance[1]+1.0,wz:P.stance[2]});
+  for (const k in goal){ const d=goal[k]-D[k]; D[k] = (snap||Math.abs(d)<.005) ? goal[k] : D[k]+d*.07; }
+  crane.position.z=D.cz;
+  leaves.forEach(l=>l.g.rotation.y = l.base + (l.base?-1:1)*Math.PI/2*D.open);
+  approach.visible = approachEdges.visible = D.open>.5;
+  liftCars.forEach(c=>c.position.y=D.car);
+  davit.visible=rope.visible=roped;
+  if (roped){
+    const len=Math.max(D.off,.05)+.4; davit.scale.set(1,1,len);
+    davit.position.set(D.wx, DAVIT_Y, W.edge - W.dir*.4 + W.dir*len/2);
+    rope.geometry.setFromPoints([new THREE.Vector3(D.wx,DAVIT_Y,D.wz),new THREE.Vector3(D.wx,D.wy+.8,D.wz)]);
+  }
+  worker.position.set(D.wx,D.wy,D.wz);
+  const sh = roped ? [D.wx,D.wy+.55,D.wz] : [D.wx,D.wy+.45,D.wz];
+  reachLine.geometry.setFromPoints([new THREE.Vector3(...sh),new THREE.Vector3(...P.p)]); reachLine.computeLineDistances();
+}
+
+// ---------- Views ----------
+const VIEWS = {
+  '3D':   [[-4,26,8],[13,12,27]],
+  'Side': [[46,12,27],[13,12,27]],
+  'Front':[[13,13,-14],[13,12,27]],
+  'Top':  [[13,62,27.01],[13,0,27]],
+};
+let tween=null;
+function setView(name){ const [p,t]=VIEWS[name]; tween={from:camera.position.clone(),to:new THREE.Vector3(...p),tf:controls.target.clone(),tt:new THREE.Vector3(...t),k:0};
+  [...$('views').children].forEach(b=>b.setAttribute('aria-pressed',b.textContent===name)); }
+function focus(p){ tween={from:camera.position.clone(),to:camera.position.clone().add(new THREE.Vector3(...p).sub(controls.target)),tf:controls.target.clone(),tt:new THREE.Vector3(...p),k:0}; }
+Object.keys(VIEWS).forEach(n=>{ const b=document.createElement('button'); b.textContent=n; b.onclick=()=>setView(n); $('views').appendChild(b); });
+camera.position.set(...VIEWS['3D'][0]); controls.target.set(...VIEWS['3D'][1]);
+$('views').children[0].setAttribute('aria-pressed','true');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize(){ const w=wrap.clientWidth,h=wrap.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(wrap); resize();
+function loop(){ requestAnimationFrame(loop);
+  if (tween){ tween.k=Math.min(1,tween.k+(reduce?1:.06)); const e=1-Math.pow(1-tween.k,3);
+    camera.position.lerpVectors(tween.from,tween.to,e); controls.target.lerpVectors(tween.tf,tween.tt,e); if(tween.k>=1) tween=null; }
+  place(reduce); controls.update(); renderer.render(scene,camera); }
+pickPoint('eyes'); place(true); loop();
+})();
+</script>
