@@ -35,7 +35,7 @@ func run() -> void:
 	crane.endpoints={"a":{"state":"stowed","point":""},"b":{"state":"stowed","point":""}}
 	rail=machine(preload("res://scripts/indexed_leg_rail.gd"),"leg_rail")
 	rail.spec=preload("res://scripts/leg_bay_layout.gd").layout().workshop.rail
-	rail.active_assembly="left_leg";rail.lane="left";rail.index_x=14.0;rail.travel_z=14.5;rail.engaged=true
+	rail.active_assembly="left_leg";rail.lane="left";rail.index_x=rail.spec.station_x;rail.travel_z=14.5;rail.engaged=true
 	foot=machine(preload("res://scripts/foot_carrier.gd"),"foot_carrier")
 	pins=machine(preload("res://scripts/captive_controls.gd"),"captive_controls")
 	pins.specs=game.leg_content.equipment.captive_controls
@@ -74,7 +74,7 @@ func run() -> void:
 	rail.engaged=false;rail.release=5.0;rail.rise_m=0.0
 	reset=evaluate("pelvis",11)
 	expect(reset.ticked == [true,false,false,false,false,false,false],"released leg still requires the rail to return")
-	rail.tilt_deg=0.0;rail.travel_z=14.5;rail.index_x=14.0;rail.release=0.0;foot.path=3.0
+	rail.tilt_deg=0.0;rail.travel_z=14.5;rail.index_x=rail.spec.station_x;rail.release=0.0;foot.path=3.0
 	reset=evaluate("pelvis",11)
 	expect(reset.ticked == [true,true,true,true,true,false,false],"home rail still requires foot reset and Build")
 	rail.active_assembly="right_leg";rail.engaged=true

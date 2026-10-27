@@ -10,7 +10,7 @@ import json
 PREFIX = "R-"
 
 
-def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_records):
+def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_records, layout):
     foot_scenario=json.loads((assets/"pitch-workshop.json").read_text())
     base_document=json.loads((assets/"assembly-definitions.json").read_text())
     pitch_document=json.loads((assets/"pitch-actuator-definitions.json").read_text())
@@ -97,7 +97,7 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
     # An empty logical right-leg build waits at the shared station. It has no
     # physical stock until the one cradle is clear and takes its first foot.
     trial["parents"] += [dict(id="right_leg",definition="right_leg",label="Structural right leg",
-        location="support:leg_queue_right",home=[14,1.85,9.4],rotation_degrees=[90,0,0]),
+        location="support:leg_queue_right",home=list(layout["workshop"]["foot_dispatch"]["sole_route"][-1]["position"]),rotation_degrees=[90,0,0]),
         dict(id="right_foot",definition="right_foot",label="Prepared right foot",location="support:right_foot_store",
              home=[-7,2,12.3],frame_offset=[0,-.8,.7],mirror_context_of="foot")]
     trial["builds"]=[]

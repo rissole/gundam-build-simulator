@@ -2,7 +2,7 @@ extends "res://tests/kit/stage_section.gd"
 ## The prepared major-section handoff uses machinery/model staging only.
 func run() -> void:
 	if not await start("pelvis"):finish();return
-	expect(rail.can_construct() and is_equal_approx(game.assembly_node("left_leg").global_position.x,14),"empty cradle starts at shared X14 station")
+	expect(rail.can_construct() and is_equal_approx(game.assembly_node("left_leg").global_position.x,rail.spec.station_x),"empty cradle starts at shared layout station")
 	expect(not rail.action_error("travel+").is_empty(),"incomplete structural leg cannot depart")
 	var fixture=game.equipment.get_equipment("module_supports")
 	expect(not fixture.request("template:chest").is_empty(),"occupied pelvis fixture refuses contact exchange")

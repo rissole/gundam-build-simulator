@@ -7,6 +7,8 @@ import math
 
 def extend(trial, layout):
     world=layout["workshop"];groups=world["groups"];context=[];pieces={}
+    task=layout["crane"]["tasks"]["cassette"]
+    park=task["source_pose"]["position"];station=task["receiver_pose"]["position"]
     def relative(group):
         if group=="arm_cassette":return [0,0,0]
         entry=groups[group]
@@ -44,11 +46,11 @@ def extend(trial, layout):
         work_locations=["support"],interaction="components",context_sources=context,slots={},
         supplied_milestones=["prepared"],milestones={"prepared":[]},manual=[dict(title="Arm rig",view="overview",slots=[],
         body="Park the leg rig (Park, then hold INDEX +) before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction.")])
-    trial["parents"].append(dict(id="arm_cassette",definition="arm_cassette",label=descriptor["title"],location="support:cassette_park",home=[14,0,-6.3]))
+    trial["parents"].append(dict(id="arm_cassette",definition="arm_cassette",label=descriptor["title"],location="support:cassette_park",home=list(park)))
     for name in ["cassette_park","cassette_station"]:
         trial["supports"][name]=dict(assemblies=["arm_cassette"],assembly_ids=["arm_cassette"])
     for key in ["assemblies","assembly_ids"]:
         trial["supports"]["crane_rigging"][key].append("arm_cassette")
         trial["supports"]["arm_cassette"][key]=["left_arm","right_arm"]
-    trial["equipment"]["arm_cassette"]=dict(pieces=pieces,park=[14,0,-6.3],station=[14,0,9.9],arm_offset=[0,1.55,0])
+    trial["equipment"]["arm_cassette"]=dict(pieces=pieces,park=list(park),station=list(station),arm_offset=[0,1.55,0])
     return descriptor

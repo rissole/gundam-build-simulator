@@ -83,10 +83,11 @@ func run() -> void:
 func cassette_preflight() -> void:
 	var blockout=game.leg_layout.blockout;var cassette=game.runtime.node("arm_cassette")
 	var controller=game.equipment.get_equipment("arm_cassette")
+	var station_x: float=game.equipment.get_equipment("leg_rail").spec.station_x
 	arm=game.runtime.node("left_arm")
 	for n in range(3):
 		var t: float=[1.35,4.05,6.05][n]
-		var point=Vector3(14,.99,-6.3+t)
+		var point=Vector3(station_x,.99,-6.3+t)
 		var ray=PhysicsRayQueryParameters3D.create(point,point+Vector3.UP*.10,arm.collision_layer)
 		var hit=game.get_world_3d().direct_space_state.intersect_ray(ray)
 		var source=""
@@ -112,7 +113,7 @@ func cassette_preflight() -> void:
 		if key.begins_with("arm_cassette_floor_pad_") or key.begins_with("arm_park_pedestal_"):excludes.append(blockout.pieces[key].body.get_rid())
 	var groups=[{"shapes":compound,"margin":.0001,"error":"Retained cassette hits {collider}"},
 		{"shapes_at":func(pose: Transform3D,_p: float)->Array:return controller.rig_solids(pose),"margin":.001,"error":"Cassette rig hits {collider}"}]
-	var path=[Vector3(14,0,-6.3),Vector3(14,4.80,-6.3),Vector3(14,4.80,9.9),Vector3(14,0,9.9)]
+	var path=[Vector3(station_x,0,-6.3),Vector3(station_x,4.80,-6.3),Vector3(station_x,4.80,9.9),Vector3(station_x,0,9.9)]
 	for i in range(3):
 		var a=Transform3D(Basis.IDENTITY,path[i]);var b=Transform3D(Basis.IDENTITY,path[i+1])
 		# Endpoint feet deliberately bear on the flush floor. Sweep the suspended
@@ -129,7 +130,7 @@ func cassette_preflight() -> void:
 		var result=Sweep.sweep(game.get_world_3d().direct_space_state,groups,Sweep.steps(a,b,9,.04),func(p: float)->Transform3D:return a.interpolate_with(b,p),15,excludes,"cassette_"+str(i))
 		expect(result.is_empty(),"retained arm, whole cassette and four-end rig clear parking transfer segment "+str(i)+": "+str(result))
 		if i==1:
-			var low=Sweep.sweep(game.get_world_3d().direct_space_state,groups,405,func(p: float)->Transform3D:return Transform3D(Basis.IDENTITY,Vector3(14,1.5,lerpf(-6.3,9.9,p))),15,excludes)
+			var low=Sweep.sweep(game.get_world_3d().direct_space_state,groups,405,func(p: float)->Transform3D:return Transform3D(Basis.IDENTITY,Vector3(station_x,1.5,lerpf(-6.3,9.9,p))),15,excludes)
 			expect(not low.is_empty(),"too-low cassette transfer collides with the horizontal prepared foot")
 	var rig_error=""
 	var cassette_layer: int=cassette.collision_layer;cassette.collision_layer=1<<17

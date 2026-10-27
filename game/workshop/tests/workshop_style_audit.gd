@@ -41,8 +41,9 @@ func run() -> void:
 		var platform = game.equipment.get_equipment("mobile_platform")
 		platform.height = lerpf(.15,2.4,p);platform.moving = true;platform._pose()
 		var cradle = game.leg_layout.cradle
-		var frame = Transform3D(Basis(Vector3.RIGHT,PI/2*(1-p)),Vector3(14,1.85,9.4))
-		cradle.apply_geometry(cradle.geometry(frame,14,14.5,p,p,p))
+		var station_x: float = game.equipment.get_equipment("leg_rail").spec.station_x
+		var frame = Transform3D(Basis(Vector3.RIGHT,PI/2*(1-p)),Vector3(station_x,1.85,9.4))
+		cradle.apply_geometry(cradle.geometry(frame,station_x,14.5,p,p,p))
 		inspect_pose("equipment_%s" % p)
 	var meshes: Array[MeshInstance3D] = [];collect(game,meshes)
 	var original = blockout.pieces.transverse_table.visual

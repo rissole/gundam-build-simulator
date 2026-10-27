@@ -153,7 +153,7 @@ func run() -> void:
 	# clear; no broad fixture exclusion can hide an equipment clash.
 	parent.rotation=Vector3.ZERO
 	var leg=game.runtime.node("left_leg")
-	leg.global_transform=Transform3D(Basis(Vector3.RIGHT,PI/2),Vector3(14,1.85,9.4))
+	leg.global_transform=Transform3D(Basis(Vector3.RIGHT,PI/2),Vector3(rail.spec.station_x,1.85,9.4))
 	var cradle=preload("res://scripts/leg_cradle.gd").new();game.add_child(cradle);cradle.setup(game,rail.spec)
 	await frames(2)
 	braces.sync_pose()

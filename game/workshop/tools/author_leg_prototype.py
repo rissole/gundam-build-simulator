@@ -710,7 +710,7 @@ def robot_documents(check=False):
     from author_hip_interfaces import extend
     extend(trial, trial_parts, trial_leg, trial_pelvis, diagram)
     from author_right_leg import extend as right_leg_content
-    mirrored=right_leg_content(ASSETS,trial,trial_parts,trial_leg,trial_pelvis,parts,sources)
+    mirrored=right_leg_content(ASSETS,trial,trial_parts,trial_leg,trial_pelvis,parts,sources,workshop_layout)
     from author_pelvis import extend as prepared_pelvis
     prepared_pelvis(trial,trial_pelvis,workshop_layout)
     from author_chest import extend as prepared_chest

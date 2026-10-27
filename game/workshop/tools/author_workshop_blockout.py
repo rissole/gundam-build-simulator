@@ -13,6 +13,8 @@ from pathlib import Path
 
 ASSETS = Path(__file__).resolve().parents[1] / "assets"
 PATH = ASSETS / "workshop-layout.json"
+# Shared build/arm-parking centreline; hip tracks and fixed infrastructure stay put.
+LIMB_X = 14.1
 
 
 def pose(position, rotation=(0, 0, 0)):
@@ -26,9 +28,9 @@ def contract():
                    lowest_overhead=23.0),
         bays={
             "bulky": dict(bounds=[-2.25, 8.75, 6, 18], datum=[3.25, .85, 13]),
-            "limb": dict(bounds=[10.5, 17.5, 7.8, 20.8], datum=[14, 1.85, 14.5]),
+            "limb": dict(bounds=[LIMB_X-3.5, LIMB_X+3.5, 7.8, 20.8], datum=[LIMB_X, 1.85, 14.5]),
             "leg_parking": dict(bounds=[20, 24, 8, 20.5], datum=[22, 1.85, 14.5]),
-            "arm_parking": dict(bounds=[11.8, 16.2, -7, 2.5], datum=[14, 1.55, -6.3]),
+            "arm_parking": dict(bounds=[LIMB_X-2.2, LIMB_X+2.2, -7, 2.5], datum=[LIMB_X, 1.55, -6.3]),
             "foot": dict(bounds=[-11.5, -3.5, 5, 16], datum=[-7, 1.2, 8]),
             "stock": dict(bounds=[-11.5, 8.75, -5, 2], height_limit=3.2),
             "structural_stock": dict(bounds=[-11.25, -2.25, 17.5, 23.5], datum=[-6.75,1.85,18.5]),
@@ -37,7 +39,7 @@ def contract():
                    chest_seat=[13, 12.70, 26], core_axis=[13, 13.35, 26],
                    shoulders=[[10.8, 15.8, 26], [15.2, 15.8, 26]],
                    head_base=[13, 16.8, 26]),
-        rail=dict(station_x=14, lanes={"left":11.9, "right":14.1, "parking":22},
+        rail=dict(station_x=LIMB_X, lanes={"left":11.9, "right":14.1, "parking":22},
                   home_z=14.5, bay_z=26, pivot=5.1, base_y=.5, lying_lift=1.35,
                   delivery_lower=.30, lower_during_turn=.25, dock_rise=1.2, gauge=1.24, table_bounds=[10.5,23.4,13.25,15.75],
                   roll_axis_y=3.1, roll_stops=[0,90,180,270],
@@ -62,9 +64,9 @@ def contract():
                               slides=dict(y=.25,width=.25,height=.15),
                               mast=dict(width=.20,min_height=.05),
                               bearing=dict(z=1.45,size=[.40,.30,.30]))),
-        foot_dispatch=dict(sole_source=pose([14,1.2,7]),
-                           sole_route=[pose([14,1.2,7]),pose([14,1.85,7]),
-                                       pose([14,1.85,9.4]),pose([14,1.85,9.4],[90,0,0])]),
+        foot_dispatch=dict(sole_source=pose([LIMB_X,1.2,7]),
+                           sole_route=[pose([LIMB_X,1.2,7]),pose([LIMB_X,1.85,7]),
+                                       pose([LIMB_X,1.85,9.4]),pose([LIMB_X,1.85,9.4],[90,0,0])]),
         foot_storage={"foot":pose([-7,2,7.3]),"right_foot":pose([-7,2,12.3])},
         chest_storage=pose([-7,.85,27.5]),
         core_storage=pose([-7,1.3,31.3]),
@@ -72,10 +74,10 @@ def contract():
         backpack=dict(hinge_seat=[13,15.5,27.2],closed_rotation=[90,0,0],
                       route_positions=[[3.25,.85,13],[3.25,17.6,13],[13,17.6,13],
                                        [13,17.6,27.2],[13,15.7,27.2],[13,15.5,27.2]]),
-        cassette=dict(size=[2,.2,9], source_shoulder=[14,1.55,9.9],
-                      parked_shoulder=[14,1.55,-6.3], saddles=[1.35,4.05,6.05],
+        cassette=dict(size=[2,.2,9], source_shoulder=[LIMB_X,1.55,9.9],
+                      parked_shoulder=[LIMB_X,1.55,-6.3], saddles=[1.35,4.05,6.05],
                       transfer_bottom=4.8, folded_clamp_top=1.7),
-        arm_delivery=dict(source_shoulder=[14,1.55,9.9],upend_y=9.6,forward_z=19.5,
+        arm_delivery=dict(source_shoulder=[LIMB_X,1.55,9.9],upend_y=9.6,forward_z=19.5,
                           approach_distance=1.13,head_height=1.35,rig_overhead=23.0,
                           right_store_shoulder=[21,1.55,-6.3]),
         bulky_fixture=dict(datum=[3.25,.85,13], pelvis_datum=[3.25,1.2,13],
@@ -91,8 +93,8 @@ def contract():
                              speed=.8, lift_speed=.5,
                              docks={"park":[6.7,0,19.3],"bulky_left":[-.95,0,13],
                                     "bulky_right":[7.45,0,13],"bulky_front":[3.25,0,8.8],
-                                    "bulky_rear":[3.25,0,15.6],"limb_left":[11.75,0,14.5],
-                                    "limb_right":[16.25,0,14.5]},
+                                    "bulky_rear":[3.25,0,15.6],"limb_left":[LIMB_X-2.25,0,14.5],
+                                    "limb_right":[LIMB_X+2.25,0,14.5]},
                              # Each path starts at parking. Transfers reverse the
                              # current path, then follow the destination path.
                              routes={"park":[],
@@ -100,8 +102,8 @@ def contract():
                                      "bulky_right":[[7.45,0,19.3],[7.45,0,13]],
                                      "bulky_front":[[7.45,0,19.3],[7.45,0,8.8],[3.25,0,8.8]],
                                      "bulky_rear":[[3.25,0,19.3],[3.25,0,15.6]],
-                                     "limb_left":[[11.75,0,19.3],[11.75,0,14.5]],
-                                     "limb_right":[[16.25,0,19.3],[16.25,0,14.5]]}),
+                                     "limb_left":[[LIMB_X-2.25,0,19.3],[LIMB_X-2.25,0,14.5]],
+                                     "limb_right":[[LIMB_X+2.25,0,19.3],[LIMB_X+2.25,0,14.5]]}),
         crane=dict(runways=[-12.5,25.3], columns=[-7,1,19,37],
                    runway_y=23.4, bridge_y=23.15, runway_span=[-8,38],
                    console=[7.8,0,22.8], park=[8.4,20,18],
@@ -280,15 +282,15 @@ def contract():
     data["signs"].append(dict(text="PREPARED BACKPACK / TWO-END CRANE TO HEAVY MODULE RIG",position=[-7,1.65,34.3],width=3.4))
 
     # Passive arm parking and the single removable cassette start together.
-    group("arm_cassette",at=[14,0,-6.3])
+    group("arm_cassette",at=[LIMB_X,0,-6.3])
     for t in data["cassette"]["saddles"]:
         if t==4.05:
-            for x in [-.7,.7]:box(f"arm_park_pedestal_{x}_{t}",[14+x,.32,-6.3+t],[.3,.64,.4],"dark")
+            for x in [-.7,.7]:box(f"arm_park_pedestal_{x}_{t}",[LIMB_X+x,.32,-6.3+t],[.3,.64,.4],"dark")
         else:
             for x in [-.7,.7]:
                 box(f"arm_cassette_foot_{x}_{t}",[x,.32,t],[.16,.64,.24],"dark","arm_cassette")
                 # Flush bearing patches leave the leg bogie's wheel route open.
-                for z in [-6.3,9.9]:box(f"arm_cassette_floor_pad_{x}_{t}_{z}",[14+x,-.025,z+t],[.28,.05,.36],"yellow")
+                for z in [-6.3,9.9]:box(f"arm_cassette_floor_pad_{x}_{t}_{z}",[LIMB_X+x,-.025,z+t],[.28,.05,.36],"yellow")
         box(f"arm_cassette_saddle_{t}",[0,.93,t],[1.4,.14,.24],"yellow","arm_cassette")
         box(f"arm_cassette_tie_{t}",[0,.74,t],[2,.2,.24],parent="arm_cassette")
         for side in [-1,1]:
@@ -560,9 +562,9 @@ def delivery_inputs(layout, data):
                           base_y=r["base_y"],lying_lift=r["lying_lift"],panels=r["panels"])
     carrier=layout["foot_carrier"]
     # FA-01's scene origin is (0,.8,-.7) relative to its sole datum.
-    carrier.update(source_pose=pose([14,2.0,6.3]), receiver_pose=pose([14,2.55,10.2],[90,0,0]),
-                   route=[pose([14,2.0,6.3]),pose([14,2.65,6.3]),pose([14,2.65,8.7]),pose([14,2.55,10.2],[90,0,0])],
-                   durations=[4,5,8],panel=[11.1,0,7],contacts=[[-.43,-.8,1.13],[.43,-.8,1.13]],
+    carrier.update(source_pose=pose([LIMB_X,2.0,6.3]), receiver_pose=pose([LIMB_X,2.55,10.2],[90,0,0]),
+                   route=[pose([LIMB_X,2.0,6.3]),pose([LIMB_X,2.65,6.3]),pose([LIMB_X,2.65,8.7]),pose([LIMB_X,2.55,10.2],[90,0,0])],
+                   durations=[4,5,8],panel=[LIMB_X-2.9,0,7],contacts=[[-.43,-.8,1.13],[.43,-.8,1.13]],
                    sole_pad_size=[.18,.07,.66], assembly="foot",receiver_owner="left_leg",receiver_slot="foot",
                    assignments={"foot":"left_leg","right_foot":"right_leg"},
                    sole_route=data["foot_dispatch"]["sole_route"],root_offset=[0,.8,-.7])
@@ -581,8 +583,8 @@ def delivery_inputs(layout, data):
         source_z=19.2 if key.startswith("right_") else 18.5
         task["source_pose"]=pose([x,1.85,source_z],[90,0,0])
         z={"shin":10.795,"fork":14.5,"spar":15.34}[base]
-        task["receiver_pose"]=pose([14,1.85,z],[90,0,0])
-        task["route_positions"]=[task["source_pose"]["position"],[x,6,source_z],[14,6,z+.2],[14,1.85,z+.2],[14,1.85,z]]
+        task["receiver_pose"]=pose([LIMB_X,1.85,z],[90,0,0])
+        task["route_positions"]=[task["source_pose"]["position"],[x,6,source_z],[LIMB_X,6,z+.2],[LIMB_X,1.85,z+.2],[LIMB_X,1.85,z]]
         task["up_y"]=6.88;task["console_position"]=data["crane"]["console"]
         task["overhead_y"]=23.0
         task["park_position"]=[8.4,0,18]
@@ -596,7 +598,7 @@ def delivery_inputs(layout, data):
             magnetic_points={"foot_front_left":[-.50,-.36,-.2],"foot_front_right":[.50,-.36,-.2],
                              "foot_rear_left":[-.50,-.36,1.2],"foot_rear_right":[.50,-.36,1.2]},
             source_pose=source,receiver_pose=carrier["source_pose"],
-            route_positions=[source["position"],[-7,5.8,source["position"][2]],[-7,5.8,6.3],[14,5.8,6.3],[14,2.08,6.3],[14,2,6.3]],
+            route_positions=[source["position"],[-7,5.8,source["position"][2]],[-7,5.8,6.3],[LIMB_X,5.8,6.3],[LIMB_X,2.08,6.3],[LIMB_X,2,6.3]],
             approach=dict(axis=[0,-1,0],distance=.08),rig_clearance=1.5,up_y=6.9,
             rack_contacts=[],console_position=data["crane"]["console"],overhead_y=23.0,park_position=[8.4,0,18])
     layout["crane"]["tasks"]["pelvis"]=dict(title="Hip assembly",payload="assembly",load_uid="pelvis",owner="pelvis",slot="",
@@ -668,8 +670,8 @@ def delivery_inputs(layout, data):
         magnetic_points={f"cassette_pad_{i}":[x,.89,t] for i,(t,x) in enumerate([(t,x) for t in [1.35,6.05] for x in [-.9,.9]],1)},
         magnetic_normal=[0,1,0],spreader_points=[[x,0,z] for z in [-2.35,2.35] for x in [-1.1,1.1]],
         rig_clearance=2.21,up_y=7.9,overhead_y=23.,rack_contacts=[],console_position=data["crane"]["console"],park_position=[8.4,0,18],
-        source_pose=pose([14,0,-6.3]),receiver_pose=pose([14,0,9.9]),
-        route_positions=[[14,0,-6.3],[14,4.8,-6.3],[14,4.8,9.9],[14,0,9.9]],
+        source_pose=pose([LIMB_X,0,-6.3]),receiver_pose=pose([LIMB_X,0,9.9]),
+        route_positions=[[LIMB_X,0,-6.3],[LIMB_X,4.8,-6.3],[LIMB_X,4.8,9.9],[LIMB_X,0,9.9]],
         approach=dict(axis=[0,-1,0],distance=0))
     for side,sign in [("left",-1),("right",1)]:
         uid=side+"_arm"; center=data["robot"]["shoulders"][0 if sign<0 else 1]
@@ -682,17 +684,17 @@ def delivery_inputs(layout, data):
             magnetic_points={f"{uid}_pad_{i}":[x,.10,t] for i,(t,x) in enumerate([(t,x) for t in [.75,4.40] for x in [-.68,.68]],1)},
             handle_points={f"{uid}_pad_{i}":[x,.10,t] for i,(t,x) in enumerate([(t,x) for t in [.75,4.40] for x in [-.72,.72]],1)},
             rig_clearance=1.25,up_y=20,overhead_y=23.,rack_contacts=[],console_position=data["crane"]["console"],park_position=[8.4,0,18],
-            source_pose=pose([14,1.55,9.9]),receiver_pose=pose(center,[75,sign*90,0]),
-            route_positions=[[14,1.55,9.9],[14,9.6,9.9],[14,9.6,9.9],[14,9.6,9.9],[14,9.6,9.9],
-                             [14,before[1],9.9],[14,before[1],19.5],[before[0],before[1],19.5],before,center],
+            source_pose=pose([LIMB_X,1.55,9.9]),receiver_pose=pose(center,[75,sign*90,0]),
+            route_positions=[[LIMB_X,1.55,9.9],[LIMB_X,9.6,9.9],[LIMB_X,9.6,9.9],[LIMB_X,9.6,9.9],[LIMB_X,9.6,9.9],
+                             [LIMB_X,before[1],9.9],[LIMB_X,before[1],19.5],[before[0],before[1],19.5],before,center],
             route_rotations=[[0,0,0],[0,0,0],[90,0,0],[90,sign*90,0]]+[[75,sign*90,0]]*6,
             sweep_radius=7.6,exact_receiver=True,access_mode="arm",restore_access=True,approach=dict(axis=[0,0,0],distance=offset))
     right=deepcopy(layout["crane"]["tasks"]["right_arm"])
     for key in ["guided_receiver","source_equipment","access_mode","restore_access"]:right.pop(key)
     right.update(title="Right arm to arm rig",owner="right_arm",slot="",source_support="right_arm_store",receiver_support="arm_cassette",
         receiver_equipment="arm_cassette",receiver_contact=True,secured=dict(milestone=""),
-        source_pose=pose([21,1.55,-6.3]),receiver_pose=pose([14,1.55,9.9]),
-        route_positions=[[21,1.55,-6.3],[21,4.8,-6.3],[14,4.8,-6.3],[14,4.8,9.9],[14,1.55,9.9]],route_rotations=[[0,0,0]]*5)
+        source_pose=pose([21,1.55,-6.3]),receiver_pose=pose([LIMB_X,1.55,9.9]),
+        route_positions=[[21,1.55,-6.3],[21,4.8,-6.3],[LIMB_X,4.8,-6.3],[LIMB_X,4.8,9.9],[LIMB_X,1.55,9.9]],route_rotations=[[0,0,0]]*5)
     layout["crane"]["tasks"]["right_arm_store"]=right
     for key,value in layout["crane"]["tasks"][layout["crane"]["task"]].items():layout["crane"][key]=deepcopy(value)
     from author_pauldrons import routes

@@ -272,7 +272,7 @@ func run() -> void:
 	for id in pins.specs:pins.locked[id]=false
 	var rail = preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail);rail.game=game;rail.equipment_id="leg_rail";game.equipment.register(rail)
 	rail.spec=layout.workshop.rail
-	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.bolster=0.0;rail.release=0.0;rail.index_x=14.0;rail.travel_z=14.5;rail.tilt_deg=0.0;rail.rise_m=0.0
+	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.bolster=0.0;rail.release=0.0;rail.index_x=rail.spec.station_x;rail.travel_z=14.5;rail.tilt_deg=0.0;rail.rise_m=0.0
 	var seat := page_named(definitions.pelvis.manual,"Seat the leg in the hip assembly")
 	var seat_text: Array[String] = []
 	for objective in seat.objectives:seat_text.append(Objectives.text(game,"pelvis",objective))
@@ -331,7 +331,7 @@ func run() -> void:
 	rail.travel_z=14.5
 	var table = Objectives.evaluate(game,"pelvis",releases[0])
 	expect(same_ticks(table,[true,true,true,false,false,false,false]),"table arrival ticks travel, got "+str(table.ticked))
-	rail.index_x=14.0
+	rail.index_x=rail.spec.station_x
 	var station = Objectives.evaluate(game,"pelvis",releases[0])
 	expect(same_ticks(station,[true,true,true,true,false,false,false]),"station arrival ticks index, got "+str(station.ticked))
 	rail.release=0.0
