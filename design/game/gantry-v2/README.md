@@ -189,7 +189,6 @@ interfaces; exclude upper catwalks, door/carrier departure and core service kit.
 | --- | --- | --- |
 | Resolve support topology, bearing approach, headroom and long reach | Astra High | Passing credible support proposal at unchanged datum; otherwise stop |
 | Review route-box overlaps without recreating C5's tolerance campaign | Astra High | Explain actual topology/contact vs broad-box overlap; never suppress failure without a bounded basis |
-| Regenerate the seven design artifacts from frozen data | Grok | [Exact scoped task](../handoff/operated-machines/C6-G1-coarse-artifacts.md); no game edits |
 | Define slice parts, ownership, locks, physical control/step outline | Astra High | User reviews concrete design, then separate build approval |
 | Write exact game edit tasks against approved revision | Astra High | Unique quoted anchors, full replacements, focused commands and stop conditions |
 | Apply those future bounded edits | Grok | Only after approval and task authoring; no engineering decisions delegated |
