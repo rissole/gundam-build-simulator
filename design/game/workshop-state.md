@@ -16,8 +16,9 @@ last version before consolidation.
   onboard Up/Down retain 0.75 m/s and their existing in-motion interlock. Guarded motion and
   rider/cargo transport remain active; waits and pauses preserve arrival time.
   Initial four focused routine suites pass (228 checks, 17.256 s); interrupt
-  follow-up passes both elevator suites (194 checks, 6.594 s). No rendered review;
-  arrival feel awaits [player re-check](robot-workshop-playtest-checklist.md#findings).
+  follow-up passes both elevator suites (194 checks, 6.594 s). **Player accepted
+  the feel:** "it feels really good." Individual landing and cargo checks remain
+  as noted in the [playtest findings](robot-workshop-playtest-checklist.md#findings).
 
 - **Left-leg feedback implemented (2026-10-26):** all nine repairs integrated:
   explicit captive braces, crane wording, shared standard hardware, surface pickup,
