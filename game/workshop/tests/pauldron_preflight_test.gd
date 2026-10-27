@@ -93,28 +93,27 @@ func run() -> void:
 			if clear:safe=expansion
 			else:blocked=expansion
 		var seated_bounds: AABB=path[-1]*bounds
-		var notch_front=INF;var notch_rear=INF
+		var overhead_floor=INF
 		for piece in game.leg_layout.blockout.pieces.values():
 			if not piece.has("body") or not piece.spec.id.ends_with("_floor"):continue
 			var size=AssemblyRuntime.vec(piece.spec.size)
 			var floor_bounds: AABB=piece.body.global_transform*AABB(-size/2,size)
-			if not is_equal_approx(floor_bounds.end.y,16.4) or floor_bounds.end.x<seated_bounds.position.x or floor_bounds.position.x>seated_bounds.end.x:continue
-			if floor_bounds.end.z<=seated_bounds.position.z:notch_front=minf(notch_front,seated_bounds.position.z-floor_bounds.end.z)
-			if floor_bounds.position.z>=seated_bounds.end.z:notch_rear=minf(notch_rear,floor_bounds.position.z-seated_bounds.end.z)
-		margins[uid]={"sampled_clearance_lower_bound":safe,"sampled_contact_upper_bound":blocked,"transit_guard":low-17.5,"overhead_to_spreader_top":23-(beam.origin.y+.09),"body_top":top,"hook_datum":beam.origin.y,"deck_notch_front":notch_front,"deck_notch_rear":notch_rear,"boss_to_ledge":.002,"harness_to_wall":.033}
+			if not is_equal_approx(floor_bounds.end.y,20.6):continue
+			overhead_floor=minf(overhead_floor,floor_bounds.position.y-seated_bounds.end.y)
+		margins[uid]={"sampled_clearance_lower_bound":safe,"sampled_contact_upper_bound":blocked,"overhead_to_spreader_top":23-(beam.origin.y+.09),"body_top":top,"hook_datum":beam.origin.y,"overhead_floor_clearance":overhead_floor,"boss_to_ledge":.002,"harness_to_wall":.033}
 		expect(safe>0 and blocked-safe<=.000313,uid+" measures positive full-route payload/rig clearance within .313 mm: "+str([safe,blocked]))
-		expect(notch_front>=.74999 and notch_rear>=.74999,uid+" actual 16.4 m floor solids leave at least .75 m fore/aft of the seated cap")
+		expect(is_finite(overhead_floor) and overhead_floor>=.5,uid+" seated cap clears the new overhead floors by at least .5 m")
 		expect(is_equal_approx(low,18.0) and is_equal_approx(top,19.4),uid+" actual body uses the agreed 18.0..19.4 transit envelope")
 		expect(is_equal_approx(beam.origin.y,20.53),uid+" actual spreader datum is world Y20.53")
-		# Upper-level floor patches flank, rather than cross, the complete seated cap.
+		# The complete seated cap remains below the new rope-access floors.
 		var deck_error=""
 		for entry in solids:
 			for piece in game.leg_layout.blockout.pieces.values():
-				if not piece.has("body") or not piece.spec.id.ends_with("_floor") or not is_equal_approx(piece.body.global_position.y,16.3):continue
+				if not piece.has("body") or not piece.spec.id.ends_with("_floor") or not is_equal_approx(piece.body.global_position.y,20.5):continue
 				var query=PhysicsShapeQueryParameters3D.new();query.shape=entry.shape;query.transform=path[-1]*entry.transform;query.collision_mask=1
 				for hit in game.get_world_3d().direct_space_state.intersect_shape(query):
 					if hit.collider==piece.body:deck_error=piece.spec.id
-		expect(deck_error.is_empty(),uid+" existing 16.4 m deck opening notches around the top: "+deck_error)
+		expect(deck_error.is_empty(),uid+" 20.6 m floors clear the seated cap: "+deck_error)
 		body.global_transform=path[-1];publish(body)
 	print("PAULDRON_MARGINS ",JSON.stringify(margins))
 	finish()
