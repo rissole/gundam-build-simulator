@@ -70,8 +70,8 @@ def contract():
         core_storage=pose([-7,1.3,31.3]),
         backpack_storage=pose([-7,.85,35]),
         backpack=dict(hinge_seat=[13,15.5,27.2],closed_rotation=[90,0,0],
-                      route_positions=[[3.25,.85,13],[3.25,5.5,13],[23.7,5.5,13],[23.7,5.5,31.8],
-                                       [24,5.5,31.8],[24,18,31.8],[13,18,31.8],[13,15.7,31.8],[13,15.7,27.2],[13,15.5,27.2]]),
+                      route_positions=[[3.25,.85,13],[3.25,17.6,13],[13,17.6,13],
+                                       [13,17.6,27.2],[13,15.7,27.2],[13,15.5,27.2]]),
         cassette=dict(size=[2,.2,9], source_shoulder=[14,1.55,9.9],
                       parked_shoulder=[14,1.55,-6.3], saddles=[1.35,4.05,6.05],
                       transfer_bottom=4.8, folded_clamp_top=1.7),
@@ -594,9 +594,12 @@ def delivery_inputs(layout, data):
     layout["crane"]["tasks"]["core"]=dict(**deepcopy(core_common),title="Core to rear dock",owner="chest",slot="core",
         source_support="bulky_fixture",source_equipment="module_supports",guided_receiver="core_guide",receiver_equipment="core_guide",
         secured=dict(milestone="core_seated"),source_pose=pose([3.25,1.3,13]),receiver_pose=pose([13,13.35,28.2]),
-        route_positions=[[3.25,1.3,13],[3.25,6,13],[23.7,6,13],[23.7,6,32.4],[24,6,32.4],[24,18.47,32.4],
-                         [13,18.47,32.4],[13,13.35,32.4],[13,13.35,28.2],[13,13.35,28.2]],
-        approach=dict(axis=[0,0,-1],distance=0))
+        # Prepared chest top is Y16.98, including its neck. Core bottom at
+        # Y17.53 clears it by .55; the bridge/spreader stay below Y20.3.
+        # Descend .5 m behind the chest before the existing guided approach.
+        route_positions=[[3.25,1.3,13],[3.25,18,13],[13,18,13],[13,18,28.6],
+                         [13,13.35,28.6],[13,13.35,28.2],[13,13.35,28.2]],
+        approach=dict(axis=[0,0,-1],distance=0),access_mode="core")
     layout["crane"]["tasks"]["backpack_store"]=dict(payload="assembly",load_uid="backpack",support="crane_rigging",
         title="Backpack to Heavy Module Bay",owner="backpack",slot="",source_support="backpack_store",receiver_support="bulky_fixture",
         receiver_equipment="module_supports",receiver_contact=True,secured=dict(milestone=""),
@@ -611,7 +614,7 @@ def delivery_inputs(layout, data):
     backpack.update(title="Backpack to hinges",owner="chest",slot="backpack",source_support="bulky_fixture",source_equipment="module_supports",
         receiver_equipment="backpack_hinge",guided_receiver="backpack_hinge",secured=dict(milestone="backpack_retained"),
         source_pose=pose([3.25,.85,13]),receiver_pose=pose(data["backpack"]["hinge_seat"]),route_positions=data["backpack"]["route_positions"],
-        approach=dict(axis=[0,-1,0],distance=.2))
+        approach=dict(axis=[0,-1,0],distance=.2),access_mode="backpack")
     backpack.pop("receiver_support");backpack.pop("receiver_contact")
     layout["crane"]["tasks"]["backpack"]=backpack
     layout["crane"]["tasks"]["cassette"]=dict(payload="assembly",load_uid="arm_cassette",support="crane_rigging",
