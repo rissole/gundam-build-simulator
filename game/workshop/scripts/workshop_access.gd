@@ -13,13 +13,35 @@ var channels: Dictionary = {}
 var requested_mode = "work"
 var moving = false
 var blocked_reason = ""
+var upper_controls: Array[Dictionary] = []
 
 func setup(workshop: Node3D, geometry: Node3D) -> void:
 	game = workshop;blockout = geometry;spec = geometry.spec.access
 	equipment_id = "workshop_access"
 	for level in spec.levels:channels[str(level)] = {"value":0.0,"goal":0.0}
 	channels["rear"] = {"value":0.0,"goal":0.0}
+	_make_upper_controls()
 	_pose()
+
+## Both banks stand beside the left lift, outside its car and the swinging
+## leaves. The upper bank is on the fixed hinge landing, not on a moving leaf.
+func _make_upper_controls() -> void:
+	if not blockout.spec.has("elevators"):return
+	var origin=Codec.to_vector(blockout.spec.elevators.left.origin)
+	var steel=game.material(Color("485f68"),.6)
+	for level in [0.0,20.6]:
+		var bank=StaticBody3D.new();add_child(bank)
+		bank.position=Vector3(origin.x+1.9,level,origin.z-.7)
+		for member in [[Vector3(0,.55,0),Vector3(.08,1.1,.08)],[Vector3(0,1.1,0),Vector3(.92,.50,.08)]]:
+			game.box(bank,member[0],member[1],steel)
+			var shape=CollisionShape3D.new();shape.shape=BoxShape3D.new();shape.shape.size=member[1];shape.position=member[0];bank.add_child(shape)
+		var label=Label3D.new();bank.add_child(label);label.position=Vector3(0,1.46,.05)
+		label.text="UPPER LEAVES";label.font_size=32;label.pixel_size=.0018;label.outline_size=0
+		for control in [["upper_open","OPEN",-.24],["upper_close","CLOSE",.24]]:
+			var key=preload("res://scripts/equipment_button.gd").make(game,bank,Vector3(control[2],1.1,.075),control[1],0,control[0]=="upper_close")
+			upper_controls.append(control_entry(key,control[0],"Upper leaves · "+control[1].capitalize(),.13,{"point":key.global_position}))
+
+func controls() -> Array[Dictionary]:return upper_controls
 
 func frames_at(values: Dictionary) -> Dictionary:
 	var result = {}
@@ -107,6 +129,8 @@ func request_mode(mode: String) -> String:
 	return ""
 
 func action_error(action: String) -> String:
+	if action in ["upper_open","upper_close"]:
+		return "Resume the workshop before moving access platforms." if game.paused else ""
 	if action=="stop":return "" if moving else "The access platforms are stopped."
 	if action=="advance" or action=="return":return ""
 	return "Unknown access control."
@@ -114,6 +138,7 @@ func action_error(action: String) -> String:
 func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():return error
+	if action in ["upper_open","upper_close"]:return request_upper(action=="upper_open")
 	if action=="stop":moving = false;return ""
 	return request_mode(requested_mode if action=="advance" else "work")
 

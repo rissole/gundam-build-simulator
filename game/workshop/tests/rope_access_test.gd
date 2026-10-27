@@ -42,6 +42,10 @@ class World extends Node3D:
 	func interact(all_stock: bool=false) -> void:components.interact(all_stock)
 	func _update_target() -> void:pass
 	func equipment_access_error(_owner: String) -> String:return ""
+	func material(color: Color, roughness: float) -> StandardMaterial3D:
+		var mat=StandardMaterial3D.new();mat.albedo_color=color;mat.roughness=roughness;return mat
+	func box(parent: Node3D, at: Vector3, size: Vector3, mat: Material) -> MeshInstance3D:
+		var node=MeshInstance3D.new();node.mesh=BoxMesh.new();node.mesh.size=size;node.material_override=mat;parent.add_child(node);node.position=at;return node
 class Progress extends RefCounted:
 	signal updated
 	var _queued=false
@@ -92,6 +96,13 @@ func aim(action: String) -> bool:
 			return game.targeting.aim_score(entry.point,entry.radius)!=INF and game.targeting.access([entry.node]).is_empty()
 	return false
 
+func aim_upper(action: String, top: bool) -> bool:
+	for entry in access.controls():
+		if entry.action!=action or (entry.point.y>10)!=top:continue
+		game.camera.look_at(entry.point);game.target=entry
+		return game.targeting.aim_score(entry.point,entry.radius)!=INF and game.targeting.access([entry.node]).is_empty()
+	return false
+
 func contract() -> Array:
 	var result=[]
 	for pair in [["l",[9.3,10.8,11.9,12.6],[4.3,5.8,6.9,7.6]],["r",[13.4,14.1,15.2,16.7],[7.6,6.9,5.8,4.3]]]:
@@ -102,13 +113,34 @@ func contract() -> Array:
 ## Use the actual authored boarding solids, rather than an unobstructed stand-in.
 func boarding_solids() -> void:
 	var authored: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json")).workshop
+	for id in authored.groups:
+		if id.begins_with("wing_left_20.6") or id.begins_with("wing_right_20.6"):
+			blockout.spec.groups[id]=authored.groups[id];blockout._group(id)
 	for record in authored.solids:
-		if not (record.id.begins_with("rope_davit_") or record.id.begins_with("rope_boom_") or record.id in ["wing_left_20.6_floor","wing_right_20.6_floor","rope_exit_floor","wing_left_8.4_floor"]):continue
+		if not (record.id.begins_with("rope_davit_") or record.id.begins_with("rope_boom_") or record.id.begins_with("wing_left_20.6") or record.id.begins_with("wing_right_20.6") or record.id.begins_with("wing_hinge_left_20.6") or record.id.begins_with("lift_left_20.6_landing") or record.id.begins_with("hinge_front_guard_left_20.6") or record.id.begins_with("hinge_rear_guard_left_20.6") or record.id in ["rope_exit_floor","wing_left_8.4_floor"]):continue
 		var body=obstacle(Codec.to_vector(record.position),Codec.to_vector(record.size))
 		if not record.parent.is_empty():body.reparent(blockout.groups[record.parent],false)
 		body.set_meta("blockout_id",record.id)
 		blockout.pieces[record.id]={"body":body,"spec":record}
 	blockout._index_pieces()
+
+func check_panel_clearance() -> void:
+	var envelopes: Array[AABB]=[]
+	for bank in access.get_children():
+		if not bank is StaticBody3D or bank.position.y<10:continue
+		for node in bank.get_children():
+			if node is CollisionShape3D:envelopes.append(node.global_transform*node.shape.get_debug_mesh().get_aabb())
+	for entry in access.controls():
+		if entry.point.y>10:envelopes.append(entry.node.global_transform*entry.node.mesh.get_aabb())
+	for phase in [0.0,.625,1.0]:
+		blockout.apply_frames(access.frames_at({"20.6":phase}))
+		var collisions=[]
+		for piece in blockout.pieces.values():
+			if not blockout.belongs_to(piece.spec.parent,["wing_left_20.6","wing_right_20.6"]):continue
+			var bounds=piece.body.global_transform*AABB(-Codec.to_vector(piece.spec.size)/2,Codec.to_vector(piece.spec.size))
+			if envelopes.any(func(box):return box.intersects(bounds)):collisions.append(piece.spec.id)
+		expect(collisions.is_empty(),"Fixed upper panel and button envelopes clear complete authored leaves at phase "+str(phase)+": "+str(collisions))
+	blockout.apply_frames(access.frames_at(access.values()))
 
 func run() -> void:
 	game=World.new();root.add_child(game)
@@ -118,6 +150,7 @@ func run() -> void:
 	game.targeting=preload("res://scripts/targeting.gd").new(game)
 	blockout=Blockout.new();game.add_child(blockout)
 	blockout.spec={"rope_stations":contract(),"groups":{},"access":{"levels":[8.4,20.6],"duration":1.0,"modes":{"work":[],"delivery":[20.6],"leg":[8.4]}}}
+	blockout.spec.elevators=JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json")).workshop.elevators
 	for level in [8.4,20.6]:
 		for side in ["left","right"]:
 			var id="wing_"+side+"_"+str(level)
@@ -128,6 +161,7 @@ func run() -> void:
 	rope=Rope.new();game.add_child(rope);rope.setup(game,blockout);game.equipment.register(rope)
 	obstacle(Vector3(13,-.1,27),Vector3(30,.2,20))
 	boarding_solids()
+	check_panel_clearance()
 	obstacle(Vector3(9.3,8.3,24.75),Vector3(2,.2,1))
 	await frames(2)
 	expect(rope.stations.size()==12 and rope.anchor(FRONT).is_equal_approx(Vector3(9.3,21.8,24.75)) and rope.anchor("front_r_13.4").is_equal_approx(Vector3(13.4,21.8,24.75)),"All twelve contract anchors resolve both mirrored leaf frames")
@@ -158,11 +192,45 @@ func run() -> void:
 	expect(access.upper_ready(true),"Crane occupancy never prevents upper leaves opening")
 	crane.free()
 	access.request("stop");access.request_mode("work");access.physics(1)
+	# Real E/targeting route at the two fixed banks; supplied poses isolate the
+	# control contract rather than asserting workshop walking or readability.
+	place(Vector3(4.1,0,24.1));game.player_controller.update_crouch(false,1);await frames(1)
+	expect(access.controls().size()==4 and aim_upper("upper_open",false),"Ground upper-leaf Open button is targetable at normal reach")
+	key(KEY_E,true);key(KEY_E,false);access.physics(1)
+	expect(access.upper_ready(true),"E at the ground panel opens only the upper leaves")
+	expect(aim_upper("upper_close",false),"Ground Close button is targetable at normal reach")
+	game.paused=true;key(KEY_E,true);key(KEY_E,false);access.physics(1)
+	expect(access.upper_ready(true) and access.request("upper_close").contains("Resume"),"Paused E and direct requests cannot move upper leaves")
+	game.paused=false;key(KEY_E,true);key(KEY_E,false);access.physics(1)
+	expect(access.upper_ready(false),"Ground Close supports the manual's close-before-lift instruction")
+	place(Vector3(4.1,20.6,24.1));await frames(1)
+	expect(rope.on_floor() and aim_upper("upper_open",true),"Upper panel stands beside a supported fixed landing and is normally targetable")
+	rope.ropes[FRONT].deployed=true
+	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
+	expect(access.blocked_reason==Rope.LEAF_REASON and game.hud.message==Rope.LEAF_REASON and access.channels["20.6"].value==0,"Physical Open reports the named deployed-rope hold through normal interaction")
+	rope.ropes[FRONT].deployed=false;access.physics(1)
+	var parked_crane=CraneOccupancy.new();game.add_child(parked_crane);parked_crane.equipment_id="service_crane";game.equipment.register(parked_crane)
+	expect(aim_upper("upper_close",true),"Upper Close button is targetable from its fixed landing")
+	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
+	expect(access.blocked_reason.contains("crane cables") and game.hud.message.contains("crane cables") and access.channels["20.6"].value==1,"Physical Close reports the named stopped-crane occupancy hold through normal interaction")
+	parked_crane.occupied=false;access.physics(1);parked_crane.free()
+	place(Vector3(5.25,20.6,23.55));await frames(1)
+	expect(aim_upper("upper_open",true),"Upper Open is aimable beside the leaf root without a remote interaction")
+	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
+	expect(access.blocked_reason.contains("Step off") and game.hud.message.contains("Step off") and access.channels["20.6"].value==0,"Physical Open reports the named upper-rider hold through normal interaction")
+	place(Vector3(4.1,20.6,24.1));await frames(1);access.physics(1)
+	expect(access.upper_ready(true),"Moving onto the fixed landing releases the pending upper swing")
+	aim_upper("upper_close",true);key(KEY_E,true);key(KEY_E,false);access.physics(1)
 	place(Vector3(9.3,20.6,24.1));await frames(1)
 	var work=Work.new();game.add_child(work);work.game=game;work.equipment_id="work";game.equipment.register(work)
 	work.handle=MeshInstance3D.new();work.handle.mesh=BoxMesh.new();work.add_child(work.handle);work.handle.position=Vector3(9.3,15.8,25.3)
 	game.interaction_outline=preload("res://scripts/interaction_outline.gd").new();game.add_child(game.interaction_outline)
 	var cue=Guidance.new();game.add_child(cue);cue.setup(game)
+	place(Vector3(4.1,20.6,24.1));await frames(1);access.request_upper(true);access.physics(1)
+	aim_upper("upper_close",true);cue.update()
+	expect(cue.visible_controls.has(game.target.node),"Upper work cues the physical Close prerequisite while front ropes are unavailable")
+	key(KEY_E,true);key(KEY_E,false);access.physics(1)
+	place(Vector3(9.3,20.6,24.1));await frames(1)
 	game.camera.look_at(rope.fixtures[FRONT].clip.global_position);cue.update()
 	expect(cue.visible_controls.has(rope.fixtures[FRONT].clip),"An upper manual control objective cues a visible rope station through shared guidance")
 

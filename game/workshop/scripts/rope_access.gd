@@ -100,6 +100,15 @@ func gate_span(id: String) -> Vector2:
 func boarding_duck(feet_y: float) -> bool:
 	return attached() and feet_y>=deck_height(attachment)-BOARDING_DUCK
 
+## Guidance describes where a front rope works after its leaf is closed.
+## Mechanical line positions always continue to use the live anchor().
+func working_anchor(id: String) -> Vector3:
+	var record: Dictionary=stations[id]
+	if record.edge!="front":return anchor(id)
+	var frames={}
+	frames[record.parent]=blockout.authored_pose(blockout.spec.groups[record.parent])
+	return blockout.frame_at(record.parent,frames)*Codec.to_vector(record.anchor)
+
 func _build_station(id: String) -> void:
 	var node = Node3D.new();add_child(node)
 	var gold = StandardMaterial3D.new();gold.albedo_color=Color("bb893b")
@@ -299,10 +308,16 @@ func access_control_entries(objective: Dictionary, owner: String, machine: Node)
 		var slots: Array=objective.get("slots",[objective.get("slot","")])
 		for sid in slots:
 			if not str(sid).is_empty() and game.model.assemblies[owner].slots.has(sid):points.append(game.components.slot_point(owner,sid))
+	var access=game.equipment.get_equipment("workshop_access")
+	var close_cued=false
 	for entry in controls():
-		if not entry.action.begins_with("clip:") or not action_error(entry.action).is_empty():continue
+		if not entry.action.begins_with("clip:"):continue
 		var id: String=entry.action.trim_prefix("clip:")
+		var working=working_anchor(id)
 		for point in points:
-			if point.y>10.5 and point.y<anchor(id).y and horizontal(point-anchor(id)).length()<=PULL_REACH+game.REACH:
-				result.append(entry);break
+			if point.y>10.5 and point.y<working.y and horizontal(point-working).length()<=PULL_REACH+game.REACH:
+				if stations[id].edge=="front" and access!=null and not access.upper_ready(false):
+					if not close_cued:result.append_array(access.manual_control_entries({"command":"upper_close"}));close_cued=true
+				elif action_error(entry.action).is_empty():result.append(entry)
+				break
 	return result
