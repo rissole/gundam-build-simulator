@@ -17,9 +17,9 @@
     "washer": {
       "family": "W-24",
       "variant": "standard",
-      "title": "W-24 · Washer",
+      "title": "W-24 · M24 washer",
       "carry_class": "pocket",
-      "short_title": "Washer"
+      "short_title": "M24 washer"
     },
     "bolt": {
       "family": "H-24120",

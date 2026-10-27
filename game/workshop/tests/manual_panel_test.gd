@@ -15,7 +15,7 @@ func run() -> void:
 	var row: Node = game.hud.objective_rows.get_child(0)
 	var objective: String = row.get_node("text").text
 	var count: String = row.get_node("count").text
-	expect(chapter == "LEFT-FOOT HEEL PADS · STEP 1 OF 4" and title == "Prepare heel pad 1" and objective == "Fit 4 × FA-305" and count == "0/4","current step panel shows the first heel-pad objective, got %s | %s | %s | %s"%[chapter,title,objective,count])
+	expect(chapter == "LEFT-FOOT HEEL PADS · STEP 1 OF 4" and title == "Prepare a heel pad (1 of 2)" and objective == "Fit 4 × FA-305" and count == "0/4","current step panel shows the first heel-pad objective, got %s | %s | %s | %s"%[chapter,title,objective,count])
 	var ready_text: String = game.hud.ready_label.text
 	var ready_n := int(ready_text.split(" ")[0]) if game.hud.ready_label.visible and not ready_text.is_empty() else -1
 	expect(game.hud.ready_label.visible and ready_text.ends_with("more ready to start") and ready_n >= 2,"footer counts other ready steps, got "+ready_text)

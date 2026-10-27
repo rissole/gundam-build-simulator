@@ -87,7 +87,8 @@ current quantities from data; historical totals are not acceptance criteria.
 Separate compatible part types from physical instance IDs. Pool interchangeable
 copies in one storage location and pocket stack (when pocket-sized); accept any
 copy at matching slots while retaining the consumed identity. Distinct types need
-an actual fit/function difference, verified against geometry and interfaces. Use
+an actual fit/function difference, verified against geometry and interfaces. A
+different name and a different pickup point require a different part number. Use
 functional variant names consistently across storage, pockets, instructions and
 placement feedback; keep source instance numbers internal. Test swapped copies,
 wrong variants at ready slots, and undo when changing compatibility. For the wider

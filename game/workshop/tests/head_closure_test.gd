@@ -140,7 +140,7 @@ func audit_manual() -> void:
 		var supplies: String=game.hud.page_body.text.get_slice("Parts for this step\n",1)
 		expect(not supplies.is_empty(),page.title+" has runtime HUD component supplies")
 		for sid in page.slots:counts[sid]=counts.get(sid,0)+1
-		if page.slots==["head_sensors"]:expect(supplies.count("×1")==1 and "HD-SENSORS" in supplies,"sensor installation lists one prepared carrier, with no duplicate camera/range stock")
+		if page.slots==["head_sensors"]:expect(supplies.count("×1")==1 and "HD-120" in supplies,"sensor installation lists one prepared carrier, with no duplicate camera/range stock")
 		if page.slots==game.equipment.get_equipment("head_sensors_receiver").spec.captive_slots:expect(supplies.count("×4")==1 and "HD-M8" in supplies,"carrier retention lists four captive M8 fasteners")
 		pages+=1
 	expect(pages==9 and counts.size()==17 and counts.values().all(func(n):return n==1),"nine closure/crown pages cover all 17 new physical slots once")

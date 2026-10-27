@@ -100,25 +100,25 @@
       "carry_class": "hand"
     },
     "fa-524__001": {
-      "family": "FA-524",
+      "family": "FA-524-A",
       "variant": "pitch-receiver",
-      "title": "FA-524 · Receiver collar half",
+      "title": "FA-524-A · Receiver collar half",
       "short_title": "Receiver collar half",
       "carry_class": "pocket",
       "variant_label": "Receiver"
     },
     "fa-524__002": {
-      "family": "FA-524",
+      "family": "FA-524-B",
       "variant": "pitch-clearance",
-      "title": "FA-524 · Clearance collar half",
+      "title": "FA-524-B · Clearance collar half",
       "short_title": "Clearance collar half",
       "carry_class": "pocket",
       "variant_label": "Clearance"
     },
     "fa-525__001": {
-      "family": "FA-525",
+      "family": "FA-525-A",
       "variant": "pitch-base",
-      "title": "FA-525 · Base eye housing",
+      "title": "FA-525-A · Base eye housing",
       "short_title": "Base eye housing",
       "carry_class": "hand",
       "variant_label": "Base"
@@ -159,9 +159,9 @@
       }
     },
     "fa-525__002": {
-      "family": "FA-525",
+      "family": "FA-525-B",
       "variant": "pitch-rod",
-      "title": "FA-525 · Rod eye housing",
+      "title": "FA-525-B · Rod eye housing",
       "short_title": "Rod eye housing",
       "carry_class": "hand",
       "variant_label": "Rod"
@@ -181,17 +181,17 @@
       "carry_class": "pocket"
     },
     "fa-529__001": {
-      "family": "FA-529",
+      "family": "FA-529-A",
       "variant": "pitch-rear",
-      "title": "FA-529 · Rear cap gasket",
+      "title": "FA-529-A · Rear cap gasket",
       "short_title": "Rear cap gasket",
       "carry_class": "pocket",
       "variant_label": "Rear"
     },
     "fa-529__002": {
-      "family": "FA-529",
+      "family": "FA-529-B",
       "variant": "pitch-front",
-      "title": "FA-529 · Front cap gasket",
+      "title": "FA-529-B · Front cap gasket",
       "short_title": "Front cap gasket",
       "carry_class": "pocket",
       "variant_label": "Front"
@@ -220,9 +220,9 @@
       }
     },
     "fa-220__001": {
-      "family": "FA-220",
+      "family": "FA-220-A",
       "variant": "pitch-cradle",
-      "title": "FA-220 · Cradle clevis",
+      "title": "FA-220-A · Cradle clevis",
       "short_title": "Cradle clevis",
       "carry_class": "two_hand",
       "variant_label": "Cradle"
@@ -263,9 +263,9 @@
       "carry_class": "pocket"
     },
     "fa-220__002": {
-      "family": "FA-220",
+      "family": "FA-220-B",
       "variant": "pitch-ring",
-      "title": "FA-220 · Ring clevis",
+      "title": "FA-220-B · Ring clevis",
       "short_title": "Ring clevis",
       "carry_class": "two_hand",
       "variant_label": "Ring"
@@ -1785,7 +1785,7 @@
               ]
             },
             {
-              "title": "FA-524 • split collar",
+              "title": "FA-524-A / FA-524-B • split collar",
               "sources": [
                 "FA-524__001",
                 "FA-524__002",
@@ -2474,7 +2474,7 @@
               ]
             },
             {
-              "title": "FA-529 • rear gasket",
+              "title": "FA-529-A • rear gasket",
               "sources": [
                 "FA-529__001"
               ],
@@ -2777,7 +2777,7 @@
           "view": "components",
           "diagram_views": [
             {
-              "title": "FA-525 • screws",
+              "title": "FA-525-A • screws",
               "sources": [
                 "FA-525__001",
                 "W-12__021",
@@ -2895,7 +2895,7 @@
           "view": "components",
           "diagram_views": [
             {
-              "title": "FA-525 • screws",
+              "title": "FA-525-B • screws",
               "sources": [
                 "FA-525__002",
                 "W-12__023",
@@ -3821,7 +3821,7 @@
           ],
           "diagram_views": [
             {
-              "title": "FA-220 • cradle",
+              "title": "FA-220-A • cradle",
               "sources": [
                 "FA-220__001",
                 "W-24__023",
@@ -3901,7 +3901,7 @@
           ],
           "diagram_views": [
             {
-              "title": "FA-220 • ring",
+              "title": "FA-220-B • ring",
               "sources": [
                 "FA-220__002",
                 "W-24__025",

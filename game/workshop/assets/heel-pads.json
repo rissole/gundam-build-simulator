@@ -138,7 +138,7 @@
     {
       "id": "pad_1",
       "definition": "heel_pad",
-      "label": "Heel pad A",
+      "label": "Heel pad",
       "base": "FA-302__001",
       "home": [
         -1.0,
@@ -149,7 +149,7 @@
     {
       "id": "pad_2",
       "definition": "heel_pad",
-      "label": "Heel pad B",
+      "label": "Heel pad",
       "base": "FA-302__002",
       "home": [
         0.8,

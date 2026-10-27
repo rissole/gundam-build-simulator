@@ -1,11 +1,19 @@
 extends RefCounted
 ## Chapter order, live step status and the tracked step. Recomputes only when
 ## the build or a machine's manual state changes, then emits `updated`.
+## Builds of one definition are interchangeable: a chapter's steps for the same
+## page of such builds name an order ("1 of 2"), not a build. Each refresh binds
+## them to builds in the order the player started them.
 signal updated
 const Objectives = preload("res://scripts/manual_objectives.gd")
 
 var game: Node
 var pinned: Dictionary = {}
+## Interchangeable builds in the order they were first started. Not saved: a
+## reload claims the started builds in authored order.
+var _claims: Array[String] = []
+## Authored step key -> the build it currently names.
+var _bound: Dictionary = {}
 var _data: Dictionary = {}
 var _status: Dictionary = {}
 var _evaluation: Dictionary = {}
@@ -40,7 +48,7 @@ func chapters() -> Array[Dictionary]:
 		if not _owners_present(entries):continue
 		var steps: Array = []
 		for entry in entries:
-			var step := _make_step(entry)
+			var step := _make_step(entry,true)
 			if step.is_empty():continue
 			steps.append(step)
 		var after: Array = chapter.get("after",[]) if chapter.get("after") is Array else []
@@ -59,9 +67,9 @@ func procedure(owner: String, page: int) -> Dictionary:
 	if first.size()!=2:return {}
 	for index in _order.size():
 		var row: Dictionary=_order[index]
-		if str(row.owner)!=str(first[0]) or int(row.page)!=int(first[1]):continue
+		if str(row.authored)!=str(first[0]) or int(row.page)!=int(first[1]):continue
 		return {"id":id,"title":str(spec.title),"machines":spec.machines,
-			"repeat":owner!=str(first[0]) or page!=int(first[1]),
+			"repeat":str(_find(owner,page).get("authored",owner))!=str(first[0]) or page!=int(first[1]),
 			"number":index+1,"step":_public(row),"label":"Procedure: p.%d — %s"%[index+1,spec.title]}
 	return {}
 
@@ -80,6 +88,7 @@ func reference_title() -> String:
 	return str(reference.get("title","Recovery and undo"))
 
 func refresh() -> void:
+	_rebind()
 	var built := chapters()
 	var flat: Array = []
 	var rows: Array[Dictionary] = []
@@ -93,7 +102,7 @@ func refresh() -> void:
 		for index in count:
 			var step: Dictionary = steps[index]
 			flat.append({"owner":step.owner,"page":step.definition})
-			rows.append({"owner":step.owner,"page":int(step.page),"title":str(step.title),"definition":step.definition,"chapter":chapter,"index":index+1,"count":count})
+			rows.append({"owner":step.owner,"authored":step.authored,"page":int(step.page),"title":str(step.title),"definition":step.definition,"chapter":chapter,"index":index+1,"count":count})
 	var evaluations: Array = []
 	for step in flat:evaluations.append(Objectives.evaluate(game,str(step.owner),step.page))
 	var done: Array = Objectives.done_states(game,flat,evaluations)
@@ -123,7 +132,7 @@ func evaluation(owner: String, page: int) -> Dictionary:
 
 func tracked() -> Dictionary:
 	if not pinned.is_empty():
-		var row := _find(str(pinned.get("owner","")),int(pinned.get("page",-1)))
+		var row := _find_authored(str(pinned.get("authored","")),int(pinned.get("page",-1)))
 		if not row.is_empty() and status(str(row.owner),int(row.page)) != "done":return _public(row)
 	for want in ["in_progress","ready"]:
 		for row in _order:
@@ -133,8 +142,11 @@ func tracked() -> Dictionary:
 func complete() -> bool:
 	return not _order.is_empty() and _status.values().all(func(state):return state == "done")
 
+## A pin holds the step, so an interchangeable step stays pinned when rebinding
+## gives it another build.
 func pin(owner: String, page: int) -> void:
-	pinned = {"owner":owner,"page":page}
+	var row := _find(owner,page)
+	pinned = {"authored":str(row.get("authored",owner)),"page":page}
 	_update()
 
 func unpin() -> void:
@@ -176,17 +188,62 @@ func _owners_present(entries: Array) -> bool:
 		if not game.model.assemblies.has(str(entry[0])):return false
 	return true
 
-func _make_step(entry) -> Dictionary:
+func _make_step(entry, bound: bool = false) -> Dictionary:
 	if not entry is Array or entry.size() < 2:return {}
-	var owner := str(entry[0])
-	if not game.model.assemblies.has(owner):return {}
+	var authored := str(entry[0])
+	if not game.model.assemblies.has(authored):return {}
 	var page := int(entry[1])
+	var owner := str(_bound.get(_key(authored,page),authored)) if bound else authored
 	var manual := _manual(owner)
 	if page < 0 or page >= manual.size() or not manual[page] is Dictionary:return {}
 	var definition: Dictionary = manual[page]
 	var title := str(definition.get("title",""))
 	if entry.size() >= 3:title = str(entry[2])
-	return {"owner":owner,"page":page,"title":title,"definition":definition}
+	return {"owner":owner,"authored":authored,"page":page,"title":title,"definition":definition}
+
+## Chapter steps for one page of several builds sharing a definition.
+func _interchangeable_groups() -> Array[Array]:
+	var groups: Array[Array] = []
+	var authored: Array = _data.get("chapters",[]) if _data.get("chapters") is Array else []
+	for chapter in authored:
+		if not chapter is Dictionary or bool(chapter.get("distinct",false)):continue
+		var by_page: Dictionary = {}
+		var entries: Array = chapter.get("steps",[]) if chapter.get("steps") is Array else []
+		for entry in entries:
+			if not entry is Array or entry.size() < 2 or not game.model.assemblies.has(str(entry[0])):continue
+			var owner := str(entry[0])
+			var group := str(game.model.assemblies[owner].definition)+"#"+str(int(entry[1]))
+			if not by_page.has(group):by_page[group] = []
+			if not by_page[group].has(owner):by_page[group].append(owner)
+		for group in by_page:
+			if by_page[group].size() > 1:groups.append([int(str(group).get_slice("#",1)),by_page[group]])
+	return groups
+
+func _rebind() -> void:
+	_bound.clear()
+	for group in _interchangeable_groups():
+		var page: int = group[0]
+		var members: Array = group[1]
+		var definition: Dictionary = _manual(str(members[0]))[page]
+		for owner in members:
+			var active := _build_started(str(owner),page,definition)
+			if active and not _claims.has(owner):_claims.append(owner)
+			elif not active:_claims.erase(owner)
+		var order: Array = []
+		for owner in _claims:
+			if members.has(owner):order.append(owner)
+		for owner in members:
+			if not order.has(owner):order.append(owner)
+		for i in members.size():_bound[_key(str(members[i]),page)] = order[i]
+
+func _build_started(owner: String, page: int, definition: Dictionary) -> bool:
+	var assembly: Dictionary = game.model.assemblies[owner]
+	if not str(assembly.parent).is_empty():return true
+	if _hung_for(owner,page,definition):return true
+	if bool(Objectives.evaluate(game,owner,definition).get("started",false)):return true
+	for sid in _tracked_slots(definition):
+		if not str(assembly.slots.get(str(sid),"")).is_empty():return true
+	return false
 
 func _manual(owner: String) -> Array:
 	if not game.model.assemblies.has(owner):return []
@@ -219,10 +276,15 @@ func _locked(row: Dictionary, index: int, done: Array, finished: Dictionary) -> 
 
 func _started(row: Dictionary, evaluation: Dictionary) -> bool:
 	if bool(evaluation.get("started",false)):return true
+	if _hung_for(str(row.owner),int(row.page),row.definition):return true
 	var filled: Dictionary = game.model.assemblies[str(row.owner)].slots
 	for sid in _tracked_slots(row.definition):
 		if not str(filled.get(str(sid),"")).is_empty():return true
 	return false
+
+## A build's first page is its preparation; hanging it at a station starts it.
+func _hung_for(owner: String, page: int, definition: Dictionary) -> bool:
+	return page == 0 and str(definition.get("view","")) == "prepare" and str(game.model.assemblies[owner].location).begins_with("station:")
 
 func _tracked_slots(page: Dictionary) -> Array:
 	var result: Array = []
@@ -262,6 +324,11 @@ func _empty_accepts(row: Dictionary, kind: String) -> bool:
 func _find(owner: String, page: int) -> Dictionary:
 	for row in _order:
 		if str(row.owner) == owner and int(row.page) == page:return row
+	return {}
+
+func _find_authored(authored: String, page: int) -> Dictionary:
+	for row in _order:
+		if str(row.authored) == authored and int(row.page) == page:return row
 	return {}
 
 func _public(row: Dictionary) -> Dictionary:

@@ -432,7 +432,7 @@ content["equipment"] = dict(
            ]})
 
 
-def catalogue_images(check=False, definitions=None, inventory=None, descriptors=None):
+def catalogue_images(check=False, definitions=None, inventory=None, descriptors=None, mirrors=None):
     """Small schematic thumbnails derived from actual descriptor primitive sizes.
 
     These support catalogue recognition, not rendered construction approval.
@@ -442,16 +442,23 @@ def catalogue_images(check=False, definitions=None, inventory=None, descriptors=
         if key in CATALOGUE:  # Existing canonical PNGs; no component-specific icons.
             continue
         record = next(p for p in (stock if inventory is None else inventory) if p["kind"] == key)
-        shapes = (sources if descriptors is None else descriptors).get(record["source_id"], {}).get("primitives", [])
+        lookup = sources if descriptors is None else descriptors
+        # A mirrored (right-hand) source draws its left source reflected through X.
+        reflected = record["source_id"] not in lookup and record["source_id"] in (mirrors or {})
+        shapes = lookup.get(mirrors[record["source_id"]] if reflected else record["source_id"], {}).get("primitives", [])
         if not shapes:  # Existing source hardware keeps its physical FA-01 mesh.
             shapes = [tube([0, 0, 0], .033, .019, .006)] if key == "lg-w36" else [
                 tube([0, -.045, 0], .018, 0, .09), tube([0, .018, 0], .027, 0, .036)]
-        if key == "lg-main-input":
+        if key.removesuffix("-right") == "lg-main-input":
             shapes = [box([0, .0, 0], [.07, .04, .04]),
                       box([.09, .14, 0], [.04, .28, .04]),
                       box([.18, .28, 0], [.18, .04, .04]),
                       box([.27, .35, 0], [.04, .14, .04]),
                       box([.27, .44, 0], [.07, .05, .04])]
+        if reflected:
+            shapes = deepcopy(shapes)
+            for shape in shapes:
+                if "center" in shape:shape["center"] = [-shape["center"][0], *shape["center"][1:]]
         top = "ring" in key or key.endswith("w24") or key.endswith("w12") or key == "lg-w36"
         axial = key in ("lg-knee-bearing", "lg-knee-thrust")
         elements, limits = [], []
@@ -746,7 +753,9 @@ def robot_documents(check=False):
     assert chapter_document.get("procedures") == procedures, "Set manual-chapters.json procedures to " + json.dumps(procedures)
     for task in workshop_layout["crane"]["tasks"].values():
         if task.get("payload")!="assembly":trial["equipment"]["parts"][task["load_uid"]]["stock_position"]=list(task["source_pose"]["position"])
-    catalogue_images(check, {key: value for key,value in trial_parts.items() if key not in parts and "catalogue_image" not in value},trial["parts"],trial["sources"])
+    from part_numbers import apply as number_parts
+    number_parts(trial_parts, trial["parts"], [trial_pelvis, chest, core, backpack, cassette, arms, pauldrons, head, mirrored, trial])
+    catalogue_images(check, {key: value for key,value in trial_parts.items() if key not in parts and "catalogue_image" not in value},trial["parts"],trial["sources"],trial["mirror_sources"])
     return {"robot-definitions.json": dict(version=1, parts=trial_parts, assemblies={"pelvis": trial_pelvis,"chest":chest,"core":core,"backpack":backpack,"arm_cassette":cassette,**arms,**pauldrons,**head,**mirrored}, assembly_patches={"left_leg": assembly_patch(leg, trial_leg)}), "robot-content.json": trial}
 
 

@@ -3,7 +3,7 @@ extends RefCounted
 ## Desktop pad view of shared assembly state. Construction rules live in data/model.
 signal changed
 const KINDS = ["sleeve", "washer", "bolt"]
-const TITLES = {"sleeve":"FA-305 · Compression sleeve","washer":"W-24 · Washer","bolt":"H-24120 · Mounting bolt","pad":"FA-302 · Heel pad"}
+const TITLES = {"sleeve":"FA-305 · Compression sleeve","washer":"W-24 · M24 washer","bolt":"H-24120 · Mounting bolt","pad":"FA-302 · Heel pad"}
 var model: AssemblyModel
 var build_id: String = "pad_1"
 var items: Dictionary:

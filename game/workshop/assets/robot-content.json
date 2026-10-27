@@ -417,14 +417,14 @@
     {
       "instance_id": "R-LG-100__001",
       "source_id": "R-LG-100__001",
-      "part_id": "LG-100",
+      "part_id": "LG-100-R",
       "kind": "lg-shin-right",
       "location": "support:leg_shin_rack_right"
     },
     {
       "instance_id": "R-FA-605__001",
       "source_id": "R-FA-605__001",
-      "part_id": "FA-605",
+      "part_id": "FA-605-R",
       "kind": "lg-main-input-right",
       "location": "bin"
     },
@@ -438,7 +438,7 @@
     {
       "instance_id": "R-LG-120__001",
       "source_id": "R-LG-120__001",
-      "part_id": "LG-120",
+      "part_id": "LG-120-R",
       "kind": "lg-thigh-spar-right",
       "location": "support:leg_spar_rack_right"
     },
@@ -1069,19 +1069,19 @@
     },
     {
       "instance_id": "R-FA-524__001",
-      "part_id": "FA-524",
+      "part_id": "FA-524-A",
       "kind": "fa-524__001",
       "source_id": "R-FA-524__001"
     },
     {
       "instance_id": "R-FA-524__002",
-      "part_id": "FA-524",
+      "part_id": "FA-524-B",
       "kind": "fa-524__002",
       "source_id": "R-FA-524__002"
     },
     {
       "instance_id": "R-FA-525__001",
-      "part_id": "FA-525",
+      "part_id": "FA-525-A",
       "kind": "fa-525__001",
       "source_id": "R-FA-525__001"
     },
@@ -1123,7 +1123,7 @@
     },
     {
       "instance_id": "R-FA-525__002",
-      "part_id": "FA-525",
+      "part_id": "FA-525-B",
       "kind": "fa-525__002",
       "source_id": "R-FA-525__002"
     },
@@ -1201,13 +1201,13 @@
     },
     {
       "instance_id": "R-FA-529__001",
-      "part_id": "FA-529",
+      "part_id": "FA-529-A",
       "kind": "fa-529__001",
       "source_id": "R-FA-529__001"
     },
     {
       "instance_id": "R-FA-529__002",
-      "part_id": "FA-529",
+      "part_id": "FA-529-B",
       "kind": "fa-529__002",
       "source_id": "R-FA-529__002"
     },
@@ -1531,7 +1531,7 @@
     },
     {
       "instance_id": "R-FA-220__001",
-      "part_id": "FA-220",
+      "part_id": "FA-220-A",
       "kind": "fa-220__001",
       "source_id": "R-FA-220__001"
     },
@@ -1585,7 +1585,7 @@
     },
     {
       "instance_id": "R-FA-220__002",
-      "part_id": "FA-220",
+      "part_id": "FA-220-B",
       "kind": "fa-220__002",
       "source_id": "R-FA-220__002"
     },
@@ -1696,14 +1696,14 @@
     {
       "instance_id": "CH-SERVICE__001",
       "source_id": "CH-SERVICE__001",
-      "part_id": "CH-SERVICE",
+      "part_id": "CH-100",
       "kind": "ch-service",
       "location": "bin"
     },
     {
       "instance_id": "CH-SERVICE__002",
       "source_id": "CH-SERVICE__002",
-      "part_id": "CH-SERVICE",
+      "part_id": "CH-100",
       "kind": "ch-service",
       "location": "bin"
     },
@@ -1766,532 +1766,532 @@
     {
       "instance_id": "BP-SERVICE__001",
       "source_id": "BP-SERVICE__001",
-      "part_id": "BP-SERVICE",
+      "part_id": "BP-100",
       "kind": "bp-service",
       "location": "bin"
     },
     {
       "instance_id": "BP-SERVICE__002",
       "source_id": "BP-SERVICE__002",
-      "part_id": "BP-SERVICE",
+      "part_id": "BP-100",
       "kind": "bp-service",
       "location": "bin"
     },
     {
       "instance_id": "SH-RING-FRONT__001",
       "source_id": "SH-RING-FRONT__001",
-      "part_id": "SH-RING-FRONT",
+      "part_id": "SH-100-A",
       "kind": "sh-ring-front",
       "location": "bin"
     },
     {
       "instance_id": "SH-RING-REAR__001",
       "source_id": "SH-RING-REAR__001",
-      "part_id": "SH-RING-REAR",
+      "part_id": "SH-100-B",
       "kind": "sh-ring-rear",
       "location": "bin"
     },
     {
       "instance_id": "SH-WASHER__001",
       "source_id": "SH-WASHER__001",
-      "part_id": "SH-WASHER",
+      "part_id": "SH-W24",
       "kind": "sh-washer",
       "location": "bin"
     },
     {
       "instance_id": "SH-BOLT__001",
       "source_id": "SH-BOLT__001",
-      "part_id": "SH-BOLT",
+      "part_id": "SH-H24240",
       "kind": "sh-bolt",
       "location": "bin"
     },
     {
       "instance_id": "SH-WASHER__002",
       "source_id": "SH-WASHER__002",
-      "part_id": "SH-WASHER",
+      "part_id": "SH-W24",
       "kind": "sh-washer",
       "location": "bin"
     },
     {
       "instance_id": "SH-BOLT__002",
       "source_id": "SH-BOLT__002",
-      "part_id": "SH-BOLT",
+      "part_id": "SH-H24240",
       "kind": "sh-bolt",
       "location": "bin"
     },
     {
       "instance_id": "SH-WASHER__003",
       "source_id": "SH-WASHER__003",
-      "part_id": "SH-WASHER",
+      "part_id": "SH-W24",
       "kind": "sh-washer",
       "location": "bin"
     },
     {
       "instance_id": "SH-BOLT__003",
       "source_id": "SH-BOLT__003",
-      "part_id": "SH-BOLT",
+      "part_id": "SH-H24240",
       "kind": "sh-bolt",
       "location": "bin"
     },
     {
       "instance_id": "SH-WASHER__004",
       "source_id": "SH-WASHER__004",
-      "part_id": "SH-WASHER",
+      "part_id": "SH-W24",
       "kind": "sh-washer",
       "location": "bin"
     },
     {
       "instance_id": "SH-BOLT__004",
       "source_id": "SH-BOLT__004",
-      "part_id": "SH-BOLT",
+      "part_id": "SH-H24240",
       "kind": "sh-bolt",
       "location": "bin"
     },
     {
       "instance_id": "SH-BRACE-LEFT__001",
       "source_id": "SH-BRACE-LEFT__001",
-      "part_id": "SH-BRACE-LEFT",
+      "part_id": "SH-110-L",
       "kind": "sh-brace-left",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__001",
       "source_id": "SH-PIN__001",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__001",
       "source_id": "SH-KEEPER__001",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__002",
       "source_id": "SH-PIN__002",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__002",
       "source_id": "SH-KEEPER__002",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-DRIVE__001",
       "source_id": "SH-DRIVE__001",
-      "part_id": "SH-DRIVE",
+      "part_id": "SH-120",
       "kind": "sh-drive",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__003",
       "source_id": "SH-PIN__003",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__003",
       "source_id": "SH-KEEPER__003",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__004",
       "source_id": "SH-PIN__004",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__004",
       "source_id": "SH-KEEPER__004",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-DRIVE__002",
       "source_id": "SH-DRIVE__002",
-      "part_id": "SH-DRIVE",
+      "part_id": "SH-120",
       "kind": "sh-drive",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__005",
       "source_id": "SH-PIN__005",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__005",
       "source_id": "SH-KEEPER__005",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__006",
       "source_id": "SH-PIN__006",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__006",
       "source_id": "SH-KEEPER__006",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-DRIVE__003",
       "source_id": "SH-DRIVE__003",
-      "part_id": "SH-DRIVE",
+      "part_id": "SH-120",
       "kind": "sh-drive",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__007",
       "source_id": "SH-PIN__007",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__007",
       "source_id": "SH-KEEPER__007",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__008",
       "source_id": "SH-PIN__008",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__008",
       "source_id": "SH-KEEPER__008",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-SERVICE__001",
       "source_id": "SH-SERVICE__001",
-      "part_id": "SH-SERVICE",
+      "part_id": "SH-130",
       "kind": "sh-service",
       "location": "bin"
     },
     {
       "instance_id": "SH-RING-FRONT__002",
       "source_id": "SH-RING-FRONT__002",
-      "part_id": "SH-RING-FRONT",
+      "part_id": "SH-100-A",
       "kind": "sh-ring-front",
       "location": "bin"
     },
     {
       "instance_id": "SH-RING-REAR__002",
       "source_id": "SH-RING-REAR__002",
-      "part_id": "SH-RING-REAR",
+      "part_id": "SH-100-B",
       "kind": "sh-ring-rear",
       "location": "bin"
     },
     {
       "instance_id": "SH-WASHER__005",
       "source_id": "SH-WASHER__005",
-      "part_id": "SH-WASHER",
+      "part_id": "SH-W24",
       "kind": "sh-washer",
       "location": "bin"
     },
     {
       "instance_id": "SH-BOLT__005",
       "source_id": "SH-BOLT__005",
-      "part_id": "SH-BOLT",
+      "part_id": "SH-H24240",
       "kind": "sh-bolt",
       "location": "bin"
     },
     {
       "instance_id": "SH-WASHER__006",
       "source_id": "SH-WASHER__006",
-      "part_id": "SH-WASHER",
+      "part_id": "SH-W24",
       "kind": "sh-washer",
       "location": "bin"
     },
     {
       "instance_id": "SH-BOLT__006",
       "source_id": "SH-BOLT__006",
-      "part_id": "SH-BOLT",
+      "part_id": "SH-H24240",
       "kind": "sh-bolt",
       "location": "bin"
     },
     {
       "instance_id": "SH-WASHER__007",
       "source_id": "SH-WASHER__007",
-      "part_id": "SH-WASHER",
+      "part_id": "SH-W24",
       "kind": "sh-washer",
       "location": "bin"
     },
     {
       "instance_id": "SH-BOLT__007",
       "source_id": "SH-BOLT__007",
-      "part_id": "SH-BOLT",
+      "part_id": "SH-H24240",
       "kind": "sh-bolt",
       "location": "bin"
     },
     {
       "instance_id": "SH-WASHER__008",
       "source_id": "SH-WASHER__008",
-      "part_id": "SH-WASHER",
+      "part_id": "SH-W24",
       "kind": "sh-washer",
       "location": "bin"
     },
     {
       "instance_id": "SH-BOLT__008",
       "source_id": "SH-BOLT__008",
-      "part_id": "SH-BOLT",
+      "part_id": "SH-H24240",
       "kind": "sh-bolt",
       "location": "bin"
     },
     {
       "instance_id": "SH-BRACE-RIGHT__001",
       "source_id": "SH-BRACE-RIGHT__001",
-      "part_id": "SH-BRACE-RIGHT",
+      "part_id": "SH-110-R",
       "kind": "sh-brace-right",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__009",
       "source_id": "SH-PIN__009",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__009",
       "source_id": "SH-KEEPER__009",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__010",
       "source_id": "SH-PIN__010",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__010",
       "source_id": "SH-KEEPER__010",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-DRIVE__004",
       "source_id": "SH-DRIVE__004",
-      "part_id": "SH-DRIVE",
+      "part_id": "SH-120",
       "kind": "sh-drive",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__011",
       "source_id": "SH-PIN__011",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__011",
       "source_id": "SH-KEEPER__011",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__012",
       "source_id": "SH-PIN__012",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__012",
       "source_id": "SH-KEEPER__012",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-DRIVE__005",
       "source_id": "SH-DRIVE__005",
-      "part_id": "SH-DRIVE",
+      "part_id": "SH-120",
       "kind": "sh-drive",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__013",
       "source_id": "SH-PIN__013",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__013",
       "source_id": "SH-KEEPER__013",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__014",
       "source_id": "SH-PIN__014",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__014",
       "source_id": "SH-KEEPER__014",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-DRIVE__006",
       "source_id": "SH-DRIVE__006",
-      "part_id": "SH-DRIVE",
+      "part_id": "SH-120",
       "kind": "sh-drive",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__015",
       "source_id": "SH-PIN__015",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__015",
       "source_id": "SH-KEEPER__015",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-PIN__016",
       "source_id": "SH-PIN__016",
-      "part_id": "SH-PIN",
+      "part_id": "SH-P40",
       "kind": "sh-pin",
       "location": "bin"
     },
     {
       "instance_id": "SH-KEEPER__016",
       "source_id": "SH-KEEPER__016",
-      "part_id": "SH-KEEPER",
+      "part_id": "SH-K40",
       "kind": "sh-keeper",
       "location": "bin"
     },
     {
       "instance_id": "SH-SERVICE__002",
       "source_id": "SH-SERVICE__002",
-      "part_id": "SH-SERVICE",
+      "part_id": "SH-130",
       "kind": "sh-service",
       "location": "bin"
     },
     {
       "instance_id": "PD-M20__001",
       "source_id": "PD-M20__001",
-      "part_id": "PD-M20-LONG",
+      "part_id": "PD-H20120-A",
       "kind": "pd-bolt-long",
       "location": "bin"
     },
     {
       "instance_id": "PD-M20__002",
       "source_id": "PD-M20__002",
-      "part_id": "PD-M20-LONG",
+      "part_id": "PD-H20120-A",
       "kind": "pd-bolt-long",
       "location": "bin"
     },
     {
       "instance_id": "PD-M20__003",
       "source_id": "PD-M20__003",
-      "part_id": "PD-M20-SHORT",
+      "part_id": "PD-H20120-B",
       "kind": "pd-bolt-short",
       "location": "bin"
     },
     {
       "instance_id": "PD-M20__004",
       "source_id": "PD-M20__004",
-      "part_id": "PD-M20-SHORT",
+      "part_id": "PD-H20120-B",
       "kind": "pd-bolt-short",
       "location": "bin"
     },
     {
       "instance_id": "PD-FRONT__001",
       "source_id": "PD-FRONT__001",
-      "part_id": "PD-FRONT",
+      "part_id": "PD-100-A",
       "kind": "pd-front",
       "location": "bin"
     },
     {
       "instance_id": "PD-REAR__001",
       "source_id": "PD-REAR__001",
-      "part_id": "PD-REAR",
+      "part_id": "PD-100-B",
       "kind": "pd-rear",
       "location": "bin"
     },
     {
       "instance_id": "PD-M20__005",
       "source_id": "PD-M20__005",
-      "part_id": "PD-M20-LONG",
+      "part_id": "PD-H20120-A",
       "kind": "pd-bolt-long",
       "location": "bin"
     },
     {
       "instance_id": "PD-M20__006",
       "source_id": "PD-M20__006",
-      "part_id": "PD-M20-LONG",
+      "part_id": "PD-H20120-A",
       "kind": "pd-bolt-long",
       "location": "bin"
     },
     {
       "instance_id": "PD-M20__007",
       "source_id": "PD-M20__007",
-      "part_id": "PD-M20-SHORT",
+      "part_id": "PD-H20120-B",
       "kind": "pd-bolt-short",
       "location": "bin"
     },
     {
       "instance_id": "PD-M20__008",
       "source_id": "PD-M20__008",
-      "part_id": "PD-M20-SHORT",
+      "part_id": "PD-H20120-B",
       "kind": "pd-bolt-short",
       "location": "bin"
     },
     {
       "instance_id": "PD-FRONT__002",
       "source_id": "PD-FRONT__002",
-      "part_id": "PD-FRONT",
+      "part_id": "PD-100-A",
       "kind": "pd-front",
       "location": "bin"
     },
     {
       "instance_id": "PD-REAR__002",
       "source_id": "PD-REAR__002",
-      "part_id": "PD-REAR",
+      "part_id": "PD-100-B",
       "kind": "pd-rear",
       "location": "bin"
     },
@@ -2354,7 +2354,7 @@
     {
       "instance_id": "HD-LOOM__001",
       "source_id": "HD-LOOM__001",
-      "part_id": "HD-LOOM",
+      "part_id": "HD-130",
       "kind": "hd-loom",
       "location": "bin"
     },
@@ -2417,7 +2417,7 @@
     {
       "instance_id": "HD-SENSORS__001",
       "source_id": "HD-SENSORS__001",
-      "part_id": "HD-SENSORS",
+      "part_id": "HD-120",
       "kind": "hd-sensors",
       "location": "bin"
     },
@@ -2452,14 +2452,14 @@
     {
       "instance_id": "HD-SERVICE__001",
       "source_id": "HD-SERVICE__001",
-      "part_id": "HD-SERVICE",
+      "part_id": "HD-140",
       "kind": "hd-sensor-loom",
       "location": "bin"
     },
     {
       "instance_id": "HD-FACE__001",
       "source_id": "HD-FACE__001",
-      "part_id": "HD-FACE",
+      "part_id": "HD-100",
       "kind": "hd-faceplate",
       "location": "bin"
     },
@@ -2494,7 +2494,7 @@
     {
       "instance_id": "HD-MASK__001",
       "source_id": "HD-MASK__001",
-      "part_id": "HD-MASK",
+      "part_id": "HD-110",
       "kind": "hd-mask",
       "location": "bin"
     },
@@ -60340,7 +60340,7 @@
     {
       "id": "right_pad_1",
       "definition": "right_heel_pad",
-      "label": "Right Heel pad A",
+      "label": "Right heel pad",
       "base": "R-FA-302__001",
       "home": [
         -1.0,
@@ -60351,7 +60351,7 @@
     {
       "id": "right_pad_2",
       "definition": "right_heel_pad",
-      "label": "Right Heel pad B",
+      "label": "Right heel pad",
       "base": "R-FA-302__002",
       "home": [
         0.8,
@@ -60362,7 +60362,7 @@
     {
       "id": "right_pitch",
       "definition": "right_pitch_actuator",
-      "label": "Right Pitch actuator",
+      "label": "Right pitch actuator",
       "base": "R-FA-513__001",
       "home": [
         -6.4,

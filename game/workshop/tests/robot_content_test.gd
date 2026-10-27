@@ -18,6 +18,18 @@ func robot_content() -> Dictionary:
 	var model = AssemblyModel.new()
 	var errors = model.configure(data, scenario)
 	expect(errors.is_empty(), "Robot content configures all real supports: " + str(errors))
+	# Each part type has its own name and drawer, so it needs its own part number.
+	var kinds_by_family: Dictionary = {}
+	for kind in data.parts:
+		var family: String = data.parts[kind].family
+		if kinds_by_family.has(family):kinds_by_family[family].append(kind)
+		else:kinds_by_family[family] = [kind]
+	var shared: Array = kinds_by_family.keys().filter(func(family): return kinds_by_family[family].size() > 1).map(func(family): return family + " " + str(kinds_by_family[family]))
+	expect(shared.is_empty(), "Each part number names exactly one part type: " + str(shared))
+	# Part numbers carry no full words (tools/part_numbers.py).
+	var number := RegEx.create_from_string("^[A-Z]+(-[A-Z])?-[A-Z]?[0-9]+(-[A-Z])?$")
+	var worded: Array = kinds_by_family.keys().filter(func(family): return number.search(family) == null)
+	expect(worded.is_empty(), "Part numbers contain no words: " + str(worded))
 	return {"model": model, "data": data, "content": content, "scenario": scenario}
 
 func stage_slot(model: AssemblyModel, owner: String, sid: String) -> bool:

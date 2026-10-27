@@ -720,9 +720,9 @@
       "catalogue_image": "res://assets/part-images/pv-eye-pin.svg"
     },
     "lg-shin-right": {
-      "family": "LG-100",
+      "family": "LG-100-R",
       "variant": "right-hand",
-      "title": "LG-100 · Structural shin · right hand",
+      "title": "LG-100-R · Structural shin · right hand",
       "short_title": "Structural shin · right hand",
       "carry_class": "equipment",
       "collision_shapes": [
@@ -1091,12 +1091,12 @@
           ]
         }
       ],
-      "catalogue_image": "res://assets/part-images/lg-shin.svg"
+      "catalogue_image": "res://assets/part-images/lg-shin-right.svg"
     },
     "lg-thigh-spar-right": {
-      "family": "LG-120",
+      "family": "LG-120-R",
       "variant": "right-hand",
-      "title": "LG-120 · Upper-leg beam · right hand",
+      "title": "LG-120-R · Upper-leg beam · right hand",
       "short_title": "Upper-leg beam · right hand",
       "carry_class": "equipment",
       "collision_shapes": [
@@ -1328,12 +1328,12 @@
           ]
         }
       ],
-      "catalogue_image": "res://assets/part-images/lg-thigh-spar.svg"
+      "catalogue_image": "res://assets/part-images/lg-thigh-spar-right.svg"
     },
     "lg-main-input-right": {
-      "family": "FA-605",
+      "family": "FA-605-R",
       "variant": "right-hand",
-      "title": "FA-605 · Main input harness with both plugs · right hand",
+      "title": "FA-605-R · Main input harness with both plugs · right hand",
       "short_title": "Main input harness with both plugs · right hand",
       "carry_class": "two_hand",
       "collision_shapes": [
@@ -1956,7 +1956,7 @@
           ]
         }
       ],
-      "catalogue_image": "res://assets/part-images/lg-main-input.svg"
+      "catalogue_image": "res://assets/part-images/lg-main-input-right.svg"
     },
     "ch-w36": {
       "family": "CH-W36",
@@ -1975,9 +1975,9 @@
       "catalogue_image": "res://assets/part-images/ch-m36-160.svg"
     },
     "ch-service": {
-      "family": "CH-SERVICE",
+      "family": "CH-100",
       "variant": "ch-service",
-      "title": "CH-SERVICE · Chest service plug",
+      "title": "CH-100 · Chest service plug",
       "short_title": "Chest service plug",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/ch-service.svg"
@@ -2015,121 +2015,121 @@
       "catalogue_image": "res://assets/part-images/bp-strut-keeper.svg"
     },
     "bp-service": {
-      "family": "BP-SERVICE",
+      "family": "BP-100",
       "variant": "bp-service",
-      "title": "BP-SERVICE · Protected backpack service run",
+      "title": "BP-100 · Protected backpack service run",
       "short_title": "Protected backpack service run",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/bp-service.svg"
     },
     "sh-ring-front": {
-      "family": "SH-RING-FRONT",
+      "family": "SH-100-A",
       "variant": "sh-ring-front",
-      "title": "SH-RING-FRONT · Front keyed ring half",
+      "title": "SH-100-A · Front keyed ring half",
       "short_title": "Front keyed ring half",
       "carry_class": "hand",
       "catalogue_image": "res://assets/part-images/sh-ring-front.svg"
     },
     "sh-ring-rear": {
-      "family": "SH-RING-REAR",
+      "family": "SH-100-B",
       "variant": "sh-ring-rear",
-      "title": "SH-RING-REAR · Rear relieved ring half",
+      "title": "SH-100-B · Rear relieved ring half",
       "short_title": "Rear relieved ring half",
       "carry_class": "hand",
       "catalogue_image": "res://assets/part-images/sh-ring-rear.svg"
     },
     "sh-washer": {
-      "family": "SH-WASHER",
+      "family": "SH-W24",
       "variant": "sh-washer",
-      "title": "SH-WASHER · M24 shoulder washer",
+      "title": "SH-W24 · M24 shoulder washer",
       "short_title": "M24 shoulder washer",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/sh-washer.svg"
     },
     "sh-bolt": {
-      "family": "SH-BOLT",
+      "family": "SH-H24240",
       "variant": "sh-bolt",
-      "title": "SH-BOLT · M24 × 240 shoulder bolt",
+      "title": "SH-H24240 · M24 × 240 shoulder bolt",
       "short_title": "M24 × 240 shoulder bolt",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/sh-bolt.svg"
     },
     "sh-brace-left": {
-      "family": "SH-BRACE-LEFT",
+      "family": "SH-110-L",
       "variant": "sh-brace-left",
-      "title": "SH-BRACE-LEFT · Left keyed neutral service brace",
+      "title": "SH-110-L · Left keyed neutral service brace",
       "short_title": "Left keyed neutral service brace",
       "carry_class": "two_hand",
       "catalogue_image": "res://assets/part-images/sh-brace-left.svg"
     },
     "sh-brace-right": {
-      "family": "SH-BRACE-RIGHT",
+      "family": "SH-110-R",
       "variant": "sh-brace-right",
-      "title": "SH-BRACE-RIGHT · Right keyed neutral service brace",
+      "title": "SH-110-R · Right keyed neutral service brace",
       "short_title": "Right keyed neutral service brace",
       "carry_class": "two_hand",
       "catalogue_image": "res://assets/part-images/sh-brace-right.svg"
     },
     "sh-pin": {
-      "family": "SH-PIN",
+      "family": "SH-P40",
       "variant": "sh-pin",
-      "title": "SH-PIN · Ø40 shoulder pin",
+      "title": "SH-P40 · Ø40 shoulder pin",
       "short_title": "Ø40 shoulder pin",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/sh-pin.svg"
     },
     "sh-keeper": {
-      "family": "SH-KEEPER",
+      "family": "SH-K40",
       "variant": "sh-keeper",
-      "title": "SH-KEEPER · Ø40 pin keeper",
+      "title": "SH-K40 · Ø40 pin keeper",
       "short_title": "Ø40 pin keeper",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/sh-keeper.svg"
     },
     "sh-drive": {
-      "family": "SH-DRIVE",
+      "family": "SH-120",
       "variant": "sh-drive",
-      "title": "SH-DRIVE · Shoulder screw-drive cartridge",
+      "title": "SH-120 · Shoulder screw-drive cartridge",
       "short_title": "Shoulder screw-drive cartridge",
       "carry_class": "two_hand",
       "catalogue_image": "res://assets/part-images/sh-drive.svg"
     },
     "sh-service": {
-      "family": "SH-SERVICE",
+      "family": "SH-130",
       "variant": "sh-service",
-      "title": "SH-SERVICE · Isolated arm service harness",
+      "title": "SH-130 · Isolated arm service harness",
       "short_title": "Isolated arm service harness",
       "carry_class": "hand",
       "catalogue_image": "res://assets/part-images/sh-service.svg"
     },
     "pd-bolt-long": {
-      "family": "PD-M20-LONG",
+      "family": "PD-H20120-A",
       "variant": "M20x120-long-shoe",
-      "title": "PD-M20-LONG · M20 carrier bolt / long shoe",
+      "title": "PD-H20120-A · M20 carrier bolt / long shoe",
       "short_title": "M20 / long shoe",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/pd-bolt-long.svg"
     },
     "pd-bolt-short": {
-      "family": "PD-M20-SHORT",
+      "family": "PD-H20120-B",
       "variant": "M20x120-short-shoe",
-      "title": "PD-M20-SHORT · M20 carrier bolt / short shoe",
+      "title": "PD-H20120-B · M20 carrier bolt / short shoe",
       "short_title": "M20 / short shoe",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/pd-bolt-short.svg"
     },
     "pd-front": {
-      "family": "PD-FRONT",
+      "family": "PD-100-A",
       "variant": "front",
-      "title": "PD-FRONT · Front upper closure panel",
+      "title": "PD-100-A · Front upper closure panel",
       "short_title": "Front upper panel",
       "carry_class": "two_hand",
       "catalogue_image": "res://assets/part-images/pd-front.svg"
     },
     "pd-rear": {
-      "family": "PD-REAR",
+      "family": "PD-100-B",
       "variant": "rear",
-      "title": "PD-REAR · Rear upper closure panel",
+      "title": "PD-100-B · Rear upper closure panel",
       "short_title": "Rear upper panel",
       "carry_class": "two_hand",
       "catalogue_image": "res://assets/part-images/pd-rear.svg"
@@ -2167,17 +2167,17 @@
       "catalogue_image": "res://assets/part-images/hd-m12-160.svg"
     },
     "hd-loom": {
-      "family": "HD-LOOM",
+      "family": "HD-130",
       "variant": "hd-loom",
-      "title": "HD-LOOM · Keyed central power/data loom and strain relief",
+      "title": "HD-130 · Keyed central power/data loom and strain relief",
       "short_title": "Keyed central power/data loom and strain relief",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/hd-loom.svg"
     },
     "hd-sensors": {
-      "family": "HD-SENSORS",
+      "family": "HD-120",
       "variant": "hd-sensors",
-      "title": "HD-SENSORS · Prepared two-camera / range-sensor carrier",
+      "title": "HD-120 · Prepared two-camera / range-sensor carrier",
       "short_title": "Prepared two-camera / range-sensor carrier",
       "carry_class": "two_hand",
       "collision_shapes": [
@@ -2606,9 +2606,9 @@
       "catalogue_image": "res://assets/part-images/hd-sensors.svg"
     },
     "hd-faceplate": {
-      "family": "HD-FACE",
+      "family": "HD-100",
       "variant": "hd-faceplate",
-      "title": "HD-FACE · Front faceplate",
+      "title": "HD-100 · Front faceplate",
       "short_title": "Front faceplate",
       "carry_class": "two_hand",
       "collision_shapes": [
@@ -2954,9 +2954,9 @@
       "catalogue_image": "res://assets/part-images/hd-faceplate.svg"
     },
     "hd-mask": {
-      "family": "HD-MASK",
+      "family": "HD-110",
       "variant": "hd-mask",
-      "title": "HD-MASK · Samurai mask",
+      "title": "HD-110 · Samurai mask",
       "short_title": "Samurai mask",
       "carry_class": "two_hand",
       "collision_shapes": [
@@ -3427,9 +3427,9 @@
       "catalogue_image": "res://assets/part-images/hd-m8.svg"
     },
     "hd-sensor-loom": {
-      "family": "HD-SERVICE",
+      "family": "HD-140",
       "variant": "hd-sensor-loom",
-      "title": "HD-SERVICE · Keyed sensor power/data plug and service-loop clip",
+      "title": "HD-140 · Keyed sensor power/data plug and service-loop clip",
       "short_title": "Keyed sensor power/data plug and service-loop clip",
       "carry_class": "pocket",
       "catalogue_image": "res://assets/part-images/hd-sensor-loom.svg"
@@ -4642,7 +4642,7 @@
             "chest/washer_4",
             "chest/bolt_4"
           ],
-          "label": "CH-SERVICE · Chest service plug",
+          "label": "CH-100 · Chest service plug",
           "requires_crane_clear": "chest"
         },
         "chest/service_2": {
@@ -4658,7 +4658,7 @@
             "chest/washer_4",
             "chest/bolt_4"
           ],
-          "label": "CH-SERVICE · Chest service plug",
+          "label": "CH-100 · Chest service plug",
           "requires_crane_clear": "chest"
         }
       },
@@ -7119,7 +7119,7 @@
             "backpack/strut_pin_2",
             "backpack/strut_keeper_2"
           ],
-          "label": "BP-SERVICE · Protected backpack service run",
+          "label": "BP-100 · Protected backpack service run",
           "access_policy": "mounted"
         },
         "backpack/service_2": {
@@ -7135,7 +7135,7 @@
             "backpack/strut_pin_2",
             "backpack/strut_keeper_2"
           ],
-          "label": "BP-SERVICE · Protected backpack service run",
+          "label": "BP-100 · Protected backpack service run",
           "access_policy": "mounted"
         },
         "left_arm": {
@@ -7157,7 +7157,7 @@
           "requires": [
             "left_arm"
           ],
-          "label": "SH-RING-FRONT · Front keyed ring half",
+          "label": "SH-100-A · Front keyed ring half",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7167,7 +7167,7 @@
           "requires": [
             "left_arm"
           ],
-          "label": "SH-RING-REAR · Rear relieved ring half",
+          "label": "SH-100-B · Rear relieved ring half",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7178,7 +7178,7 @@
             "left_arm/ring_front",
             "left_arm/ring_rear"
           ],
-          "label": "SH-WASHER · M24 shoulder washer",
+          "label": "SH-W24 · M24 shoulder washer",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7188,7 +7188,7 @@
           "requires": [
             "left_arm/washer_1"
           ],
-          "label": "SH-BOLT · M24 × 240 shoulder bolt",
+          "label": "SH-H24240 · M24 × 240 shoulder bolt",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7199,7 +7199,7 @@
             "left_arm/ring_front",
             "left_arm/ring_rear"
           ],
-          "label": "SH-WASHER · M24 shoulder washer",
+          "label": "SH-W24 · M24 shoulder washer",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7209,7 +7209,7 @@
           "requires": [
             "left_arm/washer_2"
           ],
-          "label": "SH-BOLT · M24 × 240 shoulder bolt",
+          "label": "SH-H24240 · M24 × 240 shoulder bolt",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7220,7 +7220,7 @@
             "left_arm/ring_front",
             "left_arm/ring_rear"
           ],
-          "label": "SH-WASHER · M24 shoulder washer",
+          "label": "SH-W24 · M24 shoulder washer",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7230,7 +7230,7 @@
           "requires": [
             "left_arm/washer_3"
           ],
-          "label": "SH-BOLT · M24 × 240 shoulder bolt",
+          "label": "SH-H24240 · M24 × 240 shoulder bolt",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7241,7 +7241,7 @@
             "left_arm/ring_front",
             "left_arm/ring_rear"
           ],
-          "label": "SH-WASHER · M24 shoulder washer",
+          "label": "SH-W24 · M24 shoulder washer",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7251,7 +7251,7 @@
           "requires": [
             "left_arm/washer_4"
           ],
-          "label": "SH-BOLT · M24 × 240 shoulder bolt",
+          "label": "SH-H24240 · M24 × 240 shoulder bolt",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7270,7 +7270,7 @@
             "left_arm/washer_4",
             "left_arm/bolt_4"
           ],
-          "label": "SH-BRACE-LEFT · Left keyed neutral service brace",
+          "label": "SH-110-L · Left keyed neutral service brace",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7280,7 +7280,7 @@
           "requires": [
             "left_arm/brace"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7290,7 +7290,7 @@
           "requires": [
             "left_arm/brace_1_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7300,7 +7300,7 @@
           "requires": [
             "left_arm/brace"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7310,7 +7310,7 @@
           "requires": [
             "left_arm/brace_2_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7324,7 +7324,7 @@
             "left_arm/brace_2_pin",
             "left_arm/brace_2_keeper"
           ],
-          "label": "SH-DRIVE · Shoulder screw-drive cartridge",
+          "label": "SH-120 · Shoulder screw-drive cartridge",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7334,7 +7334,7 @@
           "requires": [
             "left_arm/drive_1"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7344,7 +7344,7 @@
           "requires": [
             "left_arm/drive_1_a_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7354,7 +7354,7 @@
           "requires": [
             "left_arm/drive_1"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7364,7 +7364,7 @@
           "requires": [
             "left_arm/drive_1_b_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7378,7 +7378,7 @@
             "left_arm/brace_2_pin",
             "left_arm/brace_2_keeper"
           ],
-          "label": "SH-DRIVE · Shoulder screw-drive cartridge",
+          "label": "SH-120 · Shoulder screw-drive cartridge",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7388,7 +7388,7 @@
           "requires": [
             "left_arm/drive_2"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7398,7 +7398,7 @@
           "requires": [
             "left_arm/drive_2_a_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7408,7 +7408,7 @@
           "requires": [
             "left_arm/drive_2"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7418,7 +7418,7 @@
           "requires": [
             "left_arm/drive_2_b_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7432,7 +7432,7 @@
             "left_arm/brace_2_pin",
             "left_arm/brace_2_keeper"
           ],
-          "label": "SH-DRIVE · Shoulder screw-drive cartridge",
+          "label": "SH-120 · Shoulder screw-drive cartridge",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7442,7 +7442,7 @@
           "requires": [
             "left_arm/drive_3"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7452,7 +7452,7 @@
           "requires": [
             "left_arm/drive_3_a_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7462,7 +7462,7 @@
           "requires": [
             "left_arm/drive_3"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7472,7 +7472,7 @@
           "requires": [
             "left_arm/drive_3_b_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -7511,7 +7511,7 @@
             "left_arm/drive_3_b_pin",
             "left_arm/drive_3_b_keeper"
           ],
-          "label": "SH-SERVICE · Isolated arm service harness",
+          "label": "SH-130 · Isolated arm service harness",
           "access_policy": "mounted",
           "collision_shapes": [
             {
@@ -8690,7 +8690,7 @@
           "requires": [
             "right_arm"
           ],
-          "label": "SH-RING-FRONT · Front keyed ring half",
+          "label": "SH-100-A · Front keyed ring half",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8700,7 +8700,7 @@
           "requires": [
             "right_arm"
           ],
-          "label": "SH-RING-REAR · Rear relieved ring half",
+          "label": "SH-100-B · Rear relieved ring half",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8711,7 +8711,7 @@
             "right_arm/ring_front",
             "right_arm/ring_rear"
           ],
-          "label": "SH-WASHER · M24 shoulder washer",
+          "label": "SH-W24 · M24 shoulder washer",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8721,7 +8721,7 @@
           "requires": [
             "right_arm/washer_1"
           ],
-          "label": "SH-BOLT · M24 × 240 shoulder bolt",
+          "label": "SH-H24240 · M24 × 240 shoulder bolt",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8732,7 +8732,7 @@
             "right_arm/ring_front",
             "right_arm/ring_rear"
           ],
-          "label": "SH-WASHER · M24 shoulder washer",
+          "label": "SH-W24 · M24 shoulder washer",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8742,7 +8742,7 @@
           "requires": [
             "right_arm/washer_2"
           ],
-          "label": "SH-BOLT · M24 × 240 shoulder bolt",
+          "label": "SH-H24240 · M24 × 240 shoulder bolt",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8753,7 +8753,7 @@
             "right_arm/ring_front",
             "right_arm/ring_rear"
           ],
-          "label": "SH-WASHER · M24 shoulder washer",
+          "label": "SH-W24 · M24 shoulder washer",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8763,7 +8763,7 @@
           "requires": [
             "right_arm/washer_3"
           ],
-          "label": "SH-BOLT · M24 × 240 shoulder bolt",
+          "label": "SH-H24240 · M24 × 240 shoulder bolt",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8774,7 +8774,7 @@
             "right_arm/ring_front",
             "right_arm/ring_rear"
           ],
-          "label": "SH-WASHER · M24 shoulder washer",
+          "label": "SH-W24 · M24 shoulder washer",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8784,7 +8784,7 @@
           "requires": [
             "right_arm/washer_4"
           ],
-          "label": "SH-BOLT · M24 × 240 shoulder bolt",
+          "label": "SH-H24240 · M24 × 240 shoulder bolt",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8803,7 +8803,7 @@
             "right_arm/washer_4",
             "right_arm/bolt_4"
           ],
-          "label": "SH-BRACE-RIGHT · Right keyed neutral service brace",
+          "label": "SH-110-R · Right keyed neutral service brace",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8813,7 +8813,7 @@
           "requires": [
             "right_arm/brace"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8823,7 +8823,7 @@
           "requires": [
             "right_arm/brace_1_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8833,7 +8833,7 @@
           "requires": [
             "right_arm/brace"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8843,7 +8843,7 @@
           "requires": [
             "right_arm/brace_2_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8857,7 +8857,7 @@
             "right_arm/brace_2_pin",
             "right_arm/brace_2_keeper"
           ],
-          "label": "SH-DRIVE · Shoulder screw-drive cartridge",
+          "label": "SH-120 · Shoulder screw-drive cartridge",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8867,7 +8867,7 @@
           "requires": [
             "right_arm/drive_1"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8877,7 +8877,7 @@
           "requires": [
             "right_arm/drive_1_a_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8887,7 +8887,7 @@
           "requires": [
             "right_arm/drive_1"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8897,7 +8897,7 @@
           "requires": [
             "right_arm/drive_1_b_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8911,7 +8911,7 @@
             "right_arm/brace_2_pin",
             "right_arm/brace_2_keeper"
           ],
-          "label": "SH-DRIVE · Shoulder screw-drive cartridge",
+          "label": "SH-120 · Shoulder screw-drive cartridge",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8921,7 +8921,7 @@
           "requires": [
             "right_arm/drive_2"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8931,7 +8931,7 @@
           "requires": [
             "right_arm/drive_2_a_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8941,7 +8941,7 @@
           "requires": [
             "right_arm/drive_2"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8951,7 +8951,7 @@
           "requires": [
             "right_arm/drive_2_b_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8965,7 +8965,7 @@
             "right_arm/brace_2_pin",
             "right_arm/brace_2_keeper"
           ],
-          "label": "SH-DRIVE · Shoulder screw-drive cartridge",
+          "label": "SH-120 · Shoulder screw-drive cartridge",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8975,7 +8975,7 @@
           "requires": [
             "right_arm/drive_3"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8985,7 +8985,7 @@
           "requires": [
             "right_arm/drive_3_a_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -8995,7 +8995,7 @@
           "requires": [
             "right_arm/drive_3"
           ],
-          "label": "SH-PIN · Ø40 shoulder pin",
+          "label": "SH-P40 · Ø40 shoulder pin",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -9005,7 +9005,7 @@
           "requires": [
             "right_arm/drive_3_b_pin"
           ],
-          "label": "SH-KEEPER · Ø40 pin keeper",
+          "label": "SH-K40 · Ø40 pin keeper",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -9044,7 +9044,7 @@
             "right_arm/drive_3_b_pin",
             "right_arm/drive_3_b_keeper"
           ],
-          "label": "SH-SERVICE · Isolated arm service harness",
+          "label": "SH-130 · Isolated arm service harness",
           "access_policy": "mounted",
           "collision_shapes": [
             {
@@ -10231,7 +10231,7 @@
           "requires": [
             "left_pauldron"
           ],
-          "label": "PD-M20-LONG · M20 carrier bolt / long shoe",
+          "label": "PD-H20120-A · M20 carrier bolt / long shoe",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10241,7 +10241,7 @@
           "requires": [
             "left_pauldron"
           ],
-          "label": "PD-M20-LONG · M20 carrier bolt / long shoe",
+          "label": "PD-H20120-A · M20 carrier bolt / long shoe",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10251,7 +10251,7 @@
           "requires": [
             "left_pauldron"
           ],
-          "label": "PD-M20-SHORT · M20 carrier bolt / short shoe",
+          "label": "PD-H20120-B · M20 carrier bolt / short shoe",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10261,7 +10261,7 @@
           "requires": [
             "left_pauldron"
           ],
-          "label": "PD-M20-SHORT · M20 carrier bolt / short shoe",
+          "label": "PD-H20120-B · M20 carrier bolt / short shoe",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10274,7 +10274,7 @@
             "left_pauldron/bolt_3",
             "left_pauldron/bolt_4"
           ],
-          "label": "PD-FRONT · Front upper closure panel",
+          "label": "PD-100-A · Front upper closure panel",
           "access_policy": "mounted",
           "undo_to": "hands"
         },
@@ -10287,7 +10287,7 @@
             "left_pauldron/bolt_3",
             "left_pauldron/bolt_4"
           ],
-          "label": "PD-REAR · Rear upper closure panel",
+          "label": "PD-100-B · Rear upper closure panel",
           "access_policy": "mounted",
           "undo_to": "hands"
         },
@@ -10318,7 +10318,7 @@
           "requires": [
             "right_pauldron"
           ],
-          "label": "PD-M20-LONG · M20 carrier bolt / long shoe",
+          "label": "PD-H20120-A · M20 carrier bolt / long shoe",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10328,7 +10328,7 @@
           "requires": [
             "right_pauldron"
           ],
-          "label": "PD-M20-LONG · M20 carrier bolt / long shoe",
+          "label": "PD-H20120-A · M20 carrier bolt / long shoe",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10338,7 +10338,7 @@
           "requires": [
             "right_pauldron"
           ],
-          "label": "PD-M20-SHORT · M20 carrier bolt / short shoe",
+          "label": "PD-H20120-B · M20 carrier bolt / short shoe",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10348,7 +10348,7 @@
           "requires": [
             "right_pauldron"
           ],
-          "label": "PD-M20-SHORT · M20 carrier bolt / short shoe",
+          "label": "PD-H20120-B · M20 carrier bolt / short shoe",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10361,7 +10361,7 @@
             "right_pauldron/bolt_3",
             "right_pauldron/bolt_4"
           ],
-          "label": "PD-FRONT · Front upper closure panel",
+          "label": "PD-100-A · Front upper closure panel",
           "access_policy": "mounted",
           "undo_to": "hands"
         },
@@ -10374,7 +10374,7 @@
             "right_pauldron/bolt_3",
             "right_pauldron/bolt_4"
           ],
-          "label": "PD-REAR · Rear upper closure panel",
+          "label": "PD-100-B · Rear upper closure panel",
           "access_policy": "mounted",
           "undo_to": "hands"
         },
@@ -10499,7 +10499,7 @@
             "hd-w24/004",
             "hd-m24160/004"
           ],
-          "label": "HD-LOOM · Keyed central power/data loom and strain relief",
+          "label": "HD-130 · Keyed central power/data loom and strain relief",
           "access_policy": "mounted",
           "undo_requires_support": "crane_rigging"
         },
@@ -10675,7 +10675,7 @@
             "hd-m12160/003",
             "hd-m12160/004"
           ],
-          "label": "HD-SENSORS · Prepared two-camera / range-sensor carrier",
+          "label": "HD-120 · Prepared two-camera / range-sensor carrier",
           "access_policy": "mounted",
           "undo_to": "hands"
         },
@@ -10740,7 +10740,7 @@
             "hd-m8/003",
             "hd-m8/004"
           ],
-          "label": "HD-SERVICE · Keyed sensor power/data plug and service-loop clip",
+          "label": "HD-140 · Keyed sensor power/data plug and service-loop clip",
           "access_policy": "mounted"
         },
         "head_faceplate": {
@@ -10754,7 +10754,7 @@
             "hd-m8/004",
             "hd-service/001"
           ],
-          "label": "HD-FACE · Front faceplate",
+          "label": "HD-100 · Front faceplate",
           "access_policy": "mounted",
           "undo_to": "hands"
         },
@@ -10804,7 +10804,7 @@
             "hd-m10080/003",
             "hd-m10080/004"
           ],
-          "label": "HD-MASK · Samurai mask",
+          "label": "HD-110 · Samurai mask",
           "access_policy": "mounted",
           "undo_to": "hands"
         },
@@ -18339,7 +18339,7 @@
         },
         {
           "title": "Deliver the structural shin",
-          "goal": "Crane LG-100 from its rig onto the foot adapter.",
+          "goal": "Crane LG-100-R from its rig onto the foot adapter.",
           "slots": [
             "shin"
           ],
@@ -18933,7 +18933,7 @@
         },
         {
           "title": "Deliver the Upper-leg beam",
-          "goal": "Crane LG-120 from its rig onto the fork flange.",
+          "goal": "Crane LG-120-R from its rig onto the fork flange.",
           "slots": [
             "spar"
           ],
@@ -19163,7 +19163,7 @@
           "title": "Supported construction recovery",
           "view": "overview",
           "slots": [],
-          "body": "Before construction disassembly, move the transfer table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to the far left (PARK), seen from the foot end. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
+          "body": "Before construction disassembly, move the transfer table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to the far left (PARK), seen from the foot end. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605-R before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
         }
       ]
     },
@@ -19809,7 +19809,7 @@
           ],
           "diagram_views": [
             {
-              "title": "FA-220 • cradle",
+              "title": "FA-220-A • cradle",
               "sources": [
                 "R-FA-220__001",
                 "R-W-24__023",
@@ -19889,7 +19889,7 @@
           ],
           "diagram_views": [
             {
-              "title": "FA-220 • ring",
+              "title": "FA-220-B • ring",
               "sources": [
                 "R-FA-220__002",
                 "R-W-24__025",
@@ -21689,7 +21689,7 @@
               ]
             },
             {
-              "title": "FA-524 • split collar",
+              "title": "FA-524-A / FA-524-B • split collar",
               "sources": [
                 "R-FA-524__001",
                 "R-FA-524__002",
@@ -22378,7 +22378,7 @@
               ]
             },
             {
-              "title": "FA-529 • rear gasket",
+              "title": "FA-529-A • rear gasket",
               "sources": [
                 "R-FA-529__001"
               ],
@@ -22681,7 +22681,7 @@
           "view": "components",
           "diagram_views": [
             {
-              "title": "FA-525 • screws",
+              "title": "FA-525-A • screws",
               "sources": [
                 "R-FA-525__001",
                 "R-W-12__021",
@@ -22799,7 +22799,7 @@
           "view": "components",
           "diagram_views": [
             {
-              "title": "FA-525 • screws",
+              "title": "FA-525-B • screws",
               "sources": [
                 "R-FA-525__002",
                 "R-W-12__023",

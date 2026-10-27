@@ -39,14 +39,20 @@ for p in source:
     kind = p['instance_id'].lower() if family.startswith('FA-') else family.lower()
     if family in shared_titles: kind = family.lower()+'-pitch'
     if family == 'W-24': kind = 'washer'
+    # A real variant (own name and drawer) gets its own part number: -A, -B in
+    # source order. L/R suffixes are reserved for left/right hand.
+    if p['instance_id'] in variant_names:
+        part_number = family+'-'+'AB'[int(p['instance_id'].split('__')[1])-1]
+    else:
+        part_number = family
     if kind not in parts:
         title = p['label'].removeprefix('P ') if family.startswith('FA-') else {'W-12':'M12 washer','W-24':'M24 washer','H-12030':'M12 × 30 screw','H-12040':'M12 × 40 screw','H-12050':'M12 × 50 cap screw','H-24070':'M24 × 70 clevis bolt'}[family]
         title = shared_titles.get(family,title)
         title, variant_label = variant_names.get(p['instance_id'],(title,''))
         variant = ('pitch-'+variant_label.lower() if variant_label else 'pitch') if family.startswith('FA-') else 'standard'
-        parts[kind] = dict(family=family, variant=variant, title=family+' · '+title, short_title=title, carry_class='two_hand' if family in ['FA-510','FA-516','FA-518','FA-220'] else ('hand' if family in ['FA-511','FA-512','FA-513','FA-514','FA-517','FA-519','FA-521','FA-525','FA-526','FA-221'] else 'pocket'))
+        parts[kind] = dict(family=part_number, variant=variant, title=part_number+' · '+title, short_title=title, carry_class='two_hand' if family in ['FA-510','FA-516','FA-518','FA-220'] else ('hand' if family in ['FA-511','FA-512','FA-513','FA-514','FA-517','FA-519','FA-521','FA-525','FA-526','FA-221'] else 'pocket'))
         if variant_label: parts[kind]['variant_label'] = variant_label
-    instances.append(dict(instance_id=p['instance_id'],part_id=family,kind=kind))
+    instances.append(dict(instance_id=p['instance_id'],part_id=part_number,kind=kind))
 for standard in CATALOGUE:
     parts[standard] = canonical_part(standard)
 audit_standard_hardware(parts)
@@ -210,16 +216,16 @@ views=[
     [diagram('FA-514 → FA-513',pages[0]['slots'],[uid('FA-513')],(1,1,2))],
     [diagram('FA-515 • output shaft',[uid('FA-515')],[uid('FA-514')],(1,1,1)),diagram('FA-522 • fixture position',[uid('FA-522')],[uid('FA-514')],(1,1,2))],
     [diagram('FA-516 into FA-515 • two clamps',[uid('FA-515')]+fasts('coupling'),[uid('FA-516'),uid('FA-514'),uid('FA-522')],(1,2,.5))],
-    [diagram('FA-523 • bearing face',[uid('FA-523')],[uid('FA-522'),uid('FA-516')],(1,1,2)),diagram('FA-524 • split collar',[uid('FA-524'),uid('FA-524',2)]+fasts('collar'),[uid('FA-516'),uid('FA-523')],(1,2,.5))],
+    [diagram('FA-523 • bearing face',[uid('FA-523')],[uid('FA-522'),uid('FA-516')],(1,1,2)),diagram('FA-524-A / FA-524-B • split collar',[uid('FA-524'),uid('FA-524',2)]+fasts('collar'),[uid('FA-516'),uid('FA-523')],(1,2,.5))],
     [diagram('FA-517 onto FA-516',[uid('FA-517')],[uid('FA-516')],(1,1,1))],
     [diagram('FA-518 → FA-517 • open screw pockets',fasts('rod'),[uid('FA-518'),uid('FA-517')],(1,1,2))],
     [diagram('FA-513 • rear fastening',fasts('motor'),[barrel,uid('FA-513')],(1,1,-2)),diagram('FA-523 • external screws',fasts('retainer'),[barrel,uid('FA-523')],(1,2,2))],
     [diagram('FA-521 • rod slot',[uid('FA-521')],[uid('FA-518')],(2,1,.4)),diagram('FA-521 • housing ears',fasts('guide'),[uid('FA-521'),barrel],(2,-1,.3))],
     [diagram('FA-528 • both ends',[uid('FA-528')]+fasts('rear-sensor'),[barrel],(2,1,.5)),diagram('FA-530 • barrel port',[uid('FA-530')],[barrel],(2,1,.5))],
-    [diagram('FA-519 / FA-520',[uid('FA-519'),uid('FA-520'),uid('FA-529',2)],[barrel,uid('FA-518')],(1,1,1)),diagram('FA-529 • rear gasket',[uid('FA-529')],[barrel],(1,1,-1))],
+    [diagram('FA-519 / FA-520',[uid('FA-519'),uid('FA-520'),uid('FA-529',2)],[barrel,uid('FA-518')],(1,1,1)),diagram('FA-529-A • rear gasket',[uid('FA-529')],[barrel],(1,1,-1))],
     [diagram('FA-512 • rear cap',[uid('FA-512')]+fasts('rear-cap'),[barrel,uid('FA-529')],(1,1,-2)),diagram('FA-511 • front cap',[uid('FA-511')]+fasts('front-cap'),[barrel,uid('FA-519'),uid('FA-520'),uid('FA-529',2)],(1,1,2))],
-    [diagram('FA-525 • screws',[uid('FA-525')]+fasts('base-eye'),[uid('FA-512')],(2,1,-.8)),diagram('FA-526 / FA-527',[uid('FA-525'),uid('FA-526'),uid('FA-527')],[],(2,1,.3))],
-    [diagram('FA-525 • screws',[uid('FA-525',2)]+fasts('rod-eye'),[uid('FA-518')],(2,1,.8)),diagram('FA-526 / FA-527',[uid('FA-525',2),uid('FA-526',2),uid('FA-527',2)],[],(2,1,.3))],
+    [diagram('FA-525-A • screws',[uid('FA-525')]+fasts('base-eye'),[uid('FA-512')],(2,1,-.8)),diagram('FA-526 / FA-527',[uid('FA-525'),uid('FA-526'),uid('FA-527')],[],(2,1,.3))],
+    [diagram('FA-525-B • screws',[uid('FA-525',2)]+fasts('rod-eye'),[uid('FA-518')],(2,1,.8)),diagram('FA-526 / FA-527',[uid('FA-525',2),uid('FA-526',2),uid('FA-527',2)],[],(2,1,.3))],
     [diagram('FA-500-P • prepared',list(slots_source['pose_source'] for slots_source in slots.values()),[],(1,1,.25))]
 ]
 for n in (1,2):
@@ -239,7 +245,7 @@ for page,diagrams,ranges in zip(pages,views,context_ranges):
     page['diagram_views']=diagrams
 for n,page in enumerate(parent_pages[:2],1):
     receiver=uid('FA-103' if n==1 else 'FA-200')
-    page['diagram_views']=[diagram('FA-220 • '+('cradle' if n==1 else 'ring'),[parent[s]['pose_source'] for s in page['slots']],[receiver],(1,1,1))]
+    page['diagram_views']=[diagram(('FA-220-A • cradle' if n==1 else 'FA-220-B • ring'),[parent[s]['pose_source'] for s in page['slots']],[receiver],(1,1,1))]
 parent_pages[2]['diagram_views']=[diagram('Base • pin and keeper',[uid('FA-220'),uid('FA-221'),uid('FA-222')]+fasts('base-keeper'),[uid('FA-525'),uid('FA-526'),uid('FA-527'),uid('FA-103')],(2,1,.5)),diagram('Rod • pin and keeper',[uid('FA-220',2),uid('FA-221',2),uid('FA-222',2)]+fasts('rod-keeper'),[uid('FA-525',2),uid('FA-526',2),uid('FA-527',2),uid('FA-200')],(2,1,.5))]
 
 # Overlay uses shared pad definitions and part types at load time.

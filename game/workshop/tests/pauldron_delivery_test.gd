@@ -82,7 +82,7 @@ func audit_manual(uid: String) -> void:
 		var supplies: String=game.hud.page_body.text.get_slice("Parts for this step\n",1)
 		expect(not supplies.is_empty(),uid+" runtime HUD supplies exist for "+page.title)
 		if page.slots==[uid]:expect("(prepared) ×1" in supplies,uid+" delivery page requests one prepared carrier")
-		elif page.slots.size()==4:expect(supplies.count("×2")==2 and "PD-M20-LONG" in supplies and "PD-M20-SHORT" in supplies,uid+" retention page requests exactly two of each fitting variant")
+		elif page.slots.size()==4:expect(supplies.count("×2")==2 and "PD-H20120-A" in supplies and "PD-H20120-B" in supplies,uid+" retention page requests exactly two of each fitting variant")
 		else:expect(supplies.count("×1")==1 and "M12" not in supplies,uid+" panel page requests one panel with no extra captive-screw stock")
 		audited+=1
 	expect(audited==4,uid+" parent manual covers delivery, retention and each independent closure once")

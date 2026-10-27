@@ -58,7 +58,7 @@ Keep four concepts separate throughout the pipeline:
 
 | Concept | Purpose |
 | --- | --- |
-| Family | Design/catalogue grouping; may contain several incompatible variants |
+| Family (part ID) | Engineering part number; one compatible type per ID |
 | Compatible type/variant | What a slot accepts and inventory stacks together |
 | Physical instance ID | Unique identity retained through collection, placement and undo |
 | Installation slot/source | Destination, receiving context and expected oriented geometry |
@@ -70,6 +70,14 @@ sensors remain one type even when their destination labels are front and rear.
 
 Create distinct variants only for actual differences affecting fit or function,
 including handed geometry, dimensions, hole patterns or mating interfaces.
+Parts with a different name and a different pickup point get different part
+numbers (user rule, 2026-10-28). Suffix variants of one design with -A, -B, ...
+in order; -L/-R are reserved for left and right hand (LG-100-R, FA-524-A/-B).
+Part numbers contain no full words: a prefix, a number or hardware code
+(H24240 bolt, W24 washer, P40 pin) and the optional suffix. Working names stay
+in internal instance/source IDs; `tools/part_numbers.py` assigns the numbers.
+`robot_content_test` fails when one part number names two part types or
+contains a word.
 Verify shape and interfaces; matching family IDs or similar appearance are
 insufficient. A rotated identical part is reusable; a true mirror may be handed.
 

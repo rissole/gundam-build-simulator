@@ -205,17 +205,17 @@
     },
     {
       "instance_id": "FA-524__001",
-      "part_id": "FA-524",
+      "part_id": "FA-524-A",
       "kind": "fa-524__001"
     },
     {
       "instance_id": "FA-524__002",
-      "part_id": "FA-524",
+      "part_id": "FA-524-B",
       "kind": "fa-524__002"
     },
     {
       "instance_id": "FA-525__001",
-      "part_id": "FA-525",
+      "part_id": "FA-525-A",
       "kind": "fa-525__001"
     },
     {
@@ -250,7 +250,7 @@
     },
     {
       "instance_id": "FA-525__002",
-      "part_id": "FA-525",
+      "part_id": "FA-525-B",
       "kind": "fa-525__002"
     },
     {
@@ -315,12 +315,12 @@
     },
     {
       "instance_id": "FA-529__001",
-      "part_id": "FA-529",
+      "part_id": "FA-529-A",
       "kind": "fa-529__001"
     },
     {
       "instance_id": "FA-529__002",
-      "part_id": "FA-529",
+      "part_id": "FA-529-B",
       "kind": "fa-529__002"
     },
     {
@@ -590,7 +590,7 @@
     },
     {
       "instance_id": "FA-220__001",
-      "part_id": "FA-220",
+      "part_id": "FA-220-A",
       "kind": "fa-220__001"
     },
     {
@@ -635,7 +635,7 @@
     },
     {
       "instance_id": "FA-220__002",
-      "part_id": "FA-220",
+      "part_id": "FA-220-B",
       "kind": "fa-220__002"
     },
     {
@@ -683,7 +683,7 @@
     {
       "id": "pad_1",
       "definition": "heel_pad",
-      "label": "Heel pad A",
+      "label": "Heel pad",
       "base": "FA-302__001",
       "home": [
         -1.0,
@@ -694,7 +694,7 @@
     {
       "id": "pad_2",
       "definition": "heel_pad",
-      "label": "Heel pad B",
+      "label": "Heel pad",
       "base": "FA-302__002",
       "home": [
         0.8,

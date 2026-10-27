@@ -1,6 +1,6 @@
 # Workshop: current state
 
-Updated 2026-10-27. Read this before continuing workshop development. Keep it short:
+Updated 2026-10-28. Read this before continuing workshop development. Keep it short:
 current state, active rules and open decisions. Record player findings in the
 [playtest checklist](robot-workshop-playtest-checklist.md). When a piece of
 work finishes, move its narrative and evidence into [history/](history/) and leave
@@ -10,6 +10,21 @@ a one-line summary here. Earlier versions of this file are
 last version before consolidation.
 
 ## Where things stand
+
+- **Interchangeable heel pads (2026-10-28):** the manual no longer gives the
+  two identical heel pads hidden identities. "Prepare a heel pad (1 of 2)" binds to
+  whichever pad the player starts first; hover labels drop A/B. Rule in the
+  [manual plan](manual-plan.md#settled-decisions). 14 affected routine suites pass;
+  player recheck pending in the
+  [playtest checklist](robot-workshop-playtest-checklist.md#interchangeable-heel-pads--2026-10-28).
+  Follow-up audit, same day: a different name and pickup point now means a
+  different part number. Right-hand parts are LG-100-R, LG-120-R and FA-605-R
+  (mirrored thumbnails); pitch variants are FA-524/525/529/220-A and -B; the W-24
+  washer is "M24 washer" everywhere. Part numbers carry no words: 21 shoulder,
+  pauldron, head, chest and backpack types were renumbered (e.g. SH-110-L/-R braces,
+  SH-H24240 bolt) through `tools/part_numbers.py`. Generators reproduce the content
+  byte for byte; 23 affected routine suites pass. The diagnostics
+  `pauldron_delivery_test` and `head_closure_test` were updated but not run.
 
 - **Fast elevator calls (2026-10-27):** landing CALL trips now arrive in 0.9 seconds
   with cubic deceleration and interrupt active trips at their current height;

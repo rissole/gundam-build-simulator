@@ -34,6 +34,15 @@ not use "quest" or "quest log" in the game; that was only the user's analogy
 - **Tracked step:** the first unfinished step in chapter order unless the
   player pins another from the manual. Context never switches it. The passive
   carried-part step hint was removed with the 2026-10-26 console cleanup.
+- **Identical builds are interchangeable (2026-10-28):** chapter steps for the
+  same page of several builds sharing a definition (the two heel pads) name an
+  order, "Prepare a heel pad (1 of 2)", never a build. `manual_progress.gd`
+  binds them on every refresh in the order the player started the builds
+  (hung at a station or a part fitted); an untouched build releases its step.
+  Pins hold the step, not the build. The order is not saved; a reload claims
+  started builds in authored order. A chapter sets `"distinct": true` to opt
+  out. Such builds carry the same label ("Heel pad"), never A/B. Positions
+  they mount into (heel positions 1 and 2) are real places and keep numbers.
 - **Out of scope:** location objectives and in-world waypoints (a future
   milestone) and the clevis refusal during foot assembly (de-scoped by the
   user, still recorded in the checklist).

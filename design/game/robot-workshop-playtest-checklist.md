@@ -2,6 +2,30 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Interchangeable heel pads — 2026-10-28
+
+**Player evidence.** Clean workshop: placing a heel pad at a preparation station
+marked *Prepare heel pad 2* in progress instead of the tracked *Prepare heel pad 1*.
+The two pads are identical, so a hidden identity is unintuitive and raises doubt
+about how the manual identifies interchangeable parts.
+
+**Cause.** The physical model already treats them as interchangeable: either pad
+seats in either heel position (slots accept the `heel_pad` definition). The manual
+does not. Chapter steps name build instances (`pad_1`, `pad_2`), each bound to one
+physical base (FA-302__001/__002), and hover labels show "Heel pad A/B".
+
+**Change (2026-10-28, implemented):** the steps read "Prepare a heel pad (1 of 2)"
+and "(2 of 2)" and bind to pads in the order the player starts them (hung at a
+station or a sleeve fitted). Hover shows "FA-302 · Heel pad". Mechanical checks
+only (`manual_progress_test`, 85 checks, and 13 other affected suites); no rendered review.
+
+**Player recheck:**
+- [ ] Hang either pad first: the tracked step stays *Prepare a heel pad (1 of 2)* and
+      becomes In progress for that pad.
+- [ ] Start the second pad: it reads *(2 of 2)*; finishing either pad ticks only its own step.
+- [ ] Hover both pads: neither suggests a hidden A/B identity.
+- [ ] Seat each pad in either heel position.
+
 ## Machine operation and gantry access — 2026-10-26
 
 **Player evidence.** The foot building bay matches the vision: bays help build the

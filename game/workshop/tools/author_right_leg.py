@@ -2,10 +2,11 @@
 
 Mesh/pose reflection is explicit source metadata, resolved once by the runtime.
 Compatible hardware retains its family; handed structural/service pieces get
-distinct types. No occupied assembly moves when the selected task changes.
+distinct types and right-hand part numbers (family + "-R"). No occupied assembly moves when the selected task changes.
 """
 from copy import deepcopy
 import json
+import re
 
 PREFIX = "R-"
 
@@ -38,8 +39,11 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
         return result
 
     def mirror_text(text):
-        # Robot-side prose mirrors; the shared transfer gate stays fixed.
-        return text.replace("Left", "Right").replace("left", "right").replace("far right (PARK)", "far left (PARK)")
+        # Robot-side prose mirrors; the shared transfer gate stays fixed. Handed
+        # part numbers take their right-hand suffix.
+        text=text.replace("Left", "Right").replace("left", "right").replace("far right (PARK)", "far left (PARK)")
+        for family in handed_families:text=re.sub(r"\b"+re.escape(family)+r"\b(?!-R)",family+"-R",text)
+        return text
 
     def reflect_recipe(recipe, title):
         result=deepcopy(recipe);result["title"]=title
@@ -74,11 +78,17 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
                 if "offsets" in diagram:diagram["offsets"]={mirrored(uid):vector(at) for uid,at in diagram["offsets"].items()}
         return result
 
+    handed_families=[]
     for original,key in handed.items():
         kinds[key]=deepcopy(kinds.get(original,canonical_parts[original]))
+        family=kinds[key]["family"]
+        handed_families.append(family)
+        kinds[key]["family"]=family+"-R"
         kinds[key]["variant"]="right-hand"
-        kinds[key]["title"] += " · right hand"
+        kinds[key]["title"]=kinds[key]["title"].replace(family+" · ",family+"-R · ",1)+" · right hand"
         kinds[key]["short_title"] += " · right hand"
+        # Its own mirrored thumbnail carries the right-hand part number.
+        kinds[key].pop("catalogue_image",None)
         if "collision_shapes" in kinds[key]:kinds[key]["collision_shapes"]=collision(kinds[key]["collision_shapes"])
 
     right_leg=reflect_recipe(left_leg,"Right leg · structural prototype")
@@ -95,6 +105,7 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
         new=deepcopy(item);new["instance_id"]=PREFIX+item["instance_id"]
         new["source_id"]=mirrored(item.get("source_id",item["instance_id"]))
         new["kind"]=handed.get(item["kind"],item["kind"])
+        if new["kind"] in kinds and "part_id" in new:new["part_id"]=kinds[new["kind"]]["family"]
         if new.get("location","").startswith("support:"):new["location"] += "_right"
         trial["parts"].append(new)
 
@@ -107,7 +118,7 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
     trial["builds"]=[]
     for build in foot_scenario["builds"]:
         record=deepcopy(build);record["id"]=assembly_ids[build["id"]];record["definition"]=definitions[build["definition"]]
-        record["base"]=PREFIX+build["base"];record["label"]="Right "+record["label"]
+        record["base"]=PREFIX+build["base"];record["label"]="Right "+record["label"][:1].lower()+record["label"][1:]
         trial["builds"].append(record)
     trial["supports"]["leg_queue_right"]={"assemblies":["right_leg"],"assembly_ids":["right_leg"]}
     trial["supports"]["leg_queue_left"]={"assemblies":["left_leg"],"assembly_ids":["left_leg"]}

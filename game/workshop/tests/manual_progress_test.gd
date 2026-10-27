@@ -137,9 +137,11 @@ func run() -> void:
 			if covered.has(key):continue
 			missing.append("[%s,%d,%s]"%[str(owner),index,str(step_page.get("title",""))])
 	expect(missing.is_empty(),"pages missing from chapters and reference: "+joined(missing))
+	var pad_first := "Prepare a heel pad (1 of 2)"
+	var pad_second := "Prepare a heel pad (2 of 2)"
 	var tracked: Dictionary = progress.tracked()
-	expect(str(tracked.get("title","")) == "Prepare heel pad 1","tracked starts at Prepare heel pad 1, got "+str(tracked.get("title","")))
-	expect(progress.status("pad_1",0) == "ready","heel pad 1 is ready, got "+progress.status("pad_1",0))
+	expect(str(tracked.get("title","")) == pad_first,"tracked starts at "+pad_first+", got "+str(tracked.get("title","")))
+	expect(progress.status("pad_1",0) == "ready","the first heel-pad step is ready, got "+progress.status("pad_1",0))
 	expect(progress.status("pitch",0) == "ready","pitch actuator first step is ready, got "+progress.status("pitch",0))
 	var unlocked: Array[String] = []
 	for chapter in progress.chapters():
@@ -150,26 +152,40 @@ func run() -> void:
 			if state != "locked":unlocked.append(title+" / "+str(step.title)+"="+state)
 	expect(unlocked.is_empty(),"Hip assembly delivery and left-leg steps are locked: "+joined(unlocked))
 	expect(progress.ready_count(tracked) >= 2,"other ready steps, got "+str(progress.ready_count(tracked)))
-	fit_slots(game.model,"pad_1",["sleeve_0","sleeve_1","sleeve_2","sleeve_3"])
+	# The heel pads are identical: whichever is started first is the first step.
+	expect(game.model.move_assembly("pad_2","station:pad_2").is_empty(),"hang the authored second pad first")
 	progress.refresh()
 	tracked = progress.tracked()
-	expect(progress.status("pad_1",0) == "done","heel pad 1 is done, got "+progress.status("pad_1",0))
-	expect(str(tracked.get("title","")) == "Prepare heel pad 2","tracked moves to Prepare heel pad 2, got "+str(tracked.get("title","")))
+	expect(str(tracked.get("owner","")) == "pad_2" and str(tracked.get("title","")) == pad_first and progress.status("pad_2",0) == "in_progress","hanging either pad starts the first heel-pad step, got "+str(tracked.get("owner",""))+" "+str(tracked.get("title",""))+" "+progress.status("pad_2",0))
+	expect(progress.status("pad_1",0) == "ready","the untouched pad is the second step and ready, got "+progress.status("pad_1",0))
+	var titles: Array[String] = []
+	for chapter in progress.chapters():
+		for step in chapter.steps:
+			if str(step.owner) in ["pad_1","pad_2"]:titles.append(str(step.owner)+"="+str(step.title))
+	expect(titles == ["pad_2="+pad_first,"pad_1="+pad_second],"chapter order follows start order, got "+joined(titles))
+	expect(game.model.move_assembly("pad_2","loose").is_empty(),"return the untouched pad")
+	progress.refresh()
+	expect(str(progress.tracked().get("owner","")) == "pad_1","returning an untouched pad releases its step, got "+str(progress.tracked().get("owner","")))
 	fit_slots(game.model,"pad_2",["sleeve_0"])
 	progress.refresh()
 	tracked = progress.tracked()
-	expect(progress.status("pad_2",0) == "in_progress","heel pad 2 is in progress, got "+progress.status("pad_2",0))
-	expect(str(tracked.get("owner","")) == "pad_2" and int(tracked.get("page",-1)) == 0,"in-progress pad 2 is tracked, got "+str(tracked.get("title","")))
+	expect(str(tracked.get("owner","")) == "pad_2" and str(tracked.get("title","")) == pad_first,"a sleeve on either pad starts the first step, got "+str(tracked.get("owner",""))+" "+str(tracked.get("title","")))
+	progress.pin("pad_2",0)
+	fit_slots(game.model,"pad_1",["sleeve_0","sleeve_1","sleeve_2","sleeve_3"])
+	progress.refresh()
+	tracked = progress.tracked()
+	expect(progress.status("pad_1",0) == "done" and progress.status("pad_2",0) == "in_progress","finishing the later pad completes the second step only, got "+progress.status("pad_1",0)+" "+progress.status("pad_2",0))
+	expect(str(tracked.get("owner","")) == "pad_2" and str(tracked.get("title","")) == pad_first,"the first step keeps its pad and pin, got "+str(tracked.get("owner",""))+" "+str(tracked.get("title","")))
 	progress.pin("pitch",0)
 	progress.refresh()
 	tracked = progress.tracked()
 	expect(str(tracked.get("owner","")) == "pitch" and int(tracked.get("page",-1)) == 0,"pin tracks pitch page 0, got "+str(tracked.get("owner",""))+" "+str(tracked.get("page","")))
 	progress.unpin()
 	tracked = progress.tracked()
-	expect(str(tracked.get("owner","")) == "pad_2" and int(tracked.get("page",-1)) == 0,"unpin returns to pad 2, got "+str(tracked.get("title","")))
+	expect(str(tracked.get("owner","")) == "pad_2" and int(tracked.get("page",-1)) == 0,"unpin returns to the in-progress pad, got "+str(tracked.get("title","")))
 	var kind := str(game.model.slot_definition("pad_1","sleeve_0").get("accepts",""))
 	var found: Dictionary = progress.step_for_part(kind)
-	expect(str(found.get("owner","")) == "pad_2" and int(found.get("page",-1)) == 0,"sleeve kind finds pad 2, got "+str(found.get("owner",""))+" "+str(found.get("title","")))
+	expect(str(found.get("owner","")) == "pad_2" and str(found.get("title","")) == pad_first,"sleeve kind finds the unfinished pad, got "+str(found.get("owner",""))+" "+str(found.get("title","")))
 	expect(progress.step_for_part("not-a-part").is_empty(),"unknown kind has no step")
 	# Change-driven updates: no refresh() calls from here on. Earlier fits queued
 	# one update; let it run before counting.
