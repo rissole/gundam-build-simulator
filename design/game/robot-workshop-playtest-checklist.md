@@ -258,8 +258,32 @@ Fixed (routine checks only, player recheck pending):
 
 - [ ] Recheck: find the foot support from its glow, grab it (glow goes out),
   pull it away. Press E around the rig and the leg: no stray messages.
-- [ ] Is the lever's glow wanted? It is a large floor lever beside the table,
-  not a small control on the rig.
+- [x] Is the lever's glow wanted? No (user, 2026-10-28): removed.
+
+**Second play, 2026-10-28 (user):** "Overall I really like this direction, much
+more satisfying." Findings and decisions:
+
+- Looking at the sole, only the left pad moved the foot support. Fixed: the
+  drag follows whichever pad you grab.
+- Rename to "lower gantry" and "upper gantry" instead of leaves/front. Done
+  everywhere players read it.
+- Design principle: **when looking at the button that operates something, the
+  player should see the machinery it operates**, for immediate feedback. The
+  gantry panels failed it. Measured: the upper gantry is 12.2 m above the 8.4 m
+  level, so only a 20.6 m panel shows it. User chose: split by level, with LOWER
+  GANTRY at 8.4 m and UPPER GANTRY at 20.6 m, both beside the left lift, and no
+  ground bank. Accepted cost: lift rides on each crane delivery.
+- Closing the lower gantry at the end of the seat page highlighted "open the
+  lower gantry" while it animated closed. Fixed: an opened gantry keeps its OPEN
+  step ticked while closing.
+- Transfer table lever: the user had expected two positions and asked why PARK
+  exists. It clears the Limb Bay for the arm rig, so it stays. Decision: a
+  stick-shift gate with no labels. Seen from the foot end looking at the sole,
+  the order is PARK, a long gap, RIGHT HIP · BUILD, a short gap, LEFT HIP
+  ("|____|__|"). The TRANSFER TABLE sign goes, and the stick moves down by the
+  sole so you look at the rails while operating it. It starts in the detent
+  matching the table, which begins at RIGHT HIP · BUILD.
+- [ ] Recheck all of the above after the panel and lever moves land.
 
 ### Operated rigs open questions — Phase 1
 
