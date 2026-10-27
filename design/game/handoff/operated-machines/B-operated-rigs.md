@@ -31,41 +31,58 @@ game shows where it must end up, and the interlocks are the puzzle.**
   states. Examples: tilt only clear of the transverse table; rise only when upright
   under the hip; travel only with `rail_gates` closed. Existing guarded motion still
   stops on contact.
-- **Manual curve** (uses A's first-use/repeat mechanism): the left leg/foot gets one
+- **Manual curve** (B owns the first-use/repeat mechanism; see phase 2): the left leg/foot gets one
   objective per axis with exact keys; the right leg/foot gets one goal plus a
   procedure link. `manual_state()` reports axis-in-tolerance/seated evidence instead
   of stop numbers.
 
-## Phase 1 — this run (before A merges): B1 and B2 only
+## Done (phase 1)
 
-Do not edit `manual_objectives.gd`, `manual_progress.gd`, `manual-chapters.json`
-or the crane files in this phase.
+`2fe447e` B1 hold-E latch with mouselook (`held_control_test`), `559c938` B2 ghost
+target and axis readout (`rig_target.gd`, `rig_target_test`), `0ac87c0` B3 design
+in `design/game/robot-workshop-plan.md`, with its open questions in the checklist.
 
-1. **B1 Hold-E latch + mouselook.** In `desktop_input.gd`, `targeting.gd` and
-   `equipment_button.gd`, add a generic "held control" path. Pressing E on a
-   control that declares itself holdable latches that control, then reports
-   held/released each physics frame while E is down. Aiming away does not release
-   it; mouselook continues. Releasing E, pausing or opening a modal releases it.
-   Existing tap controls behave exactly as before. Add an isolated test.
-2. **B2 Ghost target + axis readout helper.** Add a reusable script: given an
-   assembly id and a target `Transform3D`, show a pulsing translucent copy, and
-   given axis deltas/tolerances, format a panel readout and report "all in
-   tolerance". It must be cheap: build the copy once, move it, and hide it when idle.
-   It must not add collision or targeting. Add an isolated test.
-3. **Design B3 in writing** (no rig code yet): add a section to
-   `design/game/robot-workshop-plan.md` defining each leg rig axis (range, speed,
-   jog keys), the target poses, tolerances, interlocks with refusal text, the SEAT
-   lead-in and the save fields. Base it on the existing `snapshot_pose`, `spec`
-   values and `action_error` rules. Do the same briefly for the foot rig. List open
-   questions for the user.
+## Phase 2 — leg rig (now)
 
-Stop after 1–3 and report.
+**Lesson from the rejected crane view:** it failed partly because holding Space ran
+every interesting motion. Do not add a hold-to-run sequence or an auto-align. The
+player drives each axis, and the SEAT lead-in only covers the last few centimetres.
 
-## Later phases (gated)
+The crane operator view (branch A) was **rejected and will not merge**. Nothing in
+B waits for it any more, and B now owns the shared manual mechanism.
 
-- After A merges and **human checkpoint A**: rebase on `main`, then **B3** implements
-  the leg rig axes. Write the Grok task file **B4** (leg manual pages through A's
-  mechanism, automation helper for `build_stages.gd`, tests: limits, interlocks,
-  SEAT gating, ghost pose == install pose, save round-trip).
-- After **human checkpoint B**: **B5** converts the foot rig (Raise, Travel, Turn,
-  SEAT). Grok task **B6** handles its manual and tests.
+1. **Rebase** `operated-rigs` onto `main`. Resolve the checklist conflict by keeping
+   main's machine-operation section and adding B's open-questions section after it.
+   Remove every reference to branch A, checkpoint A or "A's mechanism" from B's
+   design text.
+2. **Manual first-use/repeat mechanism.** Detailed objectives the first time a
+   procedure is used; later pages give the goal plus a working "Procedure: p.N"
+   link. Implement it in `manual_objectives.gd`, `manual_progress.gd`,
+   `manual_browser.gd`, `hud.gd` and `tools/author_manual_progress.py`. You may read
+   the rejected crane branch's version (`git show 45fc7f3`) and port the generic
+   mechanism only. Do not port its crane pages, its `robot-definitions.json` crane
+   changes or anything in `service_crane*.gd`. Extend `manual_objectives_test` and
+   `manual_progress_test`.
+3. **B3 Leg rig axes.** Implement the B3 design in `indexed_leg_rail.gd`:
+   - jog pairs held with E (B1) and the ghost plus readout (B2)
+   - per-axis limits and interlocks with named refusals
+   - SEAT within tolerance after the guided lead-in
+   - `manual_state()` evidence and the new save fields (no migration).
+
+   Use the design's proposed defaults for its open questions: one constant jog rate
+   per axis; service taps with fully jogged delivery axes; the panel grouping as
+   designed. Record each default in the checklist as awaiting playtest.
+4. **Write the Grok task file `B4-leg-manual-and-tests.md`** in this folder:
+   - left-leg pages with one objective per axis; right-leg pages with goal plus
+     procedure link
+   - the automation helper that drives the axes for `build_stages.gd`
+   - the tests listed under "Later verification" in the B3 design.
+
+   Stop there. The parent launches Grok, then runs your integration review.
+
+## Later phases
+
+- **B4 integration review**, then the player playtests the leg rig slice
+  (checkpoint B).
+- After checkpoint B: **B5** converts the foot rig (Raise, Travel, Turn, SEAT), and
+  Grok task **B6** handles its manual and tests.

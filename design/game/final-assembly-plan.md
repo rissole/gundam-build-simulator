@@ -972,15 +972,12 @@ Evidence: `game/workshop/verification/regressions-20261025T101102.018689Z/`.
 
 **approved as direction 2026-10-27; build not approved**
 
-[C5 dimensioned candidate and conflicts](gantry-v2/README.md) — 2026-10-27, design only; checker fails at the documented stop, build still not approved.
-
-Construction waits for the crane operator view and less temporary robot parts.
+Construction waits for less temporary robot parts and separate build approval.
 This proposal follows the
-[gantry access finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26)
-and [branch C brief](handoff/operated-machines/C-gantry-access.md). It does not
-replace the implemented layout above. C1 measured the current runtime seams;
-[C2's fixed landing repairs](handoff/operated-machines/C2-fill-plates.md) can land
-independently. No v2 construction, route change or lowering is authorized by
+[gantry access finding](robot-workshop-playtest-checklist.md#machine-operation-and-gantry-access--2026-10-26).
+It does not replace the implemented layout above. The 2026-10-27 fixed landing
+plates, hinge-edge rails and mirrored lowest-level guards are merged and
+player-accepted. No v2 construction, route change or lowering is authorized by
 this section. The user is wary of rebuilding the workshop around temporary
 robot prefabs; preserve the accepted gantry finish and reuse the elevators.
 
@@ -1065,11 +1062,10 @@ support handoffs. Earlier route passes cannot approve a new tower or catwalk.
 | Elevators and workers | Entire car/door/guide/shelf travel and payload envelopes; 1.50 m landing doors, local calls, at least2.20 m interlevel headroom, stopped-car nudge and held-trip return. No new landing gates implied |
 | Exit | Whole lowered robot and transport support to door, all support/work arm parking pockets, cables/services, floor/door collision and threshold; load-transfer interlocks |
 
-**Dependency on branch A:** obtain its implemented crane carry-height rule and
-actual load/rig vertical envelope before fixing tower-top heights or catwalk
-parking. The Y18/Y19 route values above are the current baseline, not a guarantee
-about the operator-view crane. Reconcile every component's lowest carried solid
-and highest spreader/cable with A, including outboard raising, before a v2 build
+**Crane dependency:** the crane operator view was rejected on 2026-10-27, so the
+current authored crane routes and their loaded rig envelopes constrain tower-top
+heights and catwalk parking. The Y18/Y19 route values above are that baseline. Reconcile every component's lowest carried solid
+and highest spreader/cable, including outboard raising, before a v2 build
 claims route clearance.
 
 ### Scope, effort and review gate
@@ -1105,8 +1101,7 @@ review is optional and requires a request. Walking, readability and assembly
 access remain the user's playtest, tracked in the linked checklist.
 
 **Checkpoint C update — 2026-10-27:** the user approved the two-tower/swing-catwalk
-concept as direction only. Building it is not approved and waits for the crane
-operator view and less temporary robot parts. Lowering/transport remains deferred.
-C0 is answered: the lowest level beside the hip has mismatched railings and
-one-sided access; the separate C3 repair is recorded in the
-[phase 2 report](handoff/operated-machines/README.md#c3-mirror-repair).
+concept as direction only. Building it is not approved and waits for less
+temporary robot parts. Lowering/transport remains deferred. The lowest-level
+railing/access asymmetry came from the right wing being a 180° copy of the left;
+it was mirrored about X13 and is covered by `gantry_dressing_test`.
