@@ -43,8 +43,8 @@ func plain_menu(options: Array) -> bool:
 
 func run() -> void:
 	var presentation = {"objectives":[
-		{"op":"operate","machine":"leg_rail","command":"index-"},
-		{"op":"seat","slot":"left_leg","via":{"machine":"leg_rail","command":"seat"}},
+		{"op":"operate","machine":"leg_rail","command":"table:hip"},
+		{"op":"seat","slot":"left_leg","via":{"machine":"leg_rail","command":"rise"}},
 		{"op":"fit","slots":["bolt"]},
 		{"op":"operate","machine":"captive_controls","command":"lock"}]}
 	var original = presentation.duplicate(true)
@@ -53,6 +53,7 @@ func run() -> void:
 	expect(presentation==original,"procedure presentation leaves physical evidence and supplies intact")
 	var game = preload("res://tests/kit/model_workshop.gd").new();root.add_child(game)
 	expect(game.setup().is_empty(),"authored stock configures")
+	var front = preload("res://tests/kit/manual_fronts.gd").new();game.add_child(front);front.equipment_id="workshop_access";game.equipment.register(front)
 	var crane = Crane.new();game.add_child(crane);crane.game = game
 	crane.equipment_id = "service_crane";game.equipment.register(crane)
 	crane.tasks = preload("res://scripts/leg_bay_layout.gd").layout().crane.tasks
@@ -137,6 +138,7 @@ func run() -> void:
 	var rig_commands: Array = supports_script.MANUAL_COMMANDS.duplicate()
 	rig_commands.append_array(supports_script.template_commands(layout.workshop.bulky_fixture.templates.keys()))
 	var commands = {"service_crane":preload("res://scripts/service_crane.gd").MANUAL_COMMANDS,"foot_carrier":preload("res://scripts/foot_carrier.gd").MANUAL_COMMANDS,"module_supports":rig_commands,"leg_rail":preload("res://scripts/indexed_leg_rail.gd").MANUAL_COMMANDS,"captive_controls":preload("res://scripts/captive_controls.gd").lock_commands(lock_ids),"core_guide":preload("res://scripts/core_guide.gd").MANUAL_COMMANDS,"backpack_hinge":preload("res://scripts/backpack_hinge.gd").MANUAL_COMMANDS}
+	commands["workshop_access"] = preload("res://tests/kit/manual_fronts.gd").MANUAL_COMMANDS
 	commands["joint_restraints"] = preload("res://scripts/passive_joint_restraints.gd").command_ids(layout.restraints)
 	var shoulder_commands = preload("res://scripts/shoulder_support.gd").MANUAL_COMMANDS
 	commands["left_shoulder"] = shoulder_commands
@@ -232,14 +234,14 @@ func run() -> void:
 	var bolt_state := Objectives.evaluate(game,"chest",bolt_page)
 	expect(bolt_text == "Core: Secure captive flange bolts" and bolt_state.counts[0] == "0/4","core bolts, got "+bolt_text+" "+str(bolt_state.counts))
 	var closed := page_named(definitions.chest.manual,"Close and latch the backpack")
-	expect(closed.objectives.size() == 9 and str(closed.objectives[0].op) == "connect","backpack close starts by refitting the connectors on the lowered crane, got "+str(closed.objectives.size()))
+	expect(closed.objectives.size() == 11 and str(closed.objectives[0].op) == "connect","backpack close starts by refitting the connectors on the lowered crane, got "+str(closed.objectives.size()))
 	var struts := page_named(definitions.chest.manual,"Attach the backpack struts")
 	expect(str(struts.objectives.back().op) == "detach" and struts.objectives.size() == 4,"struts page leaves the crane lowered at the backpack")
 	var pelvis_pin := Objectives.text(game,"pelvis",pelvis_page.objectives[0])
 	var pelvis_pickup := Objectives.text(game,"pelvis",pelvis_page.objectives[1])
-	var pelvis_receiver := Objectives.text(game,"pelvis",pelvis_page.objectives[5])
-	var pelvis_jaws := Objectives.text(game,"pelvis",pelvis_page.objectives[7])
-	expect(pelvis_page.objectives.size() == 11 and pelvis_pin == "Waist: Insert both lock pins" and pelvis_pin == "Waist: "+supports.command_label("insert_pins"),"pelvis pin objective, got "+pelvis_pin)
+	var pelvis_receiver := Objectives.text(game,"pelvis",pelvis_page.objectives[6])
+	var pelvis_jaws := Objectives.text(game,"pelvis",pelvis_page.objectives[8])
+	expect(pelvis_page.objectives.size() == 15 and pelvis_pin == "Waist: Insert both lock pins" and pelvis_pin == "Waist: "+supports.command_label("insert_pins"),"pelvis pin objective, got "+pelvis_pin)
 	expect(pelvis_pickup == "Crane console: Move to Heavy Module Bay","pelvis pickup objective, got "+pelvis_pickup)
 	expect(pelvis_receiver == "Crane console: Move to Final Assembly Bay","pelvis receiver objective, got "+pelvis_receiver)
 	expect(pelvis_jaws == "Gantry: Close the hold-down jaws" and pelvis_jaws == "Gantry: "+supports.command_label("close_jaws"),"pelvis jaw objective, got "+pelvis_jaws)
@@ -272,41 +274,45 @@ func run() -> void:
 	for id in pins.specs:pins.locked[id]=false
 	var rail = preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail);rail.game=game;rail.equipment_id="leg_rail";game.equipment.register(rail)
 	rail.spec=layout.workshop.rail
-	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.bolster=0.0;rail.release=0.0;rail.index_x=rail.spec.station_x;rail.travel_z=14.5;rail.tilt_deg=0.0;rail.rise_m=0.0
+	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.foot_support=0.0;rail.release=0.0;rail.index_x=rail.spec.station_x;rail.travel_z=rail.spec.home_z;rail.tilt_deg=0.0;rail.rise_m=0.0
+	crane.task="spar"
 	var seat := page_named(definitions.pelvis.manual,"Seat the leg in the hip assembly")
 	var seat_text: Array[String] = []
 	for objective in seat.objectives:seat_text.append(Objectives.text(game,"pelvis",objective))
-	expect(seat_text==["Leg rig: Hold BOLSTER + — until the foot bolster stows","Leg rig: Hold INDEX — toward the selected hip track until the table stops on it","Leg rig: Hold TRAVEL + — until the bogie stops at the Final Assembly Bay","Leg rig: Hold TILT + — until the leg stands upright","Leg rig: Hold RISE + — until it stops just below the hip","Leg rig: Tap Seat when every mark is green to seat the structural left leg"],"seat text names one physical axis per objective, got "+str(seat_text))
+	expect(seat_text==["Foot support: look at it, hold E and pull it away from the foot — until it stops","Transfer table lever: pull it to LEFT HIP","Bogie box: hold TO BAY — until the bogie stops at the bay","Lower front: Open — LOWER FRONT panel beside the left lift","Bogie box: hold RISE — until it seats in the hip to seat the structural left leg","Lower front: Close — LOWER FRONT panel beside the left lift"],"seat text names each physical control, got "+str(seat_text))
 	var at_home = Objectives.evaluate(game,"pelvis",seat)
 	expect(same_ticks(at_home,[false,false,false,false,false,false]),"leg rig at home ticks nothing, got "+str(at_home.ticked))
-	rail.bolster=1.0
+	rail.foot_support=1.0
 	var stowed = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(stowed,[true,false,false,false,false,false]),"stowed bolster ticks the first axis, got "+str(stowed.ticked))
-	rail.index_x=11.9
+	expect(same_ticks(stowed,[true,false,false,false,false,false]),"foot support away ticks the first control, got "+str(stowed.ticked))
+	rail.index_x=rail.spec.lanes.left
 	var indexed = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(indexed,[true,true,false,false,false,false]),"indexed lane ticks two, got "+str(indexed.ticked))
-	rail.travel_z=20.0
+	expect(same_ticks(indexed,[true,true,false,false,false,false]),"hip notch ticks two, got "+str(indexed.ticked))
+	rail.travel_z=(rail.spec.home_z+rail.spec.bay_z)/2.0
 	var traveling = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(traveling,[true,true,false,false,false,false]),"a jog part way keeps the lane, got "+str(traveling.ticked))
-	rail.travel_z=26.0
+	expect(same_ticks(traveling,[true,true,false,false,false,false]),"travel part way keeps the hip notch, got "+str(traveling.ticked))
+	rail.travel_z=rail.spec.bay_z
 	var at_bay = Objectives.evaluate(game,"pelvis",seat)
 	expect(same_ticks(at_bay,[true,true,true,false,false,false]),"bay end stop ticks travel, got "+str(at_bay.ticked))
+	front.set_front("lower",0.5,1.0,true)
+	var opening = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(opening,[true,true,true,false,false,false]),"moving gantry front does not tick open, got "+str(opening.ticked))
+	front.set_front("lower",1.0)
+	var opened = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(opened,[true,true,true,true,false,false]),"open gantry front ticks four, got "+str(opened.ticked))
 	rail.tilt_deg=50.0
 	var turning = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(turning,[true,true,true,false,false,false]),"part tilt keeps travel, got "+str(turning.ticked))
-	rail.tilt_deg=90.0
-	var upright = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(upright,[true,true,true,true,false,false]),"upright ticks four, got "+str(upright.ticked))
-	rail.rise_m=1.17
-	var raised = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(raised,[true,true,true,true,true,false]),"rise ceiling inside the capture window ticks five, got "+str(raised.ticked))
-	rail.rise_m=1.2
+	expect(same_ticks(turning,[true,true,true,true,false,false]),"partial rise keeps front open without seating, got "+str(turning.ticked))
+	rail.tilt_deg=90.0;rail.rise_m=rail.spec.dock_rise
 	var docked = Objectives.evaluate(game,"pelvis",seat)
-	expect(not docked.ticked[5],"green alignment and the docked pose alone do not mount the leg")
+	expect(not docked.ticked[4],"dock pose alone does not mount the leg")
 	game.model.assemblies.pelvis.slots.left_leg = "left_leg"
 	game.model.assemblies.left_leg.parent = "pelvis";game.model.assemblies.left_leg.parent_slot = "left_leg"
 	docked = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(docked,[true,true,true,true,true,true]) and docked.machine_complete,"actual mounting completes seating, got "+str(docked.ticked)+" complete "+str(docked.machine_complete))
+	expect(same_ticks(docked,[true,true,true,true,true,false]) and not docked.machine_complete,"actual mounting ticks seating but still requires closing the front, got "+str(docked.ticked))
+	front.set_front("lower",0.0)
+	var closed_front = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(closed_front,[true,true,true,true,true,true]) and closed_front.machine_complete,"closed gantry front completes delivery, got "+str(closed_front.ticked))
 	var cylinders: Array = []
 	var releases: Array = []
 	for step in definitions.pelvis.manual:
@@ -315,41 +321,44 @@ func run() -> void:
 	var cylinder_text := Objectives.text(game,"pelvis",cylinders[0].objectives[2])
 	expect(cylinder_text=="Hip cylinder 1: Insert lock pin","cylinder lock text, got "+cylinder_text)
 	expect(str(cylinders[1].objectives[2].command)=="lock:right_hip_1","right cylinder lock, got "+str(cylinders[1].objectives[2].command))
-	var has_build := false
+	var release_text: Array[String] = []
+	for objective in releases[0].objectives:release_text.append(Objectives.text(game,"pelvis",objective))
+	expect(release_text==["Leg clamps switch: tap RELEASE — after hip retention and both lock pins","Bogie box: hold LOWER — until the empty holder lies flat","Bogie box: hold TO TABLE — until the bogie stops on the table","Transfer table lever: pull it to RIGHT HIP · BUILD","Leg clamps switch: tap GRAB — to extend the empty holder","Foot rig: Back — repeat until it is back at dispatch","Bogie box: tap NEXT LEG"],"release text names every physical control, got "+str(release_text))
+	var has_next_leg := false
 	for objective in releases[1].objectives:
-		if str(objective.get("command",""))=="build":has_build=true
-	expect(not has_build,"right release has no build objective")
+		if str(objective.get("command",""))=="next_leg":has_next_leg=true
+	expect(not has_next_leg and releases[1].objectives.size()==6,"right release has six objectives and no next-leg objective")
 	rail.engaged=false;rail.release=5.0;rail.rise_m=0.0
 	var let_go = Objectives.evaluate(game,"pelvis",releases[0])
 	expect(same_ticks(let_go,[true,false,false,false,false,false,false]),"release arrival ticks only the let-go, got "+str(let_go.ticked))
 	rail.tilt_deg=30.0
 	var lying = Objectives.evaluate(game,"pelvis",releases[0])
 	expect(same_ticks(lying,[true,false,false,false,false,false,false]),"part tilt keeps the let-go, got "+str(lying.ticked))
-	rail.tilt_deg=0.0;rail.travel_z=20.0
+	rail.tilt_deg=0.0;rail.travel_z=(rail.spec.home_z+rail.spec.bay_z)/2.0
 	var returning = Objectives.evaluate(game,"pelvis",releases[0])
-	expect(same_ticks(returning,[true,true,false,false,false,false,false]),"lying holder ticks its tilt while travel is part way, got "+str(returning.ticked))
-	rail.travel_z=14.5
+	expect(same_ticks(returning,[true,true,false,false,false,false,false]),"flat empty holder ticks LOWER while travel is part way, got "+str(returning.ticked))
+	rail.travel_z=rail.spec.home_z
 	var table = Objectives.evaluate(game,"pelvis",releases[0])
 	expect(same_ticks(table,[true,true,true,false,false,false,false]),"table arrival ticks travel, got "+str(table.ticked))
 	rail.index_x=rail.spec.station_x
 	var station = Objectives.evaluate(game,"pelvis",releases[0])
-	expect(same_ticks(station,[true,true,true,true,false,false,false]),"station arrival ticks index, got "+str(station.ticked))
+	expect(same_ticks(station,[true,true,true,true,false,false,false]),"build notch ticks table return, got "+str(station.ticked))
 	rail.release=0.0
 	var rig_home = Objectives.evaluate(game,"pelvis",releases[0])
 	expect(same_ticks(rig_home,[true,true,true,true,true,false,false]),"extended empty holder ticks the return, got "+str(rig_home.ticked))
 	rig.path=0.0
 	var foot_home = Objectives.evaluate(game,"pelvis",releases[0])
 	expect(same_ticks(foot_home,[true,true,true,true,true,true,false]),"foot rig dispatch ticks its return, got "+str(foot_home.ticked))
-	rail.active_assembly="right_leg";rail.engaged=true;rail.lane="right"
+	rail.active_assembly="right_leg";rail.receiver_slot="right_leg";rail.engaged=true;rail.lane="right";rail.foot_support=0.0
 	var selected = Objectives.evaluate(game,"pelvis",releases[0])
-	expect(same_ticks(selected,[true,true,true,true,true,true,true]) and selected.machine_complete,"build selects the right leg, got "+str(selected.ticked)+" complete "+str(selected.machine_complete))
+	expect(same_ticks(selected,[true,true,true,true,true,true,true]) and selected.machine_complete,"NEXT LEG selects the right leg, got "+str(selected.ticked)+" complete "+str(selected.machine_complete))
 	var shoulder = preload("res://scripts/shoulder_support.gd").new();game.add_child(shoulder);shoulder.equipment_id="left_shoulder";game.equipment.register(shoulder)
 	var pauldron = preload("res://scripts/staged_receiver.gd").new();game.add_child(pauldron);pauldron.equipment_id="left_pauldron_receiver"
 	pauldron.spec={"title":"Prepared left pauldron carrier","operations":[{"id":"joint_restraints","label":"elbow / wrist restraints"},{"id":"digit_cradle","label":"digit cradle"}]}
 	game.equipment.register(pauldron)
 	var arm_rig := page_named(definitions.chest.manual,"Bring the arm rig to the Limb Bay")
 	var arm_park := Objectives.text(game,"chest",arm_rig.objectives[0])
-	expect(arm_park=="Leg rig: Park, then hold INDEX + — until the table stops at X22","left arm rig starts by parking the leg rig, got "+arm_park)
+	expect(arm_park=="Transfer table lever: pull it to PARK","left arm rig starts by parking the leg rig, got "+arm_park)
 	var brakes := page_named(definitions.chest.manual,"Left shoulder: connect services")
 	var brake_line := Objectives.text(game,"chest",brakes.objectives[0])
 	expect(brake_line=="Crane console: Check left shoulder brakes","shoulder brake check, got "+brake_line)
@@ -363,7 +372,7 @@ func run() -> void:
 	expect(insert_line=="Heavy module rig: Fit head baseplate contact inserts","head inserts, got "+insert_line)
 	var crown := page_named(definitions.chest.manual,"Decorative head crown: retain")
 	var crown_last := Objectives.text(game,"chest",crown.objectives.back())
-	expect(crown_last=="Crane console: Move to Parking bay","crown parks last, got "+crown_last)
+	expect(crown_last=="Upper leaves: Close — UPPER LEAVES panel beside the left lift","crown closes the leaves after parking, got "+crown_last)
 	var prose: Array[String] = []
 	var chapters = JSON.parse_string(FileAccess.get_file_as_string("res://assets/manual-chapters.json"))
 	for chapter in chapters.chapters:
@@ -376,6 +385,30 @@ func run() -> void:
 			if step_page.has("body") and view != "overview" and view != "prepared" and view != "summary":
 				prose.append(str(step_page.get("title", owner+":"+str(index))))
 	expect(prose.is_empty(),"action pages still have body: "+joined(prose))
+	var progress = preload("res://scripts/manual_progress.gd").new(game)
+	var page_evidence: Array = []
+	for owner in ["left_leg","right_leg","pelvis","chest","arm_cassette"]:
+		var manual: Array=definitions[game.model.assemblies[owner].definition].manual
+		for index in manual.size():
+			var step: Dictionary=manual[index]
+			if step.title not in ["Structural leg ready","Supported construction recovery","Seat the leg in the hip assembly","Release the leg rig","Reacquire support and recover","Bring the arm rig to the Limb Bay","Arm rig"]:continue
+			var right: bool=owner=="right_leg" or (owner=="pelvis" and index>=13)
+			rail.active_assembly="right_leg" if right else "left_leg"
+			var procedure: Dictionary=progress.procedure(owner,index)
+			var text_lines: Array=[]
+			var displayed: Array=[]
+			for objective in step.get("objectives",[]):text_lines.append(Objectives.text(game,owner,objective))
+			for objective_index in Objectives.display_indices(step,procedure):displayed.append(text_lines[objective_index])
+			if step.has("procedure"):
+				expect(procedure.get("repeat",false)==right,"procedure keeps first-use and mirrored roles: "+owner+":"+str(index))
+				if right:expect(displayed.is_empty() and not step.has("note"),"right procedure shows the goal and link without repeated controls: "+str(step.title))
+				else:expect(displayed==text_lines,"first-use procedure shows every control: "+str(step.title))
+			if step.title=="Seat the leg in the hip assembly":
+				expect(step.slots==["right_leg" if right else "left_leg"],"delivery supplies only the prepared leg")
+			else:expect(step.get("slots",[]).is_empty(),"status, recovery and rig-only page has no new components: "+str(step.title))
+			page_evidence.append({"owner":owner,"page_index":index,"title":step.title,"goal":step.get("goal",""),"body":step.get("body",""),"note":Objectives.note(step,int(step.get("note",{}).get("at",-1))),"slots":step.get("slots",[]),"objectives":step.get("objectives",[]),"rendered_objective_text":text_lines,"displayed_objective_text":displayed,"procedure":procedure.get("label","") if right else ""})
+	write_evidence("res://verification/r3-manual-pages.json",{"rendered_visual_review":false,"text_source":"Production ManualObjectives and ManualProgress functions used by the HUD","pages":page_evidence})
+	preload("res://tests/kit/manual_gantry_audit.gd").run(self)
 	var passed = checks.all(func(check):return check.passed)
 	print("MANUAL_OBJECTIVES ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)

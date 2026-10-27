@@ -96,7 +96,14 @@ func mappings(node: Node3D) -> void:
 	var foot=preload("res://scripts/foot_carrier.gd").new();game.add_child(foot)
 	var rail=preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail)
 	expect(foot.manual_control_actions({"command":"advance:2"}).is_empty() and foot.manual_control_actions({"command":"return:home"}).is_empty(),"Foot rig panel buttons have no cue")
-	expect(["seat","release","extend","build","park","index:lane"].all(func(command):return rail.manual_control_actions({"command":command}).is_empty()),"Leg rig panel buttons have no cue")
+	var rail_controls={"support:away":"support","table:hip":"lever","travel:bay":"travel+","rise":"rise+","clamps:release":"clamps","lower":"rise-","travel:home":"travel-","table:build":"lever","clamps:grab":"clamps","next_leg":"next_leg","table:park":"lever"}
+	expect(rail_controls.size()==rail.MANUAL_COMMANDS.size(),"all leg rig manual commands have a cue expectation")
+	for command in rail_controls:
+		expect(rail.manual_control_actions({"command":command})==[rail_controls[command]],"Leg rig "+command+" cues its physical "+rail_controls[command]+" control")
+	var front=preload("res://tests/kit/manual_fronts.gd").new();game.add_child(front)
+	for command in front.MANUAL_COMMANDS:front.entries.append(entry(front,command,node))
+	for command in front.MANUAL_COMMANDS:
+		expect(selected(front,command)==[command],"Front contract "+command+" cues its matching panel key (R1 stub)")
 	var captive=preload("res://scripts/captive_controls.gd").new();game.add_child(captive)
 	captive.specs={"left_hip_1":{},"right_hip_1":{}};captive.locked={"left_hip_1":false,"right_hip_1":true}
 	expect(captive.manual_control_actions({"command":"lock:left_hip_1"})==["left_hip_1"] and captive.manual_control_actions({"command":"lock:right_hip_1"}).is_empty(),"Cylinder mapping respects individual and mirrored lock state")

@@ -4847,8 +4847,8 @@
           "slots": [],
           "goal": "Lock the waist straight, crane the hip assembly onto the gantry and close its jaws.",
           "note": {
-            "at": 8,
-            "text": "Close the workshop-side leaves, take the left lift to ROPE ACCESS and descend to the lifting eyes. Land, unclip and recall the rope before moving the crane."
+            "at": 9,
+            "text": "At the UPPER LEAVES panel beside the left lift, close the workshop-side leaves, take the left lift to ROPE ACCESS and descend to the lifting eyes. Land, unclip and recall the rope before moving the crane."
           },
           "objectives": [
             {
@@ -4878,6 +4878,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "go:receiver",
               "task": "pelvis"
@@ -4898,6 +4903,11 @@
               "command": "close_jaws"
             },
             {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
+            },
+            {
               "op": "detach",
               "machine": "service_crane",
               "requires_state": {
@@ -4905,6 +4915,11 @@
                 "task": "pelvis",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -4925,6 +4940,11 @@
                 "task": "pelvis",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "machine_scope": {
@@ -4950,13 +4970,28 @@
                 "state": {
                   "jaws_closed": 4
                 }
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "foot",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
           }
         },
         {
           "title": "Seat the leg in the hip assembly",
-          "goal": "Jog the finished leg on its rig to the Final Assembly Bay, stand it under the left hip and seat it.",
+          "goal": "Bring the finished leg to the Final Assembly Bay, open the lower front, raise the leg into the left hip, then close the front.",
           "slots": [
             "left_leg"
           ],
@@ -4964,12 +4999,12 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "bolster:stow"
+              "command": "support:away"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "index:lane"
+              "command": "table:hip"
             },
             {
               "op": "operate",
@@ -4978,21 +5013,21 @@
             },
             {
               "op": "operate",
-              "machine": "leg_rail",
-              "command": "tilt:upright"
-            },
-            {
-              "op": "operate",
-              "machine": "leg_rail",
-              "command": "rise:dock"
+              "machine": "workshop_access",
+              "command": "lower_open"
             },
             {
               "op": "seat",
               "slot": "left_leg",
               "via": {
                 "machine": "leg_rail",
-                "command": "seat"
+                "command": "rise"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "lower_close"
             }
           ],
           "view": "components",
@@ -5007,7 +5042,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Park the empty crane first. Hold E on a panel arrow to jog one axis; you can look away while E is held. Each axis stops at its track or end stop. The pulsing outline shows the next target, and each readout turns green when its axis is aligned. The leg rig stays attached until the hip is pinned."
+            "text": "Park the empty crane first. Find the foot support at the foot end of the rig, the transfer table lever in front of the table, the bogie box beside the table, and the LOWER FRONT panel beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."
           },
           "diagram_views": [
             {
@@ -5048,6 +5083,21 @@
               {
                 "owner": "pelvis",
                 "slot": "left_leg"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "lower_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "right_foot",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
           },
@@ -5548,12 +5598,12 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "release"
+              "command": "clamps:release"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "tilt:lying"
+              "command": "lower"
             },
             {
               "op": "operate",
@@ -5563,12 +5613,12 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "index:station"
+              "command": "table:build"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "extend"
+              "command": "clamps:grab"
             },
             {
               "op": "operate",
@@ -5578,12 +5628,12 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "build"
+              "command": "next_leg"
             }
           ],
           "note": {
             "at": 1,
-            "text": "The released holder stays clear of the leg while it lies down and travels home. Reacquire at the station extends it again."
+            "text": "At the bogie box beside the table, hold LOWER until the empty holder lies flat, then TO TABLE. Move the table lever to RIGHT HIP · BUILD and tap GRAB on the leg clamps switch on the bogie to extend the empty clamps. Bring the foot rig home before using NEXT LEG."
           },
           "diagram_views": [
             {
@@ -5632,11 +5682,11 @@
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty leg rig has returned home, Release compacts the empty holder for travel; hold INDEX to the hip track, TRAVEL + and TILT + to bring it back under the mounted leg, then Reacquire closes the holder on it. If the released leg rig is still docked, Reacquire directly. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before Unseat lifts the leg back onto the rig; then hold RISE −, TILT −, TRAVEL − and INDEX to return it. The same physical components can be installed again. Never remove retention while the leg rig is released."
+          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower front at the LOWER FRONT panel beside the left lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Seat the leg in the hip assembly",
-          "goal": "Jog the finished leg on its rig to the Final Assembly Bay, stand it under the right hip and seat it.",
+          "goal": "Bring the finished leg to the Final Assembly Bay, open the lower front, raise the leg into the right hip, then close the front.",
           "slots": [
             "right_leg"
           ],
@@ -5644,12 +5694,12 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "bolster:stow"
+              "command": "support:away"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "index:lane"
+              "command": "table:hip"
             },
             {
               "op": "operate",
@@ -5658,21 +5708,21 @@
             },
             {
               "op": "operate",
-              "machine": "leg_rail",
-              "command": "tilt:upright"
-            },
-            {
-              "op": "operate",
-              "machine": "leg_rail",
-              "command": "rise:dock"
+              "machine": "workshop_access",
+              "command": "lower_open"
             },
             {
               "op": "seat",
               "slot": "right_leg",
               "via": {
                 "machine": "leg_rail",
-                "command": "seat"
+                "command": "rise"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "lower_close"
             }
           ],
           "view": "components",
@@ -5685,10 +5735,6 @@
             "R-PV-C-H24090__003",
             "R-PV-C-H24090__004"
           ],
-          "note": {
-            "at": 0,
-            "text": "Park the empty crane first. Hold E on a panel arrow to jog one axis; you can look away while E is held. Each axis stops at its track or end stop. The pulsing outline shows the next target, and each readout turns green when its axis is aligned. The leg rig stays attached until the hip is pinned."
-          },
           "diagram_views": [
             {
               "title": "Seat the leg in the hip assembly",
@@ -5728,6 +5774,21 @@
               {
                 "owner": "pelvis",
                 "slot": "right_leg"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "lower_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "chest_store",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
           },
@@ -6228,12 +6289,12 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "release"
+              "command": "clamps:release"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "tilt:lying"
+              "command": "lower"
             },
             {
               "op": "operate",
@@ -6243,12 +6304,12 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "index:station"
+              "command": "table:build"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "extend"
+              "command": "clamps:grab"
             },
             {
               "op": "operate",
@@ -6256,10 +6317,6 @@
               "command": "return:home"
             }
           ],
-          "note": {
-            "at": 1,
-            "text": "The released holder stays clear of the leg while it lies down and travels home. Reacquire at the station extends it again."
-          },
           "diagram_views": [
             {
               "title": "Release the leg rig",
@@ -6320,7 +6377,7 @@
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty leg rig has returned home, Release compacts the empty holder for travel; hold INDEX to the hip track, TRAVEL + and TILT + to bring it back under the mounted leg, then Reacquire closes the holder on it. If the released leg rig is still docked, Reacquire directly. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before Unseat lifts the leg back onto the rig; then hold RISE −, TILT −, TRAVEL − and INDEX to return it. The same physical components can be installed again. Never remove retention while the leg rig is released."
+          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower front at the LOWER FRONT panel beside the right lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Bring the chest to the heavy module rig",
@@ -6420,7 +6477,7 @@
           "slots": [
             "chest"
           ],
-          "goal": "Crane the chest from the heavy module rig onto the waist.",
+          "goal": "Crane the chest from the heavy module rig onto the waist, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "objectives": [
             {
               "op": "operate",
@@ -6441,6 +6498,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -6573,7 +6635,8 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Retain the chest on the waist",
@@ -6588,7 +6651,7 @@
             "chest/washer_4",
             "chest/bolt_4"
           ],
-          "goal": "Bolt the chest to the waist, then release and park the crane.",
+          "goal": "Bolt the chest to the waist, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "objectives": [
             {
               "op": "fit",
@@ -6614,6 +6677,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -6631,6 +6699,11 @@
                 "task": "chest",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "note": {
@@ -6766,9 +6839,25 @@
                 "machine": "service_crane",
                 "task": "chest",
                 "phase": "parked"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "core_store",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         },
         {
           "title": "Connect chest services",
@@ -11163,7 +11252,7 @@
           "slots": [
             "core"
           ],
-          "goal": "Crane the core to the chest's rear dock, then guide it in from an exit-side rope.",
+          "goal": "Crane the core to the chest's rear dock, then guide it in from an exit-side rope, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "objectives": [
             {
               "op": "operate",
@@ -11184,6 +11273,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -11226,7 +11320,7 @@
             }
           ],
           "note": {
-            "at": 7,
+            "at": 8,
             "text": "Take the right lift to ROPE ACCESS for the exit-side ropes; keep the aft connector attached."
           },
           "diagram_views": [
@@ -11307,7 +11401,7 @@
           "title": "Retain and connect the core",
           "view": "components",
           "slots": [],
-          "goal": "Bolt the core in, connect it, then release and park the crane.",
+          "goal": "Bolt the core in, connect it, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "objectives": [
             {
               "op": "operate",
@@ -11330,6 +11424,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -11347,6 +11446,11 @@
                 "task": "core",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "machine_scope": {
@@ -11375,9 +11479,25 @@
                 "state": {
                   "connected": true
                 }
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "backpack_store",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         },
         {
           "title": "Bring the backpack to the heavy module rig",
@@ -11477,7 +11597,7 @@
           "slots": [
             "backpack"
           ],
-          "goal": "Crane the open backpack onto the chest hinges.",
+          "goal": "Crane the open backpack onto the chest hinges, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "objectives": [
             {
               "op": "operate",
@@ -11498,6 +11618,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -11703,7 +11828,8 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Retain both backpack hinges",
@@ -11882,7 +12008,7 @@
           "title": "Close and latch the backpack",
           "view": "components",
           "slots": [],
-          "goal": "Close the backpack with the crane, latch it and shut the service covers.",
+          "goal": "Close the backpack with the crane, latch it and shut the service covers, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "objectives": [
             {
               "op": "connect",
@@ -11931,6 +12057,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -11948,6 +12079,11 @@
                 "task": "backpack",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             },
             {
               "op": "operate",
@@ -11975,6 +12111,21 @@
                   "covers": 2,
                   "locks": 0
                 }
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "cassette",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
           }
@@ -11987,7 +12138,7 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "park"
+              "command": "table:park"
             },
             {
               "op": "operate",
@@ -12079,7 +12230,7 @@
         },
         {
           "title": "Left shoulder: deliver the retained arm",
-          "goal": "Crane the left arm from the arm rig and seat its shoulder ball.",
+          "goal": "Crane the left arm from the arm rig and seat its shoulder ball, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "left_arm"
           ],
@@ -12101,6 +12252,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "lower_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up"
             },
@@ -12109,6 +12265,11 @@
               "machine": "service_crane",
               "command": "go:receiver",
               "task": "left_arm"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "seat",
@@ -12162,7 +12323,8 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "arm_delivery"
         },
         {
           "title": "Left shoulder: retain the ball",
@@ -12455,7 +12617,7 @@
         },
         {
           "title": "Left shoulder: connect services",
-          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane.",
+          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "left_arm/service"
           ],
@@ -12487,6 +12649,16 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "lower_close"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -12504,6 +12676,11 @@
                 "task": "left_arm",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -12555,9 +12732,40 @@
                 "state": {
                   "transferred": true
                 }
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "lower_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "right_arm_store",
+                    "phase": "delivered"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "right_arm_store",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "arm_return"
         },
         {
           "title": "Bring the right arm onto the arm rig",
@@ -12648,7 +12856,7 @@
         },
         {
           "title": "Right shoulder: deliver the retained arm",
-          "goal": "Crane the right arm from the arm rig and seat its shoulder ball.",
+          "goal": "Crane the right arm from the arm rig and seat its shoulder ball, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "right_arm"
           ],
@@ -12670,6 +12878,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "lower_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up"
             },
@@ -12678,6 +12891,11 @@
               "machine": "service_crane",
               "command": "go:receiver",
               "task": "right_arm"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "seat",
@@ -12731,7 +12949,8 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "arm_delivery"
         },
         {
           "title": "Right shoulder: retain the ball",
@@ -13024,7 +13243,7 @@
         },
         {
           "title": "Right shoulder: connect services",
-          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane.",
+          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "right_arm/service"
           ],
@@ -13056,6 +13275,16 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "lower_close"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -13073,6 +13302,11 @@
                 "task": "right_arm",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -13124,13 +13358,44 @@
                 "state": {
                   "transferred": true
                 }
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "lower_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "left_pauldron",
+                    "phase": "delivered"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "left_pauldron",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "arm_return"
         },
         {
           "title": "Left pauldron: deliver carrier",
-          "goal": "Crane the left pauldron carrier onto the shoulder.",
+          "goal": "Crane the left pauldron carrier onto the shoulder, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "left_pauldron"
           ],
@@ -13154,6 +13419,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -13213,11 +13483,12 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Left pauldron: retain carrier",
-          "goal": "Bolt the carrier to the arm, then release and park the crane.",
+          "goal": "Bolt the carrier to the arm, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "left_pauldron/bolt_1",
             "left_pauldron/bolt_2",
@@ -13245,6 +13516,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -13262,6 +13538,11 @@
                 "task": "left_pauldron",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -13304,9 +13585,25 @@
                 "machine": "service_crane",
                 "task": "left_pauldron",
                 "phase": "parked"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "right_pauldron",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         },
         {
           "title": "Left pauldron: front closure",
@@ -13402,7 +13699,7 @@
         },
         {
           "title": "Right pauldron: deliver carrier",
-          "goal": "Crane the right pauldron carrier onto the shoulder.",
+          "goal": "Crane the right pauldron carrier onto the shoulder, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "right_pauldron"
           ],
@@ -13426,6 +13723,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -13485,11 +13787,12 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Right pauldron: retain carrier",
-          "goal": "Bolt the carrier to the arm, then release and park the crane.",
+          "goal": "Bolt the carrier to the arm, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "right_pauldron/bolt_1",
             "right_pauldron/bolt_2",
@@ -13517,6 +13820,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -13534,6 +13842,11 @@
                 "task": "right_pauldron",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -13576,9 +13889,25 @@
                 "machine": "service_crane",
                 "task": "right_pauldron",
                 "phase": "parked"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "head_baseplate_to_fixture",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         },
         {
           "title": "Right pauldron: front closure",
@@ -13766,7 +14095,7 @@
         },
         {
           "title": "Head baseplate: deliver",
-          "goal": "Crane the head baseplate onto the head.",
+          "goal": "Crane the head baseplate onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "head_baseplate"
           ],
@@ -13790,6 +14119,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -13829,7 +14163,7 @@
             }
           ],
           "note": {
-            "at": 5,
+            "at": 6,
             "text": "Lower 24 cm; the front key rejects a reversed piece."
           },
           "machine_scope": {
@@ -13849,7 +14183,8 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Head baseplate: retain",
@@ -13915,7 +14250,7 @@
         },
         {
           "title": "Head baseplate: connect loom",
-          "goal": "Plug in the head loom, then release and park the crane.",
+          "goal": "Plug in the head loom, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "hd-loom/001"
           ],
@@ -13937,6 +14272,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -13954,6 +14294,11 @@
                 "task": "head_baseplate",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -13993,9 +14338,25 @@
                 "machine": "service_crane",
                 "task": "head_baseplate",
                 "phase": "parked"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "head_left_to_fixture",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         },
         {
           "title": "Bring the left wraparound side to the heavy module rig",
@@ -14091,7 +14452,7 @@
         },
         {
           "title": "Left wraparound side: deliver",
-          "goal": "Crane the left wraparound side onto the head.",
+          "goal": "Crane the left wraparound side onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "head_left"
           ],
@@ -14115,6 +14476,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -14154,7 +14520,7 @@
             }
           ],
           "note": {
-            "at": 5,
+            "at": 6,
             "text": "Lower 22 cm into the open side pockets."
           },
           "machine_scope": {
@@ -14174,11 +14540,12 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Left wraparound side: retain",
-          "goal": "Bolt the left wraparound side down, then release and park the crane.",
+          "goal": "Bolt the left wraparound side down, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "hd-m12100/001",
             "hd-m12100/002"
@@ -14202,6 +14569,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -14219,6 +14591,11 @@
                 "task": "head_left",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -14259,9 +14636,25 @@
                 "machine": "service_crane",
                 "task": "head_left",
                 "phase": "parked"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "head_right_to_fixture",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         },
         {
           "title": "Bring the right wraparound side to the heavy module rig",
@@ -14357,7 +14750,7 @@
         },
         {
           "title": "Right wraparound side: deliver",
-          "goal": "Crane the right wraparound side onto the head.",
+          "goal": "Crane the right wraparound side onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "head_right"
           ],
@@ -14381,6 +14774,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -14420,7 +14818,7 @@
             }
           ],
           "note": {
-            "at": 5,
+            "at": 6,
             "text": "Lower 22 cm into the open side pockets."
           },
           "machine_scope": {
@@ -14440,11 +14838,12 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Right wraparound side: retain",
-          "goal": "Bolt the right wraparound side down, then release and park the crane.",
+          "goal": "Bolt the right wraparound side down, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "hd-m12100/003",
             "hd-m12100/004"
@@ -14468,6 +14867,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -14485,6 +14889,11 @@
                 "task": "head_right",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -14525,9 +14934,25 @@
                 "machine": "service_crane",
                 "task": "head_right",
                 "phase": "parked"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "head_top_to_fixture",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         },
         {
           "title": "Bring the structural head top to the heavy module rig",
@@ -14623,7 +15048,7 @@
         },
         {
           "title": "Structural head top: deliver",
-          "goal": "Crane the structural head top onto the head.",
+          "goal": "Crane the structural head top onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "head_top"
           ],
@@ -14647,6 +15072,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -14686,7 +15116,7 @@
             }
           ],
           "note": {
-            "at": 5,
+            "at": 6,
             "text": "Lower 22 cm onto the roof ledges."
           },
           "machine_scope": {
@@ -14706,11 +15136,12 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Structural head top: retain",
-          "goal": "Bolt the structural head top down, then release and park the crane.",
+          "goal": "Bolt the structural head top down, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "hd-m12160/001",
             "hd-m12160/002",
@@ -14738,6 +15169,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -14755,6 +15191,11 @@
                 "task": "head_top",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -14797,9 +15238,25 @@
                 "machine": "service_crane",
                 "task": "head_top",
                 "phase": "parked"
+              },
+              {
+                "any": [
+                  {
+                    "machine": "workshop_access",
+                    "state": {
+                      "upper_closed": true
+                    }
+                  },
+                  {
+                    "machine": "service_crane",
+                    "task": "head_crown_to_fixture",
+                    "phase": "delivered"
+                  }
+                ]
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         },
         {
           "title": "Sensor carrier: slide onto guides",
@@ -15197,7 +15654,7 @@
         },
         {
           "title": "Decorative head crown: deliver",
-          "goal": "Crane the decorative head crown onto the head.",
+          "goal": "Crane the decorative head crown onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
           "slots": [
             "head_crown"
           ],
@@ -15221,6 +15678,11 @@
               "op": "operate",
               "machine": "service_crane",
               "command": "up"
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
             },
             {
               "op": "operate",
@@ -15260,7 +15722,7 @@
             }
           ],
           "note": {
-            "at": 5,
+            "at": 6,
             "text": "Lower 18 cm onto the two unequal keyed prongs."
           },
           "machine_scope": {
@@ -15280,11 +15742,12 @@
                 "phase": "delivered"
               }
             ]
-          }
+          },
+          "procedure": "upper_delivery"
         },
         {
           "title": "Decorative head crown: retain",
-          "goal": "Bolt the decorative head crown down, then release and park the crane.",
+          "goal": "Bolt the decorative head crown down, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
           "slots": [
             "hd-m12100/005",
             "hd-m12100/006"
@@ -15308,6 +15771,11 @@
             },
             {
               "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_open"
+            },
+            {
+              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
@@ -15325,6 +15793,11 @@
                 "task": "head_crown",
                 "phase": "arrived"
               }
+            },
+            {
+              "op": "operate",
+              "machine": "workshop_access",
+              "command": "upper_close"
             }
           ],
           "view": "components",
@@ -15365,9 +15838,16 @@
                 "machine": "service_crane",
                 "task": "head_crown",
                 "phase": "parked"
+              },
+              {
+                "machine": "workshop_access",
+                "state": {
+                  "upper_closed": true
+                }
               }
             ]
-          }
+          },
+          "procedure": "upper_return"
         }
       ]
     },
@@ -15530,7 +16010,7 @@
           "title": "Arm rig",
           "view": "overview",
           "slots": [],
-          "body": "Park the leg rig (Park, then hold INDEX +) before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction."
+          "body": "Park the leg rig using the transfer table lever's PARK notch before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction."
         }
       ]
     },
@@ -18673,13 +19153,13 @@
           "title": "Structural leg ready",
           "view": "prepared",
           "slots": [],
-          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table (Park, then hold INDEX +) and retrieve it without losing progress. For rear work, park the movable platform, hold LIFT + on the Limb Bay panel to raise the supported axis, then hold ROLL + or ROLL − to turn to the next locked orientation; each press stops at a detent. Restore neutral ROLL, then hold LIFT − to return to construction height. Open the hip assembly manual for delivery."
+          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever in front of the table to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
         },
         {
           "title": "Supported construction recovery",
           "view": "overview",
           "slots": [],
-          "body": "Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot rig Return reacquires the foot and reverses one guided phase per press; Return again lowers it to dispatch."
+          "body": "Bring the supported leg to RIGHT HIP · BUILD before construction disassembly. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to its PARK notch. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
         }
       ]
     },
@@ -23670,13 +24150,13 @@
             "title": "Structural leg ready",
             "view": "prepared",
             "slots": [],
-            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table (Park, then hold INDEX +) and retrieve it without losing progress. For rear work, park the movable platform, hold LIFT + on the Limb Bay panel to raise the supported axis, then hold ROLL + or ROLL − to turn to the next locked orientation; each press stops at a detent. Restore neutral ROLL, then hold LIFT − to return to construction height. Open the hip assembly manual for delivery."
+            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever in front of the table to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
           },
           {
             "title": "Supported construction recovery",
             "view": "overview",
             "slots": [],
-            "body": "Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot rig Return reacquires the foot and reverses one guided phase per press; Return again lowers it to dispatch."
+            "body": "Bring the supported leg to RIGHT HIP · BUILD before construction disassembly. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to its PARK notch. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
           }
         ]
       },

@@ -62,6 +62,17 @@ func run() -> void:
 	crane.endpoints = {"a":{"state":"stowed","point":""},"b":{"state":"stowed","point":""}}
 	crane.station = "park";crane.raised = true;crane.motion = "";crane.moving = false
 	var progress = Progress.new(game)
+	var registry=JSON.parse_string(FileAccess.get_file_as_string("res://assets/manual-chapters.json")).procedures
+	var registered: Dictionary={}
+	for chapter in progress.chapters():
+		for step in chapter.steps:
+			var procedure=progress.procedure(step.owner,step.page)
+			if procedure.is_empty():continue
+			registered[procedure.id]=true
+			var origin: Array=registry[procedure.id].first
+			expect(procedure.repeat==(step.owner!=origin[0] or step.page!=origin[1]),str(step.title)+" repeats only after its registered first use")
+			if procedure.repeat:expect(procedure.label.begins_with("Procedure: p.") and not procedure.step.is_empty(),str(step.title)+" links to its first-use page")
+	expect(registered.size()==6 and registry.size()==6,"all six authored leg and gantry procedures resolve")
 	# Fixture metadata only: no crane page or control changes are imported.
 	var first_row: Dictionary=progress._order[0]
 	var repeat_row: Dictionary=progress._order[1]
