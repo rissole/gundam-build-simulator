@@ -824,7 +824,7 @@ func _fill_step_panel(step: Dictionary) -> void:
 	if has_objectives:
 		objective_rows.visible = true
 		body_scroll.visible = false
-		for i in objectives.size():
+		for i in ManualObjectives.display_indices(definition,game.manual_progress.procedure(owner,page_index)):
 			var objective = objectives[i]
 			if not objective is Dictionary:continue
 			var ticked := false
@@ -859,6 +859,11 @@ func _fill_step_panel(step: Dictionary) -> void:
 		page_body.text = str(definition.get("body",""))
 		var height := page_body.get_combined_minimum_size().y
 		body_scroll.custom_minimum_size.y = minf(maxf(height,1.0),260.0)
+	var procedure: Dictionary=game.manual_progress.procedure(owner,page_index)
+	if procedure.get("repeat",false):
+		var link=button(procedure.label)
+		link.pressed.connect(func():browser.open_procedure(procedure.step))
+		objective_rows.add_child(link)
 	var control_note := ManualObjectives.note(definition,current)
 	note_row.visible = not control_note.is_empty()
 	if note_row.visible:note_label.text = control_note

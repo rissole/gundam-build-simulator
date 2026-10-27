@@ -3,6 +3,19 @@ extends RefCounted
 const OPS = ["fit","seat","operate","connect","detach"]
 const MACHINE_OPS = ["operate","connect","detach"]
 
+## Presentation only: completion, control cues and slot coverage always use the
+## complete typed objectives. Repeated procedures hide only their machine work;
+## independent hardware and other equipment instructions remain explicit.
+static func display_indices(page: Dictionary, procedure: Dictionary) -> Array[int]:
+	var result: Array[int]=[]
+	var objectives: Array=page.get("objectives",[])
+	for index in objectives.size():
+		var objective: Dictionary=objectives[index]
+		var machine: String=objective.get("machine",objective.get("via",{}).get("machine",""))
+		if procedure.get("repeat",false) and machine in procedure.get("machines",[]):continue
+		result.append(index)
+	return result
+
 static func machine_text(machine, objective: Dictionary, action: String) -> String:
 	var subject: String = machine.manual_subject(objective)
 	var hint: String = machine.manual_hint(objective)

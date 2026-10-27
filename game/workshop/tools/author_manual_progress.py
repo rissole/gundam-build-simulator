@@ -114,3 +114,28 @@ def bind(recipes, chapters):
                 page["machine_scope"] = scope
             if proofs:
                 page["completed_by"] = dict(all=proofs)
+
+
+def bind_procedures(recipes, chapters, procedures):
+    """Tag explicitly selected pages and return the runtime procedure registry.
+
+    Chapter order chooses the first-use tutorial; repeat presentation never changes
+    objectives, supplies, completion evidence or machine scope.
+    """
+    order = [(owner, index) for chapter in chapters
+             for owner, index, *_ in chapter["steps"]]
+    registry = {}
+    used = set()
+    for key, spec in procedures.items():
+        pages = [tuple(page) for page in spec["pages"]]
+        assert pages and len(set(pages)) == len(pages), key
+        assert spec["title"] and spec["machines"], key
+        assert all(page in order for page in pages), key
+        first = min(pages, key=order.index)
+        for owner, index in pages:
+            assert (owner, index) not in used, (owner, index)
+            used.add((owner, index))
+            recipes[owner]["manual"][index]["procedure"] = key
+        registry[key] = dict(title=spec["title"], machines=list(spec["machines"]),
+                             first=list(first))
+    return registry

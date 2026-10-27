@@ -267,3 +267,16 @@ is in the linked finding; visibility/reach and player acceptance remain separate
    backpack: it parks and sends the crane back with a command the menu never
    offers). Objective-specific diagram views. User playtest of the converted
    chapters.
+
+### First use and repeated procedures — 2026-10-27
+
+Pages may name a `procedure`. The `procedures` registry in manual-chapters supplies
+its title, machine IDs and first `[owner, page]`. `bind_procedures` in
+`author_manual_progress.py` tags explicitly selected pages and derives the first
+page from chapter order. The first page shows all typed objectives; repeats hide
+only that procedure's machine objectives and show a working **Procedure: p.N**
+link in the current-step HUD and manual browser. Other equipment and hardware stay
+explicit. Links open the original tutorial without changing tracked work, model
+state, completion evidence, supplies or control cues. Numbering is stable chapter
+order, independent of play history. B4 will register the leg procedures; existing
+crane instructions are unchanged.

@@ -47,6 +47,24 @@ func chapters() -> Array[Dictionary]:
 		result.append({"id":str(chapter.get("id","")),"title":str(chapter.get("title","")),"after":after.duplicate(),"steps":steps})
 	return result
 
+## Stable page references come from chapter order, never completion history.
+## Procedures register their first page and machine list in manual-chapters.
+func procedure(owner: String, page: int) -> Dictionary:
+	var manual=_manual(owner)
+	if page<0 or page>=manual.size():return {}
+	var id=str(manual[page].get("procedure",""))
+	var spec: Dictionary=_data.get("procedures",{}).get(id,{})
+	if spec.is_empty():return {}
+	var first: Array=spec.get("first",[])
+	if first.size()!=2:return {}
+	for index in _order.size():
+		var row: Dictionary=_order[index]
+		if str(row.owner)!=str(first[0]) or int(row.page)!=int(first[1]):continue
+		return {"id":id,"title":str(spec.title),"machines":spec.machines,
+			"repeat":owner!=str(first[0]) or page!=int(first[1]),
+			"number":index+1,"step":_public(row),"label":"Procedure: p.%d — %s"%[index+1,spec.title]}
+	return {}
+
 func reference_steps() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var reference: Dictionary = _data.get("reference",{}) if _data.get("reference") is Dictionary else {}

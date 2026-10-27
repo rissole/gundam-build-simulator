@@ -62,6 +62,24 @@ func run() -> void:
 	crane.endpoints = {"a":{"state":"stowed","point":""},"b":{"state":"stowed","point":""}}
 	crane.station = "park";crane.raised = true;crane.motion = "";crane.moving = false
 	var progress = Progress.new(game)
+	# Fixture metadata only: no crane page or control changes are imported.
+	var first_row: Dictionary=progress._order[0]
+	var repeat_row: Dictionary=progress._order[1]
+	first_row.definition["procedure"]="fixture"
+	repeat_row.definition["procedure"]="fixture"
+	progress._data["procedures"]={"fixture":{"title":"Operate the rig","machines":["leg_rail"],"first":[first_row.owner,first_row.page]}}
+	var first=progress.procedure(first_row.owner,first_row.page)
+	var repeat=progress.procedure(repeat_row.owner,repeat_row.page)
+	expect(not first.repeat and repeat.repeat and repeat.number==1 and repeat.step.owner==first_row.owner and repeat.step.page==first_row.page,"repeat links to the first chapter page")
+	expect(repeat.label=="Procedure: p.1 — Operate the rig","procedure label includes a stable page number and title")
+	var before=progress.evaluation(repeat_row.owner,repeat_row.page).duplicate(true)
+	progress.pin(repeat_row.owner,repeat_row.page)
+	progress.procedure(repeat_row.owner,repeat_row.page);progress.refresh()
+	expect(before==progress.evaluation(repeat_row.owner,repeat_row.page),"procedure lookup and tracking cannot complete physical work")
+	progress.unpin()
+	first_row.definition.erase("procedure");repeat_row.definition.erase("procedure")
+	progress._data.erase("procedures")
+	expect(progress.procedure(repeat_row.owner,repeat_row.page).is_empty(),"unregistered procedure leaves the full tutorial visible")
 	var seen: Dictionary = {}
 	var dupes: Array[String] = []
 	var bad: Array[String] = []

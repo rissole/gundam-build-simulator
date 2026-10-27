@@ -177,6 +177,11 @@ func open_browser() -> void:
 	show()
 	grab_focus()
 
+func open_procedure(step: Dictionary) -> void:
+	if not visible:open_browser()
+	_expanded[str(step.chapter.id)]=true
+	_remember(step);_rebuild();_show_detail()
+
 func close_browser() -> void:
 	if not visible:return
 	hide()
@@ -392,8 +397,10 @@ func _show_detail() -> void:
 		detail_box.add_child(body)
 	else:
 		detail_heading.visible = true
-		detail_heading.text = "OBJECTIVES (%d)"%objectives.size()
-		for i in objectives.size():
+		var indices=Objectives.display_indices(definition,hud.game.manual_progress.procedure(owner,at))
+		detail_heading.visible=not indices.is_empty()
+		detail_heading.text = "OBJECTIVES (%d)"%indices.size()
+		for i in indices:
 			var objective = objectives[i]
 			if not objective is Dictionary:continue
 			var ticked := false
@@ -419,6 +426,11 @@ func _show_detail() -> void:
 			var status = hud.label(word,13,hud.tone if kind == "current" else hud.muted)
 			line.add_child(status)
 			detail_box.add_child(row)
+	var procedure: Dictionary=hud.game.manual_progress.procedure(owner,at)
+	if procedure.get("repeat",false):
+		var link=hud.button(procedure.label)
+		link.pressed.connect(func():open_procedure(procedure.step))
+		detail_box.add_child(link)
 	var control_note := Objectives.note(definition,current)
 	note_row.visible = not control_note.is_empty()
 	if note_row.visible:note_label.text = control_note

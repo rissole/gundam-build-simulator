@@ -42,6 +42,15 @@ func plain_menu(options: Array) -> bool:
 	return true
 
 func run() -> void:
+	var presentation = {"objectives":[
+		{"op":"operate","machine":"leg_rail","command":"index-"},
+		{"op":"seat","slot":"left_leg","via":{"machine":"leg_rail","command":"seat"}},
+		{"op":"fit","slots":["bolt"]},
+		{"op":"operate","machine":"captive_controls","command":"lock"}]}
+	var original = presentation.duplicate(true)
+	expect(Objectives.display_indices(presentation,{})==[0,1,2,3],"first use displays all typed objectives")
+	expect(Objectives.display_indices(presentation,{"repeat":true,"machines":["leg_rail"]})==[2,3],"repeat hides only procedure machine objectives, including seating")
+	expect(presentation==original,"procedure presentation leaves physical evidence and supplies intact")
 	var game = preload("res://tests/kit/model_workshop.gd").new();root.add_child(game)
 	expect(game.setup().is_empty(),"authored stock configures")
 	var crane = Crane.new();game.add_child(crane);crane.game = game
