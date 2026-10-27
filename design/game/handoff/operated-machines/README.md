@@ -94,3 +94,26 @@ journey are therefore unverified until one is requested. Nobody has played it.
 - When this work merges, fold the lasting facts into the permanent docs (workshop
   state, playtest checklist, robot workshop plan). Then delete this folder's handoff
   files.
+
+## v2 rebuild status — 2026-10-27 (session stopped at usage limit)
+
+Merged on `operated-rigs`: T1 Limb Bay at X14.1, T2 crossing gates removed, T3
+gantry front OPEN/CLOSE, T4 leg rig v2 controller and stage driver (plus the
+empty-rig lever fix `c9ccc4c`). A real-content probe docked and returned both legs
+through the v2 controls. Diagnostics: `chest_delivery_test` passes (66);
+`head_crane_test` fails the same 15 stale "Parts for this step" HUD checks as the
+pre-v2 base `ca82c96` (142 others pass).
+
+Open:
+- **T5a** (leg manual pages, Astra, worktree `/private/tmp/gbs-t5a-manual`) was
+  still running. Verify its commit and merge it.
+- **T5b** (leg tests, worktree `/private/tmp/gbs-t5b-tests`, commit `2506aa4` +
+  merge of the lever fix): `leg_rig_controls_test` 174/175. One failure: "interrupted
+  table motion saves its last stop". Diagnose whether it is a test-fixture or
+  controller fault. Then T5b still owes the routine test conversions, diagnostic
+  conversions plus parse checks and the recorder (see its brief in the session
+  scratchpad, mirrored by `T5-shared-api.md`).
+- Then run `indexed_leg_rail_test`, `arm_delivery_test`, `arm_cassette_test` and
+  `arm_preflight_test` (approved). The user playtests with
+  `./play.command -- --stage=left_leg_dock`.
+- The v1 leg tests on `operated-rigs` still fail until T5b merges.
