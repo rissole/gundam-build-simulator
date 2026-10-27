@@ -505,3 +505,35 @@ The pauldron route's tightest clearance is about 1 mm at seating.
 | 2026-10-25 | Hip assembly delivery | The four gantry hold-down grips could not be seen from the rear deck. Each grip was a 12 cm block centred inside its post, so one grip hid the other, and the Use prompt never appeared because the aim point was inside that solid. The forward grip now sticks outboard of the post and the rear grip reaches back toward the deck; aiming at the grip shows Close gantry hold-down jaw. Re-check from the 8.4 m rear hip deck before detaching the crane. | Blocking |
 
 Mechanical test passes are separate from these playtest results.
+
+## Gantry v2 rope access — pending player checks, 2026-10-27
+
+A2 is implemented on `gv2/rope`; integration and the user's playtest are still
+pending. [Implementation and mechanical evidence](handoff/gantry-v2/A2-report.md).
+No rendered inspection or player acceptance is claimed by the fixture tests.
+Keep the accepted pull-in mechanic and the two separate walkway/lift routes;
+the backpack hinge remains the user's deliberately open challenge.
+
+- [ ] Find a station from the tracked manual's control glow. Read **Clip in** and
+  **Recall rope** at the gate/reel; E works at normal reach. Unclipped gates block
+  passage and only the attached station's gate opens.
+- [ ] Step off the front leaf and rear walkway without a fall. Check the rear
+  boom's top traverse, return boarding, and the small outward clearance adjustment
+  as the capsule passes a front deck edge. Height locks on release; Space rises,
+  Ctrl lowers, mouselook remains free, and WASD slack feels useful without swing.
+- [ ] G clips a visible nearby robot surface, draws to working distance, and G
+  releases toward plumb. Check that collisions feel like resting against the robot.
+- [ ] Use normal E/placement and existing hand carrying for hip lifting eyes,
+  waist, core, shoulders, pauldrons and head/crown connections. Do not treat the
+  automated collision fixture as proof of reach, visibility or connection access.
+- [ ] Descend to an 8.4 m deck and ground, unclip with G, and clip the hanging end
+  with E for another ascent. Return to the upper walkway and unclip there.
+- [ ] Request leaf motion with a front rope occupied and then free/deployed.
+  Read the named recall reason; return through the still-open occupied gate,
+  unclip and recall the line. The waiting trip resumes. Rear ropes do not block
+  the front leaves. A grounded clipped platform rider must unclip before travel.
+- [ ] Save/reload while hanging and pulled in; confirm position, view, locked
+  height, line length and lanyard state. Check the HUD line alongside carry/manual UI.
+- [ ] After A1/A3 integration, inspect station/gate presentation and crane/rope
+  coexistence in the actual layout. Backpack hinge access is still unresolved;
+  this work does not choose a solution for that challenge.
