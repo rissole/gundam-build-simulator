@@ -51,6 +51,7 @@ def extend(trial, pelvis, layout):
     pelvis.update(carry_class="equipment",work_locations=["support"],bounds=[4.02,4.1,2.0])
     pelvis["manual"].insert(0,dict(title="Deliver the prepared hip assembly",view="components",slots=[],
         goal="Lock the waist straight, crane the hip assembly onto the gantry and close its jaws.",
+        note=dict(at=8, text="Close the workshop-side leaves, take the left lift to ROPE ACCESS and descend to the lifting eyes. Land, unclip and recall the rope before moving the crane."),
         objectives=[
             dict(op="operate",machine="module_supports",command="insert_pins"),
             dict(op="operate",machine="service_crane",command="pickup",task="pelvis"),
