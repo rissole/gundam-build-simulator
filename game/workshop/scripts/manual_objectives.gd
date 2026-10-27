@@ -117,7 +117,10 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 		if not objectives[i] is Dictionary:continue
 		var op := str(objectives[i].get("op",""))
 		if MACHINE_OPS.has(op) or (op == "seat" and objectives[i].has("via")):sequence.append(i)
-	var cumulative: Dictionary = page.get("machine_scope",{}).duplicate(true)
+	# A machine's scope applies from its first objective, so earlier work on
+	# other machines (fitting rig inserts) ticks before the crane task starts.
+	var scope: Dictionary = page.get("machine_scope",{})
+	var cumulative: Dictionary = {}
 	var blind: Dictionary = {}
 	var latest := -1
 	var guards: Array = []
@@ -138,7 +141,7 @@ static func evaluate(game, owner: String, page: Dictionary) -> Dictionary:
 		if machine == null:
 			blind[machine_id] = true
 			continue
-		var expected: Dictionary = cumulative.get(machine_id,{}).duplicate()
+		var expected: Dictionary = cumulative.get(machine_id,scope.get(machine_id,{})).duplicate(true)
 		# A later physical state can retire a temporary requirement (for example
 		# latched backpack hinges no longer need crane tension).
 		if not proves(game,objective.get("completed_by",{})):

@@ -388,6 +388,8 @@ func _show_detail() -> void:
 	var at := int(_selected.page)
 	var state: Dictionary = {} if bool(_selected.get("reference",false)) else hud.game.manual_progress.evaluation(owner,at)
 	var current := int(state.get("current",-1))
+	# Only a started step has a live objective; locked/ready pages show all as pending.
+	if bool(_selected.get("reference",false)) or hud.game.manual_progress.status(owner,at) != "in_progress":current = -1
 	if objectives.is_empty():
 		detail_heading.visible = false
 		var body = hud.label(str(definition.get("body","")),14,Color("e0e7e7"))
