@@ -1,7 +1,7 @@
 # Overhead rope access — concept, 2026-10-27
 
-**Prototype implementation authorized 2026-10-27. Branch-only until playtested and approved.**
-The implemented layout dimensions are recorded below.
+**Prototype integrated on `gantry-v2`; branch-only until playtested and approved.**
+The implemented layout, rope controls, crane routes and evidence are recorded below.
 Replaces C6's upper catwalk levels (11.2/14/16.4) and tower hip beams. The robot,
 hip datum (13,10.6,26), bearing caps, jaws and today's low rear hip frame stay.
 
@@ -129,6 +129,36 @@ or automated walking/reach/visibility campaign ran. This is not player acceptanc
 [the player recheck remains open](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
 The crane routes and crossing interlocks are recorded below.
 
+## Rope operation and guidance — 2026-10-27
+
+Physical **UPPER LEAVES / OPEN / CLOSE** panels beside the left lift, at ground
+and on its fixed upper landing, let the player close the leaves after delivery.
+The panels stay on supported ground/landing geometry. The crane console keeps
+its existing movement controls. Manual guidance points to Close when front rope
+access needs it, then to an appropriate station after closure; normal range and
+occlusion checks still apply.
+
+At a station, **E** clips in and opens the protected passage. Adjacent gates trim
+their overlapping barriers to preserve the selected full 0.9 m opening. Space
+ascends, Ctrl descends, and WASD gives bounded slack. Boarding uses the existing
+crouch capsule beneath the solid davits/booms, including after reload. The rear
+boom has a collision-resolved top traverse back to its walkway. **G** clips or
+releases the pull-in lanyard while hanging, and unclips only on a floor. A free
+rope can be clipped from below or recalled at its station. Existing hand carrying,
+targeting and solid obstruction rules remain active.
+
+Front lines must be recalled before the upper leaves move. An unclipped worker
+standing on a leaf also holds its motion. Crane cables in the crossing hold
+Close, including with the crane manually stopped; closing is available once the
+crane is clear over the robot. These holds leave lower access independent.
+
+Rope snapshots retain station, line length, attachment and pull-in state with the
+current player pose. Invalid attachment/length/player/leaf combinations are
+rejected before live restoration, with no migration. This narrow rope safeguard
+does not introduce a wider per-machine save-validation framework. Manual changes
+are limited to goals and notes; objectives, slots and component quantities are
+unchanged. Backpack hinge worker access remains deliberately unresolved.
+
 ## Crane route implementation — 2026-10-27
 
 The actual prepared chest source, including its neck, tops out at **Y16.98**
@@ -164,3 +194,29 @@ height did not match that source. The front route uses the current geometry:
 These are coarse source/rig bounds and mechanical checks. The backpack hinge
 **worker access remains the user's open challenge**. No walking, reach, visibility
 or rendered review is implied by the crane delivery implementation.
+
+## Integrated verification — 2026-10-27
+
+Parent verification on the combined prototype passes **20 selected routine
+cases in 23.409 s**, with unchanged inputs and no performance warning. This
+includes the new layout (152 checks), rope/input/control (104), crane/route (198)
+fixtures, plus lifts, shelves, motion, rail endpoints, save roundtrip, startup,
+manual objectives/progress/completion/guidance, stage contract, shoulders and
+source-asset checks. Both authoring byte-equality checks and `git diff --check`
+pass. Local evidence:
+`game/workshop/verification/regressions-20261027T095513.924029Z/results.json`.
+
+The parent independently verified the exact manual source edits and recursively
+compared generated definitions with goal/note fields removed: objectives, slots,
+quantities and other content remain unchanged. Astra's source/spatial reviews
+found and repaired overlapping gates, boom boarding, lift-car interference,
+occupied-crossing closure and missing physical leaf controls. The control fixture
+uses normal E targeting, checks named hold messages, prerequisite cue switching,
+and panels against closed, intermediate and open leaf solids.
+
+These are mechanical and source-review results. No rendered review, automated
+walking/reach/visibility acceptance, diagnostic suite or gameplay FPS measurement
+ran. The [player checklist](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27)
+remains unticked. Keep this prototype on `gantry-v2` until the user playtests and
+explicitly approves. Backpack hinge worker access and eventual lowering/departure
+remain open design work.

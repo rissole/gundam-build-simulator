@@ -1,8 +1,9 @@
 # Gantry v2 — rope access, 2026-10-27
 
-**Prototype implementation authorized; kept off main until playtested and approved.**
-The current direction is the [overhead rope-access plan](overhead-access.md), with
-[active implementation tasks](../handoff/gantry-v2/README.md). It keeps the low hip
+**Prototype implemented on `gantry-v2`; kept off main until playtested and approved.**
+The [overhead rope-access implementation](overhead-access.md) and
+[player recheck](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27)
+record the current build. It keeps the low hip
 frame and 8.4 m access, replaces the upper floors with rope access at 20.6 m, and
 uses hinged workshop-side leaves plus a fixed exit-side walkway. Backpack hinge
 access and eventual lowering/departure remain open design work.

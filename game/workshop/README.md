@@ -217,11 +217,20 @@ Equipment still captures and restores its own state, which the stage runner uses
 
 ## Rope access (gantry v2 branch)
 
+The physical **UPPER LEAVES** panels beside the left lift, at ground and on its
+fixed upper landing, provide **OPEN / CLOSE** through normal E interaction.
+Close the leaves after delivery before using a front rope. Leaf movement waits for
+riders and deployed front ropes; closing also waits for crane cables in the
+crossing. Lower access stays independent. The tracked manual cues Close first
+when it is a rope prerequisite.
+
 At a 20.6 m walkway station, aim at **Clip in** and press **E**; its guard gate
 opens only for the attached player. Step through to hang. Hold **Space** to rise
 or **Ctrl** to lower at 1 m/s; releasing locks your height. **WASD** adjusts up to
 0.35 m of slack, with normal collision. At the top, move back toward the walkway.
 The rear boom allows a supported traverse between its tip and the walkway.
+Boarding automatically uses the normal crouch capsule beneath the davit/boom;
+normal carrying and collision rules remain active.
 
 While hanging, aim at supported robot structure within 1.6 m horizontally of
 your line and press **G** to pull in; G again releases toward plumb. Normal E
@@ -230,8 +239,9 @@ The rope end stays there for another ascent: aim and E to clip in from below.
 **Recall rope** at the station reel retrieves a free line. Front leaves wait with
 “Recall the ropes on the workshop-side leaves” until every front line is stowed.
 
-This mechanic awaits integration with A1's authored stations and player testing;
+This branch prototype awaits the user's [playtest](../../design/game/robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27);
 mechanical fixture checks do not establish usability or visual acceptance.
+Backpack hinge access remains an open design challenge.
 
 ## Controls
 

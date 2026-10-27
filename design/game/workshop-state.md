@@ -234,12 +234,13 @@ last version before consolidation.
 
 ## Next
 
-**Gantry v2 branch build (2026-10-27):** A1 layout is complete on `gv2/layout`:
-20.6 rope-access leaves/rear walkway, relocated lifts and preserved 8.4 hip work.
-Eleven selected routines pass (728 checks, 19.307 s); no rendered review or new
-player acceptance. [Implemented dimensions](gantry-v2/overhead-access.md#implemented-a1-layout--2026-10-27)
-and [pending player recheck](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
-Codex owns integration with A2 ropes/A3 crane routes; main remains untouched.
+**Gantry v2 prototype (2026-10-27):** integrated on `gantry-v2`, worktree
+`/private/tmp/gantry-v2`: 20.6 m rope walkways, relocated lifts, collision-resolved
+rope/lanyard work, physical upper-leaf controls and crossing-based crane routes.
+The low hip frame and 8.4 m work remain. [Implementation and mechanical evidence](gantry-v2/overhead-access.md)
+are separate from the [pending player recheck](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
+No rendered review or new player acceptance; keep off main until explicitly
+approved. Backpack hinge access and eventual lowering/departure remain open.
 
 **In progress (2026-10-27):** [machine operation](handoff/operated-machines/README.md).
 Gantry gap and mirror fixes are merged and player-accepted. The crane operator view
@@ -277,7 +278,10 @@ checks; retain the broader playtest and lane-marking obligations below.
   and tests reach later progress through `--stage` / `boot_workshop(stage)`.
 - **Saves are snapshots at rest.** A normal launch saves each set component; a
   machine's `capture()`/`apply()` must round-trip its at-rest state, including its
-  supported load. No migrations, mid-motion state or per-machine validators.
+  supported load. No migrations or serialized mid-motion state. Keep shared
+  schema checks; rope attachment is the narrow exception requiring station,
+  line-length and player/leaf consistency checks before any live restore. Do not
+  expand that safeguard into a wider per-machine validation framework.
   `--stage=<name>` gives supplied progress and is not playtest evidence. It never
   loads the save, but Save overwrites the slot with the stage plus the player's
   progress (user decision, 2026-10-25); closing the window saves only after a build
