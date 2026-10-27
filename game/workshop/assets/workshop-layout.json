@@ -1408,8 +1408,6 @@
         "rig_clearance": 2.05,
         "up_y": 14.0,
         "rack_contacts": [],
-        "access_mode": "pelvis",
-        "restore_access": true,
         "console_position": [
           7.8,
           0,
@@ -1749,9 +1747,7 @@
             0
           ],
           "distance": 0.18
-        },
-        "access_mode": "chest",
-        "restore_access": true
+        }
       },
       "core_store": {
         "payload": "assembly",
@@ -2050,8 +2046,7 @@
             -1
           ],
           "distance": 0
-        },
-        "access_mode": "core"
+        }
       },
       "backpack_store": {
         "payload": "assembly",
@@ -2309,8 +2304,7 @@
           "distance": 0.2
         },
         "source_equipment": "module_supports",
-        "guided_receiver": "backpack_hinge",
-        "access_mode": "backpack"
+        "guided_receiver": "backpack_hinge"
       },
       "cassette": {
         "payload": "assembly",
@@ -2661,8 +2655,9 @@
         ],
         "sweep_radius": 7.6,
         "exact_receiver": true,
-        "access_mode": "arm",
-        "restore_access": true,
+        "needs_front": [
+          "lower"
+        ],
         "approach": {
           "axis": [
             0,
@@ -2881,8 +2876,9 @@
         ],
         "sweep_radius": 7.6,
         "exact_receiver": true,
-        "access_mode": "arm",
-        "restore_access": true,
+        "needs_front": [
+          "lower"
+        ],
         "approach": {
           "axis": [
             0,
@@ -3187,7 +3183,6 @@
         "exact_receiver": true,
         "sweep_radius": 1.2,
         "up_y": 20.53,
-        "access_mode": "head",
         "console_position": [
           7.8,
           0,
@@ -3328,7 +3323,6 @@
         "exact_receiver": true,
         "sweep_radius": 1.2,
         "up_y": 20.53,
-        "access_mode": "head",
         "console_position": [
           7.8,
           0,
@@ -3470,7 +3464,6 @@
         "exact_receiver": true,
         "sweep_radius": 2.1,
         "up_y": 21.0,
-        "access_mode": "head",
         "console_position": [
           7.8,
           0,
@@ -3748,7 +3741,6 @@
         "exact_receiver": true,
         "sweep_radius": 2.1,
         "up_y": 21.58,
-        "access_mode": "head",
         "console_position": [
           7.8,
           0,
@@ -4026,7 +4018,6 @@
         "exact_receiver": true,
         "sweep_radius": 2.1,
         "up_y": 21.58,
-        "access_mode": "head",
         "console_position": [
           7.8,
           0,
@@ -4336,7 +4327,6 @@
         "exact_receiver": true,
         "sweep_radius": 2.1,
         "up_y": 20.52,
-        "access_mode": "head",
         "console_position": [
           7.8,
           0,
@@ -4646,7 +4636,6 @@
         "exact_receiver": true,
         "sweep_radius": 2.1,
         "up_y": 20.759999999999998,
-        "access_mode": "head",
         "console_position": [
           7.8,
           0,
@@ -6582,32 +6571,6 @@
         ]
       ],
       "rear_leaf": 1.45,
-      "modes": {
-        "work": [],
-        "pelvis": [
-          20.6
-        ],
-        "leg": [
-          8.4
-        ],
-        "chest": [
-          20.6
-        ],
-        "arm": [
-          8.4,
-          20.6
-        ],
-        "rear": [],
-        "head": [
-          20.6
-        ],
-        "core": [
-          20.6
-        ],
-        "backpack": [
-          20.6
-        ]
-      },
       "duration": 6.0
     },
     "zones": [

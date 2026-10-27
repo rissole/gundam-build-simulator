@@ -18,6 +18,7 @@ func run() -> void:
 	var fixture = game.equipment.get_equipment("foot_fixture")
 	expect(Stages.new(game).command(fixture,"sole_left").is_empty() and fixture.work_pose == "sole_left","the foot fixture turns to a stop")
 	await frames(2)
+	expect(Stages.new(game).gantry_front("lower",true).is_empty(),"player opens lower front before the snapshot")
 	var lift = game.equipment.get_equipment("left_lift")
 	var lift_rest: String = JSON.stringify(lift.capture())
 	# Ride the lift: a mid-ride save stands the player back on the deck at its stop.
@@ -40,6 +41,7 @@ func run() -> void:
 	var file: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PATH))
 	expect(JSON.stringify(Save.coerce(file.equipment.left_lift,lift.capture())) == lift_rest,"a moving machine is saved at its last stop")
 	expect(file.equipment.has("service_crane") and file.equipment.service_crane.station == "park","the parked crane is saved")
+	expect(file.equipment.workshop_access.version==2 and not file.equipment.workshop_access.has("mode") and file.equipment.workshop_access.channels.rear.value==1 and file.equipment.workshop_access.channels["20.6"].value==0,"save keeps independent fronts in version 2")
 	var saved: Dictionary = Roundtrip.state(game)
 	game.free()
 	await frames(2)
@@ -60,7 +62,10 @@ func run() -> void:
 	unknown.model.items["ghost"] = unknown.model.items.values()[0]
 	var renamed: Dictionary = JSON.parse_string(good)
 	renamed.equipment.left_lift["renamed"] = 1
-	for case in [["truncated JSON",good.substr(0,good.length()/2)],["wrong format",JSON.stringify(wrong_format)],["unknown identity",JSON.stringify(unknown)],["changed machine fields",JSON.stringify(renamed)]]:
+	var old_access: Dictionary = JSON.parse_string(good)
+	old_access.equipment.workshop_access.version=1
+	old_access.equipment.workshop_access.mode="work"
+	for case in [["old access version",JSON.stringify(old_access)],["truncated JSON",good.substr(0,good.length()/2)],["wrong format",JSON.stringify(wrong_format)],["unknown identity",JSON.stringify(unknown)],["changed machine fields",JSON.stringify(renamed)]]:
 		var out = FileAccess.open(PATH,FileAccess.WRITE)
 		out.store_string(case[1])
 		out.close()

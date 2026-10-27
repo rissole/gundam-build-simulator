@@ -28,7 +28,7 @@ def routes(layout):
                              [seat[0], 17.35, 26], seat],
             approach=dict(axis=[0, -1, 0], distance=1.60), rig_clearance=1.20,
             sweep_rig=True, exact_receiver=True, sweep_radius=1.2, up_y=20.53,
-            access_mode="head", console_position=layout["workshop"]["crane"]["console"],
+            console_position=layout["workshop"]["crane"]["console"],
             overhead_y=23.0, park_position=[8.4, 0, 18], rack_contacts=[])
 
 

@@ -116,9 +116,6 @@ def contract():
         access=dict(levels=[8.4,20.6], floor_depth=.2, guard_height=1.1,
                     wing_roots=[[5,24],[21,24]], wing_length=8, wing_width=1.2,
                     rear_roots=[[10.1,27.95],[15.9,27.95]], rear_leaf=1.45,
-                    modes={"work":[],"pelvis":[20.6],"leg":[8.4],
-                           "chest":[20.6],"arm":[8.4,20.6],
-                           "rear":[],"head":[20.6],"core":[20.6],"backpack":[20.6]},
                     duration=6.0),
         zones=["limb_station"], elevators={}, groups={}, solids=[], signs=[],
     )
@@ -611,7 +608,7 @@ def delivery_inputs(layout, data):
         source_pose=pose([3.25,1.2,13]),receiver_pose=pose([13,10.6,26]),
         route_positions=[[3.25,1.2,13],[3.25,10.8,13],[13,10.8,13],[13,10.8,26],[13,10.72,26],[13,10.6,26]],
         approach=dict(axis=[0,-1,0],distance=.12),rig_clearance=2.05,up_y=14.0,rack_contacts=[],
-        access_mode="pelvis",restore_access=True,console_position=data["crane"]["console"],overhead_y=23.,park_position=[8.4,0,18])
+        console_position=data["crane"]["console"],overhead_y=23.,park_position=[8.4,0,18])
     chest_common=dict(payload="assembly",load_uid="chest",support="crane_rigging",
         endpoint_ids=["magnet_a","magnet_b","magnet_c","magnet_d"],
         magnetic_points={f"chest_pad_{i}":[x,3.55,z] for i,(x,z) in enumerate([(x,z) for x in [-1.15,1.15] for z in [-.65,.65]],1)},
@@ -627,7 +624,7 @@ def delivery_inputs(layout, data):
         source_support="bulky_fixture",source_equipment="module_supports",receiver_equipment="module_supports",
         secured=dict(milestone="chest_secured"),source_pose=pose([3.25,.85,13]),receiver_pose=pose([13,12.7,26]),
         route_positions=[[3.25,.85,13],[3.25,12.88,13],[13,12.88,13],[13,12.88,26],[13,12.88,26],[13,12.7,26]],
-        approach=dict(axis=[0,-1,0],distance=.18),access_mode="chest",restore_access=True)
+        approach=dict(axis=[0,-1,0],distance=.18))
     core_common=dict(payload="assembly",load_uid="core",rig_adapter="core_guide",support="crane_rigging",endpoint_ids=["magnet_a","magnet_b"],
         magnetic_points={"core_front":[0,.58,-.15],"core_aft":[0,.22,1.16]},
         point_ends={"core_front":"magnet_a","core_aft":"magnet_b"},endpoint_labels={"magnet_a":"forward magnetic connector","magnet_b":"aft magnetic connector"},
@@ -647,7 +644,7 @@ def delivery_inputs(layout, data):
         # Descend .5 m behind the chest before the existing guided approach.
         route_positions=[[3.25,1.3,13],[3.25,18,13],[13,18,13],[13,18,28.6],
                          [13,13.35,28.6],[13,13.35,28.2],[13,13.35,28.2]],
-        approach=dict(axis=[0,0,-1],distance=0),access_mode="core")
+        approach=dict(axis=[0,0,-1],distance=0))
     layout["crane"]["tasks"]["backpack_store"]=dict(payload="assembly",load_uid="backpack",support="crane_rigging",
         title="Backpack to Heavy Module Bay",owner="backpack",slot="",source_support="backpack_store",receiver_support="bulky_fixture",
         receiver_equipment="module_supports",receiver_contact=True,secured=dict(milestone=""),
@@ -662,7 +659,7 @@ def delivery_inputs(layout, data):
     backpack.update(title="Backpack to hinges",owner="chest",slot="backpack",source_support="bulky_fixture",source_equipment="module_supports",
         receiver_equipment="backpack_hinge",guided_receiver="backpack_hinge",secured=dict(milestone="backpack_retained"),
         source_pose=pose([3.25,.85,13]),receiver_pose=pose(data["backpack"]["hinge_seat"]),route_positions=data["backpack"]["route_positions"],
-        approach=dict(axis=[0,-1,0],distance=.2),access_mode="backpack")
+        approach=dict(axis=[0,-1,0],distance=.2))
     backpack.pop("receiver_support");backpack.pop("receiver_contact")
     layout["crane"]["tasks"]["backpack"]=backpack
     layout["crane"]["tasks"]["cassette"]=dict(payload="assembly",load_uid="arm_cassette",support="crane_rigging",
@@ -690,9 +687,9 @@ def delivery_inputs(layout, data):
             route_positions=[[LIMB_X,1.55,9.9],[LIMB_X,9.6,9.9],[LIMB_X,9.6,9.9],[LIMB_X,9.6,9.9],[LIMB_X,9.6,9.9],
                              [LIMB_X,before[1],9.9],[LIMB_X,before[1],19.5],[before[0],before[1],19.5],before,center],
             route_rotations=[[0,0,0],[0,0,0],[90,0,0],[90,sign*90,0]]+[[75,sign*90,0]]*6,
-            sweep_radius=7.6,exact_receiver=True,access_mode="arm",restore_access=True,approach=dict(axis=[0,0,0],distance=offset))
+            sweep_radius=7.6,exact_receiver=True,needs_front=["lower"],approach=dict(axis=[0,0,0],distance=offset))
     right=deepcopy(layout["crane"]["tasks"]["right_arm"])
-    for key in ["guided_receiver","source_equipment","access_mode","restore_access"]:right.pop(key)
+    for key in ["guided_receiver","source_equipment","needs_front"]:right.pop(key)
     right.update(title="Right arm to arm rig",owner="right_arm",slot="",source_support="right_arm_store",receiver_support="arm_cassette",
         receiver_equipment="arm_cassette",receiver_contact=True,secured=dict(milestone=""),
         source_pose=pose([21,1.55,-6.3]),receiver_pose=pose([LIMB_X,1.55,9.9]),

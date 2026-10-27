@@ -211,10 +211,13 @@ empty return; arm upending/yaw/splay and shoulder seating; rear low bypass,
 outboard lift, high crossing and central lowering; high head-piece/pauldron
 deliveries; shared work-platform positioning and height adjustment.
 
-A delivery requests its shared access configuration. Work fingers retract before
+Only the player operates either gantry front; machines query and wait for OPEN.
+The upper leaves and lower front have independent OPEN/CLOSE rows beside the
+left lift at ground and on the upper landing. Work fingers retract before
 front wings swing. Rear hip bridges fold upward without crossing the held cradle.
-Gates and occupancy interlocks prevent movement through occupied areas. Restore
-working platforms only after payloads and rigging clear their moving envelopes.
+CLOSE refuses with the occupying equipment’s load name until payloads and
+rigging clear the relevant swing. Upper rope/rider holds remain. The player closes
+each front after delivery; the crane never restores it automatically.
 
 Existing equipment retains Up/Down/Go and Advance/Stop/Return until its operated
 conversion below. Show contextual destinations and specific
@@ -337,7 +340,7 @@ tolerances for player alignment. Being inside a tolerance never bypasses a sweep
 | INDEX with bolster supporting foot | Stow only after retained joints are braced. “Stow the foot bolster before indexing.” Keep unfinished-leg parking available once its retained joints are locked. |
 | Loaded departure toward hip | Matching lane, `structural_ready`, engaged holder, complete required braces, secured gantry. Preserve “Select the left/right hip lane for this leg.”, “Complete the structural leg and every retaining connection before delivery.” and “Deliver the hip assembly, close all four gantry jaws and insert both waist lock pins before leg delivery.” |
 | TRAVEL off a track / with nonneutral delivery pose | At matching lane within 0.02 m, lying, rise zero. “Align INDEX with the selected hip track.” / “Lower and lay the leg down before travelling.” Parking X22 has no longitudinal track. |
-| TRAVEL/TILT/RISE with access unavailable | Request existing `rail_gates.request_closed(true)` and `workshop_access.request_mode("leg")`; hold motion until ready. “Waiting for the ground crossing gates to close.” / “Waiting for the hip access platforms to clear.” Preserve the gate occupancy message “Leave the ground rail corridor before moving the leg rig.” |
+| Loaded RISE/LOWER with access unavailable | The player must open LOWER FRONT beside the left lift first; the leg rig only queries `front_open("lower")`. Empty rig movement needs no front change. |
 | TILT near the transverse table | At selected lane, bogie at Z26 within 0.02 m, rise zero. “Travel to the clear turn position before tilting.” / “Lower the leg before tilting.” The known-clear Z26 pose is the first slice's turn envelope; do not infer a safe earlier turn from table bounds alone. |
 | RISE while misaligned | Upright within 0.10°, selected lane and Z26 within 0.02 m. “Stand the leg upright under the selected hip before raising.” |
 | Roll/lift away from construction home | Engaged at station, foot received, bolster supports it; `source_roll` zone clear. “Roll only with the leg rig occupied in the Limb Bay.” / “Transfer the prepared foot onto the leg rig first.” Lift fully before nonneutral roll; restore roll before lowering: “Raise the construction axis before rolling.” / “Restore neutral roll before lowering the construction axis.” |
@@ -535,7 +538,7 @@ saves stay. The user approved it on 2026-10-27.
 | Transfer table (was INDEX) | Large floor lever beside the table | Grab the handle and drag it into a notch: LEFT HIP · RIGHT HIP / BUILD · PARK. The table then drives to that notch and stops. The throw is parallel to the table's travel, and the notches are named by destination. If the table may not move, the lever stays locked and its lamp says why. | Foot support away (when carrying a leg), turnover lowered, bogie on the table |
 | Bogie and leg lift | One box at the Limb Bay end of the rail, about where today's panel 1 is: TRAVEL TO BAY / TO TABLE, and LEG RISE / LOWER, hold E | TRAVEL drives along the rail between its two end stops. RISE stands the leg upright, then lifts it into the hip. Holding RISE to the top stop seats the leg. LOWER reverses; from the top, it unseats the leg only while no hip retention is fitted. | Travel: table in a hip notch, leg flat, clamps closed (carrying) or open (empty). Rise: bogie at the bay stop, gantry front open, hip gantry secured, leg structurally complete, and the selected notch matching this leg |
 | Leg clamps (was holder head) | One LEG CLAMPS switch on the rig base near the foot, about waist height; E tap toggles RELEASE / GRAB, like the waist pins | RELEASE opens both clamps, drops the head off the contact pads, pulls it back, folds it narrow and slides it 2 m sideways, clear of the leg; GRAB reverses this. A probe showed nothing less clears the docked leg when the empty rig lies down (2026-10-27). With the leg seated, the clamps sit about 4.2 m and 7.5 m up, beyond reach from the floor (about 4 m) and below the 8.4 m deck, so the switch cannot live on the clamps. | Open on a seated leg: hip retention and lock pins complete. Close: the leg is in the rig |
-| Gantry front | Box at the gantry: OPEN / CLOSE | Opens or closes every access deck level and the rear leaves. While it is closed, nothing (crane load or leg) can move into the gantry; a delivery stops at the boundary and says so. | Close: nothing inside its swing |
+| Gantry fronts | Two rows beside the left lift at ground and upper landing: UPPER LEAVES and LOWER FRONT, each OPEN / CLOSE | Player-operated independent fronts; taps reverse motion. Upper moves the 20.6 m leaves; lower moves 8.4 m wings/fingers and rear guards/leaves. The crane waits at every upper crossing, and arm lifts also wait for lower OPEN. No machine operates another. | Close: no named equipment occupant in that front’s swing; upper rope/rider/cable holds remain |
 | Next leg (was BUILD) | NEXT LEG on the bogie box | Puts the finished or empty leg back in its queue and brings the other leg onto the rig, as BUILD did. | Empty rig at the build position with clamps closed, or an unstarted leg |
 
 Removed: the crossing gates (the bogie's collision check already stops it and
@@ -564,17 +567,18 @@ and gains `clamps` (0 closed to 1 open). Support is derived from closed clamps w
 the leg on the rig. Today's five-phase release linkage is replaced by the clamps'
 own open-and-retract motion. The empty rig's
 LOWER must clear the mounted leg with that geometry; if it does not, change the
-clamp geometry rather than add a hidden motion. `workshop_access` collapses to an
-open/closed value. Old saves become invalid and are deleted.
+clamp geometry rather than add a hidden motion. `workshop_access` keeps two
+independent open/closed fronts. Version-2 snapshots retain channels and motion, without a mode.
+Old saves become invalid and are deleted.
 
 **Checks.** The clamp clearance probe settled the RELEASE motion. After building,
 `arm_delivery_test`, `chest_delivery_test` and `head_crane_test` (approved
 2026-10-27) check the crane routes with the rear leaves raised, and the arm and leg
-diagnostics check the Limb Bay shift. Crane deliveries that enter the gantry
-(pelvis, chest, arms) wait before their loaded lift, at the pickup, until the front
-is open (as implemented; simpler than stopping mid-route), and count as occupants
-until their connectors are released. Head and
-pauldron deliveries rely on their normal collision checks.
+diagnostics check the Limb Bay shift. Every upper crossing, including empty and
+reverse crane travel, waits for player OPEN; arm deliveries additionally need
+lower OPEN before lifting. Occupancy is spatial, so a seated load whose rigging
+is clear allows CLOSE even before its connectors are released. Head and pauldron
+crossings follow the same upper-front rule.
 
 #### B3 implementation notes, 2026-10-27 (superseded by v2 above)
 

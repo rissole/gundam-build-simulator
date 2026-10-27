@@ -47,6 +47,10 @@ func run() -> void:
 	expect(console.hint.text==crane.blocked,"selecting a blocked command explains what to finish")
 	console._command("up");await frames(2,false)
 	expect(console.feedback.text==crane.blocked and not console.feedback.text.contains("Connection retention"),"trying the blocked command repeats that explanation")
+	crane.status_line="To Final Assembly Bay · Up · Moving\nOpen the upper leaves (UPPER LEAVES panel beside the left lift)."
+	crane.blocked="";crane.options.clear();crane.options.append({"action":"stop","label":"Stop"})
+	console.refresh();await frames(2,false)
+	expect(console.status.text==crane.status_line and console.order==["stop"],"waiting crane shows the player panel instruction and retains Stop")
 	var passed = checks.all(func(check):return check.passed)
 	print("CRANE_CONSOLE ","PASS " if passed else "FAIL ",checks.size()," checks")
 	crane.free();hud.free();quit(0 if passed else 1)

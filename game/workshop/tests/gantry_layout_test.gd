@@ -34,8 +34,7 @@ func bounds(id: String) -> AABB:
 
 func _check_contract() -> void:
 	expect(spec.access.levels==[8.4,20.6],"only hip and rope-access levels remain")
-	var modes={"work":[],"pelvis":[20.6],"chest":[20.6],"arm":[8.4,20.6],"head":[20.6],"leg":[8.4],"rear":[],"core":[20.6],"backpack":[20.6]}
-	expect(spec.access.modes==modes,"front-crossing crane modes open the upper leaves; leg mode retains its lower sequence")
+	expect(not spec.access.has("modes"),"machine-request configurations are removed")
 	var stale: Array=[]
 	for id in spec.groups:
 		if spec.groups[id].has("level") and not spec.groups[id].level in [8.4,20.6]:stale.append(id)
@@ -44,17 +43,16 @@ func _check_contract() -> void:
 	expect(stale.is_empty(),"removed levels, rear crossover and old landing fills are absent: "+str(stale))
 	var fingers: Array=spec.groups.keys().filter(func(id):return spec.groups[id].get("joint")=="finger")
 	expect(fingers.size()==2 and fingers.all(func(id):return spec.groups[id].level==8.4),"only the retained hip fingers remain")
-	for mode in modes:
-		expect(access.request_mode(mode).is_empty(),mode+" is a supported access request")
+	for action in ["upper_open","upper_close","lower_open","lower_close"]:
+		expect(access.request(action).is_empty(),action+" is a supported player action")
 		access.physics(spec.access.duration)
-		expect(access.ready_for(mode),mode+" completes with the authored goals")
 		var saved: Dictionary=access.capture()
-		expect(access.validate(saved).is_empty(),mode+" at-rest state validates")
+		expect(access.validate(saved).is_empty(),action+" at-rest state validates")
 		access.apply(saved)
-		expect(access.ready_for(mode),mode+" round-trips its locked pose")
+		expect(access.manual_state()[action+"d" if action.ends_with("close") else action],action+" round-trips its locked pose")
 	var old: Dictionary=access.capture();old.arm_services_stowed=false
 	expect(not access.validate(old).is_empty(),"obsolete service-stow snapshot is rejected, never migrated")
-	access.request_mode("work");access.physics(spec.access.duration)
+	access.request("upper_close");access.request("lower_close");access.physics(spec.access.duration)
 	var anchors=[
 		["front_l_9.3","wing_left_20.6",Vector3(4.3,1.2,.75),Vector3(9.3,21.8,24.75)],
 		["front_l_10.8","wing_left_20.6",Vector3(5.8,1.2,.75),Vector3(10.8,21.8,24.75)],
@@ -132,9 +130,9 @@ func _check_upper_loop() -> void:
 	for id in perimeter:
 		if not id.begins_with("rope_"):continue
 		var fixed: AABB=bounds(id)
-		world.apply_frames(access.frames_at(access._goals("arm")))
+		world.apply_frames(access.frames_at({"8.4":1.0,"20.6":1.0,"rear":1.0}))
 		expect(bounds(id).is_equal_approx(fixed),"side/rear loop remains fixed when the front crane opening opens: "+id)
-		world.apply_frames(access.frames_at(access._goals("work")))
+		world.apply_frames(access.frames_at({}))
 
 func _check_hinges() -> void:
 	expect(not world.pieces.has("wing_axle_left") and not world.pieces.has("wing_axle_right"),"neither front hinge retains a through-post in the walking surface")
@@ -169,7 +167,7 @@ func _check_hinges() -> void:
 			if phase==1.0:
 				var tip: Vector3=upper*Vector3(8,0,0)
 				expect(tip.is_equal_approx(Vector3(5 if side=="left" else 21,20.6,16)),side+" fully open upper leaf points toward the workshop")
-	world.apply_frames(access.frames_at(access._goals("work")))
+	world.apply_frames(access.frames_at({}))
 
 func _check_coarse_clearance() -> void:
 	# Own-mesh unions from the approved concept mock, grown .5 m (head .75).
@@ -192,7 +190,7 @@ func _check_coarse_clearance() -> void:
 	expect(collisions.is_empty(),"closed upper access clears coarse grown robot envelopes, including head top Y20.16: "+str(collisions))
 	# Parked open leaves are above the floor-equipment envelope. Compare full
 	# boxes, not plan alone: these lanes intentionally pass beneath the leaves.
-	world.apply_frames(access.frames_at(access._goals("arm")))
+	world.apply_frames(access.frames_at({"8.4":1.0,"20.6":1.0,"rear":1.0}))
 	var equipment=[AABB(Vector3(7.3,0,22.3),Vector3(1,2,1)),AABB(Vector3(7.9,0,20),Vector3(1,2,1)),AABB(Vector3(17.1,0,20),Vector3(1,2,1)),AABB(Vector3(-2.25,0,6),Vector3(11,6.5,12))]
 	var mobile: Dictionary=spec.mobile_platform
 	for route in mobile.routes.values():
@@ -208,7 +206,7 @@ func _check_coarse_clearance() -> void:
 				var box: AABB=bounds(piece.spec.id)
 				if equipment.any(func(other):return other.intersects(box)):blocked.append(piece.spec.id)
 	expect(blocked.is_empty(),"open leaf solids clear console, rail gates, bulky bay and mobile route envelopes: "+str(blocked))
-	world.apply_frames(access.frames_at(access._goals("work")))
+	world.apply_frames(access.frames_at({}))
 
 func _check_lifts() -> void:
 	for side in ["left","right"]:

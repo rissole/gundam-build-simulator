@@ -59,6 +59,8 @@ func run() -> void:
 	var gate=Gate.new();gate.equipment_id="module_supports";game.add_child(gate);game.equipment.register(gate)
 	var crane=Crane.new();game.add_child(crane);crane.game=game
 	crane.tasks=preload("res://scripts/leg_bay_layout.gd").layout().crane.tasks
+	expect(crane.tasks.values().all(func(spec):return not spec.has("access_mode") and not spec.has("restore_access")),"no crane task operates or restores gantry access")
+	expect(crane.tasks.keys().filter(func(key):return crane.tasks[key].get("needs_front",[])==["lower"])==["left_arm","right_arm"],"only shoulder deliveries require the lower front")
 	crane.task="pelvis";crane.uid="pelvis";crane.assembly_payload=true
 	crane.config={"spec":crane.tasks.pelvis}
 	crane.END_IDS=["a","b"]

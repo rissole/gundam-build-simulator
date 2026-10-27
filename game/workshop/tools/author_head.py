@@ -97,12 +97,12 @@ def routes(layout):
             route_positions=[source,[3.25,high,13],[13,high,13],[13,high,26],[13,16.8+approach,26],[13,16.8,26]],
             approach=dict(axis=[0,-1,0],distance=approach),rig_clearance=1.20,
             sweep_rig=True,exact_receiver=True,sweep_radius=2.1,up_y=high+max(p[1] for p in points)+1.2,
-            access_mode="head",console_position=layout["workshop"]["crane"]["console"],overhead_y=23.0,
+            console_position=layout["workshop"]["crane"]["console"],overhead_y=23.0,
             park_position=[8.4,0,18],rack_contacts=[])
         if uid=="head_crown":common["rig_center_offset"]=[0,0,-.30]
         layout["crane"]["tasks"][uid]=common
         transfer=deepcopy(common)
-        for key in ["source_equipment","guided_receiver","access_mode","exact_receiver"]:transfer.pop(key)
+        for key in ["source_equipment","guided_receiver","exact_receiver"]:transfer.pop(key)
         transfer.update(title=title+" to Heavy Module Bay",owner=uid,slot="",source_support=uid+"_store",
             receiver_support="bulky_fixture",receiver_equipment="module_supports",receiver_contact=True,
             secured=dict(milestone=""),source_pose=pose(store),receiver_pose=pose(source),rig_adapter=uid+"_receiver",

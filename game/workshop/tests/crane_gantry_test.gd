@@ -107,29 +107,31 @@ func geometry() -> void:
 func interlocks() -> void:
 	select("pelvis")
 	crane.progress=.4 # travel segment is still entirely workshop-side
-	expect(crane._access_error(.41).is_empty() and access.upper_ready(false),"non-crossing loaded segment leaves upper access closed")
+	expect(crane._access_error(.41).is_empty() and access.front_closed("upper"),"non-crossing loaded segment leaves upper access closed")
 	crane.progress=.83
 	var before=crane.progress
 	crane.physics(.2)
 	expect(crane.progress==before and crane.moving and crane.blocked_reason==Production.UPPER_WAIT,"crossing pauses with a named reason and keeps trip pending")
-	access.physics(7)
+	access.request("upper_open");access.physics(7)
 	crane.physics(.2)
 	expect(crane.progress>before and crane.blocked_reason.is_empty(),"open leaves automatically resume the same trip")
 	# At Z26 the lowering segment does not reserve the upper leaves.
 	crane.station="receiver";crane.motion="down";crane.progress=0
-	access.request_upper(false);access.physics(7)
-	expect(access.upper_ready(false) and crane._access_error(.1).is_empty(),"upper leaves close while pelvis is still held at Z26")
+	access.request("upper_close");access.physics(7)
+	expect(access.front_closed("upper") and crane._access_error(.1).is_empty(),"upper leaves close while pelvis is still held at Z26")
 	# Reverse route reopens only at the crossing; deployed ropes hold it.
 	crane.motion="go:source";crane.progress=.12;ropes.clear=false
 	before=crane.progress;crane.physics(.2)
-	expect(crane.progress==before and crane.moving and crane.blocked_reason==ropes.LEAF_REASON,"return crossing waits for the named deployed front rope")
+	expect(crane.progress==before and crane.moving and crane.blocked_reason==Production.UPPER_WAIT,"return crossing asks the player to open the upper leaves")
+	access.request("upper_open");access.physics(7)
+	expect(access.blocked_reason==ropes.LEAF_REASON,"player opening still waits for the deployed rope")
 	ropes.clear=true;access.physics(7);crane.physics(.2)
 	expect(crane.progress>before,"recalling front rope resumes the pending crossing")
 	select("left_arm")
-	access.request_mode("work");access.physics(7)
-	expect(not crane._access_error(.01).is_empty(),"arm still requests its lower8.4 configuration")
-	access.physics(7)
-	expect(access.lower_ready("arm") and access.upper_ready(false),"lower arm configuration preserves closed upper leaves away from crossing")
+	access.request("upper_close");access.request("lower_close");access.physics(7)
+	expect(not crane._access_error(.01).is_empty(),"arm waits for the player to open the lower front")
+	access.request("lower_open");access.physics(7)
+	expect(access.front_open("lower") and access.front_closed("upper"),"lower arm configuration preserves closed upper leaves away from crossing")
 	# Access ticks first: closing must not get a one-frame head start into a
 	# currently occupied band, including when the operator stopped the crane.
 	for loaded in [true,false]:
@@ -137,14 +139,14 @@ func interlocks() -> void:
 		if loaded:crane.progress=.9
 		else:crane.station="receiver";crane.motion="go:park";crane.progress=.23
 		crane.moving=false
-		access.request_upper(true);access.physics(7)
+		access.request("upper_open");access.physics(7)
 		expect(crane.upper_crossing_occupied(),"current "+str(loaded)+" loaded/empty cable envelope occupies crossing")
-		access.request_upper(false);access.physics(.1)
-		expect(is_equal_approx(access.channels["20.6"].value,1) and access.blocked_reason.contains("crane cables"),"Close holds before any leaf movement into stopped crane cables")
+		var refusal: String=access.request("upper_close");access.physics(.1)
+		expect(is_equal_approx(access.channels["20.6"].value,1) and refusal.begins_with("Move the ") and refusal.ends_with("before closing the upper leaves."),"Close refuses before any leaf movement into stopped crane cables")
 		crane.station="receiver";crane.motion="down";crane.progress=0
 		expect(not crane.upper_crossing_occupied(),"current rig at Z26 releases upper close hold")
-		access.physics(7)
-		expect(access.upper_ready(false),"pending Close finishes after crane clears the band")
+		access.request("upper_close");access.physics(7)
+		expect(access.front_closed("upper"),"player Close succeeds after crane clears the band")
 
 func empty_journeys() -> void:
 	var lift=AABB(Vector3(.3,0,22.45),Vector3(3.2,22,3.2))
@@ -169,7 +171,7 @@ func empty_journeys() -> void:
 			expect(side_clear,key+" empty mast avoids the fixed upper perimeter")
 	select("pelvis",false)
 	crane.station="receiver";crane.motion="go:park";crane.progress=.12
-	access.request_mode("work");access.physics(7)
+	access.request("upper_close");access.request("lower_close");access.physics(7)
 	expect(not crane._access_error(.3).is_empty(),"empty parking trip also waits before crossing upper leaves")
 	# Existing serialized start pose deterministically restores task-switch path.
 	crane.travel_from=Transform3D(Basis.IDENTITY,Vector3(13,17,28.6))
@@ -185,7 +187,7 @@ func run() -> void:
 		if not solid.solid or not ["rope_side_","rope_corner_","rope_link_"].any(func(prefix):return solid.id.begins_with(prefix)):continue
 		perimeter.append(AABB(AssemblyRuntime.vec(solid.position)-AssemblyRuntime.vec(solid.size)/2,AssemblyRuntime.vec(solid.size)))
 	game=World.new();root.add_child(game);expect(game.setup().is_empty(),"real content configures")
-	crane=Crane.new();game.add_child(crane);crane.game=game;crane.equipment_id="service_crane";game.equipment.register(crane);crane.console=Console.new();crane.add_child(crane.console)
+	crane=Crane.new();game.add_child(crane);crane.game=game;crane.tasks=authored.crane.tasks;crane.equipment_id="service_crane";game.equipment.register(crane);crane.console=Console.new();crane.add_child(crane.console)
 	access=Access.new();game.add_child(access);access.game=game;access.equipment_id="workshop_access";access.spec=authored.workshop.access
 	access.channels={"8.4":{"value":0.,"goal":0.},"20.6":{"value":0.,"goal":0.},"rear":{"value":0.,"goal":0.}}
 	game.equipment.register(access)

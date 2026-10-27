@@ -17,6 +17,7 @@ func run() -> void:
 	crane.station="receiver";crane.raised=false;game.equipment.register(crane)
 	var receiver=preload("res://scripts/staged_receiver.gd").new();game.add_child(receiver)
 	receiver.setup(game,"receiver",{"owner":"frame","uid":"payload","slot":"seat","crane_task":"payload","retention_slots":["bolt"],"closure_slots":["cover"],"clear_zones":["prior_rig"],"seat":{"position":[0,1,0]}})
+	expect(receiver.gantry_occupant("upper").is_empty() and receiver.gantry_occupant("lower").is_empty(),"a fixed receiver does not reserve a gantry front")
 	game.zones.claim("prior_rig","previous")
 	var initial=snapshot(game.model)
 	expect(not receiver.accept().is_empty() and initial==snapshot(game.model),"occupied rig zone rejects seating atomically")

@@ -49,6 +49,8 @@ func undo(_owner: String) -> Dictionary:return {"handled":false,"error":""}
 func hand_payload() -> String:return ""
 func drop() -> Dictionary:return {"handled":false,"error":""}
 func busy_reason(_subject: String) -> String:return ""
+## Name of a load occupying this gantry front’s swing, or empty when clear.
+func gantry_occupant(_front: String) -> String:return ""
 func travel_error(_carrier_id: String, _from: float, _to: float) -> String:return ""
 func carrier_moved(_carrier_id: String) -> void:pass
 func capture() -> Dictionary:return {}

@@ -12,37 +12,37 @@ func run() -> void:
 	var world = Blockout.new();game.add_child(world);world.setup(game,layout.workshop)
 	var access = Access.new();game.add_child(access);access.setup(game,world)
 	await frames(3)
-	expect(access.ready_for("work"),"work platforms initially locked")
-	for mode in ["leg","work","pelvis","work","chest","work","arm","work"]:
-		var error: String = access.request_mode(mode)
+	expect(access.front_closed("upper") and access.front_closed("lower"),"work platforms initially locked")
+	for mode in ["lower_open","lower_close","upper_open","upper_close"]:
+		var error: String = access.request(mode)
 		expect(error.is_empty(),mode+" configuration accepted: "+error)
 		if not error.is_empty():continue
 		for step in range(13):access.physics(.5)
-		expect(access.ready_for(mode),mode+" completes and locks: "+access.blocked_reason)
+		expect(access.manual_state()[mode+"d" if mode.ends_with("close") else mode],mode+" completes and locks: "+access.blocked_reason)
 		var saved: Dictionary = JSON.parse_string(JSON.stringify(access.capture()))
 		expect(access.validate(saved).is_empty(),mode+" save validates")
 		access.apply(saved)
-		expect(access.ready_for(mode),mode+" restore preserves locked pose")
+		expect(access.manual_state()[mode+"d" if mode.ends_with("close") else mode],mode+" restore preserves locked pose")
 	# The access platforms clip through cargo by design (no clearance sweep).
 	var blocker = StaticBody3D.new();game.add_child(blocker);blocker.name = "SuppliedCargo"
 	var collision = CollisionShape3D.new();var shape = BoxShape3D.new();shape.size=Vector3(.5,1,.5)
 	collision.shape=shape;blocker.add_child(collision);blocker.position=Vector3(9,8.8,24)
 	await frames(3)
-	expect(access.request_mode("leg").is_empty() and access.moving,"cargo in a wing's swing never refuses the delivery configuration")
+	expect(access.request("lower_open").is_empty() and access.moving,"cargo in a wing's swing never refuses the delivery configuration")
 	access.physics(1.5)
 	expect(access.moving and access.blocked_reason.is_empty(),"wings swing through cargo without holding")
 	blocker.free();await frames(2)
-	access.request("stop")
+	access.request("lower_close")
 	var interrupted: Dictionary = JSON.parse_string(JSON.stringify(access.capture()))
-	expect(not access.moving and not access.ready_for("leg"),"Stop holds intermediate configuration")
-	expect(access.validate(interrupted).is_empty(),"stopped intermediate snapshot accepted")
-	access.apply(interrupted);access.request("advance")
+	expect(access.moving and not access.front_open("lower"),"Close reverses an intermediate opening")
+	expect(access.validate(interrupted).is_empty(),"intermediate snapshot accepted")
+	access.apply(interrupted);access.request("lower_open")
 	for step in range(12):access.physics(.5)
-	expect(access.ready_for("leg"),"restored partial configuration resumes to delivery lock")
+	expect(access.front_open("lower"),"restored partial configuration resumes to delivery lock")
 	for value in [-.01,1.01,"0.5",null]:
 		var corrupt = interrupted.duplicate(true);corrupt.channels.rear.value=value
 		expect(not access.validate(corrupt).is_empty(),"malformed platform phase rejected: "+str(value))
-	var bad = interrupted.duplicate(true);bad.channels.rear.goal=0
+	var bad = interrupted.duplicate(true);bad.channels.rear.goal=1
 	expect(not access.validate(bad).is_empty(),"configuration/goal mismatch rejected")
 	var passed = checks.all(func(check):return check.passed)
 	write_evidence("res://verification/wide-access.json",{"scope":"equipment-only; no access acceptance","checks":checks})
