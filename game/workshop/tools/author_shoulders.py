@@ -149,7 +149,7 @@ def extend(trial, chest, arms, kinds, diagram):
                 crane_to(uid, uid), dict(at=2, text="Keep all four connectors attached until the arm's services are connected.")),
             page("retain the ball","Clamp both ring halves around the shoulder ball.",retention,
                 [dict(op="fit", slots=list(rings)), dict(op="fit", slots=list(retention[len(rings):]))],
-                dict(at=0, text="The seam keys only fit one way round.")),
+                dict(at=0, text="Use a workshop-side rope from the left lift's ROPE ACCESS stop. The seam keys only fit one way round.")),
             page("fit the neutral brace","Fit the shoulder brace that holds the arm straight.",bracing,
                 [dict(op="fit", slots=[bracing[0]]), dict(op="fit", slots=list(bracing[1:]))])]
         for n,ids in enumerate(drive_pages,1):

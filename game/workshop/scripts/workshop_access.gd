@@ -4,7 +4,8 @@ extends "res://scripts/equipment.gd"
 ## intermediate phase is stopped/resumed and serialized. The gantry's access
 ## platforms deliberately clip through loose parts and players instead of
 ## sweeping for clearance (user decision, 2026-10-26): a whole-route sweep
-## stalled each delivery for ~0.4 s. A rider still moves with a deck.
+## stalled each delivery for ~0.4 s. Retained lower decks still carry riders;
+## the upper rope leaves wait until nobody is aboard and their ropes are recalled.
 const Codec = preload("res://scripts/pose_codec.gd")
 var blockout: Node3D
 var spec: Dictionary
@@ -61,6 +62,39 @@ func _goals(mode: String) -> Dictionary:
 	goals.rear = 1.0 if mode=="leg" else 0.0
 	return goals
 
+## The crane requests the upper crossing independently of lower work access.
+func upper_ready(open: bool) -> bool:
+	var channel: Dictionary=channels.get("20.6",{})
+	var target=1.0 if open else 0.0
+	return not channel.is_empty() and is_equal_approx(channel.value,target) and is_equal_approx(channel.goal,target)
+
+func request_upper(open: bool) -> String:
+	if not channels.has("20.6"):return "The upper access leaves are unavailable."
+	if game.paused:return "Resume the workshop before moving access platforms."
+	channels["20.6"].goal=1.0 if open else 0.0
+	moving=channels.values().any(func(channel):return not is_equal_approx(channel.value,channel.goal))
+	blocked_reason=rope_motion_error() if moving else ""
+	return ""
+
+func lower_ready(mode: String) -> bool:
+	if not mode in spec.modes:return false
+	var goals=_goals(mode)
+	for key in channels:
+		if key=="20.6":continue
+		if not is_equal_approx(channels[key].value,goals[key]) or not is_equal_approx(channels[key].goal,goals[key]):return false
+	return true
+
+func request_lower_mode(mode: String) -> String:
+	if not mode in spec.modes:return "Unknown workshop access configuration."
+	if game.paused:return "Resume the workshop before moving access platforms."
+	var goals=_goals(mode)
+	requested_mode=mode
+	for key in channels:
+		if key!="20.6":channels[key].goal=goals[key]
+	moving=channels.values().any(func(channel):return not is_equal_approx(channel.value,channel.goal))
+	blocked_reason=rope_motion_error() if moving else ""
+	return ""
+
 func request_mode(mode: String) -> String:
 	if not mode in spec.modes:return "Unknown workshop access configuration."
 	if game.paused:return "Resume the workshop before moving access platforms."
@@ -86,9 +120,10 @@ func request(action: String) -> String:
 func physics(delta: float) -> void:
 	if game.paused or not moving:return
 	blocked_reason = rope_motion_error()
-	if not blocked_reason.is_empty():return
 	var next = values()
-	for key in channels:next[key] = move_toward(channels[key].value,channels[key].goal,delta/spec.duration)
+	for key in channels:
+		if key=="20.6" and not blocked_reason.is_empty():continue
+		next[key] = move_toward(channels[key].value,channels[key].goal,delta/spec.duration)
 	for key in channels:channels[key].value = next[key]
 	_pose()
 	moving = channels.values().any(func(channel):return not is_equal_approx(channel.value,channel.goal))
@@ -98,7 +133,14 @@ func rope_motion_error() -> String:
 	var channel: Dictionary = channels.get("20.6",{})
 	if channel.is_empty() or is_equal_approx(channel.value,channel.goal):return ""
 	var rope = game.equipment.get_equipment("rope_access")
-	return rope.LEAF_REASON if rope!=null and not rope.front_ropes_clear() else ""
+	if rope!=null and not rope.front_ropes_clear():return rope.LEAF_REASON
+	var floor=EquipmentRegistry.rider_floor(game)
+	if floor!=null:
+		for side in ["left","right"]:
+			var leaf: Node=blockout.groups.get("wing_"+side+"_20.6")
+			if leaf!=null and (floor==leaf or leaf.is_ancestor_of(floor)):
+				return "Step off the workshop-side leaves before they move."
+	return ""
 
 func _pose() -> void:
 	blockout.apply_frames(frames_at(values()))
@@ -123,7 +165,7 @@ func validate(data: Variant, _candidate: AssemblyModel = null, _world: Dictionar
 		if not Codec.same_keys(channel,["value","goal"]):return ["Invalid platform phase."]
 		for field in ["value","goal"]:
 			if not Codec.number(channel[field]) or channel[field]<0 or channel[field]>1:return ["Platform phase out of range."]
-		if not is_equal_approx(channel.goal,goals[key]):return ["Platform goal disagrees with delivery configuration."]
+		if key!="20.6" and not is_equal_approx(channel.goal,goals[key]):return ["Platform goal disagrees with delivery configuration."]
 	return []
 
 func apply(data: Dictionary) -> void:

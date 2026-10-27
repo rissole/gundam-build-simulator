@@ -313,9 +313,9 @@ def extend(trial,chest,kinds,layout,diagram):
                     [tube([0,0,direction*length/2],.006,0,length,[0,0,1]),tube([0,0,-direction*.006],.010,0,.012,[0,0,1])],[uid]))
         retained[uid]=[uid]+hardware;slots[uid]["secured_by"]=hardware.copy()
         chest["milestones"][uid+"_retained"]=retained[uid]
-        retain_note=("Work from the open front: the rear pair uses the deeper tool lane." if uid=="head_baseplate" else
+        retain_note=("Descend a workshop-side rope from the left lift's ROPE ACCESS stop; the rear pair uses the deeper tool lane." if uid=="head_baseplate" else
             "Insert both bolts from the front." if uid=="head_crown" else
-            "Rear bolts enter from the rear flanks; front bolts from the front landing." if uid=="head_top" else
+            "Use exit-side ropes for the rear bolts and workshop-side ropes for the front bolts." if uid=="head_top" else
             "Insert both bolts from the open side, rearward.")
         # The baseplate loom is part of receiver retention, so the crane cannot
         # release until that page. Every other piece parks on its retain page.
@@ -387,7 +387,7 @@ def hand_pieces(trial,chest,kinds,diagram,source,page):
     sid=add("hd-sensors","HD-SENSORS__001",[0,0,0],sensor,ready,"head_sensors")
     def fasten(slots):return dict(op="operate", machine="head_sensors_receiver", command="fasten", slots=list(slots))
     page("Sensor carrier: slide onto guides", "Fit the sensor carrier in the head.", [sid],
-        [dict(op="fit", slots=[sid])], dict(at=0, text="Carry it up on the lift shelf. From 1 m forward, slide straight back."))
+        [dict(op="fit", slots=[sid])], dict(at=0, text="Take it on the left lift's shelf to ROPE ACCESS, then carry it down a workshop-side rope. From 1 m forward, slide straight back."))
     screws=[bolt("hd-m8",f"HD-M8__{n:03}",(x,.50,z),.04,[sid],True)
         for n,(x,z) in enumerate([(x,z) for x in [-.49,.49] for z in [16.52,17.08]],1)]
     page("Sensor carrier: retain", "Fasten the sensor carrier's captive bolts.", screws,
@@ -426,7 +426,7 @@ def hand_pieces(trial,chest,kinds,diagram,source,page):
     face=perforated(point(0,.68,16.655),[1.30,1.05,.08],holes)
     face_sid=add("hd-faceplate","HD-FACE__001",[0,0,0],face,chest["milestones"]["head_sensors_connected"],"head_faceplate")
     page("Front faceplate: seat", "Fit the front faceplate.", [face_sid],
-        [dict(op="fit", slots=[face_sid])], dict(at=0, text="Carry it up on the lift shelf. From 18 cm forward, slide straight back."))
+        [dict(op="fit", slots=[face_sid])], dict(at=0, text="Take it on the left lift's shelf to ROPE ACCESS, then carry it down a workshop-side rope. From 18 cm forward, slide straight back."))
     face_bolts=[bolt("hd-m10-80",f"HD-M10080__{n:03}",(x,.73,z),.08,[face_sid]) for n,(x,z) in enumerate([(x,z) for x in [-.55,.55] for z in [16.20,17.12]],1)]
     page("Front faceplate: retain", "Bolt the front faceplate down.", face_bolts, [dict(op="fit", slots=list(face_bolts))])
     chest["milestones"]["head_faceplate_retained"]=[face_sid]+face_bolts
@@ -441,7 +441,7 @@ def hand_pieces(trial,chest,kinds,diagram,source,page):
         mask += [box(point(x-.017,.74,16.53),[.006,.06,.08]),box(point(x+.017,.74,16.53),[.006,.06,.08]),box(point(x,.75,16.545),[.04,.01,.10])]
     mask_sid=add("hd-mask","HD-MASK__001",[0,0,0],mask,chest["milestones"]["head_faceplate_retained"],"head_mask")
     page("Samurai mask: hook", "Fit the samurai mask.", [mask_sid],
-        [dict(op="fit", slots=[mask_sid])], dict(at=0, text="Carry it up on the lift shelf, then lower it onto the two hooks."))
+        [dict(op="fit", slots=[mask_sid])], dict(at=0, text="Take it on the left lift's shelf to ROPE ACCESS, then carry it down a workshop-side rope. Lower it onto the two hooks."))
     mask_bolts=[bolt("hd-m10-160",f"HD-M10160__{n:03}",(x,.88,15.98),.16,[mask_sid]) for n,x in enumerate([-.56,.56],1)]
     page("Samurai mask: retain", "Bolt the samurai mask down.", mask_bolts, [dict(op="fit", slots=list(mask_bolts))])
     chest["milestones"]["head_mask_retained"]=[mask_sid]+mask_bolts

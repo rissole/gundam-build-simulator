@@ -98,8 +98,10 @@ func update_crouch(wants_crouch: bool, delta: float) -> void:
 func _rope_physics(rope: Node, delta: float) -> void:
 	game.jump_requested=false
 	game.player.velocity=Vector3.ZERO
+	# The fixed booms are above a crouched worker, below a standing head. Use
+	# ordinary crouch/uncrouch clearance before either ascent or boarding motion.
+	update_crouch(rope.boarding_duck(game.player.global_position.y+delta*rope.SPEED),delta)
 	if game.paused or game.desktop_input.modal_active():return
-	update_crouch(false,delta)
 	var grounded: bool=rope.on_floor()
 	var at: Vector3=game.player.global_position
 	var anchor: Vector3=rope.anchor(rope.attachment)

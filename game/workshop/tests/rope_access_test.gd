@@ -95,6 +95,17 @@ func contract() -> Array:
 	for x in [11.0,12.4,13.6,15.0]:result.append({"id":"rear_%.1f"%x,"parent":"","anchor":[x,21.8,28.3],"edge":"rear"})
 	return result
 
+## Use the actual authored boarding solids, rather than an unobstructed stand-in.
+func boarding_solids() -> void:
+	var authored: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json")).workshop
+	for record in authored.solids:
+		if not (record.id.begins_with("rope_davit_") or record.id.begins_with("rope_boom_") or record.id in ["wing_left_20.6_floor","wing_right_20.6_floor","rope_exit_floor","wing_left_8.4_floor"]):continue
+		var body=obstacle(Codec.to_vector(record.position),Codec.to_vector(record.size))
+		if not record.parent.is_empty():body.reparent(blockout.groups[record.parent],false)
+		body.set_meta("blockout_id",record.id)
+		blockout.pieces[record.id]={"body":body,"spec":record}
+	blockout._index_pieces()
+
 func run() -> void:
 	game=World.new();root.add_child(game)
 	game.components=preload("res://scripts/component_interaction.gd").new(game);game.add_child(game.components)
@@ -102,20 +113,39 @@ func run() -> void:
 	game.desktop_input=preload("res://scripts/desktop_input.gd").new(game)
 	game.targeting=preload("res://scripts/targeting.gd").new(game)
 	blockout=Blockout.new();game.add_child(blockout)
-	blockout.spec={"rope_stations":contract(),"groups":{},"access":{"levels":[20.6],"duration":1.0,"modes":{"work":[],"delivery":[20.6]}}}
-	for side in ["left","right"]:
-		var id="wing_"+side+"_20.6"
-		var frame={"parent":"","position":[5 if side=="left" else 21,20.6,24],"rotation_degrees":[0,0 if side=="left" else 180,0],"joint":"wing","side":side,"level":20.6}
-		blockout.spec.groups[id]=frame
-		var group=Node3D.new();blockout.add_child(group);group.transform=Blockout.authored_pose(frame);blockout.groups[id]=group;blockout.group_pieces[id]=[]
+	blockout.spec={"rope_stations":contract(),"groups":{},"access":{"levels":[8.4,20.6],"duration":1.0,"modes":{"work":[],"delivery":[20.6],"leg":[8.4]}}}
+	for level in [8.4,20.6]:
+		for side in ["left","right"]:
+			var id="wing_"+side+"_"+str(level)
+			var frame={"parent":"","position":[5 if side=="left" else 21,level,24],"rotation_degrees":[0,0 if side=="left" else 180,0],"joint":"wing","side":side,"level":level}
+			blockout.spec.groups[id]=frame
+			var group=Node3D.new();blockout.add_child(group);group.transform=Blockout.authored_pose(frame);blockout.groups[id]=group;blockout.group_pieces[id]=[]
 	access=Access.new();game.add_child(access);access.setup(game,blockout);game.equipment.register(access)
 	rope=Rope.new();game.add_child(rope);rope.setup(game,blockout);game.equipment.register(rope)
 	obstacle(Vector3(13,-.1,27),Vector3(30,.2,20))
-	obstacle(Vector3(9.3,20.5,24),Vector3(2,.2,1.2))
-	obstacle(Vector3(11,20.5,31),Vector3(2,.2,1.4))
+	boarding_solids()
 	obstacle(Vector3(9.3,8.3,24.75),Vector3(2,.2,1))
 	await frames(2)
 	expect(rope.stations.size()==12 and rope.anchor(FRONT).is_equal_approx(Vector3(9.3,21.8,24.75)) and rope.anchor("front_r_13.4").is_equal_approx(Vector3(13.4,21.8,24.75)),"All twelve contract anchors resolve both mirrored leaf frames")
+	game.player_controller.update_crouch(true,1)
+	for id in ["front_l_11.9","front_l_12.6","front_r_13.4","front_r_14.1"]:
+		rope.attachment=id;rope.physics(0)
+		for offset in [-.17,0.0,.17]:
+			place(Vector3(rope.anchor(id).x+offset,20.6,24.1))
+			expect(not game.player.test_move(game.player.global_transform,Vector3(0,0,.8)),"Full active gate opening clears the capsule beside overlapping neighbour: "+id+" / "+str(offset))
+	rope.attachment="";rope.physics(0)
+	place(Vector3(9.3,20.6,24.1));await frames(1)
+	access.request_upper(true);access.physics(.2)
+	expect(access.channels["20.6"].value==0 and access.blocked_reason.contains("Step off"),"Unroped upper leaf rider holds a pending swing")
+	access.request_mode("delivery")
+	access.channels["8.4"].goal=1.0;access.channels.rear.goal=1.0
+	access.physics(.2)
+	expect(access.channels["20.6"].value==0 and access.channels["8.4"].value>0 and access.channels.rear.value>0,"Upper rider hold does not stop accepted lower access movement")
+	place(Vector3(0,0,0));access.request_upper(false);access.physics(1)
+	expect(access.upper_ready(false) and access.channels["8.4"].value==1 and access.channels.rear.value==1,"Independent upper request preserves both lower access goals")
+	access.request_upper(true);access.request_lower_mode("work");access.physics(1)
+	expect(access.upper_ready(true) and access.lower_ready("work") and access.validate(access.capture()).is_empty(),"Lower request preserves upper crossing and its snapshot is valid independently of mode")
+	access.request("stop");access.request_mode("work");access.physics(1)
 	place(Vector3(9.3,20.6,24.1));await frames(1)
 	var work=Work.new();game.add_child(work);work.game=game;work.equipment_id="work";game.equipment.register(work)
 	work.handle=MeshInstance3D.new();work.handle.mesh=BoxMesh.new();work.add_child(work.handle);work.handle.position=Vector3(9.3,15.8,25.3)
@@ -128,6 +158,7 @@ func run() -> void:
 	expect(aim("clip:"+FRONT),"Camera aim and ordinary reach target the walkway clip control")
 	key(KEY_E,true);key(KEY_E,false)
 	expect(rope.attached(),"E clips through the normal desktop and component interaction route")
+	expect(game.crouched,"Top clip uses the normal crouch shape beneath the authored davit")
 	expect(rope.gate_passable(FRONT) and not game.player.test_move(game.player.global_transform,Vector3(0,0,.8)),"Only the attached station opens its gate")
 	expect(not rope.gate_passable("front_l_10.8") and not rope.front_ropes_clear(),"Other gates remain guarded and occupied front line interlocks leaves")
 	# Supplied off-edge pose isolates the movement mode; no automated walking.
@@ -205,6 +236,9 @@ func run() -> void:
 	expect(access.moving and access.channels["20.6"].value==0 and access.blocked_reason==Rope.LEAF_REASON,"Leaf motion pauses with the named recall reason")
 	# Free ropes must remain recallable while the access trip is waiting.
 	expect(aim("recall:"+FRONT) and rope.request("recall:"+FRONT).is_empty(),"Station reel recalls a free line while leaves wait")
+	access.physics(.1)
+	expect(access.blocked_reason.contains("Step off") and access.channels["20.6"].value==0,"Recalling the rope still waits for its unroped rider to leave")
+	place(Vector3(0,0,0));await frames(1)
 	access.physics(1)
 	expect(rope.front_ropes_clear() and not access.moving and access.channels["20.6"].value==1,"Recalled ropes release the pending leaf motion")
 	var closed=Vector3(9.3,21.8,24.75)
@@ -214,6 +248,24 @@ func run() -> void:
 	# Ground limit and rear station path are isolated from the front landing.
 	place(Vector3(11,20.6,30.8));await tick()
 	expect(aim("clip:"+REAR) and rope.request("clip:"+REAR).is_empty() and rope.front_ropes_clear(),"Rear boom control is within walkway reach and does not interlock leaves")
+	# Direct collision-resolved transfers under the real authored boom, not a
+	# workshop walking/reach campaign. The standing capsule must hit it first.
+	place(Vector3(11,20.6,30.7));game.player_controller.update_crouch(false,1)
+	expect(game.player.test_move(game.player.global_transform,Vector3(0,0,-2.4)),"Authored rear boom blocks a standing boarding capsule")
+	await tick()
+	game.player_controller._rope_move(Vector3(0,0,-2.4))
+	expect(game.crouched and absf(game.player.position.z-28.3)<.01,"Normal crouch shape transfers beneath the two metre rear boom")
+	key(KEY_CTRL,true);await tick(10);key(KEY_CTRL,false)
+	expect(game.player.position.y<19.65 and not game.crouched,"Rear descent clears the boom and returns to ordinary standing clearance")
+	key(KEY_SPACE,true);await tick(12);key(KEY_SPACE,false)
+	expect(game.crouched and absf(game.player.position.y-20.65)<.02,"Rear ascent ducks before the authored boom and reaches boarding height")
+	var boarding_snapshot=JSON.parse_string(JSON.stringify(rope.capture()))
+	place(Vector3(0,0,0));game.player_controller.update_crouch(false,1)
+	rope.apply(boarding_snapshot);place(Vector3(11,20.65,28.3))
+	expect(game.crouched and not game.player.test_move(game.player.global_transform,Vector3(0,0,2.4)),"Rope restore initializes crouch before placing the player beneath the boom")
+	game.player_controller._rope_move(Vector3(0,0,2.4));await tick()
+	expect(rope.on_floor() and rope.unclip().is_empty(),"Rear return reaches the walkway and permits normal unclipping")
+	place(Vector3(11,20.6,30.8));await tick();rope.request("clip:"+REAR)
 	place(Vector3(11,19,28.3));await tick();key(KEY_CTRL,true);await tick(210);key(KEY_CTRL,false)
 	expect(rope.on_floor() and absf(game.player.position.y)<.04 and rope.ropes[REAR].length<=rope.max_length(REAR),"Descent stops at the ground and maximum line length")
 	var platform=obstacle(Vector3(11,.15,28.3),Vector3(1,.3,1));platform.reparent(work,true)

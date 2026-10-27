@@ -140,7 +140,7 @@ def extend(trial, kinds, pelvis, layout, diagram):
         objective_page("Seat the prepared chest", "Crane the chest from the heavy module rig onto the waist.", ["chest"],
             crane_to("chest", "chest"), dict(at=2, text="Keep all four connectors attached until the chest is bolted.")),
         objective_page("Retain the chest on the waist", "Bolt the chest to the waist, then release and park the crane.", hardware,
-            [dict(op="fit", slots=list(hardware))] + park(), dict(at=0, text="The bolts go downward into the waist threads.")),
+            [dict(op="fit", slots=list(hardware))] + park(), dict(at=0, text="Use workshop-side ropes for the front bolts and exit-side ropes for the rear bolts; insert them downward. Recall front ropes before parking the crane.")),
         objective_page("Connect chest services", "Plug both chest service lines into the waist.", services,
             [dict(op="fit", slots=list(services))], dict(at=0, text="Keep both waist lock pins in."))]
     pelvis["manual"][-3]["diagram_views"]=[diagram("Prepared chest onto the locked waist",context,["PV-320__001"],
