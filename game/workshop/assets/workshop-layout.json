@@ -12998,19 +12998,51 @@
         "solid": true
       },
       {
-        "id": "wing_axle_left",
+        "id": "wing_support_left_8.4_shaft",
+        "parent": "",
+        "position": [
+          4.1850000000000005,
+          8.05,
+          25.67
+        ],
+        "size": [
+          1.87,
+          0.3000000000000007,
+          0.1999999999999993
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_support_left_8.4_arm",
+        "parent": "",
+        "position": [
+          5.0,
+          8.05,
+          24.825
+        ],
+        "size": [
+          0.2400000000000002,
+          0.3000000000000007,
+          1.8900000000000006
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_bearing_left_8.4",
         "parent": "",
         "position": [
           5,
-          11.15,
+          8.3,
           24
         ],
         "size": [
           0.24,
-          22.3,
+          0.2,
           0.24
         ],
-        "material": "steel",
+        "material": "deck",
         "solid": true
       },
       {
@@ -13652,6 +13684,54 @@
         ]
       },
       {
+        "id": "wing_support_left_20.6_shaft",
+        "parent": "",
+        "position": [
+          4.1850000000000005,
+          20.25,
+          25.67
+        ],
+        "size": [
+          1.87,
+          0.3000000000000007,
+          0.1999999999999993
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_support_left_20.6_arm",
+        "parent": "",
+        "position": [
+          5.0,
+          20.25,
+          24.825
+        ],
+        "size": [
+          0.2400000000000002,
+          0.3000000000000007,
+          1.8900000000000006
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_bearing_left_20.6",
+        "parent": "",
+        "position": [
+          5,
+          20.5,
+          24
+        ],
+        "size": [
+          0.24,
+          0.2,
+          0.24
+        ],
+        "material": "deck",
+        "solid": true
+      },
+      {
         "id": "wing_hinge_left_20.6_floor",
         "parent": "",
         "position": [
@@ -14259,19 +14339,67 @@
         "solid": true
       },
       {
-        "id": "wing_axle_right",
+        "id": "wing_corner_right",
+        "parent": "",
+        "position": [
+          22.64,
+          10.2,
+          23.26
+        ],
+        "size": [
+          0.24,
+          20.4,
+          0.24
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_support_right_8.4_corner",
+        "parent": "",
+        "position": [
+          22.64,
+          8.05,
+          23.630000000000003
+        ],
+        "size": [
+          0.240000000000002,
+          0.3000000000000007,
+          0.9800000000000004
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_support_right_8.4_arm",
+        "parent": "",
+        "position": [
+          21.82,
+          8.05,
+          24.0
+        ],
+        "size": [
+          1.8800000000000026,
+          0.3000000000000007,
+          0.240000000000002
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_bearing_right_8.4",
         "parent": "",
         "position": [
           21,
-          11.15,
+          8.3,
           24
         ],
         "size": [
           0.24,
-          22.3,
+          0.2,
           0.24
         ],
-        "material": "steel",
+        "material": "deck",
         "solid": true
       },
       {
@@ -14943,6 +15071,54 @@
           1.088,
           0.06
         ]
+      },
+      {
+        "id": "wing_support_right_20.6_corner",
+        "parent": "",
+        "position": [
+          22.64,
+          20.25,
+          23.630000000000003
+        ],
+        "size": [
+          0.240000000000002,
+          0.3000000000000007,
+          0.9800000000000004
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_support_right_20.6_arm",
+        "parent": "",
+        "position": [
+          21.82,
+          20.25,
+          24.0
+        ],
+        "size": [
+          1.8800000000000026,
+          0.3000000000000007,
+          0.240000000000002
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "wing_bearing_right_20.6",
+        "parent": "",
+        "position": [
+          21,
+          20.5,
+          24
+        ],
+        "size": [
+          0.24,
+          0.2,
+          0.24
+        ],
+        "material": "deck",
+        "solid": true
       },
       {
         "id": "wing_hinge_right_20.6_floor",

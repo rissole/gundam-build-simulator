@@ -371,14 +371,28 @@ def contract():
     for side in ["left","right"]:
         left=side=="left"
         hx=5 if left else 21
-        # A 0.24 m square post fits inside a radius .17. All wing/apron
-        # cutouts keep .20 m radial clearance through the complete swing.
-        box(f"wing_axle_{side}",[hx,11.15,24],[.24,22.3,.24])
+        # The hinge axes stay fixed, but no full-height post passes through
+        # either walking surface. The left is carried by the lift's rear guide;
+        # the opposite column stands outside the far apron corner.
+        if not left:
+            box("wing_corner_right",[22.64,10.2,23.26],[.24,20.4,.24])
         for level in data["access"]["levels"]:
             tag=str(level)
+            # Fixed brackets meet the underside, below the complete leaf swing.
+            # Left bracket touches the back of the shaft guide at (3.3,25.5),
+            # beyond the sliding shoes (which end at Z25.53).
+            if left:
+                bounds("wing_support_left_"+tag+"_shaft",3.25,5.12,level-.5,level-.2,25.57,25.77)
+                bounds("wing_support_left_"+tag+"_arm",4.88,5.12,level-.5,level-.2,23.88,25.77)
+            else:
+                bounds("wing_support_right_"+tag+"_corner",22.52,22.76,level-.5,level-.2,23.14,24.12)
+                bounds("wing_support_right_"+tag+"_arm",20.88,22.76,level-.5,level-.2,23.88,24.12)
+            # Flush bearing caps replace the former through-posts. Their .17 m
+            # corner radius clears the retained .20 m rotating deck notches.
+            box("wing_bearing_"+side+"_"+tag,[hx,level-.1,24],[.24,.2,.24],"deck")
             x0,x1=(3.5,5) if left else (21,22.5)
             apron=f"wing_hinge_{side}_{tag}"
-            # Split the apron around the axle; the left lift landing stays open.
+            # Split around the flush bearing; the left lift landing stays open.
             deck(apron,x0 if left else hx+.20,hx-.20 if left else x1,23.4,24.7,level,[])
             for label,z0,z1 in [("front",23.4,23.8),("rear",24.2,24.7)]:
                 deck(apron+"_"+label,hx-.20 if left else hx,hx if left else hx+.20,z0,z1,level,[])

@@ -108,10 +108,48 @@ func run() -> void:
 				if record.visual.transform!=record.transform or record.visual.get_parent()!=record.parent:escaped.append(record.id)
 			expect(escaped.is_empty(),"lift detailing follows original carriage and guides at "+str(level))
 	_check_selective_motion(world)
+	_check_walkway_lights(game,world,access)
 	var passed=checks.all(func(check):return check.passed)
 	write_evidence("res://verification/gantry-dressing.json",{"scope":"actual authored blockout; visual envelopes, recess geometry, collision identity and supplied intermediate equipment poses; no rendered or player acceptance","records":dressing.records.size(),"triangles":triangles,"unique_meshes":dressing.meshes.size(),"materials":dressing.materials.size(),"checks":checks})
 	print("GANTRY_DRESSING ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)
+
+func _check_walkway_lights(game: Node3D, world: Node3D, access: Node3D) -> void:
+	var before: Dictionary=_collision_state(game)
+	var lighting=preload("res://scripts/hangar_dressing.gd").new(game)
+	lighting._materials()
+	lighting._gantry_lights(world)
+	expect(_collision_state(game)==before,"under-deck fixtures add no collision or equipment bodies")
+	var fixtures: Array=[]
+	var pools=0
+	for id in world.pieces:
+		var deck: MeshInstance3D=world.pieces[id].visual
+		var housing=deck.get_node_or_null("WalkwayStripHousing")
+		if housing==null:continue
+		fixtures.append([deck,housing])
+		var lens: MeshInstance3D=housing.get_node("WalkwayStripLens")
+		var deck_box: AABB=deck.mesh.get_aabb()
+		var housing_box: AABB=housing.transform*housing.mesh.get_aabb()
+		var lens_box: AABB=housing.transform*lens.transform*lens.mesh.get_aabb()
+		expect(is_equal_approx(housing_box.end.y,deck_box.position.y) and housing_box.position.x>deck_box.position.x and housing_box.end.x<deck_box.end.x and housing_box.position.z>deck_box.position.z and housing_box.end.z<deck_box.end.z,"strip is physically mounted within the underside of "+id)
+		expect(is_equal_approx(lens_box.end.y,housing_box.position.y) and lens.material_override.emission_enabled,"luminous strip meets the bottom of its housing: "+id)
+		var pool=housing.get_node_or_null("WalkwayDownlight")
+		if pool!=null:
+			pools+=1
+			expect(not pool.shadow_enabled and pool.position.y<lens.position.y,"working light emits below its attached fixture without another shadow caster: "+id)
+	expect(fixtures.size()==6 and pools==3,"only the four current upper deck spans and two retained lower walks carry strips")
+	for phase in [0.0,.5,1.0]:
+		world.apply_frames(access.frames_at({"8.4":0.0,"20.6":phase,"rear":0.0}))
+		var detached: Array=[]
+		for pair in fixtures:
+			var deck: MeshInstance3D=pair[0];var housing: MeshInstance3D=pair[1]
+			var relative: Transform3D=deck.global_transform.affine_inverse()*housing.global_transform
+			if not relative.is_equal_approx(housing.transform):detached.append(String(deck.name))
+			var deck_box: AABB=deck.global_transform*deck.mesh.get_aabb()
+			var housing_box: AABB=housing.global_transform*housing.mesh.get_aabb()
+			if not is_equal_approx(housing_box.end.y,deck_box.position.y):detached.append(String(deck.name))
+		expect(detached.is_empty(),"under-deck fixtures stay attached through upper-leaf swing at "+str(phase)+": "+str(detached))
+	world.apply_frames(access.frames_at(access.values()))
 
 func _check_selective_motion(world) -> void:
 	# Compare the index with the original ancestry walk for every authored group.

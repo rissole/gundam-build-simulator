@@ -57,6 +57,21 @@ Keep the accepted finish ("looks great"), gap/mirror repairs ("the gantry change
 are good"), leg-delivery performance and physical assembly challenge. Passing
 mechanical tests do not approve the relocated paths or the new rope experience.
 
+**Player finding — walkway posts and floating lights (2026-10-27).** A tall pole
+obstructs the route from the workshop-side elevator. Remove that through-post
+and make the elevator shaft support that corner; move the opposite post to the
+far outer corner. Replace the floating lights between walkways with strips
+under the upper walkways. Implemented directly on `gantry-v2`: under-deck shaft
+brackets, relocated opposite column, flush hinge bearings and deck-mounted
+lighting that follows the leaves. Six selected routine cases pass in 10.803 s;
+[geometry and evidence](gantry-v2/overhead-access.md#walkway-support-and-lighting-correction--2026-10-27).
+Presentation and player recheck remain open.
+
+- [ ] Exit the workshop-side elevator at both heights and pass the former pole
+  position. Check the opposite corner and that neither support obstructs walking.
+- [ ] Inspect the shaft-supported corner and relocated opposite column. Check
+  the under-deck strips with the upper leaves closed and open: attached fixtures,
+  useful light and no floating remnants between the former levels.
 - [ ] Ride both lifts with shelf cargo: east exits at 8.4, then left east/right
   west exits at 20.6. Check calls, labels, doorway nudge, turning space and the
   sliding guide support near the top.

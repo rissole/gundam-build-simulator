@@ -241,6 +241,9 @@ The low hip frame and 8.4 m work remain. [Implementation and mechanical evidence
 are separate from the [pending player recheck](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
 No rendered review or new player acceptance; keep off main until explicitly
 approved. Backpack hinge access and eventual lowering/departure remain open.
+Player-reported walkway posts and floating lights are corrected: shaft-supported
+left hinges, opposite column beyond the outer corner and deck-mounted strips.
+Six selected routine cases pass; [player recheck pending](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
 
 **In progress (2026-10-27):** [machine operation](handoff/operated-machines/README.md).
 Gantry gap and mirror fixes are merged and player-accepted. The crane operator view

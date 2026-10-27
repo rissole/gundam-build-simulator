@@ -19,7 +19,7 @@ func run() -> void:
 	access=Access.new();game.add_child(access);access.setup(game,world)
 	_check_contract()
 	_check_walkways()
-	_check_axles()
+	_check_hinges()
 	_check_coarse_clearance()
 	_check_lifts()
 	var passed=checks.all(func(check):return check.passed)
@@ -111,24 +111,36 @@ func _check_walkways() -> void:
 			if world.pieces[id].has("shape") and bounds(id).intersects(opening):blocked.append(id)
 		expect(blocked.is_empty(),"left 8.4 landing has no fixed rail across the lift doorway or outer-walk connection: "+str(blocked))
 
-func _check_axles() -> void:
+func _check_hinges() -> void:
+	expect(not world.pieces.has("wing_axle_left") and not world.pieces.has("wing_axle_right"),"neither front hinge retains a through-post in the walking surface")
+	var corner: AABB=bounds("wing_corner_right")
+	expect(corner.position.y==0 and is_equal_approx(corner.end.y,20.4) and corner.position.x>22.5 and corner.end.z<23.4,"opposite column stands beyond the far outer apron corner")
 	for side in ["left","right"]:
 		var hx: float=5 if side=="left" else 21
-		var post: AABB=bounds("wing_axle_"+side)
-		expect(post.get_center().is_equal_approx(Vector3(hx,11.15,24)) and post.position.y==0 and is_equal_approx(post.end.y,22.3) and post.size.x<=.3 and post.size.z<=.3,side+" shared post fits the authored axle and height budget")
 		for level in [8.4,20.6]:
+			var bearing: AABB=bounds("wing_bearing_"+side+"_"+str(level))
+			expect(is_equal_approx(bearing.end.y,level),side+" bearing cap stays flush with the deck at "+str(level))
+			var former_post=AABB(Vector3(hx-.13,level+.001,23.87),Vector3(.26,2,.26))
+			var blockers: Array=[]
+			for piece_id in world.pieces:
+				if world.pieces[piece_id].has("shape") and bounds(piece_id).intersects(former_post):blockers.append(piece_id)
+			expect(blockers.is_empty(),side+" former through-post position is unobstructed above the deck: "+str(blockers))
+			var arm: AABB=bounds("wing_support_"+side+"_"+str(level)+"_arm")
+			var mount: AABB=bounds("wing_support_"+side+"_"+str(level)+("_shaft" if side=="left" else "_corner"))
+			expect(arm.grow(.001).intersects(bearing) and arm.intersects(mount) and is_equal_approx(arm.end.y,level-.2) and is_equal_approx(mount.end.y,level-.2),side+" connected bracket carries the bearing entirely beneath the leaf at "+str(level))
+			if side=="right":expect(mount.intersects(corner),"right bracket connects to the relocated corner column at "+str(level))
 			var id="wing_"+side+"_"+str(level)
 			var root_node: Node3D=world.groups[id]
 			expect(root_node.position.is_equal_approx(Vector3(hx,level,24)),id+" shares the unchanged axle")
 			var near_axis: Array=[]
-			# Every point of each deck box lies outside the post's circumscribed
+			# Every point of each deck box lies outside the bearing's circumscribed
 			# circle; rotation about Y preserves this clearance at ALL angles.
 			for piece in world.group_pieces[id]:
 				if piece.spec.material!="deck" or piece.spec.parent!=id:continue
 				var box=AABB(AssemblyRuntime.vec(piece.spec.position)-AssemblyRuntime.vec(piece.spec.size)/2,AssemblyRuntime.vec(piece.spec.size))
 				var radius=Vector2(clampf(0,box.position.x,box.end.x),clampf(0,box.position.z,box.end.z)).length()
-				if radius<Vector2(post.size.x,post.size.z).length()/2+.02:near_axis.append(piece.spec.id)
-			expect(near_axis.is_empty(),id+" deck notch clears the fixed post throughout the full swing: "+str(near_axis))
+				if radius<Vector2(bearing.size.x,bearing.size.z).length()/2+.02:near_axis.append(piece.spec.id)
+			expect(near_axis.is_empty(),id+" deck notch clears the flush bearing throughout the full swing: "+str(near_axis))
 	for phase in [0.0,.25,.50,.75,1.0]:
 		world.apply_frames(access.frames_at({"8.4":phase,"20.6":phase,"rear":0.0}))
 		for side in ["left","right"]:
@@ -188,6 +200,13 @@ func _check_lifts() -> void:
 		var origin=Vector3(1.9,0,24.05) if side=="left" else Vector3(19.6,0,31)
 		expect(lift.position.is_equal_approx(origin) and lift.deck_size==Vector2(2.6,2.6) and stops==[.15,8.4,20.6],side+" actual lift position, car size and three stops")
 		var fixed: Node3D=lift.get_node("FloorAnchoredLiftGuides")
+		if side=="left":
+			for level in [8.4,20.6]:
+				var bracket: AABB=bounds("wing_support_left_"+str(level)+"_shaft")
+				var contacts=0
+				for node in fixed.get_children():
+					if node is CollisionShape3D and bracket.intersects(node.global_transform*node.shape.get_debug_mesh().get_aabb()):contacts+=1
+				expect(contacts==1,"left hinge bracket transfers to the fixed lift shaft at "+str(level))
 		var guide_top=0.0
 		for node in fixed.get_children():
 			if node is CollisionShape3D:guide_top=maxf(guide_top,(node.global_transform*node.shape.get_debug_mesh().get_aabb()).end.y)

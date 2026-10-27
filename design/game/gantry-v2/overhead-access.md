@@ -15,9 +15,11 @@ https://claude.ai/artifact/5TYsCiNM2vnjYYn9znaRTd.
   over the head top Y19.41). They share the 8.4 m wings' vertical axles at
   (X5, Z24) and (X21, Z24) and the same split at X13: each leaf X5..12.98 /
   13.02..21, Z23.4..24.6, 1.2 m wide, 1.1 m guards. Not hung from the ceiling:
-  each leaf is a cantilever from its post, with a short mast and tie kept below
-  the crane bridge (Y22.65). Posts run floor to Y22.3. Hinge aprons at 20.6 match
-  the 8.4 ones (X3.5..5 and mirror).
+  each leaf has a short mast and tie kept below the crane bridge (Y22.65).
+  Following player feedback, the workshop-side lift shaft carries the left
+  hinge through brackets below the decks; the opposite column stands beyond
+  the far outer apron corner. There are no through-posts at the hinge axes.
+  Hinge aprons at 20.6 match the 8.4 ones (X3.5..5 and mirror).
 - **Opening for the crane:** like the wings, both leaves swing 90° toward the
   workshop and park along the hall at X4.4..5.6 / 20.4..21.6. The crane then uses
   its current front approach down the middle. Once the part hangs over the robot
@@ -71,8 +73,8 @@ coarse indications only.
 - Every delivery approaches from the workshop side. Core and backpack routes
   change to pass over the chest. Head pieces and pauldrons travel high (bottoms
   Y18–19): keep the trolley near X13 while passing the open leaves.
-- Each upper leaf is an 8 m cantilever at 20.6 m from a tall post; structure is a
-  budget, not engineered.
+- Each upper leaf is an 8 m cantilever at 20.6 m, carried by the shaft or outer
+  corner column through an under-deck bracket; structure is a budget, not engineered.
 - The right shaft is 0.1 m from the hip frame's right foot (coarse).
 
 ## Decisions and open items (user, 2026-10-27)
@@ -90,9 +92,10 @@ coarse indications only.
 ## Implemented A1 layout — 2026-10-27
 
 The branch implementation supersedes the concept's preliminary 0.3 m deck depth:
-upper decks are **0.2 m**, top Y20.6 / underside Y20.4. Shared 0.24 m square
-hinge posts at X5/X21, Z24 end at Y22.3; deck notches clear them throughout the
-swing. Mast/tie and boom members remain below the crane bridge. Both upper
+upper decks are **0.2 m**, top Y20.6 / underside Y20.4. Shared hinge axes remain
+at X5/X21, Z24. The original through-posts were removed in the player correction
+below; flush bearing caps retain the deck-notch clearance throughout the swing.
+Mast/tie and boom members remain below the crane bridge. Both upper
 leaves keep the 8.4 swing and split at X13, with no upper fingers. Low hip frame,
 jaws, bearing datums and the retained hip finger work patches are unchanged.
 
@@ -120,7 +123,7 @@ coplanar overlap. Lower sliding access gates remain; upper apron ends are guarde
 because there is no upper outer walkway. New/retained members keep the accepted
 finish and the signs read **8.4 HIP / 20.6 ROPE ACCESS**.
 
-Mechanical evidence: eleven selected routine suites pass, **728 checks in
+Initial A1 mechanical evidence: eleven selected routine suites passed, **728 checks in
 19.307 s**, including full-height shelf cargo, guide engagement/hardware travel,
 station transforms, post clearance at every swing angle, coarse grown-robot and
 nearby equipment boxes, save roundtrip, rider/nudge policy and startup. The
@@ -128,6 +131,31 @@ layout generator verifies 591 solids / 79 frames. No diagnostics, rendered revie
 or automated walking/reach/visibility campaign ran. This is not player acceptance;
 [the player recheck remains open](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
 The crane routes and crossing interlocks are recorded below.
+
+## Walkway support and lighting correction — 2026-10-27
+
+The player found the tall front hinge posts obstructing the walkways and lights
+floating between the former levels. Both through-posts are removed completely.
+At the workshop-side lift, fixed brackets connect the rear shaft guide to the
+left hinge below both decks. The opposite column moves beyond the far outer
+corner to **X22.64/Z23.26**, ends at the upper deck underside Y20.4, and carries
+its hinge through under-deck brackets. The hinge axes, swing and deck heights
+stay fixed. Flush 0.24 m square bearing caps replace the posts at walking level.
+
+The obsolete fixed-height strips and unsupported downlights are removed. Housed
+LED strips attach directly to the undersides of both upper leaves, the rear
+walkway and its landing; the two retained lower outer walks also keep mounted
+strips. Three shadowless downlights follow the main upper fixtures. All moving
+lights inherit their leaf's transform, with no new collision bodies.
+
+Six selected routine cases pass in **10.803 s**: layout (168 checks), dressing
+(152), lifts (45), crane (198), rope access (104) and startup (32). This includes
+shaft/bracket contact, clear former post positions, full lift-hardware travel,
+hinge clearance and fixture attachment through leaf rotation. The author verifies
+**602 solids / 79 frames**, byte-identical to the generated asset. Local evidence:
+`game/workshop/verification/regressions-20261027T103231.445157Z/results.json`.
+No rendered review or automated walking/reach/visibility acceptance ran. The
+[player recheck remains open](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
 
 ## Rope operation and guidance — 2026-10-27
 
