@@ -358,7 +358,7 @@ func _needs(action: String) -> Array:
 		"lift+":return [at_build,foot,under,braced]
 		"lift-":return [at_build,under,braced,neutral_roll]
 		"roll+","roll-":return [at_build,foot,under,braced,raised]
-		"lever":return [on,turnover]+([away,braced] if carrying else [clamps])
+		"lever":return [on,turnover]+([away,braced] if carrying else [_need("CLAMPS AT REST",release==0 or release==5,"Finish moving the leg clamps first.")])
 		"travel+":return [at_hip,flat,clamps]+([away,braced,complete] if carrying else [])
 		"travel-":return [at_hip,flat,clamps]+([away,braced] if carrying else [])
 		"rise+":return [bay,at_hip,front,hip,complete,braced,clamps] if carrying else [bay,at_hip,clamps]

@@ -571,7 +571,9 @@ open/closed value. Old saves become invalid and are deleted.
 `arm_delivery_test`, `chest_delivery_test` and `head_crane_test` (approved
 2026-10-27) check the crane routes with the rear leaves raised, and the arm and leg
 diagnostics check the Limb Bay shift. Crane deliveries that enter the gantry
-(pelvis, chest, arms) wait at its boundary until the front is open. Head and
+(pelvis, chest, arms) wait before their loaded lift, at the pickup, until the front
+is open (as implemented; simpler than stopping mid-route), and count as occupants
+until their connectors are released. Head and
 pauldron deliveries rely on their normal collision checks.
 
 #### B3 implementation notes, 2026-10-27 (superseded by v2 above)
