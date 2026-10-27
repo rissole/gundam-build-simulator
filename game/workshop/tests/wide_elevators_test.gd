@@ -38,18 +38,18 @@ func run() -> void:
 		expect(game.model.store_carried_item(side+"_panel",spec.shelf.supports[0]).is_empty(),side+" supplied test panel takes declared support")
 		shelf.sync()
 		var surface: AABB=shelf.global_transform*AABB(-AssemblyRuntime.vec(spec.shelf.size)/2,AssemblyRuntime.vec(spec.shelf.size))
-		var limits: Array=[5.60,7.10] if side=="left" else [18.90,20.40]
-		expect(is_equal_approx(surface.position.x,limits[0]) and is_equal_approx(surface.end.x,limits[1]) and is_equal_approx(surface.position.z,27.8) and is_equal_approx(surface.end.z,28.2),side+" shelf occupies the selected wall band")
+		var limits: Array=[.9,2.4] if side=="left" else [19.1,20.6]
+		expect(is_equal_approx(surface.position.x,limits[0]) and is_equal_approx(surface.end.x,limits[1]) and is_equal_approx(surface.position.z,spec.origin[2]-1.2) and is_equal_approx(surface.end.z,spec.origin[2]-.8),side+" shelf occupies the selected wall band")
 		var cargo: AABB=shelf.cargo[side+"_panel"].global_transform*mesh.get_aabb()
-		expect(is_equal_approx(cargo.end.y-lift.height,1.85) and cargo.end.y-lift.height<2.10,side+" panel stays inside the roof and gear budget")
-		expect(cargo.position.x>spec.origin[0]-1.26 and cargo.end.x<spec.origin[0]+1.26 and cargo.position.z>27.74 and cargo.end.z<28.2,side+" loaded shelf clears car walls and leaves the rear turning area")
-		expect(surface.end.z<29-.5 and mesh.size.x<1.5,side+" shelf clears both 1.5 m side doors; upright panel width fits their opening")
+		expect(is_equal_approx(cargo.end.y-lift.height,1.85) and cargo.end.y-lift.height<2.10,side+" panel stays below the crane bridge")
+		expect(cargo.position.x>spec.origin[0]-1.26 and cargo.end.x<spec.origin[0]+1.26 and cargo.position.z>spec.origin[2]-1.26 and cargo.end.z<spec.origin[2]-.8,side+" loaded shelf clears car walls and leaves the rear turning area")
+		expect(surface.end.z<spec.origin[2]-.75 and mesh.size.x<1.5,side+" shelf clears both 1.5 m side doors; upright panel width fits their opening")
 	await frames(3)
 	for side in lifts:
 		var lift: Node3D = lifts[side]
 		var other: Node3D = lifts["right" if side=="left" else "left"]
 		var other_state: Dictionary = other.capture()
-		for stop in [1,2,3,4,0]:
+		for stop in [1,2,0]:
 			var error: String = lift.request("stop"+str(stop))
 			expect(error.is_empty(),side+" lift route to stop "+str(stop)+": "+error)
 			if not error.is_empty():continue
@@ -76,7 +76,7 @@ func run() -> void:
 			expect(elapsed <= 1.0 and not lift.moving,side+" landing call arrives within one second")
 			expect(decelerating and previous_step < .03,side+" landing call decelerates smoothly into its stop")
 			expect(other.capture()==other_state,side+" movement leaves other elevator independent")
-			expect(lift.side_gates.all(func(gate):return gate.disabled),side+" both doors open at stopped landing")
+			expect(lift.side_gates.all(func(gate):return gate.disabled==(int(gate.get_meta("side"))==int(lift.layout_options.door_sides[stop]))),side+" only the authored landing door opens")
 			var shelf: Node3D = shelves[side]
 			var body: Node3D = shelf.cargo[side+"_panel"]
 			expect(absf(body.global_position.y-(lift.height+.65+.60))<.0001,side+" cargo remains seated on shelf")

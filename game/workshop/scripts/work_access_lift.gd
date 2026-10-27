@@ -53,15 +53,21 @@ func setup(workshop: Node3D, id: String, origin: Vector3, size: Vector2, levels:
 		for z in [-size.y/2+0.04,size.y/2-0.04]:
 			_solid(deck,Vector3(x,0.52,z),Vector3(0.06,1.04,0.06),yellow)
 		if layout_options.get("side_doors",false):
-			_solid(deck,Vector3(x,1.05,-.9),Vector3(.06,.06,.8),yellow)
-			_solid(deck,Vector3(x,1.05,1.15),Vector3(.06,.06,.3),yellow)
-			side_gates.append(_solid(deck,Vector3(x,.62,.25),Vector3(.06,1,1.5),yellow))
+			var center: float = layout_options.get("door_center_z",.25)
+			var width: float = layout_options.get("door_width",1.5)
+			var front = center-width/2
+			var rear = center+width/2
+			_solid(deck,Vector3(x,1.05,(-size.y/2+front)/2),Vector3(.06,.06,front+size.y/2),yellow)
+			_solid(deck,Vector3(x,1.05,(size.y/2+rear)/2),Vector3(.06,.06,size.y/2-rear),yellow)
+			var door = _solid(deck,Vector3(x,.62,center),Vector3(.06,1,width),yellow)
+			door.set_meta("side",-1 if x<0 else 1)
+			side_gates.append(door)
 		else:_solid(deck,Vector3(x,1.05,0),Vector3(0.06,0.06,size.y),yellow)
 	_solid(deck,Vector3(0,1.05,-size.y/2+0.04),Vector3(size.x,0.06,0.06),yellow)
 	gate = _solid(deck,Vector3(0,0.62,size.y/2-0.04),Vector3(size.x-0.12,1.0,0.06),yellow)
 	_gate_mesh = gate.get_meta("visual")
 	if layout_options.get("side_doors",false):
-		# Solid rear wall; both side doors open at every stopped landing.
+		# Solid rear wall; the authored landing chooses which side opens.
 		_make_side_landings(steel,yellow)
 	else:_make_ground_ramp(size,steel)
 	_make_guides(steel,yellow)
@@ -115,21 +121,37 @@ func _make_ground_ramp(size: Vector2, steel: Material) -> void:
 	ramp.add_child(ramp_mesh)
 
 func _make_side_landings(steel: Material, yellow: Material) -> void:
+	var center: float = layout_options.get("door_center_z",.25)
+	var width: float = layout_options.get("door_width",1.5)
 	for side in [-1,1]:
 		var fixed = StaticBody3D.new();add_child(fixed);_hardware.append(fixed.get_rid())
-		# Wedge entirely in the 1.5 m doorway; no fixed stairs in a shaft.
-		var points = PackedVector3Array()
-		for z in [-.5,1.0]:
-			points.append(Vector3(side*deck_size.x/2,0,z))
-			points.append(Vector3(side*deck_size.x/2,stops[0],z))
-			points.append(Vector3(side*(deck_size.x/2+1.2),0,z))
-		var ramp_shape = ConvexPolygonShape3D.new();ramp_shape.points=points
-		var collision = CollisionShape3D.new();collision.shape=ramp_shape;fixed.add_child(collision)
-		var mesh = MeshInstance3D.new();mesh.mesh=ramp_shape.get_debug_mesh();mesh.material_override=steel;fixed.add_child(mesh)
+		# A ramp only at a ground entrance; never make a false doorway.
+		if _door_side(0) in [0,side]:
+			var points = PackedVector3Array()
+			for z in [center-width/2,center+width/2]:
+				points.append(Vector3(side*deck_size.x/2,0,z))
+				points.append(Vector3(side*deck_size.x/2,stops[0],z))
+				points.append(Vector3(side*(deck_size.x/2+1.2),0,z))
+			var ramp_shape = ConvexPolygonShape3D.new();ramp_shape.points=points
+			var collision = CollisionShape3D.new();collision.shape=ramp_shape;fixed.add_child(collision)
+			var mesh = MeshInstance3D.new();mesh.mesh=ramp_shape.get_debug_mesh();mesh.material_override=steel;fixed.add_child(mesh)
 		for index in range(stops.size()):
-			var at = Vector3(side*(deck_size.x/2+.22),stops[index]+1.0,-.6)
+			if not _door_side(index) in [0,side]:continue
+			var at = Vector3(side*(deck_size.x/2+.22),stops[index]+1.0,center-width/2-.1)
 			_solid(fixed,at,Vector3(.12,.30,.12),steel)
 			_button(self,at+Vector3(side*.08,0,.08),"stop"+str(index),yellow)
+
+## Zero preserves the generic lift's two-door behavior; the workshop supplies
+## one signed X side per stop. Doors stay closed if stopped between landings.
+func _door_side(index: int) -> int:
+	var sides: Array = layout_options.get("door_sides",[])
+	return int(sides[index]) if index>=0 and index<sides.size() else 0
+
+func door_open(side: int) -> bool:
+	if moving:return false
+	for index in stops.size():
+		if is_equal_approx(height,stops[index]):return _door_side(index) in [0,side]
+	return false
 
 func _make_guides(steel: Material, yellow: Material) -> void:
 	# Twin rack drives carry the platform into floor-anchored guides. Both live
@@ -138,7 +160,7 @@ func _make_guides(steel: Material, yellow: Material) -> void:
 	supports.name = "FloorAnchoredLiftGuides"
 	add_child(supports)
 	_hardware.append(supports.get_rid())
-	var top = stops[-1]+1.4
+	var top: float = layout_options.get("guide_top",stops[-1]+1.4)
 	var placements: Array = layout_options.get("guide_positions",[[-(deck_size.x/2+.04),deck_size.y/2-.4],[deck_size.x/2+.04,deck_size.y/2-.4]])
 	for placement in placements:
 		var x: float = placement[0]
@@ -146,7 +168,13 @@ func _make_guides(steel: Material, yellow: Material) -> void:
 		_solid(supports,Vector3(x,0.10,z),Vector3(0.10,0.20,0.55),steel)
 		_solid(supports,Vector3(x,top/2,z),Vector3(0.10,top,0.16),steel)
 		game.box(supports,Vector3(x,top/2,z-0.09),Vector3(0.04,top-0.20,0.02),yellow)
-		var shoe = _solid(deck,Vector3(x,0.20,z-0.08),Vector3(0.22,0.40,0.22),steel)
+		var shoe_y: float = layout_options.get("guide_carriage_y",.20)
+		var shoe_height: float = layout_options.get("guide_carriage_height",.40)
+		var shoe = _solid(deck,Vector3(x,shoe_y,z-0.08),Vector3(.22,shoe_height,.22),steel)
+		if shoe_y<0:
+			# Underslung brackets remain engaged when the deck clears the
+			# guide top; the car has no roof or above-bridge drive gear.
+			_solid(deck,Vector3(x*.88,shoe_y/2,z*.88),Vector3(.28,absf(shoe_y),.28),steel)
 		shoe.name = ("GuideCarriage_"+str(x)+"_"+str(z)) if layout_options.has("guide_positions") else ("GuideCarriageLeft" if x < 0 else "GuideCarriageRight")
 		var drive = MeshInstance3D.new()
 		var pinion = CylinderMesh.new()
@@ -155,7 +183,7 @@ func _make_guides(steel: Material, yellow: Material) -> void:
 		pinion.height = 0.10
 		drive.mesh = pinion
 		drive.material_override = yellow
-		drive.position = Vector3(x,0.20,z-0.20)
+		drive.position = Vector3(x,shoe_y,z-0.20)
 		drive.rotation.z = PI/2
 		deck.add_child(drive)
 
@@ -318,8 +346,9 @@ func _pose() -> void:
 	gate.disabled = not closed
 	_gate_mesh.visible = closed
 	for door in side_gates:
-		door.disabled = not moving
-		door.get_meta("visual").visible = moving
+		var open = door_open(door.get_meta("side"))
+		door.disabled = open
+		door.get_meta("visual").visible = not open
 	_label.text = status_text()
 	var registry = game.get("equipment")
 	if registry != null:registry.carrier_moved(equipment_id)

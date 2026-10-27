@@ -111,25 +111,44 @@ def contract():
                    head_transit_bottom=19, pauldron_transit_bottom=18,
                    rear_well_bounds=[22.8,25.2,31.7,34.7],
                    arm_upend_y=9.6, arm_spreader_allowance=1.8),
-        access=dict(levels=[8.4,11.2,14,16.4], floor_depth=.2, guard_height=1.1,
+        access=dict(levels=[8.4,20.6], floor_depth=.2, guard_height=1.1,
                     wing_roots=[[5,24],[21,24]], wing_length=8, wing_width=1.2,
                     rear_roots=[[10.1,27.95],[15.9,27.95]], rear_leaf=1.45,
-                    modes={"work":[],"pelvis":[11.2,14,16.4],"leg":[8.4],
-                           "chest":[14,16.4],"arm":[8.4,11.2,14,16.4],
-                           "rear":[],"head":[]},
+                    modes={"work":[],"pelvis":[20.6],"leg":[8.4],
+                           "chest":[20.6],"arm":[8.4,20.6],
+                           "rear":[],"head":[20.6],"core":[20.6],"backpack":[20.6]},
                     duration=6.0),
         zones=["limb_station"], elevators={}, groups={}, solids=[], signs=[],
     )
-    for side, x in [("left",6.6),("right",19.4)]:
+    for side, x, z in [("left",1.9,24.05),("right",19.6,31.0)]:
         data["elevators"][side] = dict(
-            name=side, origin=[x,0,29], size=[2.6,2.6], levels=[.15,8.4,11.2,14,16.4],
+            name=side, origin=[x,0,z], size=[2.6,2.6], levels=[.15,8.4,20.6],
             yaw_degrees=0, side_doors=True, shaft_size=[3.2,3.2],
+            door_sides=[1,1,1] if side=="left" else [1,1,-1],
+            door_center_z=0, door_width=1.5, guide_top=20.2,
+            guide_carriage_y=-.6, guide_carriage_height=.8,
             panel_position=[1.1 if side=="left" else -1.1,1.1,-1.12],
             guide_positions=[[-1.45,-1.45],[1.45,1.45]],
             shelf=dict(id=side+"_shelf",supports=[side+"_shelf_0",side+"_shelf_1"],
                        # Surface at +.65; the full panel tops out at +1.85.
                        position=[-.25 if side=="left" else .25,.61,-1],yaw_degrees=0,size=[1.5,.08,.4],
                        two_hand_capacity=[1.45,.35,1.20],places=[-.35,.35]))
+
+    # Fixed cross-task contract. Parentless rear anchors are world coordinates.
+    data["rope_stations"] = [
+        dict(id="front_l_9.3", parent="wing_left_20.6", anchor=[4.3,1.2,.75], edge="front"),
+        dict(id="front_l_10.8", parent="wing_left_20.6", anchor=[5.8,1.2,.75], edge="front"),
+        dict(id="front_l_11.9", parent="wing_left_20.6", anchor=[6.9,1.2,.75], edge="front"),
+        dict(id="front_l_12.6", parent="wing_left_20.6", anchor=[7.6,1.2,.75], edge="front"),
+        dict(id="front_r_13.4", parent="wing_right_20.6", anchor=[7.6,1.2,-.75], edge="front"),
+        dict(id="front_r_14.1", parent="wing_right_20.6", anchor=[6.9,1.2,-.75], edge="front"),
+        dict(id="front_r_15.2", parent="wing_right_20.6", anchor=[5.8,1.2,-.75], edge="front"),
+        dict(id="front_r_16.7", parent="wing_right_20.6", anchor=[4.3,1.2,-.75], edge="front"),
+        dict(id="rear_11.0", parent="", anchor=[11.0,21.8,28.3], edge="rear"),
+        dict(id="rear_12.4", parent="", anchor=[12.4,21.8,28.3], edge="rear"),
+        dict(id="rear_13.6", parent="", anchor=[13.6,21.8,28.3], edge="rear"),
+        dict(id="rear_15.0", parent="", anchor=[15.0,21.8,28.3], edge="rear"),
+    ]
 
     def group(name, parent="", at=(0,0,0), rotation=(0,0,0), **extra):
         data["groups"][name] = dict(parent=parent, **pose(at,rotation), **extra)
@@ -332,44 +351,75 @@ def contract():
             box(key+"_rod",[0,-.02,0],[.04,.50,.04],parent=key)
             box(key+"_contact",[dx,.18,0],[.18,.1,.16],"yellow",key)
 
-    for level in data["access"]["levels"]:
-        tag=str(level)
-        for side in ["left","right"]:
-            left=side=="left"
+    def guard_segments(name, x0, x1, z, y, openings=(), parent=""):
+        # Union overlapping 0.9 m station openings (the two innermost stations
+        # are only 0.7 m apart). A2 supplies the clipped-player gate barriers.
+        cursor=x0
+        spans=[]
+        for x in sorted(openings):
+            start,end=max(x0,x-.45),min(x1,x+.45)
+            if start>cursor:spans.append((cursor,start))
+            cursor=max(cursor,end)
+        if cursor<x1:spans.append((cursor,x1))
+        for i,(start,end) in enumerate(spans):
+            bounds(f"{name}_rail_{i}",start,end,y+1.02,y+1.1,z-.04,z+.04,"yellow",parent)
+            for j,x in enumerate([start+.04,end-.04]):
+                box(f"{name}_post_{i}_{j}",[x,y+.51,z],[.08,1.02,.08],"yellow",parent)
+
+    for side in ["left","right"]:
+        left=side=="left"
+        hx=5 if left else 21
+        # A 0.24 m square post fits inside a radius .17. All wing/apron
+        # cutouts keep .20 m radial clearance through the complete swing.
+        box(f"wing_axle_{side}",[hx,11.15,24],[.24,22.3,.24])
+        for level in data["access"]["levels"]:
+            tag=str(level)
             x0,x1=(3.5,5) if left else (21,22.5)
-            # Front landing joins a gate at 24.7, rear portion always connected.
-            deck(f"outer_{side}_{tag}",x0,x1,24.7,37.3,level,["left" if left else "right","rear"])
-            # The root apron is the wing's bearing interface. Keep it a
-            # separately identified solid, never exclude the full outer walk
-            # from moving-equipment collision queries.
-            deck(f"wing_hinge_{side}_{tag}",x0,x1,23.4,24.7,level,["left" if left else "right"])
+            apron=f"wing_hinge_{side}_{tag}"
+            # Split the apron around the axle; the left lift landing stays open.
+            deck(apron,x0,hx-.20 if left else x1,23.4,24.7,level,[]) if left else deck(apron,hx+.20,x1,23.4,24.7,level,[])
+            for label,z0,z1 in [("front",23.4,23.8),("rear",24.2,24.7)]:
+                deck(apron+"_"+label,hx-.20 if left else hx,hx if left else hx+.20,z0,z1,level,[])
+            if not left:
+                box(apron+"_right_rail",[22.54,level+1.06,24.05],[.08,.08,1.3],"yellow")
+                for z in [23.44,24.66]:box(apron+"_right_post_"+str(z),[22.54,level+.51,z],[.08,1.02,.08],"yellow")
             box(f"hinge_front_guard_{side}_{tag}",[(x0+x1)/2+(-.35 if left else .35),level+1.06,23.32],[.8,.08,.08],"yellow")
-            # Split inner guard around the elevator's side doorway and wing root.
-            for n,(z0,z1) in enumerate([(24.7,28.5),(30,35.8)]):
-                gx=x1+.04 if left else x0-.04
-                box(f"outer_inner_{side}_{tag}_{n}",[gx,level+1.06,(z0+z1)/2],[.08,.08,z1-z0],"yellow")
+            if level==8.4:
+                deck(f"outer_{side}_{tag}",x0,x1,24.7,37.3,level,["left" if left else "right","rear"])
+                # Retain the hip entrance through the vacated old lift footprint.
+                for n,(z0,z1) in enumerate([(24.7,28.5),(30,37.3)]):
+                    gx=x1+.04 if left else x0-.04
+                    box(f"outer_inner_{side}_{tag}_{n}",[gx,level+1.06,(z0+z1)/2],[.08,.08,z1-z0],"yellow")
+                deck("hip_link_"+side,5 if left else 17.8,8.2 if left else 21,28.5,30,level,["front","rear"])
+                # New right lift boards the inner edge at X21/Z31.
+                if not left:
+                    data["solids"]=[r for r in data["solids"] if not r["id"].startswith(f"outer_inner_{side}_{tag}_1")]
+                    for n,(z0,z1) in enumerate([(30,30.25),(31.75,37.3)],1):
+                        box(f"outer_inner_{side}_{tag}_{n}",[20.96,level+1.06,(z0+z1)/2],[.08,.08,z1-z0],"yellow")
             gate=group(f"access_gate_{side}_{tag}",at=[(x0+x1)/2,level,24.85],joint="gate",level=level,stow_x=1.6 if left else -1.6)
             box(gate,[0,.65,0],[1.5,.10,.08],"yellow",gate)
-            root=group(f"wing_{side}_{tag}",at=[5 if left else 21,level,24],rotation=[0,0 if left else 180,0],joint="wing",side=side,level=level)
-            data["groups"][root]["motion_contacts"]=[f"wing_hinge_{side}_{tag}_floor"]
-            deck(root,.02,7.98,-.6,.6,0,["front","rear"],root)
-            # Keep the world-rear edge open to the work fingers on both sides.
-            # The right root's 180-degree yaw swaps local front and rear.
+            root=group(f"wing_{side}_{tag}",at=[hx,level,24],rotation=[0,0 if left else 180,0],joint="wing",side=side,level=level)
+            data["groups"][root]["motion_contacts"]=[apron+"_floor"]
+            deck(root,.20,7.98,-.6,.6,0,[],root)
+            for label,z0,z1 in [("front",-.6,-.20),("rear",.20,.6)]:
+                deck(root+"_root_"+label,.02,.20,z0,z1,0,[],root)
             open_edge="rear" if left else "front"
-            for record in data["solids"]:
-                if record["parent"]==root and f"_{open_edge}_" in record["id"]:record["solid"]=False;record["hidden"]=True
-            if level in [8.4,11.2]:
-                fx=4.6 if level==8.4 else 5.35
-                length=1.2 if level==8.4 else 2.0
-                finger=group(f"finger_{side}_{tag}",parent=root,at=[fx,0,0],joint="finger",extension=length,side=side,level=level)
-                # Telescopes rearward in world Z (local sign differs on right).
-                # At 11.2 the socket crown rises through the floor's elevation.
-                # Leave .05 m lateral clearance to its real spherical shell.
-                deck(finger,0,1.2 if level==8.4 else 1.15,-.6,.6,0,[],finger)
-                if level==11.2:
-                    middle=group(f"finger_middle_{side}_{tag}",parent=root,at=[fx,0,0],joint="finger",extension=.8,side=side,level=level)
-                    deck(middle,0,1.3,-.6,.6,-.025,[],middle)
-            if level==8.4:
+            # Guards keep their historic 8.4 width, but the upper rails sit
+            # within the leaf's 1.2 m width (short davits protrude by .15 m).
+            sign=1 if left else -1
+            guard_segments(root+("_front" if left else "_rear"),.02,7.98,-sign*(.64 if level==8.4 else .56),0,parent=root)
+            if level==20.6:
+                stations=[s for s in data["rope_stations"] if s["parent"]==root]
+                guard_segments(root+"_"+open_edge,.02,7.98,sign*.56,0,[s["anchor"][0] for s in stations],root)
+                for station in stations:
+                    x,_,z=station["anchor"]
+                    box("rope_davit_"+station["id"],[x,1.2,(sign*.45+z)/2],[.10,.10,.30],"yellow",root)
+                box(root+"_mast",[.30,.825,-sign*.50],[.12,1.65,.12],parent=root)
+                tie=group(root+"_tie",parent=root,at=[3.90,1.40,-sign*.50],rotation=[0,0,math.degrees(math.atan2(-.50,7.2))])
+                box(root+"_tie_member",[0,0,0],[math.hypot(7.2,.50),.08,.08],parent=tie)
+            else:
+                finger=group(f"finger_{side}_{tag}",parent=root,at=[4.6,0,0],joint="finger",extension=1.2,side=side,level=level)
+                deck(finger,0,1.2,-.6,.6,0,[],finger)
                 a,b=(8.2,10.1) if left else (15.9,17.8)
                 deck(f"hip_apron_{side}",a,b,27.35,30.1,level,["rear"])
                 outer=group("rear_outer_"+side,at=[10.1 if left else 15.9,level,27.95],rotation=[0,0 if left else 180,0],joint="rear_outer",side=side,level=level)
@@ -378,26 +428,35 @@ def contract():
                 deck(inner,0,1.44,-.6,.6,-.1,[],inner)
                 for parent in [outer,inner]:
                     guard=group(parent+"_guard",parent=parent,joint="rear_guard",level=level)
-                    # Both guards face world rear, away from the hip work edge.
                     box(guard,[.725,.55,.64 if left else -.64],[1.45,1.1,.08],"yellow",guard)
-            else:
-                a,b=(7.9,9.7) if left else (16.3,18.1)
-                deck(f"rear_branch_{side}_{tag}",a,b,28.5,30,level,["front","rear"])
-                a,b=(9.7,11.4) if left else (14.6,16.3)
-                deck(f"rear_flank_{side}_{tag}",a,b,27.4,30.1,level,[])
-                if level==11.2:deck("aft_finger_"+side,a,b,31.7,35.8,level,["left","right","front"])
-        deck("rear_crossover_"+tag,5,21,35.8,37.3,level,["rear"])
 
-    # Fixed landing lips stop 20 mm short of the moving car. Keep the full
-    # doorway width and stay between the shaft's corner guide bands.
+    # Rear walkway: posts from the floor, never roof hangers. Shift the west
+    # support just inboard of the retained 8.4 walk/guard (X<=5.08).
+    deck("rope_exit",5,18,30.3,31.7,20.6,[])
+    guard_segments("rope_exit_front",5,16.5,30.26,20.6,[11,12.4,13.6,15])
+    guard_segments("rope_exit_rear",5,16.5,31.74,20.6)
+    box("rope_exit_west_guard",[4.96,21.15,31],[.08,1.1,1.4],"yellow")
+    box("rope_exit_west_post",[5.24,10.2,31],[.24,20.4,.24])
+    # 1.5 m square landing at the east end, from X16.5 to the shaft X18.
+    deck("rope_exit_landing",16.5,18,30.25,31.75,20.6,["front","rear"])
+    for z in [29.55,32.45]:box("rope_exit_lift_post_"+str(z),[18.10,10.1,z],[.20,20.2,.20])
+    box("rope_exit_lift_header",[18.10,20.1,31],[.20,.20,3.10])
+    box("rope_exit_support",[17.3,20.3,31],[1.8,.2,.8])
+    for station in data["rope_stations"]:
+        if station["edge"]=="rear":
+            x=station["anchor"][0]
+            box("rope_boom_"+station["id"],[x,21.8,29.3],[.12,.12,2],"yellow")
+
+    # Fixed flush thresholds stop .02 m short of each car. Landing width is
+    # 1.5 m, including .1 m extensions at the narrower left hinge aprons.
     for level in data["access"]["levels"]:
-        tag=str(level)
-        for side,x in [("left",5.14),("right",20.86)]:
-            box(f"outer_{side}_{tag}_landing_fill",[x,level-.1,29.25],
-                [.28,.20,1.50],"deck")
-    for side,x in [("left",8.06),("right",17.94)]:
-        box(f"hip_apron_{side}_landing_fill",[x,8.30,29.25],
-            [.28,.20,1.50],"deck")
+        deck("lift_left_"+str(level)+"_landing",3.22,5,23.30,24.80,level,[])
+        # Cut the landing at the shared axle too: it joins the notched apron,
+        # and must never silently fill that notch back in.
+        data["solids"][-1]["position"][0]=(3.22+4.80)/2
+        data["solids"][-1]["size"][0]=4.80-3.22
+    deck("lift_right_8.4_landing",20.92,21.2,30.25,31.75,8.4,[])
+    deck("lift_right_20.6_landing",18,18.28,30.25,31.75,20.6,[])
 
     # Rendered joints have distinct sections while physics retains the authored
     # envelopes. Telescoping plates must not share their host's top/side planes.
