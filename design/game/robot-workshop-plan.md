@@ -86,6 +86,8 @@ Landing **CALL** buttons use a 0.9-second arrival with cubic deceleration,
 independent of travel distance (2026-10-27). Onboard **Up/Down** keep their
 0.75 m/s ride speed. Calls retain guarded motion, rider/cargo transport and
 automatic resume; obstruction and pause time do not consume the arrival time.
+A landing CALL interrupts an active trip at its current height and starts a fresh
+0.9-second arrival to that landing, including during another call.
 
 ## 1. Build the workshop and adapt the leg journey
 

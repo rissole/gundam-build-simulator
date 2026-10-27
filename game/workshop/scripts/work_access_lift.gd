@@ -208,11 +208,14 @@ func _target(action: String) -> float:
 		if index >= 0 and index < stops.size():return stops[index]
 	return height
 
-## A held trip accepts a new destination, so a rider is never trapped by an
-## obstruction they cannot reach. Calling it to where it waits cancels the trip.
+func _is_call(action: String) -> bool:
+	return action == "ground" or action.begins_with("stop")
+
+## Landing calls interrupt any trip at its current height. Onboard controls can
+## retarget a held trip, so a rider is never trapped by an obstruction.
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the lift."
-	if moving:return "Wait for the lift to stop." if blocked_reason.is_empty() else ""
+	if moving:return "Wait for the lift to stop." if blocked_reason.is_empty() and not _is_call(action) else ""
 	if is_equal_approx(_target(action),height):return "The lift is already at this level."
 	return ""
 
@@ -224,7 +227,7 @@ func request(action: String) -> String:
 	motion_obstruction = {}
 	destination = _target(action)
 	moving = not is_equal_approx(destination,height)
-	_call_remaining = CALL_DURATION if moving and (action == "ground" or action.begins_with("stop")) else 0.0
+	_call_remaining = CALL_DURATION if moving and _is_call(action) else 0.0
 	blocked_reason = _sweep_error(height,_ahead(0.0)) if moving else ""
 	_pose()
 	return ""

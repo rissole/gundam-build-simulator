@@ -91,7 +91,22 @@ func run() -> void:
 			expect(lift.request(action).is_empty(),side+" accepts onboard "+action)
 			lift.physics(.2)
 			expect(lift.moving and is_equal_approx(absf(lift.height-start),.15),side+" onboard "+action+" retains 0.75 m/s travel")
+			var interrupted_height: float = lift.height
+			expect(not lift.request("down" if action == "up" else "up").is_empty(),side+" onboard controls still wait during an active trip")
+			var call = "ground" if action == "up" else "stop4"
+			expect(lift.action_error(call).is_empty() and lift.request(call).is_empty(),side+" CALL interrupts active "+action+" travel")
+			expect(is_equal_approx(lift.height,interrupted_height) and is_equal_approx(lift.destination,start),side+" CALL replaces the destination without jumping the deck")
+			lift.physics(.3)
+			expect(lift.height < interrupted_height if action == "up" else lift.height > interrupted_height,side+" interrupted trip immediately reverses toward the call landing")
+			lift.physics(.6)
+			expect(not lift.moving and is_equal_approx(lift.height,start),side+" interrupting CALL arrives in 0.9 seconds")
 		lift.apply({"height":lift.stops[0],"destination":lift.stops[0],"moving":false})
+		expect(lift.request("stop4").is_empty(),side+" starts a full-height landing call")
+		lift.physics(.2)
+		var interrupted_height: float = lift.height
+		expect(lift.request("stop0").is_empty() and is_equal_approx(lift.height,interrupted_height),side+" another landing CALL interrupts a fast call without jumping")
+		lift.physics(.9)
+		expect(not lift.moving and is_equal_approx(lift.height,lift.stops[0]),side+" newest landing CALL replaces the previous fast destination")
 	var bad: Dictionary = game.equipment.capture();bad.left_shelf.occupants=["right_panel",""]
 	expect(not game.equipment.validate(bad,game.model,{}).is_empty(),"cross-elevator cargo substitution rejected")
 	expect(game.model.integrity_errors().is_empty(),"all physical cargo identities conserved")

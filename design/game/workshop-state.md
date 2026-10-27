@@ -12,9 +12,11 @@ last version before consolidation.
 ## Where things stand
 
 - **Fast elevator calls (2026-10-27):** landing CALL trips now arrive in 0.9 seconds
-  with cubic deceleration; onboard Up/Down retain 0.75 m/s. Guarded motion and
+  with cubic deceleration and interrupt active trips at their current height;
+  onboard Up/Down retain 0.75 m/s and their existing in-motion interlock. Guarded motion and
   rider/cargo transport remain active; waits and pauses preserve arrival time.
-  Four focused routine suites pass (228 checks, 17.256 s). No rendered review;
+  Initial four focused routine suites pass (228 checks, 17.256 s); interrupt
+  follow-up passes both elevator suites (194 checks, 6.594 s). No rendered review;
   arrival feel awaits [player re-check](robot-workshop-playtest-checklist.md#findings).
 
 - **Left-leg feedback implemented (2026-10-26):** all nine repairs integrated:
