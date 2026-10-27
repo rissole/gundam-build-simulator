@@ -36,14 +36,15 @@ func run() -> void:
 	var block=preload("res://scripts/workshop_blockout.gd").new();game.add_child(block)
 	block.spec={"access":Layout.layout().workshop.access,"elevators":Layout.layout().workshop.elevators,"groups":{}}
 	access=Access.new();game.add_child(access);access.setup(game,block);game.equipment.register(access)
-	expect(access.controls().size()==8,"two labelled rows on each of two banks")
+	expect(access.controls().size()==4 and access.get_child_count()==2,"one labelled row on each of two level banks")
 	for bank in access.get_children():
 		var labels=[]
 		for node in bank.get_children():
 			if node is Label3D:labels.append(node.text)
-		expect(labels==["UPPER GANTRY","LOWER GANTRY"],"each bank has one label per row")
+		var front="lower" if is_equal_approx(bank.position.y,8.4) else "upper"
+		expect(labels==[front.to_upper()+" GANTRY"],"each bank has only its own level’s row")
 		for action in Access.MANUAL_COMMANDS:
-			expect(access.controls().filter(func(entry):return bank.is_ancestor_of(entry.node) and entry.action==action).size()==1,"bank has exactly one "+action)
+			expect(access.controls().filter(func(entry):return bank.is_ancestor_of(entry.node) and entry.action==action).size()==(1 if action.begins_with(front) else 0),"bank exposes only its level’s action: "+action)
 	for front in ["upper","lower"]:
 		expect(access.front_closed(front) and not access.front_open(front),front+" starts fully closed")
 		expect(access.request(front+"_open").is_empty(),front+" opens by tap")
@@ -80,7 +81,7 @@ func run() -> void:
 		var stub=preload("res://tests/kit/manual_fronts.gd").new()
 		expect(stub.manual_effect(objective)==access.manual_effect(objective) and stub.manual_subject(objective)==access.manual_subject(objective) and stub.manual_hint(objective)==access.manual_hint(objective) and stub.command_label(action)==access.command_label(action),action+" manual stub matches the real fronts")
 		stub.free()
-		expect(access.manual_control_actions(objective)==[action] and access.manual_control_entries(objective).size()==2,action+" cues either physical bank")
+		expect(access.manual_control_actions(objective)==[action] and access.manual_control_entries(objective).size()==1,action+" cues its one physical bank")
 		expect(access.manual_subject(objective)==("Upper gantry" if action.begins_with("upper") else "Lower gantry") and access.manual_hint(objective)==access.manual_subject(objective).to_upper()+" panel at "+("20.6" if action.begins_with("upper") else "8.4")+" m beside the left lift",action+" names the panel")
 		expect(access.command_label(action)==("Open" if action.ends_with("open") else "Close"),action+" uses the panel's verb")
 	# Closing an opened front keeps its OPEN evidence until CLOSE arrives.
