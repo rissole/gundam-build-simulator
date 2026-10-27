@@ -55,6 +55,15 @@ func front_ropes_clear() -> bool:
 		if stations[id].edge=="front" and (ropes[id].deployed or attachment==id):return false
 	return true
 
+## A grounded clipped rider may unclip before taking another machine's trip.
+## This uses the existing short-travel guard, without special rider carrying.
+func travel_error(carrier_id: String, _from: float, _to: float) -> String:
+	if not attached() or hanging:return ""
+	var carrier=game.equipment.get_equipment(carrier_id)
+	var floor=EquipmentRegistry.rider_floor(game)
+	if carrier!=null and floor!=null and carrier.carries(floor):return "Unclip the rope before riding this platform."
+	return ""
+
 func front_available(id: String) -> bool:
 	if stations[id].edge!="front":return true
 	var access = game.equipment.get_equipment("workshop_access")
@@ -68,7 +77,7 @@ func on_floor() -> bool:
 	var collision = KinematicCollision3D.new()
 	return game.player.test_move(game.player.global_transform,Vector3.DOWN*.06,collision) and collision.get_normal().y>.65
 
-func gate_passable(id: String) -> bool:return attachment==id and front_available(id)
+func gate_passable(id: String) -> bool:return attachment==id
 
 func _build_station(id: String) -> void:
 	var node = Node3D.new();add_child(node)
@@ -210,6 +219,15 @@ func validate(data: Variant, _candidate: AssemblyModel=null, world: Dictionary={
 		var state: Variant=data.ropes[id]
 		if not Codec.same_keys(state,["deployed","length"]) or not state.deployed is bool or not Codec.number(state.length):return ["Invalid rope state."]
 		if state.length<MIN_LENGTH or state.length>max_length(id)+.001 or (not state.deployed and not is_equal_approx(state.length,MIN_LENGTH)):return ["Rope length out of range."]
+	var equipment_state: Variant=world.get("equipment",{})
+	if not equipment_state is Dictionary:return ["Invalid rope world state."]
+	var access_state: Variant=equipment_state.get("workshop_access",{})
+	if not access_state is Dictionary or not access_state.get("channels",{}) is Dictionary:return ["Invalid rope leaf state."]
+	var access_channel: Variant=access_state.get("channels",{}).get("20.6",{})
+	if not access_channel is Dictionary:return ["Invalid rope leaf channel."]
+	if not access_channel.is_empty():
+		for id in stations:
+			if stations[id].edge=="front" and data.ropes[id].deployed and (not Codec.number(access_channel.get("value")) or not is_zero_approx(access_channel.value)):return ["Deployed rope is on an open leaf."]
 	if not data.attachment is String or not data.hanging is bool or not Codec.valid_vector(data.slack):return ["Invalid rope attachment."]
 	if not data.pull_in is Array or (not data.pull_in.is_empty() and not Codec.valid_vector(data.pull_in)):return ["Invalid pull-in point."]
 	var offset=Codec.to_vector(data.slack)
@@ -220,12 +238,14 @@ func validate(data: Variant, _candidate: AssemblyModel=null, world: Dictionary={
 		if not stations.has(data.attachment) or not data.ropes[data.attachment].deployed:return ["Player attached to a stowed or unknown rope."]
 		if not data.pull_in.is_empty():
 			if not data.hanging or horizontal(Codec.to_vector(data.pull_in)-anchor(data.attachment)).length()>PULL_REACH:return ["Pull-in point out of range."]
-		var player: Array=world.get("player",[])
-		if player.size()==5:
+		var player: Variant=world.get("player",[])
+		if not world.is_empty() and not Codec.valid_vector(player,5):return ["Attached rope requires a finite player pose."]
+		if player is Array and player.size()==5:
 			var at=Vector3(player[0],player[1],player[2])
 			if absf(anchor(data.attachment).y-HARNESS-float(data.ropes[data.attachment].length)-at.y)>.12:return ["Rope length disagrees with player height."]
 			var radius=2.6 if at.y>=deck_height(data.attachment)-.08 else PULL_REACH
 			if horizontal(at-anchor(data.attachment)).length()>radius+.05:return ["Player is outside the rope envelope."]
+			if not data.pull_in.is_empty() and (Codec.to_vector(data.pull_in)-(at+Vector3.UP*1.63)).length()>2.51:return ["Pull-in point is beyond player reach."]
 	return []
 
 func apply(data: Dictionary) -> void:

@@ -125,7 +125,7 @@ func _rope_physics(rope: Node, delta: float) -> void:
 			var across=clampf(offset.dot(side),-across_limit,across_limit)
 			target=anchor+toward*along+side*across
 			target.y=at.y
-			if not grounded and move.is_zero_approx() and vertical<0:
+			if not grounded and move.is_zero_approx():
 				target.x=anchor.x;target.z=anchor.z
 		elif grounded:
 			target=at+direction*delta
@@ -141,7 +141,7 @@ func _rope_physics(rope: Node, delta: float) -> void:
 	# The front davit is 0.15 m past the leaf edge, less than the capsule's
 	# 0.26 m radius. Bias the line outward within its slack while passing the
 	# deck, so ascent/descent does not require a precise sideways adjustment.
-	if rope.pull_in==null and not grounded and rope.stations[rope.attachment].edge=="front" and at.y>deck-1.9 and (vertical!=0 or at.y<deck-.08):
+	if rope.pull_in==null and not grounded and rope.stations[rope.attachment].edge=="front" and at.y>deck-1.9 and (vertical!=0 or at.y<deck-.08 or move.is_zero_approx()):
 		var toward: Vector3=rope.deck_direction(rope.attachment)
 		var offset: Vector3=rope.horizontal(target-anchor)
 		if offset.dot(toward)>-.14:offset-=toward*(offset.dot(toward)+.14)

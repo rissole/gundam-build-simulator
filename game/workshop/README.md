@@ -215,14 +215,33 @@ machine's `capture()`/`apply()` must round-trip its at-rest state, including its
 supported load; see [Saves and checkpoints](../../design/game/robot-workshop-plan.md#saves-and-checkpoints).
 Equipment still captures and restores its own state, which the stage runner uses.
 
+## Rope access (gantry v2 branch)
+
+At a 20.6 m walkway station, aim at **Clip in** and press **E**; its guard gate
+opens only for the attached player. Step through to hang. Hold **Space** to rise
+or **Ctrl** to lower at 1 m/s; releasing locks your height. **WASD** adjusts up to
+0.35 m of slack, with normal collision. At the top, move back toward the walkway.
+The rear boom allows a supported traverse between its tip and the walkway.
+
+While hanging, aim at supported robot structure within 1.6 m horizontally of
+your line and press **G** to pull in; G again releases toward plumb. Normal E
+interaction and carrying still apply. Land on a floor, then press G to unclip.
+The rope end stays there for another ascent: aim and E to clip in from below.
+**Recall rope** at the station reel retrieves a free line. Front leaves wait with
+“Recall the ropes on the workshop-side leaves” until every front line is stowed.
+
+This mechanic awaits integration with A1's authored stations and player testing;
+mechanical fixture checks do not establish usability or visual acceptance.
+
 ## Controls
 
 | Input | Action |
 | --- | --- |
 | WASD / mouse | Move / look |
 | Shift while moving | Move faster |
-| Space | Jump from the floor or platform; release before jumping again |
-| Hold Ctrl | Crouch for a lower inspection view; release to stand when there is headroom |
+| Space | Jump; while clipped to a rope, hold to ascend |
+| Hold Ctrl | Crouch; while clipped to a rope, descend |
+| G | While hanging: clip/release pull-in lanyard. On a floor: unclip rope |
 | E | Stock/refill a pocket, carry a component/assembly, or operate a bay control |
 | 1 2 3 4 5 6 7 8 9 0 | Select one of the ten pockets |
 | Left click | Attach the selected small part, or place the carried component/assembly |

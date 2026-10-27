@@ -308,8 +308,10 @@ func _make_action_bar() -> void:
 	rope_label = label("",16,tone)
 	root.add_child(rope_label)
 	rope_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	rope_label.position = Vector2(-260,-190)
-	rope_label.size = Vector2(520,50)
+	rope_label.offset_left = -260
+	rope_label.offset_right = 260
+	rope_label.offset_top = -190
+	rope_label.offset_bottom = -140
 	rope_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	carry_panel = panel_at(root,Vector2(0.5,1),Rect2(-240,-125,480,0))
 	carry_panel.add_theme_stylebox_override("panel",style(Color("101b2380"),Color("a6bac318"),6))
@@ -457,7 +459,7 @@ func _make_pause() -> void:
 	col.add_child(grid)
 	grid.add_child(_control_group("Move & inspect",[
 		[["W","A","S","D"],"Walk"],[["~Mouse"],"Look around"],[["~Hold","Shift"],"Walk faster"],
-		[["Space"],"Jump"],[["~Hold","Ctrl"],"Crouch"],[["~Mouse wheel"],"Zoom in / out"]]))
+		[["Space"],"Jump / rope up"],[["~Hold","Ctrl"],"Crouch / rope down"],[["~Mouse wheel"],"Zoom in / out"]]))
 	grid.add_child(_control_group("Parts & pockets",[
 		[["E"],"Stock / carry / operate equipment"],[["1","~–","0"],"Select pocket"],
 		[["Q"],"Set down component"],[["B"],"Clear selected pocket"]]))
@@ -465,7 +467,7 @@ func _make_pause() -> void:
 		[["LMB"],"Attach at the preview"],[["~Hold","R","~+ mouse"],"Rotate preparation station"],
 		[["R","~then","R"],"Reset preparation rotation"],		[["Z"],"Undo (aimed build, else the current step's)"]]))
 	grid.add_child(_control_group("Manual & menu",[
-		[["M","~Manual ·","Tab"],"Hide panel"],[["Esc"],"Pause / resume"]]))
+		[["G"],"Rope lanyard / unclip on floor"],[["M","~Manual ·","Tab"],"Hide panel"],[["Esc"],"Pause / resume"]]))
 	session_label = label("",13,muted)
 	session_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL

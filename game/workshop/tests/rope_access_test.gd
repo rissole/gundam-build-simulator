@@ -4,13 +4,13 @@ const Rope = preload("res://scripts/rope_access.gd")
 const Player = preload("res://scripts/player_controller.gd")
 const Blockout = preload("res://scripts/workshop_blockout.gd")
 const Access = preload("res://scripts/workshop_access.gd")
+const Save = preload("res://scripts/workshop_save.gd")
+const Guidance = preload("res://scripts/manual_control_guidance.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
-class Components extends RefCounted:
-	var held_body: Node3D
 class Hud extends RefCounted:
 	var browser: Control = Control.new()
 	var message=""
-	func toast(value: String) -> void:message=value
+	func toast(value: String, _success: bool=false) -> void:message=value
 	func refresh() -> void:pass
 	func handle_manual_browser_input(_event: InputEvent) -> bool:return false
 class World extends Node3D:
@@ -23,7 +23,10 @@ class World extends Node3D:
 	var equipment=EquipmentRegistry.new()
 	var model=AssemblyModel.new()
 	var bodies={}
-	var components=Components.new()
+	var components: Node
+	var part_defs={}
+	var manual_progress=Progress.new()
+	var interaction_outline: Node3D
 	var hud=Hud.new()
 	var desktop_input: RefCounted
 	var player_controller: RefCounted
@@ -36,8 +39,21 @@ class World extends Node3D:
 	var jump_requested=false
 	var jump_held=false
 	var target={}
+	func interact(all_stock: bool=false) -> void:components.interact(all_stock)
 	func _update_target() -> void:pass
 	func equipment_access_error(_owner: String) -> String:return ""
+class Progress extends RefCounted:
+	signal updated
+	var _queued=false
+	func tracked() -> Dictionary:return {"owner":"chest","page":0,"definition":{"objectives":[{"op":"operate","machine":"work","command":"fasten"}]}}
+	func evaluation(_owner: String,_page: int) -> Dictionary:return {"current":0}
+	func status(_owner: String,_page: int) -> String:return "ready"
+class Work extends "res://scripts/equipment.gd":
+	var handle: MeshInstance3D
+	var operated=0
+	func controls() -> Array[Dictionary]:return [control_entry(handle,"fasten","Fasten",.12,{"point":handle.global_position})]
+	func action_error(_action: String) -> String:return ""
+	func request(_action: String) -> String:operated+=1;return ""
 var game: World
 var rope: Node
 var blockout: Node
@@ -67,7 +83,7 @@ func tick(count: int=1, delta: float=.1) -> void:
 func aim(action: String) -> bool:
 	for entry in rope.controls():
 		if entry.action==action:
-			game.camera.look_at(entry.point)
+			game.camera.look_at(entry.point,Vector3.FORWARD if absf((entry.point-game.camera.global_position).normalized().y)>.99 else Vector3.UP)
 			game.target=entry
 			return game.targeting.aim_score(entry.point,entry.radius)!=INF and game.targeting.access([entry.node]).is_empty()
 	return false
@@ -81,6 +97,7 @@ func contract() -> Array:
 
 func run() -> void:
 	game=World.new();root.add_child(game)
+	game.components=preload("res://scripts/component_interaction.gd").new(game);game.add_child(game.components)
 	game.player_controller=Player.new(game);game.player_controller.make()
 	game.desktop_input=preload("res://scripts/desktop_input.gd").new(game)
 	game.targeting=preload("res://scripts/targeting.gd").new(game)
@@ -96,26 +113,50 @@ func run() -> void:
 	obstacle(Vector3(13,-.1,27),Vector3(30,.2,20))
 	obstacle(Vector3(9.3,20.5,24),Vector3(2,.2,1.2))
 	obstacle(Vector3(11,20.5,31),Vector3(2,.2,1.4))
-	var deck=obstacle(Vector3(9.3,8.3,24.75),Vector3(2,.2,1))
+	obstacle(Vector3(9.3,8.3,24.75),Vector3(2,.2,1))
 	await frames(2)
 	expect(rope.stations.size()==12 and rope.anchor(FRONT).is_equal_approx(Vector3(9.3,21.8,24.75)) and rope.anchor("front_r_13.4").is_equal_approx(Vector3(13.4,21.8,24.75)),"All twelve contract anchors resolve both mirrored leaf frames")
 	place(Vector3(9.3,20.6,24.1));await frames(1)
+	var work=Work.new();game.add_child(work);work.game=game;work.equipment_id="work";game.equipment.register(work)
+	work.handle=MeshInstance3D.new();work.handle.mesh=BoxMesh.new();work.add_child(work.handle);work.handle.position=Vector3(9.3,15.8,25.3)
+	game.interaction_outline=preload("res://scripts/interaction_outline.gd").new();game.add_child(game.interaction_outline)
+	var cue=Guidance.new();game.add_child(cue);cue.setup(game)
+	game.camera.look_at(rope.fixtures[FRONT].clip.global_position);cue.update()
+	expect(cue.visible_controls.has(rope.fixtures[FRONT].clip),"An upper manual control objective cues a visible rope station through shared guidance")
+
 	expect(not rope.gate_passable(FRONT) and game.player.test_move(game.player.global_transform,Vector3(0,0,.8)),"Unclipped gate is a real collision barrier")
-	expect(aim("clip:"+FRONT) and rope.request("clip:"+FRONT).is_empty(),"Camera aim and ordinary reach allow clipping from the walkway")
+	expect(aim("clip:"+FRONT),"Camera aim and ordinary reach target the walkway clip control")
+	key(KEY_E,true);key(KEY_E,false)
+	expect(rope.attached(),"E clips through the normal desktop and component interaction route")
 	expect(rope.gate_passable(FRONT) and not game.player.test_move(game.player.global_transform,Vector3(0,0,.8)),"Only the attached station opens its gate")
 	expect(not rope.gate_passable("front_l_10.8") and not rope.front_ropes_clear(),"Other gates remain guarded and occupied front line interlocks leaves")
 	# Supplied off-edge pose isolates the movement mode; no automated walking.
 	place(Vector3(9.3,20.6,25.05));await tick()
 	expect(rope.hanging and absf(game.player.position.y-20.6)<.02,"Stepping beyond support locks height without free fall")
 	expect(not rope.unclip().is_empty() and rope.attached(),"Hanging player cannot unclip")
+	rope.attachment=""
+	expect(rope.action_error("clip:"+FRONT).contains("floor"),"Airborne player cannot clip a station")
+	rope.attachment=FRONT
+
 	key(KEY_CTRL,true);await tick(10);key(KEY_CTRL,false)
 	expect(absf(game.player.position.y-19.6)<.03 and not game.crouched,"Ctrl pays out at one metre per second without crouching")
+	game.paused=true;key(KEY_CTRL,true)
+	var paused_at=game.player.position;await tick(5)
+	expect(game.player.position.is_equal_approx(paused_at),"Paused rope movement is locked despite held input")
+	key(KEY_CTRL,false);game.paused=false
 	var held=game.player.position;await tick(5)
 	expect(game.player.position.distance_to(held)<.02,"Released descender stays locked")
 	key(KEY_D,true);await tick(20);key(KEY_D,false)
 	expect(rope.slack.length()<=Rope.SLACK+.001 and rope.horizontal(game.player.position-rope.anchor(FRONT)).length()<=Rope.SLACK+.01,"WASD slack remains inside the 0.35 metre circle")
 	# Pull-in ray hits supported robot structure, with actual normal collision.
 	place(Vector3(9.3,15,24.75));rope.slack=Vector3.ZERO;await tick()
+	game.target=work.controls()[0];game.camera.look_at(game.target.point)
+	key(KEY_E,true);key(KEY_E,false)
+	expect(work.operated==1,"Normal E interaction reaches a nearby connection while hanging")
+	work.handle.position.x+=4;game.target=work.controls()[0]
+	key(KEY_E,true);key(KEY_E,false)
+	expect(work.operated==1,"Hanging never bypasses the normal camera reach limit")
+	work.handle.position.x-=4
 	var robot=obstacle(Vector3(9.3,15.8,26.15),Vector3(1,2,.3));robot.set_meta("assembly_id","chest")
 	game.model.assemblies={"chest":{"parent":"","location":"support:gantry"}}
 	await frames(2)
@@ -129,6 +170,7 @@ func run() -> void:
 	expect(rope.validate(saved,null,world).is_empty(),"Pulled-in snapshot is valid at rest")
 	rope.apply(saved)
 	expect(JSON.parse_string(JSON.stringify(rope.capture()))==saved,"Pulled-in rope save round-trips")
+	check_save_path("pulled in")
 	key(KEY_G,true);key(KEY_G,false);await tick(20)
 	expect(rope.pull_in==null and rope.horizontal(game.player.position-rope.anchor(FRONT)).length()<.02,"G releases the lanyard and returns toward plumb")
 	var wall=obstacle(Vector3(9.65,15.8,24.75),Vector3(.1,2,1));await frames(2)
@@ -137,15 +179,25 @@ func run() -> void:
 	wall.free();robot.free();rope.slack=Vector3.ZERO
 	key(KEY_CTRL,true);await tick(90);key(KEY_CTRL,false)
 	expect(not rope.hanging and absf(game.player.position.y-8.4)<.04 and rope.attached(),"Descending lands on an 8.4 metre deck still clipped")
+	var landed=game.player.position
+	place(landed+Vector3.UP*.3);await tick()
+	expect(EquipmentRegistry.rider_floor(game)==null,"A hanging player above a deck is never carried as its rider")
+	place(landed);await tick()
+
 	key(KEY_G,true);key(KEY_G,false)
 	expect(not rope.attached() and rope.ropes[FRONT].deployed and not rope.front_ropes_clear(),"G unclips on a floor and leaves a deployed rope interlocking leaves")
+	place(game.player.position+Vector3(.2,0,0))
 	expect(aim("end:"+FRONT) and rope.request("end:"+FRONT).is_empty(),"Hanging end can be aimed at and clipped from below within normal reach")
 	key(KEY_SPACE,true);await tick(15);key(KEY_SPACE,false)
 	expect(rope.hanging and game.player.position.y>9.8,"Space ascends from the lower deck")
 	saved=JSON.parse_string(JSON.stringify(rope.capture()));rope.apply(saved)
 	expect(rope.validate(saved).is_empty() and JSON.parse_string(JSON.stringify(rope.capture()))==saved,"Hanging snapshot round-trips independently of grounded state")
+	check_save_path("hanging")
 	key(KEY_SPACE,true);await tick(130);key(KEY_SPACE,false)
 	expect(absf(game.player.position.y-20.65)<.02 and absf(rope.ropes[FRONT].length-Rope.MIN_LENGTH)<.02,"Ascent stops below the anchor at the top boarding height")
+	access.request_mode("delivery");access.physics(.1)
+	expect(rope.gate_passable(FRONT) and access.blocked_reason==Rope.LEAF_REASON,"Waiting leaf trip keeps the occupied gate open for the player's return")
+	access.request("stop");access.request_mode("work")
 	# Return pose supplied; capsule drops onto real walkway without teleport in mode.
 	place(Vector3(9.3,20.6,24.2));await tick();expect(rope.unclip().is_empty(),"Top walkway supports landing and unclipping")
 	expect(access.request_mode("delivery").is_empty(),"A pending leaf trip is accepted")
@@ -164,7 +216,11 @@ func run() -> void:
 	expect(aim("clip:"+REAR) and rope.request("clip:"+REAR).is_empty() and rope.front_ropes_clear(),"Rear boom control is within walkway reach and does not interlock leaves")
 	place(Vector3(11,19,28.3));await tick();key(KEY_CTRL,true);await tick(210);key(KEY_CTRL,false)
 	expect(rope.on_floor() and absf(game.player.position.y)<.04 and rope.ropes[REAR].length<=rope.max_length(REAR),"Descent stops at the ground and maximum line length")
+	var platform=obstacle(Vector3(11,.15,28.3),Vector3(1,.3,1));platform.reparent(work,true)
+	place(Vector3(11,.3,28.3));await frames(2);await tick()
+	expect(rope.travel_error("work",.3,.4).contains("Unclip"),"Existing travel guard pauses a grounded clipped platform rider")
 	rope.unclip()
+	expect(rope.travel_error("work",.3,.4).is_empty(),"Unclipping releases the platform travel guard")
 	var valid: Dictionary=rope.capture()
 	for corrupt in ["station","length","nan","stowed","pull","slack","identity"]:
 		var invalid=valid.duplicate(true)
@@ -181,3 +237,25 @@ func run() -> void:
 	var passed=checks.all(func(c):return c.passed)
 	print("ROPE_ACCESS ","PASS " if passed else "FAIL ",checks.size()," checks")
 	quit(0 if passed else 1)
+
+func check_save_path(label: String) -> void:
+	var save=Save.new(game,"user://rope-access-test.json")
+	game.equipment.steady_player=Transform3D.IDENTITY
+	var snapshot: Dictionary=JSON.parse_string(JSON.stringify(save.snapshot()))
+	expect(save._check(snapshot).is_empty() and Vector3(snapshot.player[0],snapshot.player[1],snapshot.player[2]).distance_to(game.player.position)<.001,"Save uses current hanging pose instead of stale rider pose: "+label)
+	var expected: Vector3=game.player.position
+	place(Vector3(0,0,0));rope.attachment="";rope.pull_in=null;rope.hanging=false
+	game.equipment.apply_saved(snapshot.equipment)
+	save._player=snapshot.player;save.place_player()
+	expect(rope.attached() and game.player.position.distance_to(expected)<.001,"Equipment and player restore preserve attachment: "+label)
+	var invalid=snapshot.duplicate(true);invalid.equipment.rope_access.ropes[FRONT].length=999
+	var before=rope.capture()
+	save.write(invalid)
+	expect(not save.load_saved() and not FileAccess.file_exists(save.path) and rope.capture()==before,"Invalid rope save is deleted before live state changes: "+label)
+	invalid=snapshot.duplicate(true);invalid.equipment.workshop_access.channels["20.6"].value=1.0
+	expect(not save._check(invalid).is_empty(),"Save rejects a deployed front line with an open leaf: "+label)
+	invalid=snapshot.duplicate(true);invalid.player=[]
+	expect(not save._check(invalid).is_empty(),"Attached rope save cannot omit the player pose: "+label)
+	invalid=snapshot.duplicate(true);invalid.equipment.workshop_access.channels="malformed"
+	expect(not save._check(invalid).is_empty(),"Malformed leaf state is rejected without dereferencing it: "+label)
+	Save.delete(save.path)
