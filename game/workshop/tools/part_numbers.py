@@ -4,11 +4,16 @@ Authoring modules name some part types with working names; this catalogue
 assigns their part numbers. Instance and source IDs keep the working names:
 they are internal and never shown. A part number has no full words: a prefix,
 a number or hardware code, and an optional variant suffix (-A, -B, ... in
-order; -L/-R are reserved for left and right hand).
+order; -L/-R are reserved for left and right hand, and a handed pair always
+carries both).
 """
 import re
 
 PART_NUMBERS = {
+    # Left-hand leg parts; the mirrored right leg derives -R from the same base.
+    "LG-100": "LG-100-L",
+    "LG-120": "LG-120-L",
+    "FA-605": "FA-605-L",
     "SH-RING-FRONT": "SH-100-A",
     "SH-RING-REAR": "SH-100-B",
     "SH-BRACE-LEFT": "SH-110-L",
@@ -52,7 +57,12 @@ def _rewrite(node):
 def apply(parts, inventory, assemblies):
     """Renumber part types, their stock records and every player-facing text."""
     for definition in parts.values():
-        definition["family"] = PART_NUMBERS.get(definition["family"], definition["family"])
+        family = PART_NUMBERS.get(definition["family"], definition["family"])
+        handed = family != definition["family"] and family.endswith("-L") and "left" not in definition["title"].lower()
+        definition["family"] = family
+        if handed:
+            definition["title"] += " · left hand"
+            definition["short_title"] += " · left hand"
     for record in inventory:
         if "part_id" in record:record["part_id"] = PART_NUMBERS.get(record["part_id"], record["part_id"])
     _rewrite(parts)

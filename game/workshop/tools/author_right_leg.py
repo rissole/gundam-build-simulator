@@ -2,7 +2,7 @@
 
 Mesh/pose reflection is explicit source metadata, resolved once by the runtime.
 Compatible hardware retains its family; handed structural/service pieces get
-distinct types and right-hand part numbers (family + "-R"). No occupied assembly moves when the selected task changes.
+distinct types and right-hand part numbers (-L becomes -R). No occupied assembly moves when the selected task changes.
 """
 from copy import deepcopy
 import json
@@ -42,7 +42,9 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
         # Robot-side prose mirrors; the shared transfer gate stays fixed. Handed
         # part numbers take their right-hand suffix.
         text=text.replace("Left", "Right").replace("left", "right").replace("far right (PARK)", "far left (PARK)")
-        for family in handed_families:text=re.sub(r"\b"+re.escape(family)+r"\b(?!-R)",family+"-R",text)
+        for family in handed_families:
+            base=family.removesuffix("-L")
+            text=re.sub(r"(?<![\w-])"+re.escape(base)+r"(-L)?(?![\w-])",base+"-R",text)
         return text
 
     def reflect_recipe(recipe, title):
@@ -83,10 +85,12 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
         kinds[key]=deepcopy(kinds.get(original,canonical_parts[original]))
         family=kinds[key]["family"]
         handed_families.append(family)
-        kinds[key]["family"]=family+"-R"
+        right=family.removesuffix("-L")+"-R"
+        kinds[key]["family"]=right
         kinds[key]["variant"]="right-hand"
-        kinds[key]["title"]=kinds[key]["title"].replace(family+" · ",family+"-R · ",1)+" · right hand"
-        kinds[key]["short_title"] += " · right hand"
+        for field in ("title","short_title"):
+            name=kinds[key][field].replace(family+" · ",right+" · ",1).removesuffix(" · left hand")
+            kinds[key][field]=name+" · right hand"
         # Its own mirrored thumbnail carries the right-hand part number.
         kinds[key].pop("catalogue_image",None)
         if "collision_shapes" in kinds[key]:kinds[key]["collision_shapes"]=collision(kinds[key]["collision_shapes"])

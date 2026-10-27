@@ -4,14 +4,14 @@
     {
       "instance_id": "LG-100__001",
       "source_id": "LG-100__001",
-      "part_id": "LG-100",
+      "part_id": "LG-100-L",
       "kind": "lg-shin",
       "location": "support:leg_shin_rack"
     },
     {
       "instance_id": "FA-605__001",
       "source_id": "FA-605__001",
-      "part_id": "FA-605",
+      "part_id": "FA-605-L",
       "kind": "lg-main-input",
       "location": "bin"
     },
@@ -25,7 +25,7 @@
     {
       "instance_id": "LG-120__001",
       "source_id": "LG-120__001",
-      "part_id": "LG-120",
+      "part_id": "LG-120-L",
       "kind": "lg-thigh-spar",
       "location": "support:leg_spar_rack"
     },

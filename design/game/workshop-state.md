@@ -18,8 +18,8 @@ last version before consolidation.
   player recheck pending in the
   [playtest checklist](robot-workshop-playtest-checklist.md#interchangeable-heel-pads--2026-10-28).
   Follow-up audit, same day: a different name and pickup point now means a
-  different part number. Right-hand parts are LG-100-R, LG-120-R and FA-605-R
-  (mirrored thumbnails); pitch variants are FA-524/525/529/220-A and -B; the W-24
+  different part number. Handed pairs carry both suffixes: LG-100-L/-R,
+  LG-120-L/-R and FA-605-L/-R (mirrored thumbnails, "· left/right hand" names); pitch variants are FA-524/525/529/220-A and -B; the W-24
   washer is "M24 washer" everywhere. Part numbers carry no words: 21 shoulder,
   pauldron, head, chest and backpack types were renumbered (e.g. SH-110-L/-R braces,
   SH-H24240 bolt) through `tools/part_numbers.py`. Generators reproduce the content

@@ -108,7 +108,7 @@ func run() -> void:
 	expect(same_ticks(lifted_off,[true,true,true,true,true,false]),"lifting off the seat steps the checklist back, got "+str(lifted_off.ticked))
 	var texts: Array[String] = []
 	for objective in page.objectives:texts.append(Objectives.text(game,"left_leg",objective))
-	expect(texts == ["Crane console: Move to Left shin rig","Crane console: Lower crane","Crane: Attach magnetic connectors","Crane console: Raise crane","Crane console: Move to Limb Bay","Crane console: Lower crane to seat LG-100"],"shin objective text, got "+str(texts))
+	expect(texts == ["Crane console: Move to Left shin rig","Crane console: Lower crane","Crane: Attach magnetic connectors","Crane console: Raise crane","Crane console: Move to Limb Bay","Crane console: Lower crane to seat LG-100-L"],"shin objective text, got "+str(texts))
 	expect(Objectives.text(game,"foot",{"op":"seat","slot":"pitch"}) == "Seat the prepared FA-500-P","pitch seat names the prepared actuator, got "+Objectives.text(game,"foot",{"op":"seat","slot":"pitch"}))
 	var parts: Dictionary = game.model.definitions.parts
 	var washer := part_kind(parts,"W-12")
@@ -187,7 +187,7 @@ func run() -> void:
 	var shin_page := page_named(definitions[left_definition].manual,"Deliver the structural shin")
 	var shin_text: Array[String] = []
 	for objective in shin_page.objectives:shin_text.append(Objectives.text(game,"left_leg",objective))
-	expect(shin_text == ["Crane console: Move to Left shin rig","Crane console: Lower crane","Crane: Attach magnetic connectors","Crane console: Raise crane","Crane console: Move to Limb Bay","Crane console: Lower crane to seat LG-100"],"shin delivery text, got "+str(shin_text))
+	expect(shin_text == ["Crane console: Move to Left shin rig","Crane console: Lower crane","Crane: Attach magnetic connectors","Crane console: Raise crane","Crane console: Move to Limb Bay","Crane console: Lower crane to seat LG-100-L"],"shin delivery text, got "+str(shin_text))
 	var right_shin := page_named(definitions.right_leg.manual,"Deliver the structural shin")
 	expect(str(right_shin.objectives[0].task) == "right_shin","right shin pickup task, got "+str(right_shin.objectives[0].task))
 	var cartridge := page_named(definitions.pitch_actuator.manual,"Drive cartridge")

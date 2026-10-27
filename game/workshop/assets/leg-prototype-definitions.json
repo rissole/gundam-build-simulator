@@ -2,10 +2,10 @@
   "version": 1,
   "parts": {
     "lg-shin": {
-      "family": "LG-100",
+      "family": "LG-100-L",
       "variant": "structural",
-      "title": "LG-100 · Structural shin",
-      "short_title": "Structural shin",
+      "title": "LG-100-L · Structural shin · left hand",
+      "short_title": "Structural shin · left hand",
       "carry_class": "equipment",
       "collision_shapes": [
         {
@@ -371,10 +371,10 @@
       "catalogue_image": "res://assets/part-images/lg-knee-fork.svg"
     },
     "lg-thigh-spar": {
-      "family": "LG-120",
+      "family": "LG-120-L",
       "variant": "structural",
-      "title": "LG-120 · Upper-leg beam",
-      "short_title": "Upper-leg beam",
+      "title": "LG-120-L · Upper-leg beam · left hand",
+      "short_title": "Upper-leg beam · left hand",
       "carry_class": "equipment",
       "collision_shapes": [
         {
@@ -577,10 +577,10 @@
       "catalogue_image": "res://assets/part-images/lg-w36.svg"
     },
     "lg-main-input": {
-      "family": "FA-605",
+      "family": "FA-605-L",
       "variant": "main-input",
-      "title": "FA-605 · Main input harness with both plugs",
-      "short_title": "Main input harness with both plugs",
+      "title": "FA-605-L · Main input harness with both plugs · left hand",
+      "short_title": "Main input harness with both plugs · left hand",
       "carry_class": "two_hand",
       "collision_shapes": [
         {
@@ -1242,7 +1242,7 @@
             "foot"
           ],
           "pose_source": "LG-100__001",
-          "label": "LG-100 · Structural shin",
+          "label": "LG-100-L · Structural shin",
           "support_required": true,
           "source_supports": [
             "leg_shin_rack"
@@ -1405,7 +1405,7 @@
             "ankle/W-36__024",
             "ankle/H-36090__004"
           ],
-          "label": "FA-605 · Main input harness with both plugs",
+          "label": "FA-605-L · Main input harness with both plugs",
           "snap_position": [
             0.3567236065864563,
             0.9608125686645508,
@@ -1586,7 +1586,7 @@
             "cap/washer_2",
             "cap/screw_2"
           ],
-          "label": "LG-120 · Upper-leg beam",
+          "label": "LG-120-L · Upper-leg beam",
           "support_required": true,
           "source_supports": [
             "crane_rigging"
@@ -1776,7 +1776,7 @@
         },
         {
           "title": "Lower the structural shin",
-          "body": "Use the shin rack controls to lower LG-100 onto the already fitted foot adapter. Align the female key with the adapter tongue; the equipment carries the load while it is unbolted.",
+          "body": "Use the shin rack controls to lower LG-100-L onto the already fitted foot adapter. Align the female key with the adapter tongue; the equipment carries the load while it is unbolted.",
           "slots": [
             "shin"
           ],
@@ -1810,7 +1810,7 @@
         },
         {
           "title": "Secure the ankle flange",
-          "body": "Fit four W-36 washers on the LG-100 flange, then four H-36090 M36 × 90 bolts downward into the already fitted FA-201 adapter. Heads are accessible above the flange outside the narrow shin beam.",
+          "body": "Fit four W-36 washers on the LG-100-L flange, then four H-36090 M36 × 90 bolts downward into the already fitted FA-201 adapter. Heads are accessible above the flange outside the narrow shin beam.",
           "slots": [
             "ankle/W-36__021",
             "ankle/H-36090__001",
@@ -1901,7 +1901,7 @@
         },
         {
           "title": "Connect the shin disconnect",
-          "body": "Fit FA-605 as one main input harness, including both attached plugs. Seat its box end in the already fitted FA-604 main socket, follow the existing foot guide clips, then push its upper keyed plug into the angled socket integral to LG-100 beside the ankle flange. Undo this step to unplug the harness before separating foot and shin.",
+          "body": "Fit FA-605-L as one main input harness, including both attached plugs. Seat its box end in the already fitted FA-604 main socket, follow the existing foot guide clips, then push its upper keyed plug into the angled socket integral to LG-100-L beside the ankle flange. Undo this step to unplug the harness before separating foot and shin.",
           "slots": [
             "main_input"
           ],
@@ -1912,7 +1912,7 @@
           ],
           "diagram_views": [
             {
-              "title": "FA-605 · one complete routed harness",
+              "title": "FA-605-L · one complete routed harness",
               "sources": [
                 "FA-605__001"
               ],
@@ -2081,7 +2081,7 @@
         },
         {
           "title": "Join the thigh spar",
-          "body": "Use the service crane to lower LG-120 onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120. Fit four W-24 washers and four LG-H24100 bolts downward through the exposed flange corners.",
+          "body": "Use the service crane to lower LG-120-L onto the already fitted LG-110 fork flange. The hip ball and neck are integral to LG-120-L. Fit four W-24 washers and four LG-H24100 bolts downward through the exposed flange corners.",
           "slots": [
             "spar",
             "fork/washer_1",
@@ -2099,7 +2099,7 @@
           ],
           "diagram_views": [
             {
-              "title": "LG-120 · lower onto fork",
+              "title": "LG-120-L · lower onto fork",
               "sources": [
                 "LG-120__001"
               ],
@@ -2379,7 +2379,7 @@
       "manual": [
         {
           "title": "Seat the supported leg",
-          "body": "The braced hip bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the leg rail to dock the LG-120 hip ball upward into the left socket's open underside. Keep rail support until all retaining bolts are fitted.",
+          "body": "The braced hip bridge and both bolted socket housings are already fitted on the gantry. With the left ring removed, use the leg rail to dock the LG-120-L hip ball upward into the left socket's open underside. Keep rail support until all retaining bolts are fitted.",
           "slots": [
             "left_leg"
           ],
@@ -2419,7 +2419,7 @@
         },
         {
           "title": "Fit the split retaining ring",
-          "body": "Carry and fit both PV-120 semicircular halves around the already seated LG-120 neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.",
+          "body": "Carry and fit both PV-120 semicircular halves around the already seated LG-120-L neck from opposite sides. Either identical half fits either destination. Their inward lips capture the ball with clearance around the neck.",
           "slots": [
             "ring_1",
             "ring_2"

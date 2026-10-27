@@ -30,6 +30,8 @@ func robot_content() -> Dictionary:
 	var number := RegEx.create_from_string("^[A-Z]+(-[A-Z])?-[A-Z]?[0-9]+(-[A-Z])?$")
 	var worded: Array = kinds_by_family.keys().filter(func(family): return number.search(family) == null)
 	expect(worded.is_empty(), "Part numbers contain no words: " + str(worded))
+	var unpaired: Array = kinds_by_family.keys().filter(func(family): return (family.ends_with("-L") and not kinds_by_family.has(family.trim_suffix("-L") + "-R")) or (family.ends_with("-R") and not kinds_by_family.has(family.trim_suffix("-R") + "-L")))
+	expect(unpaired.is_empty(), "Handed part numbers come in -L/-R pairs: " + str(unpaired))
 	return {"model": model, "data": data, "content": content, "scenario": scenario}
 
 func stage_slot(model: AssemblyModel, owner: String, sid: String) -> bool:

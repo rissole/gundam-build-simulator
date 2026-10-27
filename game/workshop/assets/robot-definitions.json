@@ -17,10 +17,10 @@
       }
     },
     "lg-shin": {
-      "family": "LG-100",
+      "family": "LG-100-L",
       "variant": "structural",
-      "title": "LG-100 · Structural shin",
-      "short_title": "Structural shin",
+      "title": "LG-100-L · Structural shin · left hand",
+      "short_title": "Structural shin · left hand",
       "carry_class": "equipment",
       "collision_shapes": [
         {
@@ -391,10 +391,10 @@
       "catalogue_image": "res://assets/part-images/lg-shin.svg"
     },
     "lg-thigh-spar": {
-      "family": "LG-120",
+      "family": "LG-120-L",
       "variant": "structural",
-      "title": "LG-120 · Upper-leg beam",
-      "short_title": "Upper-leg beam",
+      "title": "LG-120-L · Upper-leg beam · left hand",
+      "short_title": "Upper-leg beam · left hand",
       "carry_class": "equipment",
       "collision_shapes": [
         {
@@ -16388,7 +16388,7 @@
             "foot"
           ],
           "pose_source": "R-LG-100__001",
-          "label": "LG-100 · Structural shin",
+          "label": "LG-100-L · Structural shin",
           "support_required": true,
           "source_supports": [
             "crane_rigging"
@@ -16926,7 +16926,7 @@
             "ankle/W-36__024",
             "ankle/H-36090__004"
           ],
-          "label": "FA-605 · Main input harness with both plugs",
+          "label": "FA-605-L · Main input harness with both plugs",
           "snap_position": [
             -0.3567236065864563,
             0.9608125686645508,
@@ -17741,7 +17741,7 @@
             "cap/washer_2",
             "cap/screw_2"
           ],
-          "label": "LG-120 · Upper-leg beam",
+          "label": "LG-120-L · Upper-leg beam",
           "support_required": true,
           "source_supports": [
             "crane_rigging"
@@ -23336,7 +23336,7 @@
           },
           {
             "title": "Deliver the structural shin",
-            "goal": "Crane LG-100 from its rig onto the foot adapter.",
+            "goal": "Crane LG-100-L from its rig onto the foot adapter.",
             "slots": [
               "shin"
             ],
@@ -23930,7 +23930,7 @@
           },
           {
             "title": "Deliver the Upper-leg beam",
-            "goal": "Crane LG-120 from its rig onto the fork flange.",
+            "goal": "Crane LG-120-L from its rig onto the fork flange.",
             "slots": [
               "spar"
             ],
@@ -24160,7 +24160,7 @@
             "title": "Supported construction recovery",
             "view": "overview",
             "slots": [],
-            "body": "Before construction disassembly, move the transfer table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to the far left (PARK), seen from the foot end. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
+            "body": "Before construction disassembly, move the transfer table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to the far left (PARK), seen from the foot end. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605-L before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
           }
         ]
       },

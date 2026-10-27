@@ -754,7 +754,7 @@ def robot_documents(check=False):
     for task in workshop_layout["crane"]["tasks"].values():
         if task.get("payload")!="assembly":trial["equipment"]["parts"][task["load_uid"]]["stock_position"]=list(task["source_pose"]["position"])
     from part_numbers import apply as number_parts
-    number_parts(trial_parts, trial["parts"], [trial_pelvis, chest, core, backpack, cassette, arms, pauldrons, head, mirrored, trial])
+    number_parts(trial_parts, trial["parts"], [trial_leg, trial_pelvis, chest, core, backpack, cassette, arms, pauldrons, head, mirrored, trial])
     catalogue_images(check, {key: value for key,value in trial_parts.items() if key not in parts and "catalogue_image" not in value},trial["parts"],trial["sources"],trial["mirror_sources"])
     return {"robot-definitions.json": dict(version=1, parts=trial_parts, assemblies={"pelvis": trial_pelvis,"chest":chest,"core":core,"backpack":backpack,"arm_cassette":cassette,**arms,**pauldrons,**head,**mirrored}, assembly_patches={"left_leg": assembly_patch(leg, trial_leg)}), "robot-content.json": trial}
 
@@ -809,6 +809,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     checking = args.check
     audit()
+    from part_numbers import apply as number_parts
+    number_parts(parts, stock, [leg, pelvis, foot, content])
     # Catalogue images are stable inputs in this consolidation; a recipe check
     # still verifies their generator bytes and records their authored paths.
     catalogue_images(check=checking)
