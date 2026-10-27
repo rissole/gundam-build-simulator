@@ -3,6 +3,7 @@ extends "res://tests/kit/stage_section.gd"
 
 func run() -> void:
 	if not await start("head"):finish();return
+	if not gantry_front("upper",true):finish();return
 	var crane=game.equipment.get_equipment("service_crane");var fixture=game.equipment.get_equipment("module_supports")
 	var left=game.equipment.get_equipment("head_left_receiver");var top=game.equipment.get_equipment("head_top_receiver")
 	expect(not left.receiving_error().is_empty(),"side before baseplate retention/connection is rejected")

@@ -2,6 +2,7 @@ extends "res://tests/kit/stage_section.gd"
 ## Mechanical/model fixture only. The user owns walking and connection access.
 func run() -> void:
 	if not await start("chest"):finish();return
+	if not gantry_front("upper",true):finish();return
 	expect(await deliver_chest(),"detailed section completes")
 	finish()
 
