@@ -60,7 +60,12 @@ func handle(event: InputEvent) -> void:
 			KEY_9: game.model.select_pocket(8)
 			KEY_0: game.model.select_pocket(9)
 			KEY_E: game.interact(event.shift_pressed)
-			KEY_Q: game.drop_selected()
+			KEY_Q:
+				var rope = game.equipment.get_equipment("rope_access")
+				if rope!=null and rope.attached():
+					var error: String=rope.unclip()
+					if not error.is_empty():game.hud.toast(error)
+				else:game.drop_selected()
 			KEY_B: game.deposit()
 			KEY_Z: game.undo_build()
 			KEY_TAB: game.hud.manual.visible = not game.hud.manual.visible

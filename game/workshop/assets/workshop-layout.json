@@ -16552,22 +16552,6 @@
         "solid": true
       },
       {
-        "id": "lift_left_8.4_landing_rear_floor",
-        "parent": "",
-        "position": [
-          4.15,
-          8.3,
-          24.75
-        ],
-        "size": [
-          1.2999999999999998,
-          0.1999999999999993,
-          0.10000000000000142
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
         "id": "lift_left_20.6_landing_floor",
         "parent": "",
         "position": [
@@ -16595,22 +16579,6 @@
           1.2999999999999998,
           0.1999999999999993,
           0.09999999999999787
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "lift_left_20.6_landing_rear_floor",
-        "parent": "",
-        "position": [
-          4.15,
-          20.5,
-          24.75
-        ],
-        "size": [
-          1.2999999999999998,
-          0.1999999999999993,
-          0.10000000000000142
         ],
         "material": "deck",
         "solid": true

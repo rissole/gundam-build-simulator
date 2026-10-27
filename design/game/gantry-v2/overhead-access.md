@@ -206,12 +206,22 @@ occlusion checks still apply.
 
 At a station, **E** clips in and opens the protected passage. Adjacent gates trim
 their overlapping barriers to preserve the selected full 0.9 m opening. Space
-ascends, Ctrl descends, and WASD gives bounded slack. Boarding uses the existing
+ascends and Ctrl descends: taps move at 0.6 m/s for the first 0.12 seconds, then
+held input accelerates at 8 m/s² up to 4.5 m/s (about 0.61 seconds after pressing).
+Release locks height immediately; reversal starts a fresh slow tap. Pause,
+collision/end limits, lanyard use and reload reset the transient acceleration.
+WASD gives bounded slack at its existing speed. Boarding uses the existing
 crouch capsule beneath the solid davits/booms, including after reload. The rear
 boom has a collision-resolved top traverse back to its walkway. **G** clips or
-releases the pull-in lanyard while hanging, and unclips only on a floor. A free
+releases the pull-in lanyard while hanging. **Q** unclips only on a floor; while
+attached it never drops a carried component, even when unclipping is refused.
+Outside rope use Q keeps its normal set-down action. A free
 rope can be clipped from below or recalled at its station. Existing hand carrying,
 targeting and solid obstruction rules remain active.
+
+Clip-in success keeps the permanent rope HUD and suppresses the duplicate
+temporary status toast, for both station clips and hanging ends, through E or
+click. Errors still use normal feedback; other equipment keeps its status toasts.
 
 Front lines must be recalled before the upper leaves move. An unclipped worker
 standing on a leaf also holds its motion. Crane cables in the crossing hold
@@ -224,6 +234,27 @@ rejected before live restoration, with no migration. This narrow rope safeguard
 does not introduce a wider per-machine save-validation framework. Manual changes
 are limited to goals and notes; objectives, slots and component quantities are
 unchanged. Backpack hinge worker access remains deliberately unresolved.
+
+## Corner flashing and rope-control follow-up — 2026-10-27
+
+The player called the upper loop "Near perfect" and reported flashing corner
+geometry near the workshop-side elevator. Two rear landing-extension plates
+overlapped the side-walk floor over X3.5..4.8/Z24.7..24.8, at both 8.4 and
+20.6 m. Removing those redundant plates retains the existing continuous floor.
+The dressed fixed walkway meshes now pass a pairwise coplanar top-face check.
+This also implements the player's requested Q unclip, permanent-only clip status,
+and fast held rappelling with slow taps described above.
+
+Five selected routine cases pass in **7.938 s**: rope access (121 checks),
+gantry dressing (161), layout (188), centered carrying (14) and startup (32).
+Rope checks cover E/click feedback, errors, Q versus set-down, both travel
+directions, repeated taps, reversal, instant stopping, frame-rate-independent
+acceleration and reload reset. Existing landing, boom, collision and save checks
+also pass. The author verifies **607 solids / 79 frames**, byte-identical to
+the generated asset. Local evidence:
+`game/workshop/verification/regressions-20261027T110404.141596Z/results.json`.
+No rendered review or automated walking/reach/visibility acceptance ran; corner
+appearance and rappelling feel remain player rechecks.
 
 ## Crane route implementation — 2026-10-27
 

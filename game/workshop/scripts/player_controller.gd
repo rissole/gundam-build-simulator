@@ -98,10 +98,7 @@ func update_crouch(wants_crouch: bool, delta: float) -> void:
 func _rope_physics(rope: Node, delta: float) -> void:
 	game.jump_requested=false
 	game.player.velocity=Vector3.ZERO
-	# The fixed booms are above a crouched worker, below a standing head. Use
-	# ordinary crouch/uncrouch clearance before either ascent or boarding motion.
-	update_crouch(rope.boarding_duck(game.player.global_position.y+delta*rope.SPEED),delta)
-	if game.paused or game.desktop_input.modal_active():return
+	if game.paused or game.desktop_input.modal_active():rope.reset_motion();return
 	var grounded: bool=rope.on_floor()
 	var at: Vector3=game.player.global_position
 	var anchor: Vector3=rope.anchor(rope.attachment)
@@ -109,6 +106,10 @@ func _rope_physics(rope: Node, delta: float) -> void:
 	var move=Vector2(float(movement_pressed(KEY_D))-float(movement_pressed(KEY_A)),float(movement_pressed(KEY_S))-float(movement_pressed(KEY_W))).normalized()
 	var direction: Vector3=game.player.basis*Vector3(move.x,0,move.y)
 	var vertical=float(movement_pressed(KEY_SPACE))-float(movement_pressed(KEY_CTRL))
+	var can_travel: bool=rope.pull_in==null and (vertical>0 or (vertical<0 and rope.horizontal(at-anchor).length()<=rope.SLACK+.01))
+	var rise: float=rope.vertical_step(vertical if can_travel else 0.0,delta)
+	# Anticipate the actual accelerated step before entering a low davit/boom.
+	update_crouch(rope.boarding_duck(at.y+maxf(0,rise)),delta)
 	var target=at
 	if rope.pull_in!=null:
 		var outward: Vector3=rope.horizontal(anchor-rope.pull_in).normalized()
@@ -138,8 +139,8 @@ func _rope_physics(rope: Node, delta: float) -> void:
 			target=anchor+rope.slack;target.y=at.y
 		# Do not descend alongside a two-metre boom: first draw to its plumb
 		# line, with collisions, then pay out. Space still lifts from any floor.
-		if vertical>0 or (vertical<0 and rope.horizontal(at-anchor).length()<=rope.SLACK+.01):
-			target.y=clampf(at.y+vertical*rope.SPEED*delta,0,anchor.y-rope.HARNESS-rope.MIN_LENGTH)
+		if can_travel:
+			target.y=clampf(at.y+rise,0,anchor.y-rope.HARNESS-rope.MIN_LENGTH)
 	# The front davit is 0.15 m past the leaf edge, less than the capsule's
 	# 0.26 m radius. Bias the line outward within its slack while passing the
 	# deck, so ascent/descent does not require a precise sideways adjustment.
@@ -150,9 +151,11 @@ func _rope_physics(rope: Node, delta: float) -> void:
 		offset=offset.limit_length(rope.SLACK)
 		target.x=anchor.x+offset.x;target.z=anchor.z+offset.z
 		if vertical>0 and rope.horizontal(at-anchor).dot(toward)>-.13:target.y=at.y
-	var horizontal: Vector3=rope.horizontal(target-at).limit_length(delta*rope.SPEED)
+	var horizontal: Vector3=rope.horizontal(target-at).limit_length(delta*rope.TRAVERSE_SPEED)
 	_rope_move(horizontal)
 	_rope_move(Vector3(0,target.y-game.player.global_position.y,0))
+	# A floor, ceiling, boarding edge or rope end must not bank up acceleration.
+	if absf(game.player.global_position.y-at.y)+.001<absf(rise):rope.reset_motion()
 	# Establish floor contact without gravity/free fall. The locked length then
 	# comes from the actual collision-resolved pose, including a deck landing.
 	if grounded and vertical<=0:_rope_move(Vector3.DOWN*.015)

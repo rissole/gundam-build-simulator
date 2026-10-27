@@ -109,10 +109,26 @@ func run() -> void:
 			expect(escaped.is_empty(),"lift detailing follows original carriage and guides at "+str(level))
 	_check_selective_motion(world)
 	_check_walkway_lights(game,world,access)
+	_check_fixed_deck_faces(world)
 	var passed=checks.all(func(check):return check.passed)
 	write_evidence("res://verification/gantry-dressing.json",{"scope":"actual authored blockout; visual envelopes, recess geometry, collision identity and supplied intermediate equipment poses; no rendered or player acceptance","records":dressing.records.size(),"triangles":triangles,"unique_meshes":dressing.meshes.size(),"materials":dressing.materials.size(),"checks":checks})
 	print("GANTRY_DRESSING ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)
+
+func _check_fixed_deck_faces(world: Node3D) -> void:
+	var decks: Array=[]
+	for piece in world.pieces.values():
+		if piece.spec.material=="deck" and piece.spec.parent.is_empty() and Dressing.selected(piece.spec.id):decks.append(piece)
+	var overlaps: Array=[]
+	for i in decks.size():
+		var a: AABB=decks[i].visual.global_transform*decks[i].visual.mesh.get_aabb()
+		for j in range(i+1,decks.size()):
+			var b: AABB=decks[j].visual.global_transform*decks[j].visual.mesh.get_aabb()
+			if not is_equal_approx(a.end.y,b.end.y):continue
+			var width=minf(a.end.x,b.end.x)-maxf(a.position.x,b.position.x)
+			var depth=minf(a.end.z,b.end.z)-maxf(a.position.z,b.position.z)
+			if width>.00001 and depth>.00001:overlaps.append(decks[i].spec.id+" / "+decks[j].spec.id)
+	expect(overlaps.is_empty(),"fixed walkway top faces have no coplanar overlap at any corner: "+str(overlaps))
 
 func _check_walkway_lights(game: Node3D, world: Node3D, access: Node3D) -> void:
 	var before: Dictionary=_collision_state(game)

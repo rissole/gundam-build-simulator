@@ -509,8 +509,9 @@ def contract():
     # 1.5 m, including .1 m extensions at the narrower left hinge aprons.
     for level in data["access"]["levels"]:
         deck("lift_left_"+str(level)+"_landing",3.22,3.5,23.30,24.80,level,[])
-        for edge,z0,z1 in [("front",23.30,23.4),("rear",24.7,24.80)]:
-            deck("lift_left_"+str(level)+"_landing_"+edge,3.5,4.8,z0,z1,level,[])
+        # The side walkway already covers the rear extension at both levels.
+        # A second plate there creates overlapping coplanar walking surfaces.
+        deck("lift_left_"+str(level)+"_landing_front",3.5,4.8,23.30,23.4,level,[])
     deck("lift_right_8.4_landing",20.92,21,30.25,31.75,8.4,[])
     deck("lift_right_20.6_landing",18,18.28,30.25,31.75,20.6,[])
 

@@ -462,12 +462,12 @@ func _make_pause() -> void:
 		[["Space"],"Jump / rope up"],[["~Hold","Ctrl"],"Crouch / rope down"],[["~Mouse wheel"],"Zoom in / out"]]))
 	grid.add_child(_control_group("Parts & pockets",[
 		[["E"],"Stock / carry / operate equipment"],[["1","~–","0"],"Select pocket"],
-		[["Q"],"Set down component"],[["B"],"Clear selected pocket"]]))
+		[["Q"],"Unclip rope / set down component"],[["B"],"Clear selected pocket"]]))
 	grid.add_child(_control_group("Build & rotate",[
 		[["LMB"],"Attach at the preview"],[["~Hold","R","~+ mouse"],"Rotate preparation station"],
 		[["R","~then","R"],"Reset preparation rotation"],		[["Z"],"Undo (aimed build, else the current step's)"]]))
 	grid.add_child(_control_group("Manual & menu",[
-		[["G"],"Rope lanyard / unclip on floor"],[["M","~Manual ·","Tab"],"Hide panel"],[["Esc"],"Pause / resume"]]))
+		[["G"],"Rope pull-in lanyard"],[["M","~Manual ·","Tab"],"Hide panel"],[["Esc"],"Pause / resume"]]))
 	session_label = label("",13,muted)
 	session_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL

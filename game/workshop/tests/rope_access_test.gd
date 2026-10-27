@@ -39,6 +39,8 @@ class World extends Node3D:
 	var jump_requested=false
 	var jump_held=false
 	var target={}
+	var drops=0
+	func drop_selected() -> void:drops+=1
 	func interact(all_stock: bool=false) -> void:components.interact(all_stock)
 	func _update_target() -> void:pass
 	func equipment_access_error(_owner: String) -> String:return ""
@@ -236,8 +238,12 @@ func run() -> void:
 
 	expect(not rope.gate_passable(FRONT) and game.player.test_move(game.player.global_transform,Vector3(0,0,.8)),"Unclipped gate is a real collision barrier")
 	expect(aim("clip:"+FRONT),"Camera aim and ordinary reach target the walkway clip control")
+	game.hud.message=""
 	key(KEY_E,true);key(KEY_E,false)
 	expect(rope.attached(),"E clips through the normal desktop and component interaction route")
+	expect(game.hud.message.is_empty() and rope.status_text().contains("Q unclip"),"Successful clip keeps permanent rope status without a duplicate temporary toast")
+	key(KEY_E,true);key(KEY_E,false)
+	expect(game.hud.message.contains("Already clipped"),"Quiet clip success still reports interaction errors")
 	expect(game.crouched,"Top clip uses the normal crouch shape beneath the authored davit")
 	expect(rope.gate_passable(FRONT) and not game.player.test_move(game.player.global_transform,Vector3(0,0,.8)),"Only the attached station opens its gate")
 	expect(not rope.gate_passable("front_l_10.8") and not rope.front_ropes_clear(),"Other gates remain guarded and occupied front line interlocks leaves")
@@ -245,12 +251,15 @@ func run() -> void:
 	place(Vector3(9.3,20.6,25.05));await tick()
 	expect(rope.hanging and absf(game.player.position.y-20.6)<.02,"Stepping beyond support locks height without free fall")
 	expect(not rope.unclip().is_empty() and rope.attached(),"Hanging player cannot unclip")
+	key(KEY_Q,true);key(KEY_Q,false)
+	expect(rope.attached() and game.drops==0 and game.hud.message.contains("Land on a floor"),"Q refuses an airborne unclip without dropping carried parts")
 	rope.attachment=""
 	expect(rope.action_error("clip:"+FRONT).contains("floor"),"Airborne player cannot clip a station")
 	rope.attachment=FRONT
 
 	key(KEY_CTRL,true);await tick(10);key(KEY_CTRL,false)
-	expect(absf(game.player.position.y-19.6)<.03 and not game.crouched,"Ctrl pays out at one metre per second without crouching")
+	expect(game.player.position.y<17.7 and game.player.position.y>17.3 and not game.crouched,"Held Ctrl accelerates through roughly three metres in its first second")
+	await check_acceleration()
 	game.paused=true;key(KEY_CTRL,true)
 	var paused_at=game.player.position;await tick(5)
 	expect(game.player.position.is_equal_approx(paused_at),"Paused rope movement is locked despite held input")
@@ -296,9 +305,15 @@ func run() -> void:
 	place(landed);await tick()
 
 	key(KEY_G,true);key(KEY_G,false)
-	expect(not rope.attached() and rope.ropes[FRONT].deployed and not rope.front_ropes_clear(),"G unclips on a floor and leaves a deployed rope interlocking leaves")
+	expect(rope.attached(),"G is reserved for the lanyard and no longer unclips on a floor")
+	key(KEY_Q,true);key(KEY_Q,false)
+	expect(not rope.attached() and rope.ropes[FRONT].deployed and not rope.front_ropes_clear() and game.drops==0,"Q unclips on a floor and leaves a deployed rope interlocking leaves")
+	key(KEY_Q,true);key(KEY_Q,false)
+	expect(game.drops==1,"Q retains normal set-down behavior when not clipped to a rope")
 	place(game.player.position+Vector3(.2,0,0))
-	expect(aim("end:"+FRONT) and rope.request("end:"+FRONT).is_empty(),"Hanging end can be aimed at and clipped from below within normal reach")
+	expect(aim("end:"+FRONT),"Hanging end can be aimed at from below within normal reach")
+	game.hud.message="";game.components.attach_target()
+	expect(rope.attached() and game.hud.message.is_empty(),"Clicking a hanging end also clips without a duplicate temporary toast")
 	key(KEY_SPACE,true);await tick(15);key(KEY_SPACE,false)
 	expect(rope.hanging and game.player.position.y>9.8,"Space ascends from the lower deck")
 	saved=JSON.parse_string(JSON.stringify(rope.capture()));rope.apply(saved)
@@ -369,6 +384,43 @@ func run() -> void:
 	var passed=checks.all(func(c):return c.passed)
 	print("ROPE_ACCESS ","PASS " if passed else "FAIL ",checks.size()," checks")
 	quit(0 if passed else 1)
+
+func check_acceleration() -> void:
+	var original: Vector3=game.player.position
+	var original_slack: Vector3=rope.slack
+	for code in [KEY_CTRL,KEY_SPACE]:
+		place(Vector3(9.3,16,24.75));rope.slack=Vector3.ZERO;rope.reset_motion();await tick()
+		var start=game.player.position.y
+		key(code,true);await tick();key(code,false)
+		var tap=absf(game.player.position.y-start)
+		expect(absf(tap-.06)<.003,"A 100 ms "+str(code)+" tap moves only six centimetres")
+		await tick()
+		start=game.player.position.y
+		key(code,true);await tick();key(code,false);await tick()
+		expect(absf(absf(game.player.position.y-start)-tap)<.003,"Repeated taps restart at precision speed")
+		key(code,true);await tick(7)
+		start=game.player.position.y;await tick()
+		expect(absf(absf(game.player.position.y-start)-.45)<.003,"Held ascent/descent reaches 4.5 m/s within 0.7 seconds")
+		key(code,false);start=game.player.position.y;await tick(3)
+		expect(absf(game.player.position.y-start)<.002,"Release locks height immediately without coasting")
+	# Reverse a held run without an intervening idle physics tick.
+	place(Vector3(9.3,16,24.75));rope.reset_motion()
+	key(KEY_SPACE,true);await tick(7);key(KEY_SPACE,false)
+	var start=game.player.position.y
+	key(KEY_CTRL,true);await tick();key(KEY_CTRL,false);await tick()
+	expect(absf(start-game.player.position.y-.06)<.003,"Direction reversal starts with a fresh slow tap")
+	var travelled: Array=[]
+	for hz in [30,120]:
+		place(Vector3(9.3,16,24.75));rope.reset_motion()
+		key(KEY_CTRL,true);await tick(int(hz*.8),1.0/hz);key(KEY_CTRL,false);await tick()
+		travelled.append(16-game.player.position.y)
+	expect(absf(travelled[0]-travelled[1])<.003,"Acceleration travels the same distance at 30 and 120 physics ticks per second")
+	# Restore resets speed without changing the saved at-rest rope pose/schema.
+	key(KEY_CTRL,true);await tick(7)
+	var saved: Dictionary=rope.capture();rope.apply(saved)
+	start=game.player.position.y;await tick();key(KEY_CTRL,false);await tick()
+	expect(absf(start-game.player.position.y-.06)<.003,"Reloading a rope snapshot restarts at precision speed")
+	place(original);rope.slack=original_slack;rope.reset_motion();await tick()
 
 func check_save_path(label: String) -> void:
 	var save=Save.new(game,"user://rope-access-test.json")

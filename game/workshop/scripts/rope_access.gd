@@ -4,7 +4,11 @@ extends "res://scripts/equipment.gd"
 const Codec = preload("res://scripts/pose_codec.gd")
 const HARNESS = 1.0
 const MIN_LENGTH = 0.15
-const SPEED = 1.0
+const TRAVERSE_SPEED = 1.0
+const TAP_SPEED = 0.6
+const MAX_SPEED = 4.5
+const ACCELERATION = 8.0
+const TAP_TIME = 0.12
 const SLACK = 0.35
 const PULL_REACH = 1.6
 const PULL_GAP = 0.45
@@ -18,6 +22,28 @@ var attachment = ""
 var hanging = false
 var pull_in: Variant = null
 var slack = Vector3.ZERO
+# Input acceleration is transient; loading a snapshot always starts at rest.
+var _vertical_direction = 0.0
+var _vertical_held = 0.0
+
+func reset_motion() -> void:
+	_vertical_direction=0.0;_vertical_held=0.0
+
+func _vertical_distance(seconds: float) -> float:
+	var ramp=(MAX_SPEED-TAP_SPEED)/ACCELERATION
+	var accelerating=clampf(seconds-TAP_TIME,0,ramp)
+	var cruising=maxf(0,seconds-TAP_TIME-ramp)
+	return TAP_SPEED*seconds+.5*ACCELERATION*accelerating*accelerating+(MAX_SPEED-TAP_SPEED)*cruising
+
+## Integrate the ramp across the whole tick, including its tap/cruise boundaries.
+## Release, reversal and conflicting inputs start a fresh precision tap.
+func vertical_step(direction: float, delta: float) -> float:
+	if is_zero_approx(direction):reset_motion();return 0.0
+	if direction!=_vertical_direction:reset_motion();_vertical_direction=direction
+	var next=_vertical_held+delta
+	var distance=_vertical_distance(next)-_vertical_distance(_vertical_held)
+	_vertical_held=minf(next,TAP_TIME+(MAX_SPEED-TAP_SPEED)/ACCELERATION)
+	return direction*distance
 
 func setup(workshop: Node, geometry: Node3D) -> void:
 	game = workshop;blockout = geometry;equipment_id = "rope_access"
@@ -169,9 +195,9 @@ func controls() -> Array[Dictionary]:
 	for id in stations:
 		var f: Dictionary=fixtures[id]
 		for item in [["clip:",f.clip,"Clip in · gate opens"],["recall:",f.recall,"Recall rope"]]:
-			result.append(control_entry(item[1],item[0]+id,item[2],.12,{"point":item[1].global_position}))
+			result.append(control_entry(item[1],item[0]+id,item[2],.12,{"point":item[1].global_position,"success_toast":item[0]=="recall:"}))
 		if ropes[id].deployed and attachment!=id:
-			result.append(control_entry(f.end,"end:"+id,"Clip into hanging rope",.14,{"point":f.end.global_position}))
+			result.append(control_entry(f.end,"end:"+id,"Clip into hanging rope",.14,{"point":f.end.global_position,"success_toast":false}))
 	return result
 
 func action_error(action: String) -> String:
@@ -184,7 +210,7 @@ func action_error(action: String) -> String:
 			if attachment==id:return "Unclip on a floor before recalling the rope."
 			return "" if ropes[id].deployed else "The rope is already stowed."
 		"clip","end":
-			if attached():return "Already clipped in · G unclips on a floor."
+			if attached():return "Already clipped in · Q unclips on a floor."
 			if not on_floor():return "Stand on a floor before clipping in."
 			if parts[0]=="end":return "" if ropes[id].deployed else "The rope is stowed."
 			if absf(game.player.global_position.y-deck_height(id))>.12:return "Use the hanging rope end from below."
@@ -201,6 +227,7 @@ func request(action: String) -> String:
 	if not game.targeting.can_see(node.global_position,[node]):return "The rope control is obstructed."
 	if parts[0]=="recall":ropes[id]={"deployed":false,"length":MIN_LENGTH}
 	else:
+		reset_motion()
 		attachment=id;hanging=false;pull_in=null;slack=Vector3.ZERO
 		ropes[id].deployed=true
 		ropes[id].length=clampf(anchor(id).y-game.player.global_position.y-HARNESS,MIN_LENGTH,max_length(id))
@@ -213,11 +240,13 @@ func unclip() -> String:
 	if not on_floor():return "Land on a floor before unclipping."
 	# Leave the end at harness height for the next ascent from this floor.
 	ropes[attachment].length=clampf(anchor(attachment).y-game.player.global_position.y-HARNESS,MIN_LENGTH,max_length(attachment))
-	attachment="";hanging=false;pull_in=null;slack=Vector3.ZERO;physics(0)
+	attachment="";hanging=false;pull_in=null;slack=Vector3.ZERO;reset_motion();physics(0)
 	return ""
 
 func rope_key() -> String:
-	if not attached() or on_floor():return unclip()
+	if not attached():return "Clip in at a rope station or hanging rope end."
+	if on_floor():return "Hang on the rope to use the lanyard · Q unclips on a floor."
+	reset_motion()
 	if pull_in!=null:pull_in=null;slack=Vector3.ZERO;return ""
 	var from: Vector3=game.camera.global_position
 	var query=PhysicsRayQueryParameters3D.create(from,from-game.camera.global_basis.z*2.5,game.WORLD_MASK,[game.player.get_rid()])
@@ -240,7 +269,7 @@ func attach_lanyard(point: Vector3, body: Node) -> String:
 
 func status_text() -> String:
 	if not attached():return ""
-	return "Rope · %s · %.1f m%s%s\n%s" % ["hanging" if hanging else "clipped",ropes[attachment].length," · pull-in" if pull_in!=null else "", " · ducking under davit" if boarding_duck(game.player.global_position.y) else "", "Space ↑ / Ctrl ↓ · WASD slack · G lanyard" if hanging else "Step through your gate · G unclip"]
+	return "Rope · %s · %.1f m%s%s\n%s" % ["hanging" if hanging else "clipped",ropes[attachment].length," · pull-in" if pull_in!=null else "", " · ducking under davit" if boarding_duck(game.player.global_position.y) else "", "Space ↑ / Ctrl ↓ (hold: faster) · WASD · G lanyard" if hanging else "Space ↑ / Ctrl ↓ · step through your gate · Q unclip"]
 
 func capture() -> Dictionary:
 	return {"version":1,"ropes":ropes.duplicate(true),"attachment":attachment,"hanging":hanging,"pull_in":[] if pull_in==null else Codec.vector(pull_in),"slack":Codec.vector(slack)}
@@ -283,6 +312,7 @@ func validate(data: Variant, _candidate: AssemblyModel=null, world: Dictionary={
 
 func apply(data: Dictionary) -> void:
 	if not validate(data).is_empty():return
+	reset_motion()
 	ropes=data.ropes.duplicate(true);attachment=data.attachment;hanging=data.hanging
 	pull_in=null if data.pull_in.is_empty() else Codec.to_vector(data.pull_in)
 	slack=Codec.to_vector(data.slack)

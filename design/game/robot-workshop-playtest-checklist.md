@@ -79,6 +79,26 @@ the crane. The new lighting continues beneath the added decks. Six selected
 routine cases pass in 12.308 s; player rechecks remain open.
 [Layout and mechanical evidence](gantry-v2/overhead-access.md#upper-perimeter-and-deck-cleanup--2026-10-27).
 
+**Player response — "Near perfect" (2026-10-27).** Preserve the upper loop and
+plain decks. The player reports flashing/clipping at walkway corners, especially
+the upper workshop-side elevator, and requests Q to unclip, removal of the
+temporary duplicate clip-in message, and quick held ascent/descent acceleration
+with slow taps. Removed the two overlapping rear landing-extension plates,
+implemented Q unclip while attached (normal set-down otherwise), kept permanent
+rope status without a success toast, and added a 0.6→4.5 m/s ramp over about
+0.6 seconds. Five selected routine cases pass in 7.938 s.
+[Diagnosis and mechanical evidence](gantry-v2/overhead-access.md#corner-flashing-and-rope-control-follow-up--2026-10-27).
+
+- [ ] Walk over the corners, particularly the workshop-side elevator at both
+  heights, and confirm the floor no longer flashes.
+- [ ] Clip at a station and a hanging end: only the permanent rope status should
+  appear on success. Check that failed operations still explain the problem.
+- [ ] Q unclips on a floor without dropping a carried part; G operates the
+  pull-in lanyard. Once unclipped, Q still sets down carried parts.
+- [ ] Tap Space/Ctrl for small height adjustments, hold for fast travel, reverse
+  direction and release. Confirm the ramp and instant stop feel controllable
+  near decks, booms and connections.
+
 - [ ] Inspect both hinge landings: plain deck sections, no old pole cap or four
   isolated filler blocks, and a narrow seam into the long leaf.
 - [ ] Walk the upper circuit with the front leaves closed, including the turn
@@ -124,7 +144,7 @@ routine cases pass in 12.308 s; player rechecks remain open.
 - [ ] Use normal E/placement and existing hand carrying for hip lifting eyes,
   waist, core, shoulders, pauldrons and head/crown connections. Do not treat the
   automated collision fixture as proof of reach, visibility or connection access.
-- [ ] Descend to an 8.4 m deck and ground, unclip with G, and clip the hanging end
+- [ ] Descend to an 8.4 m deck and ground, unclip with Q, and clip the hanging end
   with E for another ascent. Return to the upper walkway and unclip there.
 - [ ] Request leaf motion with a front rope occupied and then free/deployed.
   Read the named recall reason; return through the still-open occupied gate,

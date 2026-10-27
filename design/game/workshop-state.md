@@ -246,6 +246,10 @@ left hinges, opposite column beyond the outer corner and deck-mounted strips.
 Player response: "Really great!" Follow-up adds plain hinge decks, removes floating
 rappel labels and joins the upper floor into a perimeter with a rear-elevator
 bypass. [Player recheck pending](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
+Player calls the loop "Near perfect"; the next correction removes duplicate corner
+floor plates, uses Q to unclip, keeps only permanent clip-in status and accelerates
+held rappelling while preserving slow taps. Five selected routine cases pass;
+corner appearance and movement feel await the player recheck.
 
 **In progress (2026-10-27):** [machine operation](handoff/operated-machines/README.md).
 Gantry gap and mirror fixes are merged and player-accepted. The crane operator view
