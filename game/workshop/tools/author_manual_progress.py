@@ -18,6 +18,15 @@ def transport(task, phase):
 
 
 def bind(recipes, chapters):
+    ordered = [recipes[owner]["manual"][index]
+               for chapter in chapters for owner, index, *_ in chapter["steps"] if owner in recipes]
+    next_delivery = {}
+    following_task = ""
+    for page in reversed(ordered):
+        next_delivery[id(page)] = following_task
+        for objective in page.get("objectives", []):
+            if objective.get("machine") == "service_crane" and objective.get("command") == "pickup":
+                following_task = objective["task"]
     task = ""
     for chapter in chapters:
         for owner, index, *_ in chapter["steps"]:
@@ -95,8 +104,8 @@ def bind(recipes, chapters):
                             objective["completed_by"] = latched
             if "leg_rail" in machines and not seat:
                 commands = {o.get("command") for o in objectives if o.get("machine") == "leg_rail"}
-                if "release" in commands:
-                    side = "left_leg" if "build" in commands else "right_leg"
+                if "clamps:release" in commands:
+                    side = "left_leg" if "next_leg" in commands else "right_leg"
                     scope["leg_rail"] = dict(active_assembly=side)
                     page["requires_state"] = mounted("pelvis", side)
                     if side == "left_leg":
@@ -108,8 +117,22 @@ def bind(recipes, chapters):
                         proofs.append(dict(all=[state("leg_rail", active_assembly="right_leg", engaged=False, parked=True),
                                                 state("foot_carrier", stop=0)]))
                     proofs.append(mounted("pelvis", side))
-                elif "park" in commands:
+                elif "table:park" in commands:
                     proofs.append(state("leg_rail", parked=True))
+            # Mounting/parking alone cannot skip a newly authored CLOSE. Once
+            # the next load has actually arrived, the same durable reset proof
+            # used for shared rigs permits subsequent front reuse.
+            front_goals = {}
+            for objective in objectives:
+                if objective.get("machine") == "workshop_access":
+                    front, goal = objective["command"].split("_")
+                    front_goals[front] = goal
+            for front, goal in front_goals.items():
+                if goal != "close":
+                    continue
+                closed = state("workshop_access", **{front + "_closed": True})
+                later = next_delivery[id(page)]
+                proofs.append(dict(any=[closed, transport(later, "delivered")]) if later else closed)
             if scope:
                 page["machine_scope"] = scope
             if proofs:

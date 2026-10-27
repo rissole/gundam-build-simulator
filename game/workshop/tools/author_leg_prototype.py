@@ -623,21 +623,21 @@ def robot_documents(check=False):
     page(pages, "Retain the knee axle", "", cap_slots, ["LG-110__001", "LG-140__001"], goal="Cap the axle, engage both knee braces, then release and park the crane.", objectives=[dict(op="fit", slots=[cap_slots[0]]), dict(op="fit", slots=list(cap_slots[1:]))] + engage("knee") + deepcopy(RELEASE), note=dict(at=0, text="Work from the side opposite the axle aisle."))
     delivery("Deliver the Upper-leg beam", "spar", "LG-120", "fork flange")
     page(pages, "Fasten the Upper-leg beam flange", "", spar_slots[1:], ["LG-110__001", "LG-120__001"], goal="Bolt the beam flange, engage both flange braces, then release and park the crane.", objectives=[dict(op="fit", slots=list(spar_slots[1:]))] + engage("beam") + deepcopy(RELEASE), note=dict(at=0, text="Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the hip assembly M24 × 140."))
-    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table (Park, then hold INDEX +) and retrieve it without losing progress. For rear work, park the movable platform, hold LIFT + on the Limb Bay panel to raise the supported axis, then hold ROLL + or ROLL − to turn to the next locked orientation; each press stops at a detent. Restore neutral ROLL, then hold LIFT − to return to construction height. Open the hip assembly manual for delivery."))
-    pages.append(dict(title="Supported construction recovery", view="overview", slots=[], body="Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot rig Return reacquires the foot and reverses one guided phase per press; Return again lowers it to dispatch."))
+    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever in front of the table to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."))
+    pages.append(dict(title="Supported construction recovery", view="overview", slots=[], body="Bring the supported leg to RIGHT HIP · BUILD before construction disassembly. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to its PARK notch. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."))
     trial_leg["manual"] = pages
     pages = []
     page(pages, "Seat the leg in the hip assembly", "", ["left_leg"], context_sources,
-         goal="Jog the finished leg on its rig to the Final Assembly Bay, stand it under the left hip and seat it.",
+         goal="Bring the finished leg to the Final Assembly Bay, open the lower front, raise the leg into the left hip, then close the front.",
          objectives=[
-             dict(op="operate", machine="leg_rail", command="bolster:stow"),
-             dict(op="operate", machine="leg_rail", command="index:lane"),
+             dict(op="operate", machine="leg_rail", command="support:away"),
+             dict(op="operate", machine="leg_rail", command="table:hip"),
              dict(op="operate", machine="leg_rail", command="travel:bay"),
-             dict(op="operate", machine="leg_rail", command="tilt:upright"),
-             dict(op="operate", machine="leg_rail", command="rise:dock"),
-             dict(op="seat", slot="left_leg", via=dict(machine="leg_rail", command="seat")),
+             dict(op="operate", machine="workshop_access", command="lower_open"),
+             dict(op="seat", slot="left_leg", via=dict(machine="leg_rail", command="rise")),
+             dict(op="operate", machine="workshop_access", command="lower_close"),
          ],
-         note=dict(at=0, text="Park the empty crane first. Hold E on a panel arrow to jog one axis; you can look away while E is held. Each axis stops at its track or end stop. The pulsing outline shows the next target, and each readout turns green when its axis is aligned. The leg rig stays attached until the hip is pinned."))
+         note=dict(at=0, text="Park the empty crane first. Find the foot support at the foot end of the rig, the transfer table lever in front of the table, the bogie box beside the table, and the LOWER FRONT panel beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."))
     for half, pairs in ((1, (3, 4)), (2, (1, 2))):
         ordinal = "first" if half == 1 else "second"
         page(pages, "Carry retaining half " + str(half), "", ["ring_" + str(half)], ["PV-110__001", "PV-V-HIP-BALL"],
@@ -653,16 +653,16 @@ def robot_documents(check=False):
     pages.append(dict(title="Release the leg rig", view="components", slots=[],
         goal="Let the hip carry the leg, then drive the empty rigs home.",
         objectives=[
-            dict(op="operate", machine="leg_rail", command="release"),
-            dict(op="operate", machine="leg_rail", command="tilt:lying"),
+            dict(op="operate", machine="leg_rail", command="clamps:release"),
+            dict(op="operate", machine="leg_rail", command="lower"),
             dict(op="operate", machine="leg_rail", command="travel:home"),
-            dict(op="operate", machine="leg_rail", command="index:station"),
-            dict(op="operate", machine="leg_rail", command="extend"),
+            dict(op="operate", machine="leg_rail", command="table:build"),
+            dict(op="operate", machine="leg_rail", command="clamps:grab"),
             dict(op="operate", machine="foot_carrier", command="return:home"),
-            dict(op="operate", machine="leg_rail", command="build"),
+            dict(op="operate", machine="leg_rail", command="next_leg"),
         ],
-        note=dict(at=1, text="The released holder stays clear of the leg while it lies down and travels home. Reacquire at the station extends it again.")))
-    pages.append(dict(title="Reacquire support and recover", view="overview", slots=[], body="If the empty leg rig has returned home, Release compacts the empty holder for travel; hold INDEX to the hip track, TRAVEL + and TILT + to bring it back under the mounted leg, then Reacquire closes the holder on it. If the released leg rig is still docked, Reacquire directly. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before Unseat lifts the leg back onto the rig; then hold RISE −, TILT −, TRAVEL − and INDEX to return it. The same physical components can be installed again. Never remove retention while the leg rig is released."))
+        note=dict(at=1, text="At the bogie box beside the table, hold LOWER until the empty holder lies flat, then TO TABLE. Move the table lever to RIGHT HIP · BUILD and tap GRAB on the leg clamps switch on the bogie to extend the empty clamps. Bring the foot rig home before using NEXT LEG.")))
+    pages.append(dict(title="Reacquire support and recover", view="overview", slots=[], body="If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower front at the LOWER FRONT panel beside the left lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."))
     trial_pelvis["manual"] = pages
     for definition in (trial_leg, trial_pelvis):
         for step in definition["manual"]:
@@ -732,13 +732,16 @@ def robot_documents(check=False):
     from author_manual_progress import bind, bind_procedures
     chapter_document = json.loads((ASSETS / "manual-chapters.json").read_text())
     bound = {"left_leg": trial_leg, "pelvis": trial_pelvis, "chest": chest, **mirrored}
+    from author_gantry_manual import bind_fronts
+    gantry_procedures = bind_fronts(bound, chapter_document["chapters"])
     bind(bound, chapter_document["chapters"])
-    # The left leg teaches each leg rig axis; the right leg repeats the goal
+    # The left leg teaches each physical control; the right leg repeats the goal
     # with a link back to that first procedure page.
     titled = lambda title: [["pelvis", i] for i, p in enumerate(trial_pelvis["manual"]) if p["title"] == title]
     procedures = bind_procedures(bound, chapter_document["chapters"], {
-        "leg_delivery": dict(title="Jog the leg to its hip", machines=["leg_rail"], pages=titled("Seat the leg in the hip assembly")),
-        "leg_return": dict(title="Release the leg rig and drive it home", machines=["leg_rail"], pages=titled("Release the leg rig")),
+        "leg_delivery": dict(title="Jog the leg to its hip", machines=["leg_rail", "workshop_access"], pages=titled("Seat the leg in the hip assembly")),
+        "leg_return": dict(title="Release the leg rig and drive it home", machines=["leg_rail", "foot_carrier"], pages=titled("Release the leg rig")),
+        **gantry_procedures,
     })
     assert chapter_document.get("procedures") == procedures, "Set manual-chapters.json procedures to " + json.dumps(procedures)
     for task in workshop_layout["crane"]["tasks"].values():

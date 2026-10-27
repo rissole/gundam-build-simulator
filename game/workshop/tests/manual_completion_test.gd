@@ -29,13 +29,14 @@ func evaluate(owner: String, index: int) -> Dictionary:return Objectives.evaluat
 func run() -> void:
 	game = preload("res://tests/kit/model_workshop.gd").new();root.add_child(game)
 	expect(game.setup().is_empty(),"authored model loads")
+	var front=machine(preload("res://tests/kit/manual_fronts.gd"),"workshop_access")
 	crane=machine(preload("res://scripts/service_crane.gd"),"service_crane")
 	crane.tasks=preload("res://scripts/leg_bay_layout.gd").layout().crane.tasks
 	crane.task="foot";crane.station="park";crane.raised=true;crane.END_IDS=["a","b"]
 	crane.endpoints={"a":{"state":"stowed","point":""},"b":{"state":"stowed","point":""}}
 	rail=machine(preload("res://scripts/indexed_leg_rail.gd"),"leg_rail")
 	rail.spec=preload("res://scripts/leg_bay_layout.gd").layout().workshop.rail
-	rail.active_assembly="left_leg";rail.lane="left";rail.index_x=rail.spec.station_x;rail.travel_z=14.5;rail.engaged=true
+	rail.active_assembly="left_leg";rail.lane="left";rail.index_x=rail.spec.station_x;rail.travel_z=rail.spec.home_z;rail.engaged=true
 	foot=machine(preload("res://scripts/foot_carrier.gd"),"foot_carrier")
 	pins=machine(preload("res://scripts/captive_controls.gd"),"captive_controls")
 	pins.specs=game.leg_content.equipment.captive_controls
@@ -49,6 +50,24 @@ func run() -> void:
 	var progress=Progress.new(game)
 	expect(not progress.complete(),"fresh workshop is not complete")
 	expect(evaluate("left_leg",1).current == 0,"initial parked crane does not tick a delivery")
+	# A parked delivery cannot bypass its final CLOSE. Later actual delivery is
+	# durable proof of the earlier reset, even while fronts serve another load.
+	var hip_location: String=game.model.assemblies.pelvis.location
+	var foot_location: String=game.model.assemblies.foot.location
+	game.model.assemblies.pelvis.location="support:pelvis_gantry"
+	crane.task="pelvis"
+	front.set_front("upper",1.0)
+	expect(evaluate("pelvis",0).current!=-1,"parked hip delivery still needs its upper leaves closed")
+	front.set_front("upper",0.5,0.0,true)
+	expect(evaluate("pelvis",0).current!=-1,"closing upper leaves do not yet complete hip delivery")
+	front.set_front("upper",0.0)
+	expect(evaluate("pelvis",0).current==-1,"stopped closed upper leaves complete the parked hip delivery")
+	game.model.assemblies.foot.location="support:foot_carrier";crane.task="foot"
+	front.set_front("upper",1.0)
+	expect(evaluate("pelvis",0).current==-1,"the next delivered foot preserves hip completion during front reuse")
+	game.model.assemblies.foot.location=foot_location
+	expect(evaluate("pelvis",0).current!=-1,"changing crane task without delivered stock cannot prove the front reset")
+	game.model.assemblies.pelvis.location=hip_location;front.set_front("upper",0.0)
 	# Reproduce leaving a captive pin out and starting the next cylinder.
 	fill("pelvis",page("pelvis",8).slots)
 	fill("pelvis",["cylinder_2"])
@@ -61,33 +80,33 @@ func run() -> void:
 	# The same stop must not count as mounting the other foot or leg.
 	foot.path=3.0;foot.receiving_assembly="left_leg"
 	expect(not evaluate("right_leg",2).started and not evaluate("right_leg",2).fits_complete,"left foot dock pose does not advance the right-foot page")
-	rail.bolster=1.0;rail.index_x=11.9;rail.travel_z=26.0;rail.tilt_deg=90.0;rail.rise_m=1.2
+	rail.foot_support=1.0;rail.index_x=rail.spec.lanes.left;rail.travel_z=rail.spec.bay_z;rail.tilt_deg=90.0;rail.rise_m=rail.spec.dock_rise
 	expect(not evaluate("pelvis",13).started,"left leg dock pose does not advance the right-leg page")
 	game.model.assemblies.left_leg.slots.foot="foot"
 	game.model.assemblies.foot.parent="left_leg"
 	game.model.assemblies.pelvis.slots.left_leg="left_leg"
 	# Shared-machine prefixes must all match. A foot rig already home is not
-	# evidence of releasing the leg rig; changing Build is not a foot reset.
+	# evidence of releasing the leg rig; using NEXT LEG is not a foot reset.
 	foot.path=0.0
 	var reset=evaluate("pelvis",11)
 	expect(reset.current==0 and not reset.machine_complete,"foot rig home cannot tick leg release")
 	rail.engaged=false;rail.release=5.0;rail.rise_m=0.0
 	reset=evaluate("pelvis",11)
 	expect(reset.ticked == [true,false,false,false,false,false,false],"released leg still requires the rail to return")
-	rail.tilt_deg=0.0;rail.travel_z=14.5;rail.index_x=rail.spec.station_x;rail.release=0.0;foot.path=3.0
+	rail.tilt_deg=0.0;rail.travel_z=rail.spec.home_z;rail.index_x=rail.spec.station_x;rail.release=0.0;foot.path=3.0
 	reset=evaluate("pelvis",11)
-	expect(reset.ticked == [true,true,true,true,true,false,false],"home rail still requires foot reset and Build")
-	rail.active_assembly="right_leg";rail.engaged=true
-	expect(evaluate("pelvis",11).current != -1,"Build cannot hide a foot rig left at docking")
+	expect(reset.ticked == [true,true,true,true,true,false,false],"home rail still requires foot reset and NEXT LEG")
+	rail.active_assembly="right_leg";rail.receiver_slot="right_leg";rail.lane="right";rail.engaged=true;rail.foot_support=0.0
+	expect(evaluate("pelvis",11).current != -1,"NEXT LEG cannot hide a foot rig left at docking")
 	foot.path=0.0
-	expect(evaluate("pelvis",11).current == -1,"both resets and right Build complete release")
+	expect(evaluate("pelvis",11).current == -1,"both resets and NEXT LEG complete release")
 	game.model.assemblies.right_foot.location="support:foot_carrier"
 	foot.receiving_assembly="right_leg";foot.path=1.5
 	expect(evaluate("pelvis",11).current == -1,"left reset stays complete while the next delivered foot moves")
 	# Once the right foot is really installed, reuse of both rigs is durable proof.
 	game.model.assemblies.right_leg.slots.foot="right_foot"
 	game.model.assemblies.right_foot.parent="right_leg"
-	foot.receiving_assembly="right_leg";foot.path=3.0;rail.index_x=14.1;rail.travel_z=26.0;rail.tilt_deg=90.0
+	foot.receiving_assembly="right_leg";foot.path=3.0;rail.index_x=rail.spec.lanes.right;rail.travel_z=rail.spec.bay_z;rail.tilt_deg=90.0
 	expect(evaluate("pelvis",11).current == -1,"right-foot installation preserves the completed left reset")
 	expect(evaluate("left_leg",2).current == -1,"left-foot docking stays complete after rig reuse")
 	game.model.assemblies.right_leg.slots.foot="";game.model.assemblies.right_foot.parent=""
@@ -126,23 +145,25 @@ func run() -> void:
 	expect(page("pelvis",20).note==note,"mirrored cylinder receives the same lock note")
 	# Guided receivers have an arrival before the actual mounting operation.
 	var guide=machine(preload("res://scripts/core_guide.gd"),"core_guide")
+	front.set_front("upper",1.0)
 	guide.spec={"capture":0.85,"travel":2.2};guide.travel=0.85
 	crane.task="core";crane.station="receiver";crane.raised=false
 	crane.POINT_IDS.assign(["core_front","core_aft"])
 	crane.endpoints.a={"state":"attached","point":"core_front"};crane.endpoints.b={"state":"attached","point":"core_aft"}
-	expect(evaluate("chest",2).current==7 and not evaluate("chest",2).fits_complete,"core capture advances to releasing the front connector before mounting")
+	expect(evaluate("chest",2).current==8 and not evaluate("chest",2).fits_complete,"core capture advances to releasing the front connector before mounting")
 	crane.endpoints.a={"state":"stowed","point":""}
-	expect(evaluate("chest",2).current==8,"front connector release advances to guide seating")
+	expect(evaluate("chest",2).current==9,"front connector release advances to guide seating")
 	game.model.assemblies.chest.slots.core="core";guide.travel=2.2
 	expect(evaluate("chest",2).current == -1,"physical core seating completes its delivery")
 	crane.endpoints.b={"state":"stowed","point":""}
+	front.set_front("upper",0.0)
 	# A whole-robot state fixture exercises every authored chapter after all
 	# shared machines have moved on. No stage journey or rendering is involved.
 	for owner in game.model.assemblies:fill(str(owner),game.model.assemblies[owner].slots.keys())
 	for id in pins.locked:pins.locked[id]=true
 	game.model.assemblies.arm_cassette.location="support:cassette_station"
 	game.model.assemblies.right_foot.parent="right_leg"
-	rail.active_assembly="right_leg";rail.engaged=false;rail.travel_z=14.5;rail.tilt_deg=0.0;rail.rise_m=0.0;rail.release=0.0;rail.index_x=22.0
+	rail.active_assembly="right_leg";rail.engaged=false;rail.travel_z=rail.spec.home_z;rail.tilt_deg=0.0;rail.rise_m=0.0;rail.release=0.0;rail.index_x=rail.spec.lanes.parking
 	foot.path=0.0
 	crane.task="head_crown";crane.station="park";crane.raised=true
 	guide.connected=true;guide.bolts.fill(true)
@@ -162,6 +183,10 @@ func run() -> void:
 		for step in chapter.steps:
 			if progress.status(step.owner,step.page)!="done":unfinished.append(str(chapter.id)+" / "+str(step.title)+" "+str(progress.evaluation(step.owner,step.page).ticked))
 	expect(unfinished.is_empty() and progress.complete(),"all chapters complete from retained physical state: "+str(unfinished))
+	front.set_front("upper",1.0);progress.refresh()
+	expect(not progress.complete() and evaluate("chest",56).current!=-1,"the final crown page still needs its upper leaves closed after parking")
+	front.set_front("upper",0.0);progress.refresh()
+	expect(progress.complete(),"closing the final front restores whole-manual completion")
 	crane.task="backpack";crane.station="receiver";crane.raised=false
 	crane.endpoints.a.state="attached";crane.endpoints.b.state="attached"
 	pack.angle=0.0;pack.latches.fill(false);pack.covers.fill(false);pack.locks.fill(true)
@@ -171,7 +196,7 @@ func run() -> void:
 	pack.angle=1.0;pack.latches.fill(true);crane.endpoints.a.state="stowed";crane.endpoints.b.state="stowed"
 	crane.station="park";crane.raised=true
 	crane.task="backpack";pack.covers.fill(false)
-	expect(evaluate("chest",9).current==8,"latched backpack retires crane tension but still requires its covers")
+	expect(evaluate("chest",9).current==10,"latched backpack retires crane tension but still requires its covers")
 	pack.covers.fill(true)
 	expect(evaluate("chest",9).current == -1,"closed covers complete the latched backpack")
 	crane.task="head_crown"

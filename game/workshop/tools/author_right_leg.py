@@ -134,7 +134,7 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
         if "objectives" in page:
             kept=[]
             for objective in page["objectives"]:
-                if objective.get("machine")=="leg_rail" and objective.get("command")=="build":
+                if objective.get("machine")=="leg_rail" and objective.get("command")=="next_leg":
                     continue
                 if objective.get("slot") in slot_names:
                     objective["slot"]=slot_names[objective["slot"]]
@@ -145,6 +145,8 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
                     objective["command"]="lock:right_"+command[len("lock:left_"):]
                 kept.append(objective)
             page["objectives"]=kept
+        if page["title"] in ("Seat the leg in the hip assembly", "Release the leg rig"):
+            page.pop("note", None)  # The repeated page links to the first-use procedure.
         pelvis["manual"].append(page)
     pelvis["title"]="Hip assembly · both hip installations"
     pelvis["milestones"]["right_ring_secured"]=[slot_names[sid] for sid in pelvis["milestones"]["left_ring_secured"]]

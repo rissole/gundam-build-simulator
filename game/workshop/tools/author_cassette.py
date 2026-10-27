@@ -45,7 +45,7 @@ def extend(trial, layout):
     descriptor=dict(title="Arm rig",carry_class="equipment",bounds=[2,1.68,9],
         work_locations=["support"],interaction="components",context_sources=context,slots={},
         supplied_milestones=["prepared"],milestones={"prepared":[]},manual=[dict(title="Arm rig",view="overview",slots=[],
-        body="Park the leg rig (Park, then hold INDEX +) before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction.")])
+        body="Park the leg rig using the transfer table lever's PARK notch before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction.")])
     trial["parents"].append(dict(id="arm_cassette",definition="arm_cassette",label=descriptor["title"],location="support:cassette_park",home=list(park)))
     for name in ["cassette_park","cassette_station"]:
         trial["supports"][name]=dict(assemblies=["arm_cassette"],assembly_ids=["arm_cassette"])

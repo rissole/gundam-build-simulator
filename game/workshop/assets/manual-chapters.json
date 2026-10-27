@@ -34,8 +34,12 @@
      "steps": [["chest", 50], ["chest", 51], ["chest", 52], ["chest", 53], ["chest", 54], ["chest", 55], ["chest", 56]]}
   ],
   "procedures": {
-    "leg_delivery": {"title": "Jog the leg to its hip", "machines": ["leg_rail"], "first": ["pelvis", 1]},
-    "leg_return": {"title": "Release the leg rig and drive it home", "machines": ["leg_rail"], "first": ["pelvis", 11]}
+    "leg_delivery": {"title": "Jog the leg to its hip", "machines": ["leg_rail", "workshop_access"], "first": ["pelvis", 1]},
+    "leg_return": {"title": "Release the leg rig and drive it home", "machines": ["leg_rail", "foot_carrier"], "first": ["pelvis", 11]},
+    "upper_delivery": {"title": "Crane a load through the upper leaves", "machines": ["service_crane", "workshop_access"], "first": ["pelvis", 26]},
+    "upper_return": {"title": "Release the load, park the crane and close the upper leaves", "machines": ["service_crane", "workshop_access"], "first": ["pelvis", 27]},
+    "arm_delivery": {"title": "Open both fronts and crane the arm to its shoulder", "machines": ["service_crane", "workshop_access"], "first": ["chest", 11]},
+    "arm_return": {"title": "Release the arm, close the lower front and park the crane", "machines": ["service_crane", "workshop_access"], "first": ["chest", 17]}
   },
   "reference": {
     "title": "Recovery and undo",
