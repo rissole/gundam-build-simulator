@@ -3,6 +3,7 @@
 ROUTINE = (
     'access_lift_test',
     'assembly_model_test',
+    'assembly_render_lifecycle_test',
     'centered_carry_test',
     'chest_content_test',
     'connection_discovery_test',

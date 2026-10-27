@@ -45,9 +45,37 @@ between each hip finger and the hip apron is a deliberate robot/leg work opening
 physical assembly challenge remain constraints. Parts can continue at the existing
 hip datum/Y10.97 bearing caps while these equipment choices wait.
 
+## Left-leg docking renderer errors — 2026-10-27
+
+**Player report:** many `BUG, indexing did not unpair geometries from light.`
+errors while docking the left leg, accompanied by substantial lag. The captured
+Godot 4.7.2 Metal/Forward+ gameplay log contained 30 occurrences. Earlier positive
+leg-performance feedback remains a constraint; it does not dismiss this report.
+
+**Repair:** assembly batching changed live source meshes' render layers to zero,
+triggering [Godot issue #121989](https://github.com/godotengine/godot/issues/121989).
+The workaround withdraws each affected render instance before changing its mask
+and immediately restores its visibility. Node visibility, child outlines, original
+meshes and component identities are preserved. Docking/undocking now retains
+local render batches and outstanding CPU work across reparenting; it no longer
+waits for compilation and discards batches on every tree exit. Final destruction
+still joins outstanding work and restores surviving source meshes.
+
+**Evidence:** five focused routine suites pass, 116 checks in 9.697 s, covering
+render lifecycle, outlines, nested assemblies, rail endpoints and startup.
+`game/workshop/verification/regressions-20261027T111610.647045Z/results.json`.
+A separate tiny renderer reproduction on Godot 4.7.2 / Metal / Apple M2 produced
+two light-unpair errors with the old mask change and zero errors with the helper.
+Script and both logs: `game/workshop/verification/light-unpair-repro/`.
+This was an isolated renderer experiment, not a visual review or a full gameplay
+performance measurement. No expensive diagnostic suites ran.
+
+- [ ] Restart the game to load the fix, dock and release the left leg, and confirm
+  the errors and hitch are gone. Full-scene smoothness still needs this recheck.
+
 ## Gantry v2 rope access — 2026-10-27
 
-**Integrated on `gantry-v2`; full rope-access playtest pending.** The prototype replaces
+**Merge into main approved by the user (2026-10-27); detailed rope-access checks remain open.** The prototype replaces
 11.2/14/16.4 decks with 20.6 rope access, relocates both lifts and preserves the
 8.4 hip working geometry and low hip frame. Rope work, physical upper-leaf controls,
 manual cues and crane routes are integrated. [Implementation and mechanical evidence](gantry-v2/overhead-access.md).

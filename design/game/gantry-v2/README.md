@@ -1,6 +1,6 @@
 # Gantry v2 — rope access, 2026-10-27
 
-**Prototype implemented on `gantry-v2`; kept off main until playtested and approved.**
+**Implemented on `gantry-v2`; user approved merging into main on 2026-10-27.**
 The [overhead rope-access implementation](overhead-access.md) and
 [player recheck](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27)
 record the current build. It keeps the low hip

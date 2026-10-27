@@ -1,6 +1,6 @@
 # Overhead rope access — concept, 2026-10-27
 
-**Prototype integrated on `gantry-v2`; branch-only until playtested and approved.**
+**Implemented on `gantry-v2`; user approved merging into main on 2026-10-27.**
 The implemented layout, rope controls, crane routes and evidence are recorded below.
 Replaces C6's upper catwalk levels (11.2/14/16.4) and tower hip beams. The robot,
 hip datum (13,10.6,26), bearing caps, jaws and today's low rear hip frame stay.
@@ -314,6 +314,23 @@ and panels against closed, intermediate and open leaf solids.
 These are mechanical and source-review results. No rendered review, automated
 walking/reach/visibility acceptance, diagnostic suite or gameplay FPS measurement
 ran. The [player checklist](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27)
-remains unticked. Keep this prototype on `gantry-v2` until the user playtests and
-explicitly approves. Backpack hinge worker access and eventual lowering/departure
-remain open design work.
+retains its detailed rechecks. The user subsequently approved merging into main
+after the [docking renderer repair](../robot-workshop-playtest-checklist.md#left-leg-docking-renderer-errors--2026-10-27).
+Backpack hinge worker access and eventual lowering/departure remain open design work.
+
+## Main integration checks — 2026-10-27
+
+After the docking renderer repair, twelve selected routine cases pass across
+three runs: render lifecycle, outlines, nested mounts, rail endpoints, startup,
+gantry layout, rope controls, crane policy/crossings, elevators, save roundtrip
+and source assets. Run totals: 9.697 s, 17.361 s and 2.648 s, with unchanged
+inputs and no performance warnings. Local reports:
+
+- `game/workshop/verification/regressions-20261027T111610.647045Z/results.json`
+- `game/workshop/verification/regressions-20261027T111736.609530Z/results.json`
+- `game/workshop/verification/regressions-20261027T111835.796404Z/results.json`
+
+The isolated Metal/Forward+ light-pairing reproduction goes from two engine
+errors to zero with the workaround. No full-scene FPS measurement or rendered
+visual review is claimed. The user authorized merging `gantry-v2` into main
+once this repair was complete; detailed player rechecks remain open.
