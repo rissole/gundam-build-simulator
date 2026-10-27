@@ -117,3 +117,14 @@ Open:
   `arm_preflight_test` (approved). The user playtests with
   `./play.command -- --stage=left_leg_dock`.
 - The v1 leg tests on `operated-rigs` still fail until T5b merges.
+
+## Rebased onto gantry v2 — 2026-10-27
+
+`operated-rigs` was rebuilt on `main` `9bb629c` (gantry v2 rope access). Replayed
+B1–B3, the v1 checkpoint, T2 (gates removed), T1 (Limb Bay X14.1) and T4 (leg rig
+v2). T3 (single gantry-front state) was left out: gantry v2 rewrote the same access
+and crane code. The pre-rebase branch is `operated-rigs-pre-gantry`. On the rebased
+branch: generators pass; startup and the gantry v2 suites pass (10 cases, 952
+checks). A real-content probe docks up to RISE, which stops at 46° against the
+closed rear leaf, because nothing yet lets the player open the 8.4 m front. The
+re-plan awaits the user's decisions on crane access and the lower-front control.
