@@ -47,7 +47,7 @@ func stage_errors(stage: String) -> Array[String]:
 			for owner in ["left_leg","right_leg","pelvis"]:
 				var root: String=game.runtime.definition(owner).get("root_slot","")
 				_need(errors,model.assemblies[owner].slots.keys().all(func(sid):return sid==root or model.assemblies[owner].slots[sid].is_empty()),"Fresh "+owner+" must have no construction supplied.")
-			_need(errors,rail.active_assembly=="left_leg" and rail.lane=="left" and rail.can_construct() and rail.release==0 and rail.bolster==0,"Fresh leg rig must support the left build at home.")
+			_need(errors,rail.active_assembly=="left_leg" and rail.lane=="left" and rail.can_construct() and rail.release==0 and rail.foot_support==0,"Fresh leg rig must support the left build at home.")
 			_carrier_home(errors)
 			_need(errors,fixture.template=="pelvis" and fixture.height==0 and not fixture.moving and fixture.source_release==0 and not fixture.locks.values().any(func(v):return v) and fixture.jaws.all(func(v):return v==1),"Fresh heavy module rig must be lowered with open jaws and unset waist pins.")
 			_need(errors,crane.endpoints.values().all(func(end):return end.state=="stowed"),"Stow every fresh magnetic connector.")
@@ -184,13 +184,25 @@ func jog(controller: Node, action: String, limit: int = 1600) -> String:
 	controller.set_jog("")
 	return "" if settled else step+": The jog did not reach its stop."+("" if held.is_empty() else " "+held)
 
-## Jogs INDEX through intermediate track stops until the table reaches x.
+## Throws the transfer table lever to the notch at x and waits for the table.
 func index_to(rail: Node, x: float) -> String:
-	for stop in range(4):
-		if is_equal_approx(rail.index_x,x):return ""
-		var error=jog(rail,"index+" if x>rail.index_x else "index-")
-		if not error.is_empty():return error
-	return "" if is_equal_approx(rail.index_x,x) else "leg_rail: INDEX did not reach X"+str(x)+"."
+	var error: String=rail.throw_lever(x)
+	if error.is_empty():error=settle(rail)
+	if error.is_empty() and not is_equal_approx(rail.index_x,x):error="The table did not reach X"+str(x)+"."
+	return "" if error.is_empty() else "leg_rail lever: "+error
+
+## Drags the foot support to a stroke (0 under the foot, 1 clear), as the player does.
+func pull_support(rail: Node, goal: float) -> String:
+	var error: String=rail.pull_support(goal)
+	if error.is_empty():error=settle(rail)
+	return "" if error.is_empty() else "leg_rail foot support: "+error
+
+## The gantry front's own control. Nothing opens or closes it automatically.
+func gantry_front(open: bool) -> String:
+	var front=_equipment("workshop_access")
+	if not front.has_method("is_open"):return ""
+	if (front.is_open() if open else front.is_closed()):return ""
+	return command(front,"open" if open else "close")
 
 func supply_rig(crane: Node, attached: bool) -> void:
 	var state: Dictionary=crane.capture()
@@ -265,11 +277,12 @@ func _leg_build(side: String) -> String:
 
 func _leg_dock(side: String) -> String:
 	var rail=_equipment("leg_rail")
-	var error=jog(rail,"bolster+")
+	var error=pull_support(rail,1.0)
 	if error.is_empty():error=index_to(rail,rail.spec.lanes[side])
-	for action in ["travel+","tilt+","rise+"]:
-		if error.is_empty():error=jog(rail,action)
-	if error.is_empty():error=command(rail,"seat")
+	if error.is_empty():error=jog(rail,"travel+")
+	if error.is_empty():error=gantry_front(true)
+	if error.is_empty():error=jog(rail,"rise+")
+	if error.is_empty():error=gantry_front(false)
 	if not error.is_empty():return error
 	if not rail.supports_seated(side+"_leg") or game.model.assemblies[side+"_leg"].parent!="pelvis":return side+" leg docking: Holder did not seat the leg at its hip."
 	Staging.fill(game,"pelvis")
@@ -280,16 +293,16 @@ func _leg_dock(side: String) -> String:
 		if not lock_error.is_empty():return id+": "+lock_error
 	error=settle(_equipment("workshop_access"))
 	if not error.is_empty():return "hip work decks: "+error
-	error=command(rail,"release")
-	for action in ["tilt-","travel-"]:
+	error=command(rail,"clamps")
+	for action in ["rise-","travel-"]:
 		if error.is_empty():error=jog(rail,action)
 	if error.is_empty():error=index_to(rail,rail.spec.station_x)
-	if error.is_empty():error=command(rail,"reacquire")
+	if error.is_empty():error=command(rail,"clamps")
 	if not error.is_empty():return error
 	if not rail.at_home():return side+" leg release: The empty leg rig did not return home."
 	error=_commands(_equipment("foot_carrier"),["return","return","return"])
 	if not error.is_empty():return error
-	return command(rail,"build") if side=="left" else ""
+	return command(rail,"next_leg") if side=="left" else ""
 
 func _chest() -> String:
 	var error=command(_equipment("module_supports"),"template:chest")
@@ -358,8 +371,7 @@ func _arm(side: String) -> String:
 	var crane=_equipment("service_crane");var rail=_equipment("leg_rail")
 	var error=""
 	if side=="left":
-		error=command(rail,"park")
-		if error.is_empty():error=index_to(rail,rail.spec.lanes.parking)
+		error=index_to(rail,rail.spec.lanes.parking)
 		if not error.is_empty():return error
 		error=_transfer("cassette")
 	else:error=_transfer("right_arm_store")

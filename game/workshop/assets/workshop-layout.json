@@ -58,6 +58,23 @@
       "tail_y": 0.36,
       "tail_height": 0.14,
       "post_base": 0.43
+    },
+    "controls": {
+      "bogie_box": [
+        8.78,
+        0,
+        14.5
+      ],
+      "turnover_box": [
+        18.3,
+        0,
+        18.0
+      ],
+      "lever": [
+        9.6,
+        0,
+        12.6
+      ]
     }
   },
   "parent_homes": {
@@ -5779,18 +5796,23 @@
         20.5,
         30.6
       ],
-      "panels": [
-        [
+      "controls": {
+        "bogie_box": [
           8.78,
           0,
           14.5
         ],
-        [
-          8.5,
+        "turnover_box": [
+          18.3,
           0,
-          24
+          18.0
+        ],
+        "lever": [
+          9.6,
+          0,
+          12.6
         ]
-      ],
+      },
       "holder": {
         "spine": [
           0,
