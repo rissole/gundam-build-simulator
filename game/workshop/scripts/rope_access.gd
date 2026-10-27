@@ -13,7 +13,7 @@ const SLACK = 0.35
 const PULL_REACH = 1.6
 const PULL_GAP = 0.45
 const BOARDING_DUCK = 0.75
-const LEAF_REASON = "Recall the ropes on the workshop-side leaves"
+const LEAF_REASON = "Recall the ropes on the upper gantry"
 var blockout: Node3D
 var stations: Dictionary = {}
 var ropes: Dictionary = {}
@@ -204,7 +204,7 @@ func action_error(action: String) -> String:
 	var parts=action.split(":",true,1)
 	if parts.size()!=2 or not stations.has(parts[1]):return "Unknown rope station."
 	var id: String=parts[1]
-	if parts[0]!="recall" and not front_available(id):return "Close and lock the workshop-side leaves before using a rope."
+	if parts[0]!="recall" and not front_available(id):return "Close the upper gantry before using a rope."
 	match parts[0]:
 		"recall":
 			if attachment==id:return "Unclip on a floor before recalling the rope."

@@ -279,7 +279,7 @@ func run() -> void:
 	var seat := page_named(definitions.pelvis.manual,"Seat the leg in the hip assembly")
 	var seat_text: Array[String] = []
 	for objective in seat.objectives:seat_text.append(Objectives.text(game,"pelvis",objective))
-	expect(seat_text==["Foot support: look at it, hold E and pull it away from the foot — until it stops","Transfer table lever: pull it to LEFT HIP","Bogie box: hold TO BAY — until the bogie stops at the bay","Lower front: Open — LOWER FRONT panel beside the left lift","Bogie box: hold RISE — until it seats in the hip to seat the structural left leg","Lower front: Close — LOWER FRONT panel beside the left lift"],"seat text names each physical control, got "+str(seat_text))
+	expect(seat_text==["Foot support: look at it, hold E and pull it away from the foot — until it stops","Transfer table lever: pull it to LEFT HIP","Bogie box: hold TO BAY — until the bogie stops at the bay","Lower gantry: Open — LOWER GANTRY panel at 8.4 m beside the left lift","Bogie box: hold RISE — until it seats in the hip to seat the structural left leg","Lower gantry: Close — LOWER GANTRY panel at 8.4 m beside the left lift"],"seat text names each physical control, got "+str(seat_text))
 	var at_home = Objectives.evaluate(game,"pelvis",seat)
 	expect(same_ticks(at_home,[false,false,false,false,false,false]),"leg rig at home ticks nothing, got "+str(at_home.ticked))
 	rail.foot_support=1.0
@@ -310,6 +310,9 @@ func run() -> void:
 	game.model.assemblies.left_leg.parent = "pelvis";game.model.assemblies.left_leg.parent_slot = "left_leg"
 	docked = Objectives.evaluate(game,"pelvis",seat)
 	expect(same_ticks(docked,[true,true,true,true,true,false]) and not docked.machine_complete,"actual mounting ticks seating but still requires closing the front, got "+str(docked.ticked))
+	front.set_front("lower",0.5,0.0,true)
+	var closing = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(closing,[true,true,true,true,true,false]) and closing.current==5,"closing front keeps OPEN ticked and tracks CLOSE, got "+str(closing.ticked))
 	front.set_front("lower",0.0)
 	var closed_front = Objectives.evaluate(game,"pelvis",seat)
 	expect(same_ticks(closed_front,[true,true,true,true,true,true]) and closed_front.machine_complete,"closed gantry front completes delivery, got "+str(closed_front.ticked))
@@ -372,7 +375,7 @@ func run() -> void:
 	expect(insert_line=="Heavy module rig: Fit head baseplate contact inserts","head inserts, got "+insert_line)
 	var crown := page_named(definitions.chest.manual,"Decorative head crown: retain")
 	var crown_last := Objectives.text(game,"chest",crown.objectives.back())
-	expect(crown_last=="Upper leaves: Close — UPPER LEAVES panel beside the left lift","crown closes the leaves after parking, got "+crown_last)
+	expect(crown_last=="Upper gantry: Close — UPPER GANTRY panel at 20.6 m beside the left lift","crown closes the leaves after parking, got "+crown_last)
 	var prose: Array[String] = []
 	var chapters = JSON.parse_string(FileAccess.get_file_as_string("res://assets/manual-chapters.json"))
 	for chapter in chapters.chapters:

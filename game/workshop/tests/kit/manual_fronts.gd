@@ -13,7 +13,8 @@ func front_closed(front: String) -> bool:
 	return fronts[front].value==0.0 and fronts[front].goal==0.0 and not fronts[front].moving
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func manual_state() -> Dictionary:
-	return {"upper_open":front_open("upper"),"upper_closed":front_closed("upper"),"lower_open":front_open("lower"),"lower_closed":front_closed("lower")}
+	var closing=func(front):return fronts[front].goal==0.0 and fronts[front].value>0.0
+	return {"upper_open":front_open("upper") or closing.call("upper"),"upper_closed":front_closed("upper"),"lower_open":front_open("lower") or closing.call("lower"),"lower_closed":front_closed("lower")}
 func manual_effect(objective: Dictionary) -> Dictionary:
 	var command: String=objective.get("command","")
 	if command not in MANUAL_COMMANDS:return {}
@@ -22,10 +23,10 @@ func manual_effect(objective: Dictionary) -> Dictionary:
 	# cannot retain an impossible requirement for simultaneous open and closed.
 	return {front+"_open":open,front+"_closed":not open}
 func manual_subject(objective: Dictionary) -> String:
-	return "Upper leaves" if str(objective.get("command","")).begins_with("upper_") else "Lower front"
+	return "Upper gantry" if str(objective.get("command","")).begins_with("upper_") else "Lower gantry"
 func command_label(command: String, _task: String = "") -> String:return "Open" if command.ends_with("_open") else "Close"
 func manual_hint(objective: Dictionary) -> String:
-	return ("UPPER LEAVES" if str(objective.get("command","")).begins_with("upper_") else "LOWER FRONT")+" panel beside the left lift"
+	return ("UPPER GANTRY panel at 20.6" if str(objective.get("command","")).begins_with("upper_") else "LOWER GANTRY panel at 8.4")+" m beside the left lift"
 func manual_control_actions(objective: Dictionary) -> Array:return [objective.command]
 func controls() -> Array[Dictionary]:return entries
 func action_error(action: String) -> String:return "" if action in MANUAL_COMMANDS else "Unknown front control."

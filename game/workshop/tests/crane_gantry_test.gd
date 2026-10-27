@@ -142,7 +142,7 @@ func interlocks() -> void:
 		access.request("upper_open");access.physics(7)
 		expect(crane.upper_crossing_occupied(),"current "+str(loaded)+" loaded/empty cable envelope occupies crossing")
 		var refusal: String=access.request("upper_close");access.physics(.1)
-		expect(is_equal_approx(access.channels["20.6"].value,1) and refusal.begins_with("Move the ") and refusal.ends_with("before closing the upper leaves."),"Close refuses before any leaf movement into stopped crane cables")
+		expect(is_equal_approx(access.channels["20.6"].value,1) and refusal.begins_with("Move the ") and refusal.ends_with("before closing the upper gantry."),"Close refuses before any leaf movement into stopped crane cables")
 		crane.station="receiver";crane.motion="down";crane.progress=0
 		expect(not crane.upper_crossing_occupied(),"current rig at Z26 releases upper close hold")
 		access.request("upper_close");access.physics(7)

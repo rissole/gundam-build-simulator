@@ -8,7 +8,7 @@ const Layout = preload("res://scripts/leg_bay_layout.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
 const VERSION = 2
 const UPPER_LEAF_BAND = AABB(Vector3(4.4,0,23.4),Vector3(17.2,25,1.2))
-const UPPER_WAIT = "Open the upper leaves (UPPER LEAVES panel beside the left lift)."
+const UPPER_WAIT = "Open the upper gantry (UPPER GANTRY panel at 20.6 m beside the left lift)."
 # Conservative unions of 101 sampled lower-front poses: wing/guard sweep,
 # shallow fingers, and rear folds. Separate heights let a seated arm clear the
 # fingers by 61 mm; the rear band starts behind its Z26.68 aft edge.
@@ -786,7 +786,7 @@ func _access_error(next: float) -> String:
 	if access==null:return ""
 	if attached_count()==required_ends:
 		for front in config.spec.get("needs_front",[]):
-			if not access.front_open(front):return "Open the lower front (LOWER FRONT panel beside the left lift)."
+			if not access.front_open(front):return "Open the lower gantry (LOWER GANTRY panel at 8.4 m beside the left lift)."
 	if _upper_crossing(next) and not access.front_open("upper"):return UPPER_WAIT
 	return ""
 

@@ -41,7 +41,7 @@ func run() -> void:
 		var labels=[]
 		for node in bank.get_children():
 			if node is Label3D:labels.append(node.text)
-		expect(labels==["UPPER LEAVES","LOWER FRONT"],"each bank has one label per row")
+		expect(labels==["UPPER GANTRY","LOWER GANTRY"],"each bank has one label per row")
 		for action in Access.MANUAL_COMMANDS:
 			expect(access.controls().filter(func(entry):return bank.is_ancestor_of(entry.node) and entry.action==action).size()==1,"bank has exactly one "+action)
 	for front in ["upper","lower"]:
@@ -65,7 +65,7 @@ func run() -> void:
 	for front in ["lower","upper"]:
 		occupant.front=front;operate(front+"_open")
 		var before=access.capture()
-		var expected="Move the test load out of the gantry before closing the "+("lower front" if front=="lower" else "upper leaves")+"."
+		var expected="Move the test load out of the gantry before closing the "+("lower gantry" if front=="lower" else "upper gantry")+"."
 		expect(access.action_error(front+"_close")==expected and access.request(front+"_close")==expected and before==access.capture(),"named occupant refuses Close atomically for "+front)
 		var other="upper" if front=="lower" else "lower"
 		operate(other+"_close")
@@ -81,8 +81,16 @@ func run() -> void:
 		expect(stub.manual_effect(objective)==access.manual_effect(objective) and stub.manual_subject(objective)==access.manual_subject(objective) and stub.manual_hint(objective)==access.manual_hint(objective) and stub.command_label(action)==access.command_label(action),action+" manual stub matches the real fronts")
 		stub.free()
 		expect(access.manual_control_actions(objective)==[action] and access.manual_control_entries(objective).size()==2,action+" cues either physical bank")
-		expect(access.manual_subject(objective)==("Upper leaves" if action.begins_with("upper") else "Lower front") and access.manual_hint(objective)==access.manual_subject(objective).to_upper()+" panel beside the left lift",action+" names the panel")
+		expect(access.manual_subject(objective)==("Upper gantry" if action.begins_with("upper") else "Lower gantry") and access.manual_hint(objective)==access.manual_subject(objective).to_upper()+" panel at "+("20.6" if action.begins_with("upper") else "8.4")+" m beside the left lift",action+" names the panel")
 		expect(access.command_label(action)==("Open" if action.ends_with("open") else "Close"),action+" uses the panel's verb")
+	# Closing an opened front keeps its OPEN evidence until CLOSE arrives.
+	operate("lower_open");access.request("lower_close");access.physics(.05)
+	var mid: Dictionary=access.manual_state()
+	expect(access.moving and mid.lower_open and not mid.lower_closed,"a closing front still reads opened, not yet closed")
+	var stub_front=preload("res://tests/kit/manual_fronts.gd").new();stub_front.set_front("lower",.5,0.0,true)
+	expect(stub_front.manual_state().lower_open and not stub_front.manual_state().lower_closed,"the manual stub reads a closing front the same way")
+	stub_front.free();operate("lower_close")
+	expect(not access.manual_state().lower_open and access.manual_state().lower_closed,"a closed front reads closed only")
 	for obsolete in ["stop","advance","return"]:expect(not access.request(obsolete).is_empty(),"removed action "+obsolete+" is rejected")
 	operate("lower_open")
 	var saved: Dictionary=JSON.parse_string(JSON.stringify(access.capture()))
@@ -97,7 +105,7 @@ func run() -> void:
 	crane.console=Console.new();crane.add_child(crane.console)
 	select("pelvis");crane.progress=.83
 	var before=access.capture();crane.physics(.2)
-	expect(crane.progress==.83 and crane.moving and crane.blocked_reason=="Open the upper leaves (UPPER LEAVES panel beside the left lift)." and before==access.capture(),"loaded crossing waits with exact instruction without operating access")
+	expect(crane.progress==.83 and crane.moving and crane.blocked_reason=="Open the upper gantry (UPPER GANTRY panel at 20.6 m beside the left lift)." and before==access.capture(),"loaded crossing waits with exact instruction without operating access")
 	operate("upper_open");crane.physics(.2)
 	expect(crane.progress>.83 and crane.blocked_reason.is_empty(),"player Open resumes the pending loaded crossing")
 	select("pelvis",false);crane.station="receiver";crane.motion="go:park";crane.progress=.12
@@ -108,7 +116,7 @@ func run() -> void:
 	var shoulder=preload("res://scripts/shoulder_support.gd").new();game.add_child(shoulder);shoulder.game=game;shoulder.equipment_id="left_shoulder"
 	shoulder.mass=preload("res://scripts/arm_delivery_geometry.gd").mass_properties(game.leg_content,game.runtime.definition("left_arm"));game.equipment.register(shoulder)
 	select("left_arm");before=access.capture();crane.physics(.05)
-	expect(crane.progress==0 and crane.moving and crane.blocked_reason=="Open the lower front (LOWER FRONT panel beside the left lift)." and before==access.capture(),"arm waits for lower front without moving it")
+	expect(crane.progress==0 and crane.moving and crane.blocked_reason=="Open the lower gantry (LOWER GANTRY panel at 8.4 m beside the left lift)." and before==access.capture(),"arm waits for lower front without moving it")
 	operate("lower_open")
 	expect(crane._access_error(.01).is_empty(),"arm wait clears after lower Open")
 	var passed=checks.all(func(c):return c.passed)

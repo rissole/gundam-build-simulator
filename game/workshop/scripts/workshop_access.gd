@@ -36,7 +36,7 @@ func _make_upper_controls() -> void:
 		for member in [[Vector3(0,.55,0),Vector3(.08,1.1,.08)],[Vector3(0,1.15,0),Vector3(.92,.94,.08)]]:
 			game.box(bank,member[0],member[1],steel)
 			var shape=CollisionShape3D.new();shape.shape=BoxShape3D.new();shape.shape.size=member[1];shape.position=member[0];bank.add_child(shape)
-		for row in [["upper","UPPER LEAVES",1.35],["lower","LOWER FRONT",.87]]:
+		for row in [["upper","UPPER GANTRY",1.35],["lower","LOWER GANTRY",.87]]:
 			var label=Label3D.new();bank.add_child(label);label.position=Vector3(0,row[2]+.18,.05)
 			label.text=row[1];label.font_size=32;label.pixel_size=.0018;label.outline_size=0
 			for control in [["open","OPEN",-.24],["close","CLOSE",.24]]:
@@ -86,7 +86,7 @@ func front_closed(front: String) -> bool:return _front_at(front,0.0)
 func _occupant_error(front: String) -> String:
 	for equipment in game.equipment.all():
 		var occupant: String=equipment.gantry_occupant(front)
-		if not occupant.is_empty():return "Move the %s out of the gantry before closing the %s." % [occupant,"upper leaves" if front=="upper" else "lower front"]
+		if not occupant.is_empty():return "Move the %s out of the gantry before closing the %s." % [occupant,manual_subject({"command":front+"_close"}).to_lower()]
 	return ""
 
 func action_error(action: String) -> String:
@@ -104,10 +104,16 @@ func request(action: String) -> String:
 
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String = "") -> String:return "Open" if action.ends_with("_open") else "Close"
-func manual_subject(objective: Dictionary) -> String:return "Upper leaves" if str(objective.get("command","")).begins_with("upper_") else "Lower front"
-func manual_hint(objective: Dictionary) -> String:return manual_subject(objective).to_upper()+" panel beside the left lift"
+func manual_subject(objective: Dictionary) -> String:return "Upper gantry" if str(objective.get("command","")).begins_with("upper_") else "Lower gantry"
+## Each gantry's panel stands on its own level, in view of what it moves.
+func manual_hint(objective: Dictionary) -> String:
+	return manual_subject(objective).to_upper()+" panel at "+("20.6" if str(objective.get("command","")).begins_with("upper_") else "8.4")+" m beside the left lift"
+## `<front>_open` stays true while an opened front closes, so a page's OPEN step
+## stays ticked while its CLOSE step is still in progress.
 func manual_state() -> Dictionary:
-	return {"upper_open":front_open("upper"),"upper_closed":front_closed("upper"),"lower_open":front_open("lower"),"lower_closed":front_closed("lower")}
+	return {"upper_open":front_open("upper") or _front_closing("upper"),"upper_closed":front_closed("upper"),"lower_open":front_open("lower") or _front_closing("lower"),"lower_closed":front_closed("lower")}
+func _front_closing(front: String) -> bool:
+	return FRONTS[front].all(func(key):return channels[key].goal==0.0) and FRONTS[front].any(func(key):return channels[key].value>0.0)
 func manual_effect(objective: Dictionary) -> Dictionary:
 	var command: String=objective.get("command","")
 	if command not in MANUAL_COMMANDS:return {}
@@ -143,13 +149,13 @@ func rope_motion_error() -> String:
 	if rope!=null and not rope.front_ropes_clear():return rope.LEAF_REASON
 	var crane=game.equipment.get_equipment("service_crane")
 	if channel.goal<channel.value and crane!=null and crane.has_method("upper_crossing_occupied") and crane.upper_crossing_occupied():
-		return "Wait for the crane cables to clear the upper access leaves."
+		return "Wait for the crane cables to clear the upper gantry."
 	var floor=EquipmentRegistry.rider_floor(game)
 	if floor!=null:
 		for side in ["left","right"]:
 			var leaf: Node=blockout.groups.get("wing_"+side+"_20.6")
 			if leaf!=null and (floor==leaf or leaf.is_ancestor_of(floor)):
-				return "Step off the workshop-side leaves before they move."
+				return "Step off the upper gantry before it moves."
 	return ""
 
 func _pose() -> void:
@@ -175,7 +181,7 @@ func validate(data: Variant, _candidate: AssemblyModel = null, _world: Dictionar
 		for field in ["value","goal"]:
 			if not Codec.number(channel[field]) or channel[field]<0 or channel[field]>1:return ["Platform phase out of range."]
 		if channel.goal not in [0.0,1.0]:return ["Invalid front goal."]
-	if data.channels["8.4"]!=data.channels.rear:return ["Lower front channels disagree."]
+	if data.channels["8.4"]!=data.channels.rear:return ["Lower gantry channels disagree."]
 	if data.moving!=data.channels.values().any(func(channel):return not is_equal_approx(channel.value,channel.goal)):return ["Front motion disagrees with its phases."]
 	return []
 

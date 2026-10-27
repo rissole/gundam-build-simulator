@@ -100,12 +100,12 @@ func mappings(node: Node3D) -> void:
 	var foot=preload("res://scripts/foot_carrier.gd").new();game.add_child(foot)
 	var rail=preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail)
 	expect(foot.manual_control_actions({"command":"advance:2"}).is_empty() and foot.manual_control_actions({"command":"return:home"}).is_empty(),"Foot rig panel buttons have no cue")
-	# On-rig controls glow; the bogie box buttons are rig panel buttons and do not.
-	var rail_controls={"support:away":"support","table:hip":"lever","travel:bay":"","rise":"","clamps:release":"clamps","lower":"","travel:home":"","table:build":"lever","clamps:grab":"clamps","next_leg":"","table:park":"lever"}
+	# Small on-rig controls glow; the lever and bogie box buttons do not.
+	var rail_controls={"support:away":"support","table:hip":"","travel:bay":"","rise":"","clamps:release":"clamps","lower":"","travel:home":"","table:build":"","clamps:grab":"clamps","next_leg":"","table:park":""}
 	expect(rail_controls.size()==rail.MANUAL_COMMANDS.size(),"all leg rig manual commands have a cue expectation")
 	for command in rail_controls:
 		var want: Array=[] if rail_controls[command].is_empty() else [rail_controls[command]]
-		expect(rail.manual_control_actions({"command":command})==want,"Leg rig "+command+(" cues its physical "+rail_controls[command]+" control" if not want.is_empty() else " (bogie box button) has no cue"))
+		expect(rail.manual_control_actions({"command":command})==want,"Leg rig "+command+(" cues its physical "+rail_controls[command]+" control" if not want.is_empty() else " (lever or bogie box button) has no cue"))
 	var front=preload("res://tests/kit/manual_fronts.gd").new();game.add_child(front)
 	for command in front.MANUAL_COMMANDS:front.entries.append(entry(front,command,node))
 	for command in front.MANUAL_COMMANDS:

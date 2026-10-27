@@ -185,12 +185,13 @@ func _drag_tick(action: String) -> void:
 		var error=action_error(action)
 		if not error.is_empty():blocked_reason=error;_refresh();return
 		var camera=game.get("camera")
-		var grabbed: Vector3=layout.cradle.pieces["BolsterPad_1"].visual.global_position if action=="support" else lever_pivot.global_transform*Vector3(0,1.02,0)
-		drag={"kind":action,"distance":camera.global_position.distance_to(grabbed) if is_instance_valid(camera) else 1.5}
+		var pad: String=_aimed_pad(camera) if action=="support" else ""
+		var grabbed: Vector3=layout.cradle.pieces[pad].visual.global_position if action=="support" else lever_pivot.global_transform*Vector3(0,1.02,0)
+		drag={"kind":action,"pad":pad,"distance":camera.global_position.distance_to(grabbed) if is_instance_valid(camera) else 1.5}
 		_sync_moving()
 	var hand=_hand()
 	if hand==null:return
-	if action=="support":pull_support(_support_param(hand))
+	if action=="support":pull_support(_support_param(hand,drag.pad))
 	else:
 		var pivot: Vector3=lever_pivot.global_position
 		lever_angle=clampf(rad_to_deg(atan2(hand.x-pivot.x,maxf(.05,hand.y-pivot.y))),-LEVER_ANGLE,LEVER_ANGLE)
@@ -211,15 +212,26 @@ func _nearest_notch_angle() -> Dictionary:
 		if best.is_empty() or absf(notch.angle-lever_angle)<absf(best.angle-lever_angle):best=notch
 	return best
 
-## Foot support stroke nearest the hand, along the pad's spread-then-slide path.
-func _support_param(hand: Vector3) -> float:
+## The foot support pad nearest the camera's line of sight: either pad drags.
+func _aimed_pad(camera) -> String:
+	if not is_instance_valid(camera):return "BolsterPad_1"
+	var best: String="";var best_d=INF
+	for side in [-1,1]:
+		var id: String="BolsterPad_"+str(side)
+		var offset: Vector3=layout.cradle.pieces[id].visual.global_position-camera.global_position
+		var d: float=offset.cross(-camera.global_basis.z).length()
+		if d<best_d:best_d=d;best=id
+	return best
+
+## Foot support stroke nearest the hand, along the grabbed pad's spread-then-slide path.
+func _support_param(hand: Vector3, pad: String = "BolsterPad_1") -> float:
 	var fraction: float=spec.holder.bolster.spread_fraction
 	var points: Array=[]
 	for t in [0.0,fraction,1.0]:
 		var state=_state();state.foot_support=t
 		var at=snapshot_pose(state)
 		for record in layout.cradle.geometry(at.frame,at.bogie_x,at.bogie_z,at.opening,at.compact,t):
-			if record.id=="BolsterPad_1":points.append(record.pose.origin)
+			if record.id==pad:points.append(record.pose.origin)
 	var best_t=foot_support;var best_d=INF
 	for segment in 2:
 		var a: Vector3=points[segment];var b: Vector3=points[segment+1]
@@ -255,11 +267,10 @@ func controls() -> Array[Dictionary]:
 		result.append(entry)
 	return result
 
-## The manual's gold glow marks on-rig controls only (foot support, lever, clamp
-## switch); control box buttons never glow.
+## The manual's gold glow marks small on-rig controls only (foot support, clamp
+## switch); the transfer table lever and control box buttons never glow.
 func manual_control_actions(objective: Dictionary) -> Array:
-	return {"support:away":["support"],"table:hip":["lever"],"table:build":["lever"],"table:park":["lever"],
-		"clamps:release":["clamps"],"clamps:grab":["clamps"]}.get(str(objective.get("command","")),[])
+	return {"support:away":["support"],"clamps:release":["clamps"],"clamps:grab":["clamps"]}.get(str(objective.get("command","")),[])
 
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String = "") -> String:
@@ -351,7 +362,7 @@ func _needs(action: String) -> Array:
 	var clamps=_need("CLAMPS CLOSED" if carrying else "CLAMPS RELEASED",release==0 if carrying else release==5,
 		"Finish moving the leg clamps first." if release>0 and release<5 else "Tap the leg clamps switch to RELEASE the empty holder first (on the bogie).")
 	var bay=_need("BOGIE AT BAY STOP",absf(travel_z-float(spec.bay_z))<=EPS,"Drive the bogie to the bay stop first (bogie box: TO BAY).")
-	var front=_need("LOWER FRONT OPEN",front_open,"Open the gantry's lower front first (LOWER FRONT panel beside the left lift).")
+	var front=_need("LOWER GANTRY OPEN",front_open,"Open the lower gantry first (LOWER GANTRY panel at 8.4 m beside the left lift).")
 	var hip=_need("HIP GANTRY SECURED",gantry==null or gantry.support_secured(),"Deliver the hip assembly, close all four gantry jaws and insert both waist lock pins first.")
 	var complete=_need("LEG COMPLETE",game.model.milestone(active_assembly,"structural_ready"),"Complete the structural leg and every retaining connection first.")
 	var neutral_roll=_need("ROLL NEUTRAL",roll_deg==0,"Roll the turnover back to neutral before lowering it.")

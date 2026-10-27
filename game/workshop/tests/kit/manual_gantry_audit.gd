@@ -77,7 +77,7 @@ static func run(h) -> void:
 			var procedure=progress.procedure(row.owner,row.page)
 			for index in Objectives.display_indices(page,procedure):displayed.append(texts[index])
 			h.expect(texts.all(func(t):return not t.is_empty()),row.title+" renders every typed objective")
-			h.expect((str(page.goal)+str(page.get("note",{}).get("text",""))).count("UPPER LEAVES panel beside the left lift")==1,row.title+" locates the panel once in authored guidance")
+			h.expect((str(page.goal)+str(page.get("note",{}).get("text",""))).count("UPPER GANTRY panel at 20.6 m beside the left lift")==1,row.title+" locates the panel once in authored guidance")
 			var delivery=commands.find("service_crane:go:receiver");var park=commands.find("service_crane:go:park")
 			if delivery>=0:h.expect(commands.find("workshop_access:upper_open")==delivery+(1 if task in ["left_arm","right_arm"] else -1),row.title+" opens the upper leaves before the first crossing objective")
 			if park>=0:

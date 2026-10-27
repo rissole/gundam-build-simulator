@@ -190,7 +190,7 @@ func run() -> void:
 	expect(access.front_open("upper") and access.front_closed("lower") and access.validate(access.capture()).is_empty(),"Lower request preserves upper crossing and its snapshot is valid independently of mode")
 	var crane=CraneOccupancy.new();game.add_child(crane);crane.equipment_id="service_crane";game.equipment.register(crane)
 	access.request("lower_open");access.request("upper_close");access.physics(.2)
-	expect(access.channels["20.6"].value==1 and access.blocked_reason=="Wait for the crane cables to clear the upper access leaves." and access.channels["8.4"].value>0,"Stopped crane occupancy holds upper closing before the crane tick while lower access moves")
+	expect(access.channels["20.6"].value==1 and access.blocked_reason=="Wait for the crane cables to clear the upper gantry." and access.channels["8.4"].value>0,"Stopped crane occupancy holds upper closing before the crane tick while lower access moves")
 	crane.occupied=false;access.physics(1)
 	expect(access.front_closed("upper") and access.front_open("lower"),"Pending upper close finishes once the crane is clear")
 	crane.occupied=true;access.request("upper_open");access.physics(1)

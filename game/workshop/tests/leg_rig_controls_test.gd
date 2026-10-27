@@ -177,8 +177,9 @@ func run() -> void:
 	for stroke in [0.0,.15,float(spec.holder.bolster.spread_fraction),.7,1.0]:
 		var state=rail._state();state.foot_support=stroke
 		var at=rail.snapshot_pose(state)
-		var pad=holder.cradle.geometry(at.frame,at.bogie_x,at.bogie_z,at.opening,at.compact,stroke).filter(func(record):return record.id=="BolsterPad_1")[0]
-		expect(is_equal_approx(rail._support_param(pad.pose.origin),stroke),"hand maps to spread/slide stroke "+str(stroke))
+		for id in ["BolsterPad_1","BolsterPad_-1"]:
+			var pad=holder.cradle.geometry(at.frame,at.bogie_x,at.bogie_z,at.opening,at.compact,stroke).filter(func(record):return record.id==id)[0]
+			expect(is_equal_approx(rail._support_param(pad.pose.origin,id),stroke),id+" hand maps to spread/slide stroke "+str(stroke))
 	game.camera=Camera3D.new();game.add_child(game.camera)
 	var pad: Node3D=holder.cradle.pieces.BolsterPad_1.visual
 	game.camera.global_position=pad.global_position+Vector3(0,0,1.5)
@@ -193,6 +194,16 @@ func run() -> void:
 	support_handler.call(false,0.0)
 	var released_at: float=rail.foot_support;tick(3)
 	expect(not rail.moving and rail.foot_support==released_at,"release stops the support immediately")
+	pull(0)
+	# Either pad is a handle: the one in view follows the hand along its own path.
+	game.camera.global_position=holder.cradle.pieces["BolsterPad_-1"].visual.global_position+Vector3(0,0,1.5)
+	support_handler.call(true,.1)
+	expect(rail.drag.get("pad","")=="BolsterPad_-1","aiming at the other pad grabs that pad")
+	var other_pad=holder.cradle.geometry(clear_pose.frame,clear_pose.bogie_x,clear_pose.bogie_z,clear_pose.opening,clear_pose.compact,1.0).filter(func(record):return record.id=="BolsterPad_-1")[0]
+	game.camera.global_position=other_pad.pose.origin+Vector3(0,0,rail.drag.distance)
+	support_handler.call(true,.1);tick()
+	expect(is_equal_approx(rail.foot_support,Rail.SUPPORT_SPEED*.1),"dragging the other pad moves the support too")
+	support_handler.call(false,0.0)
 	pull(0)
 	jog("lift+")
 	expect(rail.roll_height_m==rail._lift_max(),"turnover reaches the raise end stop")
@@ -255,7 +266,7 @@ func run() -> void:
 	hold("travel+");rail.set_jog("")
 	expect(rail.travel_z==spec.bay_z,"TO BAY stops exactly")
 	refusal("lever","onto the table","off-table bogie locks the lever")
-	refusal("rise+","lower front","closed lower front refuses RISE even with the upper leaves open")
+	refusal("rise+","lower gantry","closed lower front refuses RISE even with the upper leaves open")
 	expect(rail.gantry_occupant("lower").is_empty() and rail.gantry_occupant("upper").is_empty(),"flat rig occupies neither gantry front")
 	access.opened=true;gantry.secured=false
 	refusal("rise+","gantry jaws","RISE requires secured hip gantry");gantry.secured=true
@@ -287,7 +298,7 @@ func run() -> void:
 	expect(game.runtime.node("left_leg").global_transform.is_equal_approx(game.runtime.mount_pose("pelvis","left_leg","left_leg")),"installation mounts the exact runtime pose")
 	expect(not rail.ghost.visible and rail.gantry_occupant("lower").is_empty(),"mounted leg hides its ghost and no longer occupies the lower front as a rig load")
 	access.opened=false
-	refusal("rise-","lower front","loaded LOWER needs the lower front open")
+	refusal("rise-","lower gantry","loaded LOWER needs the lower front open")
 	access.opened=true
 	refusal("clamps","Complete hip retention","RELEASE needs complete retention")
 	jog("rise-")
@@ -376,8 +387,8 @@ func check_lamps(braces: Braces, gantry: Gantry) -> void:
 	rail.tilt_deg=1;lamp("bogie","LEG LYING FLAT",false);rail.tilt_deg=0
 	lamp("bogie","CLAMPS CLOSED",true)
 	rail.release=.5;lamp("bogie","CLAMPS CLOSED",false);rail.release=0
-	lamp("bogie","LOWER FRONT OPEN",false)
-	access.opened=true;access.upper_opened=false;lamp("bogie","LOWER FRONT OPEN",true)
+	lamp("bogie","LOWER GANTRY OPEN",false)
+	access.opened=true;access.upper_opened=false;lamp("bogie","LOWER GANTRY OPEN",true)
 	access.opened=false;access.upper_opened=true
 	lamp("bogie","HIP GANTRY SECURED",true)
 	gantry.secured=false;lamp("bogie","HIP GANTRY SECURED",false);gantry.secured=true

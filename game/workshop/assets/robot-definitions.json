@@ -4848,7 +4848,7 @@
           "goal": "Lock the waist straight, crane the hip assembly onto the gantry and close its jaws.",
           "note": {
             "at": 9,
-            "text": "At the UPPER LEAVES panel beside the left lift, close the workshop-side leaves, take the left lift to ROPE ACCESS and descend to the lifting eyes. Land, unclip and recall the rope before moving the crane."
+            "text": "At the UPPER GANTRY panel at 20.6 m beside the left lift, close the upper gantry, then descend from ROPE ACCESS to the lifting eyes. Land, unclip and recall the rope before moving the crane."
           },
           "objectives": [
             {
@@ -4991,7 +4991,7 @@
         },
         {
           "title": "Seat the leg in the hip assembly",
-          "goal": "Bring the finished leg to the Final Assembly Bay, open the lower front, raise the leg into the left hip, then close the front.",
+          "goal": "Bring the finished leg to the Final Assembly Bay, open the lower gantry, raise the leg into the left hip, then close the lower gantry.",
           "slots": [
             "left_leg"
           ],
@@ -5042,7 +5042,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Park the empty crane first. Find the foot support under the foot (reach it from either side of the rig), the transfer table lever in front of the table, the bogie box beside the table, and the LOWER FRONT panel beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."
+            "text": "Park the empty crane first. Find the foot support under the foot (reach it from either side of the rig), the transfer table lever by the sole of the foot, the bogie box beside the table, and the LOWER GANTRY panel at 8.4 m beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."
           },
           "diagram_views": [
             {
@@ -5682,11 +5682,11 @@
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower front at the LOWER FRONT panel beside the left lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."
+          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower gantry at the LOWER GANTRY panel at 8.4 m beside the left lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Seat the leg in the hip assembly",
-          "goal": "Bring the finished leg to the Final Assembly Bay, open the lower front, raise the leg into the right hip, then close the front.",
+          "goal": "Bring the finished leg to the Final Assembly Bay, open the lower gantry, raise the leg into the right hip, then close the lower gantry.",
           "slots": [
             "right_leg"
           ],
@@ -6377,7 +6377,7 @@
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower front at the LOWER FRONT panel beside the right lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."
+          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower gantry at the LOWER GANTRY panel at 8.4 m beside the right lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Bring the chest to the heavy module rig",
@@ -6477,7 +6477,7 @@
           "slots": [
             "chest"
           ],
-          "goal": "Crane the chest from the heavy module rig onto the waist, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the chest from the heavy module rig onto the waist, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "objectives": [
             {
               "op": "operate",
@@ -6651,7 +6651,7 @@
             "chest/washer_4",
             "chest/bolt_4"
           ],
-          "goal": "Bolt the chest to the waist, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Bolt the chest to the waist, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "objectives": [
             {
               "op": "fit",
@@ -11252,7 +11252,7 @@
           "slots": [
             "core"
           ],
-          "goal": "Crane the core to the chest's rear dock, then guide it in from an exit-side rope, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the core to the chest's rear dock, then guide it in from an exit-side rope, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "objectives": [
             {
               "op": "operate",
@@ -11401,7 +11401,7 @@
           "title": "Retain and connect the core",
           "view": "components",
           "slots": [],
-          "goal": "Bolt the core in, connect it, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Bolt the core in, connect it, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "objectives": [
             {
               "op": "operate",
@@ -11597,7 +11597,7 @@
           "slots": [
             "backpack"
           ],
-          "goal": "Crane the open backpack onto the chest hinges, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the open backpack onto the chest hinges, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "objectives": [
             {
               "op": "operate",
@@ -12008,7 +12008,7 @@
           "title": "Close and latch the backpack",
           "view": "components",
           "slots": [],
-          "goal": "Close the backpack with the crane, latch it and shut the service covers, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Close the backpack with the crane, latch it and shut the service covers, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "objectives": [
             {
               "op": "connect",
@@ -12230,7 +12230,7 @@
         },
         {
           "title": "Left shoulder: deliver the retained arm",
-          "goal": "Crane the left arm from the arm rig and seat its shoulder ball, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the left arm from the arm rig and seat its shoulder ball, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "left_arm"
           ],
@@ -12617,7 +12617,7 @@
         },
         {
           "title": "Left shoulder: connect services",
-          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "left_arm/service"
           ],
@@ -12856,7 +12856,7 @@
         },
         {
           "title": "Right shoulder: deliver the retained arm",
-          "goal": "Crane the right arm from the arm rig and seat its shoulder ball, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the right arm from the arm rig and seat its shoulder ball, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "right_arm"
           ],
@@ -13243,7 +13243,7 @@
         },
         {
           "title": "Right shoulder: connect services",
-          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "right_arm/service"
           ],
@@ -13395,7 +13395,7 @@
         },
         {
           "title": "Left pauldron: deliver carrier",
-          "goal": "Crane the left pauldron carrier onto the shoulder, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the left pauldron carrier onto the shoulder, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "left_pauldron"
           ],
@@ -13488,7 +13488,7 @@
         },
         {
           "title": "Left pauldron: retain carrier",
-          "goal": "Bolt the carrier to the arm, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Bolt the carrier to the arm, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "left_pauldron/bolt_1",
             "left_pauldron/bolt_2",
@@ -13699,7 +13699,7 @@
         },
         {
           "title": "Right pauldron: deliver carrier",
-          "goal": "Crane the right pauldron carrier onto the shoulder, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the right pauldron carrier onto the shoulder, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "right_pauldron"
           ],
@@ -13792,7 +13792,7 @@
         },
         {
           "title": "Right pauldron: retain carrier",
-          "goal": "Bolt the carrier to the arm, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Bolt the carrier to the arm, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "right_pauldron/bolt_1",
             "right_pauldron/bolt_2",
@@ -14095,7 +14095,7 @@
         },
         {
           "title": "Head baseplate: deliver",
-          "goal": "Crane the head baseplate onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the head baseplate onto the head, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "head_baseplate"
           ],
@@ -14250,7 +14250,7 @@
         },
         {
           "title": "Head baseplate: connect loom",
-          "goal": "Plug in the head loom, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Plug in the head loom, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "hd-loom/001"
           ],
@@ -14452,7 +14452,7 @@
         },
         {
           "title": "Left wraparound side: deliver",
-          "goal": "Crane the left wraparound side onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the left wraparound side onto the head, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "head_left"
           ],
@@ -14545,7 +14545,7 @@
         },
         {
           "title": "Left wraparound side: retain",
-          "goal": "Bolt the left wraparound side down, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Bolt the left wraparound side down, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "hd-m12100/001",
             "hd-m12100/002"
@@ -14750,7 +14750,7 @@
         },
         {
           "title": "Right wraparound side: deliver",
-          "goal": "Crane the right wraparound side onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the right wraparound side onto the head, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "head_right"
           ],
@@ -14843,7 +14843,7 @@
         },
         {
           "title": "Right wraparound side: retain",
-          "goal": "Bolt the right wraparound side down, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Bolt the right wraparound side down, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "hd-m12100/003",
             "hd-m12100/004"
@@ -15048,7 +15048,7 @@
         },
         {
           "title": "Structural head top: deliver",
-          "goal": "Crane the structural head top onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the structural head top onto the head, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "head_top"
           ],
@@ -15141,7 +15141,7 @@
         },
         {
           "title": "Structural head top: retain",
-          "goal": "Bolt the structural head top down, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Bolt the structural head top down, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "hd-m12160/001",
             "hd-m12160/002",
@@ -15654,7 +15654,7 @@
         },
         {
           "title": "Decorative head crown: deliver",
-          "goal": "Crane the decorative head crown onto the head, using the UPPER LEAVES panel beside the left lift to open the way before crossing.",
+          "goal": "Crane the decorative head crown onto the head, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "slots": [
             "head_crown"
           ],
@@ -15747,7 +15747,7 @@
         },
         {
           "title": "Decorative head crown: retain",
-          "goal": "Bolt the decorative head crown down, then release and park the crane, using the UPPER LEAVES panel beside the left lift to open the return route and close the leaves after parking.",
+          "goal": "Bolt the decorative head crown down, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
           "slots": [
             "hd-m12100/005",
             "hd-m12100/006"
@@ -19153,7 +19153,7 @@
           "title": "Structural leg ready",
           "view": "prepared",
           "slots": [],
-          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever in front of the table to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
+          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
         },
         {
           "title": "Supported construction recovery",
@@ -24150,7 +24150,7 @@
             "title": "Structural leg ready",
             "view": "prepared",
             "slots": [],
-            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever in front of the table to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
+            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
           },
           {
             "title": "Supported construction recovery",
