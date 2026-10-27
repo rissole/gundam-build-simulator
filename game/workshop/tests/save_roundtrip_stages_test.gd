@@ -20,7 +20,6 @@ class Sampler extends "res://scripts/build_stages.gd":
 		for tick in range(limit):
 			if not controller.moving or points.is_empty():break
 			_equipment("workshop_access").physics(.1)
-			_equipment("rail_gates").physics(.1)
 			controller.physics(.1)
 			var point: Array = points[0]
 			if controller.moving and controller.motion == point[0] and controller.station == point[1] and controller.progress >= point[2]:

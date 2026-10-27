@@ -158,7 +158,6 @@ func settle(controller: Node, limit: int = 1600) -> String:
 	for tick in range(limit):
 		if not controller.moving:return controller.blocked_reason
 		_equipment("workshop_access").physics(.1)
-		_equipment("rail_gates").physics(.1)
 		controller.physics(.1)
 	# A held lift waits for its obstruction instead of refusing the request.
 	var held: String = str(controller.get("blocked_reason")) if controller.get("blocked_reason") != null else ""
@@ -179,7 +178,6 @@ func jog(controller: Node, action: String, limit: int = 1600) -> String:
 	controller.set_jog(action)
 	for tick in range(limit):
 		_equipment("workshop_access").physics(.1)
-		_equipment("rail_gates").physics(.1)
 		controller.physics(.1)
 		if controller.jog_settled():break
 	var settled: bool=controller.jog_settled();var held: String=controller.blocked_reason

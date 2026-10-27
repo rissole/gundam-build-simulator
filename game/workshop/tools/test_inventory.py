@@ -33,7 +33,6 @@ ROUTINE = (
     'pitch_interface_test',
     'pitch_model_test',
     'pockets_model_test',
-    'rail_gates_test',
     'rail_endpoint_test',
     'receiver_contract_test',
     'rig_target_test',

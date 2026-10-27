@@ -87,8 +87,6 @@ def contract():
                            receiver_support="pelvis_gantry",receiver_pose=pose([13,10.6,26]),
                            locks={"yaw":[0,1.37,-.70],"lean":[.92,1.70,0]}),
         stock_grid=dict(origin=[-10.8,.7,-3.6],columns=14,spacing=[1.35,1.8]),
-        rail_gates=dict(groups=["rail_gate_left","rail_gate_right"],duration=2,
-                        occupied_center=[13,1.15,25.55],occupied_size=[8.2,2.1,10.1]),
         mobile_platform=dict(size=[2.4,2], deck_size=[1.2,1.4], heights=[.15,1.6,2.0,2.4],
                              speed=.8, lift_speed=.5,
                              docks={"park":[6.7,0,19.3],"bulky_left":[-.95,0,13],
@@ -211,17 +209,6 @@ def contract():
             x=frame["position"][0]+side*.43;z=frame["position"][2]+1.13
             box(f"{owner}_store_mast_{side}",[x,.58,z],[.12,1.16,.18])
             box(f"{owner}_store_sole_{side}",[x,1.165,z],[.18,.07,.66],"yellow")
-
-    # Pedestrian entrances at either end of the ground crosswalk. Hinges stay
-    # outside the empty holder's X8.9..17.1 sweep; rails travel between gates.
-    for side,x,angle in [("left",8.4,-90),("right",17.6,90)]:
-        key="rail_gate_"+side
-        box(key+"_post",[x,.65,20.5],[.14,1.3,.14],"dark")
-        group(key,at=[x,0,20.5],closed_angle=0,open_angle=angle,motion_contacts=[key+"_post"])
-        box(key+"_bar",[0,1.02,.85],[.10,.18,1.50],"yellow",key)
-        box(key+"_lower_bar",[0,.60,.85],[.08,.12,1.50],"yellow",key)
-        box(key+"_link",[0,.81,.14],[.06,.42,.06],parent=key)
-        data["signs"].append(dict(text="RAIL CROSSING / WAIT FOR OPEN GATES",position=[x,1.65,20.5],width=2.6))
 
     # The one adjustable bulky fixture, initially using pelvis bearing inserts.
     # Payload-specific contacts move with its frame; exchange is occupancy-gated

@@ -6344,23 +6344,6 @@
         1.8
       ]
     },
-    "rail_gates": {
-      "groups": [
-        "rail_gate_left",
-        "rail_gate_right"
-      ],
-      "duration": 2,
-      "occupied_center": [
-        13,
-        1.15,
-        25.55
-      ],
-      "occupied_size": [
-        8.2,
-        2.1,
-        10.1
-      ]
-    },
     "mobile_platform": {
       "size": [
         2.4,
@@ -6788,42 +6771,6 @@
           0,
           0,
           0
-        ]
-      },
-      "rail_gate_left": {
-        "parent": "",
-        "position": [
-          8.4,
-          0,
-          20.5
-        ],
-        "rotation_degrees": [
-          0,
-          0,
-          0
-        ],
-        "closed_angle": 0,
-        "open_angle": -90,
-        "motion_contacts": [
-          "rail_gate_left_post"
-        ]
-      },
-      "rail_gate_right": {
-        "parent": "",
-        "position": [
-          17.6,
-          0,
-          20.5
-        ],
-        "rotation_degrees": [
-          0,
-          0,
-          0
-        ],
-        "closed_angle": 0,
-        "open_angle": 90,
-        "motion_contacts": [
-          "rail_gate_right_post"
         ]
       },
       "bulky_fixture": {
@@ -9553,134 +9500,6 @@
           0.66
         ],
         "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "rail_gate_left_post",
-        "parent": "",
-        "position": [
-          8.4,
-          0.65,
-          20.5
-        ],
-        "size": [
-          0.14,
-          1.3,
-          0.14
-        ],
-        "material": "dark",
-        "solid": true
-      },
-      {
-        "id": "rail_gate_left_bar",
-        "parent": "rail_gate_left",
-        "position": [
-          0,
-          1.02,
-          0.85
-        ],
-        "size": [
-          0.1,
-          0.18,
-          1.5
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "rail_gate_left_lower_bar",
-        "parent": "rail_gate_left",
-        "position": [
-          0,
-          0.6,
-          0.85
-        ],
-        "size": [
-          0.08,
-          0.12,
-          1.5
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "rail_gate_left_link",
-        "parent": "rail_gate_left",
-        "position": [
-          0,
-          0.81,
-          0.14
-        ],
-        "size": [
-          0.06,
-          0.42,
-          0.06
-        ],
-        "material": "steel",
-        "solid": true
-      },
-      {
-        "id": "rail_gate_right_post",
-        "parent": "",
-        "position": [
-          17.6,
-          0.65,
-          20.5
-        ],
-        "size": [
-          0.14,
-          1.3,
-          0.14
-        ],
-        "material": "dark",
-        "solid": true
-      },
-      {
-        "id": "rail_gate_right_bar",
-        "parent": "rail_gate_right",
-        "position": [
-          0,
-          1.02,
-          0.85
-        ],
-        "size": [
-          0.1,
-          0.18,
-          1.5
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "rail_gate_right_lower_bar",
-        "parent": "rail_gate_right",
-        "position": [
-          0,
-          0.6,
-          0.85
-        ],
-        "size": [
-          0.08,
-          0.12,
-          1.5
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "rail_gate_right_link",
-        "parent": "rail_gate_right",
-        "position": [
-          0,
-          0.81,
-          0.14
-        ],
-        "size": [
-          0.06,
-          0.42,
-          0.06
-        ],
-        "material": "steel",
         "solid": true
       },
       {
@@ -17863,24 +17682,6 @@
           17.6
         ],
         "width": 1.6
-      },
-      {
-        "text": "RAIL CROSSING / WAIT FOR OPEN GATES",
-        "position": [
-          8.4,
-          1.65,
-          20.5
-        ],
-        "width": 2.6
-      },
-      {
-        "text": "RAIL CROSSING / WAIT FOR OPEN GATES",
-        "position": [
-          17.6,
-          1.65,
-          20.5
-        ],
-        "width": 2.6
       },
       {
         "text": "PREPARED CHEST / CRANE TO EMPTY HEAVY MODULE RIG",

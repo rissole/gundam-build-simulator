@@ -40,7 +40,7 @@ passing. The fixture setup is supplied state, not evidence of player access.
 | assembly_model, state, pitch_model, pockets_model, supported_model | Retained unchanged as routine model suites: inventory, dependency cycles, wrong variants, exact identity, supported transfers, atomic rejection and undo. |
 | robot_content, leg_content, part_variants, source_assets | Routine data/source coverage retained. Robot content now consumes the production content loader. |
 | zone_register, geometry_surface_audit, interaction_outline, manual_diagram_cache | Routine small fixtures retained; geometry algorithm coverage does not imply a whole-workshop surface audit. |
-| nested_runtime, centered_carry, access_lift, rail_gates, mobile_platform, wide_elevators | Routine real-physics fixtures retained. Shared equipment fixture extracted into `kit/equipment_fixture.gd`; no dependency on the wide-access test body. |
+| nested_runtime, centered_carry, access_lift, mobile_platform, wide_elevators | Routine real-physics fixtures retained. Shared equipment fixture extracted into `kit/equipment_fixture.gd`; no dependency on the wide-access test body. |
 | pitch_interface | Routine actual imported triangles and interface checks retained. |
 | chest_content, shoulder_content | All existing assertions retained in isolated source fixtures using production procedural mesh and collision projection. No preceding build or hangar boot. |
 | workshop_launch | Replaced by workshop_smoke: one actual startup, explicit initialized/paused state, equipment registration, ownership, initial manual, fresh boundary and Escape input. |
