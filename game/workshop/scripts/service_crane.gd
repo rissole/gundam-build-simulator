@@ -8,7 +8,14 @@ const Layout = preload("res://scripts/leg_bay_layout.gd")
 const Codec = preload("res://scripts/pose_codec.gd")
 const VERSION = 2
 const UPPER_LEAF_BAND = AABB(Vector3(4.4,0,23.4),Vector3(17.2,25,1.2))
-const UPPER_WAIT = "Waiting for the upper access leaves to open."
+const UPPER_WAIT = "Open the upper leaves (UPPER LEAVES panel beside the left lift)."
+# Conservative unions of 101 sampled lower-front poses: wing/guard sweep,
+# shallow fingers, and rear folds. Separate heights let a seated arm clear the
+# fingers by 61 mm; the rear band starts behind its Z26.68 aft edge.
+const LOWER_SWING_BANDS = [
+	AABB(Vector3(3.49,8.19,15.98),Vector3(19.02,1.32,8.93)),
+	AABB(Vector3(4.39,8.19,18.15),Vector3(17.22,.22,7.66)),
+	AABB(Vector3(9.69,8.19,27.34),Vector3(6.62,1.80,1.30))]
 const EMPTY_TRAVEL_Y = 20.6
 const FRONT_TRANSFER_Z = 13.0
 var END_IDS: Array = []
@@ -746,18 +753,41 @@ func upper_crossing_occupied() -> bool:
 	if _guide()!=null and _guide().active:frame=_guide().load_pose()
 	return _upper_envelope(frame,_beam_pose(),attached_count()>0).intersects(UPPER_LEAF_BAND)
 
+## Upper uses the existing cable crossing band, including an empty/stopped rig.
+## Lower tests current payload and rig bounds against the measured swing bands.
+func gantry_occupant(front: String) -> String:
+	if config.is_empty():return ""
+	if front=="upper":return (_load_title(task) if attached_count()>0 else "crane cables") if upper_crossing_occupied() else ""
+	if front!="lower" or attached_count()==0 or not is_instance_valid(load_body):return ""
+	var envelopes: Array[AABB]=[]
+	var solids: Array[Dictionary]=[]
+	Sweep.collect_shapes(load_body,Transform3D.IDENTITY,solids)
+	for entry in solids:
+		var bounds: Variant=Sweep.local_bounds(entry.shape)
+		if bounds!=null:envelopes.append(entry.transform*bounds)
+	var frame=load_pose(path)
+	var adapter=game.equipment.get_equipment(config.spec.get("rig_adapter",""))
+	if adapter!=null and adapter.has_method("rig_solids"):
+		for entry in adapter.rig_solids(frame):envelopes.append(entry.world*Sweep.local_bounds(entry.shape))
+	else:
+		var head=_beam_pose()
+		var rig=_upper_envelope(frame,head,true)
+		var bottom=head.origin.y-.1
+		for index in points.size():bottom=minf(bottom,_cable_position(frame,index).y-.05)
+		rig.position.y=bottom;rig.size.y=maxf(0,float(config.spec.get("overhead_y",23))-bottom)
+		envelopes.append(rig)
+	for bounds in envelopes:
+		for band in LOWER_SWING_BANDS:
+			if bounds.intersects(band):return _load_title(task)
+	return ""
+
 func _access_error(next: float) -> String:
 	var access=game.equipment.get_equipment("workshop_access")
 	if access==null:return ""
-	if attached_count()==required_ends and config.spec.has("access_mode"):
-		var mode: String=config.spec.access_mode
-		if not access.lower_ready(mode):
-			var error: String=access.request_lower_mode(mode)
-			return error if not error.is_empty() else "Waiting for the lower access platforms to lock."
-	if _upper_crossing(next) and not access.upper_ready(true):
-		var error: String=access.request_upper(true)
-		if not error.is_empty():return error
-		return access.blocked_reason if not access.blocked_reason.is_empty() else UPPER_WAIT
+	if attached_count()==required_ends:
+		for front in config.spec.get("needs_front",[]):
+			if not access.front_open(front):return "Open the lower front (LOWER FRONT panel beside the left lift)."
+	if _upper_crossing(next) and not access.front_open("upper"):return UPPER_WAIT
 	return ""
 
 func _load_beam(frame: Transform3D) -> Transform3D:
@@ -811,7 +841,6 @@ func physics(delta: float) -> void:
 				else:
 					var error=_seat()
 					if not error.is_empty():blocked_reason=error;moving=false;return
-					if config.spec.get("restore_access",false):game.equipment.get_equipment("workshop_access").request_lower_mode("work")
 			if motion.begins_with("go:"):station = motion.get_slice(":",1);travel_from = null
 			else:raised = motion == "up"
 			motion = "";progress = 0;moving = false

@@ -235,13 +235,22 @@ func _transfer(task: String) -> String:
 	# The player's console path: the crane's next pickup must be this stage's load.
 	var crane=_equipment("service_crane")
 	if crane.next_route()!=task:return "service_crane: next pickup is "+crane.next_route()+", not "+task+"."
-	var error=_commands(crane,(["pickup"] if crane.task!=task or crane.station!="source" else [])+["down"])
+	var error=gantry_front("upper",true)
+	if not error.is_empty():return error
+	for front in crane.tasks[task].get("needs_front",[]):
+		error=gantry_front(front,true)
+		if not error.is_empty():return error
+	error=_commands(crane,(["pickup"] if crane.task!=task or crane.station!="source" else [])+["down"])
 	if not error.is_empty():return error
 	supply_rig(crane,true)
 	return _commands(crane,["up","go:receiver","down"])
 func _park() -> String:
 	var crane=_equipment("service_crane");supply_rig(crane,false)
-	return _commands(crane,["up","go:park"])
+	var error=gantry_front("upper",true)
+	if error.is_empty():error=_commands(crane,["up","go:park"])
+	if error.is_empty():error=gantry_front("upper",false)
+	if error.is_empty():error=gantry_front("lower",false)
+	return error
 
 func _pelvis() -> String:
 	var fixture=_equipment("module_supports")
@@ -359,7 +368,8 @@ func _backpack() -> String:
 	error=_park()
 	if not error.is_empty():return error
 	Staging.fill(game,"chest",pack.spec.service_slots)
-	error=_commands(crane,["go:receiver","down"])
+	error=gantry_front("upper",true)
+	if error.is_empty():error=_commands(crane,["go:receiver","down"])
 	if not error.is_empty():return error
 	supply_rig(crane,true)
 	error=_commands(pack,["take_weight","lock:0","lock:1","close","latch:0","latch:1"])

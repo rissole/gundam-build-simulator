@@ -49,7 +49,7 @@ func run() -> void:
 	game.set_paused(true)
 	var crane=game.equipment.get_equipment("service_crane");var fixture=game.equipment.get_equipment("module_supports")
 	var access=game.equipment.get_equipment("workshop_access")
-	var access_state: Dictionary=access.capture();access_state.mode="head";access_state.moving=false
+	var access_state: Dictionary=access.capture();access_state.moving=false
 	for key in access_state.channels:access_state.channels[key]={"value":0.0,"goal":0.0}
 	access.apply(access_state);await frames(2)
 	for uid in ["head_baseplate","head_left","head_right","head_top","head_crown"]:

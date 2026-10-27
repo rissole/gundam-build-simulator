@@ -343,7 +343,7 @@ func access_control_entries(objective: Dictionary, owner: String, machine: Node)
 		var working=working_anchor(id)
 		for point in points:
 			if point.y>10.5 and point.y<working.y and horizontal(point-working).length()<=PULL_REACH+game.REACH:
-				if stations[id].edge=="front" and access!=null and not access.upper_ready(false):
+				if stations[id].edge=="front" and access!=null and not access.front_closed("upper"):
 					if not close_cued:result.append_array(access.manual_control_entries({"command":"upper_close"}));close_cued=true
 				elif action_error(entry.action).is_empty():result.append(entry)
 				break

@@ -120,3 +120,10 @@ snapshots. `rail_endpoint` covers the 60 Hz lead-in arrival; `equipment_motion`
 covers held-jog obstruction, release and resume. The real-content seat pose and the
 full leg journey stay in the `indexed_leg_rail` and `stage_sequence` diagnostics.
 Panel readability and jog feel need a player.
+
+`gantry_fronts_test` is a routine isolated controller fixture: both labelled panel
+banks, independent OPEN/CLOSE and reversal, named equipment occupancy, manual
+state/effects/control cues, version-2 saves and version-1 rejection. It drives the
+production crane's loaded and empty crossing waits and lower-front arm wait without
+a workshop stage replay. Existing rope and crane fixtures retain rope/rider/cable
+holds and route-envelope coverage. These checks do not establish player acceptance.

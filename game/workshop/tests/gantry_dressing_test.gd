@@ -246,12 +246,12 @@ func _check_landing_fills(world, lifts: Array, access) -> void:
 			swept.size.y += lift.stops[-1]-lift.stops[0]
 			if bounds.grow(.001).intersects(swept):collisions.append(str(child.name))
 		expect(collisions.is_empty(),"plate clears all car hardware for full lift travel: "+id+" "+str(collisions))
-	for mode in access.spec.modes:
-		world.apply_frames(access.frames_at(access._goals(mode)))
+	for state in [{},{"20.6":1.0},{"8.4":1.0,"rear":1.0},{"8.4":1.0,"rear":1.0,"20.6":1.0}]:
+		world.apply_frames(access.frames_at(state))
 		var moved: Array = []
 		for id in expected:
 			if world.pieces.has(id) and not _piece_bounds(world.pieces[id]).is_equal_approx(expected[id]):moved.append(id)
-		expect(moved.is_empty(),"landing plates stay fixed in access mode "+mode+": "+str(moved))
+		expect(moved.is_empty(),"landing plates stay fixed with front channels "+str(state)+": "+str(moved))
 	world.apply_frames(access.frames_at(access.values()))
 
 # Compare actual box corners, not just AABBs: intermediate rotated leaves must
@@ -279,12 +279,12 @@ func _check_mirrored_access(world, access) -> void:
 			other = other.left(-1)+("1" if id.ends_with("0") else "0")
 		pairs[id] = other
 	var states: Dictionary = {}
-	for mode in access.spec.modes:states[mode] = access._goals(mode)
+	for state in [{},{"20.6":1.0},{"8.4":1.0,"rear":1.0},{"8.4":1.0,"rear":1.0,"20.6":1.0}]:states[str(state)] = state
 	# Boundaries and partial poses cover guard collapse, inner fold, outer rise,
 	# finger retraction and wing swing, independently and together.
 	for phase in [.0,.07,.15,.22,.25,.37,.6,.63,.89,1.0]:
 		for channel in ["8.4","rear","all"]:
-			var values: Dictionary = access._goals("work")
+			var values: Dictionary = {"8.4":0.0,"rear":0.0,"20.6":0.0}
 			for key in values:
 				if channel=="all" or key==channel:values[key] = phase
 			states[channel+"/"+str(phase)] = values
@@ -303,7 +303,7 @@ func _check_mirrored_access(world, access) -> void:
 			var bt: Transform3D = PhysicsServer3D.body_get_state(b.body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM)
 			if a.shape.disabled!=b.shape.disabled or a.body.collision_layer!=b.body.collision_layer or not _mirrored_box(at*a.shape.transform,AABB(-a.shape.shape.size/2,a.shape.shape.size),bt*b.shape.transform,AABB(-b.shape.shape.size/2,b.shape.shape.size)):bad.append(id+" physics")
 		expect(bad.is_empty(),"access decks and guards mirror about X13 at "+label+": "+str(bad))
-	world.apply_frames(access.frames_at(access._goals("work")))
+	world.apply_frames(access.frames_at({"8.4":0.0,"rear":0.0,"20.6":0.0}))
 	for side in ["left","right"]:
 		# Existing hip work patch stays 1.2 m long and flush to the wing. The
 		# standing-height entrance band must have no rail across it on either side.

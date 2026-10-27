@@ -198,7 +198,10 @@ new circuit and deck presentation await the player's recheck.
 ## Rope operation and guidance — 2026-10-27
 
 Physical **UPPER LEAVES / OPEN / CLOSE** panels beside the left lift, at ground
-and on its fixed upper landing, let the player close the leaves after delivery.
+and on its fixed upper landing, let the player open and close the leaves.
+Each bank also has a **LOWER FRONT / OPEN / CLOSE** row for the 8.4 m
+wings/fingers and rear guards/leaves. The fronts operate independently and taps
+can reverse either front. Only the player operates them; machines query and wait.
 The panels stay on supported ground/landing geometry. The crane console keeps
 its existing movement controls. Manual guidance points to Close when front rope
 access needs it, then to an appropriate station after closure; normal range and
@@ -224,9 +227,10 @@ temporary status toast, for both station clips and hanging ends, through E or
 click. Errors still use normal feedback; other equipment keeps its status toasts.
 
 Front lines must be recalled before the upper leaves move. An unclipped worker
-standing on a leaf also holds its motion. Crane cables in the crossing hold
-Close, including with the crane manually stopped; closing is available once the
-crane is clear over the robot. These holds leave lower access independent.
+standing on a leaf also holds its motion. Registered equipment occupying either
+swing refuses Close with its load name. Crane cables in the upper crossing also
+prevent closing, including with the crane manually stopped; closing is available
+once the crane is clear over the robot. These holds leave lower access independent.
 
 Rope snapshots retain station, line length, attachment and pull-in state with the
 current player pose. Invalid attachment/length/player/leaf combinations are
@@ -274,13 +278,15 @@ height did not match that source. The front route uses the current geometry:
   The mast is at X13/Z28.6, with the wide lower rig beneath the booms.
 - **Other deliveries:** their existing front routes remain; upper leaf crossing
   uses the cable/contact/spreader envelope. Head pieces and pauldrons stay inside
-  the open-leaf corridor. The upper leaves are requested only for the next
-  crossing segment, including reverse and empty travel. At the robot they can
-  close while the crane still supports the component. A deployed front rope or
-  a worker standing on a leaf holds the trip with its named reason; clearing the
-  condition resumes it. A Close request also waits while crane cables already
-  occupy the band, including a manually stopped crane; leaf physics checks that
-  hold before moving. The arm's 8.4 m needs remain a separate lower configuration.
+  the open-leaf corridor. Before every loaded, empty or reverse crossing, the crane
+  waits for the player to open the upper leaves at the panel beside the left lift.
+  It resumes the same trip once they are fully open. At the robot they can close
+  while the crane still supports the component. Deployed front ropes and leaf
+  riders retain their motion holds. Arm deliveries also wait for the player to
+  open the lower front before lifting. No crane task opens or restores either
+  front; CLOSE refuses with the occupying equipment's load name while its load
+  or cables are in that front's swing.
+
 - **Empty crane:** the old direct diagonal from parking to rear stock crossed
   the relocated left lift. All empty pickup, parking, return and receiver-reacquire
   paths now lift the beam to at least 20.6 m, travel fore to the Z13 transfer lane,
