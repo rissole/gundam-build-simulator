@@ -45,8 +45,9 @@ def contract():
                   roll_axis_y=3.1, roll_stops=[0,90,180,270],
                   corridor=[10.5,15.5,20.5,30.6],
                   # One control beside each mechanism: bogie box where the old panel stood,
-                  # turnover box at the leg's head end, transfer table lever in front of the table.
-                  controls=dict(bogie_box=[8.78,0,14.5],turnover_box=[18.3,0,18.0],lever=[9.6,0,12.6]),
+                  # turnover box beyond the loaded head sweep and east of the right aisle;
+                  # PI yaw faces the operator back toward the build position.
+                  controls=dict(bogie_box=[8.78,0,14.5],turnover_box=[19.5,0,19.8],lever=[9.6,0,12.6]),
                   holder=dict(spine=[0,4.45,1.45], spine_size=[.24,3.6,.20],
                               contacts_y=[2.8,6.1], contact_x=.80,
                               outer_x=1.05, jaw_stroke=.15, lower=.30,
