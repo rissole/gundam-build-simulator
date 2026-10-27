@@ -158,6 +158,12 @@ func run() -> void:
 			expect(entry.node.get_meta("control_bank").position.is_equal_approx(AssemblyRuntime.vec(spec.controls.turnover_box)),entry.action+" is on the turnover box")
 	for action in Rail.HOLDS+Rail.DRAGS+Rail.TAPS:expect(actions.get(action,0)==(2 if action=="support" else 1),action+" has exactly its specified controls")
 	expect(rail.lever_pivot.get_parent().position.is_equal_approx(AssemblyRuntime.vec(spec.controls.lever)),"lever stands at the layout position")
+	var stick=rail.lever_pivot.get_parent()
+	expect(is_zero_approx(stick.rotation.y) and spec.controls.lever[2]<9.4,"stick faces the sole from the foot end with +X to the viewer's left")
+	expect(stick.get_node_or_null("Gate")!=null,"stick has a physical gate plate")
+	var stick_text=stick.find_children("*","Label3D",true,false)
+	expect(stick_text.size()==rail.lamps.lever.size() and stick_text.all(func(label):return label in rail.lamps.lever),"lever text consists only of interlock lamps: no destination plates or sign")
+	expect(rail.manual_control_actions({"command":"table:park"}).is_empty(),"transfer stick never receives a manual glow")
 	for side in [-1,1]:
 		expect(rail.buttons.any(func(entry):return entry.action=="support" and entry.node==holder.cradle.pieces["BolsterPad_"+str(side)].visual),"support drag is attached to pad "+str(side))
 	refusal("clamps","not seated","unseated leg cannot release its clamps")
@@ -220,12 +226,50 @@ func run() -> void:
 	jog("lift-");expect(rail.roll_height_m==0,"turnover reaches the lower end stop")
 	refusal("lever","foot support","table requires support away")
 	var locked_angle: float=rail.lever_angle
+	var lever_entry=rail.buttons.filter(func(entry):return entry.action=="lever")[0]
+	var lever_handler=EquipmentButton.hold_handler(lever_entry)
+	game.camera.global_position=lever_entry.node.global_position+Vector3(0,0,-1.5)
+	game.camera.look_at(lever_entry.node.global_position)
+	lever_handler.call(true,.1)
+	expect(rail.drag.is_empty() and rail.lever_angle==locked_angle and rail.table_goal<0,"hold E cannot drag a locked lever")
+	lamp("lever","FOOT SUPPORT AWAY",false)
+	lever_handler.call(false,0.0)
 	expect(not rail.throw_lever(spec.lanes.left).is_empty() and rail.lever_angle==locked_angle and rail.table_goal<0,"locked lever stays in its notch")
 	pull(1);expect(rail.foot_support==1 and rail.manual_state().support_away,"programmatic support pull finishes at the end stop")
 	refusal("lift+","support back","turnover needs support under the foot")
 	refusal("travel+","LEFT HIP","travel needs this leg's hip notch")
 	var notches: Array=rail.notches()
 	expect(notches.map(func(n):return n.x)==[float(spec.lanes.left),float(spec.station_x),float(spec.lanes.parking)],"lever has left, build/right and park notches")
+	expect(is_equal_approx(notches[2].offset-notches[1].offset,2*(notches[1].offset-notches[0].offset)),"physical gate has a long PARK gap exactly twice the HIP gap")
+	expect(notches[0].offset<notches[1].offset and notches[1].offset<notches[2].offset,"seen toward +Z: PARK, long gap, BUILD, short gap, LEFT HIP")
+	var gate_meshes=stick.get_node("Gate").find_children("*","MeshInstance3D",true,false)
+	for i in range(notches.size()-1):
+		var between=Vector3((notches[i].offset+notches[i+1].offset)/2,0,-.115)
+		expect(gate_meshes.any(func(mesh):return (mesh.transform*mesh.get_aabb()).has_point(between)),"plate teeth separate adjacent detent pockets")
+	for notch in notches:
+		var pocket=Vector3(notch.offset,0,-.115)
+		var slot_point=Vector3(notch.offset,0,0)
+		expect(not gate_meshes.any(func(mesh):return (mesh.transform*mesh.get_aabb()).has_point(pocket) or (mesh.transform*mesh.get_aabb()).has_point(slot_point)),"gate and detent opening are real gaps at "+notch.name)
+		expect(is_equal_approx(tan(deg_to_rad(notch.angle))*Rail.LEVER_GATE_HEIGHT,notch.offset),"stick intersects the gate at "+notch.name)
+		game.camera.global_position=lever_entry.node.global_position+Vector3(0,0,-1.5)
+		game.camera.look_at(lever_entry.node.global_position)
+		lever_handler.call(true,.1)
+		# Move the held hand to a point slightly off the notch, then release.
+		# Production drag math and callback choose the nearest mechanical stop.
+		var angle: float=notch.angle+(-1.0 if notch.offset>0 else 1.0)
+		var hand: Vector3=rail.lever_pivot.global_position+Vector3(sin(deg_to_rad(angle)),cos(deg_to_rad(angle)),0)*1.02
+		game.camera.global_position=hand+Vector3(0,0,-rail.drag.distance)
+		game.camera.look_at(hand)
+		lever_handler.call(true,.1)
+		expect(is_equal_approx(rail.lever_angle,angle) and is_zero_approx(rail.lever_pivot.position.z),"held stick follows the hand toward "+notch.name)
+		lever_handler.call(false,0.0)
+		expect(rail.drag.is_empty() and rail.table_goal==notch.x and is_equal_approx(rail.lever_angle,notch.angle) and is_equal_approx(rail.lever_pivot.position.z,Rail.LEVER_DETENT_DEPTH),"release snaps to nearest "+notch.name+" and drives its table X")
+		for tick_index in 160:
+			if not rail.moving:break
+			tick()
+		expect(is_equal_approx(rail.index_x,notch.x) and not rail.moving,"drag/release arrives at "+notch.name)
+		expect(is_equal_approx(rail.lever_pivot.rotation.z,-deg_to_rad(notch.angle)),"idle stick follows table notch "+notch.name)
+	lever(spec.station_x)
 	# The small fixture's ankle/toe misses head-end obstacles. Supply the actual
 	# LG-120 hip-ball dimensions for this full loaded table sweep (Y9.2, R0.45).
 	var hip_ball=CollisionShape3D.new();hip_ball.shape=SphereShape3D.new();hip_ball.shape.radius=.45
@@ -244,7 +288,7 @@ func run() -> void:
 	expect(rail.ghost.visible and rail.ghost.global_transform.is_equal_approx(table_ghost),"travel objective's ghost stays fixed while the table lever moves another mechanism")
 	lever(spec.lanes.left)
 	expect(rail.index_x==spec.lanes.left and not rail.moving,"moving table accepts a new notch and stops exactly")
-	refusal("support","build position","support only operates at build")
+	refusal("support","middle detent (RIGHT HIP · BUILD)","support only operates at build")
 	for pair in [["tilt_deg",1.0,"flat"],["release",.5,"clamps"],["foot_support",0.0,"foot support"]]:
 		var before=rail.get(pair[0]);rail.set(pair[0],pair[1]);refusal("travel+",pair[2],"travel interlock "+pair[0]);rail.set(pair[0],before)
 	braces.missing="Lock the braces.";refusal("travel+","braces","travel requires braces");braces.missing=""
@@ -356,9 +400,9 @@ func lamp(box: String, label: String, ok: bool) -> void:
 	expect(matches,box+" lamp "+label+" is "+("green" if ok else "red"))
 
 func check_lamps(braces: Braces, gantry: Gantry) -> void:
-	lamp("turnover","AT BUILD POSITION",true)
-	rail.index_x=rail.spec.lanes.left;lamp("turnover","AT BUILD POSITION",false);lamp("bogie","TABLE AT LEFT HIP",true)
-	rail.index_x=rail.spec.station_x;lamp("bogie","TABLE AT LEFT HIP",false)
+	lamp("turnover","TABLE AT MIDDLE (RIGHT HIP · BUILD)",true)
+	rail.index_x=rail.spec.lanes.left;lamp("turnover","TABLE AT MIDDLE (RIGHT HIP · BUILD)",false);lamp("bogie","TABLE AT RIGHT END (LEFT HIP)",true)
+	rail.index_x=rail.spec.station_x;lamp("bogie","TABLE AT RIGHT END (LEFT HIP)",false)
 	lamp("turnover","FOOT RECEIVED",true);lamp("bogie","LEG COMPLETE",true)
 	game.model.assemblies.left_leg.slots.foot=""
 	lamp("turnover","FOOT RECEIVED",false);lamp("bogie","LEG COMPLETE",false)

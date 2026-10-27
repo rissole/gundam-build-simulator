@@ -37,6 +37,10 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
             if "rotation_degrees" in shape:shape["rotation_degrees"]=[shape["rotation_degrees"][0],-shape["rotation_degrees"][1],-shape["rotation_degrees"][2]]
         return result
 
+    def mirror_text(text):
+        # Robot-side prose mirrors; the shared transfer gate stays fixed.
+        return text.replace("Left", "Right").replace("left", "right").replace("far right (PARK)", "far left (PARK)")
+
     def reflect_recipe(recipe, title):
         result=deepcopy(recipe);result["title"]=title
         for field in ["frame_source","enclosure_source"]:
@@ -55,8 +59,8 @@ def extend(assets, trial, kinds, left_leg, pelvis, canonical_parts, source_recor
             if "snap_rotation_degrees" in slot:slot["snap_rotation_degrees"]=[slot["snap_rotation_degrees"][0],-slot["snap_rotation_degrees"][1],-slot["snap_rotation_degrees"][2]]
         for page in result["manual"]:
             for field in ["title","body","goal"]:
-                if field in page:page[field]=page[field].replace("Left","Right").replace("left","right")
-            if "note" in page:page["note"]["text"]=page["note"]["text"].replace("Left","Right").replace("left","right")
+                if field in page:page[field]=mirror_text(page[field])
+            if "note" in page:page["note"]["text"]=mirror_text(page["note"]["text"])
             for objective in page.get("objectives",[]):
                 if "task" in objective:objective["task"]="right_"+objective["task"]
                 if objective.get("machine")=="joint_restraints":

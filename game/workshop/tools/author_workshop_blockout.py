@@ -47,7 +47,9 @@ def contract():
                   # One control beside each mechanism: bogie box where the old panel stood,
                   # turnover box beyond the loaded head sweep and east of the right aisle;
                   # PI yaw faces the operator back toward the build position.
-                  controls=dict(bogie_box=[8.78,0,14.5],turnover_box=[19.5,0,19.8],lever=[9.6,0,12.6]),
+                  # Stick by the sole, outside the foot route and right walk aisle;
+                  # yaw 0 keeps +X hand travel toward PARK (left when facing +Z).
+                  controls=dict(bogie_box=[8.78,0,14.5],turnover_box=[19.5,0,19.8],lever=[16.8,0,7.0],lever_yaw=0),
                   holder=dict(spine=[0,4.45,1.45], spine_size=[.24,3.6,.20],
                               contacts_y=[2.8,6.1], contact_x=.80,
                               outer_x=1.05, jaw_stroke=.15, lower=.30,

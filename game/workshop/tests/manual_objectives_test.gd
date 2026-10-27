@@ -276,10 +276,18 @@ func run() -> void:
 	rail.spec=layout.workshop.rail
 	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.foot_support=0.0;rail.release=0.0;rail.index_x=rail.spec.station_x;rail.travel_z=rail.spec.home_z;rail.tilt_deg=0.0;rail.rise_m=0.0
 	crane.task="spar"
+	for owner in ["left_leg","right_leg","pelvis","chest","arm_cassette"]:
+		var parking_pages=0
+		for parking_page in definitions[owner].manual:
+			var prose: String=parking_page.get("body","")+parking_page.get("note",{}).get("text","")
+			if not prose.contains("(PARK)"):continue
+			parking_pages+=1
+			expect(prose.contains("far left (PARK)") and not prose.contains("far right (PARK)"),owner+" parking guidance preserves the physical gate direction across mirrored manuals")
+		expect(parking_pages>0,owner+" has authored parking guidance")
 	var seat := page_named(definitions.pelvis.manual,"Seat the leg in the hip assembly")
 	var seat_text: Array[String] = []
 	for objective in seat.objectives:seat_text.append(Objectives.text(game,"pelvis",objective))
-	expect(seat_text==["Foot support: look at it, hold E and pull it away from the foot — until it stops","Transfer table lever: pull it to LEFT HIP","Bogie box: hold TO BAY — until the bogie stops at the bay","Lower gantry: Open — LOWER GANTRY panel at 8.4 m beside the left lift","Bogie box: hold RISE — until it seats in the hip to seat the structural left leg","Lower gantry: Close — LOWER GANTRY panel at 8.4 m beside the left lift"],"seat text names each physical control, got "+str(seat_text))
+	expect(seat_text==["Foot support: look at it, hold E and pull it away from the foot — until it stops","Transfer table lever: move it to the right end (LEFT HIP)","Bogie box: hold TO BAY — until the bogie stops at the bay","Lower gantry: Open — LOWER GANTRY panel at 8.4 m beside the left lift","Bogie box: hold RISE — until it seats in the hip to seat the structural left leg","Lower gantry: Close — LOWER GANTRY panel at 8.4 m beside the left lift"],"seat text names each physical control, got "+str(seat_text))
 	var at_home = Objectives.evaluate(game,"pelvis",seat)
 	expect(same_ticks(at_home,[false,false,false,false,false,false]),"leg rig at home ticks nothing, got "+str(at_home.ticked))
 	rail.foot_support=1.0
@@ -326,7 +334,7 @@ func run() -> void:
 	expect(str(cylinders[1].objectives[2].command)=="lock:right_hip_1","right cylinder lock, got "+str(cylinders[1].objectives[2].command))
 	var release_text: Array[String] = []
 	for objective in releases[0].objectives:release_text.append(Objectives.text(game,"pelvis",objective))
-	expect(release_text==["Leg clamps switch: tap RELEASE — after hip retention and both lock pins","Bogie box: hold LOWER — until the empty holder lies flat","Bogie box: hold TO TABLE — until the bogie stops on the table","Transfer table lever: pull it to RIGHT HIP · BUILD","Leg clamps switch: tap GRAB — to extend the empty holder","Foot rig: Back — repeat until it is back at dispatch","Bogie box: tap NEXT LEG"],"release text names every physical control, got "+str(release_text))
+	expect(release_text==["Leg clamps switch: tap RELEASE — after hip retention and both lock pins","Bogie box: hold LOWER — until the empty holder lies flat","Bogie box: hold TO TABLE — until the bogie stops on the table","Transfer table lever: move it to the middle detent (RIGHT HIP · BUILD)","Leg clamps switch: tap GRAB — to extend the empty holder","Foot rig: Back — repeat until it is back at dispatch","Bogie box: tap NEXT LEG"],"release text names every physical control, got "+str(release_text))
 	var has_next_leg := false
 	for objective in releases[1].objectives:
 		if str(objective.get("command",""))=="next_leg":has_next_leg=true
@@ -361,7 +369,7 @@ func run() -> void:
 	game.equipment.register(pauldron)
 	var arm_rig := page_named(definitions.chest.manual,"Bring the arm rig to the Limb Bay")
 	var arm_park := Objectives.text(game,"chest",arm_rig.objectives[0])
-	expect(arm_park=="Transfer table lever: pull it to PARK","left arm rig starts by parking the leg rig, got "+arm_park)
+	expect(arm_park=="Transfer table lever: push it to the far left (PARK)","left arm rig starts by parking the leg rig, got "+arm_park)
 	var brakes := page_named(definitions.chest.manual,"Left shoulder: connect services")
 	var brake_line := Objectives.text(game,"chest",brakes.objectives[0])
 	expect(brake_line=="Crane console: Check left shoulder brakes","shoulder brake check, got "+brake_line)
