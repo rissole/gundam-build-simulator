@@ -197,15 +197,33 @@ new circuit and deck presentation await the player's recheck.
 
 ## Rope operation and guidance — 2026-10-27
 
-Physical **UPPER LEAVES / OPEN / CLOSE** panels beside the left lift, at ground
-and on its fixed upper landing, let the player open and close the leaves.
-Each bank also has a **LOWER FRONT / OPEN / CLOSE** row for the 8.4 m
-wings/fingers and rear guards/leaves. The fronts operate independently and taps
-can reverse either front. Only the player operates them; machines query and wait.
-The panels stay on supported ground/landing geometry. The crane console keeps
-its existing movement controls. Manual guidance points to Close when front rope
-access needs it, then to an appropriate station after closure; normal range and
-occlusion checks still apply.
+Physical **LOWER GANTRY / OPEN / CLOSE** is on the fixed left lift hinge apron
+at **(4.80, 8.4, 24.40), yaw −90°**; **UPPER GANTRY / OPEN / CLOSE** is on its
+fixed upper apron at **(4.55, 20.6, 24.35), yaw −75°**. Each bank has only its
+own row; the ground bank is removed. Lower moves the 8.4 m wings/fingers and rear
+guards/leaves; upper moves the 20.6 m leaves. Independent tap/reversal behavior,
+manual wording, machine waits and the crane console remain unchanged.
+
+A temporary real-scene probe used the standing **1.63 m** eye, **75°** vertical
+FOV and **1440×900** viewport, aiming at both buttons from (3.90, 8.4, 25.22) /
+(3.80, 20.6, 25.25). Minimum **in-frustum and unoccluded** fractions at
+closed / half / open were **85 / 85 / 63.75%** for the nearer lower wing,
+**70 / 100 / 60%** for its finger, and **55 / 78.75 / 56.25%** for the nearer
+upper leaf (80 surface samples each). Frustum-only fractions were
+100 / 100 / 100%, 70 / 100 / 100%, and 85 / 100 / 100%, respectively.
+All 320 rear-leaf samples were outside the aimed view at every phase; rear
+visibility is not required. Fresh-workshop collisions and moving rope barriers
+were active. Conservative completed-robot arm bounds obscure the closed lower
+finger; visibility through future installed arms is not claimed.
+
+Both operating poses are supported and unobstructed; reach is **1.41–1.62 m**
+(`REACH=2.35`). A 301-phase sweep with 10 mm inflated panel bounds found no
+contact: lower/upper moving gaps **0.134 / 0.051 m**, lower gate **0.090 m**,
+lift travel **1.429 / 1.186 m**, crane/cables **0.855 / 0.806 m**. Free apron
+passages remain **0.78 / 0.73 m**, versus the 0.52 m player diameter.
+Local measurements: `game/workshop/verification/p1-panel-measurements.json`;
+throwaway probe removed. This is numerical evidence, not rendered review or
+player acceptance. Manual Close/station cues retain normal reach and occlusion.
 
 At a station, **E** clips in and opens the protected passage. Adjacent gates trim
 their overlapping barriers to preserve the selected full 0.9 m opening. Space

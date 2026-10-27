@@ -99,9 +99,9 @@ func aim(action: String) -> bool:
 			return game.targeting.aim_score(entry.point,entry.radius)!=INF and game.targeting.access([entry.node]).is_empty()
 	return false
 
-func aim_upper(action: String, top: bool) -> bool:
+func aim_panel(action: String) -> bool:
 	for entry in access.controls():
-		if entry.action!=action or (entry.point.y>10)!=top:continue
+		if entry.action!=action:continue
 		game.camera.look_at(entry.point);game.target=entry
 		# The panel prompt offers E exactly when the action is available.
 		game.targeting.offered_key="E" if access.action_error(action).is_empty() else ""
@@ -122,7 +122,7 @@ func boarding_solids() -> void:
 		if id.begins_with("wing_left_20.6") or id.begins_with("wing_right_20.6"):
 			blockout.spec.groups[id]=authored.groups[id];blockout._group(id)
 	for record in authored.solids:
-		if not (record.id.begins_with("rope_davit_") or record.id.begins_with("rope_boom_") or record.id.begins_with("wing_left_20.6") or record.id.begins_with("wing_right_20.6") or record.id.begins_with("wing_hinge_left_20.6") or record.id.begins_with("lift_left_20.6_landing") or record.id.begins_with("hinge_front_guard_left_20.6") or record.id.begins_with("hinge_rear_guard_left_20.6") or record.id in ["rope_exit_floor","wing_left_8.4_floor"]):continue
+		if not (record.id.begins_with("rope_davit_") or record.id.begins_with("rope_boom_") or record.id.begins_with("wing_left_20.6") or record.id.begins_with("wing_right_20.6") or record.id.begins_with("wing_hinge_left_20.6") or record.id.begins_with("lift_left_20.6_landing") or record.id.begins_with("hinge_front_guard_left_20.6") or record.id.begins_with("hinge_rear_guard_left_20.6") or record.id in ["rope_exit_floor","wing_left_8.4_floor","wing_hinge_left_8.4_floor","outer_left_8.4_floor","rope_side_left_floor"]):continue
 		var body=obstacle(Codec.to_vector(record.position),Codec.to_vector(record.size))
 		if not record.parent.is_empty():body.reparent(blockout.groups[record.parent],false)
 		body.set_meta("blockout_id",record.id)
@@ -199,40 +199,42 @@ func run() -> void:
 	access.request("upper_close");access.request("lower_close");access.physics(1)
 	# Real E/targeting route at the two fixed banks; supplied poses isolate the
 	# control contract rather than asserting workshop walking or readability.
-	place(Vector3(4.1,0,24.1));game.player_controller.update_crouch(false,1);await frames(1)
-	expect(access.controls().size()==8 and aim_upper("upper_open",false),"Ground upper-leaf Open button is targetable at normal reach")
+	place(Vector3(3.9,8.4,25.22));game.player_controller.update_crouch(false,1);await frames(1)
+	expect(access.controls().size()==4 and rope.on_floor() and aim_panel("lower_open"),"Lower Open is targetable from its supported 8.4 m landing at normal reach")
 	key(KEY_E,true);key(KEY_E,false);access.physics(1)
-	expect(access.front_open("upper"),"E at the ground panel opens only the upper leaves")
-	expect(aim_upper("upper_close",false),"Ground Close button is targetable at normal reach")
+	expect(access.front_open("lower") and access.front_closed("upper"),"E at the 8.4 m panel opens only the lower front")
+	expect(aim_panel("lower_close"),"Lower Close is targetable at normal reach")
 	game.paused=true;key(KEY_E,true);key(KEY_E,false);access.physics(1)
-	expect(access.front_open("upper") and access.request("upper_close").contains("Resume"),"Paused E and direct requests cannot move upper leaves")
+	expect(access.front_open("lower") and access.request("lower_close").contains("Resume"),"Paused E and direct requests cannot move the lower front")
 	game.paused=false;key(KEY_E,true);key(KEY_E,false);access.physics(1)
-	expect(access.front_closed("upper"),"Ground Close supports the manual's close-before-lift instruction")
-	place(Vector3(4.1,20.6,24.1));await frames(1)
-	expect(rope.on_floor() and aim_upper("upper_open",true),"Upper panel stands beside a supported fixed landing and is normally targetable")
+	expect(access.front_closed("lower") and access.front_closed("upper"),"Lower Close preserves the upper front")
+	place(Vector3(3.8,20.6,25.25));await frames(1)
+	expect(rope.on_floor() and aim_panel("upper_open"),"Upper panel stands beside a supported fixed landing and is normally targetable")
 	rope.ropes[FRONT].deployed=true
 	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
 	expect(access.blocked_reason==Rope.LEAF_REASON and game.hud.message==Rope.LEAF_REASON and access.channels["20.6"].value==0,"Physical Open reports the named deployed-rope hold through normal interaction")
 	rope.ropes[FRONT].deployed=false;access.physics(1)
 	var parked_crane=CraneOccupancy.new();game.add_child(parked_crane);parked_crane.equipment_id="service_crane";game.equipment.register(parked_crane)
-	expect(aim_upper("upper_close",true),"Upper Close button is targetable from its fixed landing")
+	expect(aim_panel("upper_close"),"Upper Close button is targetable from its fixed landing")
 	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
 	expect(access.blocked_reason.contains("crane cables") and game.hud.message.contains("crane cables") and access.channels["20.6"].value==1,"Physical Close reports the named stopped-crane occupancy hold through normal interaction")
 	parked_crane.occupied=false;access.physics(1);parked_crane.free()
 	place(Vector3(5.25,20.6,23.55));await frames(1)
-	expect(aim_upper("upper_open",true),"Upper Open is aimable beside the leaf root without a remote interaction")
-	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
-	expect(access.blocked_reason.contains("Step off") and game.hud.message.contains("Step off") and access.channels["20.6"].value==0,"Physical Open reports the named upper-rider hold through normal interaction")
-	place(Vector3(4.1,20.6,24.1));await frames(1);access.physics(1)
+	# The panel now faces the fixed landing; a leaf rider sees its back.
+	# Supplied requests isolate the existing rider hold from panel targeting.
+	expect(access.request("upper_open").is_empty(),"Upper Open accepts a pending trip with a leaf rider")
+	access.physics(.1)
+	expect(access.blocked_reason.contains("Step off") and access.channels["20.6"].value==0,"Upper rider still holds the accepted trip")
+	place(Vector3(3.8,20.6,25.25));await frames(1);access.physics(1)
 	expect(access.front_open("upper"),"Moving onto the fixed landing releases the pending upper swing")
-	aim_upper("upper_close",true);key(KEY_E,true);key(KEY_E,false);access.physics(1)
+	aim_panel("upper_close");key(KEY_E,true);key(KEY_E,false);access.physics(1)
 	place(Vector3(9.3,20.6,24.1));await frames(1)
 	var work=Work.new();game.add_child(work);work.game=game;work.equipment_id="work";game.equipment.register(work)
 	work.handle=MeshInstance3D.new();work.handle.mesh=BoxMesh.new();work.add_child(work.handle);work.handle.position=Vector3(9.3,15.8,25.3)
 	game.interaction_outline=preload("res://scripts/interaction_outline.gd").new();game.add_child(game.interaction_outline)
 	var cue=Guidance.new();game.add_child(cue);cue.setup(game)
 	place(Vector3(4.1,20.6,24.1));await frames(1);access.request("upper_open");access.physics(1)
-	aim_upper("upper_close",true);cue.update()
+	aim_panel("upper_close");cue.update()
 	expect(cue.visible_controls.has(game.target.node),"Upper work cues the physical Close prerequisite while front ropes are unavailable")
 	key(KEY_E,true);key(KEY_E,false);access.physics(1)
 	place(Vector3(9.3,20.6,24.1));await frames(1)

@@ -24,25 +24,25 @@ func setup(workshop: Node3D, geometry: Node3D) -> void:
 	_make_upper_controls()
 	_pose()
 
-## Both banks stand beside the left lift, outside its car and the swinging
-## leaves. The upper bank is on the fixed hinge landing, not on a moving leaf.
+## Single-row banks on the fixed left hinge aprons. The low fascia and measured
+## facing angles keep the near wing/leaf in view without blocking the lift route.
 func _make_upper_controls() -> void:
 	if not blockout.spec.has("elevators"):return
 	var origin=Codec.to_vector(blockout.spec.elevators.left.origin)
 	var steel=game.material(Color("485f68"),.6)
-	for level in [0.0,20.6]:
+	for row in [["lower","LOWER GANTRY",8.4,Vector2(2.9,.35),-90.0],["upper","UPPER GANTRY",20.6,Vector2(2.65,.30),-75.0]]:
 		var bank=StaticBody3D.new();add_child(bank)
-		bank.position=Vector3(origin.x+1.9,level,origin.z-.7)
-		for member in [[Vector3(0,.55,0),Vector3(.08,1.1,.08)],[Vector3(0,1.15,0),Vector3(.92,.94,.08)]]:
+		bank.position=Vector3(origin.x+row[3].x,row[2],origin.z+row[3].y)
+		bank.rotation.y=deg_to_rad(row[4])
+		for member in [[Vector3(0,.25,0),Vector3(.08,.50,.08)],[Vector3(0,.74,0),Vector3(.64,.48,.08)]]:
 			game.box(bank,member[0],member[1],steel)
 			var shape=CollisionShape3D.new();shape.shape=BoxShape3D.new();shape.shape.size=member[1];shape.position=member[0];bank.add_child(shape)
-		for row in [["upper","UPPER GANTRY",1.35],["lower","LOWER GANTRY",.87]]:
-			var label=Label3D.new();bank.add_child(label);label.position=Vector3(0,row[2]+.18,.05)
-			label.text=row[1];label.font_size=32;label.pixel_size=.0018;label.outline_size=0
-			for control in [["open","OPEN",-.24],["close","CLOSE",.24]]:
-				var action: String=row[0]+"_"+control[0]
-				var key=preload("res://scripts/equipment_button.gd").make(game,bank,Vector3(control[2],row[2],.075),control[1],0,control[0]=="close")
-				upper_controls.append(control_entry(key,action,manual_subject({"command":action})+" · "+control[1].capitalize(),.13,{"point":key.global_position}))
+		var label=Label3D.new();bank.add_child(label);label.position=Vector3(0,.83,.05)
+		label.text=row[1];label.font_size=32;label.pixel_size=.0018;label.outline_size=0
+		for control in [["open","OPEN",-.17],["close","CLOSE",.17]]:
+			var action: String=row[0]+"_"+control[0]
+			var key=preload("res://scripts/equipment_button.gd").make(game,bank,Vector3(control[2],.65,.075),control[1],0,control[0]=="close")
+			upper_controls.append(control_entry(key,action,manual_subject({"command":action})+" · "+control[1].capitalize(),.13,{"point":key.global_position}))
 
 func controls() -> Array[Dictionary]:return upper_controls
 

@@ -18,6 +18,7 @@ func run() -> void:
 	world=Blockout.new();game.add_child(world);world.setup(game,spec)
 	access=Access.new();game.add_child(access);access.setup(game,world)
 	_check_contract()
+	_check_panels()
 	_check_walkways()
 	_check_upper_loop()
 	_check_hinges()
@@ -82,6 +83,41 @@ func _check_contract() -> void:
 			if not piece.has("shape") or not Dressing.selected(id):continue
 			if bounds(id).intersects(gap):blocked.append(id)
 		expect(blocked.is_empty(),"station has a full guard opening: "+wanted[0]+" "+str(blocked))
+
+func panel_bounds(bank: Node3D) -> Array[AABB]:
+	var result: Array[AABB]=[]
+	for node in bank.get_children():
+		if node is CollisionShape3D:result.append(node.global_transform*node.shape.get_debug_mesh().get_aabb())
+	for entry in access.controls():
+		if bank.is_ancestor_of(entry.node):result.append(entry.node.global_transform*entry.node.mesh.get_aabb())
+	return result
+
+func _check_panels() -> void:
+	expect(access.get_child_count()==2 and access.controls().size()==4,"two fixed banks with one Open/Close pair each")
+	for bank in access.get_children():
+		var lower=is_equal_approx(bank.position.y,8.4)
+		var tag="8.4" if lower else "20.6"
+		var front="lower" if lower else "upper"
+		var apron=bounds("wing_hinge_left_"+tag+"_floor")
+		var foot=bank.global_transform*AABB(Vector3(-.04,0,-.04),Vector3(.08,.01,.08))
+		expect(is_equal_approx(bank.position.y,float(tag)) and apron.grow(.011).encloses(foot) and bank.get_parent()==access,"bank stands on its fixed left lift hinge apron at "+tag)
+		var entries=access.controls().filter(func(entry):return bank.is_ancestor_of(entry.node))
+		expect(entries.map(func(entry):return entry.action)==[front+"_open",front+"_close"],"bank row matches its level at "+tag)
+		var envelopes=panel_bounds(bank)
+		var collisions=[]
+		for step in 21:
+			var phase=step/20.0
+			world.apply_frames(access.frames_at({"8.4":phase,"20.6":phase,"rear":phase}))
+			for id in world.pieces:
+				var piece: Dictionary=world.pieces[id]
+				if not piece.has("shape") or piece.spec.parent.is_empty():continue
+				var box=bounds(id)
+				# Deck tops meet the pedestal base plane; only above-deck solids
+				# can obstruct it (rotated floor AABBs overstate the corner sweep).
+				if box.end.y<=bank.position.y+.001:continue
+				if envelopes.any(func(panel):return panel.grow(.005).intersects(box)) and id not in collisions:collisions.append(id)
+		expect(collisions.is_empty(),"bank and buttons clear wings, fingers, gates and rear leaves throughout motion at "+tag+": "+str(collisions))
+	world.apply_frames(access.frames_at({}))
 
 func _check_walkways() -> void:
 	var rear: AABB=bounds("rope_exit_floor").merge(bounds("rope_exit_landing_floor"))
@@ -266,6 +302,8 @@ func _check_lifts() -> void:
 				if not node is CollisionShape3D:continue
 				var swept: AABB=node.global_transform*node.shape.get_debug_mesh().get_aabb()
 				swept.size.y+=travel
+				for bank in access.get_children():
+					if panel_bounds(bank).any(func(panel):return panel.intersects(swept)):overlaps.append("gantry panel / "+str(body.name))
 				for id in world.pieces:
 					if not world.pieces[id].has("shape"):continue
 					if swept.grow(-.001).intersects(bounds(id)):overlaps.append(id+" / "+str(body.name)+" / "+str(node.name))
