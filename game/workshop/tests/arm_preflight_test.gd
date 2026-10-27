@@ -15,9 +15,8 @@ func run() -> void:
 	game=await boot_workshop("pelvis")
 	var rail=game.equipment.get_equipment("leg_rail")
 	expect(rail.request("park").is_empty(),"park the actual leg cradle before using the common limb station")
-	for tick in range(1000):
-		if not rail.moving:break
-		rail.physics(.1)
+	var index_error: String=preload("res://scripts/build_stages.gd").new(game).index_to(rail,rail.spec.lanes.parking)
+	expect(index_error.is_empty(),"held INDEX + reaches parking: "+index_error)
 	expect(is_equal_approx(rail.index_x,22) and not rail.moving,"parked leg cradle remains a live obstacle at X22: "+str(rail.capture()))
 	game.set_paused(true) # Geometry staging below deliberately supplies poses.
 	await cassette_preflight()

@@ -33,6 +33,10 @@
     {"id": "face", "title": "Face and crown", "after": ["head_sensors"],
      "steps": [["chest", 50], ["chest", 51], ["chest", 52], ["chest", 53], ["chest", 54], ["chest", 55], ["chest", 56]]}
   ],
+  "procedures": {
+    "leg_delivery": {"title": "Jog the leg to its hip", "machines": ["leg_rail"], "first": ["pelvis", 1]},
+    "leg_return": {"title": "Release the leg rig and drive it home", "machines": ["leg_rail"], "first": ["pelvis", 11]}
+  },
   "reference": {
     "title": "Recovery and undo",
     "steps": [["left_leg", 13, "Left leg: supported construction recovery"], ["pelvis", 12, "Left hip: reacquire support and recover"], ["right_leg", 13, "Right leg: supported construction recovery"], ["pelvis", 24, "Right hip: reacquire support and recover"]]

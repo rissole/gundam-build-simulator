@@ -24,3 +24,14 @@ func command(controller: Node, action: String) -> bool:
 	return error.is_empty()
 
 func supply_rig(crane: Node, attached: bool) -> void:stages.supply_rig(crane,attached)
+
+## Holds one leg rig arrow as Hold E does until it reaches its next stop.
+func jog(controller: Node, action: String) -> bool:
+	var error: String=stages.jog(controller,action)
+	expect(error.is_empty(),controller.equipment_id+" holds "+action+" to its stop: "+error)
+	return error.is_empty()
+
+func index_to(x: float) -> bool:
+	var error: String=stages.index_to(rail,x)
+	expect(error.is_empty(),"leg rig indexes to X"+str(x)+": "+error)
+	return error.is_empty()

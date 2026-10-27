@@ -224,8 +224,10 @@ is not a reason to allow remote fastening or disable obstruction handling.
 
 ### Operated rigs — Phase 1 design, 2026-10-27
 
-**Design only for B3/B5.** B1 supplies an opt-in Hold E callback on a physical
-button; B2 supplies `scripts/rig_target.gd`. Neither rig uses them yet. This section
+**B3 is implemented on the `operated-rigs` branch (2026-10-27); B5 is design
+only.** B1 supplies an opt-in Hold E callback on a physical button; B2 supplies
+`scripts/rig_target.gd`. The leg rig uses both; see the
+[B3 implementation notes](#b3-implementation-notes-2026-10-27). This section
 supersedes the NEXT-driven delivery design when those later tasks are implemented.
 Follow the [branch handoff](handoff/operated-machines/B-operated-rigs.md): implement
 the leg slice now; complete **checkpoint B before B5**. B owns the shared manual
@@ -501,6 +503,104 @@ the [playtest checklist](robot-workshop-playtest-checklist.md#operated-rigs-open
   banks on the existing panels, with no relocated panel or hidden modal.
 - Is the final foot guide turn acceptable as the short lead-in? Proposed default:
   1.1° green capture window and 0.5 s guide, preserving the existing sole pivot.
+
+#### Leg rig control interface v2, 2026-10-27 (approved)
+
+The first operated build was rejected in play
+([findings](robot-workshop-playtest-checklist.md#operated-leg-rig-playtest--2026-10-27)).
+This interface replaces the panel, input and target parts of the design above, and
+the B3 implementation notes below. The joint maths, collision sweeps and at-rest
+saves stay. The user approved it on 2026-10-27.
+
+**Principles.** The fantasy is engineering: concrete impact with control.
+
+1. One control moves one mechanism, and nothing else moves. If another mechanism
+   is in the way, the control refuses and names that mechanism; it never operates
+   it for you.
+2. Each control sits on or beside the part it moves, so you watch the part move
+   while you operate it. There is no central console.
+3. Each part carries its plain name in stencil, and each control describes the
+   motion in plain words. Arrows and lever throws point the way the part moves.
+4. Each mechanism shows its own state: lamps at locked positions, and a red/green
+   lamp for each condition it needs, named after the other mechanism.
+5. A control can be a lever, a grab-and-drag part or an E tap on the part itself.
+   It does not have to be a button.
+
+**Controls.**
+
+| Mechanism | Control | Behaviour | Needs |
+| --- | --- | --- | --- |
+| Foot support (was bolster) | Drag the support itself | Look at it and hold E: it follows your hand along its one path, at most 0.3 of its stroke per second, and stops at its ends or against anything in the way. Releasing E leaves it there. | To move away from the foot: braces locked, turnover lowered and neutral |
+| Turnover (was roll and lift) | Small box at the head end of the table: RAISE / LOWER and ROLL ↺ / ↻, hold E | RAISE lifts the leg clear of the table. ROLL turns it, stopping at each 90° position; a fresh press continues. | Leg at the build position with its foot support under the foot and braces locked; fully raised to roll; neutral to lower |
+| Transfer table (was INDEX) | Large floor lever beside the table | Grab the handle and drag it into a notch: LEFT HIP · RIGHT HIP / BUILD · PARK. The table then drives to that notch and stops. The throw is parallel to the table's travel, and the notches are named by destination. If the table may not move, the lever stays locked and its lamp says why. | Foot support away (when carrying a leg), turnover lowered, bogie on the table |
+| Bogie and leg lift | One box at the Limb Bay end of the rail, about where today's panel 1 is: TRAVEL TO BAY / TO TABLE, and LEG RISE / LOWER, hold E | TRAVEL drives along the rail between its two end stops. RISE stands the leg upright, then lifts it into the hip. Holding RISE to the top stop seats the leg. LOWER reverses; from the top, it unseats the leg only while no hip retention is fitted. | Travel: table in a hip notch, leg flat, clamps closed (carrying) or open (empty). Rise: bogie at the bay stop, gantry front open, hip gantry secured, leg structurally complete, and the selected notch matching this leg |
+| Leg clamps (was holder head) | One LEG CLAMPS switch on the rig base near the foot, about waist height; E tap toggles RELEASE / GRAB, like the waist pins | RELEASE opens both clamps, drops the head off the contact pads, pulls it back, folds it narrow and slides it 2 m sideways, clear of the leg; GRAB reverses this. A probe showed nothing less clears the docked leg when the empty rig lies down (2026-10-27). With the leg seated, the clamps sit about 4.2 m and 7.5 m up, beyond reach from the floor (about 4 m) and below the 8.4 m deck, so the switch cannot live on the clamps. | Open on a seated leg: hip retention and lock pins complete. Close: the leg is in the rig |
+| Gantry front | Box at the gantry: OPEN / CLOSE | Opens or closes every access deck level and the rear leaves. While it is closed, nothing (crane load or leg) can move into the gantry; a delivery stops at the boundary and says so. | Close: nothing inside its swing |
+| Next leg (was BUILD) | NEXT LEG on the bogie box | Puts the finished or empty leg back in its queue and brings the other leg onto the rig, as BUILD did. | Empty rig at the build position with clamps closed, or an unstarted leg |
+
+Removed: the crossing gates (the bogie's collision check already stops it and
+names anyone in its path), LANE, PARK, SEAT, STOP, RELEASE, REACQUIRE, UNSEAT and
+the per-axis numeric readouts. Every axis ends on a hard stop or notch, so the leg
+always arrives exactly aligned. The challenge is the order of operations and the
+interlocks, not fine positioning.
+
+**Ghost.** The ghost shows the target of the current manual objective, and nothing
+else. It stays fixed until that objective is complete, whatever the player
+presses. Objectives that move a support rather than the leg (foot support, clamp switch,
+gantry front) show no leg ghost; the existing manual control glow marks the part
+or control to use.
+
+**Manual.** The left leg gets one objective per control, naming where it is ("At
+the foot support, look at it, hold E and pull it away from the foot"). The right
+leg gets the goal plus a link to that procedure.
+
+**Model changes.** The whole Limb Bay, authored around X14, moves 0.1 m to X14.1 so
+the build station is the right hip track: the leg build station, foot dispatch and
+foot rig routes, leg and arm crane routes, the arm rig station and parking, and the
+mobile platform's Limb Bay docks (user decision A, 2026-10-27). The arm and leg
+diagnostics are run afterwards. The rig keeps the coordinates `index_x`,
+`travel_z`, `tilt_deg`, `rise_m`, `roll_deg`, `roll_height_m` and `foot_support`,
+and gains `clamps` (0 closed to 1 open). Support is derived from closed clamps with
+the leg on the rig. Today's five-phase release linkage is replaced by the clamps'
+own open-and-retract motion. The empty rig's
+LOWER must clear the mounted leg with that geometry; if it does not, change the
+clamp geometry rather than add a hidden motion. `workshop_access` collapses to an
+open/closed value. Old saves become invalid and are deleted.
+
+**Checks.** The clamp clearance probe settled the RELEASE motion. After building,
+`arm_delivery_test`, `chest_delivery_test` and `head_crane_test` (approved
+2026-10-27) check the crane routes with the rear leaves raised, and the arm and leg
+diagnostics check the Limb Bay shift. Crane deliveries that enter the gantry
+(pelvis, chest, arms) wait at its boundary until the front is open. Head and
+pauldron deliveries rely on their normal collision checks.
+
+#### B3 implementation notes, 2026-10-27 (superseded by v2 above)
+
+The rejected first operated build followed the design above. Where the design left
+a choice, the branch chose the following. None of it has player acceptance.
+
+- **Track and detent stops.** INDEX halts exactly at each authored track (X11.9,
+  14.0, 14.1, 22.0) and ROLL at each 90° detent. Continuing past one needs a fresh
+  press. At 0.8 m/s, the ±0.02 m window around the station and right track lasts
+  50 ms, so free stopping is not playable. The other axes stop at end stops. RISE
+  stops at its 1.17 m loaded ceiling, inside the capture window.
+- **Panels.** Both existing panels keep their positions. Each widens to 2.0 m with
+  a DELIVERY bank (INDEX/TRAVEL/TILT/RISE arrows with signed readouts) and a tap
+  row: STOP, SEAT, RELEASE, REACQUIRE and UNSEAT. The Limb Bay panel adds a
+  CONSTRUCTION bank (ROLL/LIFT/BOLSTER) and LANE/PARK/BUILD.
+- **Targets.** A minus jog on a delivery axis, or UNSEAT, selects the return
+  targets. A plus jog or LANE selects the delivery targets again. PARK toggles the
+  X22 target. The ghost shows only for a carried leg away from construction home.
+- **Empty holder.** RELEASE on the table compacts an extended empty holder for
+  travel. REACQUIRE closes it on the docked leg, or extends it at the station
+  before BUILD. Release arrival sets `rise_m` to zero; the released pose is
+  identical in both branches.
+- **Gates** reopen when the rig comes to rest on the table, or at the dock with
+  the leg mounted. A loaded leg returning after UNSEAT keeps them closed.
+- **Manual commands** are typed per physical goal (`bolster:stow`, `index:lane`,
+  `travel:bay`, `tilt:upright`, `rise:dock`, `seat`; `release`, `tilt:lying`,
+  `travel:home`, `index:station`, `extend`, `build`; `park`). The manual has no
+  NEXT-style command.
 
 ### Saves and checkpoints
 

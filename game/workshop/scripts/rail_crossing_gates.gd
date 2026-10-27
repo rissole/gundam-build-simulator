@@ -68,7 +68,7 @@ func action_error(action: String) -> String:
 	if action=="resume":return "" if value!=goal else "The crossing gates are already locked."
 	if action!="open":return "Unknown crossing control."
 	var rail=game.equipment.get_equipment("leg_rail")
-	if rail!=null and (rail.moving or not rail.mode.is_empty() or rail.path not in [0.0,3.0]):return "The leg rig must be locked in the Limb Bay or at the dock before opening the crossing."
+	if rail!=null and not rail.gates_may_open():return "The leg rig must be locked in the Limb Bay or at the dock before opening the crossing."
 	return ""
 
 func request(action: String) -> String:

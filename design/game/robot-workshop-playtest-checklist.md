@@ -188,11 +188,31 @@ rope status without a success toast, and added a 0.6→4.5 m/s ramp over about
 challenge; lowering and final exit are undesigned. Pull-in lanyards remain
 accepted as a mechanic. No change here grants acceptance to the wider journey.
 
+### Operated leg rig playtest — 2026-10-27
+
+**Player verdict:** the first operated leg rig (one 2 m panel per end, hold-E
+arrows) is "awful". Findings, in the user's terms:
+
+- [ ] A button must operate one mechanism only. TRAVEL also closed the crossing
+  gates and swung the gantry access wings open; the player wants to operate those
+  themselves.
+- [ ] Labels don't explain the operation. "BOLSTER" means nothing to a player.
+- [ ] Controls need not share one interface. Group them by mechanism.
+- [ ] The ghost must always show the target objective. Holding INDEX swapped the
+  ghost between lanes, because a minus jog switched to the return targets.
+- [ ] Design the control interface before implementing. The fantasy is
+  engineering: concrete impact with control.
+
+Status: [control interface v2](robot-workshop-plan.md#leg-rig-control-interface-v2-2026-10-27-approved) was agreed in discussion (drag the foot support, a transfer table lever, a combined RISE, E taps on the clamps, a simple gantry front, no crossing gates). The user approved it on 2026-10-27. The branch controller stays
+unmerged, and the questions below still apply to whatever replaces it.
+
 ### Operated rigs open questions — Phase 1
 
-B1/B2 helpers have isolated mechanical checks; the rigs are not converted and no
-new presentation or player acceptance is claimed. The [B3/B5 design](robot-workshop-plan.md#operated-rigs--phase-1-design-2026-10-27)
-keeps the accepted foot building bay and physical access challenge. At checkpoint B:
+The leg rig is converted on the `operated-rigs` branch (2026-10-27) and has
+routine mechanical checks only. The foot rig is not converted, and no presentation
+or player acceptance is claimed. The [B3/B5 design](robot-workshop-plan.md#operated-rigs--phase-1-design-2026-10-27)
+keeps the accepted foot building bay and physical access challenge. To play it,
+launch `./play.command -- --stage=left_leg_dock`. At checkpoint B:
 
 - [ ] Judge initial jog speeds and correction while looking away from the panel;
   constant rates are proposed, a slower final-approach mode remains an option.
@@ -205,6 +225,16 @@ keeps the accepted foot building bay and physical access challenge. At checkpoin
   window) versus another lead-in. Preserve its existing sole pivot and support.
 - [ ] Check per-axis green marks, signed readouts, ghost pulse and first-use/repeat
   guidance in play. Helper tests establish none of their readability or usability.
+- [ ] INDEX stops at each track and ROLL at each 90° detent; a fresh press is
+  needed to continue. Is that acceptable, or does it read as a hidden NEXT? (Free
+  stopping at 0.8 m/s gives a 50 ms window.)
+- [ ] The two panels are now 2.0 m wide, with up to 22 arrows and 8 taps. Are they
+  readable and reachable? Is splitting construction controls onto the Limb Bay
+  panel only the right call?
+- [ ] REACQUIRE also extends the empty holder at the station before BUILD. Is the
+  name clear for that use, or does it need its own tap?
+- [ ] Ghost policy: shown only for a carried leg away from construction home and
+  hidden when seated. Is it visible enough during TRAVEL and TILT?
 
 ## Left leg completed — 2026-10-26
 

@@ -46,39 +46,36 @@ manual_objectives_test manual_progress_test manual_panel_test held_control_test
 rig_target_test workshop_smoke_test --jobs 4` passes 112/33/11/21/25/31 checks in
 10.4 s. This is mechanical evidence only; nobody has played it.
 
+B3 and the leg part of B4 (2026-10-27) convert the leg
+rig: hold-E jog arrows for INDEX/TRAVEL/TILT/RISE and ROLL/LIFT/BOLSTER, taps for
+STOP/SEAT/RELEASE/REACQUIRE/UNSEAT/LANE/PARK/BUILD, the ghost and per-axis readouts,
+named interlocks, the guided SEAT lead-in and the new save shape. The left leg's
+manual teaches one axis per objective; the right leg's pages are tagged repeats
+(`leg_delivery`, `leg_return` in `manual-chapters.json`). `build_stages.gd`
+drives the same arrows through `jog()` / `index_to()`. Choices the design left
+open are listed under "B3 implementation notes" in the
+[plan](../../robot-workshop-plan.md#b3-implementation-notes-2026-10-27).
+
+Mechanical evidence: the new routine `leg_rig_jog_test` (128 checks) plus the 23
+other routine suites touching the rig, crane, foot rig, gates, braces, saves,
+content, manual and startup pass (`run_regressions.py --only ...`, 28.6 s).
+Diagnostics that drive the leg rig (`indexed_leg_rail_test`, `arm_*`,
+`pelvis_delivery_test`) were converted and parse-checked with `--check-only`, and
+`stage_sequence_test` now reaches the leg stages through the new driver, but none
+were **run**; the real-content seat pose and full stage
+journey are therefore unverified until one is requested. Nobody has played it.
+
 ## Next, in order
 
-1. **B3: convert the leg rig** (`game/workshop/scripts/indexed_leg_rail.gd`). Not
-   started; the worktree was clean when the coordinator was stopped. Implement the B3
-   design:
-   - NEXT becomes jog pairs, wired through the B1 hold latch, plus BOLSTER, RELEASE
-     and SEAT
-   - the authored stops become per-axis limits, reusing `snapshot_pose`
-   - the interlocks and named refusals
-   - the B2 ghost and readout
-   - SEAT gating `install_supported`
-   - `manual_state()` reporting axis/seat evidence
-   - the new at-rest save fields (no migration: invalid saves are deleted).
-
-   Use the design's proposed defaults for its open questions: one constant jog rate
-   per axis; service taps for the holder's jaw/lower/withdraw sequence, with fully
-   jogged delivery axes; panel banks as designed. Apply the
-   `gundam-assembly-review` skill: the carried leg and its mounted children must
-   follow every intermediate pose.
-2. **B4: leg manual, automation and tests.** The left leg gets one objective per axis;
-   the right leg gets the goal plus a procedure link (the `d145866` mechanism). Add an
-   automation helper so `build_stages.gd` and the tests can drive the axes. Tests
-   cover:
-   - limits and interlocks
-   - SEAT gating
-   - ghost pose equal to the install pose
-   - the save round-trip
-   - the other cases under "Later verification and open questions" in the B3 design.
-
-   This part is mostly mechanical once B3 exists and suits a well-specified task file.
-3. **Checkpoint B:** the user playtests the leg rig. Merge into `main` after the user
-   accepts it, or fix their findings first. Record the results in the checklist's
-   "Operated rigs open questions" section.
+1. **Checkpoint B: the user playtests the leg rig.** Launch
+   `./play.command -- --stage=left_leg_dock` (left leg built, braces engaged, hip
+   secured) and follow the manual. `--stage=right_leg_build` exercises the new
+   left-leg docking driver during preparation and is unverified.
+2. Remaining B4 coverage, if the playtest keeps this shape: run the converted
+   diagnostics on request; a real-content check that the seated joint pose equals
+   `runtime.mount_pose` for both legs.
+3. Merge into `main` after the user accepts the leg rig, or fix their findings
+   first. Record the results in the checklist's "Operated rigs open questions".
 4. **B5/B6: the foot rig** (`foot_carrier.gd`: RAISE, TRAVEL, TURN, SEAT), with its
    manual and tests in the same shape, only after checkpoint B.
 
@@ -86,8 +83,9 @@ rig_target_test workshop_smoke_test --jobs 4` passes 112/33/11/21/25/31 checks i
 
 - Work on this branch only.
 - Verification: `python3 game/workshop/tools/run_regressions.py --only <touched suites> --jobs 4`.
-  Likely suites are the six above, plus `equipment_motion_test`, `save_roundtrip_test`,
-  `stage_contract_test` and any leg-rail suite in `tools/test_inventory.py`.
+  Leg rig suites: `leg_rig_jog_test`, `rail_endpoint_test`, `equipment_motion_test`,
+  `joint_restraints_test`, the `manual_*` suites, `save_roundtrip_test`,
+  `stage_contract_test` and `workshop_smoke_test`.
 - Don't run `run_diagnostics.py` or the full suite without an explicit request, and
   don't run a rendered review or walking/reach sweeps. Classify each new suite in
   `tools/test_inventory.py`.

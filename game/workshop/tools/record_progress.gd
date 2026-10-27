@@ -11,6 +11,9 @@ var sequence: Dictionary
 var trace: Array = []
 var frame_index := 0
 var failed := false
+## Operated-rig arrows held like Hold E, by machine ID, with an optional tap
+## requested once the held jog reaches its stop.
+var held_jogs: Dictionary = {}
 
 func _initialize() -> void:
 	run.call_deferred()
@@ -143,15 +146,27 @@ func operations(entries: Array) -> bool:
 		var machine=game.equipment.get_equipment(entry.equipment)
 		if machine==null:die("Unknown equipment: "+entry.equipment);return false
 		var error := ""
-		if entry.has("action"):error=machine.request(entry.action)
+		if entry.has("jog"):
+			error=machine.action_error(entry.jog)
+			if error.is_empty():machine.set_jog(entry.jog);held_jogs[entry.equipment]=str(entry.get("then",""))
+		elif entry.has("action"):error=machine.request(entry.action)
 		elif entry.has("mode"):error=machine.request_mode(entry.mode)
 		elif entry.has("closed"):error=machine.request_closed(entry.closed)
 		if not error.is_empty():die(entry.equipment+": "+error);return false
 		if entry.get("settle",false):
 			for tick in range(7200):
 				if not machine.moving:break
+				if held_jogs.has(entry.equipment) and machine.jog_settled() and not finish_jog(entry.equipment):return false
 				if not await advance(1):return false
 			if machine.moving:die("Setup motion timed out: "+entry.equipment);return false
+	return true
+
+## Releases a settled held jog, then requests its follow-up tap.
+func finish_jog(id: String) -> bool:
+	var machine=game.equipment.get_equipment(id);var then: String=held_jogs[id]
+	held_jogs.erase(id);machine.set_jog("")
+	var error: String=machine.request(then) if not then.is_empty() else ""
+	if not error.is_empty():die(id+": "+error);return false
 	return true
 
 func advance(ticks: int) -> bool:
@@ -159,6 +174,8 @@ func advance(ticks: int) -> bool:
 		# Yield to Jolt so each sweep sees the preceding tick's collider poses.
 		await physics_frame
 		game.equipment.physics(1.0/60.0)
+		for id in held_jogs.keys():
+			if not held_jogs[id].is_empty() and game.equipment.get_equipment(id).jog_settled() and not finish_jog(id):return false
 		for id in sequence.watch:
 			var machine=game.equipment.get_equipment(id)
 			var blockage=machine.get("blocked_reason")

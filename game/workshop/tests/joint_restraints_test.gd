@@ -67,7 +67,7 @@ func run() -> void:
 	release_crane.END_IDS=["a","b"];release_crane.endpoints={"a":{"state":"attached","point":"near"},"b":{"state":"attached","point":"far"}}
 	var end=Node3D.new();game.add_child(end);release_crane.end_nodes={"a":end,"b":end};release_crane.station="receiver";release_crane.raised=false
 	expect(release_crane.action_error("detach:a").contains("brace"),"retained shin keeps crane support until its braces lock")
-	for action in ["roll","park","advance"]:expect(rail.action_error(action).contains("brace"),"loaded "+action+" requires the retained joint braces")
+	for action in ["lift+","bolster+","index-","travel+"]:expect(rail.action_error(action).contains("brace"),"loaded "+action+" requires the retained joint braces")
 	for owner in ["left_leg","right_leg"]:
 		rail.active_assembly=owner
 		game.model.assemblies.left_leg.location="support:leg_holder" if owner=="left_leg" else "support:queue"
@@ -83,7 +83,7 @@ func run() -> void:
 		expect(braces.required_error(owner).is_empty(),owner+" all independent locks release transport gates")
 	expect(release_crane.action_error("detach:a").is_empty(),"locked ankle braces permit the ordinary crane connector release")
 	rail.engaged=false
-	expect(rail.action_error("return").is_empty(),"brace gates keep empty-rig return available")
+	expect(rail.action_error("index+").is_empty(),"brace gates keep empty-rig indexing available")
 	rail.engaged=true
 	# Direct-space obstacle catches an intermediate slider pose and resumes safely.
 	rail.active_assembly="left_leg"

@@ -442,12 +442,12 @@
       "setup": [
         {
           "equipment": "leg_rail",
-          "action": "advance",
+          "jog": "bolster+",
           "settle": true
         },
         {
           "equipment": "leg_rail",
-          "action": "advance",
+          "jog": "index-",
           "settle": true
         }
       ],
@@ -500,7 +500,7 @@
           "start": [
             {
               "equipment": "leg_rail",
-              "action": "advance"
+              "jog": "travel+"
             }
           ],
           "anchor": "left_leg",
@@ -534,7 +534,7 @@
           "start": [
             {
               "equipment": "leg_rail",
-              "action": "advance"
+              "jog": "tilt+"
             }
           ],
           "target": [
@@ -567,7 +567,8 @@
           "start": [
             {
               "equipment": "leg_rail",
-              "action": "advance"
+              "jog": "rise+",
+              "then": "seat"
             }
           ],
           "target": [
@@ -590,7 +591,8 @@
       ],
       "expect": {
         "leg_rail": {
-          "path": 3,
+          "rise_m": 1.2,
+          "engaged": true,
           "moving": false
         }
       },

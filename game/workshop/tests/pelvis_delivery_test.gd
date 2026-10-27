@@ -3,7 +3,7 @@ extends "res://tests/kit/stage_section.gd"
 func run() -> void:
 	if not await start("pelvis"):finish();return
 	expect(rail.can_construct() and is_equal_approx(game.assembly_node("left_leg").global_position.x,14),"empty cradle starts at shared X14 station")
-	expect(not rail.request("advance").is_empty(),"incomplete structural leg cannot depart")
+	expect(not rail.action_error("travel+").is_empty(),"incomplete structural leg cannot depart")
 	var fixture=game.equipment.get_equipment("module_supports")
 	expect(not fixture.request("template:chest").is_empty(),"occupied pelvis fixture refuses contact exchange")
 	expect(not fixture.source_error().is_empty(),"unset waist pins reject source lifting")

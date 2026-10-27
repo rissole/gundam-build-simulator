@@ -7,7 +7,7 @@ func run() -> void:
 	var trim: Dictionary=cassette.mass_properties()
 	expect(trim.center.z>1.35 and trim.center.z<6.05,"loaded cassette's authored mass centre lies between both lifting pairs: "+str(trim))
 	expect(not cassette.receiving_error("arm_cassette").is_empty(),"occupied leg station rejects the cassette before travel")
-	if not command(rail,"park"):finish();return
+	if not command(rail,"park") or not index_to(rail.spec.lanes.parking):finish();return
 	expect(cassette.receiving_error("arm_cassette").is_empty(),"parked leg cradle makes the shared station available")
 	expect(crane.request("task:cassette").is_empty(),"existing crane selects the retained-cassette task")
 	if not command(crane,"go:source") or not command(crane,"down"):finish();return
@@ -42,8 +42,8 @@ func run() -> void:
 	supply_rig(crane,false)
 	if not command(crane,"up") or not command(crane,"go:park"):finish();return
 	expect(game.model.assemblies.left_arm.location=="support:arm_cassette" and cassette.occupant()=="left_arm","parking retains the same arm without rebuilding or replacing it")
-	if not command(rail,"park"):finish();return
-	expect(rail.path==0 and is_equal_approx(rail.index_x,rail.spec.station_x) and rail.release==0 and not rail.moving and rail.mode.is_empty(),"leg cradle physically reclaims the cleared shared station")
+	if not command(rail,"park") or not index_to(rail.spec.station_x):finish();return
+	expect(rail.at_station() and rail.release==0 and not rail.moving,"leg cradle physically reclaims the cleared shared station")
 	finish()
 
 func finish() -> void:

@@ -9,7 +9,7 @@ func run() -> void:
 func deliver_arms() -> bool:
 	var crane=game.equipment.get_equipment("service_crane")
 	var cassette=game.equipment.get_equipment("arm_cassette")
-	if not is_equal_approx(rail.index_x,22) and not command(rail,"park"):return false
+	if not is_equal_approx(rail.index_x,22) and not (command(rail,"park") and index_to(rail.spec.lanes.parking)):return false
 	if not command(crane,"task:cassette") or not command(crane,"go:source") or not command(crane,"down"):return false
 	supply_rig(crane,true)
 	if not command(crane,"up") or not command(crane,"go:receiver") or not command(crane,"down"):return false

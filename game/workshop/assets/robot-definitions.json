@@ -4956,7 +4956,7 @@
         },
         {
           "title": "Seat the leg in the hip assembly",
-          "goal": "Drive the finished leg on its rig to the Final Assembly Bay and dock it into the left hip.",
+          "goal": "Jog the finished leg on its rig to the Final Assembly Bay, stand it under the left hip and seat it.",
           "slots": [
             "left_leg"
           ],
@@ -4964,29 +4964,34 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:bolster"
+              "command": "bolster:stow"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:index"
+              "command": "index:lane"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:travel"
+              "command": "travel:bay"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:upright"
+              "command": "tilt:upright"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "rise:dock"
             },
             {
               "op": "seat",
               "slot": "left_leg",
               "via": {
                 "machine": "leg_rail",
-                "command": "next:dock"
+                "command": "seat"
               }
             }
           ],
@@ -5002,7 +5007,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Park the empty crane first. The leg rig stays attached until the hip is pinned."
+            "text": "Park the empty crane first. Hold E on a panel arrow to jog one axis; you can look away while E is held. Each axis stops at its track or end stop. The pulsing outline shows the next target, and each readout turns green when its axis is aligned. The leg rig stays attached until the hip is pinned."
           },
           "diagram_views": [
             {
@@ -5045,7 +5050,8 @@
                 "slot": "left_leg"
               }
             ]
-          }
+          },
+          "procedure": "leg_delivery"
         },
         {
           "title": "Carry retaining half 1",
@@ -5537,17 +5543,32 @@
           "title": "Release the leg rig",
           "view": "components",
           "slots": [],
-          "goal": "Let the hip carry the leg, then send the empty rigs home.",
+          "goal": "Let the hip carry the leg, then drive the empty rigs home.",
           "objectives": [
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:release"
+              "command": "release"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "back:home"
+              "command": "tilt:lying"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "travel:home"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "index:station"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "extend"
             },
             {
               "op": "operate",
@@ -5560,6 +5581,10 @@
               "command": "build"
             }
           ],
+          "note": {
+            "at": 1,
+            "text": "The released holder stays clear of the leg while it lies down and travels home. Reacquire at the station extends it again."
+          },
           "diagram_views": [
             {
               "title": "Release the leg rig",
@@ -5600,17 +5625,18 @@
                 "slot": "left_leg"
               }
             ]
-          }
+          },
+          "procedure": "leg_return"
         },
         {
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."
+          "body": "If the empty leg rig has returned home, Release compacts the empty holder for travel; hold INDEX to the hip track, TRAVEL + and TILT + to bring it back under the mounted leg, then Reacquire closes the holder on it. If the released leg rig is still docked, Reacquire directly. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before Unseat lifts the leg back onto the rig; then hold RISE −, TILT −, TRAVEL − and INDEX to return it. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Seat the leg in the hip assembly",
-          "goal": "Drive the finished leg on its rig to the Final Assembly Bay and dock it into the right hip.",
+          "goal": "Jog the finished leg on its rig to the Final Assembly Bay, stand it under the right hip and seat it.",
           "slots": [
             "right_leg"
           ],
@@ -5618,29 +5644,34 @@
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:bolster"
+              "command": "bolster:stow"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:index"
+              "command": "index:lane"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:travel"
+              "command": "travel:bay"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:upright"
+              "command": "tilt:upright"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "rise:dock"
             },
             {
               "op": "seat",
               "slot": "right_leg",
               "via": {
                 "machine": "leg_rail",
-                "command": "next:dock"
+                "command": "seat"
               }
             }
           ],
@@ -5656,7 +5687,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Park the empty crane first. The leg rig stays attached until the hip is pinned."
+            "text": "Park the empty crane first. Hold E on a panel arrow to jog one axis; you can look away while E is held. Each axis stops at its track or end stop. The pulsing outline shows the next target, and each readout turns green when its axis is aligned. The leg rig stays attached until the hip is pinned."
           },
           "diagram_views": [
             {
@@ -5699,7 +5730,8 @@
                 "slot": "right_leg"
               }
             ]
-          }
+          },
+          "procedure": "leg_delivery"
         },
         {
           "title": "Carry retaining half 1",
@@ -6191,17 +6223,32 @@
           "title": "Release the leg rig",
           "view": "components",
           "slots": [],
-          "goal": "Let the hip carry the leg, then send the empty rigs home.",
+          "goal": "Let the hip carry the leg, then drive the empty rigs home.",
           "objectives": [
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "next:release"
+              "command": "release"
             },
             {
               "op": "operate",
               "machine": "leg_rail",
-              "command": "back:home"
+              "command": "tilt:lying"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "travel:home"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "index:station"
+            },
+            {
+              "op": "operate",
+              "machine": "leg_rail",
+              "command": "extend"
             },
             {
               "op": "operate",
@@ -6209,6 +6256,10 @@
               "command": "return:home"
             }
           ],
+          "note": {
+            "at": 1,
+            "text": "The released holder stays clear of the leg while it lies down and travels home. Reacquire at the station extends it again."
+          },
           "diagram_views": [
             {
               "title": "Release the leg rig",
@@ -6262,13 +6313,14 @@
                 "slot": "right_leg"
               }
             ]
-          }
+          },
+          "procedure": "leg_return"
         },
         {
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."
+          "body": "If the empty leg rig has returned home, Release compacts the empty holder for travel; hold INDEX to the hip track, TRAVEL + and TILT + to bring it back under the mounted leg, then Reacquire closes the holder on it. If the released leg rig is still docked, Reacquire directly. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before Unseat lifts the leg back onto the rig; then hold RISE −, TILT −, TRAVEL − and INDEX to return it. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Bring the chest to the heavy module rig",
@@ -15478,7 +15530,7 @@
           "title": "Arm rig",
           "view": "overview",
           "slots": [],
-          "body": "Park the leg rig before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction."
+          "body": "Park the leg rig (Park, then hold INDEX +) before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction."
         }
       ]
     },
@@ -18621,7 +18673,7 @@
           "title": "Structural leg ready",
           "view": "prepared",
           "slots": [],
-          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the hip assembly manual for delivery."
+          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table (Park, then hold INDEX +) and retrieve it without losing progress. For rear work, park the movable platform, hold LIFT + on the Limb Bay panel to raise the supported axis, then hold ROLL + or ROLL − to turn to the next locked orientation; each press stops at a detent. Restore neutral ROLL, then hold LIFT − to return to construction height. Open the hip assembly manual for delivery."
         },
         {
           "title": "Supported construction recovery",
@@ -23618,7 +23670,7 @@
             "title": "Structural leg ready",
             "view": "prepared",
             "slots": [],
-            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the hip assembly manual for delivery."
+            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table (Park, then hold INDEX +) and retrieve it without losing progress. For rear work, park the movable platform, hold LIFT + on the Limb Bay panel to raise the supported axis, then hold ROLL + or ROLL − to turn to the next locked orientation; each press stops at a detent. Restore neutral ROLL, then hold LIFT − to return to construction height. Open the hip assembly manual for delivery."
           },
           {
             "title": "Supported construction recovery",

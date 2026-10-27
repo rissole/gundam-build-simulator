@@ -47,6 +47,10 @@ func until_held(equipment: Node) -> void:
 	for tick in range(200):
 		equipment.physics(.1)
 		if not equipment.moving or not equipment.blocked_reason.is_empty():return
+func until_settled(rail: Node) -> void:
+	for tick in range(200):
+		rail.physics(.1)
+		if rail.jog_settled():return
 func run() -> void:
 	await shared_queries()
 	await linear_queries()
@@ -337,42 +341,50 @@ func rail_motion() -> void:
 	var layout = Layout.new();game.add_child(layout);layout.cradle = preload("res://scripts/leg_cradle.gd").new();layout.add_child(layout.cradle);layout.cradle.setup(game,definition)
 	var rail = preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail);rail.game = game;rail.layout = layout;rail.spec = definition;rail.equipment_id = "leg_rail";game.equipment.register(rail)
 	var payload = AnimatableBody3D.new();payload.sync_to_physics = false;game.add_child(payload);shape(payload,Vector3(.2,.2,.2));game.runtime.payload = payload
-	game.model.assemblies.left_leg = {"parent":"","location":"support:leg_holder"}
-	rail.index_x = definition.station_x;rail._pose()
-	var direction = signf(definition.lanes.parking-definition.station_x)
-	var blocker = obstacle(game,Vector3(definition.station_x+direction*2,definition.holder.bogie.y,definition.home_z),Vector3(.1,.3,.3),Motion.PARTS);await frames(2)
-	expect(rail.request("park").is_empty(),"rail accepts parking with a distant loose obstacle")
-	rail.physics(.1)
-	expect(rail.index_x != definition.station_x and rail.blocked_reason.is_empty(),"rail moves through the clear start of its route")
+	game.model.definitions = {"assemblies":{"leg":{"supplied_milestones":["structural_ready"],"slots":{}}}}
+	game.model.assemblies.left_leg = {"parent":"","location":"support:leg_holder","definition":"leg","slots":{}}
+	# Loaded indexing needs the stowed bolster; from the right track the next stop is parking.
+	rail.bolster = 1.0;rail.index_x = definition.lanes.right;rail._pose()
+	var direction = signf(definition.lanes.parking-definition.lanes.right)
+	var blocker = obstacle(game,Vector3(definition.lanes.right+direction*2,definition.holder.bogie.y,definition.home_z),Vector3(.1,.3,.3),Motion.PARTS);await frames(2)
+	expect(rail.action_error("index+").is_empty(),"loaded rail accepts an INDEX jog with a distant loose obstacle")
+	rail.set_jog("index+");rail.physics(.1)
+	expect(rail.index_x != definition.lanes.right and rail.blocked_reason.is_empty(),"held INDEX moves through the clear start of its route")
 	until_held(rail)
-	expect(rail.moving and rail.motion_obstruction.get("collider") == blocker,"real articulated holder pauses and identifies its obstacle")
+	expect(rail.moving and rail.motion_obstruction.get("collider") == blocker,"real articulated holder pauses and identifies its obstacle while E stays held")
 	var at: float = rail.index_x;rail.physics(.1)
 	expect(is_equal_approx(rail.index_x,at),"waiting rail preserves progress")
-	expect(rail.request("return").is_empty(),"waiting rail accepts return without requiring Stop")
-	until_held(rail)
-	expect(not rail.moving and is_equal_approx(rail.index_x,definition.station_x),"held rail returns to the station")
-	rail.request("park");until_held(rail);blocker.free();await frames(2);until_held(rail)
-	expect(not rail.moving and is_equal_approx(rail.index_x,definition.lanes.parking),"cleared rail resumes automatically to its original destination")
-	# Exercise the reported longitudinal rail phase, with the real holder and
-	# payload sweep. Only unrelated gate/access orchestration is supplied.
+	rail.set_jog("")
+	expect(not rail.moving and is_equal_approx(rail.index_x,at),"releasing E brakes the waiting rail where it stands")
+	expect(rail.action_error("index-").is_empty(),"the opposite arrow is available after release")
+	rail.set_jog("index-");until_settled(rail)
+	expect(rail.jog_settled() and rail.index_x == definition.lanes.right,"reverse jog stops exactly on the right hip track")
+	rail.set_jog("");rail.set_jog("index+");until_held(rail)
+	blocker.free();await frames(2);until_settled(rail)
+	expect(rail.jog_settled() and rail.index_x == definition.lanes.parking,"a held jog resumes once the obstacle clears and stops at parking")
+	rail.set_jog("")
+	# Exercise longitudinal travel with the real holder and payload sweep. Only
+	# unrelated gate/access orchestration is supplied.
 	var gates=Gates.new();game.add_child(gates);gates.equipment_id="rail_gates";game.equipment.register(gates)
 	var access=Access.new();game.add_child(access);access.equipment_id="workshop_access";game.equipment.register(access)
-	rail.path=.2;rail.goal=1;rail.mode="path";rail.moving=true;rail._pose()
+	rail.index_x=definition.lanes.left;rail.travel_z=lerpf(definition.home_z,definition.bay_z,.2);rail._pose()
 	payload.set_meta("collision_revision",0)
 	var resize_events: Array = []
 	for piece in layout.cradle.pieces.values():piece.shape.shape.changed.connect(func():resize_events.append(true))
 	var forward=Vector3(0,0,signf(definition.bay_z-definition.home_z))
 	blocker=obstacle(game,payload.global_position+forward*.6,Vector3(.2,.2,.002),Motion.PARTS);await frames(2)
-	var start: float=rail.path;rail.physics(1.0/60.0)
-	expect(rail.path>start and rail.blocked_reason.is_empty(),"longitudinal rail starts along clear track")
+	expect(rail.action_error("travel+").is_empty(),"lying leg on its track accepts TRAVEL +: "+rail.action_error("travel+"))
+	var start: float=rail.travel_z;rail.set_jog("travel+");rail.physics(1.0/60.0)
+	expect(rail.travel_z>start and rail.blocked_reason.is_empty(),"longitudinal rail starts along clear track")
 	until_held(rail)
 	expect(rail.moving and rail.motion_obstruction.get("collider")==blocker,"straight rail waits for a thin obstacle in the loaded leg's path")
 	expect(resize_events.is_empty(),"straight rail movement does not rebuild unchanged live holder dimensions")
 	var query_count: int=layout.cradle.query_boxes.size()
 	var saved_boxes: Dictionary=layout.cradle.query_boxes.duplicate()
-	blocker.free();await frames(2);until_held(rail)
-	expect(not rail.moving and rail.path==1,"longitudinal rail resumes to the next stop after the obstacle clears")
+	blocker.free();await frames(2);until_settled(rail)
+	expect(rail.jog_settled() and rail.travel_z==definition.bay_z,"held TRAVEL resumes to its bay end stop after the obstacle clears")
 	expect(query_count==layout.cradle.pieces.size() and layout.cradle.query_boxes==saved_boxes,"holder queries reuse one box per member across travel ticks")
+	rail.set_jog("")
 	var live_sizes: Dictionary={}
 	for id in layout.cradle.pieces:live_sizes[id]=layout.cradle.pieces[id].shape.shape.size
 	var holder_pose=rail.snapshot_pose(rail.capture())

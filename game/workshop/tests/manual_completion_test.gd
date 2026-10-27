@@ -34,8 +34,8 @@ func run() -> void:
 	crane.task="foot";crane.station="park";crane.raised=true;crane.END_IDS=["a","b"]
 	crane.endpoints={"a":{"state":"stowed","point":""},"b":{"state":"stowed","point":""}}
 	rail=machine(preload("res://scripts/indexed_leg_rail.gd"),"leg_rail")
-	rail.spec={"station_x":14.0,"lanes":{"left":10.0,"right":18.0,"parking":20.0}}
-	rail.active_assembly="left_leg";rail.lane="left";rail.index_x=14.0;rail.path=0.0;rail.engaged=true
+	rail.spec=preload("res://scripts/leg_bay_layout.gd").layout().workshop.rail
+	rail.active_assembly="left_leg";rail.lane="left";rail.index_x=14.0;rail.travel_z=14.5;rail.engaged=true
 	foot=machine(preload("res://scripts/foot_carrier.gd"),"foot_carrier")
 	pins=machine(preload("res://scripts/captive_controls.gd"),"captive_controls")
 	pins.specs=game.leg_content.equipment.captive_controls
@@ -61,7 +61,7 @@ func run() -> void:
 	# The same stop must not count as mounting the other foot or leg.
 	foot.path=3.0;foot.receiving_assembly="left_leg"
 	expect(not evaluate("right_leg",2).started and not evaluate("right_leg",2).fits_complete,"left foot dock pose does not advance the right-foot page")
-	rail.path=3.0;rail.bolster=1.0;rail.index_x=10.0
+	rail.bolster=1.0;rail.index_x=11.9;rail.travel_z=26.0;rail.tilt_deg=90.0;rail.rise_m=1.2
 	expect(not evaluate("pelvis",13).started,"left leg dock pose does not advance the right-leg page")
 	game.model.assemblies.left_leg.slots.foot="foot"
 	game.model.assemblies.foot.parent="left_leg"
@@ -71,12 +71,12 @@ func run() -> void:
 	foot.path=0.0
 	var reset=evaluate("pelvis",11)
 	expect(reset.current==0 and not reset.machine_complete,"foot rig home cannot tick leg release")
-	rail.engaged=false;rail.path=2.0
+	rail.engaged=false;rail.release=5.0;rail.rise_m=0.0
 	reset=evaluate("pelvis",11)
-	expect(reset.ticked == [true,false,false,false],"released leg still requires the rail to return")
-	rail.path=0.0;rail.index_x=14.0;foot.path=3.0
+	expect(reset.ticked == [true,false,false,false,false,false,false],"released leg still requires the rail to return")
+	rail.tilt_deg=0.0;rail.travel_z=14.5;rail.index_x=14.0;rail.release=0.0;foot.path=3.0
 	reset=evaluate("pelvis",11)
-	expect(reset.ticked == [true,true,false,false],"home rail still requires foot reset and Build")
+	expect(reset.ticked == [true,true,true,true,true,false,false],"home rail still requires foot reset and Build")
 	rail.active_assembly="right_leg";rail.engaged=true
 	expect(evaluate("pelvis",11).current != -1,"Build cannot hide a foot rig left at docking")
 	foot.path=0.0
@@ -87,7 +87,7 @@ func run() -> void:
 	# Once the right foot is really installed, reuse of both rigs is durable proof.
 	game.model.assemblies.right_leg.slots.foot="right_foot"
 	game.model.assemblies.right_foot.parent="right_leg"
-	foot.receiving_assembly="right_leg";foot.path=3.0;rail.path=2.0;rail.index_x=18.0
+	foot.receiving_assembly="right_leg";foot.path=3.0;rail.index_x=14.1;rail.travel_z=26.0;rail.tilt_deg=90.0
 	expect(evaluate("pelvis",11).current == -1,"right-foot installation preserves the completed left reset")
 	expect(evaluate("left_leg",2).current == -1,"left-foot docking stays complete after rig reuse")
 	game.model.assemblies.right_leg.slots.foot="";game.model.assemblies.right_foot.parent=""
@@ -142,7 +142,7 @@ func run() -> void:
 	for id in pins.locked:pins.locked[id]=true
 	game.model.assemblies.arm_cassette.location="support:cassette_station"
 	game.model.assemblies.right_foot.parent="right_leg"
-	rail.active_assembly="right_leg";rail.engaged=false;rail.path=0.0;rail.release=0.0;rail.index_x=20.0
+	rail.active_assembly="right_leg";rail.engaged=false;rail.travel_z=14.5;rail.tilt_deg=0.0;rail.rise_m=0.0;rail.release=0.0;rail.index_x=22.0
 	foot.path=0.0
 	crane.task="head_crown";crane.station="park";crane.raised=true
 	guide.connected=true;guide.bolts.fill(true)

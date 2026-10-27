@@ -96,7 +96,7 @@ func mappings(node: Node3D) -> void:
 	var foot=preload("res://scripts/foot_carrier.gd").new();game.add_child(foot)
 	var rail=preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail)
 	expect(foot.manual_control_actions({"command":"advance:2"}).is_empty() and foot.manual_control_actions({"command":"return:home"}).is_empty(),"Foot rig panel buttons have no cue")
-	expect(["next:dock","back:home","build","park"].all(func(command):return rail.manual_control_actions({"command":command}).is_empty()),"Leg rig panel buttons have no cue")
+	expect(["seat","release","extend","build","park","index:lane"].all(func(command):return rail.manual_control_actions({"command":command}).is_empty()),"Leg rig panel buttons have no cue")
 	var captive=preload("res://scripts/captive_controls.gd").new();game.add_child(captive)
 	captive.specs={"left_hip_1":{},"right_hip_1":{}};captive.locked={"left_hip_1":false,"right_hip_1":true}
 	expect(captive.manual_control_actions({"command":"lock:left_hip_1"})==["left_hip_1"] and captive.manual_control_actions({"command":"lock:right_hip_1"}).is_empty(),"Cylinder mapping respects individual and mirrored lock state")

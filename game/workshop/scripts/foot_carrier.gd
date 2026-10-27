@@ -275,9 +275,9 @@ func validate(data: Variant, candidate: AssemblyModel = null, world: Dictionary 
 	if data.handoff=="extend" and (payload or data.path!=0):return ["Only the empty dispatch carrier can reset its sole pads."]
 	if world.has("equipment") and (payload or data.handoff in ["withdraw","capture"]):
 		var peer = world.equipment.get("leg_rail")
-		if not peer is Dictionary or not Codec.number(peer.get("path"),3) or not peer.get("moving") is bool or not peer.get("engaged") is bool:return ["Invalid peer leg rig state."]
+		if not peer is Dictionary or not ["index_x","travel_z","tilt_deg","rise_m","roll_deg","roll_height_m"].all(func(field):return Codec.number(peer.get(field),360)) or not peer.get("engaged") is bool:return ["Invalid peer leg rig state."]
 		var rail: Dictionary = peer
-		if rail.path != 0 or rail.moving or not rail.engaged or rail.assembly!=data.receiver or rail.index_x!=layout.layout().workshop.rail.station_x or rail.roll!=0 or rail.roll_height!=0:return ["Foot rig transfer requires the matching engaged leg rig stopped in the Limb Bay."]
+		if not game.equipment.get_equipment("leg_rail").at_station(rail) or not rail.engaged or rail.assembly!=data.receiver or rail.roll_deg!=0 or rail.roll_height_m!=0:return ["Foot rig transfer requires the matching engaged leg rig stopped in the Limb Bay."]
 		if data.handoff == "capture":
 			var history: Array = model.assemblies[data.receiver].history
 			if history.is_empty() or history.back().slot != "foot":return ["Foot reacquisition requires all structural work removed."]

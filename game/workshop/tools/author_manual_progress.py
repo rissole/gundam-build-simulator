@@ -95,7 +95,7 @@ def bind(recipes, chapters):
                             objective["completed_by"] = latched
             if "leg_rail" in machines and not seat:
                 commands = {o.get("command") for o in objectives if o.get("machine") == "leg_rail"}
-                if "next:release" in commands:
+                if "release" in commands:
                     side = "left_leg" if "build" in commands else "right_leg"
                     scope["leg_rail"] = dict(active_assembly=side)
                     page["requires_state"] = mounted("pelvis", side)

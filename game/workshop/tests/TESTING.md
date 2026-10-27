@@ -109,3 +109,14 @@ captive-hardware meshes. It checks world poses, reuse across target movement and
 idle, model invalidation, absence of collision/target metadata, and independent
 axis tolerances. Shader configuration is checked headlessly; pulse appearance,
 readability and rig integration remain unreviewed until their later phases.
+
+`leg_rig_jog` drives the production leg rig controller with its real holder
+geometry and a small supplied leg/hip model. It checks the joint pose against the
+former path formula at every endpoint, both directions and stops of every jog
+axis, track and roll detents, named refusals and gate/deck waiting, SEAT gating,
+interrupted and resumed lead-in with a single install, ghost and readout agreement
+with the install pose, RELEASE/REACQUIRE/UNSEAT, the empty return and at-rest
+snapshots. `rail_endpoint` covers the 60 Hz lead-in arrival; `equipment_motion`
+covers held-jog obstruction, release and resume. The real-content seat pose and the
+full leg journey stay in the `indexed_leg_rail` and `stage_sequence` diagnostics.
+Panel readability and jog feel need a player.

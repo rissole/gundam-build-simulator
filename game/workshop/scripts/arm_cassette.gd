@@ -245,8 +245,7 @@ func validate(data: Variant,candidate: AssemblyModel=null,world: Dictionary={}) 
 			if not frame.is_equal_approx(Transform3D(Basis.IDENTITY,at)):return ["Arm rig pose disagrees with its floor support."]
 		if not arm.is_empty() and not Codec.to_pose(world.fixtures[arm]).is_equal_approx(frame*Transform3D(Basis.IDENTITY,AssemblyRuntime.vec(spec.arm_offset))):return ["Retained arm pose disagrees with its arm rig."]
 		if record.location=="support:cassette_station":
-			var rail: Dictionary=world.equipment.leg_rail
-			if rail.path!=0 or not is_equal_approx(rail.index_x,22) or rail.moving:return ["The arm rig and leg rig occupy the Limb Bay together."]
+			if not game.equipment.get_equipment("leg_rail").parked(world.equipment.leg_rail):return ["The arm rig and leg rig occupy the Limb Bay together."]
 		if data.floor_release>0:
 			var crane: Dictionary=world.equipment.service_crane
 			if crane.task!="cassette" or crane.endpoints.values().any(func(end):return end.state!="attached"):return ["The arm rig lost floor retention without four magnetic connectors."]

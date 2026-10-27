@@ -126,7 +126,7 @@ func manual_effect(objective: Dictionary) -> Dictionary:return {str(objective.co
 
 func _supported(owner: String) -> bool:
 	var rail = game.equipment.get_equipment("leg_rail")
-	return game.model.assemblies[owner].location=="support:leg_holder" and rail!=null and rail.active_assembly==owner and rail.engaged and not rail.moving and rail.mode.is_empty() and rail.release==0 and rail.path==0 and rail.roll==0 and rail.roll_height==0 and is_equal_approx(rail.index_x,rail.spec.station_x) and rail.bolster==0
+	return game.model.assemblies[owner].location=="support:leg_holder" and rail!=null and rail.supports_construction(owner)
 
 func action_error(action: String) -> String:
 	if not action.begins_with("engage:") and not action.begins_with("stow:"):return "Unknown brace control."
@@ -167,7 +167,7 @@ func physics(delta: float) -> void:
 	if is_equal_approx(next,fixture.goal):
 		fixture.progress=fixture.goal;fixture.locked=fixture.goal==1;moving=false;active=""
 	var rail = game.equipment.get_equipment("leg_rail")
-	if rail!=null:rail.load_geometry.invalidate()
+	if rail!=null:rail.articulation_changed()
 
 func motion_error(fixture: Dictionary, from: float, to: float) -> String:
 	var excluded: Array[RID]=[]

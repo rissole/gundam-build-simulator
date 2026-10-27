@@ -623,20 +623,21 @@ def robot_documents(check=False):
     page(pages, "Retain the knee axle", "", cap_slots, ["LG-110__001", "LG-140__001"], goal="Cap the axle, engage both knee braces, then release and park the crane.", objectives=[dict(op="fit", slots=[cap_slots[0]]), dict(op="fit", slots=list(cap_slots[1:]))] + engage("knee") + deepcopy(RELEASE), note=dict(at=0, text="Work from the side opposite the axle aisle."))
     delivery("Deliver the Upper-leg beam", "spar", "LG-120", "fork flange")
     page(pages, "Fasten the Upper-leg beam flange", "", spar_slots[1:], ["LG-110__001", "LG-120__001"], goal="Bolt the beam flange, engage both flange braces, then release and park the crane.", objectives=[dict(op="fit", slots=list(spar_slots[1:]))] + engage("beam") + deepcopy(RELEASE), note=dict(at=0, text="Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the hip assembly M24 × 140."))
-    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table and retrieve it without losing progress. For rear work, park the movable platform, use Roll to raise the supported axis, then Roll to the next locked orientation. Return restores neutral roll, then construction height. Open the hip assembly manual for delivery."))
+    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Park the empty crane with both magnetic connectors stowed. The leg rig can park an unfinished leg on the transverse table (Park, then hold INDEX +) and retrieve it without losing progress. For rear work, park the movable platform, hold LIFT + on the Limb Bay panel to raise the supported axis, then hold ROLL + or ROLL − to turn to the next locked orientation; each press stops at a detent. Restore neutral ROLL, then hold LIFT − to return to construction height. Open the hip assembly manual for delivery."))
     pages.append(dict(title="Supported construction recovery", view="overview", slots=[], body="Return the supported leg home before construction disassembly. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to reacquire support before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the rail home, foot rig Return reacquires the foot and reverses one guided phase per press; Return again lowers it to dispatch."))
     trial_leg["manual"] = pages
     pages = []
     page(pages, "Seat the leg in the hip assembly", "", ["left_leg"], context_sources,
-         goal="Drive the finished leg on its rig to the Final Assembly Bay and dock it into the left hip.",
+         goal="Jog the finished leg on its rig to the Final Assembly Bay, stand it under the left hip and seat it.",
          objectives=[
-             dict(op="operate", machine="leg_rail", command="next:bolster"),
-             dict(op="operate", machine="leg_rail", command="next:index"),
-             dict(op="operate", machine="leg_rail", command="next:travel"),
-             dict(op="operate", machine="leg_rail", command="next:upright"),
-             dict(op="seat", slot="left_leg", via=dict(machine="leg_rail", command="next:dock")),
+             dict(op="operate", machine="leg_rail", command="bolster:stow"),
+             dict(op="operate", machine="leg_rail", command="index:lane"),
+             dict(op="operate", machine="leg_rail", command="travel:bay"),
+             dict(op="operate", machine="leg_rail", command="tilt:upright"),
+             dict(op="operate", machine="leg_rail", command="rise:dock"),
+             dict(op="seat", slot="left_leg", via=dict(machine="leg_rail", command="seat")),
          ],
-         note=dict(at=0, text="Park the empty crane first. The leg rig stays attached until the hip is pinned."))
+         note=dict(at=0, text="Park the empty crane first. Hold E on a panel arrow to jog one axis; you can look away while E is held. Each axis stops at its track or end stop. The pulsing outline shows the next target, and each readout turns green when its axis is aligned. The leg rig stays attached until the hip is pinned."))
     for half, pairs in ((1, (3, 4)), (2, (1, 2))):
         ordinal = "first" if half == 1 else "second"
         page(pages, "Carry retaining half " + str(half), "", ["ring_" + str(half)], ["PV-110__001", "PV-V-HIP-BALL"],
@@ -650,14 +651,18 @@ def robot_documents(check=False):
              objectives=[dict(op="fit", slots=list(ids))],
              note=dict(at=0, text=fasten_note))
     pages.append(dict(title="Release the leg rig", view="components", slots=[],
-        goal="Let the hip carry the leg, then send the empty rigs home.",
+        goal="Let the hip carry the leg, then drive the empty rigs home.",
         objectives=[
-            dict(op="operate", machine="leg_rail", command="next:release"),
-            dict(op="operate", machine="leg_rail", command="back:home"),
+            dict(op="operate", machine="leg_rail", command="release"),
+            dict(op="operate", machine="leg_rail", command="tilt:lying"),
+            dict(op="operate", machine="leg_rail", command="travel:home"),
+            dict(op="operate", machine="leg_rail", command="index:station"),
+            dict(op="operate", machine="leg_rail", command="extend"),
             dict(op="operate", machine="foot_carrier", command="return:home"),
             dict(op="operate", machine="leg_rail", command="build"),
-        ]))
-    pages.append(dict(title="Reacquire support and recover", view="overview", slots=[], body="If the empty leg rig has returned home, use Advance through travel, tilt and upward docking to bring it back under the mounted leg. The final docking motion automatically closes the leg rig jaws and reacquires support. If the released leg rig is already docked, Advance directly reacquires support. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before rail Return can unseat the leg, lower, reverse tilt and travel home, one phase per press. The same physical components can be installed again. Never remove retention while the leg rig is released."))
+        ],
+        note=dict(at=1, text="The released holder stays clear of the leg while it lies down and travels home. Reacquire at the station extends it again.")))
+    pages.append(dict(title="Reacquire support and recover", view="overview", slots=[], body="If the empty leg rig has returned home, Release compacts the empty holder for travel; hold INDEX to the hip track, TRAVEL + and TILT + to bring it back under the mounted leg, then Reacquire closes the holder on it. If the released leg rig is still docked, Reacquire directly. Wait for the leg rig to report engaged before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece before Unseat lifts the leg back onto the rig; then hold RISE −, TILT −, TRAVEL − and INDEX to return it. The same physical components can be installed again. Never remove retention while the leg rig is released."))
     trial_pelvis["manual"] = pages
     for definition in (trial_leg, trial_pelvis):
         for step in definition["manual"]:
@@ -724,9 +729,18 @@ def robot_documents(check=False):
     pauldrons=pauldrons_content(trial,chest,arms,trial_parts,workshop_layout,diagram)
     from author_head import extend as head_content
     head=head_content(trial,chest,trial_parts,workshop_layout,diagram)
-    from author_manual_progress import bind
-    bind({"left_leg": trial_leg, "pelvis": trial_pelvis, "chest": chest, **mirrored},
-         json.loads((ASSETS / "manual-chapters.json").read_text())["chapters"])
+    from author_manual_progress import bind, bind_procedures
+    chapter_document = json.loads((ASSETS / "manual-chapters.json").read_text())
+    bound = {"left_leg": trial_leg, "pelvis": trial_pelvis, "chest": chest, **mirrored}
+    bind(bound, chapter_document["chapters"])
+    # The left leg teaches each leg rig axis; the right leg repeats the goal
+    # with a link back to that first procedure page.
+    titled = lambda title: [["pelvis", i] for i, p in enumerate(trial_pelvis["manual"]) if p["title"] == title]
+    procedures = bind_procedures(bound, chapter_document["chapters"], {
+        "leg_delivery": dict(title="Jog the leg to its hip", machines=["leg_rail"], pages=titled("Seat the leg in the hip assembly")),
+        "leg_return": dict(title="Release the leg rig and drive it home", machines=["leg_rail"], pages=titled("Release the leg rig")),
+    })
+    assert chapter_document.get("procedures") == procedures, "Set manual-chapters.json procedures to " + json.dumps(procedures)
     for task in workshop_layout["crane"]["tasks"].values():
         if task.get("payload")!="assembly":trial["equipment"]["parts"][task["load_uid"]]["stock_position"]=list(task["source_pose"]["position"])
     catalogue_images(check, {key: value for key,value in trial_parts.items() if key not in parts and "catalogue_image" not in value},trial["parts"],trial["sources"])

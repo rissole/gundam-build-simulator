@@ -1111,7 +1111,7 @@ func validate(data: Variant, candidate: AssemblyModel = null, _world: Dictionary
 	if not inactive.is_empty():return inactive
 	if count > 0 and installed and _world.has("equipment") and receiver_support.is_empty() and not assembly_payload:
 		var rail: Dictionary = _world.equipment.leg_rail
-		if rail.path != 0 or rail.moving or not rail.engaged:return ["Attached crane task requires the engaged rail home."]
+		if not game.equipment.get_equipment("leg_rail").on_table(rail) or not rail.engaged:return ["Attached crane task requires the engaged rail home."]
 	if assembly_payload and carried and _world.has("fixtures"):
 		if not preload("res://scripts/pose_codec.gd").to_pose(_world.fixtures[uid]).is_equal_approx(load_pose(_path(data.station,data.raised,data.motion,data.progress))):return ["Suspended assembly pose disagrees with its crane route."]
 	if not receiver_support.is_empty() and count>0 and installed and _world.has("equipment"):
@@ -1177,7 +1177,7 @@ func _receiver_error(route: Dictionary = {}) -> String:
 		if live and _installed():return "" if receiver.path==0 and receiver.withdrawal==0 and not receiver.moving else "Return the receiving carrier to dispatch first."
 		return "" if receiver.can_receive(id) else "Return the empty foot rig to dispatch, extend its sole pads and select the matching leg on the leg rig."
 	var rail = game.equipment.get_equipment("leg_rail")
-	if rail == null or rail.path > .0001 or rail.moving or not rail.engaged:return "Return the engaged leg rig home before crane delivery or reacquisition."
+	if rail == null or not rail.on_table() or rail.moving or not rail.engaged:return "Return the engaged leg rig home before crane delivery or reacquisition."
 	if rail.has_method("can_construct") and not rail.can_construct():return "Return the leg rig to the Limb Bay and restore construction roll before crane delivery."
 	if rail.has_method("can_construct") and rail.active_assembly!=spec.owner:return "Use Build on the leg rig to choose the "+spec.owner.replace("_"," ")+" first."
 	return ""

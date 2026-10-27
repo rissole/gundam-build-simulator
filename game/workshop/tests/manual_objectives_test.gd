@@ -270,42 +270,43 @@ func run() -> void:
 	var pins = preload("res://scripts/captive_controls.gd").new();game.add_child(pins);pins.equipment_id="captive_controls";game.equipment.register(pins)
 	pins.specs=content.equipment.captive_controls
 	for id in pins.specs:pins.locked[id]=false
-	var rail = preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail);rail.equipment_id="leg_rail";game.equipment.register(rail)
-	rail.spec={"station_x":14.0,"lanes":{"left":10.0,"right":18.0}}
-	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.path=0.0;rail.bolster=0.0;rail.release=0.0;rail.index_x=14.0;rail.moving=false;rail.mode=""
+	var rail = preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail);rail.game=game;rail.equipment_id="leg_rail";game.equipment.register(rail)
+	rail.spec=layout.workshop.rail
+	rail.lane="left";rail.active_assembly="left_leg";rail.engaged=true;rail.bolster=0.0;rail.release=0.0;rail.index_x=14.0;rail.travel_z=14.5;rail.tilt_deg=0.0;rail.rise_m=0.0
 	var seat := page_named(definitions.pelvis.manual,"Seat the leg in the hip assembly")
 	var seat_text: Array[String] = []
 	for objective in seat.objectives:seat_text.append(Objectives.text(game,"pelvis",objective))
-	var seat_prefix := true
-	for index in range(seat_text.size()-1):
-		if not seat_text[index].begins_with("Leg rig: Next — "):seat_prefix=false
-	expect(seat_prefix and seat_text[seat_text.size()-1]=="Leg rig: Next to seat the structural left leg","seat text, got "+str(seat_text))
+	expect(seat_text==["Leg rig: Hold BOLSTER + — until the foot bolster stows","Leg rig: Hold INDEX — toward the selected hip track until the table stops on it","Leg rig: Hold TRAVEL + — until the bogie stops at the Final Assembly Bay","Leg rig: Hold TILT + — until the leg stands upright","Leg rig: Hold RISE + — until it stops just below the hip","Leg rig: Tap Seat when every mark is green to seat the structural left leg"],"seat text names one physical axis per objective, got "+str(seat_text))
 	var at_home = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(at_home,[false,false,false,false,false]),"leg rig at home ticks nothing, got "+str(at_home.ticked))
+	expect(same_ticks(at_home,[false,false,false,false,false,false]),"leg rig at home ticks nothing, got "+str(at_home.ticked))
 	rail.bolster=1.0
 	var stowed = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(stowed,[true,false,false,false,false]),"stowed bolster ticks the first phase, got "+str(stowed.ticked))
-	rail.index_x=10.0
+	expect(same_ticks(stowed,[true,false,false,false,false,false]),"stowed bolster ticks the first axis, got "+str(stowed.ticked))
+	rail.index_x=11.9
 	var indexed = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(indexed,[true,true,false,false,false]),"indexed lane ticks two, got "+str(indexed.ticked))
-	rail.path=0.4
+	expect(same_ticks(indexed,[true,true,false,false,false,false]),"indexed lane ticks two, got "+str(indexed.ticked))
+	rail.travel_z=20.0
 	var traveling = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(traveling,[true,true,false,false,false]),"travel in motion keeps the lane, got "+str(traveling.ticked))
-	rail.path=1.0
+	expect(same_ticks(traveling,[true,true,false,false,false,false]),"a jog part way keeps the lane, got "+str(traveling.ticked))
+	rail.travel_z=26.0
 	var at_bay = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(at_bay,[true,true,true,false,false]),"bay arrival ticks travel, got "+str(at_bay.ticked))
-	rail.path=1.6
+	expect(same_ticks(at_bay,[true,true,true,false,false,false]),"bay end stop ticks travel, got "+str(at_bay.ticked))
+	rail.tilt_deg=50.0
 	var turning = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(turning,[true,true,true,false,false]),"turning keeps travel, got "+str(turning.ticked))
-	rail.path=2.0
+	expect(same_ticks(turning,[true,true,true,false,false,false]),"part tilt keeps travel, got "+str(turning.ticked))
+	rail.tilt_deg=90.0
 	var upright = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(upright,[true,true,true,true,false]),"upright ticks four, got "+str(upright.ticked))
-	rail.path=3.0
+	expect(same_ticks(upright,[true,true,true,true,false,false]),"upright ticks four, got "+str(upright.ticked))
+	rail.rise_m=1.17
+	var raised = Objectives.evaluate(game,"pelvis",seat)
+	expect(same_ticks(raised,[true,true,true,true,true,false]),"rise ceiling inside the capture window ticks five, got "+str(raised.ticked))
+	rail.rise_m=1.2
 	var docked = Objectives.evaluate(game,"pelvis",seat)
-	expect(not docked.ticked[4],"leg rig dock stop alone does not mount the leg")
+	expect(not docked.ticked[5],"green alignment and the docked pose alone do not mount the leg")
 	game.model.assemblies.pelvis.slots.left_leg = "left_leg"
+	game.model.assemblies.left_leg.parent = "pelvis";game.model.assemblies.left_leg.parent_slot = "left_leg"
 	docked = Objectives.evaluate(game,"pelvis",seat)
-	expect(same_ticks(docked,[true,true,true,true,true]) and docked.machine_complete,"dock completes seating, got "+str(docked.ticked)+" complete "+str(docked.machine_complete))
+	expect(same_ticks(docked,[true,true,true,true,true,true]) and docked.machine_complete,"actual mounting completes seating, got "+str(docked.ticked)+" complete "+str(docked.machine_complete))
 	var cylinders: Array = []
 	var releases: Array = []
 	for step in definitions.pelvis.manual:
@@ -318,28 +319,37 @@ func run() -> void:
 	for objective in releases[1].objectives:
 		if str(objective.get("command",""))=="build":has_build=true
 	expect(not has_build,"right release has no build objective")
-	rail.engaged=false;rail.release=5.0;rail.path=2.0
+	rail.engaged=false;rail.release=5.0;rail.rise_m=0.0
 	var let_go = Objectives.evaluate(game,"pelvis",releases[0])
-	expect(same_ticks(let_go,[true,false,false,false]),"release arrival ticks only the let-go, got "+str(let_go.ticked))
-	rail.path=1.4
+	expect(same_ticks(let_go,[true,false,false,false,false,false,false]),"release arrival ticks only the let-go, got "+str(let_go.ticked))
+	rail.tilt_deg=30.0
+	var lying = Objectives.evaluate(game,"pelvis",releases[0])
+	expect(same_ticks(lying,[true,false,false,false,false,false,false]),"part tilt keeps the let-go, got "+str(lying.ticked))
+	rail.tilt_deg=0.0;rail.travel_z=20.0
 	var returning = Objectives.evaluate(game,"pelvis",releases[0])
-	expect(same_ticks(returning,[true,false,false,false]),"return in motion keeps the let-go, got "+str(returning.ticked))
-	rail.path=0.0;rail.index_x=14.0;rail.release=0.0
+	expect(same_ticks(returning,[true,true,false,false,false,false,false]),"lying holder ticks its tilt while travel is part way, got "+str(returning.ticked))
+	rail.travel_z=14.5
+	var table = Objectives.evaluate(game,"pelvis",releases[0])
+	expect(same_ticks(table,[true,true,true,false,false,false,false]),"table arrival ticks travel, got "+str(table.ticked))
+	rail.index_x=14.0
+	var station = Objectives.evaluate(game,"pelvis",releases[0])
+	expect(same_ticks(station,[true,true,true,true,false,false,false]),"station arrival ticks index, got "+str(station.ticked))
+	rail.release=0.0
 	var rig_home = Objectives.evaluate(game,"pelvis",releases[0])
-	expect(same_ticks(rig_home,[true,true,false,false]),"empty rig home ticks the return, got "+str(rig_home.ticked))
+	expect(same_ticks(rig_home,[true,true,true,true,true,false,false]),"extended empty holder ticks the return, got "+str(rig_home.ticked))
 	rig.path=0.0
 	var foot_home = Objectives.evaluate(game,"pelvis",releases[0])
-	expect(same_ticks(foot_home,[true,true,true,false]),"foot rig dispatch ticks its return, got "+str(foot_home.ticked))
+	expect(same_ticks(foot_home,[true,true,true,true,true,true,false]),"foot rig dispatch ticks its return, got "+str(foot_home.ticked))
 	rail.active_assembly="right_leg";rail.engaged=true;rail.lane="right"
 	var selected = Objectives.evaluate(game,"pelvis",releases[0])
-	expect(same_ticks(selected,[true,true,true,true]) and selected.machine_complete,"build selects the right leg, got "+str(selected.ticked)+" complete "+str(selected.machine_complete))
+	expect(same_ticks(selected,[true,true,true,true,true,true,true]) and selected.machine_complete,"build selects the right leg, got "+str(selected.ticked)+" complete "+str(selected.machine_complete))
 	var shoulder = preload("res://scripts/shoulder_support.gd").new();game.add_child(shoulder);shoulder.equipment_id="left_shoulder";game.equipment.register(shoulder)
 	var pauldron = preload("res://scripts/staged_receiver.gd").new();game.add_child(pauldron);pauldron.equipment_id="left_pauldron_receiver"
 	pauldron.spec={"title":"Prepared left pauldron carrier","operations":[{"id":"joint_restraints","label":"elbow / wrist restraints"},{"id":"digit_cradle","label":"digit cradle"}]}
 	game.equipment.register(pauldron)
 	var arm_rig := page_named(definitions.chest.manual,"Bring the arm rig to the Limb Bay")
 	var arm_park := Objectives.text(game,"chest",arm_rig.objectives[0])
-	expect(arm_park=="Leg rig: Park","left arm rig starts by parking the leg rig, got "+arm_park)
+	expect(arm_park=="Leg rig: Park, then hold INDEX + — until the table stops at X22","left arm rig starts by parking the leg rig, got "+arm_park)
 	var brakes := page_named(definitions.chest.manual,"Left shoulder: connect services")
 	var brake_line := Objectives.text(game,"chest",brakes.objectives[0])
 	expect(brake_line=="Crane console: Check left shoulder brakes","shoulder brake check, got "+brake_line)

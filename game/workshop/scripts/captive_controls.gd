@@ -68,7 +68,7 @@ func action_error(action: String) -> String:
 	if not available(action):return "Fit the hip cylinder before operating its lock pin."
 	var spec: Dictionary=specs[action]
 	var rail=game.equipment.get_equipment("leg_rail")
-	if rail==null or rail.active_assembly!=spec.support_assembly or not rail.engaged or rail.path!=3 or rail.release!=0 or rail.moving or not rail.mode.is_empty():return "Reacquire and lock the leg rig before changing a lock pin."
+	if rail==null or not rail.supports_seated(spec.support_assembly):return "Reacquire and lock the leg rig before changing a lock pin."
 	if not locked[action] and not spec.requires.all(func(sid):return not game.model.assemblies[spec.owner].slots[sid].is_empty()):return "Fit both eye pins and their captive keepers before inserting this lock pin."
 	return game.hands.error(equipment_id)
 
