@@ -38,6 +38,9 @@ func physics(delta: float) -> void:
 		return
 	_held_control.handler.call(true,delta)
 
+## The control E is holding, for cues that should rest while it is in hand.
+func held_control() -> Dictionary:return _held_control
+
 func release_control() -> void:
 	var previous = _held_control
 	_held_control = {}
@@ -92,9 +95,13 @@ func handle(event: InputEvent) -> void:
 			KEY_0: game.model.select_pocket(9)
 			KEY_E:
 				if fresh_interact:
+					# Refusals answer only an action the prompt offered; pressing
+					# E at anything else is silent.
+					game.hud.quiet_errors = game.targeting.offered_key.is_empty()
 					if EquipmentButton.hold_handler(game.target).is_valid():
 						_held_control = game.targeting.latch_control()
 					else:game.interact(event.shift_pressed)
+					game.hud.quiet_errors = false
 			KEY_Q:
 				var rope = game.equipment.get_equipment("rope_access")
 				if rope!=null and rope.attached():

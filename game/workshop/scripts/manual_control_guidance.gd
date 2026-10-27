@@ -59,6 +59,7 @@ func update() -> void:
 		clear()
 		return
 	var eligible: Array[Node3D] = []
+	var held: Dictionary = game.desktop_input.held_control()
 	var entries: Array = machine.manual_control_entries(objective) if is_instance_valid(machine) else []
 	var rope = game.equipment.get_equipment("rope_access")
 	if rope!=null:entries.append_array(rope.access_control_entries(objective,objective_owner,machine))
@@ -67,9 +68,12 @@ func update() -> void:
 		if not is_instance_valid(node) or not node.is_visible_in_tree():continue
 		var point: Vector3 = entry.get("point",node.global_position)
 		if game.camera.global_position.distance_squared_to(point)>RANGE*RANGE or not game.camera.is_position_in_frustum(point):continue
+		# The cue rests while E holds this control, so the player knows they found it.
+		if not held.is_empty() and held.get("controller")==entry.get("controller") and held.get("action")==entry.get("action"):continue
 		# Local controls never inherit receiver proxy exclusions: the same
 		# machine can obscure a handle on its far side, as can unrelated scenery.
-		if not game.targeting.can_see(point,entry.get("allowed",[])):continue
+		# A control that is its own collider (`sight_self`) is seen when hit.
+		if not game.targeting.can_see(point,entry.get("allowed",[]),entry.get("sight_self",false)):continue
 		# Pickup/obstruction focus wins over the quieter manual cue.
 		var focus: Node3D = game.interaction_outline.focused
 		if is_instance_valid(focus) and (focus==node or focus.is_ancestor_of(node)):continue

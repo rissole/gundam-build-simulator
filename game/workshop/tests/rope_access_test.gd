@@ -10,6 +10,7 @@ const Codec = preload("res://scripts/pose_codec.gd")
 class Hud extends RefCounted:
 	var browser: Control = Control.new()
 	var message=""
+	var quiet_errors=false
 	func toast(value: String, _success: bool=false) -> void:message=value
 	func refresh() -> void:pass
 	func handle_manual_browser_input(_event: InputEvent) -> bool:return false
@@ -102,6 +103,8 @@ func aim_upper(action: String, top: bool) -> bool:
 	for entry in access.controls():
 		if entry.action!=action or (entry.point.y>10)!=top:continue
 		game.camera.look_at(entry.point);game.target=entry
+		# The panel prompt offers E exactly when the action is available.
+		game.targeting.offered_key="E" if access.action_error(action).is_empty() else ""
 		return game.targeting.aim_score(entry.point,entry.radius)!=INF and game.targeting.access([entry.node]).is_empty()
 	return false
 

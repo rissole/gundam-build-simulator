@@ -637,7 +637,7 @@ def robot_documents(check=False):
              dict(op="seat", slot="left_leg", via=dict(machine="leg_rail", command="rise")),
              dict(op="operate", machine="workshop_access", command="lower_close"),
          ],
-         note=dict(at=0, text="Park the empty crane first. Find the foot support at the foot end of the rig, the transfer table lever in front of the table, the bogie box beside the table, and the LOWER FRONT panel beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."))
+         note=dict(at=0, text="Park the empty crane first. Find the foot support under the foot (reach it from either side of the rig), the transfer table lever in front of the table, the bogie box beside the table, and the LOWER FRONT panel beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."))
     for half, pairs in ((1, (3, 4)), (2, (1, 2))):
         ordinal = "first" if half == 1 else "second"
         page(pages, "Carry retaining half " + str(half), "", ["ring_" + str(half)], ["PV-110__001", "PV-V-HIP-BALL"],

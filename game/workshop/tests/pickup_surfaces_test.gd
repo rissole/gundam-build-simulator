@@ -3,6 +3,7 @@ extends "res://tests/kit/harness.gd"
 class Hud extends Node:
 	var caption = ""
 	var message = ""
+	var quiet_errors = false
 	func present_target(text: String, _key = "", _label = "", _point = Vector2.ZERO, _usable = false):caption = text
 	func toast(text: String, _good = false):message = text
 	func refresh():pass
@@ -74,6 +75,11 @@ class Fixture extends Node3D:
 		components = preload("res://scripts/component_interaction.gd").new(self);add_child(components)
 		targeting = preload("res://scripts/targeting.gd").new(self)
 		input = preload("res://scripts/desktop_input.gd").new(self)
+## A fresh E press and its release; E acts only on a fresh press.
+func press_e(game) -> void:
+	for down in [true,false]:
+		var event = InputEventKey.new();event.physical_keycode = KEY_E;event.pressed = down;game.input.handle(event)
+
 func _initialize():run.call_deferred()
 func body(game: Fixture, uid: String, mesh: Mesh, pose = Transform3D.IDENTITY) -> WorkshopPart:
 	var result = WorkshopPart.new();result.uid = uid;result.freeze = true;result.collision_layer = 2
@@ -110,7 +116,7 @@ func run():
 		await frames(2)
 		aim(game,eye,at)
 		expect(game.target.get("uid","") == uid and game.interaction_outline.focused == item,"Visible material selects and outlines "+uid+" under source/dropped transforms")
-		var event = InputEventKey.new();event.physical_keycode = KEY_E;event.pressed = true;game.input.handle(event)
+		press_e(game)
 		expect(game.model.held_item() == uid and game.components.held_body == item,"Desktop E takes the aimed identity "+uid)
 		game.model.release_item("loose");game.components.held_body = null;item.free()
 	# A real half-ring's central hole, with its coarse solid-box collider, must
@@ -126,7 +132,7 @@ func run():
 	var builds: int = query.builds;var collections: int = query.collections
 	for frame in 30:game.targeting.update_target()
 	expect(query.builds == builds and query.collections == collections,"Warm aim reuses mesh BVHs and hierarchy membership without face or tree scans")
-	var event = InputEventKey.new();event.physical_keycode = KEY_E;event.pressed = true;game.input.handle(event)
+	press_e(game)
 	expect(game.model.held_item() == "small","Desktop E through the real hole collects the visible object behind")
 	game.model.release_item("loose");game.components.held_body = null;game.loose.small = cube;cube.held = false
 	var wall = StaticBody3D.new();wall.collision_layer = 1;game.add_child(wall)
@@ -134,7 +140,7 @@ func run():
 	await frames(2)
 	aim(game,Vector3(0,1,-.12),cube.global_position)
 	expect(game.target.is_empty() and game.interaction_outline.focused == null,"Unrelated wall blocks selection and clears the same pickup outline")
-	game.input.handle(event)
+	press_e(game)
 	expect(game.model.held_item().is_empty(),"Desktop E cannot collect through unrelated scenery")
 	wall.free();ring.free()
 	await frames(2)
@@ -145,7 +151,7 @@ func run():
 	game.equipment.entries.assign([{"type":"equipment","controller":shelf,"action":"take:0","label":"Shelf component","point":Vector3(8,8,8),"radius":.3,"input":"pickup","node":cube,"pickup_body":cube,"allowed":[cube],"allow_body_hit":true}])
 	aim(game,Vector3(0,1,-.12),cube.global_position)
 	expect(game.target.get("type","") == "equipment" and game.interaction_outline.focused == cube,"Supported pickup uses the mesh hit even when its proxy target is off screen")
-	game.input.handle(event)
+	press_e(game)
 	expect(game.model.held_item() == "small" and is_instance_valid(game.components.held_body),"Desktop E transfers supported ownership through the ordinary equipment pickup path")
 	game.components.held_body.free();game.components.held_body = null;game.model.release_item("loose");game.loose.clear()
 	var near = body(game,"small",cube_mesh,Transform3D(Basis.IDENTITY,Vector3(0,0,-2.04)))
@@ -155,7 +161,7 @@ func run():
 	near.position.z = -2.2
 	await frames(2)
 	aim(game,Vector3.ZERO,near.global_position)
-	game.input.handle(event)
+	press_e(game)
 	expect(game.model.held_item().is_empty(),"Desktop E preserves the reach limit at the actual pickup surface")
 	near.free();game.loose.clear()
 	var passed = checks.all(func(c):return c.passed)

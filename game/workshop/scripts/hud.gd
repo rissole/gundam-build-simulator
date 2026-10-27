@@ -3,6 +3,8 @@ const Diagram = preload("res://scripts/manual_diagram.gd")
 const ManualBrowser = preload("res://scripts/manual_browser.gd")
 const ManualObjectives = preload("res://scripts/manual_objectives.gd")
 var game: Node
+## Set while E acts on a target whose prompt offered no E: refusals stay silent.
+var quiet_errors := false
 var root: Control
 var manual: PanelContainer
 var page_title: Label
@@ -874,6 +876,7 @@ func _fill_step_panel(step: Dictionary) -> void:
 	diagram.show_parts(game,packed[0],packed[1])
 
 func toast(text: String, success: bool = false) -> void:
+	if quiet_errors and not success:return
 	toast_label.text = text
 	toast_label.add_theme_color_override("font_color",tone if success else Color("ffd2a0"))
 	toast_time = 5.0

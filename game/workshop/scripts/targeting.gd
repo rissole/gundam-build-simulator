@@ -3,6 +3,9 @@ extends RefCounted
 var game: Node
 var pickup_surfaces = preload("res://scripts/pickup_surfaces.gd").new()
 var pickup_bodies: Dictionary = {}
+## The key the visible prompt offers ("E", "Hold E" or ""). E explains a
+## failure only for an action its prompt offered.
+var offered_key := ""
 
 func _init(workshop: Node) -> void:
 	game = workshop
@@ -15,7 +18,7 @@ func latch_control() -> Dictionary:
 	if not error.is_empty():
 		game.hud.toast(error)
 		return {}
-	return {"node":game.target.node,"handler":handler}
+	return {"node":game.target.node,"handler":handler,"controller":game.target.get("controller"),"action":game.target.get("action","")}
 
 func update_target() -> void:
 	game.target = {}
@@ -212,6 +215,7 @@ func _present_outline(pickup: Node3D = null) -> void:
 	else:game.interaction_outline.clear()
 
 func present_target(access_error: String) -> void:
+	offered_key = ""
 	if game.target.is_empty() or game.paused:
 		game.hud.present_target("")
 		_present_outline()
@@ -296,6 +300,7 @@ func present_target(access_error: String) -> void:
 		game.hud.present_target("")
 		return
 	if not detail.is_empty():caption += "\n"+detail
+	offered_key = action_key if action_key.ends_with("E") else ""
 	game.hud.present_target(caption,action_key,action_label,game.camera.unproject_position(presentation_point),usable)
 
 func target_sight_depth() -> float:

@@ -97,9 +97,12 @@ func build_controls() -> void:
 	var key=EquipmentButton.make(game,clamp_switch,Vector3(-.07,.95,0),"LEG CLAMPS",-PI/2,true)
 	buttons.append(control_entry(key,"clamps","clamps",.14))
 	for side in [-1,1]:
-		var pad: Node3D=layout.cradle.pieces["BolsterPad_"+str(side)].visual
-		EquipmentButton.set_hold_handler(pad,_hold.bind("support"))
-		buttons.append(control_entry(pad,"support","support",.3,{"side":side}))
+		var piece: Dictionary=layout.cradle.pieces["BolsterPad_"+str(side)]
+		EquipmentButton.set_hold_handler(piece.visual,_hold.bind("support"))
+		# The pad and its link are the control's own solids: a sightline that
+		# reaches either sees the foot support.
+		var own: Array=[piece.body,layout.cradle.pieces["BolsterLink_"+str(side)].body]
+		buttons.append(control_entry(piece.visual,"support","support",.3,{"side":side,"allowed":own,"allow_body_hit":true,"sight_self":true}))
 
 ## A control box whose face points along local −X; `yaw` turns the whole box.
 func _box(at: Vector3, yaw: float, title: String, id: String) -> Node3D:
@@ -252,10 +255,11 @@ func controls() -> Array[Dictionary]:
 		result.append(entry)
 	return result
 
-## The manual's gold glow marks the physical control for each objective.
+## The manual's gold glow marks on-rig controls only (foot support, lever, clamp
+## switch); control box buttons never glow.
 func manual_control_actions(objective: Dictionary) -> Array:
-	return {"support:away":["support"],"table:hip":["lever"],"table:build":["lever"],"table:park":["lever"],"travel:bay":["travel+"],"travel:home":["travel-"],
-		"rise":["rise+"],"lower":["rise-"],"clamps:release":["clamps"],"clamps:grab":["clamps"],"next_leg":["next_leg"]}.get(str(objective.get("command","")),[])
+	return {"support:away":["support"],"table:hip":["lever"],"table:build":["lever"],"table:park":["lever"],
+		"clamps:release":["clamps"],"clamps:grab":["clamps"]}.get(str(objective.get("command","")),[])
 
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String = "") -> String:
@@ -337,8 +341,8 @@ func _needs(action: String) -> Array:
 	var front_open: bool=access==null or access.front_open("lower")
 	var gantry=game.equipment.get_equipment("module_supports")
 	var at_build=_need("AT BUILD POSITION",carrying and at_station(),"Bring the leg to the build position first: transfer table lever to RIGHT HIP · BUILD.")
-	var under=_need("FOOT SUPPORT UNDER FOOT",foot_support==0,"Push the foot support back under the foot first (at the foot end of the rig).")
-	var away=_need("FOOT SUPPORT AWAY",foot_support>=1,"Pull the foot support away from the foot first (at the foot end of the rig).")
+	var under=_need("FOOT SUPPORT UNDER FOOT",foot_support==0,"Push the foot support back under the foot first (under the foot, from either side of the rig).")
+	var away=_need("FOOT SUPPORT AWAY",foot_support>=1,"Pull the foot support away from the foot first (under the foot, from either side of the rig).")
 	var braced=_need("BRACES LOCKED",brace_error.is_empty(),brace_error)
 	var turnover=_need("TURNOVER LOWERED",roll_deg==0 and roll_height_m==0,"Roll the turnover to neutral and lower it first (turnover box at the head end of the table).")
 	var on=_need("BOGIE ON TABLE",on_table(),"Drive the bogie back onto the table first (bogie box: TO TABLE).")

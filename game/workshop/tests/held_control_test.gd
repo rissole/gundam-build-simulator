@@ -4,9 +4,11 @@ const EquipmentButton = preload("res://scripts/equipment_button.gd")
 class Hud extends RefCounted:
 	var messages: Array[String] = []
 	var consume = false
+	var quiet_errors = false
 	func handle_manual_browser_input(_event):return consume
 	func refresh():pass
-	func toast(message):messages.append(message)
+	func toast(message):
+		if not quiet_errors:messages.append(message)
 class Look extends RefCounted:
 	var total = Vector2.ZERO
 	func look(relative):total += relative
@@ -52,7 +54,7 @@ func run():
 	var button = MeshInstance3D.new();game.add_child(button);button.position = Vector3(0,0,-1)
 	EquipmentButton.set_hold_handler(button,controller.held.bind("index+"))
 	var target = {"type":"equipment","controller":controller,"node":button,"action":"index+","point":button.global_position}
-	game.target = target
+	game.target = target;game.targeting.offered_key = "Hold E"
 	key(input,true);input.physics(.02);input.physics(.03)
 	expect(controller.events==[[true,.02,"index+"],[true,.03,"index+"]],"one held callback per physics tick with delta")
 	expect(game.taps.is_empty(),"holdable press does not invoke tap action")
@@ -81,7 +83,11 @@ func run():
 	expect(controller.events.back()[0]==false,"release survives manual input consumption")
 	controller.refusal = "Close the rail gates."
 	count = controller.events.size();key(input,true);input.physics(.01);key(input,false)
-	expect(controller.events.size()==count and game.hud.messages.back()==controller.refusal,"initial machine refusal prevents latch and is shown")
+	expect(controller.events.size()==count and game.hud.messages.back()==controller.refusal,"initial machine refusal of a prompted hold prevents latch and is shown")
+	var shown = game.hud.messages.size();game.targeting.offered_key = ""
+	key(input,true);input.physics(.01);key(input,false)
+	expect(controller.events.size()==count and game.hud.messages.size()==shown and not game.hud.quiet_errors,"E without an offered prompt refuses silently and restores toasts")
+	game.targeting.offered_key = "Hold E"
 	controller.refusal = "";game.target = target.duplicate();game.target.point = Vector3(0,0,-3)
 	key(input,true);input.physics(.01);key(input,false)
 	expect(controller.events.size()==count and game.hud.messages.back().begins_with("Out of reach"),"initial reach check prevents remote latch")

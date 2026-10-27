@@ -44,6 +44,9 @@ class Crane extends "res://scripts/service_crane.gd":
 	func menu_options() -> Array[Dictionary]:return options
 	func _guide() -> Node:return guided_node
 	func action_error(action: String) -> String:return "Unavailable" if action in unavailable else ""
+class HeldInput extends RefCounted:
+	var held: Dictionary={}
+	func held_control() -> Dictionary:return held
 class World extends Node3D:
 	const WORLD_MASK=15
 	var camera: Camera3D
@@ -56,6 +59,7 @@ class World extends Node3D:
 	var targeting: RefCounted
 	var interaction_outline: Node3D
 	var paused=false
+	var desktop_input=HeldInput.new()
 var game: World
 func _initialize() -> void:run.call_deferred()
 
@@ -96,10 +100,12 @@ func mappings(node: Node3D) -> void:
 	var foot=preload("res://scripts/foot_carrier.gd").new();game.add_child(foot)
 	var rail=preload("res://scripts/indexed_leg_rail.gd").new();game.add_child(rail)
 	expect(foot.manual_control_actions({"command":"advance:2"}).is_empty() and foot.manual_control_actions({"command":"return:home"}).is_empty(),"Foot rig panel buttons have no cue")
-	var rail_controls={"support:away":"support","table:hip":"lever","travel:bay":"travel+","rise":"rise+","clamps:release":"clamps","lower":"rise-","travel:home":"travel-","table:build":"lever","clamps:grab":"clamps","next_leg":"next_leg","table:park":"lever"}
+	# On-rig controls glow; the bogie box buttons are rig panel buttons and do not.
+	var rail_controls={"support:away":"support","table:hip":"lever","travel:bay":"","rise":"","clamps:release":"clamps","lower":"","travel:home":"","table:build":"lever","clamps:grab":"clamps","next_leg":"","table:park":"lever"}
 	expect(rail_controls.size()==rail.MANUAL_COMMANDS.size(),"all leg rig manual commands have a cue expectation")
 	for command in rail_controls:
-		expect(rail.manual_control_actions({"command":command})==[rail_controls[command]],"Leg rig "+command+" cues its physical "+rail_controls[command]+" control")
+		var want: Array=[] if rail_controls[command].is_empty() else [rail_controls[command]]
+		expect(rail.manual_control_actions({"command":command})==want,"Leg rig "+command+(" cues its physical "+rail_controls[command]+" control" if not want.is_empty() else " (bogie box button) has no cue"))
 	var front=preload("res://tests/kit/manual_fronts.gd").new();game.add_child(front)
 	for command in front.MANUAL_COMMANDS:front.entries.append(entry(front,command,node))
 	for command in front.MANUAL_COMMANDS:
@@ -173,6 +179,18 @@ func run() -> void:
 	cue.update();expect(cue.visible_controls.is_empty(),"Real physics obstruction suppresses a fully occluded control")
 	blocker.queue_free();await frames(2);cue.update()
 	expect(cue.visible_controls==[node],"Removing the obstruction restores the retained cue")
+	game.desktop_input.held={"controller":machine,"action":control.action};cue.update()
+	expect(cue.visible_controls.is_empty(),"The cue rests while E holds its control")
+	game.desktop_input.held={};cue.update()
+	expect(cue.visible_controls==[node],"Letting go restores the cue")
+	# A control that is its own collider (the leg rig's foot support pad).
+	var pad=StaticBody3D.new();game.add_child(pad);pad.position=Vector3(0,0,-2)
+	var pad_shape=CollisionShape3D.new();pad_shape.shape=BoxShape3D.new();pad_shape.shape.size=Vector3(.3,.3,.3);pad.add_child(pad_shape)
+	await frames(2)
+	cue.update();expect(cue.visible_controls.is_empty(),"A control's own solid hides its centre without sight_self")
+	control.allowed=[pad];control.sight_self=true;cue.update()
+	expect(cue.visible_controls==[node],"A sight_self control is seen when the sightline reaches its own solid")
+	pad.queue_free();await frames(2);control.erase("allowed");control.erase("sight_self")
 	game.manual_progress._queued=true;cue.update();expect(cue.visible_controls.is_empty(),"Queued manual changes clear stale cues before deferred recomputation")
 	expect(Objectives.note({"objectives":[{"op":"operate"}],"note":{"at":0,"text":"Fit both end pins first."}},0)=="Fit both end pins first." and Objectives.note({"objectives":[{"op":"connect"}]},0).is_empty(),"Machine notes show only authored details")
 	var passed=checks.all(func(check):return check.passed)

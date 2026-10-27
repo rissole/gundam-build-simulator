@@ -233,6 +233,34 @@ returns both legs. No presentation or player acceptance is claimed. Launch
 - [ ] Clearances are tight but measured: the bogie box clears the rig's travel by
   40 mm and the turnover box clears the table by 150 mm (conservative bounds).
 
+**First play, 2026-10-28 (user):** "I can't even tell where the foot support
+is" — it should glow like other on-rig controls — and it should stop glowing
+while you're grabbing it, as feedback that you've found it. E-key messages were
+unhelpful: random errors, "Aim at a drawer, shelf or loose component", and "This
+fixture stays at its work station" when pressing E on the leg. Rule: an E
+refusal answers only an action the target's E prompt offered.
+
+Fixed (routine checks only, player recheck pending):
+
+- The foot support's sight check aimed at the centre of its own pad, so every
+  view hit the pad itself; it had neither the glow nor a Hold E prompt. The pad
+  and its link now count as the control. A real-scene probe shows the glow and
+  Hold E from either side of the rig. From the foot end, the foot carrier's sole
+  crossbar hides it, so the manual note and lamp refusals now say "under the
+  foot, from either side of the rig".
+- A control's glow rests while E holds it and returns when released (every held
+  control, not only the foot support).
+- Leg rig glow follows the on-rig rule: foot support, transfer table lever and
+  LEG CLAMPS switch glow; bogie box buttons do not, like other rig panel
+  buttons. The gantry front panel rows still glow as gantry v2 had them.
+- E at a target whose prompt offers no E (or at nothing) is silent. Successful
+  actions are unchanged, and refusals still show for prompted actions.
+
+- [ ] Recheck: find the foot support from its glow, grab it (glow goes out),
+  pull it away. Press E around the rig and the leg: no stray messages.
+- [ ] Is the lever's glow wanted? It is a large floor lever beside the table,
+  not a small control on the rig.
+
 ### Operated rigs open questions — Phase 1
 
 These questions were written for the rejected v1 rig. Items about the 2 m
