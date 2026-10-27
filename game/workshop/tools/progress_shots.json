@@ -11,6 +11,12 @@
       ],
       "setup": [
         {
+          "equipment": "workshop_access",
+          "front": "upper",
+          "open": true,
+          "settle": true
+        },
+        {
           "shelf": "head_sensors"
         },
         {
@@ -215,7 +221,8 @@
           "start": [
             {
               "equipment": "workshop_access",
-              "mode": "arm"
+              "front": "lower",
+              "open": true
             }
           ],
           "target": [
@@ -295,7 +302,8 @@
           "start": [
             {
               "equipment": "workshop_access",
-              "mode": "pelvis"
+              "front": "upper",
+              "open": true
             }
           ],
           "target": [
@@ -441,12 +449,14 @@
       "setup": [
         {
           "equipment": "leg_rail",
-          "jog": "bolster+",
+          "call": "pull_support",
+          "value": 1,
           "settle": true
         },
         {
           "equipment": "leg_rail",
-          "jog": "index-",
+          "call": "throw_lever",
+          "value": 11.9,
           "settle": true
         }
       ],
@@ -458,7 +468,8 @@
           "start": [
             {
               "equipment": "workshop_access",
-              "mode": "leg"
+              "front": "lower",
+              "open": true
             }
           ],
           "target": [
@@ -525,7 +536,7 @@
           "start": [
             {
               "equipment": "leg_rail",
-              "jog": "tilt+"
+              "jog": "rise+"
             }
           ],
           "target": [
@@ -549,19 +560,6 @@
           "id": "04-dock",
           "seconds": 2,
           "speed": 5,
-          "before": [
-            {
-              "equipment": "leg_rail",
-              "settle": true
-            }
-          ],
-          "start": [
-            {
-              "equipment": "leg_rail",
-              "jog": "rise+",
-              "then": "seat"
-            }
-          ],
           "target": [
             11.9,
             10.3,

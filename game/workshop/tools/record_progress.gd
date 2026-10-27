@@ -150,8 +150,12 @@ func operations(entries: Array) -> bool:
 			error=machine.action_error(entry.jog)
 			if error.is_empty():machine.set_jog(entry.jog);held_jogs[entry.equipment]=str(entry.get("then",""))
 		elif entry.has("action"):error=machine.request(entry.action)
-		elif entry.has("mode"):error=machine.request_mode(entry.mode)
-		elif entry.has("closed"):error=machine.request_closed(entry.closed)
+		elif entry.has("front"):error=machine.request(str(entry.front)+("_open" if entry.open else "_close"))
+		elif entry.has("call"):
+			match str(entry.call):
+				"pull_support":error=machine.pull_support(float(entry.value))
+				"throw_lever":error=machine.throw_lever(float(entry.value))
+				_:error="Unknown recorder call: "+str(entry.call)
 		if not error.is_empty():die(entry.equipment+": "+error);return false
 		if entry.get("settle",false):
 			for tick in range(7200):
@@ -175,7 +179,7 @@ func advance(ticks: int) -> bool:
 		await physics_frame
 		game.equipment.physics(1.0/60.0)
 		for id in held_jogs.keys():
-			if not held_jogs[id].is_empty() and game.equipment.get_equipment(id).jog_settled() and not finish_jog(id):return false
+			if game.equipment.get_equipment(id).jog_settled() and not finish_jog(id):return false
 		for id in sequence.watch:
 			var machine=game.equipment.get_equipment(id)
 			var blockage=machine.get("blocked_reason")

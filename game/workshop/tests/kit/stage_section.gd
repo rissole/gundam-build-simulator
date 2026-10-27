@@ -33,5 +33,18 @@ func jog(controller: Node, action: String) -> bool:
 
 func index_to(x: float) -> bool:
 	var error: String=stages.index_to(rail,x)
-	expect(error.is_empty(),"leg rig indexes to X"+str(x)+": "+error)
+	expect(error.is_empty(),"transfer table lever reaches X"+str(x)+": "+error)
 	return error.is_empty()
+
+func pull_support(goal: float) -> bool:
+	var error: String=stages.pull_support(rail,goal)
+	expect(error.is_empty(),"foot support reaches stroke "+str(goal)+": "+error)
+	return error.is_empty()
+
+## Diagnostics operate the fronts explicitly; the crane and leg rig only query.
+func gantry_front(front: String, open: bool) -> bool:
+	var error: String=stages.gantry_front(front,open)
+	var access=game.equipment.get_equipment("workshop_access")
+	var reached: bool=access.front_open(front) if open else access.front_closed(front)
+	expect(error.is_empty() and reached,"explicit "+front+" front "+("OPEN" if open else "CLOSE")+" completes: "+error)
+	return error.is_empty() and reached

@@ -30,13 +30,9 @@ class Crane extends "res://scripts/service_crane.gd":
 		PhysicsServer3D.body_set_state(load_body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,load_body.global_transform)
 class Equipment extends WorkshopEquipment:
 	var moving = true
-class Gates extends WorkshopEquipment:
-	func occupancy_error() -> String:return ""
-	func closed() -> bool:return true
-	func request_closed(_closed: bool) -> String:return ""
 class Access extends WorkshopEquipment:
-	func ready_for(_mode: String) -> bool:return true
-	func request_mode(_mode: String) -> String:return ""
+	func front_open(front: String) -> bool:return front=="lower"
+	func front_closed(front: String) -> bool:return not front_open(front)
 func _initialize() -> void:call_deferred("run")
 func shape(body: CollisionObject3D, size: Vector3) -> void:
 	var col = CollisionShape3D.new();var box = BoxShape3D.new();box.size = size;col.shape = box;body.add_child(col)
@@ -343,29 +339,25 @@ func rail_motion() -> void:
 	var payload = AnimatableBody3D.new();payload.sync_to_physics = false;game.add_child(payload);shape(payload,Vector3(.2,.2,.2));game.runtime.payload = payload
 	game.model.definitions = {"assemblies":{"leg":{"supplied_milestones":["structural_ready"],"slots":{}}}}
 	game.model.assemblies.left_leg = {"parent":"","location":"support:leg_holder","definition":"leg","slots":{}}
-	# Loaded indexing needs the stowed bolster; from the right track the next stop is parking.
-	rail.bolster = 1.0;rail.index_x = definition.lanes.right;rail._pose()
-	var direction = signf(definition.lanes.parking-definition.lanes.right)
-	var blocker = obstacle(game,Vector3(definition.lanes.right+direction*2,definition.holder.bogie.y,definition.home_z),Vector3(.1,.3,.3),Motion.PARTS);await frames(2)
-	expect(rail.action_error("index+").is_empty(),"loaded rail accepts an INDEX jog with a distant loose obstacle")
-	rail.set_jog("index+");rail.physics(.1)
-	expect(rail.index_x != definition.lanes.right and rail.blocked_reason.is_empty(),"held INDEX moves through the clear start of its route")
+	# The lever selects a notch and drives the real table until it stops.
+	rail.foot_support=1.0;rail.index_x=definition.station_x;rail._pose()
+	var direction=signf(definition.lanes.parking-definition.station_x)
+	var blocker=obstacle(game,Vector3(definition.station_x+direction*2,definition.holder.bogie.y,definition.home_z),Vector3(.1,.3,.3),Motion.PARTS)
+	await frames(2)
+	expect(rail.throw_lever(definition.lanes.parking).is_empty(),"table lever accepts a throw with a distant loose obstacle")
+	rail.physics(.1)
+	expect(rail.index_x!=definition.station_x and rail.blocked_reason.is_empty(),"lever drives the table through the clear start of its route")
 	until_held(rail)
-	expect(rail.moving and rail.motion_obstruction.get("collider") == blocker,"real articulated holder pauses and identifies its obstacle while E stays held")
-	var at: float = rail.index_x;rail.physics(.1)
-	expect(is_equal_approx(rail.index_x,at),"waiting rail preserves progress")
-	rail.set_jog("")
-	expect(not rail.moving and is_equal_approx(rail.index_x,at),"releasing E brakes the waiting rail where it stands")
-	expect(rail.action_error("index-").is_empty(),"the opposite arrow is available after release")
-	rail.set_jog("index-");until_settled(rail)
-	expect(rail.jog_settled() and rail.index_x == definition.lanes.right,"reverse jog stops exactly on the right hip track")
-	rail.set_jog("");rail.set_jog("index+");until_held(rail)
-	blocker.free();await frames(2);until_settled(rail)
-	expect(rail.jog_settled() and rail.index_x == definition.lanes.parking,"a held jog resumes once the obstacle clears and stops at parking")
-	rail.set_jog("")
-	# Exercise longitudinal travel with the real holder and payload sweep. Only
-	# unrelated gate/access orchestration is supplied.
-	var gates=Gates.new();game.add_child(gates);gates.equipment_id="rail_gates";game.equipment.register(gates)
+	expect(rail.moving and rail.motion_obstruction.get("collider")==blocker and rail.blocked_reason.contains("Supplied obstruction"),"table pauses and names its actual loose obstacle")
+	var at: float=rail.index_x;rail.physics(.1)
+	expect(rail.index_x==at and rail.table_goal==definition.lanes.parking,"waiting table preserves progress and its selected notch")
+	expect(rail.throw_lever(definition.station_x).is_empty() and rail.index_x==at,"blocked table can retarget the build notch without a pose jump")
+	until_held(rail)
+	expect(not rail.moving and rail.index_x==definition.station_x,"retargeted lever stops exactly at build")
+	rail.throw_lever(definition.lanes.parking);until_held(rail)
+	blocker.free();await frames(2);until_held(rail)
+	expect(not rail.moving and rail.index_x==definition.lanes.parking and rail.blocked_reason.is_empty(),"table automatically resumes to its selected notch after the obstacle clears")
+	# Exercise held longitudinal travel with the real holder and payload sweep.
 	var access=Access.new();game.add_child(access);access.equipment_id="workshop_access";game.equipment.register(access)
 	rail.index_x=definition.lanes.left;rail.travel_z=lerpf(definition.home_z,definition.bay_z,.2);rail._pose()
 	payload.set_meta("collision_revision",0)
@@ -377,7 +369,12 @@ func rail_motion() -> void:
 	var start: float=rail.travel_z;rail.set_jog("travel+");rail.physics(1.0/60.0)
 	expect(rail.travel_z>start and rail.blocked_reason.is_empty(),"longitudinal rail starts along clear track")
 	until_held(rail)
-	expect(rail.moving and rail.motion_obstruction.get("collider")==blocker,"straight rail waits for a thin obstacle in the loaded leg's path")
+	expect(rail.moving and rail.motion_obstruction.get("collider")==blocker and rail.blocked_reason.contains("Supplied obstruction"),"held TRAVEL waits and names a thin obstacle in the loaded leg's path")
+	at=rail.travel_z;rail.physics(.1)
+	expect(rail.travel_z==at and rail.jog=="travel+","waiting TRAVEL preserves progress while its arrow stays held")
+	rail.set_jog("");rail.physics(.1)
+	expect(not rail.moving and rail.travel_z==at,"releasing E brakes waiting TRAVEL at its current position")
+	rail.set_jog("travel+")
 	expect(resize_events.is_empty(),"straight rail movement does not rebuild unchanged live holder dimensions")
 	var query_count: int=layout.cradle.query_boxes.size()
 	var saved_boxes: Dictionary=layout.cradle.query_boxes.duplicate()
@@ -387,7 +384,7 @@ func rail_motion() -> void:
 	rail.set_jog("")
 	var live_sizes: Dictionary={}
 	for id in layout.cradle.pieces:live_sizes[id]=layout.cradle.pieces[id].shape.shape.size
-	var holder_pose=rail.snapshot_pose(rail.capture())
+	var holder_pose=rail.snapshot_pose(rail._state())
 	layout.cradle.query_geometry(holder_pose.frame,holder_pose.bogie_x,holder_pose.bogie_z,1,1,1)
 	var unchanged=true
 	for id in layout.cradle.pieces:

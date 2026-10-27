@@ -19,7 +19,7 @@ ROUTINE = (
     'interaction_outline_test',
     'held_control_test',
     'leg_content_test',
-    'leg_rig_jog_test',
+    'leg_rig_controls_test',
     'joint_restraints_test',
     'manual_diagram_cache_test',
     'manual_completion_test',

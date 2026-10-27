@@ -2,12 +2,13 @@ extends "res://tests/kit/stage_section.gd"
 ## Mechanical transfer in continuous play, not walking/targetability review.
 func run() -> void:
 	if not await start("left_arm"):finish();return
+	if not gantry_front("upper",true):finish();return
 	var cassette=game.equipment.get_equipment("arm_cassette");var crane=game.equipment.get_equipment("service_crane")
 	expect(cassette.occupant()=="left_arm","same physical left arm starts retained on the one cassette")
 	var trim: Dictionary=cassette.mass_properties()
 	expect(trim.center.z>1.35 and trim.center.z<6.05,"loaded cassette's authored mass centre lies between both lifting pairs: "+str(trim))
 	expect(not cassette.receiving_error("arm_cassette").is_empty(),"occupied leg station rejects the cassette before travel")
-	if not command(rail,"park") or not index_to(rail.spec.lanes.parking):finish();return
+	if not index_to(rail.spec.lanes.parking):finish();return
 	expect(cassette.receiving_error("arm_cassette").is_empty(),"parked leg cradle makes the shared station available")
 	expect(crane.request("task:cassette").is_empty(),"existing crane selects the retained-cassette task")
 	if not command(crane,"go:source") or not command(crane,"down"):finish();return
@@ -33,7 +34,7 @@ func run() -> void:
 	expect(cassette.floor_release>0 and cassette.floor_release<1,"station locks close only after cassette reaches floor contact")
 	if not command(crane,"resume"):finish();return
 	expect(cassette.support_secured() and game.model.assemblies.arm_cassette.location=="support:cassette_station","station floor locks take the retained cassette before rig release")
-	expect(not rail.request("park").is_empty(),"cassette occupancy prevents the parked leg holder from returning")
+	expect(not rail.throw_lever(rail.spec.station_x).is_empty(),"cassette occupancy prevents the parked leg holder from returning")
 	supply_rig(crane,false)
 	if not command(crane,"up") or not command(crane,"go:park"):finish();return
 	if not command(crane,"go:receiver") or not command(crane,"down"):finish();return
@@ -42,8 +43,9 @@ func run() -> void:
 	supply_rig(crane,false)
 	if not command(crane,"up") or not command(crane,"go:park"):finish();return
 	expect(game.model.assemblies.left_arm.location=="support:arm_cassette" and cassette.occupant()=="left_arm","parking retains the same arm without rebuilding or replacing it")
-	if not command(rail,"park") or not index_to(rail.spec.station_x):finish();return
+	if not index_to(rail.spec.station_x):finish();return
 	expect(rail.at_station() and rail.release==0 and not rail.moving,"leg cradle physically reclaims the cleared shared station")
+	if not gantry_front("upper",false):finish();return
 	finish()
 
 func finish() -> void:

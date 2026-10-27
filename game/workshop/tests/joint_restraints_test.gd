@@ -23,9 +23,9 @@ func run() -> void:
 	for owner in ["left_leg","right_leg"]:
 		var slots: Dictionary={}
 		var milestones: Dictionary={}
-		for part in ["shin","fork","spar"]:
+		for part in ["foot","shin","fork","spar"]:
 			var uid=owner+"_"+part
-			slots[part]={"accepts":"member","pose_source":uid,"snap_position":[0,{"shin":1.395,"fork":5.1,"spar":5.94}[part],0]}
+			slots[part]={"accepts":"member","pose_source":uid,"snap_position":[0,{"foot":0,"shin":1.395,"fork":5.1,"spar":5.94}[part],0]}
 			milestones[part+"_secured"]=[part]
 			scenario.parts.append({"instance_id":uid,"kind":"member"})
 		definitions.assemblies[owner]={"slots":slots,"milestones":milestones,"work_locations":["support:leg_holder","support:queue"]}
@@ -53,7 +53,7 @@ func run() -> void:
 	expect(source_shapes.size()==28,"source shin sweep includes both captive ankle and knee bridge pairs")
 	# Fit each physical member. Retention must never operate the captive braces.
 	for owner in ["left_leg","right_leg"]:
-		for sid in ["shin","fork","spar"]:
+		for sid in ["foot","shin","fork","spar"]:
 			game.model.items[owner+"_"+sid].owner=owner;game.model.items[owner+"_"+sid].slot=sid;game.model.items[owner+"_"+sid].location="installed";game.model.assemblies[owner].slots[sid]=owner+"_"+sid
 	game.model.changed.emit()
 	for fixture in braces.fixtures:
@@ -67,7 +67,12 @@ func run() -> void:
 	release_crane.END_IDS=["a","b"];release_crane.endpoints={"a":{"state":"attached","point":"near"},"b":{"state":"attached","point":"far"}}
 	var end=Node3D.new();game.add_child(end);release_crane.end_nodes={"a":end,"b":end};release_crane.station="receiver";release_crane.raised=false
 	expect(release_crane.action_error("detach:a").contains("brace"),"retained shin keeps crane support until its braces lock")
-	for action in ["lift+","bolster+","index-","travel+"]:expect(rail.action_error(action).contains("brace"),"loaded "+action+" requires the retained joint braces")
+	for action in ["support","lift+","lever","travel+"]:
+		# Satisfy unrelated controls so a missing brace is the named refusal.
+		rail.foot_support=1 if action in ["lever","travel+"] else 0
+		rail.index_x=rail.spec.lanes.left if action=="travel+" else rail.spec.station_x
+		expect(rail.action_error(action).contains("brace"),"loaded "+action+" requires the retained joint braces: "+rail.action_error(action))
+	rail.foot_support=0;rail.index_x=rail.spec.station_x
 	for owner in ["left_leg","right_leg"]:
 		rail.active_assembly=owner
 		game.model.assemblies.left_leg.location="support:leg_holder" if owner=="left_leg" else "support:queue"
@@ -83,7 +88,7 @@ func run() -> void:
 		expect(braces.required_error(owner).is_empty(),owner+" all independent locks release transport gates")
 	expect(release_crane.action_error("detach:a").is_empty(),"locked ankle braces permit the ordinary crane connector release")
 	rail.engaged=false
-	expect(rail.action_error("index+").is_empty(),"brace gates keep empty-rig indexing available")
+	expect(rail.action_error("lever").is_empty(),"brace gates keep empty-rig table lever available")
 	rail.engaged=true
 	# Direct-space obstacle catches an intermediate slider pose and resumes safely.
 	rail.active_assembly="left_leg"
@@ -130,9 +135,9 @@ func run() -> void:
 	expect(braces.validate(saved).is_empty(),"at-rest lock snapshot validates")
 	fixture.locked=false;fixture.progress=0;braces.apply(saved)
 	expect(fixture.locked and fixture.progress==1,"snapshot restore preserves engagement without inferring retention")
-	rail.bolster=1
-	expect(not braces.request("stow:"+fixture.id).is_empty(),"stowed foot bolster prevents brace correction")
-	rail.bolster=0;rail.engaged=false
+	rail.foot_support=1
+	expect(not braces.request("stow:"+fixture.id).is_empty(),"withdrawn foot support prevents brace correction")
+	rail.foot_support=0;rail.engaged=false
 	expect(not braces.request("stow:"+fixture.id).is_empty(),"released rig cannot remove mounted joint support")
 	rail.engaged=true;rail.moving=true
 	expect(not braces.request("stow:"+fixture.id).is_empty(),"moving rig cannot disengage braces")

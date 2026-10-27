@@ -110,16 +110,31 @@ idle, model invalidation, absence of collision/target metadata, and independent
 axis tolerances. Shader configuration is checked headlessly; pulse appearance,
 readability and rig integration remain unreviewed until their later phases.
 
-`leg_rig_jog` drives the production leg rig controller with its real holder
-geometry and a small supplied leg/hip model. It checks the joint pose against the
-former path formula at every endpoint, both directions and stops of every jog
-axis, track and roll detents, named refusals and gate/deck waiting, SEAT gating,
-interrupted and resumed lead-in with a single install, ghost and readout agreement
-with the install pose, RELEASE/REACQUIRE/UNSEAT, the empty return and at-rest
-snapshots. `rail_endpoint` covers the 60 Hz lead-in arrival; `equipment_motion`
-covers held-jog obstruction, release and resume. The real-content seat pose and the
-full leg journey stay in the `indexed_leg_rail` and `stage_sequence` diagnostics.
-Panel readability and jog feel need a player.
+`leg_rig_controls` drives the production v2 leg rig controller with real holder
+geometry and a small supplied leg/hip model. It preserves the legacy endpoint
+pose comparisons and checks physical hold/drag/tap controls, the foot support's
+spread-then-slide hand mapping and speed limit, turnover stops and cyclic roll
+detents, lever notches and retargeting, travel interlocks, both end stops, and
+RISE/LOWER seating and supported undo. The nested child's node, mesh and physics
+poses follow every intermediate tilt between input and physics ticks. Clamp
+release/reversal/reacquisition, empty return, NEXT LEG, condition lamps, fixed
+manual-objective ghosts, lower-front queries and occupancy, and v3 at-rest saves
+are covered. The save fixture observes every registry motion transition, including
+an interrupted table trip after a newly completed support stroke; v1/v2 snapshots
+are rejected. `rail_endpoint` checks exact, single-install RISE arrival at 60 Hz.
+`equipment_motion` checks held TRAVEL and the lever's table drive against real
+named obstacles, retained progress, reversal/release and automatic resume, while
+preserving query-box reuse checks. `joint_restraints` checks the support, turnover,
+lever and travel brace gates independently of other interlocks.
+
+The leg, arm/cassette/preflight and pelvis diagnostics and their shared section
+helper use v2 rig controls and explicit gantry-front operations. They run only
+on request.
+Recorder edits also use explicit fronts, support pulls and lever throws. One RISE
+hold spans the tilt/dock cut; edit tests check its time budget without rendering.
+Real-content seating and full journeys remain named diagnostics. Panel readability,
+control feel and rendered presentation require separate player or requested visual
+evidence.
 
 `gantry_fronts_test` is a routine isolated controller fixture: both labelled panel
 banks, independent OPEN/CLOSE and reversal, named equipment occupancy, manual

@@ -3,13 +3,14 @@ extends "res://tests/kit/stage_section.gd"
 ## No walking, reach, aiming or rendered acceptance is inferred.
 func run() -> void:
 	if not await start("left_arm"):finish();return
+	if not gantry_front("upper",true):finish();return
 	expect(await deliver_arms(),"detailed section completes")
 	finish()
 
 func deliver_arms() -> bool:
 	var crane=game.equipment.get_equipment("service_crane")
 	var cassette=game.equipment.get_equipment("arm_cassette")
-	if not is_equal_approx(rail.index_x,22) and not (command(rail,"park") and index_to(rail.spec.lanes.parking)):return false
+	if not rail.parked() and not index_to(rail.spec.lanes.parking):return false
 	if not command(crane,"task:cassette") or not command(crane,"go:source") or not command(crane,"down"):return false
 	supply_rig(crane,true)
 	if not command(crane,"up") or not command(crane,"go:receiver") or not command(crane,"down"):return false
@@ -33,7 +34,8 @@ func deliver_arms() -> bool:
 		expect(crane.route.size()==expected.size() and range(expected.size()).all(func(n):return crane.route[n].is_equal_approx(expected[n])),uid+" live waypoints exactly match the measured preflight route and rotations")
 		supply_rig(crane,true)
 		var access=game.equipment.get_equipment("workshop_access")
-		expect(access.request_mode("arm").is_empty() and settle(access),uid+" delivery decks open before interrupted source transfer")
+		if not gantry_front("lower",true):return false
+		expect(access.front_open("upper") and access.front_open("lower"),uid+" both fronts explicitly open before interrupted source transfer")
 		expect(crane.request("up").is_empty(),uid+" starts four-end source weight transfer")
 		crane.physics(.2);crane.request("stop")
 		expect(cassette.clamps.all(func(v):return v>0 and v<1) and game.model.assemblies[uid].location=="support:arm_cassette",uid+" stays on its saddles through partial clamp release")
@@ -86,7 +88,8 @@ func deliver_arms() -> bool:
 		if not command(crane,"up") or not command(crane,"go:park"):return false
 		expect(game.model.integrity_errors().is_empty(),uid+" delivery and retention conserve stock and assembly ownership")
 		if not await correct_shoulder(side):return false
-	return true
+		if not gantry_front("lower",false):return false
+	return gantry_front("upper",false)
 
 func correct_shoulder(side: String) -> bool:
 	var crane=game.equipment.get_equipment("service_crane");var shoulder=game.equipment.get_equipment(side+"_shoulder")
