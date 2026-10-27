@@ -19,6 +19,7 @@ func run() -> void:
 	access=Access.new();game.add_child(access);access.setup(game,world)
 	_check_contract()
 	_check_walkways()
+	_check_upper_loop()
 	_check_hinges()
 	_check_coarse_clearance()
 	_check_lifts()
@@ -88,9 +89,6 @@ func _check_walkways() -> void:
 	var rear: AABB=bounds("rope_exit_floor").merge(bounds("rope_exit_landing_floor"))
 	expect(rear.is_equal_approx(AABB(Vector3(5,20.4,30.25),Vector3(13,.2,1.5))),"exit deck and widened east landing span X5..18 at 20.6")
 	expect(bounds("rope_exit_landing_floor").size.is_equal_approx(Vector3(1.5,.2,1.5)),"east lift has a 1.5 m square landing")
-	expect(is_equal_approx(bounds("rope_exit_west_guard").size.y,1.1),"west exit-walk end is guarded")
-	for side in ["left","right"]:
-		expect(world.pieces.has("hinge_rear_guard_"+side+"_20.6_rail_0"),side+" upper apron ends in a fixed rear guard")
 	for station in spec.rope_stations:
 		if station.edge!="rear":continue
 		var boom: AABB=bounds("rope_boom_"+station.id)
@@ -111,6 +109,33 @@ func _check_walkways() -> void:
 			if world.pieces[id].has("shape") and bounds(id).intersects(opening):blocked.append(id)
 		expect(blocked.is_empty(),"left 8.4 landing has no fixed rail across the lift doorway or outer-walk connection: "+str(blocked))
 
+func _check_upper_loop() -> void:
+	# Surface adjacency and fixed joint apertures, not a simulated player walk.
+	var perimeter=["wing_hinge_left_20.6_floor","wing_left_20.6_floor","wing_right_20.6_floor",
+		"wing_hinge_right_20.6_floor","rope_side_right_floor","rope_corner_right_floor",
+		"rope_link_right_floor","rope_exit_landing_floor","rope_exit_floor","rope_side_left_floor"]
+	for i in perimeter.size():
+		var a: AABB=bounds(perimeter[i]);var b: AABB=bounds(perimeter[(i+1)%perimeter.size()])
+		expect(is_equal_approx(a.end.y,20.6) and a.grow(.025).intersects(b.grow(.025)),"upper perimeter has a flush connection: "+perimeter[i]+" to "+perimeter[(i+1)%perimeter.size()])
+	for opening in [
+		AABB(Vector3(3.6,20.61,24.65),Vector3(1.3,1.7,.2)),
+		AABB(Vector3(21.1,20.61,24.65),Vector3(1.3,1.7,.2)),
+		AABB(Vector3(4.9,20.61,30.45),Vector3(.2,1.7,1.1)),
+		AABB(Vector3(20.9,20.61,27.85),Vector3(.2,1.7,1.2)),
+		AABB(Vector3(16.6,20.61,29.1),Vector3(1.2,1.7,.2)),
+		AABB(Vector3(16.6,20.61,30.2),Vector3(1.2,1.7,.2)),
+		AABB(Vector3(16.4,20.61,30.4),Vector3(.2,1.7,1.2))]:
+		var blocked: Array=[]
+		for id in world.pieces:
+			if world.pieces[id].has("shape") and bounds(id).intersects(opening):blocked.append(id)
+		expect(blocked.is_empty(),"fixed upper join has no obsolete end guard or support across it: "+str(blocked))
+	for id in perimeter:
+		if not id.begins_with("rope_"):continue
+		var fixed: AABB=bounds(id)
+		world.apply_frames(access.frames_at(access._goals("arm")))
+		expect(bounds(id).is_equal_approx(fixed),"side/rear loop remains fixed when the front crane opening opens: "+id)
+		world.apply_frames(access.frames_at(access._goals("work")))
+
 func _check_hinges() -> void:
 	expect(not world.pieces.has("wing_axle_left") and not world.pieces.has("wing_axle_right"),"neither front hinge retains a through-post in the walking surface")
 	var corner: AABB=bounds("wing_corner_right")
@@ -118,8 +143,12 @@ func _check_hinges() -> void:
 	for side in ["left","right"]:
 		var hx: float=5 if side=="left" else 21
 		for level in [8.4,20.6]:
-			var bearing: AABB=bounds("wing_bearing_"+side+"_"+str(level))
-			expect(is_equal_approx(bearing.end.y,level),side+" bearing cap stays flush with the deck at "+str(level))
+			var id="wing_"+side+"_"+str(level)
+			var apron: AABB=bounds("wing_hinge_"+side+"_"+str(level)+"_floor")
+			var leaf: AABB=bounds(id+"_floor")
+			expect(apron.size.is_equal_approx(Vector3(1.5,.2,1.3)) and leaf.size.is_equal_approx(Vector3(7.96,.2,1.2)) and apron.grow(.021).intersects(leaf),side+" plain landing meets a single rectangular leaf with a 20 mm seam")
+			var obsolete=["wing_bearing_"+side+"_"+str(level),id+"_root_front_floor",id+"_root_rear_floor","wing_hinge_"+side+"_"+str(level)+"_front_floor","wing_hinge_"+side+"_"+str(level)+"_rear_floor"]
+			expect(obsolete.all(func(piece_id):return not world.pieces.has(piece_id)),side+" pole cap and four isolated notch fillers are removed at "+str(level))
 			var former_post=AABB(Vector3(hx-.13,level+.001,23.87),Vector3(.26,2,.26))
 			var blockers: Array=[]
 			for piece_id in world.pieces:
@@ -127,20 +156,10 @@ func _check_hinges() -> void:
 			expect(blockers.is_empty(),side+" former through-post position is unobstructed above the deck: "+str(blockers))
 			var arm: AABB=bounds("wing_support_"+side+"_"+str(level)+"_arm")
 			var mount: AABB=bounds("wing_support_"+side+"_"+str(level)+("_shaft" if side=="left" else "_corner"))
-			expect(arm.grow(.001).intersects(bearing) and arm.intersects(mount) and is_equal_approx(arm.end.y,level-.2) and is_equal_approx(mount.end.y,level-.2),side+" connected bracket carries the bearing entirely beneath the leaf at "+str(level))
+			expect(arm.grow(.001).intersects(apron) and arm.grow(.001).intersects(leaf) and arm.intersects(mount) and is_equal_approx(arm.end.y,level-.2) and is_equal_approx(mount.end.y,level-.2),side+" connected bracket supports the landing and leaf from beneath at "+str(level))
 			if side=="right":expect(mount.intersects(corner),"right bracket connects to the relocated corner column at "+str(level))
-			var id="wing_"+side+"_"+str(level)
 			var root_node: Node3D=world.groups[id]
 			expect(root_node.position.is_equal_approx(Vector3(hx,level,24)),id+" shares the unchanged axle")
-			var near_axis: Array=[]
-			# Every point of each deck box lies outside the bearing's circumscribed
-			# circle; rotation about Y preserves this clearance at ALL angles.
-			for piece in world.group_pieces[id]:
-				if piece.spec.material!="deck" or piece.spec.parent!=id:continue
-				var box=AABB(AssemblyRuntime.vec(piece.spec.position)-AssemblyRuntime.vec(piece.spec.size)/2,AssemblyRuntime.vec(piece.spec.size))
-				var radius=Vector2(clampf(0,box.position.x,box.end.x),clampf(0,box.position.z,box.end.z)).length()
-				if radius<Vector2(bearing.size.x,bearing.size.z).length()/2+.02:near_axis.append(piece.spec.id)
-			expect(near_axis.is_empty(),id+" deck notch clears the flush bearing throughout the full swing: "+str(near_axis))
 	for phase in [0.0,.25,.50,.75,1.0]:
 		world.apply_frames(access.frames_at({"8.4":phase,"20.6":phase,"rear":0.0}))
 		for side in ["left","right"]:

@@ -137,7 +137,7 @@ func _check_walkway_lights(game: Node3D, world: Node3D, access: Node3D) -> void:
 		if pool!=null:
 			pools+=1
 			expect(not pool.shadow_enabled and pool.position.y<lens.position.y,"working light emits below its attached fixture without another shadow caster: "+id)
-	expect(fixtures.size()==6 and pools==3,"only the four current upper deck spans and two retained lower walks carry strips")
+	expect(fixtures.size()==10 and pools==3,"upper perimeter additions carry mounted strips without adding more light sources")
 	for phase in [0.0,.5,1.0]:
 		world.apply_frames(access.frames_at({"8.4":0.0,"20.6":phase,"rear":0.0}))
 		var detached: Array=[]

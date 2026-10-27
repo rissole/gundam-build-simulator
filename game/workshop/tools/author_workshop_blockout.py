@@ -387,28 +387,21 @@ def contract():
             else:
                 bounds("wing_support_right_"+tag+"_corner",22.52,22.76,level-.5,level-.2,23.14,24.12)
                 bounds("wing_support_right_"+tag+"_arm",20.88,22.76,level-.5,level-.2,23.88,24.12)
-            # Flush bearing caps replace the former through-posts. Their .17 m
-            # corner radius clears the retained .20 m rotating deck notches.
-            box("wing_bearing_"+side+"_"+tag,[hx,level-.1,24],[.24,.2,.24],"deck")
             x0,x1=(3.5,5) if left else (21,22.5)
             apron=f"wing_hinge_{side}_{tag}"
-            # Split around the flush bearing; the left lift landing stays open.
-            deck(apron,x0 if left else hx+.20,hx-.20 if left else x1,23.4,24.7,level,[])
-            for label,z0,z1 in [("front",23.4,23.8),("rear",24.2,24.7)]:
-                deck(apron+"_"+label,hx-.20 if left else hx,hx if left else hx+.20,z0,z1,level,[])
+            # A plain landing meets the plain leaf across a 20 mm seam. The
+            # old through-post, cap and four small notch fillers are gone.
+            # Hinge support stays below the walking surface.
+            deck(apron,x0,x1,23.4,24.7,level,[])
             if not left:
                 box(apron+"_right_rail",[22.54,level+1.06,24.05],[.08,.08,1.3],"yellow")
                 for z in [23.44,24.66]:box(apron+"_right_post_"+str(z),[22.54,level+.51,z],[.08,1.02,.08],"yellow")
             if left:
                 # The lift replaces the west guard. Guard the two ends of its
                 # full-width landing instead, with the doorway unobstructed.
-                for edge,z in [("front",23.26),("rear",24.84)]:
-                    if edge=="rear" and level==8.4:continue # route onto retained outer walk
-                    guard_segments(f"hinge_{edge}_guard_{side}_{tag}",3.22,4.8,z,level)
+                guard_segments(f"hinge_front_guard_{side}_{tag}",3.22,4.8,z=23.26,y=level)
             else:
                 box(f"hinge_front_guard_{side}_{tag}",[(x0+x1)/2+.35,level+1.06,23.32],[.8,.08,.08],"yellow")
-                if level==20.6:
-                    guard_segments(f"hinge_rear_guard_{side}_{tag}",21,22.5,24.74,level)
             if level==8.4:
                 deck(f"outer_{side}_{tag}",x0,x1,24.7,37.3,level,["rear"] if left else ["right","rear"])
                 if left:
@@ -424,15 +417,12 @@ def contract():
                     gx=x1+.04 if left else x0-.04
                     box(f"outer_inner_{side}_{tag}_{n}",[gx,level+1.06,(z0+z1)/2],[.08,.08,z1-z0],"yellow")
                 deck("hip_link_"+side,5 if left else 17.8,8.2 if left else 21,link_front,link_rear,level,["front","rear"])
-                # Retain the original lower outer-walk barrier. There is no
-                # upper outer walk to gate: those apron ends are fixed guards.
+                # Retain the original lower outer-walk barrier.
                 gate=group(f"access_gate_{side}_{tag}",at=[(x0+x1)/2,level,24.85],joint="gate",level=level,stow_x=1.6 if left else -1.6)
                 box(gate,[0,.65,0],[1.5,.10,.08],"yellow",gate)
             root=group(f"wing_{side}_{tag}",at=[hx,level,24],rotation=[0,0 if left else 180,0],joint="wing",side=side,level=level)
             data["groups"][root]["motion_contacts"]=[apron+"_floor"]
-            deck(root,.20,7.98,-.6,.6,0,[],root)
-            for label,z0,z1 in [("front",-.6,-.20),("rear",.20,.6)]:
-                deck(root+"_root_"+label,.02,.20,z0,z1,0,[],root)
+            deck(root,.02,7.98,-.6,.6,0,[],root)
             open_edge="rear" if left else "front"
             # Guards keep their historic 8.4 width, but the upper rails sit
             # within the leaf's 1.2 m width (short davits protrude by .15 m).
@@ -471,13 +461,43 @@ def contract():
     deck("rope_exit",5,16.5,30.3,31.7,20.6,[])
     guard_segments("rope_exit_front",5,16.5,30.26,20.6,[11,12.4,13.6,15])
     guard_segments("rope_exit_rear",5,16.5,31.74,20.6)
-    box("rope_exit_west_guard",[4.96,21.15,31],[.08,1.1,1.4],"yellow")
     box("rope_exit_west_post",[5.24,10.2,31],[.24,20.4,.24])
     # 1.5 m square landing at the east end, from X16.5 to the shaft X18.
-    deck("rope_exit_landing",16.5,18,30.25,31.75,20.6,["front","rear"])
+    deck("rope_exit_landing",16.5,18,30.25,31.75,20.6,["rear"])
     for z in [29.55,32.45]:box("rope_exit_lift_post_"+str(z),[17.90,10.1,z],[.20,20.2,.20])
     box("rope_exit_lift_header",[17.90,20.1,31],[.20,.20,3.10])
     box("rope_exit_support",[17.3,20.3,31],[1.8,.2,.8])
+
+    # Fixed upper sides close the perimeter. At the rear-right corner the
+    # route turns in front of the elevator shaft, so it stays connected while
+    # the car is on a lower floor. Keep the existing rear rappel anchors.
+    deck("rope_side_left",3.5,5,24.7,31.7,20.6,["rear"])
+    bounds("rope_side_left_outer_rail",3.42,3.5,21.62,21.7,24.8,31.7,"yellow")
+    for i,z in enumerate([24.84,28.25,31.66]):
+        box("rope_side_left_outer_post_"+str(i),[3.46,21.11,z],[.08,1.02,.08],"yellow")
+    bounds("rope_side_left_inner_rail",5,5.08,21.62,21.7,24.7,30.3,"yellow")
+    for i,z in enumerate([24.74,27.5,30.26]):
+        box("rope_side_left_inner_post_"+str(i),[5.04,21.11,z],[.08,1.02,.08],"yellow")
+    deck("rope_side_right",21,22.5,24.7,29.2,20.6,["right"])
+    bounds("rope_side_right_inner_rail",20.92,21,21.62,21.7,24.7,27.7,"yellow")
+    for i,z in enumerate([24.74,27.66]):
+        box("rope_side_right_inner_post_"+str(i),[20.96,21.11,z],[.08,1.02,.08],"yellow")
+    deck("rope_corner_right",16.5,21,27.7,29.2,20.6,["front"])
+    deck("rope_link_right",16.5,18,29.2,30.25,20.6,[])
+    bounds("rope_corner_right_inner_rail",16.42,16.5,21.62,21.7,27.7,30.3,"yellow")
+    for i,z in enumerate([27.74,30.26]):
+        box("rope_corner_right_inner_post_"+str(i),[16.46,21.11,z],[.08,1.02,.08],"yellow")
+    guard_segments("rope_corner_right_shaft",17.9,22.5,29.24,20.6)
+    # Inset this guard 0.1 m to clear the lift's projecting sliding sleeve.
+    bounds("rope_link_right_shaft_rail",17.9,17.98,21.62,21.7,29.24,30.25,"yellow")
+    for i,z in enumerate([29.28,30.21]):
+        box("rope_link_right_shaft_post_"+str(i),[17.94,21.11,z],[.08,1.02,.08],"yellow")
+    # Longitudinal girders connect the new runs to the supported front and
+    # rear landings, all beneath the deck and clear of lift-car travel.
+    bounds("rope_side_left_support",4.8,5.2,20.1,20.4,24,31.7)
+    bounds("rope_side_right_support",21,21.4,20.1,20.4,24,28.7)
+    bounds("rope_corner_right_support",17.6,21.4,20.1,20.4,28.5,28.9)
+    bounds("rope_link_right_support",17.6,18,20.1,20.4,28.5,31.4)
     for station in data["rope_stations"]:
         if station["edge"]=="rear":
             x=station["anchor"][0]

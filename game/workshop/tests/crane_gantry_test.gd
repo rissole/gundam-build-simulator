@@ -23,6 +23,7 @@ var access: Access
 var ropes: Ropes
 var authored: Dictionary
 var content: Dictionary
+var perimeter: Array[AABB]=[]
 func _initialize() -> void:run.call_deferred()
 func select(key: String, loaded: bool=true) -> void:
 	var spec: Dictionary=authored.crane.tasks[key]
@@ -87,9 +88,11 @@ func geometry() -> void:
 	for key in ["pelvis","chest","core","backpack","left_arm","right_arm","left_pauldron","right_pauldron","head_baseplate","head_left","head_right","head_top","head_crown"]:
 		select(key)
 		var crossed=false;var clear=true
+		var side_clear=true
 		for i in range(crane.route.size()-1):
 			var a: Transform3D=crane.route[i];var b: Transform3D=crane.route[i+1]
 			var box=crane._upper_envelope(a,crane._load_beam(a),true).merge(crane._upper_envelope(b,crane._load_beam(b),true))
+			if perimeter.any(func(solid):return box.intersects(solid)):side_clear=false
 			if box.intersects(Production.UPPER_LEAF_BAND):
 				crossed=true
 				# Outboard source moves at Z13 may span X5; only the fore/aft
@@ -98,6 +101,7 @@ func geometry() -> void:
 			expect(maxf(a.origin.z,b.origin.z)<=28.61,key+" has no rear-walkway route excursion")
 		var frame: Transform3D=crane.route.back()
 		expect(crossed and clear,key+" crosses front inside open-leaf corridor")
+		expect(side_clear,key+" loaded cable envelope clears the new fixed side walks and elevator bypass")
 		expect(not crane._upper_envelope(frame,crane._load_beam(frame),true).intersects(Production.UPPER_LEAF_BAND),key+" seated rig lets upper leaves close")
 
 func interlocks() -> void:
@@ -154,11 +158,15 @@ func empty_journeys() -> void:
 			var reverse=Production.empty_route(pair[1],pair[0]);reverse.reverse()
 			expect(route==reverse,key+" pickup/park/return/reacquire share a symmetric route")
 			var clear=true
+			var side_clear=true
 			for i in range(route.size()-1):
 				var a: Vector3=route[i].origin;var b: Vector3=route[i+1].origin
 				var low=a.min(b);var high=a.max(b);low.y=0;high.y=23
-				clear=clear and not AABB(low,high-low).grow(.2).intersects(lift)
+				var mast=AABB(low,high-low).grow(.2)
+				clear=clear and not mast.intersects(lift)
+				if perimeter.any(func(solid):return mast.intersects(solid)):side_clear=false
 			expect(clear,key+" empty mast avoids relocated left lift")
+			expect(side_clear,key+" empty mast avoids the fixed upper perimeter")
 	select("pelvis",false)
 	crane.station="receiver";crane.motion="go:park";crane.progress=.12
 	access.request_mode("work");access.physics(7)
@@ -173,6 +181,9 @@ func empty_journeys() -> void:
 
 func run() -> void:
 	authored=Layout.layout();content=JSON.parse_string(FileAccess.get_file_as_string("res://assets/robot-content.json"))
+	for solid in authored.workshop.solids:
+		if not solid.solid or not ["rope_side_","rope_corner_","rope_link_"].any(func(prefix):return solid.id.begins_with(prefix)):continue
+		perimeter.append(AABB(AssemblyRuntime.vec(solid.position)-AssemblyRuntime.vec(solid.size)/2,AssemblyRuntime.vec(solid.size)))
 	game=World.new();root.add_child(game);expect(game.setup().is_empty(),"real content configures")
 	crane=Crane.new();game.add_child(crane);crane.game=game;crane.equipment_id="service_crane";game.equipment.register(crane);crane.console=Console.new();crane.add_child(crane.console)
 	access=Access.new();game.add_child(access);access.game=game;access.equipment_id="workshop_access";access.spec=authored.workshop.access

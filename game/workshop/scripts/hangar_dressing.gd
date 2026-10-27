@@ -333,7 +333,9 @@ func _gantry_lights(blockout: Node3D) -> void:
 	# Attach to real deck visuals, including their authored thickness and moving
 	# parent. No fixed-height remnants of the removed 11.2/14 m walkways.
 	for id in ["wing_left_20.6_floor","wing_right_20.6_floor","rope_exit_floor",
-		"rope_exit_landing_floor","outer_left_8.4_floor","outer_right_8.4_floor"]:
+		"rope_exit_landing_floor","rope_side_left_floor","rope_side_right_floor",
+		"rope_corner_right_floor","rope_link_right_floor",
+		"outer_left_8.4_floor","outer_right_8.4_floor"]:
 		var deck: MeshInstance3D = blockout.pieces[id].visual
 		var box: AABB = deck.mesh.get_aabb()
 		var along_x: bool = box.size.x >= box.size.z

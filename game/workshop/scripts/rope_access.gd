@@ -122,9 +122,7 @@ func _build_station(id: String) -> void:
 	var end = _box(node,Vector3.ZERO,Vector3(.10,.16,.10),gold)
 	var line = _box(node,Vector3.ZERO,Vector3(.018,1,.018),line_material)
 	var lanyard = _box(node,Vector3.ZERO,Vector3(.014,1,.014),line_material)
-	var label = Label3D.new();node.add_child(label);label.font_size=24;label.pixel_size=.003;label.billboard=BaseMaterial3D.BILLBOARD_ENABLED
-	label.text="E · Clip in\nRecall rope · E at reel\nG · Unclip on a floor"
-	fixtures[id]={"root":node,"gate":gate,"shape":shape,"bar":bar,"clip":clip,"recall":recall,"end":end,"line":line,"lanyard":lanyard,"label":label}
+	fixtures[id]={"root":node,"gate":gate,"shape":shape,"bar":bar,"clip":clip,"recall":recall,"end":end,"line":line,"lanyard":lanyard}
 
 func _box(parent: Node3D, at: Vector3, size: Vector3, material: Material) -> MeshInstance3D:
 	var node=MeshInstance3D.new();node.mesh=BoxMesh.new();node.mesh.size=size;node.material_override=material;parent.add_child(node);node.position=at
@@ -158,7 +156,6 @@ func physics(_delta: float) -> void:
 		# the rear davit tip two metres beyond it.
 		f.clip.global_position=gate_point(id)+side*.34+Vector3.UP*.45+toward*.12
 		f.recall.global_position=f.clip.global_position+Vector3.UP*.25
-		f.label.global_position=f.clip.global_position+Vector3.UP*.55
 		f.end.global_position=end_point(id)
 		f.end.visible=ropes[id].deployed and attachment!=id
 		var end: Vector3=game.player.global_position+Vector3.UP*HARNESS if attachment==id and is_instance_valid(game.get("player")) else end_point(id)

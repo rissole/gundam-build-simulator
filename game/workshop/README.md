@@ -217,6 +217,11 @@ Equipment still captures and restores its own state, which the stage runner uses
 
 ## Rope access (gantry v2 branch)
 
+The upper walkways form a loop around the robot. Fixed side runs connect the
+front landings to the rear walkway, passing around the rear elevator even when
+its car is downstairs. The front leaves open for crane deliveries; the route
+around the sides and rear remains available. Rappel controls use hover tooltips.
+
 The physical **UPPER LEAVES** panels beside the left lift, at ground and on its
 fixed upper landing, provide **OPEN / CLOSE** through normal E interaction.
 Close the leaves after delivery before using a front rope. Leaf movement waits for

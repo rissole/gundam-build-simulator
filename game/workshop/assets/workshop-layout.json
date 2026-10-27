@@ -13030,65 +13030,17 @@
         "solid": true
       },
       {
-        "id": "wing_bearing_left_8.4",
-        "parent": "",
-        "position": [
-          5,
-          8.3,
-          24
-        ],
-        "size": [
-          0.24,
-          0.2,
-          0.24
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
         "id": "wing_hinge_left_8.4_floor",
         "parent": "",
         "position": [
-          4.15,
+          4.25,
           8.3,
           24.049999999999997
         ],
         "size": [
-          1.2999999999999998,
+          1.5,
           0.1999999999999993,
           1.3000000000000007
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "wing_hinge_left_8.4_front_floor",
-        "parent": "",
-        "position": [
-          4.9,
-          8.3,
-          23.6
-        ],
-        "size": [
-          0.20000000000000018,
-          0.1999999999999993,
-          0.40000000000000213
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "wing_hinge_left_8.4_rear_floor",
-        "parent": "",
-        "position": [
-          4.9,
-          8.3,
-          24.45
-        ],
-        "size": [
-          0.20000000000000018,
-          0.1999999999999993,
-          0.5
         ],
         "material": "deck",
         "solid": true
@@ -13417,63 +13369,21 @@
         "id": "wing_left_8.4_floor",
         "parent": "wing_left_8.4",
         "position": [
-          4.09,
+          4.0,
           -0.1,
           0.0
         ],
         "size": [
-          7.78,
+          7.960000000000001,
           0.2,
           1.2
         ],
         "material": "deck",
         "solid": true,
         "visual_size": [
-          7.78,
+          7.960000000000001,
           0.188,
           1.2
-        ]
-      },
-      {
-        "id": "wing_left_8.4_root_front_floor",
-        "parent": "wing_left_8.4",
-        "position": [
-          0.11,
-          -0.1,
-          -0.4
-        ],
-        "size": [
-          0.18000000000000002,
-          0.2,
-          0.39999999999999997
-        ],
-        "material": "deck",
-        "solid": true,
-        "visual_size": [
-          0.18000000000000002,
-          0.188,
-          0.39999999999999997
-        ]
-      },
-      {
-        "id": "wing_left_8.4_root_rear_floor",
-        "parent": "wing_left_8.4",
-        "position": [
-          0.11,
-          -0.1,
-          0.4
-        ],
-        "size": [
-          0.18000000000000002,
-          0.2,
-          0.39999999999999997
-        ],
-        "material": "deck",
-        "solid": true,
-        "visual_size": [
-          0.18000000000000002,
-          0.188,
-          0.39999999999999997
         ]
       },
       {
@@ -13716,65 +13626,17 @@
         "solid": true
       },
       {
-        "id": "wing_bearing_left_20.6",
-        "parent": "",
-        "position": [
-          5,
-          20.5,
-          24
-        ],
-        "size": [
-          0.24,
-          0.2,
-          0.24
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
         "id": "wing_hinge_left_20.6_floor",
         "parent": "",
         "position": [
-          4.15,
+          4.25,
           20.5,
           24.049999999999997
         ],
         "size": [
-          1.2999999999999998,
+          1.5,
           0.1999999999999993,
           1.3000000000000007
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "wing_hinge_left_20.6_front_floor",
-        "parent": "",
-        "position": [
-          4.9,
-          20.5,
-          23.6
-        ],
-        "size": [
-          0.20000000000000018,
-          0.1999999999999993,
-          0.40000000000000213
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "wing_hinge_left_20.6_rear_floor",
-        "parent": "",
-        "position": [
-          4.9,
-          20.5,
-          24.45
-        ],
-        "size": [
-          0.20000000000000018,
-          0.1999999999999993,
-          0.5
         ],
         "material": "deck",
         "solid": true
@@ -13828,114 +13690,24 @@
         "solid": true
       },
       {
-        "id": "hinge_rear_guard_left_20.6_rail_0",
-        "parent": "",
-        "position": [
-          4.01,
-          21.660000000000004,
-          24.84
-        ],
-        "size": [
-          1.5799999999999996,
-          0.08000000000000185,
-          0.0799999999999983
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "hinge_rear_guard_left_20.6_post_0_0",
-        "parent": "",
-        "position": [
-          3.2600000000000002,
-          21.110000000000003,
-          24.84
-        ],
-        "size": [
-          0.08,
-          1.02,
-          0.08
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "hinge_rear_guard_left_20.6_post_0_1",
-        "parent": "",
-        "position": [
-          4.76,
-          21.110000000000003,
-          24.84
-        ],
-        "size": [
-          0.08,
-          1.02,
-          0.08
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
         "id": "wing_left_20.6_floor",
         "parent": "wing_left_20.6",
         "position": [
-          4.09,
+          4.0,
           -0.1,
           0.0
         ],
         "size": [
-          7.78,
+          7.960000000000001,
           0.2,
           1.2
         ],
         "material": "deck",
         "solid": true,
         "visual_size": [
-          7.78,
+          7.960000000000001,
           0.188,
           1.2
-        ]
-      },
-      {
-        "id": "wing_left_20.6_root_front_floor",
-        "parent": "wing_left_20.6",
-        "position": [
-          0.11,
-          -0.1,
-          -0.4
-        ],
-        "size": [
-          0.18000000000000002,
-          0.2,
-          0.39999999999999997
-        ],
-        "material": "deck",
-        "solid": true,
-        "visual_size": [
-          0.18000000000000002,
-          0.188,
-          0.39999999999999997
-        ]
-      },
-      {
-        "id": "wing_left_20.6_root_rear_floor",
-        "parent": "wing_left_20.6",
-        "position": [
-          0.11,
-          -0.1,
-          0.4
-        ],
-        "size": [
-          0.18000000000000002,
-          0.2,
-          0.39999999999999997
-        ],
-        "material": "deck",
-        "solid": true,
-        "visual_size": [
-          0.18000000000000002,
-          0.188,
-          0.39999999999999997
         ]
       },
       {
@@ -14387,65 +14159,17 @@
         "solid": true
       },
       {
-        "id": "wing_bearing_right_8.4",
-        "parent": "",
-        "position": [
-          21,
-          8.3,
-          24
-        ],
-        "size": [
-          0.24,
-          0.2,
-          0.24
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
         "id": "wing_hinge_right_8.4_floor",
         "parent": "",
         "position": [
-          21.85,
+          21.75,
           8.3,
           24.049999999999997
         ],
         "size": [
-          1.3000000000000007,
+          1.5,
           0.1999999999999993,
           1.3000000000000007
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "wing_hinge_right_8.4_front_floor",
-        "parent": "",
-        "position": [
-          21.1,
-          8.3,
-          23.6
-        ],
-        "size": [
-          0.1999999999999993,
-          0.1999999999999993,
-          0.40000000000000213
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "wing_hinge_right_8.4_rear_floor",
-        "parent": "",
-        "position": [
-          21.1,
-          8.3,
-          24.45
-        ],
-        "size": [
-          0.1999999999999993,
-          0.1999999999999993,
-          0.5
         ],
         "material": "deck",
         "solid": true
@@ -14806,63 +14530,21 @@
         "id": "wing_right_8.4_floor",
         "parent": "wing_right_8.4",
         "position": [
-          4.09,
+          4.0,
           -0.1,
           0.0
         ],
         "size": [
-          7.78,
+          7.960000000000001,
           0.2,
           1.2
         ],
         "material": "deck",
         "solid": true,
         "visual_size": [
-          7.78,
+          7.960000000000001,
           0.188,
           1.2
-        ]
-      },
-      {
-        "id": "wing_right_8.4_root_front_floor",
-        "parent": "wing_right_8.4",
-        "position": [
-          0.11,
-          -0.1,
-          -0.4
-        ],
-        "size": [
-          0.18000000000000002,
-          0.2,
-          0.39999999999999997
-        ],
-        "material": "deck",
-        "solid": true,
-        "visual_size": [
-          0.18000000000000002,
-          0.188,
-          0.39999999999999997
-        ]
-      },
-      {
-        "id": "wing_right_8.4_root_rear_floor",
-        "parent": "wing_right_8.4",
-        "position": [
-          0.11,
-          -0.1,
-          0.4
-        ],
-        "size": [
-          0.18000000000000002,
-          0.2,
-          0.39999999999999997
-        ],
-        "material": "deck",
-        "solid": true,
-        "visual_size": [
-          0.18000000000000002,
-          0.188,
-          0.39999999999999997
         ]
       },
       {
@@ -15105,65 +14787,17 @@
         "solid": true
       },
       {
-        "id": "wing_bearing_right_20.6",
-        "parent": "",
-        "position": [
-          21,
-          20.5,
-          24
-        ],
-        "size": [
-          0.24,
-          0.2,
-          0.24
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
         "id": "wing_hinge_right_20.6_floor",
         "parent": "",
         "position": [
-          21.85,
+          21.75,
           20.5,
           24.049999999999997
         ],
         "size": [
-          1.3000000000000007,
+          1.5,
           0.1999999999999993,
           1.3000000000000007
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "wing_hinge_right_20.6_front_floor",
-        "parent": "",
-        "position": [
-          21.1,
-          20.5,
-          23.6
-        ],
-        "size": [
-          0.1999999999999993,
-          0.1999999999999993,
-          0.40000000000000213
-        ],
-        "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "wing_hinge_right_20.6_rear_floor",
-        "parent": "",
-        "position": [
-          21.1,
-          20.5,
-          24.45
-        ],
-        "size": [
-          0.1999999999999993,
-          0.1999999999999993,
-          0.5
         ],
         "material": "deck",
         "solid": true
@@ -15233,114 +14867,24 @@
         "solid": true
       },
       {
-        "id": "hinge_rear_guard_right_20.6_rail_0",
-        "parent": "",
-        "position": [
-          21.75,
-          21.660000000000004,
-          24.74
-        ],
-        "size": [
-          1.5,
-          0.08000000000000185,
-          0.0799999999999983
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "hinge_rear_guard_right_20.6_post_0_0",
-        "parent": "",
-        "position": [
-          21.04,
-          21.110000000000003,
-          24.74
-        ],
-        "size": [
-          0.08,
-          1.02,
-          0.08
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "hinge_rear_guard_right_20.6_post_0_1",
-        "parent": "",
-        "position": [
-          22.46,
-          21.110000000000003,
-          24.74
-        ],
-        "size": [
-          0.08,
-          1.02,
-          0.08
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
         "id": "wing_right_20.6_floor",
         "parent": "wing_right_20.6",
         "position": [
-          4.09,
+          4.0,
           -0.1,
           0.0
         ],
         "size": [
-          7.78,
+          7.960000000000001,
           0.2,
           1.2
         ],
         "material": "deck",
         "solid": true,
         "visual_size": [
-          7.78,
+          7.960000000000001,
           0.188,
           1.2
-        ]
-      },
-      {
-        "id": "wing_right_20.6_root_front_floor",
-        "parent": "wing_right_20.6",
-        "position": [
-          0.11,
-          -0.1,
-          -0.4
-        ],
-        "size": [
-          0.18000000000000002,
-          0.2,
-          0.39999999999999997
-        ],
-        "material": "deck",
-        "solid": true,
-        "visual_size": [
-          0.18000000000000002,
-          0.188,
-          0.39999999999999997
-        ]
-      },
-      {
-        "id": "wing_right_20.6_root_rear_floor",
-        "parent": "wing_right_20.6",
-        "position": [
-          0.11,
-          -0.1,
-          0.4
-        ],
-        "size": [
-          0.18000000000000002,
-          0.2,
-          0.39999999999999997
-        ],
-        "material": "deck",
-        "solid": true,
-        "visual_size": [
-          0.18000000000000002,
-          0.188,
-          0.39999999999999997
         ]
       },
       {
@@ -16048,22 +15592,6 @@
         "solid": true
       },
       {
-        "id": "rope_exit_west_guard",
-        "parent": "",
-        "position": [
-          4.96,
-          21.15,
-          31
-        ],
-        "size": [
-          0.08,
-          1.1,
-          1.4
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
         "id": "rope_exit_west_post",
         "parent": "",
         "position": [
@@ -16093,54 +15621,6 @@
           1.5
         ],
         "material": "deck",
-        "solid": true
-      },
-      {
-        "id": "rope_exit_landing_front_rail",
-        "parent": "",
-        "position": [
-          17.25,
-          21.660000000000004,
-          30.21
-        ],
-        "size": [
-          1.5,
-          0.08000000000000185,
-          0.0799999999999983
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "rope_exit_landing_front_post0",
-        "parent": "",
-        "position": [
-          16.54,
-          21.110000000000003,
-          30.21
-        ],
-        "size": [
-          0.08,
-          1.02,
-          0.08
-        ],
-        "material": "yellow",
-        "solid": true
-      },
-      {
-        "id": "rope_exit_landing_front_post1",
-        "parent": "",
-        "position": [
-          17.96,
-          21.110000000000003,
-          30.21
-        ],
-        "size": [
-          0.08,
-          1.02,
-          0.08
-        ],
-        "material": "yellow",
         "solid": true
       },
       {
@@ -16251,6 +15731,598 @@
           1.8,
           0.2,
           0.8
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_floor",
+        "parent": "",
+        "position": [
+          4.25,
+          20.5,
+          28.2
+        ],
+        "size": [
+          1.5,
+          0.1999999999999993,
+          7.0
+        ],
+        "material": "deck",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_rear_rail",
+        "parent": "",
+        "position": [
+          4.25,
+          21.660000000000004,
+          31.74
+        ],
+        "size": [
+          1.5,
+          0.08000000000000185,
+          0.0799999999999983
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_rear_post0",
+        "parent": "",
+        "position": [
+          3.54,
+          21.110000000000003,
+          31.74
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_rear_post1",
+        "parent": "",
+        "position": [
+          4.96,
+          21.110000000000003,
+          31.74
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_outer_rail",
+        "parent": "",
+        "position": [
+          3.46,
+          21.66,
+          28.25
+        ],
+        "size": [
+          0.08000000000000007,
+          0.0799999999999983,
+          6.899999999999999
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_outer_post_0",
+        "parent": "",
+        "position": [
+          3.46,
+          21.11,
+          24.84
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_outer_post_1",
+        "parent": "",
+        "position": [
+          3.46,
+          21.11,
+          28.25
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_outer_post_2",
+        "parent": "",
+        "position": [
+          3.46,
+          21.11,
+          31.66
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_inner_rail",
+        "parent": "",
+        "position": [
+          5.04,
+          21.66,
+          27.5
+        ],
+        "size": [
+          0.08000000000000007,
+          0.0799999999999983,
+          5.600000000000001
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_inner_post_0",
+        "parent": "",
+        "position": [
+          5.04,
+          21.11,
+          24.74
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_inner_post_1",
+        "parent": "",
+        "position": [
+          5.04,
+          21.11,
+          27.5
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_inner_post_2",
+        "parent": "",
+        "position": [
+          5.04,
+          21.11,
+          30.26
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_right_floor",
+        "parent": "",
+        "position": [
+          21.75,
+          20.5,
+          26.95
+        ],
+        "size": [
+          1.5,
+          0.1999999999999993,
+          4.5
+        ],
+        "material": "deck",
+        "solid": true
+      },
+      {
+        "id": "rope_side_right_right_rail",
+        "parent": "",
+        "position": [
+          22.54,
+          21.660000000000004,
+          26.95
+        ],
+        "size": [
+          0.0799999999999983,
+          0.08000000000000185,
+          4.5
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_right_right_post0",
+        "parent": "",
+        "position": [
+          22.54,
+          21.110000000000003,
+          24.74
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_right_right_post1",
+        "parent": "",
+        "position": [
+          22.54,
+          21.110000000000003,
+          29.16
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_right_inner_rail",
+        "parent": "",
+        "position": [
+          20.96,
+          21.66,
+          26.2
+        ],
+        "size": [
+          0.0799999999999983,
+          0.0799999999999983,
+          3.0
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_right_inner_post_0",
+        "parent": "",
+        "position": [
+          20.96,
+          21.11,
+          24.74
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_right_inner_post_1",
+        "parent": "",
+        "position": [
+          20.96,
+          21.11,
+          27.66
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_floor",
+        "parent": "",
+        "position": [
+          18.75,
+          20.5,
+          28.45
+        ],
+        "size": [
+          4.5,
+          0.1999999999999993,
+          1.5
+        ],
+        "material": "deck",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_front_rail",
+        "parent": "",
+        "position": [
+          18.75,
+          21.660000000000004,
+          27.66
+        ],
+        "size": [
+          4.5,
+          0.08000000000000185,
+          0.0799999999999983
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_front_post0",
+        "parent": "",
+        "position": [
+          16.54,
+          21.110000000000003,
+          27.66
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_front_post1",
+        "parent": "",
+        "position": [
+          20.96,
+          21.110000000000003,
+          27.66
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_link_right_floor",
+        "parent": "",
+        "position": [
+          17.25,
+          20.5,
+          29.725
+        ],
+        "size": [
+          1.5,
+          0.1999999999999993,
+          1.0500000000000007
+        ],
+        "material": "deck",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_inner_rail",
+        "parent": "",
+        "position": [
+          16.46,
+          21.66,
+          29.0
+        ],
+        "size": [
+          0.0799999999999983,
+          0.0799999999999983,
+          2.6000000000000014
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_inner_post_0",
+        "parent": "",
+        "position": [
+          16.46,
+          21.11,
+          27.74
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_inner_post_1",
+        "parent": "",
+        "position": [
+          16.46,
+          21.11,
+          30.26
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_shaft_rail_0",
+        "parent": "",
+        "position": [
+          20.2,
+          21.660000000000004,
+          29.24
+        ],
+        "size": [
+          4.600000000000001,
+          0.08000000000000185,
+          0.0799999999999983
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_shaft_post_0_0",
+        "parent": "",
+        "position": [
+          17.939999999999998,
+          21.110000000000003,
+          29.24
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_shaft_post_0_1",
+        "parent": "",
+        "position": [
+          22.46,
+          21.110000000000003,
+          29.24
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_link_right_shaft_rail",
+        "parent": "",
+        "position": [
+          17.939999999999998,
+          21.66,
+          29.744999999999997
+        ],
+        "size": [
+          0.08000000000000185,
+          0.0799999999999983,
+          1.0100000000000016
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_link_right_shaft_post_0",
+        "parent": "",
+        "position": [
+          17.94,
+          21.11,
+          29.28
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_link_right_shaft_post_1",
+        "parent": "",
+        "position": [
+          17.94,
+          21.11,
+          30.21
+        ],
+        "size": [
+          0.08,
+          1.02,
+          0.08
+        ],
+        "material": "yellow",
+        "solid": true
+      },
+      {
+        "id": "rope_side_left_support",
+        "parent": "",
+        "position": [
+          5.0,
+          20.25,
+          27.85
+        ],
+        "size": [
+          0.40000000000000036,
+          0.29999999999999716,
+          7.699999999999999
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "rope_side_right_support",
+        "parent": "",
+        "position": [
+          21.2,
+          20.25,
+          26.35
+        ],
+        "size": [
+          0.3999999999999986,
+          0.29999999999999716,
+          4.699999999999999
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "rope_corner_right_support",
+        "parent": "",
+        "position": [
+          19.5,
+          20.25,
+          28.7
+        ],
+        "size": [
+          3.799999999999997,
+          0.29999999999999716,
+          0.3999999999999986
+        ],
+        "material": "steel",
+        "solid": true
+      },
+      {
+        "id": "rope_link_right_support",
+        "parent": "",
+        "position": [
+          17.8,
+          20.25,
+          29.95
+        ],
+        "size": [
+          0.3999999999999986,
+          0.29999999999999716,
+          2.8999999999999986
         ],
         "material": "steel",
         "solid": true

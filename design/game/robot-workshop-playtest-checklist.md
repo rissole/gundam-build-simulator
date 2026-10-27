@@ -47,7 +47,7 @@ hip datum/Y10.97 bearing caps while these equipment choices wait.
 
 ## Gantry v2 rope access — 2026-10-27
 
-**Integrated on `gantry-v2`; no new player acceptance.** The prototype replaces
+**Integrated on `gantry-v2`; full rope-access playtest pending.** The prototype replaces
 11.2/14/16.4 decks with 20.6 rope access, relocates both lifts and preserves the
 8.4 hip working geometry and low hip frame. Rope work, physical upper-leaf controls,
 manual cues and crane routes are integrated. [Implementation and mechanical evidence](gantry-v2/overhead-access.md).
@@ -65,7 +65,27 @@ under the upper walkways. Implemented directly on `gantry-v2`: under-deck shaft
 brackets, relocated opposite column, flush hinge bearings and deck-mounted
 lighting that follows the leaves. Six selected routine cases pass in 10.803 s;
 [geometry and evidence](gantry-v2/overhead-access.md#walkway-support-and-lighting-correction--2026-10-27).
-Presentation and player recheck remain open.
+The player responded "Really great!" to this correction; specific rechecks and
+the broader rope-access journey remain open.
+
+**Follow-up — plain decks and an upper loop (2026-10-27).** The player still sees
+the old pole-shaped cap and four rectangular fillers at the walkway hinge. They
+asked to remove that geometry, remove floating rappel instructions because hover
+tooltips suffice, and connect the upper walkways into a square perimeter (an
+elevator gap is acceptable). Implemented plain landing/leaf plates at both
+levels, tooltip-only station labels, and fixed upper side runs with a short
+bypass in front of the rear elevator. The existing front leaves still open for
+the crane. The new lighting continues beneath the added decks. Six selected
+routine cases pass in 12.308 s; player rechecks remain open.
+[Layout and mechanical evidence](gantry-v2/overhead-access.md#upper-perimeter-and-deck-cleanup--2026-10-27).
+
+- [ ] Inspect both hinge landings: plain deck sections, no old pole cap or four
+  isolated filler blocks, and a narrow seam into the long leaf.
+- [ ] Walk the upper circuit with the front leaves closed, including the turn
+  around the rear elevator with its car downstairs. Check joins, guard edges and
+  carrying space. With the leaves open, use the fixed route via the rear.
+- [ ] Confirm rappel stations have no floating instructions and their existing
+  hover tooltips still make clipping and recall clear.
 
 - [ ] Exit the workshop-side elevator at both heights and pass the former pole
   position. Check the opposite corner and that neither support obstructs walking.

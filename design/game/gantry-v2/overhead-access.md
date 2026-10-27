@@ -40,11 +40,15 @@ https://claude.ai/artifact/5TYsCiNM2vnjYYn9znaRTd.
 - **Lifts, one per walkway (option (b)):** stops 0.15, 8.4 and 20.6. The left lift
   moves outboard of the left hinge post (X0.3..3.5, Z22.45..25.65) and opens onto
   the hinge apron at both 8.4 and 20.6. The right lift moves aft
-  (X18..21.2, Z29.4..32.6) and opens onto the exit-side walkway. Crossing between
-  walkways means going down and back up. The crane bridge passes over both lifts,
+  (X18..21.2, Z29.4..32.6) and opens onto the exit-side walkway. The upper side
+  runs now connect both landings without a trip downstairs. The crane bridge passes over both lifts,
   so shaft structure ends at Y20.2 and cars are open-topped.
 - **Kept:** the 8.4 m landing (outer walkways, hip aprons, rear hip decks, front
   swing wings). The fixed rear crossover is removed.
+- **Upper perimeter (player follow-up):** fixed 1.5 m side runs join the front
+  landings to the rear walkway. The right route turns in front of the rear lift
+  shaft, keeping the loop connected even with the car downstairs. The front
+  leaves still open for crane crossings; the sides and rear stay fixed.
 
 ## How each connection is reached
 
@@ -81,8 +85,9 @@ coarse indications only.
 
 1. Backpack hinge: **open challenge**, deliberately unsolved.
 2. Pull-in lanyards: **accepted** as a mechanic.
-3. Walkways: two rappel sides, one lift each (**option (b)**). Workshop side is **hinged on the
-   8.4 m wing axles** so the crane can come down the hall; exit side is fixed.
+3. Walkways: two rappel sides, one lift each (**option (b)**), now joined by an
+   upper perimeter loop. Workshop side is **hinged on the 8.4 m wing axles** so
+   the crane can come down the hall; the sides and exit side are fixed.
 4. Exit: the robot is released and lowered to the ground, then needs a clear run.
    The rear hip frame and 8.4 m rear decks/aprons sit behind it. Use whatever is
    simplest yet satisfying; not designed yet. The robot passes under the exit-side
@@ -94,7 +99,7 @@ coarse indications only.
 The branch implementation supersedes the concept's preliminary 0.3 m deck depth:
 upper decks are **0.2 m**, top Y20.6 / underside Y20.4. Shared hinge axes remain
 at X5/X21, Z24. The original through-posts were removed in the player correction
-below; flush bearing caps retain the deck-notch clearance throughout the swing.
+below; the later deck cleanup removes their caps and notched filler plates too.
 Mast/tie and boom members remain below the crane bridge. Both upper
 leaves keep the 8.4 swing and split at X13, with no upper fingers. Low hip frame,
 jaws, bearing datums and the retained hip finger work patches are unchanged.
@@ -119,8 +124,8 @@ replace that path: left Z28.5..30; right Z27.6..29.1 to clear the new shaft.
 Left lift landings extend the hinge apron's depth by 0.1 m at each end. Fixed
 thresholds leave a 20 mm car gap. The right car's east face X20.9 is 0.1 m from
 the retained X21 outer walk, so its flush plate spans X20.92..21 without a
-coplanar overlap. Lower sliding access gates remain; upper apron ends are guarded
-because there is no upper outer walkway. New/retained members keep the accepted
+coplanar overlap. Lower sliding access gates remain; upper apron ends now join
+the perimeter side runs. New/retained members keep the accepted
 finish and the signs read **8.4 HIP / 20.6 ROPE ACCESS**.
 
 Initial A1 mechanical evidence: eleven selected routine suites passed, **728 checks in
@@ -140,7 +145,8 @@ At the workshop-side lift, fixed brackets connect the rear shaft guide to the
 left hinge below both decks. The opposite column moves beyond the far outer
 corner to **X22.64/Z23.26**, ends at the upper deck underside Y20.4, and carries
 its hinge through under-deck brackets. The hinge axes, swing and deck heights
-stay fixed. Flush 0.24 m square bearing caps replace the posts at walking level.
+stay fixed. This first correction used flush 0.24 m square bearing caps; the
+follow-up below removes those caps and the surrounding notch fillers.
 
 The obsolete fixed-height strips and unsupported downlights are removed. Housed
 LED strips attach directly to the undersides of both upper leaves, the rear
@@ -156,6 +162,38 @@ hinge clearance and fixture attachment through leaf rotation. The author verifie
 `game/workshop/verification/regressions-20261027T103231.445157Z/results.json`.
 No rendered review or automated walking/reach/visibility acceptance ran. The
 [player recheck remains open](../robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
+
+## Upper perimeter and deck cleanup — 2026-10-27
+
+The player liked the post/lighting correction ("Really great!") and requested
+plain landings, no floating rappel labels, and a complete upper circuit.
+Both levels now use single rectangular hinge landings and leaf decks separated
+by a 20 mm seam. The small pole caps and four notch fillers at each hinge are
+removed. Hinge support stays underneath the decks; front swing behavior remains.
+
+At Y20.6 the left side spans X3.5..5/Z24.7..31.7. The right side spans
+X21..22.5/Z24.7..29.2, then turns across X16.5..21/Z27.7..29.2 and connects to
+the existing rear lift landing through X16.5..18/Z29.2..30.25. This inset corner
+keeps the route outside the shaft and independent of the lift car. The shaft-side
+guard is inset 0.1 m to clear its sliding guide sleeve. Removed end guards open
+the deck joins; remaining edges are guarded. Under-deck girders join the side
+runs to the existing supported corners. The square-like perimeter is complete
+when the front leaves are closed; opening them retains a fixed route around the
+sides and rear between the front landings. Rappel anchors and crane routes stay
+at their existing positions.
+
+The four new fixed deck sections carry attached strip housings, with no extra
+light sources. Rappel stations no longer create floating instruction labels;
+normal hover tooltips, control glow and the rope HUD remain.
+
+Six selected routine cases pass in **12.308 s**: layout (188 checks), dressing
+(160), crane (235), rope access (104), lifts (45) and startup (32). Checks cover
+deck adjacency and open joins, full lift/carriage travel, loaded and empty crane
+envelopes against the fixed perimeter, existing rope behavior, and strip attachment.
+The author verifies **609 solids / 79 frames**, with generated byte equality.
+Local evidence: `game/workshop/verification/regressions-20261027T104714.045559Z/results.json`.
+No rendered review or automated walking/reach/visibility acceptance ran; the
+new circuit and deck presentation await the player's recheck.
 
 ## Rope operation and guidance — 2026-10-27
 
