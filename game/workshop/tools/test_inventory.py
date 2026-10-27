@@ -33,6 +33,7 @@ ROUTINE = (
     'receiver_contract_test',
     'robot_content_test',
     'runner_contracts',
+    'rope_access_test',
     'save_roundtrip_test',
     'shoulder_content_test',
     'shelf_storage_test',

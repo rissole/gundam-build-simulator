@@ -7,6 +7,7 @@ const RANGE = 10.0
 var game: Node
 var objective: Dictionary = {}
 var machine: Node
+var objective_owner = ""
 var outlines: Array = []
 var visible_controls: Array[Node3D] = []
 
@@ -39,11 +40,12 @@ func refresh() -> void:
 	var index := int(evaluation.get("current",-1))
 	var objectives: Array = step.definition.get("objectives",[])
 	if index<0 or index>=objectives.size():return
+	objective_owner = str(step.owner)
 	objective = objectives[index]
 	if objective.get("op","")=="seat" and objective.get("via") is Dictionary:
 		objective = objective.via.duplicate()
 		objective.op = "operate"
-	if objective.get("op","") not in ["operate","connect","detach"]:
+	if objective.get("op","") not in ["operate","connect","detach","fit","seat"]:
 		objective = {}
 		return
 	machine = game.equipment.get_equipment(str(objective.get("machine","")))
@@ -53,11 +55,14 @@ func clear() -> void:
 	for outline in outlines:outline.clear()
 
 func update() -> void:
-	if game.paused or not is_instance_valid(machine) or objective.is_empty() or game.manual_progress._queued:
+	if game.paused or objective.is_empty() or game.manual_progress._queued:
 		clear()
 		return
 	var eligible: Array[Node3D] = []
-	for entry in machine.manual_control_entries(objective):
+	var entries: Array = machine.manual_control_entries(objective) if is_instance_valid(machine) else []
+	var rope = game.equipment.get_equipment("rope_access")
+	if rope!=null:entries.append_array(rope.access_control_entries(objective,objective_owner,machine))
+	for entry in entries:
 		var node = entry.get("node") as Node3D
 		if not is_instance_valid(node) or not node.is_visible_in_tree():continue
 		var point: Vector3 = entry.get("point",node.global_position)
