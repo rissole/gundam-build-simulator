@@ -197,12 +197,13 @@ func pull_support(rail: Node, goal: float) -> String:
 	if error.is_empty():error=settle(rail)
 	return "" if error.is_empty() else "leg_rail foot support: "+error
 
-## The gantry front's own control. Nothing opens or closes it automatically.
-func gantry_front(open: bool) -> String:
-	var front=_equipment("workshop_access")
-	if not front.has_method("is_open"):return ""
-	if (front.is_open() if open else front.is_closed()):return ""
-	return command(front,"open" if open else "close")
+## Operates one gantry front ("upper" leaves or "lower" front) from its panel.
+## Nothing opens or closes either automatically.
+func gantry_front(front: String, open: bool) -> String:
+	var access=_equipment("workshop_access")
+	if not access.has_method("front_open"):return ""
+	if (access.front_open(front) if open else access.front_closed(front)):return ""
+	return command(access,front+("_open" if open else "_close"))
 
 func supply_rig(crane: Node, attached: bool) -> void:
 	var state: Dictionary=crane.capture()
@@ -280,9 +281,9 @@ func _leg_dock(side: String) -> String:
 	var error=pull_support(rail,1.0)
 	if error.is_empty():error=index_to(rail,rail.spec.lanes[side])
 	if error.is_empty():error=jog(rail,"travel+")
-	if error.is_empty():error=gantry_front(true)
+	if error.is_empty():error=gantry_front("lower",true)
 	if error.is_empty():error=jog(rail,"rise+")
-	if error.is_empty():error=gantry_front(false)
+	if error.is_empty():error=gantry_front("lower",false)
 	if not error.is_empty():return error
 	if not rail.supports_seated(side+"_leg") or game.model.assemblies[side+"_leg"].parent!="pelvis":return side+" leg docking: Holder did not seat the leg at its hip."
 	Staging.fill(game,"pelvis")

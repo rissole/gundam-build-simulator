@@ -300,9 +300,9 @@ func supports_seated(assembly: String) -> bool:
 	return active_assembly==assembly and engaged and release==0 and not moving and _at_dock()
 func supports_construction(assembly: String) -> bool:
 	return active_assembly==assembly and can_construct() and foot_support==0
-## A leg still on the rig and tilted up stands inside the gantry's swing.
-func gantry_occupant() -> String:
-	return "leg on the leg rig" if _carrying() and tilt_deg>EPS else ""
+## A leg still on the rig and tilted up stands inside the lower front's swing.
+func gantry_occupant(front: String) -> String:
+	return "leg on the leg rig" if front=="lower" and _carrying() and tilt_deg>EPS else ""
 
 func _lane_x() -> float:return float(spec.lanes[lane])
 func _at_dock(any_rise: bool = false, state: Dictionary = {}) -> bool:
@@ -334,7 +334,7 @@ func _needs(action: String) -> Array:
 	var braces=game.equipment.get_equipment("joint_restraints")
 	var brace_error: String=braces.required_error(active_assembly) if braces!=null and carrying else ""
 	var access=game.equipment.get_equipment("workshop_access")
-	var front_open: bool=access==null or not access.has_method("is_open") or access.is_open()
+	var front_open: bool=access==null or not access.has_method("front_open") or access.front_open("lower")
 	var gantry=game.equipment.get_equipment("module_supports")
 	var at_build=_need("AT BUILD POSITION",carrying and at_station(),"Bring the leg to the build position first: transfer table lever to RIGHT HIP · BUILD.")
 	var under=_need("FOOT SUPPORT UNDER FOOT",foot_support==0,"Push the foot support back under the foot first (at the foot end of the rig).")
@@ -347,7 +347,7 @@ func _needs(action: String) -> Array:
 	var clamps=_need("CLAMPS CLOSED" if carrying else "CLAMPS RELEASED",release==0 if carrying else release==5,
 		"Finish moving the leg clamps first." if release>0 and release<5 else "Tap the leg clamps switch to RELEASE the empty holder first (on the bogie).")
 	var bay=_need("BOGIE AT BAY STOP",absf(travel_z-float(spec.bay_z))<=EPS,"Drive the bogie to the bay stop first (bogie box: TO BAY).")
-	var front=_need("GANTRY FRONT OPEN",front_open,"Open the gantry front first (control box at the gantry).")
+	var front=_need("LOWER FRONT OPEN",front_open,"Open the gantry's lower front first (LOWER FRONT panel beside the left lift).")
 	var hip=_need("HIP GANTRY SECURED",gantry==null or gantry.support_secured(),"Deliver the hip assembly, close all four gantry jaws and insert both waist lock pins first.")
 	var complete=_need("LEG COMPLETE",game.model.milestone(active_assembly,"structural_ready"),"Complete the structural leg and every retaining connection first.")
 	var neutral_roll=_need("ROLL NEUTRAL",roll_deg==0,"Roll the turnover back to neutral before lowering it.")
