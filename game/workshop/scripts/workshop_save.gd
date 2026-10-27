@@ -41,6 +41,8 @@ func snapshot() -> Dictionary:
 	# Mid-ride, the player goes back to the stop the machine reloads at.
 	var steady: Variant = game.equipment.steady_player
 	var player: Transform3D = steady if steady is Transform3D else game.player.global_transform
+	var rope = game.equipment.get_equipment("rope_access")
+	if rope!=null and rope.attached():player = game.player.global_transform
 	return {"format":FORMAT,"model":normalised_model(),"equipment":game.equipment.save_capture(),
 		"player":[player.origin.x,player.origin.y,player.origin.z,player.basis.get_euler().y,game.camera.rotation.x]}
 
@@ -122,6 +124,12 @@ func _check(data: Variant) -> String:
 	for id in fresh:
 		if not same_shape(data.equipment[id],fresh[id]):return id+" state changed"
 		data.equipment[id] = coerce(data.equipment[id],fresh[id])
+	# Rope attachment is safety-critical and has variable station identities.
+	# Validate it before restoring any live model/equipment, not only in apply().
+	var rope = game.equipment.get_equipment("rope_access")
+	if rope!=null:
+		var errors: Array[String] = rope.validate(data.equipment.rope_access,null,data)
+		if not errors.is_empty():return "; ".join(errors)
 	return ""
 
 ## Places bodies from the restored model, then lets each machine pose its loads.

@@ -67,6 +67,11 @@ func handle(event: InputEvent) -> void:
 			KEY_PAGEUP: game.hud.body_scroll.scroll_vertical -= 140
 			KEY_PAGEDOWN: game.hud.body_scroll.scroll_vertical += 140
 			KEY_F: reset_station()
+			KEY_G:
+				var rope = game.equipment.get_equipment("rope_access")
+				if rope!=null:
+					var error: String=rope.rope_key()
+					if not error.is_empty():game.hud.toast(error)
 		game.hud.refresh()
 		# Pocket changes can switch between pickup and placement intent. Resolve
 		# that immediately so selecting a part and clicking in one frame works.

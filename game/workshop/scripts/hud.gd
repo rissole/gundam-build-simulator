@@ -43,6 +43,7 @@ var fps_estimate: float = 0.0
 var fps_refresh: float = 0.0
 var action_bar: HBoxContainer
 var action_slots: Array[Dictionary] = []
+var rope_label: Label
 var carry_label: Label
 var carry_panel: PanelContainer
 var set_down_hint: HBoxContainer
@@ -304,6 +305,12 @@ func _make_action_bar() -> void:
 		content.add_child(variant_label)
 		variant_label.size = Vector2(66,0)
 		action_slots.append({"card":card,"model":texture,"count":count,"id":id_label,"variant":variant_label,"kind":""})
+	rope_label = label("",16,tone)
+	root.add_child(rope_label)
+	rope_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	rope_label.position = Vector2(-260,-190)
+	rope_label.size = Vector2(520,50)
+	rope_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	carry_panel = panel_at(root,Vector2(0.5,1),Rect2(-240,-125,480,0))
 	carry_panel.add_theme_stylebox_override("panel",style(Color("101b2380"),Color("a6bac318"),6))
 	var carry_row = HBoxContainer.new()
@@ -865,6 +872,10 @@ func toast(text: String, success: bool = false) -> void:
 	toast_time = 5.0
 
 func _process(delta: float) -> void:
+	if is_instance_valid(rope_label):
+		var rope = game.equipment.get_equipment("rope_access")
+		rope_label.text = rope.status_text() if rope!=null else ""
+		rope_label.visible = not game.paused and not rope_label.text.is_empty()
 	# Frame-time average with a short memory, redrawn ten times a second.
 	# Engine.get_frames_per_second() only publishes once per second.
 	if delta > 0.0:
