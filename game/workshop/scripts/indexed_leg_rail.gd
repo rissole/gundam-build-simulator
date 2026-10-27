@@ -20,7 +20,8 @@ const ROLL_SPEED = 20.0
 const SUPPORT_SPEED = .3
 const TABLE_SPEED = .8
 const RELEASE_SPEED = .6
-const LEVER_ANGLE = 28.0
+const LEVER_GATE_HEIGHT = .64
+const LEVER_DETENT_DEPTH = -.115
 const HOLDS = ["travel+","travel-","rise+","rise-","lift+","lift-","roll+","roll-"]
 const DRAGS = ["support","lever"]
 const TAPS = ["clamps","next_leg"]
@@ -121,32 +122,51 @@ func _key(panel: Node3D, action: String, caption: String, at: Vector3) -> void:
 	if action in HOLDS:EquipmentButton.set_hold_handler(key,_hold.bind(action))
 	buttons.append(control_entry(key,action,action,.11))
 
-## A floor lever thrown parallel to the table's travel, with one notch per
-## destination named on its quadrant plate.
+## A stick in an open gate. From the sole (+Z view), +X is screen-left:
+## PARK, a long gap, BUILD, a short gap, LEFT HIP. Only interlock lamps carry text.
 func _lever(at: Vector3) -> void:
-	var base=Node3D.new();add_child(base);base.position=at
+	var base=Node3D.new();base.name="TransferStick";add_child(base);base.position=at
+	base.rotation.y=deg_to_rad(float(spec.controls.lever_yaw))
 	var dark=game.material(Color("263a43"),.4)
-	game.box(base,Vector3(0,.08,0),Vector3(1.1,.16,.3),dark,true)
+	var steel=game.material(Color("8a9aa1"),.6)
+	game.box(base,Vector3(0,.08,0),Vector3(1.24,.16,.44),dark,true)
+	for side in [-1,1]:
+		game.box(base,Vector3(side*.58,.46,0),Vector3(.08,.60,.36),dark,true)
+	# A real opening between plate strips; the front edge has three detent
+	# pockets. Their positions come from the same data as input and table travel.
+	var gate=Node3D.new();gate.name="Gate";base.add_child(gate);gate.position.y=.16+LEVER_GATE_HEIGHT
+	game.box(gate,Vector3(0,0,.135),Vector3(1.24,.05,.17),steel,true)
+	game.box(gate,Vector3(0,0,-.20),Vector3(1.24,.05,.04),steel,true)
+	var edge=-.62
+	for notch in notches():
+		var end: float=notch.offset-.055
+		game.box(gate,Vector3((edge+end)/2,0,LEVER_DETENT_DEPTH),Vector3(end-edge,.05,.13),steel,true)
+		edge=notch.offset+.055
+	game.box(gate,Vector3((edge+.62)/2,0,LEVER_DETENT_DEPTH),Vector3(.62-edge,.05,.13),steel,true)
+	for side in [-1,1]:game.box(gate,Vector3(side*.60,0,0),Vector3(.04,.05,.10),steel,true)
 	lever_pivot=Node3D.new();base.add_child(lever_pivot);lever_pivot.position=Vector3(0,.16,0)
-	game.box(lever_pivot,Vector3(0,.5,0),Vector3(.06,1.0,.06),game.material(Color("8a9aa1"),.6))
+	game.box(lever_pivot,Vector3(0,.5,0),Vector3(.06,1.0,.06),steel)
 	var knob=game.box(lever_pivot,Vector3(0,1.02,0),Vector3(.14,.14,.14),game.material(Color("e8b46b"),.3))
 	EquipmentButton.set_hold_handler(knob,_hold.bind("lever"))
 	buttons.append(control_entry(knob,"lever","lever",.2))
-	labels.append(game.sign_panel(base,"TRANSFER TABLE",Vector3(0,.45,.2),Vector2(1.0,.2),24,.0015,PI))
-	for notch in notches():
-		var plate=Label3D.new();base.add_child(plate);plate.text=notch.name;plate.font_size=18;plate.pixel_size=.0013
-		plate.rotation.y=PI;plate.position=Vector3(sin(deg_to_rad(notch.angle))*.55,.2,.16);plate.outline_size=0
 	lamps["lever"]=[]
 	for row in range(4):
-		var lamp=Label3D.new();base.add_child(lamp);lamp.position=Vector3(.5,.35-row*.07,.16)
-		lamp.rotation.y=PI;lamp.font_size=16;lamp.pixel_size=.0013;lamp.outline_size=0
+		var lamp=Label3D.new();base.add_child(lamp);lamp.position=Vector3(.50,.66-row*.09,-.23)
+		lamp.rotation.y=PI;lamp.font_size=18;lamp.pixel_size=.0013;lamp.outline_size=0
 		lamp.horizontal_alignment=HORIZONTAL_ALIGNMENT_LEFT;lamps.lever.append(lamp)
 
-## Lever notches in table order: their X is where the table stops.
+## Single source for slot offsets, stick angles and destination X. Slot gaps
+## are exactly 1:2; the stick intersects the gate at each corresponding offset.
 func notches() -> Array:
-	return [{"name":"LEFT HIP","x":float(spec.lanes.left),"angle":-LEVER_ANGLE},
-		{"name":"RIGHT HIP · BUILD","x":float(spec.station_x),"angle":0.0},
-		{"name":"PARK","x":float(spec.lanes.parking),"angle":LEVER_ANGLE}]
+	var result=[{"name":"LEFT HIP","x":float(spec.lanes.left),"offset":-.42,"place":"right end"},
+		{"name":"RIGHT HIP · BUILD","x":float(spec.station_x),"offset":-.14,"place":"middle detent"},
+		{"name":"PARK","x":float(spec.lanes.parking),"offset":.42,"place":"far left"}]
+	for notch in result:notch.angle=rad_to_deg(atan2(notch.offset,LEVER_GATE_HEIGHT))
+	return result
+
+func _detent_label(x: float) -> String:
+	var notch=_notch_for(x)
+	return notch.place+" ("+notch.name+")"
 
 func _notch_for(x: float) -> Dictionary:
 	var best: Dictionary={}
@@ -193,8 +213,9 @@ func _drag_tick(action: String) -> void:
 	if hand==null:return
 	if action=="support":pull_support(_support_param(hand,drag.pad))
 	else:
-		var pivot: Vector3=lever_pivot.global_position
-		lever_angle=clampf(rad_to_deg(atan2(hand.x-pivot.x,maxf(.05,hand.y-pivot.y))),-LEVER_ANGLE,LEVER_ANGLE)
+		var local: Vector3=lever_pivot.get_parent().to_local(hand)-lever_pivot.position
+		var stops=notches()
+		lever_angle=clampf(rad_to_deg(atan2(local.x,maxf(.05,local.y))),stops.front().angle,stops.back().angle)
 		_refresh()
 
 func _drag_end() -> void:
@@ -274,9 +295,8 @@ func manual_control_actions(objective: Dictionary) -> Array:
 
 func manual_commands() -> Array:return MANUAL_COMMANDS
 func command_label(action: String, _task: String = "") -> String:
-	var side: String=active_assembly.trim_suffix("_leg").to_upper()
-	return {"support:away":"look at it, hold E and pull it away from the foot","table:hip":"pull it to "+side+" HIP","travel:bay":"hold TO BAY","rise":"hold RISE","clamps:release":"tap RELEASE",
-		"lower":"hold LOWER","travel:home":"hold TO TABLE","table:build":"pull it to RIGHT HIP · BUILD","clamps:grab":"tap GRAB","next_leg":"tap NEXT LEG","table:park":"pull it to PARK"}.get(action,"")
+	return {"support:away":"look at it, hold E and pull it away from the foot","table:hip":"move it to the "+_detent_label(_lane_x()),"travel:bay":"hold TO BAY","rise":"hold RISE","clamps:release":"tap RELEASE",
+		"lower":"hold LOWER","travel:home":"hold TO TABLE","table:build":"move it to the "+_detent_label(float(spec.station_x)),"clamps:grab":"tap GRAB","next_leg":"tap NEXT LEG","table:park":"push it to the "+_detent_label(_parking_x())}.get(action,"")
 func manual_subject(objective: Dictionary) -> String:
 	return {"support:away":"Foot support","table:hip":"Transfer table lever","table:build":"Transfer table lever","table:park":"Transfer table lever","clamps:release":"Leg clamps switch","clamps:grab":"Leg clamps switch"}.get(str(objective.get("command","")),"Bogie box")
 func manual_hint(objective: Dictionary) -> String:
@@ -345,19 +365,19 @@ func retention_state(model: AssemblyModel = null, controls_state: Dictionary = {
 func _need(label: String, ok: bool, refusal: String) -> Dictionary:return {"label":label,"ok":ok,"refusal":refusal}
 
 func _needs(action: String) -> Array:
-	var carrying=_carrying();var side: String=active_assembly.trim_suffix("_leg")
+	var carrying=_carrying()
 	var braces=game.equipment.get_equipment("joint_restraints")
 	var brace_error: String=braces.required_error(active_assembly) if braces!=null and carrying else ""
 	var access=game.equipment.get_equipment("workshop_access")
 	var front_open: bool=access==null or access.front_open("lower")
 	var gantry=game.equipment.get_equipment("module_supports")
-	var at_build=_need("AT BUILD POSITION",carrying and at_station(),"Bring the leg to the build position first: transfer table lever to RIGHT HIP · BUILD.")
+	var at_build=_need("TABLE AT MIDDLE (RIGHT HIP · BUILD)",carrying and at_station(),"At the foot end, move the transfer table lever to the "+_detent_label(float(spec.station_x))+" first.")
 	var under=_need("FOOT SUPPORT UNDER FOOT",foot_support==0,"Push the foot support back under the foot first (under the foot, from either side of the rig).")
 	var away=_need("FOOT SUPPORT AWAY",foot_support>=1,"Pull the foot support away from the foot first (under the foot, from either side of the rig).")
 	var braced=_need("BRACES LOCKED",brace_error.is_empty(),brace_error)
 	var turnover=_need("TURNOVER LOWERED",roll_deg==0 and roll_height_m==0,"Roll the turnover to neutral and lower it first (turnover box at the head end of the table).")
 	var on=_need("BOGIE ON TABLE",on_table(),"Drive the bogie back onto the table first (bogie box: TO TABLE).")
-	var at_hip=_need("TABLE AT "+side.to_upper()+" HIP",absf(index_x-_lane_x())<=EPS,"Pull the transfer table lever to "+side.to_upper()+" HIP first.")
+	var at_hip=_need("TABLE AT "+_detent_label(_lane_x()).to_upper(),absf(index_x-_lane_x())<=EPS,"At the foot end, move the transfer table lever to the "+_detent_label(_lane_x())+" first.")
 	var flat=_need("LEG LYING FLAT",tilt_deg<=EPS and rise_m<=EPS,"Lower the leg flat first (bogie box: LOWER).")
 	var clamps=_need("CLAMPS CLOSED" if carrying else "CLAMPS RELEASED",release==0 if carrying else release==5,
 		"Finish moving the leg clamps first." if release>0 and release<5 else "Tap the leg clamps switch to RELEASE the empty holder first (on the bogie).")
@@ -686,6 +706,8 @@ func _refresh() -> void:
 	if is_instance_valid(lever_pivot):
 		var angle: float=lever_angle if drag.get("kind","")=="lever" else (_notch_for(table_goal).angle if table_goal>=0 else _notch_for(index_x).angle)
 		if drag.get("kind","")!="lever":lever_angle=angle
+		# Held stick runs along the slot; release seats it in the front pocket.
+		lever_pivot.position.z=0.0 if drag.get("kind","")=="lever" else LEVER_DETENT_DEPTH
 		lever_pivot.rotation.z=-deg_to_rad(angle)
 	if is_instance_valid(clamp_switch):clamp_switch.global_position=Vector3(index_x-1.0,0,travel_z)
 	if is_instance_valid(ghost):

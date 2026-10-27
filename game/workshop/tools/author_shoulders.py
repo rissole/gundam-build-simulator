@@ -141,7 +141,8 @@ def extend(trial, chest, arms, kinds, diagram):
             return record
         if side=="left":
             chest["manual"].append(dict(title="Bring the arm rig to the Limb Bay", goal="Park the leg rig and crane the arm rig into the Limb Bay.",
-                slots=[], objectives=[operate(rail,"table:park")]+crane_to("cassette")+park(), view="components"))
+                slots=[], objectives=[operate(rail,"table:park")]+crane_to("cassette")+park(), view="components",
+                note=dict(at=0, text="At the transfer table lever by the sole of the foot, push it to the far left (PARK), seen from the foot end, to clear the Limb Bay.")))
         else:
             chest["manual"].append(dict(title="Bring the right arm onto the arm rig", goal="Crane the right arm onto the arm rig.",
                 slots=[], objectives=crane_to("right_arm_store")+park(), view="components"))

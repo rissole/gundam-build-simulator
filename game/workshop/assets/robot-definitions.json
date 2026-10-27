@@ -5633,7 +5633,7 @@
           ],
           "note": {
             "at": 1,
-            "text": "At the bogie box beside the table, hold LOWER until the empty holder lies flat, then TO TABLE. Move the table lever to RIGHT HIP · BUILD and tap GRAB on the leg clamps switch on the bogie to extend the empty clamps. Bring the foot rig home before using NEXT LEG."
+            "text": "At the bogie box beside the table, hold LOWER until the empty holder lies flat, then TO TABLE. Move the table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end, then tap GRAB on the leg clamps switch on the bogie to extend the empty clamps. Bring the foot rig home before using NEXT LEG."
           },
           "diagram_views": [
             {
@@ -5682,7 +5682,7 @@
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower gantry at the LOWER GANTRY panel at 8.4 m beside the left lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."
+          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip detent, seen from the foot end (right end for LEFT HIP; middle for RIGHT HIP · BUILD), then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower gantry at the LOWER GANTRY panel at 8.4 m beside the left lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end; push the foot support under the foot for construction. With the foot support away, push the lever to the far left (PARK), seen from the foot end, to park the leg. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Seat the leg in the hip assembly",
@@ -6377,7 +6377,7 @@
           "title": "Reacquire support and recover",
           "view": "overview",
           "slots": [],
-          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip notch, then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower gantry at the LOWER GANTRY panel at 8.4 m beside the right lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to RIGHT HIP · BUILD; push the foot support under the foot for construction. Use the lever's PARK notch to park the leg with the foot support away. The same physical components can be installed again. Never remove retention while the leg rig is released."
+          "body": "If the empty leg rig has returned home, tap RELEASE on the leg clamps switch on the bogie while it is on the table to fold the empty clamps for travel. Pull the transfer table lever to this leg's hip detent, seen from the foot end (right end for LEFT HIP; middle for RIGHT HIP · BUILD), then use the bogie box to hold TO BAY and RISE to bring the empty rig upright under the mounted leg. Tap GRAB on the clamps switch to take the leg's weight. If the released rig is still upright under the leg, use GRAB directly. Wait for the clamps to finish gripping before any retention undo. Z removes the most recent bolt, washer and half in reverse order. Each half returns to your hands at the actual connection; store it on the lift shelf and ride to Ground. Remove every fitted retention piece and both cylinder lock pins, open the lower gantry at the LOWER GANTRY panel at 8.4 m beside the right lift, then hold LOWER at the bogie box to unseat the leg and lay it flat. Hold TO TABLE, then pull the table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end; push the foot support under the foot for construction. With the foot support away, push the lever to the far left (PARK), seen from the foot end, to park the leg. The same physical components can be installed again. Never remove retention while the leg rig is released."
         },
         {
           "title": "Bring the chest to the heavy module rig",
@@ -12207,6 +12207,10 @@
             }
           ],
           "view": "components",
+          "note": {
+            "at": 0,
+            "text": "At the transfer table lever by the sole of the foot, push it to the far left (PARK), seen from the foot end, to clear the Limb Bay."
+          },
           "machine_scope": {
             "service_crane": {
               "task": "cassette"
@@ -16010,7 +16014,7 @@
           "title": "Arm rig",
           "view": "overview",
           "slots": [],
-          "body": "Park the leg rig using the transfer table lever's PARK notch before bringing the arm rig into the Limb Bay. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction."
+          "body": "Before bringing the arm rig into the Limb Bay, park the leg rig: at the transfer table lever by the sole of the foot, push it to the far left (PARK), seen from the foot end. The arm rig holds the prepared arm on three saddles and six clamps. Use the shared crane's Arm rig to Limb Bay task, fit all four magnetic connectors, then raise and transfer the retained arm rig. Its floor locks engage before the crane releases. Reverse the same task to park an unfinished arm without changing its construction."
         }
       ]
     },
@@ -19153,13 +19157,13 @@
           "title": "Structural leg ready",
           "view": "prepared",
           "slots": [],
-          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
+          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to the far left (PARK), seen from the foot end. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
         },
         {
           "title": "Supported construction recovery",
           "view": "overview",
           "slots": [],
-          "body": "Bring the supported leg to RIGHT HIP · BUILD before construction disassembly. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to its PARK notch. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
+          "body": "Before construction disassembly, move the transfer table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to the far left (PARK), seen from the foot end. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
         }
       ]
     },
@@ -24150,13 +24154,13 @@
             "title": "Structural leg ready",
             "view": "prepared",
             "slots": [],
-            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to its PARK notch. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
+            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to the far left (PARK), seen from the foot end. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
           },
           {
             "title": "Supported construction recovery",
             "view": "overview",
             "slots": [],
-            "body": "Bring the supported leg to RIGHT HIP · BUILD before construction disassembly. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to its PARK notch. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
+            "body": "Before construction disassembly, move the transfer table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to the far left (PARK), seen from the foot end. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."
           }
         ]
       },
