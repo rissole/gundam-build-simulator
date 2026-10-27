@@ -10,7 +10,7 @@ The game will eventually be AR, so controls stay physical and in sight.
 
 | Branch | Worktree | Brief | State |
 | --- | --- | --- | --- |
-| `gantry-v2-plan` | `/private/tmp/gbs-gantry-v2` | [C5 — v2 dimensioned plan](C5-v2-dimensioned-plan.md) | Design only; running |
+| `gantry-v2-plan` | `/private/tmp/gbs-gantry-v2` | [C6 — v2 coarse plan](C6-v2-coarse-plan.md) | Design only; C5 candidate blocked, revising |
 | `operated-rigs` | `/private/tmp/gbs-rigs` | [B — Operated rigs](B-operated-rigs.md) | B1/B2 helpers and B3 design done; leg rig next |
 
 Each branch has one Astra High coordinator (Codex). It does the judgment work and
