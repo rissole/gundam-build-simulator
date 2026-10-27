@@ -102,7 +102,7 @@ func panel_via_shelf(side: String, sid: String) -> bool:
 	var error: String=shelf.request("store")
 	expect(error.is_empty(),sid+" stores its real identity on the elevator shelf: "+error)
 	if not error.is_empty():return false
-	if not command(lift,"stop3"):return false
+	if not command(lift,"stop2"):return false
 	expect(game.model.items[uid].location=="support:"+shelf.support_ids[0],sid+" remains shelf-owned during elevator travel")
 	error=shelf.request("take:0");expect(error.is_empty(),sid+" returns from the shelf to two hands: "+error)
 	if not error.is_empty():return false
