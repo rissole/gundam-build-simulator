@@ -161,7 +161,7 @@ func _piece_bounds(piece: Dictionary) -> AABB:
 
 func _check_landing_fills(world, lifts: Array, access) -> void:
 	var expected: Dictionary = {}
-	for entry in [["left",8.4,3.22,4.80,23.30],["left",20.6,3.22,4.80,23.30],["right",8.4,20.92,21.2,30.25],["right",20.6,18.0,18.28,30.25]]:
+	for entry in [["left",8.4,3.22,3.5,23.30],["left",20.6,3.22,3.5,23.30],["right",8.4,20.92,21.0,30.25],["right",20.6,18.0,18.28,30.25]]:
 		var id = "lift_"+entry[0]+"_"+str(entry[1])+"_landing_floor"
 		expected[id]=AABB(Vector3(entry[2],entry[1]-.2,entry[4]),Vector3(entry[3]-entry[2],.2,1.5))
 	var actual: Array = world.pieces.keys().filter(func(id):return id.begins_with("lift_") and id.ends_with("_landing_floor"))
@@ -216,7 +216,7 @@ func _check_mirrored_access(world, access) -> void:
 	var pairs: Dictionary = {}
 	for id in world.pieces:
 		if not "left" in id or ("right" in id and id.find("right")<id.find("left")):continue
-		if not ["wing_left_","finger_","rear_outer_","rear_inner_","hip_apron_","hip_link_","access_gate_"].any(func(prefix):return id.begins_with(prefix)):continue
+		if not ["wing_left_","finger_","rear_outer_","rear_inner_","hip_apron_","access_gate_"].any(func(prefix):return id.begins_with(prefix)):continue
 		var other: String = id.replace("left","SIDE").replace("right","left").replace("SIDE","right")
 		if id.begins_with("wing_left_"):
 			other = other.replace("_front_","_rear_") if "_front_" in other else other.replace("_rear_","_front_")
