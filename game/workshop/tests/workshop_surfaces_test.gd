@@ -76,6 +76,10 @@ func run() -> void:
 
 func inspect_pose(label: String, meshes: Array[MeshInstance3D]) -> Dictionary:
 	var findings := Audit.inspect(meshes)
+	var repaired_joints := findings.filter(func(finding):
+		var paths: String = finding.path_a + " " + finding.path_b
+		return "arm_cassette" in paths or "rope_davit_arm" in paths or "rope_boom_arm" in paths)
+	expect(repaired_joints.is_empty(), "%s: cassette and rope arm joints remain free of coplanar overlaps" % label)
 	for finding in findings:
 		print("COPLANAR ", label, " ", finding.path_a, " <> ", finding.path_b,
 			" area=", finding.total_overlap_area, " normal=", finding.normal_a)

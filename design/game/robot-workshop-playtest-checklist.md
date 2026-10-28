@@ -940,3 +940,21 @@ Mechanical test passes are separate from these playtest results.
 - Open: repair reported overlaps and recheck flicker in play. Robot geometry,
   hangar dressing, other equipment constructors, internal same-node overlaps and
   intermediate motion remain outside this test's scope. No rendered review ran.
+
+- Repair in progress: cassette ties/clamps, rope davit/boom arms and duplicate
+  posts now use non-overlapping visible geometry; lift shoe and platform rail/
+  parking joints were adjusted while preserving collisions. The actual-scene
+  scan reports 34 parked and 36 open/raised pairs (652 meshes, 1.017 seconds);
+  cassette and rope arm assertions pass in both poses. Remaining findings include
+  support girders, guard connections and lift carriages. Gantry layout and
+  dressing and access-lift checks pass, though the runner reported changed input
+  hashes during that run. A subsequent stable run passed all 52 mobile-platform
+  checks and confirmed the remaining surface findings. No rendered review or
+  player recheck has been performed.
+
+- Repair completed for the checked poses: the fixture now finds zero pairs in
+  both, including the gantry girders, guards and lift carriage joints. Visible
+  geometry was trimmed or recessed at the joins; collision boxes are unchanged.
+  Focused scan: 652 meshes, 0.982 seconds. All 53 routine cases pass in 54.358
+  seconds with unchanged inputs. No rendered review was requested; player
+  recheck of flicker remains open. Exclusions listed above remain unverified.

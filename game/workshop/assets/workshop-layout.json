@@ -11345,7 +11345,12 @@
           0.24
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.6,
+          0.2,
+          0.24
+        ]
       },
       {
         "id": "arm_cassette_clamp_-1_1.35_bar",
@@ -11361,7 +11366,17 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.385,
+          0.08,
+          0.12
+        ],
+        "visual_offset": [
+          -0.0075,
+          0,
+          0
+        ]
       },
       {
         "id": "arm_cassette_clamp_-1_1.35_foot",
@@ -11409,7 +11424,17 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.385,
+          0.08,
+          0.12
+        ],
+        "visual_offset": [
+          0.0075,
+          0,
+          0
+        ]
       },
       {
         "id": "arm_cassette_clamp_1_1.35_foot",
@@ -11505,7 +11530,12 @@
           0.24
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.6,
+          0.2,
+          0.24
+        ]
       },
       {
         "id": "arm_cassette_clamp_-1_4.05_bar",
@@ -11521,7 +11551,17 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.385,
+          0.08,
+          0.12
+        ],
+        "visual_offset": [
+          -0.0075,
+          0,
+          0
+        ]
       },
       {
         "id": "arm_cassette_clamp_-1_4.05_foot",
@@ -11569,7 +11609,17 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.385,
+          0.08,
+          0.12
+        ],
+        "visual_offset": [
+          0.0075,
+          0,
+          0
+        ]
       },
       {
         "id": "arm_cassette_clamp_1_4.05_foot",
@@ -11749,7 +11799,12 @@
           0.24
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.6,
+          0.2,
+          0.24
+        ]
       },
       {
         "id": "arm_cassette_clamp_-1_6.05_bar",
@@ -11765,7 +11820,17 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.385,
+          0.08,
+          0.12
+        ],
+        "visual_offset": [
+          -0.0075,
+          0,
+          0
+        ]
       },
       {
         "id": "arm_cassette_clamp_-1_6.05_foot",
@@ -11813,7 +11878,17 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.385,
+          0.08,
+          0.12
+        ],
+        "visual_offset": [
+          0.0075,
+          0,
+          0
+        ]
       },
       {
         "id": "arm_cassette_clamp_1_6.05_foot",
@@ -12709,7 +12784,17 @@
           1.8900000000000006
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.2400000000000002,
+          0.3000000000000007,
+          1.6900000000000013
+        ],
+        "visual_offset": [
+          0,
+          0,
+          -0.09999999999999787
+        ]
       },
       {
         "id": "wing_hinge_left_8.4_floor",
@@ -12741,7 +12826,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.3199999999999998,
+          0.08000000000000007,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          0.1299999999999999,
+          0.004,
+          0
+        ]
       },
       {
         "id": "hinge_front_guard_left_8.4_post_0_0",
@@ -12949,7 +13044,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          3.119999999999999,
+          0.08000000000000007,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          0.040000000000000036,
+          0,
+          0
+        ]
       },
       {
         "id": "hip_link_left_front_post0",
@@ -12997,7 +13102,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          3.119999999999999,
+          0.08000000000000007,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          0.040000000000000036,
+          0,
+          0
+        ]
       },
       {
         "id": "hip_link_left_rear_post0",
@@ -13305,7 +13420,17 @@
           1.8900000000000006
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.2400000000000002,
+          0.3000000000000007,
+          1.6900000000000013
+        ],
+        "visual_offset": [
+          0,
+          0,
+          -0.09999999999999787
+        ]
       },
       {
         "id": "wing_hinge_left_20.6_floor",
@@ -13337,7 +13462,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.3199999999999998,
+          0.08000000000000185,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          0.1299999999999999,
+          0.004,
+          0
+        ]
       },
       {
         "id": "hinge_front_guard_left_20.6_post_0_0",
@@ -13614,7 +13749,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.40000000000000036,
+          0.1,
+          0.1
+        ],
+        "visual_offset": [
+          0.0,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_davit_front_l_10.8",
@@ -13646,7 +13791,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.40000000000000036,
+          0.1,
+          0.1
+        ],
+        "visual_offset": [
+          0.0,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_davit_front_l_11.9",
@@ -13678,7 +13833,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.45000000000000107,
+          0.1,
+          0.1
+        ],
+        "visual_offset": [
+          0.0,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_davit_front_l_12.6",
@@ -13710,7 +13875,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.5999999999999996,
+          0.1,
+          0.1
+        ],
+        "visual_offset": [
+          0.27500000000000036,
+          0,
+          0
+        ]
       },
       {
         "id": "wing_left_20.6_davit_pier_0",
@@ -13726,7 +13901,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          1.19,
+          0.08
+        ],
+        "visual_offset": [
+          0,
+          0.005,
+          0
+        ]
       },
       {
         "id": "wing_left_20.6_davit_pier_1",
@@ -13742,7 +13927,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          1.19,
+          0.08
+        ],
+        "visual_offset": [
+          0,
+          0.005,
+          0
+        ]
       },
       {
         "id": "wing_left_20.6_davit_pier_2",
@@ -13758,7 +13953,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          1.19,
+          0.08
+        ],
+        "visual_offset": [
+          0,
+          0.005,
+          0
+        ]
       },
       {
         "id": "wing_left_20.6_mast",
@@ -13822,7 +14027,17 @@
           0.9800000000000004
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.240000000000002,
+          0.3000000000000007,
+          0.740000000000002
+        ],
+        "visual_offset": [
+          0,
+          0,
+          0.11999999999999744
+        ]
       },
       {
         "id": "wing_support_right_8.4_arm",
@@ -13838,7 +14053,17 @@
           0.240000000000002
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.6400000000000006,
+          0.3000000000000007,
+          0.240000000000002
+        ],
+        "visual_offset": [
+          -0.120000000000001,
+          0,
+          0
+        ]
       },
       {
         "id": "wing_hinge_right_8.4_floor",
@@ -14110,7 +14335,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          3.120000000000001,
+          0.08000000000000007,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          -0.03999999999999915,
+          0,
+          0
+        ]
       },
       {
         "id": "hip_link_right_front_post0",
@@ -14158,7 +14393,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          3.120000000000001,
+          0.08000000000000007,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          -0.03999999999999915,
+          0,
+          0
+        ]
       },
       {
         "id": "hip_link_right_rear_post0",
@@ -14450,7 +14695,17 @@
           0.9800000000000004
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.240000000000002,
+          0.3000000000000007,
+          0.740000000000002
+        ],
+        "visual_offset": [
+          0,
+          0,
+          0.11999999999999744
+        ]
       },
       {
         "id": "wing_support_right_20.6_arm",
@@ -14466,7 +14721,17 @@
           0.240000000000002
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          1.6400000000000006,
+          0.3000000000000007,
+          0.240000000000002
+        ],
+        "visual_offset": [
+          -0.120000000000001,
+          0,
+          0
+        ]
       },
       {
         "id": "wing_hinge_right_20.6_floor",
@@ -14791,7 +15056,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.5999999999999996,
+          0.1,
+          0.1
+        ],
+        "visual_offset": [
+          0.27500000000000036,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_davit_front_r_14.1",
@@ -14823,7 +15098,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.45000000000000107,
+          0.1,
+          0.1
+        ],
+        "visual_offset": [
+          0.0,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_davit_front_r_15.2",
@@ -14855,7 +15140,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.40000000000000036,
+          0.1,
+          0.1
+        ],
+        "visual_offset": [
+          0.0,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_davit_front_r_16.7",
@@ -14887,7 +15182,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.40000000000000036,
+          0.1,
+          0.1
+        ],
+        "visual_offset": [
+          0.0,
+          0,
+          0
+        ]
       },
       {
         "id": "wing_right_20.6_davit_pier_0",
@@ -14903,7 +15208,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          1.19,
+          0.08
+        ],
+        "visual_offset": [
+          0,
+          0.005,
+          0
+        ]
       },
       {
         "id": "wing_right_20.6_davit_pier_1",
@@ -14919,7 +15234,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          1.19,
+          0.08
+        ],
+        "visual_offset": [
+          0,
+          0.005,
+          0
+        ]
       },
       {
         "id": "wing_right_20.6_davit_pier_2",
@@ -14935,7 +15260,17 @@
           0.1
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          1.19,
+          0.08
+        ],
+        "visual_offset": [
+          0,
+          0.005,
+          0
+        ]
       },
       {
         "id": "wing_right_20.6_mast",
@@ -14999,7 +15334,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          5.470000000000001,
+          0.08000000000000185,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          0.040000000000000036,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_exit_front_post_0_0",
@@ -15191,7 +15536,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.9700000000000024,
+          0.08000000000000185,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          -0.03999999999999915,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_exit_front_post_4_0",
@@ -15399,7 +15754,17 @@
           3.1
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.2,
+          0.2,
+          2.700000000000003
+        ],
+        "visual_offset": [
+          0,
+          0,
+          0.0
+        ]
       },
       {
         "id": "rope_exit_support",
@@ -15607,7 +15972,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "hidden": true
       },
       {
         "id": "rope_side_right_floor",
@@ -15719,7 +16085,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "hidden": true
       },
       {
         "id": "rope_corner_right_floor",
@@ -15751,7 +16118,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          4.420000000000002,
+          0.08000000000000185,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          -0.03999999999999915,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_corner_right_front_post0",
@@ -15847,7 +16224,8 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "hidden": true
       },
       {
         "id": "rope_corner_right_shaft_rail_0",
@@ -15863,7 +16241,17 @@
           0.0799999999999983
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          4.52,
+          0.08000000000000185,
+          0.0799999999999983
+        ],
+        "visual_offset": [
+          0.0400000000000027,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_corner_right_shaft_post_0_0",
@@ -15879,7 +16267,17 @@
           0.08
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.08,
+          1.02,
+          0.03999999999999915
+        ],
+        "visual_offset": [
+          0,
+          0,
+          -0.019999999999999574
+        ]
       },
       {
         "id": "rope_corner_right_shaft_post_0_1",
@@ -15959,7 +16357,17 @@
           7.699999999999999
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.21999999999999975,
+          0.29999999999999716,
+          5.93
+        ],
+        "visual_offset": [
+          -0.08999999999999986,
+          0,
+          0.884999999999998
+        ]
       },
       {
         "id": "rope_side_right_support",
@@ -15975,7 +16383,17 @@
           4.699999999999999
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.3999999999999986,
+          0.29999999999999716,
+          4.579999999999998
+        ],
+        "visual_offset": [
+          0,
+          0,
+          0.05999999999999872
+        ]
       },
       {
         "id": "rope_corner_right_support",
@@ -15991,7 +16409,17 @@
           0.3999999999999986
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          3.3999999999999986,
+          0.29999999999999716,
+          0.3999999999999986
+        ],
+        "visual_offset": [
+          -0.1999999999999993,
+          0,
+          0
+        ]
       },
       {
         "id": "rope_link_right_support",
@@ -16007,7 +16435,17 @@
           2.8999999999999986
         ],
         "material": "steel",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.17999999999999972,
+          0.29999999999999716,
+          1.7000000000000028
+        ],
+        "visual_offset": [
+          -0.10999999999999943,
+          0,
+          -0.1999999999999993
+        ]
       },
       {
         "id": "rope_boom_rear_11.0",
@@ -16055,7 +16493,12 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.4,
+          0.12,
+          0.12
+        ]
       },
       {
         "id": "rope_boom_rear_12.4",
@@ -16103,7 +16546,12 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.4,
+          0.12,
+          0.12
+        ]
       },
       {
         "id": "rope_boom_rear_13.6",
@@ -16151,7 +16599,12 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.4,
+          0.12,
+          0.12
+        ]
       },
       {
         "id": "rope_boom_rear_15.0",
@@ -16199,7 +16652,12 @@
           0.12
         ],
         "material": "yellow",
-        "solid": true
+        "solid": true,
+        "visual_size": [
+          0.4,
+          0.12,
+          0.12
+        ]
       },
       {
         "id": "lift_left_8.4_landing_floor",

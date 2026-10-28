@@ -185,8 +185,15 @@ func _make_guides(steel: Material, yellow: Material) -> void:
 			carrier = carriage;shoe_y = 0
 			_solid(carriage,Vector3(x,.35,z-.08),Vector3(.12,.70,.12),steel)
 			_solid(deck,Vector3(x,.40,z-.08),Vector3(.22,.80,.22),steel)
-			_solid(deck,Vector3(x*.92,.12,z*.92),Vector3(.30,.24,.30),steel)
+			var connector = _solid(deck,Vector3(x*.92,.12,z*.92),Vector3(.30,.24,.30),steel)
+			var connector_visual: MeshInstance3D = connector.get_meta("visual")
+			connector_visual.mesh.size = Vector3(.29,.23,.29);connector_visual.position.y += .005
 		var shoe = _solid(carrier,Vector3(x,shoe_y,z-0.08),Vector3(.22,.40,.22),steel)
+		if layout_options.has("guide_top"):
+			# The outer car sleeve shares this footprint at the lower stops.
+			# Keep the solid shoe, but recess its visual inside the sleeve.
+			var visual: MeshInstance3D = shoe.get_meta("visual")
+			visual.mesh.size = Vector3(.21,.396,.21);visual.position.y += .006
 		shoe.name = ("GuideCarriage_"+str(x)+"_"+str(z)) if layout_options.has("guide_positions") else ("GuideCarriageLeft" if x < 0 else "GuideCarriageRight")
 		var drive = MeshInstance3D.new()
 		var pinion = CylinderMesh.new()

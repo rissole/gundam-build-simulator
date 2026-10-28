@@ -282,11 +282,17 @@ def contract():
                 for z in [-6.3,9.9]:box(f"arm_cassette_floor_pad_{x}_{t}_{z}",[LIMB_X+x,-.025,z+t],[.28,.05,.36],"yellow")
         box(f"arm_cassette_saddle_{t}",[0,.93,t],[1.4,.14,.24],"yellow","arm_cassette")
         box(f"arm_cassette_tie_{t}",[0,.74,t],[2,.2,.24],parent="arm_cassette")
+        # Rails cover the ends of each tie. End the visual at their inner
+        # faces while retaining the full authored collision member.
+        data["solids"][-1]["visual_size"] = [1.6,.2,.24]
         for side in [-1,1]:
             key=f"arm_cassette_clamp_{side}_{t}"
             group(key,parent="arm_cassette",at=[side*.82,1.10,t])
             data["groups"][key].update(joint="clamp",side=side,fold_degrees=-side*90)
             box(key+"_bar",[-side*.255,0,0],[.51,.08,.12],"yellow",key)
+            # The clamp foot and pivot post own the ends of the visible bar.
+            data["solids"][-1]["visual_size"] = [.385,.08,.12]
+            data["solids"][-1]["visual_offset"] = [side*.0075,0,0]
             box(key+"_foot",[-side*.51,0,0],[.14,.08,.12],"yellow",key)
             box(key+"_post",[side*.82,.93,t],[.10,.34,.12],parent="arm_cassette")
     for x in [-.9,.9]:box(f"arm_cassette_rail_{x}",[x,.75,4.05],[.2,.2,9],parent="arm_cassette")
@@ -416,8 +422,19 @@ def contract():
                     # share the last pier, leaving their entire 0.9 m clear.
                     pier=3.80 if x==4.3 else 5.30 if x==5.8 else 6.35
                     box("rope_davit_arm_"+station["id"],[(pier+x)/2,1.2,sign*.50],[x-pier+.10,.10,.10],"yellow",root)
+                    # End at the pier and davit faces. Two neighbouring arms
+                    # share the last pier; the longer arm starts beyond the
+                    # first davit, which already covers the intervening span.
+                    start = 6.95 if x == 7.6 else pier + .05
+                    end = x - .05
+                    data["solids"][-1]["visual_size"] = [end-start,.10,.10]
+                    data["solids"][-1]["visual_offset"] = [(start+end)/2-(pier+x)/2,0,0]
                 for i,x in enumerate([3.80,5.30,6.35]):
                     box(root+"_davit_pier_"+str(i),[x,.6,sign*.50],[.10,1.2,.10],"yellow",root)
+                    # Rail jambs meet these piers. Recess the visual slightly
+                    # at their shared faces while retaining the support solid.
+                    data["solids"][-1]["visual_size"] = [.08,1.19,.08]
+                    data["solids"][-1]["visual_offset"] = [0,.005,0]
                 box(root+"_mast",[.30,.825,-sign*.50],[.12,1.65,.12],parent=root)
                 tie=group(root+"_tie",parent=root,at=[3.90,1.40,-sign*.50],rotation=[0,0,math.degrees(math.atan2(-.50,7.2))])
                 box(root+"_tie_member",[0,0,0],[math.hypot(7.2,.50),.08,.08],parent=tie)
@@ -456,15 +473,18 @@ def contract():
     bounds("rope_side_left_inner_rail",5,5.08,21.62,21.7,24.7,30.3,"yellow")
     for i,z in enumerate([24.74,27.5,30.26]):
         box("rope_side_left_inner_post_"+str(i),[5.04,21.11,z],[.08,1.02,.08],"yellow")
+        if i == 2:data["solids"][-1]["hidden"] = True  # Shared exit-front post.
     deck("rope_side_right",21,22.5,24.7,29.2,20.6,["right"])
     bounds("rope_side_right_inner_rail",20.92,21,21.62,21.7,24.7,27.7,"yellow")
     for i,z in enumerate([24.74,27.66]):
         box("rope_side_right_inner_post_"+str(i),[20.96,21.11,z],[.08,1.02,.08],"yellow")
+        if i == 1:data["solids"][-1]["hidden"] = True  # Shared corner post.
     deck("rope_corner_right",16.5,21,27.7,29.2,20.6,["front"])
     deck("rope_link_right",16.5,18,29.2,30.25,20.6,[])
     bounds("rope_corner_right_inner_rail",16.42,16.5,21.62,21.7,27.7,30.3,"yellow")
     for i,z in enumerate([27.74,30.26]):
         box("rope_corner_right_inner_post_"+str(i),[16.46,21.11,z],[.08,1.02,.08],"yellow")
+        if i == 1:data["solids"][-1]["hidden"] = True  # Shared exit-front post.
     guard_segments("rope_corner_right_shaft",17.9,22.5,29.24,20.6)
     # Inset this guard 0.1 m to clear the lift's projecting sliding sleeve.
     bounds("rope_link_right_shaft_rail",17.9,17.98,21.62,21.7,29.24,30.25,"yellow")
@@ -482,6 +502,9 @@ def contract():
             box("rope_boom_"+station["id"],[x,21.8,29.3],[.12,.12,2],"yellow")
             box("rope_boom_pier_"+station["id"],[x-.52,21.2,30.36],[.12,1.2,.12],"yellow")
             box("rope_boom_arm_"+station["id"],[x-.26,21.8,30.3],[.64,.12,.12],"yellow")
+            # The pier and boom occupy both ends of the arm; draw the arm
+            # only between them, preserving its full collision box.
+            data["solids"][-1]["visual_size"] = [.40,.12,.12]
 
     # Fixed flush thresholds stop .02 m short of each car. Landing width is
     # 1.5 m, including .1 m extensions at the narrower left hinge aprons.
@@ -498,6 +521,39 @@ def contract():
     for entry in data["solids"]:
         name=entry["id"]
         sx,sy,sz=entry["size"]
+        # Visible structural members end at the adjoining member's face. Keep
+        # the authored physics boxes whole for equipment sweeps and support.
+        ranges = {}
+        if name.startswith("wing_support_left_") and name.endswith("_arm"): ranges[2] = (23.88,25.57)
+        if name.startswith("wing_support_right_") and name.endswith("_corner"): ranges[2] = (23.38,24.12)
+        if name.startswith("wing_support_right_") and name.endswith("_arm"): ranges[0] = (20.88,22.52)
+        if name == "rope_side_left_support": ranges = {0:(4.8,5.02),2:(25.77,31.7)}
+        if name == "rope_side_right_support": ranges[2] = (24.12,28.7)
+        if name == "rope_corner_right_support": ranges[0] = (17.6,21.0)
+        if name == "rope_link_right_support": ranges = {0:(17.6,17.78),2:(28.9,30.6)}
+        if name == "rope_exit_lift_header": ranges[2] = (29.65,32.35)
+        # Horizontal guards stop at their perpendicular neighbours at corners.
+        if name.startswith("hinge_front_guard_left_") and name.endswith("_rail_0"): ranges[0] = (3.48,4.8)
+        if name.startswith("hip_link_left_") and name.endswith("_rail"): ranges[0] = (5.08,8.2)
+        if name.startswith("hip_link_right_") and name.endswith("_rail"): ranges[0] = (17.8,20.92)
+        if name == "rope_exit_front_rail_0": ranges[0] = (5.08,10.55)
+        if name == "rope_exit_front_rail_4": ranges[0] = (15.45,16.42)
+        if name == "rope_corner_right_front_rail": ranges[0] = (16.5,20.92)
+        if name == "rope_corner_right_shaft_rail_0": ranges[0] = (17.98,22.5)
+        if name == "rope_corner_right_shaft_post_0_0": ranges[2] = (29.20,29.24)
+        if ranges:
+            size = entry["size"].copy()
+            offset = [0,0,0]
+            for axis,(start,end) in ranges.items():
+                size[axis] = end-start
+                offset[axis] = (start+end)/2-entry["position"][axis]
+            if name.startswith("hinge_front_guard_left_") and name.endswith("_rail_0"):
+                # The folding wing passes this crossing at the open stop.
+                # A small visible height step prevents coincident top/bottom
+                # faces while leaving the barrier collider at its authored pose.
+                offset[1] = .004
+            entry["visual_size"] = size
+            entry["visual_offset"] = offset
         if name.startswith("finger_") and name.endswith("_floor"):
             inset=.016 if name.startswith("finger_middle_") else .008
             entry["visual_size"]=[sx-inset,sy-inset,sz-inset]

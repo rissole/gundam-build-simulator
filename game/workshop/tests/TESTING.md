@@ -43,10 +43,10 @@ Findings include node paths, triangle vertices, normals, separation and overlap
 area in `verification/workshop-surfaces.json`; the console lists offending pairs.
 An injected duplicate of the actual transverse table verifies detection.
 
-This is intentionally a failing content gate until existing overlaps are fixed;
-there is no baseline allowlist. Initial measurement on 2026-10-28: 648 meshes,
-113 parked and 111 open/raised pair findings, 1.286 seconds for setup and both
-scans. These are geometric risks, not rendered confirmation of visible flicker.
+There is no baseline allowlist. The initial 2026-10-28 run found 113 parked
+and 111 open/raised mesh pairs. After repair the fixture passes both poses over
+652 meshes in 0.982 seconds (setup and scan); this does not establish rendered
+appearance or player acceptance.
 Coverage excludes robot meshes, hangar dressing, other equipment constructors,
 faces within the same mesh node, and intermediate motion. The smaller
 `geometry_surface_audit_test` validates the detector's contacts, tolerances,

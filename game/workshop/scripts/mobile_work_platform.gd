@@ -42,7 +42,10 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 	for x in [-size.x/2+.035,size.x/2-.035]:
 		for z in [-size.y/2+.035,size.y/2-.035]:_solid(deck,Vector3(x,.52,z),Vector3(.07,1.04,.07),yellow)
 		for y in [.53,1.05]:_solid(deck,Vector3(x,y,0),Vector3(.07,.07,size.y-.14),yellow)
-	for y in [.53,1.05]:_solid(deck,Vector3(0,y,-size.y/2+.035),Vector3(size.x,.07,.07),yellow)
+	for y in [.53,1.05]:
+		var rail = _solid(deck,Vector3(0,y,-size.y/2+.035),Vector3(size.x,.07,.07),yellow)
+		# The corner posts own the visual ends; retain the collision span.
+		rail.get_meta("visual").mesh.size.x -= .14
 	gate = _solid(deck,Vector3(0,.6,size.y/2-.035),Vector3(size.x-.14,1.0,.07),yellow)
 	# Tapered yellow nose; the rear ends in a boarding ramp inside the footprint.
 	_prism(base,[Vector2(-.5,-spec.size[1]/2),Vector2(.5,-spec.size[1]/2),Vector2(spec.size[0]/2,-size.y/2-.2),Vector2(spec.size[0]/2,size.y/2),Vector2(-spec.size[0]/2,size.y/2),Vector2(-spec.size[0]/2,-size.y/2-.2)],.07,.21,yellow)
@@ -119,7 +122,8 @@ func _make_parking_mark(material: Material) -> void:
 	var mark = Node3D.new();mark.name = "PlatformParking";add_child(mark);mark.top_level = true;mark.global_position = position
 	var half = Vector2(spec.size[0]/2+.25,spec.size[1]/2+.25)
 	for x in [-half.x,half.x]:game.box(mark,Vector3(x,.006,0),Vector3(.035,.008,half.y*2),material)
-	for z in [-half.y,half.y]:game.box(mark,Vector3(0,.006,z),Vector3(half.x*2,.008,.035),material)
+	# End cross stripes at the side stripes: corners share edges, not faces.
+	for z in [-half.y,half.y]:game.box(mark,Vector3(0,.006,z),Vector3(half.x*2-.035,.008,.035),material)
 	var title = game.sign_panel(mark,"FRONT ↑",Vector3(0,.018,-half.y-.2),Vector2(1,.24),40,.002);title.get_parent().rotation.x = -PI/2
 	title = game.sign_panel(mark,"PLATFORM PARKING",Vector3(0,.018,half.y+.2),Vector2(2.4,.3),40,.002);title.get_parent().rotation.x = -PI/2
 

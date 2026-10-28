@@ -11,14 +11,14 @@ last version before consolidation.
 
 ## Where things stand
 
-- **Coplanar regression (2026-10-28):** new routine `workshop_surfaces_test`
-  checks actual dressed blockout, lifts and mobile platform at two poses in about
-  1.3 seconds. It currently fails on 113 parked / 111 open-raised mesh pairs;
-  fixes remain open, with no allowlist. Scope and command in
-  [testing coverage](../../game/workshop/tests/TESTING.md#coplanar-surface-regression).
-  Detector fixtures pass; no rendered review.
-  [Player finding and remaining repairs](robot-workshop-playtest-checklist.md#coplanar-flicker-regression--2026-10-28).
-
+- **Coplanar repairs (2026-10-28):** visible joints in the cassette, rope
+  access, gantry supports, lift guides and mobile platform no longer report
+  overlapping faces in the parked and open/raised fixture poses; collision
+  geometry is preserved. All 53 routine cases pass (54.358 s). The fast surface
+  test scans 652 meshes in 0.982 s; robot, hangar dressing and intermediate
+  motion remain outside its scope. No rendered review; player recheck pending.
+  [Finding and recheck](robot-workshop-playtest-checklist.md#coplanar-flicker-regression--2026-10-28);
+  [test scope](../../game/workshop/tests/TESTING.md#coplanar-surface-regression).
 
 - **Operated scissor platform (2026-10-28):** long wheeled chassis, tapered front,
   scissor arms and rear ramp; one red **Operate** button. W/S drives, A/D steers,
