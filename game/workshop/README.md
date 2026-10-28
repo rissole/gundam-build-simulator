@@ -100,6 +100,7 @@ editor and runs tests. From a terminal at the repository root:
 
 ```sh
 ./play.command                                  # play from the start
+./play.command --stage                          # list stages in build order
 ./play.command -- --stage=pelvis                # play from a later stage
 ./play.command --editor                         # open the project in the Godot editor
 python3 game/workshop/tools/run_regressions.py --only stage_contract_test

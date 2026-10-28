@@ -2,6 +2,25 @@
 set -eu
 workshop_root="$(cd -- "$(dirname -- "$0")" && pwd)"
 workshop_project="$workshop_root/game/workshop"
+# List stages without starting Godot, using the progression defined by the game.
+for workshop_arg in "$@"; do
+  if [[ "$workshop_arg" == --stage || "$workshop_arg" == --stage= ]]; then
+    python3 - "$workshop_project/scripts/build_stages.gd" <<'PYTHON'
+import ast
+import re
+import sys
+
+source = open(sys.argv[1], encoding="utf-8").read()
+for name in ("FOOT_STAGES", "STAGES"):
+    match = re.search(r"^const " + name + r"\s*=\s*(\[[^\n]*\])", source, re.MULTILINE)
+    if not match:
+        sys.exit(f"Could not read {name} from build_stages.gd")
+    for stage in ast.literal_eval(match.group(1)):
+        print(stage)
+PYTHON
+    exit 0
+  fi
+done
 workshop_godot="${GODOT_BIN:-$HOME/.cache/gundam-tools/Godot-4.7.2/Godot.app/Contents/MacOS/Godot}"
 if [[ ! -x "$workshop_godot" ]]; then
   if command -v godot >/dev/null 2>&1; then
