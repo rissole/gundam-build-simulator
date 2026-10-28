@@ -34,6 +34,11 @@ last version before consolidation.
   flicker/clipping, while the convex walking collider stays. A low chassis
   **CALL ↓** button now returns the raised deck with guarded descent. Mechanical
   geometry and call checks pass; visual/player recheck pending.
+  Player recheck found open ramp faces and slow CALL. The ramp is now a closed,
+  thin treaded plate; CALL takes 0.9 s of unobstructed motion, like the landing
+  lifts. Three routine suites pass (170 checks). Rear and oblique real-renderer
+  views were inspected: no open faces or broad floor overlap in those views.
+  Moving-frame flicker and player acceptance remain open.
 
 - **Interchangeable heel pads (2026-10-28):** the manual no longer gives the
   two identical heel pads hidden identities. "Prepare a heel pad (1 of 2)" binds to

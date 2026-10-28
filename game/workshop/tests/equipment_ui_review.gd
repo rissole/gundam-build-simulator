@@ -47,6 +47,9 @@ func run() -> void:
 func capture_platform() -> void:
 	root.content_scale_size=Vector2i(1280,720);root.size=Vector2i(1280,720)
 	var platform = game.equipment.get_equipment("mobile_platform")
+	var origin: Transform3D = platform.global_transform
+	await capture("platform-ramp-rear",origin*Vector3(0,1.05,3.25),origin*Vector3(0,.23,1.43),false)
+	await capture("platform-ramp-oblique",origin*Vector3(1.5,.92,2.7),origin*Vector3(0,.23,1.43),false)
 	var point: Vector3 = platform.operate_button.global_position
 	var eye = point+Vector3(0,.73,1.1)
 	await capture("platform-controls",eye,point)

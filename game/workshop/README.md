@@ -65,7 +65,7 @@ There is no separate Stop or height button, and no destination menu.
 The platform has no status display. The red button's **Operate** prompt and the
 short control hint while operating explain its controls.
 If you step off while it is raised, use **CALL ↓** on the low post beside the
-rear right of its wheeled chassis. It lowers to boarding height, waiting for a
+rear right of its wheeled chassis. It lowers to boarding height in about 0.9 seconds, waiting for a
 blocked descent and continuing when the path clears. The button travels with the
 chassis, so it is available wherever you parked the lift.
 
@@ -75,8 +75,8 @@ stop movement. Riders, hand loads and resting deck cargo use shared equipment
 support. Raising/lowering checks the deck, cargo and scissor arms without nudging
 obstructions. Return the lowered lift inside its marked parking berth when a
 rig needs that space; its complete rotated footprint must fit.
-The rear ramp draws only its exposed slope and sides; its solid walking shape
-still meets the lowered deck.
+The rear ramp has a closed thin plate with yellow edges and crosswise treads;
+its solid walking shape still meets the lowered deck.
 
 Elevators, shelf cargo, loaded crane and leg holder check
 only nearby travel for obstacles. They wait, name the obstruction and resume

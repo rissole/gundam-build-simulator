@@ -11,6 +11,7 @@ const TURN_ACCELERATION = PI*4/3
 const TURN_BRAKING = PI*2
 const SCISSOR_LENGTH = 1.4
 const SCISSOR_BASE = .18
+const CALL_DURATION = 0.9
 var spec: Dictionary
 var height = .45
 var moving = false
@@ -18,6 +19,7 @@ var mode = ""
 var speed = 0.0
 var turn_speed = 0.0
 var blocked_reason = ""
+var call_remaining = 0.0
 var deck: AnimatableBody3D
 var base: StaticBody3D
 var gate: CollisionShape3D
@@ -55,13 +57,29 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 			for sign in [-1,1]:
 				var bar = _solid(base,Vector3.ZERO,Vector3(.055,.065,SCISSOR_LENGTH),yellow)
 				scissors.append({"shape":bar,"visual":bar.get_meta("visual"),"x":x+sign*.035,"tier":tier,"sign":sign})
-	# Keep the full convex walking shape. Only draw the exposed top and sides:
-	# the underside lies on the floor and the front face meets the chassis.
+	# The walking hull is a wedge; its visible skin is a thin closed plate.
+	# Tuck the front into the deck, and keep the tapered toe above the floor.
 	var points = PackedVector3Array()
 	for x in [-size.x/2,size.x/2]:
 		points.append(Vector3(x,0,size.y/2));points.append(Vector3(x,height,size.y/2));points.append(Vector3(x,0,spec.size[1]/2))
-	var ramp = _convex(base,points,[0,2,1,3,4,5,1,2,4,2,5,4],steel)
+	var skin = PackedVector3Array()
+	for x in [-size.x/2,size.x/2]:
+		skin.append(Vector3(x,height-.055,size.y/2-.04))
+		skin.append(Vector3(x,height+.01,size.y/2-.04))
+		skin.append(Vector3(x,.018,spec.size[1]/2))
+		skin.append(Vector3(x,.008,spec.size[1]/2))
+	var ramp = _convex(base,points,[0,3,2,0,2,1,4,5,6,4,6,7,1,2,5,2,6,5,0,4,3,3,4,7,0,1,4,1,5,4,3,7,2,2,7,6],steel,skin)
 	ramp.name = "BoardingRamp"
+	var near_z = size.y/2-.04;var far_z = spec.size[1]/2
+	var incline = atan2(height+.01-.018,far_z-near_z)
+	var tread = game.material(Color("8b978e"),.2)
+	for x in [-size.x/2+.035,size.x/2-.035]:
+		var edge = game.box(base,Vector3(x,(height+.01+.018)/2+.012,(near_z+far_z)/2),Vector3(.035,.02,far_z-near_z-.06),yellow)
+		edge.rotation.x = incline
+	for step in range(1,6):
+		var fraction = float(step)/6
+		var strip = game.box(base,Vector3(0,lerpf(height+.01,.018,fraction)+.012,lerpf(near_z,far_z,fraction)),Vector3(size.x-.15,.012,.035),tread)
+		strip.rotation.x = incline
 	# The chassis carries this control when the platform is away from parking.
 	_solid(base,Vector3(.69,.49,1.05),Vector3(.10,.80,.12),yellow)
 	call_button = preload("res://scripts/equipment_button.gd").make(game,base,Vector3(.78,.87,1.05),"CALL ↓",PI/2)
@@ -80,10 +98,11 @@ func _solid(parent: CollisionObject3D, at: Vector3, size: Vector3, material: Mat
 	var col = CollisionShape3D.new();col.position = at;var shape = BoxShape3D.new();shape.size = size;col.shape = shape
 	parent.add_child(col);col.set_meta("visual",visual);return col
 
-func _convex(parent: CollisionObject3D, points: PackedVector3Array, indices: Array, material: Material) -> MeshInstance3D:
+func _convex(parent: CollisionObject3D, points: PackedVector3Array, indices: Array, material: Material, visual_points: PackedVector3Array = PackedVector3Array()) -> MeshInstance3D:
 	var collision = CollisionShape3D.new();var shape = ConvexPolygonShape3D.new();shape.points = points;collision.shape = shape;parent.add_child(collision)
 	var surface = SurfaceTool.new();surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for i in indices:surface.add_vertex(points[i])
+	var vertices = points if visual_points.is_empty() else visual_points
+	for i in indices:surface.add_vertex(vertices[i])
 	surface.generate_normals();var visual = MeshInstance3D.new();visual.mesh = surface.commit();visual.material_override = material;parent.add_child(visual)
 	return visual
 
@@ -136,6 +155,7 @@ func request(action: String) -> String:
 	if not error.is_empty():return error
 	if action=="call":
 		speed = 0;turn_speed = 0;moving = true;mode = "call"
+		call_remaining = CALL_DURATION
 		blocked_reason = "";motion_obstruction = {}
 		_pose();return ""
 	return drive_controls.open()
@@ -143,6 +163,7 @@ func request(action: String) -> String:
 ## Halt is also used on operation exit, pause and collision: no stored momentum.
 func halt() -> void:
 	speed = 0;turn_speed = 0;moving = false;mode = ""
+	call_remaining = 0
 	blocked_reason = "";motion_obstruction = {};_pose()
 
 func ground_drive_error() -> String:
@@ -193,10 +214,14 @@ func lift(direction: float, delta: float) -> void:
 func physics(delta: float) -> void:
 	if drive_controls.is_open:drive_controls.physics(delta)
 	elif mode=="call" and moving and not game.paused:
-		var next = maxf(spec.heights[0],height-spec.lift_speed*clampf(delta,0,.05))
+		var step = minf(delta,.05)
+		var fraction = maxf(0.0,1.0-step/call_remaining)
+		var next = spec.heights[0]+(height-spec.heights[0])*pow(fraction,3)
 		motion_obstruction = {};blocked_reason = _height_error(next)
-		if blocked_reason.is_empty():height = next
-		if is_equal_approx(height,spec.heights[0]):moving = false;mode = ""
+		if blocked_reason.is_empty():
+			height = next
+			call_remaining = maxf(0.0,call_remaining-step)
+		if is_equal_approx(height,spec.heights[0]):moving = false;mode = "";call_remaining = 0
 		_pose()
 
 func _scissor_pose(entry: Dictionary, value: float) -> Transform3D:
@@ -217,7 +242,8 @@ func _height_error(next: float) -> String:
 			for entry in scissors:bars.append({"shape":entry.shape.shape,"world":global_transform*_scissor_pose(entry,lerpf(height,next,p))})
 			return bars,"margin":-.002}]
 	var destination = global_transform.translated(Vector3.UP*(next-height))
-	return EquipmentRegistry.Motion.sweep(self,groups,2,func(p):return global_transform.interpolate_with(destination,p),without_passengers(hardware())).get("error","")
+	var samples = maxi(2,ceili(absf(next-height)*3/.025))
+	return EquipmentRegistry.Motion.sweep(self,groups,samples,func(p):return global_transform.interpolate_with(destination,p),without_passengers(hardware())).get("error","")
 
 func _pose() -> void:
 	deck.position.y = height

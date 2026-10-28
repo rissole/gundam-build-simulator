@@ -45,6 +45,18 @@ Four focused routine suites pass (199 checks), including the ramp triangle audit
 retained ramp collision, call access/arrival, pause and blocked descent. These
 are mechanical checks; rendered flicker and player reach/feel need recheck.
 
+**Player recheck, same day:** CALL feels too slow compared with the elevators;
+the ramp has missing/open faces and still looks bad. The earlier face-removal fix
+was rejected. A closed thin steel plate now encloses the ramp, with yellow edges
+and treads. Its full walking collider is retained. CALL descends with the same
+0.9-second ease-out as the landing lifts; its timer pauses when blocked. Three
+routine suites pass (170 checks). Real-renderer rear and oblique views before
+and after were inspected. The final views show a continuous slope and closed
+sides without a broad coplanar floor face. The local capture report is
+`game/workshop/verification/equipment-ui-ramp-final-641098/captures.json`
+(`inputs_unchanged=true`). This is inspected presentation, not player acceptance
+or a moving-frame flicker check.
+
 Movement and turning nudge small loose piles (up to 16 bodies) only after
 every body's swept path is clear. Pinned/fixed/held/mounted/supported blockers
 stop the whole step without partial nudges. Shared rider/cargo support carries

@@ -311,6 +311,15 @@ post descends from any raised position without the operator aboard. The descent
 uses the existing deck/scissor/payload sweep and waits for an obstruction,
 resuming when clear. The call remains with the moving chassis.
 
+**Ramp correction and fast call (2026-10-28):** the open-sided treatment above
+looked worse in play. The ramp now uses a closed, tapered steel plate with its
+toe 8–18 mm above the floor, a front tucked into the deck, yellow edge trims
+and crosswise tread strips. The unchanged convex walking hull still meets the
+deck and floor. A 0.9-second eased CALL matches the landing lifts; its remaining
+time pauses while the guarded descent is blocked. Real-renderer rear and oblique
+views were captured and inspected; player feel and moving-frame flicker remain
+for playtest.
+
 ### Shared elevator access to hips and shoulders
 
 Move both elevator shafts **behind the shoulder line**, to centres
