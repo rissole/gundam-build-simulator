@@ -14,9 +14,11 @@ last version before consolidation.
 - **Operated scissor platform (2026-10-28):** long wheeled chassis, tapered front,
   scissor arms and rear ramp; one red **Operate** button. W/S drives, A/D steers,
   mouse looks; short acceleration/braking ramps. Held Space/Ctrl controls height
-  continuously; E/Q leaves. Ground travel/turning nudges loose parts only through
-  clear space. Shared rider/cargo and rope interlocks remain. Parking is marked.
-  Focused routine checks pass; presentation and revised feel await player review.
+  continuously; E/Q leaves. At the player's request, the physical status display
+  was removed and driving/turning works at any height. Travel nudges loose parts
+  only through clear space. Shared rider/cargo and rope interlocks remain. Parking
+  is marked. Four affected routine suites pass (191 checks); presentation and
+  revised feel await player review.
   Pose/height snapshots are v3 (old saves are invalid under the no-migration rule).
   [Player feedback, evidence and recheck](robot-workshop-playtest-checklist.md#free-drive-mobile-platform--2026-10-28).
 
@@ -315,8 +317,9 @@ checks; retain the broader playtest obligations below.
 - **Mobile platform (user, 2026-10-28):** one red Operate button takes W/S drive,
   A/D steering, free mouse look and held Space/Ctrl height input. This replaces
   destinations and separate height/Stop buttons; driving/turning ramps briefly. It nudges loose parts through clear space; it stops for
-  pinned piles, held/mounted loads and fixed equipment. Ground driving requires
-  a lowered deck. Other equipment retains guarded waiting rather than pushing.
+  pinned piles, held/mounted loads and fixed equipment. Driving is allowed with
+  the deck raised; full raised geometry remains guarded. Other equipment retains
+  guarded waiting rather than pushing.
 
 - **Operated machines (user, 2026-10-27/28):** one control operates one mechanism;
   no machine operates another, and nothing enters the gantry unless the player has

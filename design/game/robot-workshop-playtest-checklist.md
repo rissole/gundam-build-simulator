@@ -25,10 +25,17 @@ drives and A/D turns, including in place. Mouse look stays independent. Ground
 speed ramps to 0.8 m/s in ~0.33 s, brakes in ~0.2 s; steering has short ramps too.
 Held Space/Ctrl moves the deck between 0.45 and 2.40 m and stops on release.
 There are no separate Up/Down/Stop buttons, fixed height stops or destination
-routes. Height input brakes ground travel. Lower fully before driving.
+routes. Height input brakes travel; driving and steering remain available when
+the deck is raised.
 E/Q leaves, Escape pauses and focus loss releases operation immediately.
 
-Ground movement and turning nudge small loose piles (up to 16 bodies) only after
+**Player correction (2026-10-28):** remove the physical status screen and let the
+lift drive while raised. Implemented: the deck display is gone, and W/S driving
+and A/D turning work at any selected height. Raised travel checks the chassis,
+scissor arms, deck, rider, held load and loose deck cargo through its full sweep.
+The existing red-button tooltip and operating hint remain. Player recheck pending.
+
+Movement and turning nudge small loose piles (up to 16 bodies) only after
 every body's swept path is clear. Pinned/fixed/held/mounted/supported blockers
 stop the whole step without partial nudges. Shared rider/cargo support carries
 translation and rotation; rope interlocks stay active. Height sweeps include the
@@ -50,12 +57,20 @@ invalid under the existing no-migration policy. No recipes, part allocation,
 manual objectives or mounted interfaces changed. The rendered UI helper was
 updated but not run. No inspected presentation or player acceptance is claimed.
 
+**Correction checks:** `mobile_platform_test` (42), `equipment_motion_test` (85),
+`workshop_smoke_test` (31) and `save_roundtrip_test` (33) pass: 191 mechanical
+checks in 16.681 s. The platform fixture covers raised travel/turning and a
+fixed blocker at raised deck height. Rendered presentation and player feel still
+await recheck.
+
 **Player recheck:**
 
 - [ ] Longer scissor lift reads clearly: front, rear boarding ramp, red Operate button.
 - [ ] W/S driving, A/D turning, free mouse look and entry facing feel natural.
 - [ ] Slight acceleration/braking feels responsive; steering/turning in place is useful.
 - [ ] Space/Ctrl reaches comfortable work heights and stops when released.
+- [ ] Drive and steer while raised; check clearance, stability and rider feel.
+- [ ] The red Operate button is understandable without a status screen.
 - [ ] Nudge loose pieces/a small pile while driving and turning; judge gentleness.
 - [ ] A pinned pile or fixed obstacle stops it; reversing/steering away is clear.
 - [ ] Rider, held component and loose deck cargo follow turns without drift.

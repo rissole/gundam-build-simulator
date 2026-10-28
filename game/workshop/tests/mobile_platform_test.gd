@@ -98,8 +98,17 @@ func run():
 	key(game,KEY_SPACE,true);await tick(game,7);key(game,KEY_SPACE,false);await tick(game,1)
 	var intermediate = platform.height;await tick(game,5)
 	expect(intermediate>spec.heights[0] and platform.height==intermediate and not platform.moving,"Space raises only while held and releases at an arbitrary height")
-	at = platform.position;key(game,KEY_W,true);await tick(game,3);key(game,KEY_W,false)
-	expect(platform.position.is_equal_approx(at) and platform.blocked_reason.contains("Lower"),"raised platform refuses driving")
+	at = platform.position;var raised = platform.height
+	key(game,KEY_W,true);await tick(game,10);key(game,KEY_W,false);await tick(game,6)
+	expect(platform.position.distance_to(at)>.12 and is_equal_approx(platform.height,raised),"raised platform drives at its selected height")
+	expect(platform.rider()==game.player and game.player.position.distance_to(platform.global_transform*Vector3(0,raised,0))<.001,"raised ground travel carries its operator")
+	at = platform.position;key(game,KEY_D,true);await tick(game,9);key(game,KEY_D,false);await tick(game,6)
+	expect(platform.rotation.y<-.4 and platform.position.is_equal_approx(at) and is_equal_approx(platform.height,raised),"raised platform steers in place without lowering")
+	var high_wall = obstacle(game,platform.global_transform*Vector3(0,raised+.6,-2.1),Vector3(1.5,1.5,.15));high_wall.global_basis = platform.global_basis
+	await frames(2)
+	key(game,KEY_W,true);await tick(game,35);key(game,KEY_W,false)
+	expect(platform.motion_obstruction.get("collider")==high_wall and platform.position.distance_to(high_wall.position)>1.1,"raised deck and rider stop before a fixed overhead-height obstacle")
+	high_wall.free();await tick(game,6)
 	key(game,KEY_CTRL,true);await tick(game,10);key(game,KEY_CTRL,false);await tick(game,1)
 	expect(is_equal_approx(platform.height,spec.heights[0]) and not game.jump_requested,"Ctrl lowers to the limit without leaking jump or crouch input")
 	key(game,KEY_E,true);key(game,KEY_E,false)
@@ -165,6 +174,7 @@ func run():
 	platform.rotation.y = PI/2
 	expect(not platform.busy_reason("bulky_tilt").is_empty(),"parking interlock uses the rotated footprint, not just its centre")
 	expect(platform.controls().size()==1 and platform.controls()[0].label=="Operate","only the red Operate control is exposed")
+	expect(platform.deck.find_children("*","Label3D",true,false).is_empty(),"platform has no physical status display")
 	expect(spec.size[1]>spec.size[0]*2 and spec.deck_size[1]>spec.deck_size[0]*1.5,"chassis and deck have an elongated footprint")
 	var passed = checks.all(func(check):return check.passed)
 	write_evidence("res://verification/mobile-platform.json",{"scope":"mechanical and input checks only","checks":checks})

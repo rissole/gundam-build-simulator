@@ -286,8 +286,10 @@ There is one large red **Operate** button. W/S drives forward/reverse; A/D steer
 faces the player toward the nose. Ground speed ramps to 0.8 m/s in approximately
 0.33 s and brakes in 0.2 s. Steering ramps to 60°/s in 0.25 s, braking in 0.17 s.
 Space/Ctrl raises/lowers at 0.5 m/s while held, with immediate release stopping
-at any height. There are no separate height/Stop buttons or automatic stops.
-Height input brakes ground travel; ground driving requires the lowered deck.
+at any height. There are no separate height/Stop buttons, automatic stops or
+physical status display. Height input brakes travel; W/S and A/D move the whole
+lift at any height, with the raised deck, scissor arms and rider in its swept
+collision envelope.
 E/Q leaves operation; Escape pauses and focus loss releases the controls.
 
 Both driving and turning sweep the chassis, deck, rider and cargo. Loose parts

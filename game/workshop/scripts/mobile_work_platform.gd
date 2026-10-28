@@ -22,7 +22,6 @@ var deck: AnimatableBody3D
 var base: StaticBody3D
 var gate: CollisionShape3D
 var scissors: Array[Dictionary] = []
-var label: Label3D
 var drive_controls: CanvasLayer
 var operate_button: MeshInstance3D
 
@@ -66,7 +65,6 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 	var cap = CylinderMesh.new();cap.top_radius = .15;cap.bottom_radius = .15;cap.height = .09
 	operate_button.mesh = cap;operate_button.rotation.x = PI/2
 	operate_button.set_meta("control_bank",deck)
-	label = game.sign_panel(deck,"",Vector3(0,1.3,-size.y/2+.12),Vector2(1.0,.26),28,.0015)
 	drive_controls = preload("res://scripts/platform_drive_controls.gd").new();add_child(drive_controls);drive_controls.setup(self)
 	_make_parking_mark(yellow)
 	_pose()
@@ -127,7 +125,6 @@ func halt() -> void:
 	blocked_reason = "";motion_obstruction = {};_pose()
 
 func ground_drive_error() -> String:
-	if height>spec.heights[0]+.001:return "Lower the platform before driving."
 	var rail = game.equipment.get_equipment("leg_rail")
 	if rail!=null:
 		var reason: String = rail.busy_reason("mobile_platform")
@@ -201,7 +198,6 @@ func _pose() -> void:
 	for entry in scissors:
 		var pose = _scissor_pose(entry,height);entry.shape.transform = pose;entry.visual.transform = pose
 	base.force_update_transform();PhysicsServer3D.body_set_state(base.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,base.global_transform)
-	label.text = status_text()
 
 func status_text() -> String:
 	if not blocked_reason.is_empty():return "Platform waiting\n"+blocked_reason

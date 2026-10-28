@@ -58,11 +58,14 @@ nose. **W/S** drives forward/reverse, **A/D** steers the whole platform, and the
 mouse looks freely. It can turn in place. Driving takes about a third of a second
 to reach 0.8 m/s; releasing the keys brakes in about 0.2 seconds. Turning also
 ramps up and brakes. **Space / Ctrl** raises/lowers only while held, stopping at
-any height between 0.45 and 2.40 m. Height input stops ground motion; lower fully
-to drive. **E/Q** leaves, **Esc** stops/pauses, and losing focus releases operation.
+any height between 0.45 and 2.40 m. Height input brakes travel; W/S and A/D can
+drive and steer at any height. **E/Q** leaves, **Esc** stops/pauses, and losing focus releases operation.
 There is no separate Stop or height button, and no destination menu.
 
-Driving and turning gently nudge loose parts, including small piles, only when
+The platform has no status display. The red button's **Operate** prompt and the
+short control hint while operating explain its controls.
+
+Driving and turning at any height gently nudge loose parts, including small piles, only when
 the full movement is clear. Fixed equipment, held/mounted loads and pinned piles
 stop movement. Riders, hand loads and resting deck cargo use shared equipment
 support. Raising/lowering checks the deck, cargo and scissor arms without nudging
