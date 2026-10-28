@@ -151,7 +151,7 @@ func _run() -> void:
 	var started := Time.get_ticks_msec()
 	expect(Audit.inspect(many).is_empty(), "Broad phase permits a workshop-sized set of separate meshes")
 	var elapsed := Time.get_ticks_msec() - started
-	expect(elapsed < 15000, "350-mesh audit completes within 15 seconds (actual %d ms)" % elapsed)
+	expect(elapsed < 1000, "350-mesh audit completes within 1 second (actual %d ms)" % elapsed)
 	print("GEOMETRY_AUDIT_PERFORMANCE %d ms / 350 meshes" % elapsed)
 	var passed := true
 	for check in checks:

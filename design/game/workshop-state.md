@@ -11,6 +11,15 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Coplanar regression (2026-10-28):** new routine `workshop_surfaces_test`
+  checks actual dressed blockout, lifts and mobile platform at two poses in about
+  1.3 seconds. It currently fails on 113 parked / 111 open-raised mesh pairs;
+  fixes remain open, with no allowlist. Scope and command in
+  [testing coverage](../../game/workshop/tests/TESTING.md#coplanar-surface-regression).
+  Detector fixtures pass; no rendered review.
+  [Player finding and remaining repairs](robot-workshop-playtest-checklist.md#coplanar-flicker-regression--2026-10-28).
+
+
 - **Operated scissor platform (2026-10-28):** long wheeled chassis, tapered front,
   scissor arms and rear ramp; one red **Operate** button. W/S drives, A/D steers,
   mouse looks; short acceleration/braking ramps. Held Space/Ctrl controls height

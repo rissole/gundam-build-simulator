@@ -18,11 +18,21 @@ static func inspect(meshes: Array[MeshInstance3D], plane_tolerance: float = 0.00
 				if absf(pose.basis.determinant()) > 1e-12:
 					occluders.append({"instance": instance, "inverse": pose.affine_inverse(),
 						"half_size": instance.mesh.size.abs() * 0.5})
+	# Sweep the widest world axis so distant meshes never reach triangle tests.
+	var lower := Vector3(INF, INF, INF)
+	var upper := Vector3(-INF, -INF, -INF)
+	for data in geometry:
+		lower = lower.min(data.lower)
+		upper = upper.max(data.upper)
+	var axis := (upper - lower).max_axis_index() if not geometry.is_empty() else 0
+	geometry.sort_custom(func(a, b): return a.lower[axis] < b.lower[axis])
 	var findings: Array[Dictionary] = []
 	for i in range(geometry.size()):
 		var a: Dictionary = geometry[i]
 		for j in range(i + 1, geometry.size()):
 			var b: Dictionary = geometry[j]
+			if b.lower[axis] > a.upper[axis] + plane_tolerance:
+				break
 			if a.instance == b.instance or not _bounds_overlap(a, b, plane_tolerance):
 				continue
 			var evidence: Dictionary = {}

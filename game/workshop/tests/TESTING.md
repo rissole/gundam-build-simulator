@@ -29,6 +29,29 @@ simulate a run-all command. Diagnostics default to one worker. Files remain in
 place where useful to existing visual-review inheritance; classification, not
 filename suffix, determines which runner can execute them.
 
+## Coplanar surface regression
+
+`python3 game/workshop/tools/run_regressions.py --only workshop_surfaces_test geometry_surface_audit_test`
+
+`workshop_surfaces_test` builds the real authored blockout, gantry detailing,
+lift cars and mobile platform in a small fixture. It checks parked and open/raised
+poses without booting robot stages or rendering. Overlapping same-facing triangles
+within 0.25 mm fail; opposite-facing contacts and shared edges are allowed.
+The detector sorts mesh bounds along the widest axis to skip distant pairs.
+The fixture has a five-second build/scan budget (process startup is separate).
+Findings include node paths, triangle vertices, normals, separation and overlap
+area in `verification/workshop-surfaces.json`; the console lists offending pairs.
+An injected duplicate of the actual transverse table verifies detection.
+
+This is intentionally a failing content gate until existing overlaps are fixed;
+there is no baseline allowlist. Initial measurement on 2026-10-28: 648 meshes,
+113 parked and 111 open/raised pair findings, 1.286 seconds for setup and both
+scans. These are geometric risks, not rendered confirmation of visible flicker.
+Coverage excludes robot meshes, hangar dressing, other equipment constructors,
+faces within the same mesh node, and intermediate motion. The smaller
+`geometry_surface_audit_test` validates the detector's contacts, tolerances,
+transforms and conservative opaque-box occlusion; it does not audit game content.
+
 ## Coverage migration
 
 This table maps the previous runnable inventory to its retained assertions and

@@ -913,3 +913,18 @@ The pauldron route's tightest clearance is about 1 mm at seating.
 | 2026-10-25 | Hip assembly delivery | The four gantry hold-down grips could not be seen from the rear deck. Each grip was a 12 cm block centred inside its post, so one grip hid the other, and the Use prompt never appeared because the aim point was inside that solid. The forward grip now sticks outboard of the post and the rear grip reaches back toward the deck; aiming at the grip shows Close gantry hold-down jaw. Re-check from the 8.4 m rear hip deck before detaching the crane. | Blocking |
 
 Mechanical test passes are separate from these playtest results.
+
+## Coplanar flicker regression — 2026-10-28
+
+- Player reports coplanar faces cause distracting flicker and requests a fast
+  regression. Synthetic-only coverage was explicitly rejected as insufficient.
+- Added routine coverage of 648 actual dressed blockout/lift/mobile-platform
+  meshes at parked and open/raised poses. Latest setup and scans: 1.297 seconds;
+  focused runner including startup and detector fixtures: 5.155 seconds.
+- Automated result: detector's 31 checks and real-asset duplicate injection pass;
+  content gate fails on 113 parked / 111 open-raised overlapping mesh pairs.
+  Named triangles and paths are recorded in
+  `game/workshop/verification/workshop-surfaces.json`. No allowlist was added.
+- Open: repair reported overlaps and recheck flicker in play. Robot geometry,
+  hangar dressing, other equipment constructors, internal same-node overlaps and
+  intermediate motion remain outside this test's scope. No rendered review ran.

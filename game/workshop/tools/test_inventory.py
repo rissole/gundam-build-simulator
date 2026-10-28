@@ -52,6 +52,7 @@ ROUTINE = (
     'supported_model_test',
     'wide_elevators_test',
     'workshop_smoke_test',
+    'workshop_surfaces_test',
     'zone_register_test',
 )
 
