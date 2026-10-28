@@ -1,130 +1,172 @@
 extends "res://tests/kit/harness.gd"
-## Mechanical equipment harness; supplied blockers are not a walked/access test.
+## Small real-physics fixture: free driving, desktop operation, nudging and saves.
+## Supplied poses are mechanical checks, never walked/access acceptance.
 const Fixture = preload("res://tests/kit/equipment_fixture.gd")
 const Platform = preload("res://scripts/mobile_work_platform.gd")
-const Blockout = preload("res://scripts/workshop_blockout.gd")
 class Hands extends RefCounted:
 	var held_body: CollisionObject3D
-class RiderFixture extends Fixture:
+	func title(kind):return kind
+class Hud extends RefCounted:
+	var target_panel = Control.new()
+	var quiet_errors = false
+	func handle_manual_browser_input(_event):return false
+	func refresh():pass
+class Game extends Fixture:
+	const REACH = 2.0
 	var player: CharacterBody3D
+	var camera: Camera3D
 	var components = Hands.new()
-func _initialize() -> void:call_deferred("run")
-
-func settle(platform: Node) -> void:
-	for tick in range(1000):
-		if not platform.moving:return
-		platform.physics(.25)
-		if not platform.blocked_reason.is_empty():return
-
-## Ridden motion runs one registry tick per frame, as in play: the rider moves,
-## then the registry carries them; Jolt applies kinematic poses at the next step.
-func ride(platform: Node) -> void:
-	for tick in range(1000):
-		if not platform.moving or not platform.blocked_reason.is_empty():return
-		# The rider moves first, as in play, against the deck pose of the last step.
-		if is_instance_valid(platform.game.player):platform.game.player.velocity = Vector3(0,-.1,0);platform.game.player.move_and_slide()
-		platform.game.equipment.physics(.1);await frames(1)
-
-func obstacle(parent: Node3D, at: Vector3, size: Vector3) -> StaticBody3D:
-	var body = StaticBody3D.new();parent.add_child(body);body.name="SuppliedBlocker";body.position=at
-	var col = CollisionShape3D.new();var shape = BoxShape3D.new();shape.size=size;col.shape=shape;body.add_child(col)
+	var loose = {}
+	var started = true
+	var automated_test = true
+	var scripted_controls = {}
+	var jump_requested = false
+	var target = {}
+	var hud = Hud.new()
+	var targeting = {"offered_key":"E"}
+	var desktop_input = preload("res://scripts/desktop_input.gd").new(self)
+	var player_controller = preload("res://scripts/player_controller.gd").new(self)
+	func interact(_shift):target.controller.request(target.action)
+	func _update_target():pass
+	func set_paused(value):paused = value
+	func _visible(point, allowed):
+		var hit = get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(camera.global_position,point,1,[player.get_rid()]))
+		return hit.is_empty() or hit.collider in allowed
+	func _exit_tree():hud.target_panel.free()
+func _initialize():call_deferred("run")
+func key(game, code, pressed):
+	var event = InputEventKey.new();event.physical_keycode = code;event.pressed = pressed
+	game.desktop_input.handle(event)
+func shape(body, size):
+	var col = CollisionShape3D.new();col.shape = BoxShape3D.new();col.shape.size = size;body.add_child(col)
+func obstacle(game, at, size):
+	var body = StaticBody3D.new();game.add_child(body);body.position = at;shape(body,size);return body
+func part(game, id, at):
+	var body = WorkshopPart.new();body.uid = id;body.kind = id;body.collision_layer = 2;body.collision_mask = 15
+	game.add_child(body);shape(body,Vector3(.2,.2,.2));body.position = at
+	game.loose[id] = body;game.model.items[id] = {"location":"loose"}
 	return body
-
-func run() -> void:
-	var game = RiderFixture.new();root.add_child(game)
-	var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json"))
-	var world = Blockout.new();game.add_child(world);world.setup(game,layout.workshop)
-	var platform = Platform.new();game.add_child(platform);platform.setup(game,layout.workshop.mobile_platform);game.equipment.register(platform)
-	await frames(3)
-	for dock in platform.spec.docks:
-		if dock=="park":continue
-		expect(platform.request("dock:"+dock).is_empty(),"request "+dock+" transfer")
-		platform.physics(.2)
-		var stop = platform.controls().filter(func(entry):return entry.action=="stop")
-		expect(stop.size()==1 and platform.action_error("stop").is_empty(),"moving platform offers its stop button")
-		var stopped_at: Vector3 = platform.position;platform.request("stop");platform.physics(.2)
-		expect(not platform.moving and platform.position.is_equal_approx(stopped_at) and platform.mode=="travel","stop holds the platform partway along "+dock)
-		var snapshot: Dictionary = JSON.parse_string(JSON.stringify(platform.capture()))
-		expect(platform.validate(snapshot).is_empty(),"interrupted "+dock+" transfer validates")
-		platform.apply(snapshot);platform.request("advance");settle(platform)
-		expect(platform.dock==dock and not platform.moving and platform.mode.is_empty(),"continuous transfer reaches "+dock+": "+platform.blocked_reason)
-		if platform.dock!=dock:break
-		expect(platform.position.is_equal_approx(AssemblyRuntime.vec(platform.spec.docks[dock])),"authored "+dock+" pose")
-		for height in platform.spec.heights.slice(1):
-			expect(platform.request("advance").is_empty(),"raise at "+dock)
-			platform.physics(.2);snapshot=JSON.parse_string(JSON.stringify(platform.capture()))
-			expect(platform.validate(snapshot).is_empty(),"height transfer snapshot validates")
-			platform.apply(snapshot);settle(platform)
-			expect(is_equal_approx(platform.height,height) and not platform.moving,"platform reaches %.2f at %s: %s"%[height,dock,platform.blocked_reason])
-		expect(not platform.request("dock:park").is_empty(),"raised platform rejects ground transfer")
-		for index in range(3):platform.request("return");settle(platform)
-		expect(is_equal_approx(platform.height,platform.spec.heights[0]),"platform returns to ground")
-		platform.request("return");settle(platform)
-		expect(platform.dock=="park" and platform.mode.is_empty(),"reverse route returns to parking: "+platform.blocked_reason)
-		if platform.dock!="park":break
-	var cargo = obstacle(game,platform.global_position+Vector3(0,.5,0),Vector3(.3,.3,.3));await frames(2)
-	expect(not platform.request("dock:bulky_right").is_empty(),"occupied deck rejects repositioning")
-	cargo.free();await frames(2)
-	var path_blocker = obstacle(game,Vector3(4.4,.5,19.3),Vector3(.2,1,.5));path_blocker.collision_layer = 2
-	await frames(2)
-	expect(platform.request("dock:bulky_rear").is_empty(),"ground trip accepts a distant part in its lane")
-	platform.physics(.1)
-	expect(platform.position.x<6.7 and platform.blocked_reason.is_empty(),"ground trip starts through the clear part of the lane")
-	settle(platform)
-	expect(platform.moving and platform.motion_obstruction.get("collider") == path_blocker and platform.position.x>5.1,"platform waits short of a named ground obstruction: "+platform.blocked_reason)
-	var waiting_at: Vector3 = platform.position
-	expect(platform.request("return").is_empty() and platform.position.is_equal_approx(waiting_at),"waiting platform reverses without jumping")
-	settle(platform)
-	expect(platform.dock=="park","waiting ground transfer can return to its starting dock")
-	platform.request("dock:bulky_rear");settle(platform)
-	platform.request("stop");path_blocker.free();await frames(2);platform.physics(.2)
-	expect(not platform.moving and platform.mode=="travel","manual Stop stays stopped after the obstruction clears")
-	platform.request("go");settle(platform)
-	expect(platform.dock=="bulky_rear","explicit Resume finishes a manually stopped trip: "+platform.blocked_reason)
-	platform.request("dock:park");settle(platform)
-	platform.request("dock:bulky_rear");platform.physics(1);platform.request("stop")
-	var before: Vector3 = platform.position
-	expect(platform.request("return").is_empty(),"interrupted transfer can reverse")
-	expect(platform.position.is_equal_approx(before),"reversing preserves current physical position")
-	settle(platform)
-	expect(platform.dock=="park","reversed partial route reaches its original dock")
-	var obstruction = obstacle(game,platform.global_position+Vector3(0,2,0),Vector3(.5,.2,.5));await frames(2)
-	platform.request("advance");settle(platform)
-	expect(platform.moving and not platform.blocked_reason.is_empty() and platform.height<1.6,"overhead solid stops raising without penetration")
-	obstruction.free();await frames(2)
-	settle(platform)
-	expect(is_equal_approx(platform.height,1.6),"cleared overhead route resumes raising without another request")
-	platform.request("return");settle(platform)
+func tick(game, count):
+	for i in count:
+		game.equipment.physics(.05);await frames(1)
+func run():
+	var game = Game.new();root.add_child(game)
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json")).workshop.mobile_platform
+	spec.parking = [0,0,0]
+	var platform = Platform.new();game.add_child(platform);platform.setup(game,spec);game.equipment.register(platform)
+	var floor = obstacle(game,Vector3(0,-.1,0),Vector3(30,.2,30))
 	game.player = CharacterBody3D.new();game.player.collision_layer = 8;game.add_child(game.player)
-	preload("res://scripts/player_controller.gd").ignore_platform_motion(game.player)
-	var capsule = CapsuleShape3D.new();capsule.radius = .26;capsule.height = 1.7
-	var body = CollisionShape3D.new();body.shape = capsule;body.position.y = .86;game.player.add_child(body)
-	game.player.global_position = platform.global_position+Vector3(0,platform.height,0);await frames(2)
-	var load = obstacle(game,game.player.global_position+Vector3(0,1.2,-.45),Vector3(.3,.3,.3));game.components.held_body = load
-	for tick in range(10):game.player.velocity = Vector3(0,-.1,0);game.player.move_and_slide();await frames(1)
-	var grip: Vector3 = load.global_position-game.player.global_position
-	var seat: Vector3 = game.player.global_position-(platform.global_position+Vector3(0,platform.height,0))
-	expect(platform.rider()==game.player,"player on the lowered deck rides")
-	expect(platform.request("dock:bulky_right").is_empty(),"ridden platform accepts ground transfer")
-	await ride(platform)
-	expect(platform.dock=="bulky_right","ridden transfer reaches bulky right: "+platform.blocked_reason)
-	expect(game.player.global_position.distance_to(platform.global_position+Vector3(0,platform.height,0)+seat)<.001,"rider travels with the deck without extra platform motion")
-	expect(load.global_position.is_equal_approx(game.player.global_position+grip),"hand load travels with the rider")
-	platform.request("advance");await ride(platform)
-	expect(is_equal_approx(platform.height,1.6),"rider can raise the platform holding a load: "+platform.blocked_reason)
-	expect(load.global_position.is_equal_approx(game.player.global_position+grip) and absf(game.player.global_position.y-1.6-seat.y)<.001,"rider and load rise with the deck")
-	platform.request("return");await ride(platform)
-	game.components.held_body = null;load.free()
-	game.player.global_position = platform.global_position+Vector3(-2.5,0,0);await frames(2)
-	var walker: Vector3 = game.player.global_position
-	expect(platform.rider()==null,"player beside the platform is not a rider")
-	expect(platform.request("dock:park").is_empty(),"empty transfer back to parking")
-	await ride(platform)
-	expect(platform.dock=="park" and Vector2(game.player.global_position.x-walker.x,game.player.global_position.z-walker.z).length()<.001,"empty transfer leaves the walker behind: "+platform.blocked_reason)
-	platform.request("advance");await ride(platform)
-	var invalid: Dictionary = platform.capture();invalid.mode="travel";invalid.from="park";invalid.to="bulky_right"
-	expect(not platform.validate(invalid).is_empty(),"save rejects raised ground transfer")
+	var capsule = CollisionShape3D.new();capsule.shape = CapsuleShape3D.new();capsule.shape.radius = .26;capsule.shape.height = 1.7;capsule.position.y = .86;game.player.add_child(capsule)
+	game.camera = Camera3D.new();game.player.add_child(game.camera);game.camera.position.y = 1.63
+	game.player.position = Vector3(4,0,0);await frames(3)
+	expect(not platform.request("operate").is_empty(),"onboard control refuses remote driving")
+	game.player.position = Vector3(0,spec.heights[0],0);await frames(2)
+	game.target = platform.controls().filter(func(entry):return entry.action=="operate")[0]
+	key(game,KEY_E,true);key(game,KEY_E,false)
+	expect(platform.drive_controls.is_open and game.desktop_input.modal_active(),"E on Operate enters onboard operation through the desktop adapter")
+	var hand = obstacle(game,game.player.position+Vector3(0,1.2,-.45),Vector3(.2,.2,.2));game.components.held_body = hand
+	var grip = hand.position-game.player.position
+	var rope = preload("res://scripts/rope_access.gd").new();game.add_child(rope)
+	rope.game = game;rope.equipment_id = "rope_access";rope.attachment = "supplied";rope.hanging = false;game.equipment.register(rope)
+	var tethered = platform.position;platform.drive(Vector2(0,-1),.05)
+	expect(platform.position.is_equal_approx(tethered) and platform.blocked_reason.contains("Unclip"),"shared rope guard blocks free driving while clipped in")
+	rope.free()
+	var start = platform.position
+	key(game,KEY_W,true);await tick(game,1)
+	var slow = platform.speed
+	expect(slow>0 and slow<spec.speed*.3,"drive starts with a small acceleration step")
+	await tick(game,8)
+	expect(is_equal_approx(platform.speed,spec.speed) and platform.position.z<start.z-.2,"held W reaches cruising speed toward the nose")
+	expect(game.player.position.distance_to(platform.position+Vector3(0,spec.heights[0],0))<.001,"shared registry carries the operator exactly once")
+	expect(hand.position.is_equal_approx(game.player.position+grip),"hand load travels with the driving operator")
+	key(game,KEY_W,false);var at = platform.position;await tick(game,1)
+	expect(platform.speed>0 and platform.speed<spec.speed and platform.position.z<at.z,"key release decelerates instead of snapping to rest")
+	await tick(game,6);at = platform.position;await tick(game,3)
+	expect(platform.position.is_equal_approx(at) and not platform.moving,"short braking ramp reaches rest without lingering drift")
+	var mouse = InputEventMouseMotion.new();mouse.relative = Vector2(100,10);game.desktop_input.handle(mouse)
+	var relative_yaw = game.player.rotation.y-platform.rotation.y
+	expect(not is_zero_approx(relative_yaw),"mouse look remains independent of steering")
+	var hand_local = platform.global_transform.affine_inverse()*hand.global_transform
+	key(game,KEY_D,true);await tick(game,12);key(game,KEY_D,false);await tick(game,6)
+	expect(platform.rotation.y<-.3 and platform.position.is_equal_approx(at),"D physically turns the platform right in place without strafing")
+	expect(is_equal_approx(game.player.rotation.y-platform.rotation.y,relative_yaw),"turning carries the rider's heading while preserving free look")
+	expect(hand.global_transform.is_equal_approx(platform.global_transform*hand_local),"held load inherits the continuous turning pose")
+	game.components.held_body = null;hand.free()
+	var heading = -platform.global_basis.z
+	key(game,KEY_W,true);await tick(game,10);key(game,KEY_W,false);await tick(game,6)
+	expect((platform.position-at).normalized().dot(heading)>.999,"W follows the turned chassis, independently of the camera")
+	key(game,KEY_SPACE,true);await tick(game,7);key(game,KEY_SPACE,false);await tick(game,1)
+	var intermediate = platform.height;await tick(game,5)
+	expect(intermediate>spec.heights[0] and platform.height==intermediate and not platform.moving,"Space raises only while held and releases at an arbitrary height")
+	at = platform.position;key(game,KEY_W,true);await tick(game,3);key(game,KEY_W,false)
+	expect(platform.position.is_equal_approx(at) and platform.blocked_reason.contains("Lower"),"raised platform refuses driving")
+	key(game,KEY_CTRL,true);await tick(game,10);key(game,KEY_CTRL,false);await tick(game,1)
+	expect(is_equal_approx(platform.height,spec.heights[0]) and not game.jump_requested,"Ctrl lowers to the limit without leaking jump or crouch input")
+	key(game,KEY_E,true);key(game,KEY_E,false)
+	expect(not platform.drive_controls.is_open and not game.desktop_input.modal_active(),"E releases the controls")
+	game.player.rotation = Vector3.ZERO;game.camera.rotation = Vector3.ZERO
+	game.target = platform.controls().filter(func(entry):return entry.action=="operate")[0]
+	key(game,KEY_E,true);key(game,KEY_E,false);key(game,KEY_W,true);await tick(game,1);key(game,KEY_ESCAPE,true)
+	expect(game.paused and not platform.drive_controls.is_open and not platform.moving,"Escape brakes, releases operation and pauses")
+	game.paused = false;key(game,KEY_W,false)
+	platform.request("operate");platform.drive_controls._notification(NOTIFICATION_APPLICATION_FOCUS_OUT)
+	expect(not platform.drive_controls.is_open and not platform.moving,"focus loss brakes without retained drive input")
+	platform.lift(1,.05);platform.lift(0,0)
+	var snapshot = JSON.parse_string(JSON.stringify(platform.capture()));var saved = platform.transform;var saved_height = platform.height
+	platform.position = Vector3(7,0,7);platform.rotation.y = 1.3;platform.apply(snapshot)
+	expect(platform.validate(snapshot).is_empty() and platform.transform.is_equal_approx(saved) and is_equal_approx(platform.height,saved_height) and not platform.moving,"arbitrary position, heading and held height round-trip at rest through JSON")
+	snapshot.position[1] = 1
+	expect(not platform.validate(snapshot).is_empty(),"snapshot rejects a floating base")
+	game.player.position = Vector3(5,0,5);platform.position = Vector3.ZERO;platform.height = spec.heights[0];platform.rotation.y = -PI/2;platform.halt();await frames(2)
+	# Real loose parts in front of the base. A second touching part forms a pile.
+	var first = part(game,"first",Vector3(1.89,.105,0))
+	var second = part(game,"second",Vector3(2.10,.105,0));await frames(12)
+	var original = first.position
+	for i in 18:platform.drive(Vector2(0,-1),.05);await frames(1)
+	expect(first.position.x>original.x+.1 and second.position.x>2.2,"base nudges a loose pile along the driven direction")
+	expect(game.model.items.first.location=="loose" and game.loose.first==first,"nudge preserves part identity and loose ownership")
+	# A held identity must never become pushable merely because its collider is loose.
+	first.held = true
+	expect(not preload("res://scripts/loose_part_nudge.gd").pushable(game,first),"held parts cannot be nudged")
+	first.held = false
+	var wall = obstacle(game,Vector3(3.2,.3,0),Vector3(.2,.6,.5));await frames(2)
+	for i in 20:platform.drive(Vector2(0,-1),.05);await frames(1)
+	at = platform.position;var pinned = first.position
+	platform.drive(Vector2(0,-1),.05)
+	expect(not platform.blocked_reason.is_empty() and platform.position.is_equal_approx(at) and first.position.is_equal_approx(pinned),"pinned pile blocks transactionally without partial nudges")
+	expect(second.position.x<3.01,"pushed parts stay outside the wall")
+	platform.drive(Vector2(0,1),.05)
+	expect(platform.position.x<at.x,"blocked platform can immediately reverse")
+	wall.free();first.free();second.free();game.loose.clear()
+	platform.halt();platform.position = Vector3.ZERO;platform._pose();await frames(2)
+	var fixed = obstacle(game,Vector3(1.89,.2,0),Vector3(.2,.4,.3));await frames(2)
+	for i in 10:platform.drive(Vector2(0,-1),.05)
+	expect(platform.position.x<.1 and not platform.blocked_reason.is_empty(),"fixed equipment remains solid")
+	fixed.free();platform.halt();await frames(2)
+	platform.position = Vector3.ZERO;platform.rotation.y = 0;platform.halt();await frames(2)
+	var corner = obstacle(game,Vector3(1.0,1.1,0),Vector3(.12,.4,2.4));await frames(2)
+	for i in 60:platform.drive(Vector2.RIGHT,.05)
+	expect(platform.rotation.y<-.05 and platform.rotation.y>-PI/2 and not platform.blocked_reason.is_empty(),"long deck's turning sweep stops before a fixed side obstacle")
+	var stopped_yaw = platform.rotation.y;platform.drive(Vector2.LEFT,.05)
+	expect(platform.rotation.y>stopped_yaw,"a blocked turn can steer back out without retained angular momentum")
+	corner.free();platform.rotation.y = 0;platform.halt();await frames(2)
+	var overhead = obstacle(game,Vector3(0,2,0),Vector3(.5,.2,.5));await frames(2)
+	for i in 80:platform.lift(1,.05)
+	expect(platform.height<=1.902 and not platform.blocked_reason.is_empty(),"overhead obstacle stops held raising")
+	overhead.free();await frames(2)
+	for i in 100:platform.lift(1,.05)
+	expect(is_equal_approx(platform.height,spec.heights[-1]),"held height input reaches its upper limit after clearing the obstacle")
+	platform.lift(0,0)
+	for i in 100:platform.lift(-1,.05)
+	platform.lift(0,0)
+	expect(is_equal_approx(platform.height,spec.heights[0]),"lowering stops at boarding height")
+	platform.position = Vector3(.19,0,.19);platform.rotation.y = 0;platform._pose()
+	expect(platform.busy_reason("bulky_tilt").is_empty(),"parking mark allows a small manual positioning tolerance")
+	platform.rotation.y = PI/2
+	expect(not platform.busy_reason("bulky_tilt").is_empty(),"parking interlock uses the rotated footprint, not just its centre")
+	expect(platform.controls().size()==1 and platform.controls()[0].label=="Operate","only the red Operate control is exposed")
+	expect(spec.size[1]>spec.size[0]*2 and spec.deck_size[1]>spec.deck_size[0]*1.5,"chassis and deck have an elongated footprint")
 	var passed = checks.all(func(check):return check.passed)
-	write_evidence("res://verification/mobile-platform.json",{"scope":"equipment and collision checks only","checks":checks})
+	write_evidence("res://verification/mobile-platform.json",{"scope":"mechanical and input checks only","checks":checks})
 	print("MOBILE_PLATFORM ","PASS " if passed else "FAIL ",checks.size()," checks")
 	game.free();quit(0 if passed else 1)

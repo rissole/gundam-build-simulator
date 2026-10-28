@@ -74,7 +74,7 @@ implementation; it does not claim to preserve every current rack.
 | Foot/small-component bay | X−11.5..−3.5/Z5..16 | Continue the existing detailed foot workflow; prepared-foot datum (−7,1.2,8). Internal full-foot tooling is the next component pass. |
 | Small preparation and stock | X−11.5..8.75/Z−5..2 | Carryable mechanisms, hardware, sensors and reusable adapters. Keep stock ≤3.2 m high under the distribution routes. |
 | Foot dispatch | (14,1.2,7); foot Z4.8..7.8 | Shared guided carrier into the supported leg root at Z9.4. |
-| Mobile platform parking | X5.5..7.9/Z18.3..20.3 | One guarded adjustable work platform, stabilized footprint 2.4 × 2.0 m. |
+| Mobile platform parking | X5.9..7.5/Z17.5..21.1 | One wheeled scissor platform, footprint 1.6 × 3.6 m including the rear ramp. |
 | Loaded leg floor corridor | **X10.5..15.5/Z20.5..30.6** | Both hip approaches, tilt/rise and loaded holder; excludes pedestrians during motion. |
 
 Main ground aisles are X8.9..10.4 and X17.65..19.15; front crosswalk
@@ -274,18 +274,32 @@ future saves. Never release the last load-bearing clamp just to change pose.
 | Backpack | Open 90°, face down on perimeter contacts, clear of nozzles, strut eyes and services. Transfer in that same restrained orientation. |
 | Head pieces | Upright structural feet/flange contacts centred X3.25/Z13; baseplate bottom Y0.60, other pieces Y0.85. |
 
-The **one mobile guarded platform** has a stabilized 2.40 × 2.00 m footprint,
-clear standing deck approximately 1.20 × 1.40 m and deck settings 1.60–2.40 m
-with ground boarding/lowering. The player may ride it, with a hand load, between
-docks on the lowered deck; loose loads on the deck block a transfer. It must not need a separate fixed staircase
-outside that footprint. Chest side docks are left X−2.15..0.25 or right
-X6.25..8.65, leaving 0.26 m to the upright load and the opposite side open for
-walking. Front dock Z7.8..9.8 leaves **0.493 m** to the bare-frame tilt sweep.
-Rear dock Z14.6..16.6 is used only in the normal upright source pose; stow it
-before shifting or tilting the bare frame. Do not draw the one platform in all
-positions as if multiple platforms existed. It parks outside both crane pickup
-and limb rolling envelopes. Its guards, stabilizers and controls must fit these
-bounds; actual footing/stability remains equipment engineering.
+The **one mobile scissor platform** (user revision, 2026-10-28) follows the
+provided scissor-lift reference: a long wheeled chassis with a tapered nose,
+front lamps and controls, two pairs of crossed lifting stages, a rectangular
+railed deck and a rear boarding ramp. Its footprint is **1.60 × 3.60 m**, with a
+**1.20 × 2.20 m** deck that moves continuously from **0.45 to 2.40 m**. The ramp
+and four wheels stay with the chassis. Front is local −Z; rear boarding is +Z.
+
+There is one large red **Operate** button. W/S drives forward/reverse; A/D steers
+(including turning in place); mouse look remains independent. Entering operation
+faces the player toward the nose. Ground speed ramps to 0.8 m/s in approximately
+0.33 s and brakes in 0.2 s. Steering ramps to 60°/s in 0.25 s, braking in 0.17 s.
+Space/Ctrl raises/lowers at 0.5 m/s while held, with immediate release stopping
+at any height. There are no separate height/Stop buttons or automatic stops.
+Height input brakes ground travel; ground driving requires the lowered deck.
+E/Q leaves operation; Escape pauses and focus loss releases the controls.
+
+Both driving and turning sweep the chassis, deck, rider and cargo. Loose parts
+may be nudged only if the complete pile's swept movement is clear; fixed,
+held/mounted/supported bodies and pinned piles stop it. Shared rope interlocks
+remain. Height sweeps cover the scissor members as well as the deck and payload.
+The former automatic docks/routes are removed. Service positions are selected
+by the player and constrained by live collision checks. Park within the marked
+berth at (6.7,0,19.3) before shifting or tilting the bare frame; the rotated
+footprint must fit with 0.25 m clearance on each side. The old fixed-route floor
+marking obligation is superseded. Geometry/control readability, manoeuvring feel
+and connection access remain player checks, not automated acceptance.
 
 ### Shared elevator access to hips and shoulders
 
@@ -735,7 +749,7 @@ workshop save. Do not carry that directory change into a production merge.
 | --- | --- |
 | Lighting and post-processing first | Yes, but make renderer choice the first experiment. The current game uses Compatibility; volumetric fog, SSAO and SSR require Forward+. AgX, a WorldEnvironment, 17 spots, cool fill, haze and room dressing already exist. Preserve a readable working exposure; the user previously rejected a darker workshop. |
 | PBR floor, metal and paint next | High value alongside the lighting. Roughness variation and small normals should make materials distinct without changing collision or assembly. Painted surfaces remain nonmetallic. A near-black background alone gives metal little to reflect; include a room reflection source. |
-| Warning decals and bay lettering | Useful for meaningful wayfinding, not blanket decoration. Bay labels and hazard sleeves already exist. Preserve them; the mobile platform's actual route marking remains separate pending work. Decal nodes require Forward+ or Mobile; flat meshes/labels can retain Compatibility support. |
+| Warning decals and bay lettering | Useful for meaningful wayfinding, not blanket decoration. Bay labels and hazard sleeves already exist. Preserve them; the mobile platform's parking mark is part of its free-drive revision. Decal nodes require Forward+ or Mobile; flat meshes/labels can retain Compatibility support. |
 | Industrial asset packs | A later step after testing the lighting. Choose one consistent kit, trial one bay, then expand. Prefer glTF/GLB; FBX is supported, but engine-specific shaders, pivots, scale and collision still need adaptation. Keep authored equipment dimensions, attachment frames and moving envelopes. Check the chosen pack's engine-use licence and texture/draw-call costs before purchase. No packs were acquired for this spike. |
 | AI-generated crane motion and control scripts | Treat assistance as an implementation tool, not a roadmap phase. Existing machines already implement riding, stopping, obstruction holds and support interlocks. A generic Tween must not bypass those rules. Cosmetic cable motion can follow the authoritative machinery later. |
 | In-world console screens and tactile feedback | Trial one readable status screen after lighting acceptance; keep detailed manual/checklist text on the HUD. SubViewport screens need resolution, angled viewing and input testing. Positional motor/stop audio is likely a better early addition than camera shake during precision assembly. Godot uses AudioStreamPlayer3D for spatial audio; a generic SoundPool is not needed. |
@@ -815,7 +829,7 @@ or a structural engineering approval.
 | Inspection cover | A 420 × 450 mm flush cover, Y1.68..2.13, on the forward face; four small captive fixings, a 2 mm dark perimeter seam. | Maximum inset 3 mm. No handle, hinge swing, status lamp or implied player action. Match the panel's colour closely to the column. |
 | Identity | A modest pale `02 / GANTRY` stencil above the cover, centred around Y2.4. | No invented capacity ratings, maintenance dates or controls. Surface colour, no emission; keep the existing bay signs as primary wayfinding. |
 | Wear | A few exposed-metal flecks on vulnerable corners; small streaks below the cover screws; dusty material where the base meets the floor. | No continuous silver outline. Keep most coating intact and wear concentrated below eye level. Use normals/roughness for fine marks, not additional geometry. |
-| Floor contact | A low-contrast dirt/roughness fringe, at most 80 mm outside the foot, fading into the existing epoxy. | No raised lip, new slab or collider. This is contact staining, not a safety or travel boundary. Mobile-platform route marking remains a separate task. |
+| Floor contact | A low-contrast dirt/roughness fringe, at most 80 mm outside the foot, fading into the existing epoxy. | No raised lip, new slab or collider. This is contact staining, not a safety or travel boundary. The free-drive platform has its own parking mark. |
 
 Authored geometry check: the foot covers X8.1..9.5/Z30.9..32.5, while the column
 starts at Z30.8. Its existing 100 mm front overhang is shown explicitly. This
@@ -1063,7 +1077,7 @@ support handoffs. Earlier route passes cannot approve a new tower or catwalk.
 | Arm routes | Horizontal source and cassette transfer, upend/yaw/splay, 1.13 m lower/outboard pre-seat approach, opposite installed arm, cable planesZ25.23..26.77 and both shoulder work positions |
 | Pauldron routes | Lowest loadY18.0 baseline, shoulder descent and final approach, rig spread and upper-level guard/parked-arm clearance on both sides |
 | Head routes | Lowest loadY19.0 baseline, baseplate/shell/sensor/crown approaches, neck connection work and tallest hook/spreader under the23.0 m obstruction limit |
-| Mobile platform | Existing park (6.7,0,19.3), all routes/docks, raising with riders/hand loads and its still-pending visible route markings; tower bases and parked work arms cannot consume these lanes |
+| Mobile platform | Park (6.7,0,19.3), the 1.6 × 3.6 m scissor-lift footprint and shared rider/hand-load support; free driving and the marked berth supersede fixed routes/docks (2026-10-28) |
 | Elevators and workers | Entire car/door/guide/shelf travel and payload envelopes; 1.50 m landing doors, local calls, at least2.20 m interlevel headroom, stopped-car nudge and held-trip return. No new landing gates implied |
 | Exit | Whole lowered robot and transport support to door, all support/work arm parking pockets, cables/services, floor/door collision and threshold; load-transfer interlocks |
 

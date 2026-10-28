@@ -233,19 +233,15 @@ func _check_coarse_clearance() -> void:
 	world.apply_frames(access.frames_at({"8.4":1.0,"20.6":1.0,"rear":1.0}))
 	var equipment=[AABB(Vector3(7.3,0,22.3),Vector3(1,2,1)),AABB(Vector3(7.9,0,20),Vector3(1,2,1)),AABB(Vector3(17.1,0,20),Vector3(1,2,1)),AABB(Vector3(-2.25,0,6),Vector3(11,6.5,12))]
 	var mobile: Dictionary=spec.mobile_platform
-	for route in mobile.routes.values():
-		var previous=AssemblyRuntime.vec(mobile.docks.park)
-		for point in route:
-			var next=AssemblyRuntime.vec(point)
-			equipment.append(AABB(previous-Vector3(1.2,0,1),Vector3(2.4,4.5,2)).merge(AABB(next-Vector3(1.2,0,1),Vector3(2.4,4.5,2))))
-			previous=next
+	var mobile_size = Vector3(mobile.size[0],mobile.heights[-1]+1.1,mobile.size[1])
+	equipment.append(AABB(AssemblyRuntime.vec(mobile.parking)-Vector3(mobile_size.x/2,0,mobile_size.z/2),mobile_size))
 	var blocked: Array=[]
 	for side in ["left","right"]:
 		for level in [8.4,20.6]:
 			for piece in world.group_pieces["wing_"+side+"_"+str(level)]:
 				var box: AABB=bounds(piece.spec.id)
 				if equipment.any(func(other):return other.intersects(box)):blocked.append(piece.spec.id)
-	expect(blocked.is_empty(),"open leaf solids clear console, rail gates, bulky bay and mobile route envelopes: "+str(blocked))
+	expect(blocked.is_empty(),"open leaf solids clear console, rail gates, bulky bay and mobile parking envelope: "+str(blocked))
 	world.apply_frames(access.frames_at({}))
 
 func _check_lifts() -> void:

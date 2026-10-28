@@ -28,6 +28,12 @@ class Crane extends "res://scripts/service_crane.gd":
 		if not is_instance_valid(load_body):return
 		load_body.global_transform = load_pose(path)
 		PhysicsServer3D.body_set_state(load_body.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,load_body.global_transform)
+class DrivenPlatform extends "res://scripts/mobile_work_platform.gd":
+	var drive_axis = Vector2.ZERO
+	var lift_axis = 0.0
+	func physics(delta):
+		if lift_axis!=0:lift(lift_axis,delta)
+		else:drive(drive_axis,delta)
 class Equipment extends WorkshopEquipment:
 	var moving = true
 class Access extends WorkshopEquipment:
@@ -255,24 +261,27 @@ func deck_cargo_obstacles() -> void:
 func mobile_deck_cargo() -> void:
 	var game = Game.new();root.add_child(game)
 	var spec: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/workshop-layout.json")).workshop.mobile_platform
-	spec.docks = {"park":[0,0,0],"test":[3,0,0]};spec.routes = {"park":[],"test":[[3,0,0]]}
-	var platform = preload("res://scripts/mobile_work_platform.gd").new();game.add_child(platform);platform.setup(game,spec);game.equipment.register(platform)
-	var load = loose_part(game,"ordinary_bracket",Vector3(0,.30,0),Vector3(.3,.3,.3))
+	spec.parking = [0,0,0]
+	var platform = DrivenPlatform.new();game.add_child(platform);platform.setup(game,spec);game.equipment.register(platform)
+	var load = loose_part(game,"ordinary_bracket",Vector3(0,spec.heights[0]+.15,0),Vector3(.3,.3,.3))
 	await frames(30);await cargo_tick(game,3,0)
 	var offset = load.position-platform.deck.global_position
-	expect(platform.passengers().has(load) and platform.request("dock:test").is_empty(),"ordinary resting loose cargo permits mobile platform ground transfer")
-	await cargo_tick(game,4)
-	var at = load.position;platform.request("stop");await cargo_tick(game,2)
-	expect(not platform.moving and load.position.is_equal_approx(at),"mobile Stop holds loose cargo without drift")
-	expect(platform.request("return").is_empty(),"stopped cargo platform accepts reversal")
-	await cargo_tick(game,20)
-	expect(platform.dock=="park" and load.position.is_equal_approx(platform.deck.global_position+offset),"reversed ground transfer returns the same loose passenger exactly once")
-	platform.request("up");await cargo_tick(game,40)
-	expect(not platform.moving and is_equal_approx(platform.height,spec.heights[1]) and load.position.is_equal_approx(platform.deck.global_position+offset),"shared cargo support also follows mobile vertical travel")
-	platform.request("down");await cargo_tick(game,2)
+	expect(platform.passengers().has(load),"ordinary resting loose cargo permits mobile platform ground driving")
+	platform.drive_axis = Vector2(0,-1);await cargo_tick(game,10)
+	platform.drive_axis = Vector2.ZERO;await cargo_tick(game,6)
+	var at = load.position;await cargo_tick(game,2)
+	expect(not platform.moving and load.position.is_equal_approx(at),"mobile braking holds loose cargo without drift")
+	var local = platform.global_transform.affine_inverse()*load.global_transform
+	platform.drive_axis = Vector2.RIGHT;await cargo_tick(game,10)
+	platform.drive_axis = Vector2.ZERO;await cargo_tick(game,6)
+	expect(platform.rotation.y<-.3 and load.global_transform.is_equal_approx(platform.global_transform*local),"continuous steering rotates the same loose passenger exactly once")
+	platform.lift_axis = 1;await cargo_tick(game,20);platform.lift_axis = 0;platform.lift(0,0)
+	expect(not platform.moving and platform.height>spec.heights[0] and is_equal_approx(load.position.y,platform.height+offset.y),"shared cargo support follows held vertical motion to any height")
+	platform.lift_axis = -1;await cargo_tick(game,2)
 	load.position.x = 8;PhysicsServer3D.body_set_state(load.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,load.global_transform)
 	await cargo_tick(game,1)
 	expect(platform.moving and not load.freeze and not platform.passengers().has(load),"support loss during mobile travel restores dynamic physics without stopping an empty deck")
+	platform.lift_axis = 0;platform.lift(0,0)
 	var other = preload("res://scripts/work_access_lift.gd").new();game.add_child(other)
 	other.setup(game,"other",Vector3(8,0,0),Vector2(3,3),[.15,1.5] as Array[float]);game.equipment.register(other)
 	load.position = Vector3(8,.30,0);load.linear_velocity=Vector3.ZERO;load.angular_velocity=Vector3.ZERO

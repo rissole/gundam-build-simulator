@@ -47,19 +47,14 @@ func run() -> void:
 func capture_platform() -> void:
 	root.content_scale_size=Vector2i(1280,720);root.size=Vector2i(1280,720)
 	var platform = game.equipment.get_equipment("mobile_platform")
-	var point: Vector3 = platform.move_button.global_position
+	var point: Vector3 = platform.operate_button.global_position
 	var eye = point+Vector3(0,.73,1.1)
 	await capture("platform-controls",eye,point)
-	var error: String = platform.request("open_move")
+	# Supplied onboard pose shows drive help; it does not establish reachability.
+	game.player.global_position = platform.global_position+Vector3(0,platform.height,0)
+	game.camera.position = Vector3(0,1.63,0)
+	await frames(2,false)
+	var error: String = platform.request("operate")
 	if not error.is_empty():push_error(error);quit(2);return
-	await capture("platform-destinations",eye,point,false)
-	platform.move_menu.shut()
-	# Supplied interrupted-route pose: review the recovery menu, not travel success.
-	platform.from_dock = "park";platform.to_dock = "bulky_left"
-	platform.mode = "travel";platform.travel = .2;platform.moving = false;platform._pose()
-	point = platform.move_button.global_position;eye = point+Vector3(0,.73,1.1)
-	await capture("platform-interrupted",eye,point)
-	error = platform.request("open_move")
-	if not error.is_empty():push_error(error);quit(2);return
-	await capture("platform-recovery",eye,point,false)
-	platform.move_menu.shut()
+	await capture("platform-drive",game.camera.global_position,point,false)
+	platform.drive_controls.shut()

@@ -2,6 +2,66 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Free-drive mobile platform — 2026-10-28
+
+**Player decision:** “Can we make the moveable platform free drive? It should
+nudge stuff out of the way.” Clarification: **WASD at onboard control**. This
+supersedes the platform's fixed destination routes and the earlier no-pushing /
+route-lane marking obligation for this machine's ground motion only.
+
+**Player feedback and refinements:** the first implementation's fixed deck axes
+were unintuitive (having to hold A to go toward the view); “but you cant turn”.
+The user requested slight acceleration/deceleration, explicitly chose **A/D
+steers; W/S drives; mouse looks freely**, requested a non-square platform with a
+clear front, and supplied a wheeled scissor-lift reference. The initial three
+button proposal (held Up/Down plus Drive, no Stop) was superseded by their final
+choice: **one big red button with tooltip Operate**, then WASD plus held
+Space/Ctrl like rappelling. No positive acceptance of the implemented version
+has been supplied.
+
+**Implemented:** 1.6 × 3.6 m wheeled chassis, tapered/lit nose, 1.2 × 2.2 m railed
+deck, two scissor stages and rear ramp. Entering Operate faces forward; W/S
+drives and A/D turns, including in place. Mouse look stays independent. Ground
+speed ramps to 0.8 m/s in ~0.33 s, brakes in ~0.2 s; steering has short ramps too.
+Held Space/Ctrl moves the deck between 0.45 and 2.40 m and stops on release.
+There are no separate Up/Down/Stop buttons, fixed height stops or destination
+routes. Height input brakes ground travel. Lower fully before driving.
+E/Q leaves, Escape pauses and focus loss releases operation immediately.
+
+Ground movement and turning nudge small loose piles (up to 16 bodies) only after
+every body's swept path is clear. Pinned/fixed/held/mounted/supported blockers
+stop the whole step without partial nudges. Shared rider/cargo support carries
+translation and rotation; rope interlocks stay active. Height sweeps include the
+scissor bars. The parking berth tests the actual rotated footprint, allowing
+0.25 m clearance on each side, rather than requiring an exact centre/yaw.
+
+**Mechanical evidence:** 358 passing checks: `mobile_platform_test` (38),
+`equipment_motion_test` (85), `gantry_layout_test` (171), `workshop_smoke_test`
+(31) and `save_roundtrip_test` (33). The last five-case run took 19.424 s and
+exposed an exact floating-point comparison in the new JSON-height assertion;
+using approximate comparison passes the platform follow-up in 4.060 s. Other
+four cases passed on the same production code. Local logs:
+`game/workshop/verification/regressions-20261028T073131.852281Z/` and
+`regressions-20261028T073406.330752Z/`. Authoring audit and generated-layout byte
+equality pass. Checks cover platform input/geometry/motion, shared cargo, gantry
+parking clearance, startup and save/reload. Snapshots use
+version 3 for arbitrary position, heading and height; older workshop saves are
+invalid under the existing no-migration policy. No recipes, part allocation,
+manual objectives or mounted interfaces changed. The rendered UI helper was
+updated but not run. No inspected presentation or player acceptance is claimed.
+
+**Player recheck:**
+
+- [ ] Longer scissor lift reads clearly: front, rear boarding ramp, red Operate button.
+- [ ] W/S driving, A/D turning, free mouse look and entry facing feel natural.
+- [ ] Slight acceleration/braking feels responsive; steering/turning in place is useful.
+- [ ] Space/Ctrl reaches comfortable work heights and stops when released.
+- [ ] Nudge loose pieces/a small pile while driving and turning; judge gentleness.
+- [ ] A pinned pile or fixed obstacle stops it; reversing/steering away is clear.
+- [ ] Rider, held component and loose deck cargo follow turns without drift.
+- [ ] Return inside the parking mark; rig interlock clears without fiddly alignment.
+- [ ] Pause/focus loss/exit stops immediately; a new save restores position, heading and height.
+
 ## Interchangeable heel pads — 2026-10-28
 
 **Player evidence.** Clean workshop: placing a heel pad at a preparation station

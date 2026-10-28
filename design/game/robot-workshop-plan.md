@@ -111,6 +111,10 @@ motion envelopes in the fixture and route contract, including:
 - Shared front wings, retracting work fingers, upward-folding two-leaf rear hip
   bridges, fixed rear flanks and rear crossover.
 - Foot preparation/dispatch area, stock storage and one movable work platform.
+  As decided 2026-10-28, the lowered platform drives freely from onboard WASD
+  controls and nudges loose parts through checked clear space. A/D steers, W/S
+  drives; held Space/Ctrl controls continuous height via one red Operate button. See the [platform contract](final-assembly-plan.md)
+  and [player recheck](robot-workshop-playtest-checklist.md#free-drive-mobile-platform--2026-10-28).
 
 Use simple readable geometry with actual collision volumes, support surfaces and
 moving equipment. Preserve precision around mounting faces, fixtures and transport

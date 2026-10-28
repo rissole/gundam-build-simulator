@@ -11,6 +11,15 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Operated scissor platform (2026-10-28):** long wheeled chassis, tapered front,
+  scissor arms and rear ramp; one red **Operate** button. W/S drives, A/D steers,
+  mouse looks; short acceleration/braking ramps. Held Space/Ctrl controls height
+  continuously; E/Q leaves. Ground travel/turning nudges loose parts only through
+  clear space. Shared rider/cargo and rope interlocks remain. Parking is marked.
+  Focused routine checks pass; presentation and revised feel await player review.
+  Pose/height snapshots are v3 (old saves are invalid under the no-migration rule).
+  [Player feedback, evidence and recheck](robot-workshop-playtest-checklist.md#free-drive-mobile-platform--2026-10-28).
+
 - **Interchangeable heel pads (2026-10-28):** the manual no longer gives the
   two identical heel pads hidden identities. "Prepare a heel pad (1 of 2)" binds to
   whichever pad the player starts first; hover labels drop A/B. Rule in the
@@ -218,8 +227,10 @@ last version before consolidation.
   - The pause names what it is waiting for: the player, a named loose part, or
     the hand load.
   - A held trip accepts a new destination, so a rider is never trapped.
-  - Loose parts in a path are pointed at, never pushed aside (user's choice), so
-    the path itself must be very visibly marked.
+  - Automated travel points at loose blockers instead of pushing them. The
+    mobile platform's free ground driving is the explicit 2026-10-28 exception:
+    it nudges loose parts through checked clear space. Its former route/lane
+    requirement is superseded; the parking berth is marked.
   - Elevators take the simplest form: no landing gates. A player may lean up to
     `PLAYER_TOLERANCE` (0.2 m) into the shaft; the arriving car nudges them back
     onto the landing. Anyone further in holds the car above their head with
@@ -242,8 +253,8 @@ last version before consolidation.
   mechanical evidence only. [Scope, constraints and evidence](history/shared-equipment-motion-20261025.md).
 
   **Remaining:**
-  - The mobile platform's route lane still needs visible floor marking (the
-    user's condition for pointing at parts instead of pushing them).
+  - The former mobile-platform route-marking obligation was superseded by free
+    driving and nudging (2026-10-28). Its parking mark awaits player review.
   - User playtest of waiting/resuming, held-trip return controls, obstruction
     wording/outline visibility and the elevator nudge. No rendered review ran.
 
@@ -290,16 +301,22 @@ and C6 remain design records. Findings and open choices:
 The nine [left-leg task repairs](handoff/left-leg-feedback/README.md) are implemented.
 Next is the [focused left-leg recheck](robot-workshop-playtest-checklist.md#focused-left-leg-recheck),
 then the wider workshop journey. Keep player acceptance separate from mechanical
-checks; retain the broader playtest and lane-marking obligations below.
+checks; retain the broader playtest obligations below.
 
 1. The user playtests the robot workshop with the
    [playtest checklist](robot-workshop-playtest-checklist.md), from the foot build in the
    hangar onward. Record results there.
-2. Finish guarded equipment motion (see “Where things stand”): mark the mobile
-   platform's route lane, then playtest the shared waiting/resuming behavior.
+2. Playtest free platform driving/nudging and the other machines' shared
+   waiting/resuming behavior (see “Where things stand”).
 3. Pick from the deferred items below only after a decision.
 
 ## Active rules
+
+- **Mobile platform (user, 2026-10-28):** one red Operate button takes W/S drive,
+  A/D steering, free mouse look and held Space/Ctrl height input. This replaces
+  destinations and separate height/Stop buttons; driving/turning ramps briefly. It nudges loose parts through clear space; it stops for
+  pinned piles, held/mounted loads and fixed equipment. Ground driving requires
+  a lowered deck. Other equipment retains guarded waiting rather than pushing.
 
 - **Operated machines (user, 2026-10-27/28):** one control operates one mechanism;
   no machine operates another, and nothing enters the gantry unless the player has

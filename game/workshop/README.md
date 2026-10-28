@@ -50,26 +50,36 @@ Click controls or use ↑/↓ and E/Enter. Esc pauses; Q closes. (The screenshot
 above predates this and still shows the removed load chooser.)
 
 Elevators have **Up / Down** onboard and **Call** at each landing. Each press
-travels to the next level and stops automatically. The mobile work platform has
-its own **Up / Down** pair plus one **MOVE** button. Move opens a centered menu
-like the crane's; choose a destination to start travelling there at ground level.
-The menu closes when travel starts. Down at ground does nothing. To return to
-parking, open Move and choose **Parking bay**. Interrupted travel offers **Resume
-to… / Return to…** in the same menu. Q/Close cancels without moving; Esc pauses.
+travels to the next level and stops automatically.
 
-Elevators, the mobile platform, shelf cargo, loaded crane and leg holder check
+The **mobile scissor platform** has one large red button: **Operate**. Board via
+the rear ramp and press E on it. Entering operation faces you toward its tapered
+nose. **W/S** drives forward/reverse, **A/D** steers the whole platform, and the
+mouse looks freely. It can turn in place. Driving takes about a third of a second
+to reach 0.8 m/s; releasing the keys brakes in about 0.2 seconds. Turning also
+ramps up and brakes. **Space / Ctrl** raises/lowers only while held, stopping at
+any height between 0.45 and 2.40 m. Height input stops ground motion; lower fully
+to drive. **E/Q** leaves, **Esc** stops/pauses, and losing focus releases operation.
+There is no separate Stop or height button, and no destination menu.
+
+Driving and turning gently nudge loose parts, including small piles, only when
+the full movement is clear. Fixed equipment, held/mounted loads and pinned piles
+stop movement. Riders, hand loads and resting deck cargo use shared equipment
+support. Raising/lowering checks the deck, cargo and scissor arms without nudging
+obstructions. Return the lowered lift inside its marked parking berth when a
+rig needs that space; its complete rotated footprint must fit.
+
+Elevators, shelf cargo, loaded crane and leg holder check
 only nearby travel for obstacles. They wait, name the obstruction and resume
 when it clears. Loose blockers are outlined when you are not aiming at another
 pickup. **STOP** cancels automatic resumption until you explicitly resume.
-A waiting platform or holder can return; a waiting crane transport offers
+A waiting holder can return; a waiting crane transport offers
 **Return to…** along its existing route. Crane lifting/lowering retains its
-support-transfer interlocks. The platform's marked floor lane is still pending.
+support-transfer interlocks. Free driving replaces the platform's fixed route and its pending lane marking.
 
 ![Elevator panel with two labelled vertical-travel buttons](../../docs/images/workshop-lift-controls.png)
 
-![Mobile platform with Up, Down and Move](../../docs/images/workshop-mobile-controls.png)
-
-![Move menu lists destinations directly](../../docs/images/workshop-mobile-destinations.png)
+The earlier platform MOVE/menu screenshots are superseded by the red Operate button; its presentation awaits player review.
 
 Rail, foot-rig and heavy-module-rig buttons also carry face labels. Their
 existing staged movement and Stop/recovery functions remain available.
@@ -86,7 +96,7 @@ for hands-on verification. Reproduce the screenshots with:
 ```
 
 Append `--platform-only` after the review tag to capture just the platform controls,
-destination menu and supplied interrupted-trip recovery menu.
+and supplied onboard driving view.
 
 The capture manifest records input/image hashes. Its supplied empty-crane poses
 illustrate UI states and do not establish successful delivery or reachability.

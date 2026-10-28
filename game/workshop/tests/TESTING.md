@@ -72,7 +72,7 @@ and automatic resume. Crane projection alone is substituted; the rail uses its
 real articulated holder geometry with a small supplied payload. Receiver contact
 exclusions are checked independently from unrelated loose obstacles. These are
 controller contracts, not full authored load-route diagnostics. The existing
-mobile_platform case also covers ground obstruction/return and explicit Stop;
+mobile_platform case covers onboard desktop input, vehicle steering, acceleration/braking, pause/focus-loss release, loose-pile nudging and pinned/fixed/turning obstruction, arbitrary pose/height saves and held vertical travel;
 access_lift checks obstacle identities alongside its established rider behavior.
 
 New runner_contracts uses tiny Python subprocesses for classification, named-only
