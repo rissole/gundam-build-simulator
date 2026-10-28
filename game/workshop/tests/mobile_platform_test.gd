@@ -176,6 +176,33 @@ func run():
 	expect(platform.controls().size()==1 and platform.controls()[0].label=="Operate","only the red Operate control is exposed")
 	expect(platform.deck.find_children("*","Label3D",true,false).is_empty(),"platform has no physical status display")
 	expect(spec.size[1]>spec.size[0]*2 and spec.deck_size[1]>spec.deck_size[0]*1.5,"chassis and deck have an elongated footprint")
+	var ramp: MeshInstance3D = platform.base.get_node("BoardingRamp")
+	var vertices: PackedVector3Array = ramp.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var hidden_face = false
+	for index in range(0,vertices.size(),3):
+		var face = [vertices[index],vertices[index+1],vertices[index+2]]
+		if face.all(func(v):return is_zero_approx(v.y)) or face.all(func(v):return is_equal_approx(v.z,spec.deck_size[1]/2)):hidden_face = true
+	expect(vertices.size()==12 and not hidden_face,"ramp draws only its exposed top and sides, with no coplanar floor or chassis faces")
+	expect(platform.base.get_children().any(func(child):return child is CollisionShape3D and child.shape is ConvexPolygonShape3D and child.shape.points.size()==6),"ramp keeps its full solid walking shape")
+	platform.position = Vector3.ZERO;platform.rotation.y = 0;platform.height = spec.heights[-1];platform.halt()
+	game.player.position = Vector3(1.4,0,1.05);await frames(2)
+	var call = platform.controls().filter(func(entry):return entry.action=="call")
+	expect(call.size()==1 and call[0].node.global_position.distance_to(game.camera.global_position)<game.REACH,"raised lift offers a ground-reachable call button on its chassis")
+	expect(platform.request("call").is_empty() and platform.mode=="call","call starts a guarded descent")
+	for i in 8:platform.physics(.05)
+	var before_pause = platform.height;game.paused = true;platform.physics(.5);game.paused = false
+	expect(is_equal_approx(platform.height,before_pause),"pause holds a called descent")
+	var blocker = obstacle(game,Vector3(0,1.7,0),Vector3(.6,.2,.6));await frames(2)
+	for i in 100:
+		platform.physics(.05)
+		if not platform.blocked_reason.is_empty():break
+	expect(platform.moving and platform.height>spec.heights[0] and platform.motion_obstruction.get("collider")==blocker,"called descent waits above an obstruction")
+	blocker.free();await frames(2)
+	for i in 200:
+		platform.physics(.05)
+		if not platform.moving:break
+	expect(is_equal_approx(platform.height,spec.heights[0]) and platform.mode.is_empty() and not platform.moving,"called lift resumes and reaches boarding height")
+	expect(platform.controls().all(func(entry):return entry.action!="call"),"ground call prompt disappears after arrival")
 	var passed = checks.all(func(check):return check.passed)
 	write_evidence("res://verification/mobile-platform.json",{"scope":"mechanical and input checks only","checks":checks})
 	print("MOBILE_PLATFORM ","PASS " if passed else "FAIL ",checks.size()," checks")

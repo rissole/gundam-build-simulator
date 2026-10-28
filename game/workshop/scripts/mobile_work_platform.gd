@@ -24,6 +24,7 @@ var gate: CollisionShape3D
 var scissors: Array[Dictionary] = []
 var drive_controls: CanvasLayer
 var operate_button: MeshInstance3D
+var call_button: MeshInstance3D
 
 func setup(workshop: Node3D, definition: Dictionary) -> void:
 	game = workshop;spec = definition;equipment_id = "mobile_platform"
@@ -54,11 +55,16 @@ func setup(workshop: Node3D, definition: Dictionary) -> void:
 			for sign in [-1,1]:
 				var bar = _solid(base,Vector3.ZERO,Vector3(.055,.065,SCISSOR_LENGTH),yellow)
 				scissors.append({"shape":bar,"visual":bar.get_meta("visual"),"x":x+sign*.035,"tier":tier,"sign":sign})
-	# Two triangular sides and their connecting faces form a solid boarding ramp.
+	# Keep the full convex walking shape. Only draw the exposed top and sides:
+	# the underside lies on the floor and the front face meets the chassis.
 	var points = PackedVector3Array()
 	for x in [-size.x/2,size.x/2]:
 		points.append(Vector3(x,0,size.y/2));points.append(Vector3(x,height,size.y/2));points.append(Vector3(x,0,spec.size[1]/2))
-	_convex(base,points,[0,2,1,3,4,5,1,2,4,2,5,4,0,1,3,1,4,3,0,3,2,3,5,2],steel)
+	var ramp = _convex(base,points,[0,2,1,3,4,5,1,2,4,2,5,4],steel)
+	ramp.name = "BoardingRamp"
+	# The chassis carries this control when the platform is away from parking.
+	_solid(base,Vector3(.69,.49,1.05),Vector3(.10,.80,.12),yellow)
+	call_button = preload("res://scripts/equipment_button.gd").make(game,base,Vector3(.78,.87,1.05),"CALL ↓",PI/2)
 	# One deliberately large red physical control. The hover text is simply Operate.
 	game.box(deck,Vector3(0,.90,-size.y/2+.12),Vector3(.46,.34,.08),steel)
 	operate_button = game.box(deck,Vector3(0,.94,-size.y/2+.18),Vector3(.28,.28,.09),game.material(Color("bd3e32"),.25))
@@ -74,11 +80,12 @@ func _solid(parent: CollisionObject3D, at: Vector3, size: Vector3, material: Mat
 	var col = CollisionShape3D.new();col.position = at;var shape = BoxShape3D.new();shape.size = size;col.shape = shape
 	parent.add_child(col);col.set_meta("visual",visual);return col
 
-func _convex(parent: CollisionObject3D, points: PackedVector3Array, indices: Array, material: Material) -> void:
+func _convex(parent: CollisionObject3D, points: PackedVector3Array, indices: Array, material: Material) -> MeshInstance3D:
 	var collision = CollisionShape3D.new();var shape = ConvexPolygonShape3D.new();shape.points = points;collision.shape = shape;parent.add_child(collision)
 	var surface = SurfaceTool.new();surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for i in indices:surface.add_vertex(points[i])
 	surface.generate_normals();var visual = MeshInstance3D.new();visual.mesh = surface.commit();visual.material_override = material;parent.add_child(visual)
+	return visual
 
 func _prism(parent: CollisionObject3D, outline: Array, low: float, high: float, material: Material) -> void:
 	var points = PackedVector3Array();var indices: Array = [];var count = outline.size()
@@ -98,7 +105,10 @@ func _make_parking_mark(material: Material) -> void:
 	title = game.sign_panel(mark,"PLATFORM PARKING",Vector3(0,.018,half.y+.2),Vector2(2.4,.3),40,.002);title.get_parent().rotation.x = -PI/2
 
 func controls() -> Array[Dictionary]:
-	return [control_entry(operate_button,"operate","Operate",.18,{"point":operate_button.global_position,"allowed":[deck],"success_toast":false})]
+	var result: Array[Dictionary] = [control_entry(operate_button,"operate","Operate",.18,{"point":operate_button.global_position,"allowed":[deck],"success_toast":false})]
+	if height>spec.heights[0]+.001:
+		result.append(control_entry(call_button,"call","Call platform down",.14,{"point":call_button.global_position,"allowed":[base]}))
+	return result
 
 func operate_access_error() -> String:
 	if rider() == null:return "Step onto the platform to operate it."
@@ -113,10 +123,21 @@ func cargo_decks() -> Array[Dictionary]:
 	return [{"body":deck,"bounds":AABB(Vector3(-spec.deck_size[0]/2,-.01,-spec.deck_size[1]/2),Vector3(spec.deck_size[0],.06,spec.deck_size[1]))}]
 func action_error(action: String) -> String:
 	if game.paused:return "Resume the workshop before operating the work platform."
-	return operate_access_error() if action=="operate" else "Unknown work platform control."
+	if action=="operate":
+		if mode=="call":return "Wait for the platform to lower."
+		return operate_access_error()
+	if action=="call":
+		if height<=spec.heights[0]+.001:return "The platform is already down."
+		if drive_controls.is_open:return "Leave the controls before calling the platform."
+		return ""
+	return "Unknown work platform control."
 func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():return error
+	if action=="call":
+		speed = 0;turn_speed = 0;moving = true;mode = "call"
+		blocked_reason = "";motion_obstruction = {}
+		_pose();return ""
 	return drive_controls.open()
 
 ## Halt is also used on operation exit, pause and collision: no stored momentum.
@@ -171,6 +192,12 @@ func lift(direction: float, delta: float) -> void:
 
 func physics(delta: float) -> void:
 	if drive_controls.is_open:drive_controls.physics(delta)
+	elif mode=="call" and moving and not game.paused:
+		var next = maxf(spec.heights[0],height-spec.lift_speed*clampf(delta,0,.05))
+		motion_obstruction = {};blocked_reason = _height_error(next)
+		if blocked_reason.is_empty():height = next
+		if is_equal_approx(height,spec.heights[0]):moving = false;mode = ""
+		_pose()
 
 func _scissor_pose(entry: Dictionary, value: float) -> Transform3D:
 	var rise = (value-.12-SCISSOR_BASE)/2

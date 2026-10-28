@@ -35,6 +35,16 @@ and A/D turning work at any selected height. Raised travel checks the chassis,
 scissor arms, deck, rider, held load and loose deck cargo through its full sweep.
 The existing red-button tooltip and operating hint remain. Player recheck pending.
 
+**Player follow-up:** the bottom ramp flickers/clips; a player who jumps off a
+raised lift needs to call it down. Geometry inspection found a hidden underside
+drawn flush with the floor and a front face sharing the chassis plane. Removed
+those visual triangles, keeping the full convex walking collider. A low
+rear-right **CALL ↓** post moves with the chassis and starts a guarded descent
+from any raised height. The call waits for a blocker and resumes after clearance.
+Four focused routine suites pass (199 checks), including the ramp triangle audit,
+retained ramp collision, call access/arrival, pause and blocked descent. These
+are mechanical checks; rendered flicker and player reach/feel need recheck.
+
 Movement and turning nudge small loose piles (up to 16 bodies) only after
 every body's swept path is clear. Pinned/fixed/held/mounted/supported blockers
 stop the whole step without partial nudges. Shared rider/cargo support carries
@@ -76,6 +86,9 @@ await recheck.
 - [ ] Rider, held component and loose deck cargo follow turns without drift.
 - [ ] Return inside the parking mark; rig interlock clears without fiddly alignment.
 - [ ] Pause/focus loss/exit stops immediately; a new save restores position, heading and height.
+- [ ] The rear ramp no longer flickers against the floor/chassis; boarding stays smooth.
+- [ ] Jump off at a raised work position and find **CALL ↓** beside the chassis.
+- [ ] Calling lowers to boarding height; a person or object beneath holds the deck until clear.
 
 ## Interchangeable heel pads — 2026-10-28
 

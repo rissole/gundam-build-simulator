@@ -21,6 +21,10 @@ last version before consolidation.
   revised feel await player review.
   Pose/height snapshots are v3 (old saves are invalid under the no-migration rule).
   [Player feedback, evidence and recheck](robot-workshop-playtest-checklist.md#free-drive-mobile-platform--2026-10-28).
+  Follow-up: the rear ramp's coplanar hidden faces were removed after reported
+  flicker/clipping, while the convex walking collider stays. A low chassis
+  **CALL ↓** button now returns the raised deck with guarded descent. Mechanical
+  geometry and call checks pass; visual/player recheck pending.
 
 - **Interchangeable heel pads (2026-10-28):** the manual no longer gives the
   two identical heel pads hidden identities. "Prepare a heel pad (1 of 2)" binds to

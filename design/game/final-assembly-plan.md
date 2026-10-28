@@ -303,6 +303,14 @@ footprint must fit with 0.25 m clearance on each side. The old fixed-route floor
 marking obligation is superseded. Geometry/control readability, manoeuvring feel
 and connection access remain player checks, not automated acceptance.
 
+**2026-10-28 follow-up:** after the player reported flicker/clipping at the
+bottom of the rear ramp, remove its hidden visual underside (coplanar with the
+floor) and front face (coplanar with the chassis). Retain the full convex ramp
+collision. A labelled **CALL ↓** button on the ground-level rear-right chassis
+post descends from any raised position without the operator aboard. The descent
+uses the existing deck/scissor/payload sweep and waits for an obstruction,
+resuming when clear. The call remains with the moving chassis.
+
 ### Shared elevator access to hips and shoulders
 
 Move both elevator shafts **behind the shoulder line**, to centres
