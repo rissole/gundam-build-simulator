@@ -21,8 +21,9 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
   pass (740 checks). No rendered review.
 - [x] Spam-jump on both lifts riding up, down and on a landing call: the car
   never pauses or shows a waiting message, and landings feel natural.
-- [ ] Jumping near the top stop under the crane bridge: any brief hold reads
-  sensibly, or say if it should behave differently.
+- [x] Jumping near the top stop under the crane bridge: any brief hold reads
+  sensibly, or say if it should behave differently. Player: “it's fine” — keep
+  the brief hold and the existing waiting message.
 
 ## Rope swinging — 2026-10-30
 
