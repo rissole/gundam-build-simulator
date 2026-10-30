@@ -104,7 +104,9 @@ func handle(event: InputEvent) -> void:
 					game.hud.quiet_errors = false
 			KEY_Q:
 				var rope = game.equipment.get_equipment("rope_access")
-				if rope!=null and rope.attached():
+				# Hanging, Q is the hand's drop; unclipping needs a floor anyway.
+				var hanging_full: bool=rope!=null and rope.hanging and game.hands.occupied()
+				if rope!=null and rope.attached() and not hanging_full:
 					var error: String=rope.unclip()
 					if not error.is_empty():game.hud.toast(error)
 				else:game.drop_selected()
@@ -114,11 +116,7 @@ func handle(event: InputEvent) -> void:
 			KEY_PAGEUP: game.hud.body_scroll.scroll_vertical -= 140
 			KEY_PAGEDOWN: game.hud.body_scroll.scroll_vertical += 140
 			KEY_F: reset_station()
-			KEY_G:
-				var rope = game.equipment.get_equipment("rope_access")
-				if rope!=null:
-					var error: String=rope.rope_key()
-					if not error.is_empty():game.hud.toast(error)
+
 		game.hud.refresh()
 		# Pocket changes can switch between pickup and placement intent. Resolve
 		# that immediately so selecting a part and clicking in one frame works.

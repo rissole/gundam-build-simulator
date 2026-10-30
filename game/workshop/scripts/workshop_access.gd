@@ -100,6 +100,8 @@ func action_error(action: String) -> String:
 func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():return error
+	var rope = game.equipment.get_equipment("rope_access")
+	if action.begins_with("upper_") and rope!=null:rope.stow_free_front()
 	for key in FRONTS[action.get_slice("_",0)]:channels[key].goal=1.0 if action.ends_with("_open") else 0.0
 	moving=channels.values().any(func(channel):return not is_equal_approx(channel.value,channel.goal))
 	blocked_reason=rope_motion_error() if moving else ""

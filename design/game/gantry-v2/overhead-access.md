@@ -34,9 +34,10 @@ https://claude.ai/artifact/5TYsCiNM2vnjYYn9znaRTd.
   Core and backpack deliveries approach from the workshop side over the chest;
   no delivery crosses this walkway. The crane console stays in use.
 - **Rappel points:** davits along each walkway's robot-side edge swing out up to
-  2.0 m toward the robot at Y21.8, below the crane bridge. Controlled descender, no
-  swinging. Pull-in lanyards reach up to about 1.6 m (user-accepted). No rappelling
-  from a leaf while it is open.
+  2.0 m toward the robot at Y21.8, below the crane bridge. Controlled vertical
+  travel plus WASD pendulum swinging and contact bracing, capped at 1.5 m
+  horizontally (player decision, 2026-10-30, reversing the earlier lanyard
+  acceptance). No rappelling from a leaf while it is open.
 - **Lifts, one per walkway (option (b)):** stops 0.15, 8.4 and 20.6. The left lift
   moves outboard of the left hinge post (X0.3..3.5, Z22.45..25.65) and opens onto
   the hinge apron at both 8.4 and 20.6. The right lift moves aft
@@ -60,17 +61,19 @@ https://claude.ai/artifact/5TYsCiNM2vnjYYn9znaRTd.
 | 3 | Hip lifting adapters off (Y11.35) | Workshop-side rope, davit 0.3 m | Works (reach 0.40) |
 | 4 | Leg → hip: ring, bolts, cylinders, pins | 8.4 m front wings and rear decks, as today | Unchanged |
 | 5 | Chest → waist, front | Workshop-side rope while crane holds the chest | Works (0.60) |
-| 6 | Chest → waist, rear | Exit-side rope, davit 2.0 m, pull-in | Pull-in (1.50) |
+| 6 | Chest → waist, rear | Exit-side rope, davit 2.0 m, swing/brace | Coarse offset 1.50 |
 | 7 | Core → chest: rear flange, bolts | Exit-side rope beside the core path | Works (0.70) |
 | 8 | Backpack hinge and strut pins | — | **Open challenge** (user will propose something) |
 | 9 | Arm → shoulder: seat, split ring | Workshop-side rope while crane holds the arm | Works (0.80) |
-| 10 | Pauldron | Workshop-side rope, forward and outboard | Pull-in (1.00) |
+| 10 | Pauldron | Workshop-side rope, forward and outboard, swing/brace | Coarse offset 1.00 |
 | 11 | Head → neck | Workshop-side rope | Works (0.70) |
 | 12 | Head top and crown | Workshop-side rope, short drop | Works (0.80) |
 
-Reach is from the hanging worker's shoulders: ≤0.85 m works, ≤1.6 m works with a
-pull-in lanyard. Robot blocks are C5 measured unions without growth, so these are
-coarse indications only.
+The table retains the concept's coarse connection indications, not player
+acceptance. Runtime uses normal 2.35 m eye-to-work reach and the shared sight
+check, from plumb or a collision-resolved brace within the swing cap. Robot blocks
+were C5 measured unions without growth. Current washer station measurements are
+in the [swinging checklist](../robot-workshop-playtest-checklist.md#rope-swinging--2026-10-30).
 
 ## Costs and follow-ups
 
@@ -84,7 +87,9 @@ coarse indications only.
 ## Decisions and open items (user, 2026-10-27)
 
 1. Backpack hinge: **open challenge**, deliberately unsolved.
-2. Pull-in lanyards: **accepted** as a mechanic.
+2. **Reversed 2026-10-30:** the player rejected the formerly accepted pull-in
+   lanyard as unintuitive and an extra keybind. Swinging and holding into a
+   surface to brace replace it entirely; no extra key.
 3. Walkways: two rappel sides, one lift each (**option (b)**), now joined by an
    upper perimeter loop. Workshop side is **hinged on the 8.4 m wing axles** so
    the crane can come down the hall; the sides and exit side are fixed.
@@ -232,30 +237,61 @@ At a station, **E** clips in and opens the protected passage. Adjacent gates tri
 their overlapping barriers to preserve the selected full 0.9 m opening. Space
 ascends and Ctrl descends: taps move at 0.6 m/s for the first 0.12 seconds, then
 held input accelerates at 8 m/s² up to 4.5 m/s (about 0.61 seconds after pressing).
-Release locks height immediately; reversal starts a fresh slow tap. Pause,
-collision/end limits, lanyard use and reload reset the transient acceleration.
-WASD gives bounded slack at its existing speed. Boarding uses the existing
-crouch capsule beneath the solid davits/booms, including after reload. The rear
-boom has a collision-resolved top traverse back to its walkway. **G** clips or
-releases the pull-in lanyard while hanging. **Q** unclips only on a floor; while
-attached it never drops a carried component, even when unclipping is refused.
+Release locks line length immediately; reversal starts a fresh slow tap. Pause,
+collision/end limits and reload reset the transient vertical acceleration.
+Below the 1.9 m deck-clearance zone, WASD adds tangential acceleration relative
+to horizontal camera facing; mouse look remains free. The harness swings on an
+arc around the anchor, with momentum and overshoot. Space/Ctrl change radius
+without changing the angle. Holding into a contacted surface pins the player
+there at zero velocity; releasing lets gravity draw them back toward plumb.
+The same capsule, world mask and collide-and-slide stop inward velocity with no
+bounce. Grounded clipped movement retains 0.35 m slack; the top boarding corridor
+and front davit outward bias are preserved without swinging there. Boarding
+uses the existing crouch capsule beneath solid davits/booms, including after
+reload. The rear boom retains its collision-resolved traverse to the walkway.
+Paused/modal input freezes motion; a hanging player never rides a platform.
+**Q** unclips on a floor; while hanging with full hands it drops the hand load.
 Outside rope use Q keeps its normal set-down action. A free
 rope can be clipped from below or recalled at its station. Existing hand carrying,
 targeting and solid obstruction rules remain active.
+
+Swing tuning (2026-10-30): restoring coefficient **24/9 s⁻²**, scaling effective
+gravity with length for a **3.85 s** period at all lengths; tangential pumping
+**1.3 m/s²**; damping **0.1 s⁻¹** with input and **2.8 s⁻¹** on release (player
+retune 2026-10-30: a held key only leans about 0.5 m; range takes pumping). The
+stronger release damping settles promptly while lighter pumping damping permits
+momentum to build. Horizontal offset is **≤1.5 m** (player reduced it from 2.5 m by 40%, 2026-10-30), additionally **≤60°** on
+short ropes to keep the harness below the anchor. Physics substeps are at most
+**1/120 s**. In the isolated nine-metre fixture, pumping with direction reversals
+reaches the 1.5 m cap at **3.45 s**, about one swing (holding one key peaks at **0.93 m**), then
+settles to **0.010 m** after four released seconds. These are mechanical timings;
+feel and usability await player review.
+
+Manual cues retain their generic per-point cache and **one new prediction per
+frame**. A plumb capsule descent stops at the first floor. At sampled eye heights
+(0.3 m intervals), a horizontal capsule sweep toward the work stops at its first
+contact within the swing cap. Only a holdable brace, or plumb itself, qualifies
+with normal reach and shared sight; a passing extreme in empty air does not.
+There are no station, recipe or part exceptions. The centre front ropes remain
+uncued for waist washers because their plumb descents stop on the chest shoulders.
 
 Clip-in success keeps the permanent rope HUD and suppresses the duplicate
 temporary status toast, for both station clips and hanging ends, through E or
 click. Errors still use normal feedback; other equipment keeps its status toasts.
 
-Front lines must be recalled before the upper leaves move. An unclipped worker
-standing on a leaf also holds its motion. Registered equipment occupying either
+Free front lines stow automatically when upper-leaf movement is requested; a
+clipped front rider still holds it. Ends shorter than 1.8 m stow on unclip. An
+unclipped worker standing on a leaf also holds its motion. Registered equipment occupying either
 swing refuses Close with its load name. Crane cables in the upper crossing also
 prevent closing, including with the crane manually stopped; closing is available
 once the crane is clear over the robot. These holds leave lower access independent.
 
-Rope snapshots retain station, line length, attachment and pull-in state with the
-current player pose. Invalid attachment/length/player/leaf combinations are
-rejected before live restoration, with no migration. This narrow rope safeguard
+Rope snapshots v2 retain station, anchor-to-harness length and attachment with
+the current player pose; swing velocity and bracing are transient. Restore keeps
+the saved pose at rest and resumes the pendulum. Old snapshots are invalid under
+the no-migration rule. The envelope is 1.5 m, also bounded to 60° on short lines;
+the boarding corridor retains its separate top envelope. Invalid attachment,
+length, player or leaf combinations are rejected before live restoration. This narrow rope safeguard
 does not introduce a wider per-machine save-validation framework. Manual changes
 are limited to goals and notes; objectives, slots and component quantities are
 unchanged. Backpack hinge worker access remains deliberately unresolved.

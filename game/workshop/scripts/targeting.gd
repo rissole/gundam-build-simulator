@@ -120,8 +120,10 @@ func aim_score(point: Vector3, radius: float) -> float:
 	if perpendicular > radius: return INF
 	return perpendicular/radius + ahead*0.008
 
-func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, depth: float = 0.065) -> bool:
-	var query = PhysicsRayQueryParameters3D.create(game.camera.global_position,point,game.WORLD_MASK)
+## `from` defaults to the camera; rope guidance judges a predicted hanging eye.
+func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, depth: float = 0.065, from: Variant = null) -> bool:
+	var eye: Vector3 = game.camera.global_position if from == null else from
+	var query = PhysicsRayQueryParameters3D.create(eye,point,game.WORLD_MASK)
 	var excluded: Array[RID] = [game.player.get_rid()]
 	for body in game.bodies.values():
 		if body.held:excluded.append(body.get_rid())
@@ -139,7 +141,7 @@ func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, 
 	for attempt in range(16):
 		hit = game.get_world_3d().direct_space_state.intersect_ray(query)
 		if hit.is_empty() or not pickup_bodies.has(hit.collider):break
-		var surface = pickup_surfaces.ray_hit(hit.collider,game.camera.global_position,(point-game.camera.global_position).normalized(),game.camera.global_position.distance_to(point)+0.002)
+		var surface = pickup_surfaces.ray_hit(hit.collider,eye,(point-eye).normalized(),eye.distance_to(point)+0.002)
 		if not surface.is_empty():
 			hit.position = surface.point
 			break
@@ -150,7 +152,7 @@ func can_see(point: Vector3, allowed: Array = [], allow_body_hit: bool = false, 
 	if allowed.has(hit.collider) and not allow_body_hit and hit.position.distance_to(point) >= depth and hit.position.distance_to(point) <= depth+0.025:
 		# A small proxy mismatch is forgiven only when actual receiver material
 		# leaves the connection exposed. Deep/back-side body hits stay blocked.
-		var surface = pickup_surfaces.ray_hit(hit.collider,game.camera.global_position,(point-game.camera.global_position).normalized(),game.camera.global_position.distance_to(point))
+		var surface = pickup_surfaces.ray_hit(hit.collider,eye,(point-eye).normalized(),eye.distance_to(point))
 		if surface.is_empty() or surface.point.distance_to(point) < depth:
 			excluded.append(hit.collider.get_rid())
 			query.exclude = excluded

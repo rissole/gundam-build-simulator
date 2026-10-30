@@ -2,6 +2,157 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Rope swinging — 2026-10-30
+
+**Player accepted (2026-10-30):** “it feels good” after the hold retune, then
+“love it” after the 1.5 m cap. Open items below are optional detail checks.
+
+**Player decision:** “I dont like the lanyard thing. Very unintuitive, and just
+another keybind. I'd rather swinging mechanic, so you can build momentum to get
+to hard to reach places.” This reverses the 2026-10-27 lanyard acceptance.
+
+**Implemented:** the lanyard, its visual, G binding/help and saved fields are
+removed. Below the boarding clearance, WASD pumps a pendulum relative to the
+camera's horizontal facing, with free mouse look, arc motion and overshoot.
+Holding into a contacted surface braces at zero velocity for ordinary E/click
+work; releasing returns toward plumb. The same capsule/world mask resolves
+contact with no bounce. Space/Ctrl retain precise taps and accelerating holds,
+changing radius along the current angle. Top boarding, the front outward bias,
+deck landings, grounded 0.35 m slack and hanging/platform interlocks remain.
+Pause/modal input freezes motion. Snapshot v2 restores the position at rest,
+without velocity or a saved brace; old saves are invalid, with no migration.
+
+**Tuning:** restoring coefficient **24/9 s⁻²** (effective gravity scales with
+length, giving a **3.85 s** period instead of a sluggish long-rope swing);
+tangential pump **1.3 m/s²** (retuned from 2.8, see below); input damping **0.1 s⁻¹** (from 0.45), released damping
+**2.8 s⁻¹**. Lighter damping while pumping builds momentum; stronger released
+damping permits a prompt return. Offset cap **1.5 m** (was 2.5 m; see the second retune below), also limited to **60°** on
+short lines so the bob stays below the anchor. Maximum physics step **1/120 s**;
+boarding clearance **1.9 m** below deck.
+
+**Player feedback (same day):** “rappelling feels good without the lanyard. i
+think the swinging is slightly too much: if I hold S, i shouldnt be able to go the
+full 2.4m just hovering along. it should take a swing to reach max distance.”
+Cause: a held key is a constant push, which shifts the pendulum's rest point to
+pump ÷ restore (1.05 m) and lightly damped overshoot doubled it. Retuned so a held
+key only leans about 0.5 m and range needs pumping in time with the swing. In the
+nine-metre fixture, holding one key from rest peaks at **0.93 m** in six seconds;
+pumping with motion-following reversals reaches the cap at **5.72 s** (about 1.5
+swings of the 3.85 s period); after four released seconds the offset is
+**0.010 m**. All 53 routine cases pass (139 rope checks).
+
+**Second retune (player):** “it feels good, just reduce maximum swing distance by
+like 40%.” Cap **2.5 → 1.5 m**. Pumping now reaches the cap at **3.45 s**, about one
+swing; holding one key still peaks at 0.93 m. Re-measured serving ropes on a
+converted copy of the player's backup save: washer/bolt 1 — front 10.8, front 15.2,
+rear 13.6; 2 — front 10.8, rear 12.4, rear 13.6; 3 — front 10.8, front 15.2, rear
+12.4; 4 — front 15.2, rear 12.4, rear 13.6. The four centre front ropes stay
+uncued. All 53 routine cases pass (139 rope checks).
+
+**Measured cue sets (2.5 m cap, superseded by the second retune above):** on a disposable copy of the player's seated-chest save,
+with waist hardware returned to stock in that copy. Only the copy's rope schema
+was adapted for the measurement fixture; the live save was never loaded or
+written and its SHA-256 was unchanged. The probe was deleted afterwards.
+Cues use normal **2.35 m** reach and the shared sight check, from plumb or a
+capsule sweep stopped at a braceable surface within the cap. Empty-air extremes
+do not qualify. The per-point cache and one-new-prediction-per-frame budget
+remain; there are no station/part/recipe lists.
+
+| Waist washer | World point (m) | Serving station IDs |
+| --- | --- | --- |
+| 1 | (12.16, 12.803, 25.42) | `front_l_9.3`, `front_l_10.8`, `front_r_15.2`, `rear_13.6` |
+| 2 | (12.16, 12.803, 26.58) | `front_l_10.8`, `rear_12.4`, `rear_13.6`, `rear_15.0` |
+| 3 | (13.84, 12.803, 25.42) | `front_l_10.8`, `front_r_15.2`, `front_r_16.7`, `rear_12.4` |
+| 4 | (13.84, 12.803, 26.58) | `front_r_15.2`, `rear_11.0`, `rear_12.4`, `rear_13.6` |
+
+The four centre front ropes (11.9, 12.6, 13.4, 14.1) remain uncued: their plumb
+capsules stop at feet **14.88–15.95 m** on the chest shoulders. Other front lines
+reach about **8.34–8.39 m**; rear lines reach **9.30–10.94 m**. These numerical
+cue results are not walking, visibility or player acceptance. Local evidence:
+`game/workshop/verification/rope-swing-stations.json` and
+`game/workshop/verification/rope-swing-probe.log`.
+
+**Automated evidence:** `python3 game/workshop/tools/run_regressions.py` reports
+`REGRESSIONS PASS 53 cases; inputs unchanged=True`, **54.383 s**, below the
+60-second warning budget. The isolated rope suite passes **138 checks** covering
+pumping/cap/settling (retuned values above), long lines, collision/bracing and E work, length changes,
+pause/modals, save/restore, deck landings and cue obstruction/budget behavior.
+Local report:
+`game/workshop/verification/regressions-20261030T074021.624268Z/results.json`.
+No diagnostics or rendered review; player acceptance remains open. The coordinator reviews/commits this
+uncommitted implementation; the existing cue, auto-stow, Q/drop and per-corner
+crane-release work is retained.
+
+- [ ] Pump with WASD relative to the view; reverse with the motion to build useful
+      momentum. Check the feel of reaching the cap in about 5–6 seconds (retuned).
+- [ ] Retune: holding one key only leans (~0.5–0.9 m); reaching the 1.5 m cap takes
+      about one pumped swing.
+- [ ] Release input: the return, overshoot and 3–4 second settling feel comfortable.
+- [ ] Swing into structure and keep holding toward it: the working pose stays
+      pinned while aiming, selecting and fitting parts. Release swings away.
+- [ ] At each waist corner, use a listed serving rope, swing/brace and place the
+      washer and bolt without timing a passing extreme. The four centre ropes
+      stay uncued; only still-open connections influence the glow.
+- [ ] Robot, gantry and guard contacts stop the capsule without clipping or bounce;
+      swing and change length near surfaces, deck landings and boarding passages.
+- [ ] Space/Ctrl taps remain precise and holds accelerate mid-swing; mouse look
+      stays free, pause/manual modals freeze motion, and hanging never rides a lift.
+- [ ] Save while offset/braced, restore at that position at rest, then resume the
+      swing. Confirm old-save invalidation is expected for this version.
+
+## Chest waist hardware and rope cues — 2026-10-30
+
+**Player finding:** the chest's four CH-W36 waist washers seemed impossible to
+fit; the prompt always said “approach its exposed side”. Standing on the waist
+beams (~10.9 m) puts the eye ~0.2 m below the flange top where the washers sit
+(12.8 m), so they are hidden from every standable spot. Rope access works, but
+the manual glowed **every** rope station within ~4 m. The four centre front
+ropes stop on the chest shoulders at ~15–16 m, and the outer rear ropes cannot
+see their corners even with pull-in. The upper gantry was also open, which
+swings the front ropes away. **Player confirmed** closing the upper gantry and
+using the right ropes works, and called the all-stations glow very unintuitive.
+
+**Initial implementation (superseded by swinging above):** rope cues predict
+real service, generically. The player's capsule descends the plumb line until it meets a floor, then normal reach and the
+shared placement sight check are judged from plumb or the lanyard pull-in pose.
+Only open connections count; predictions are cached and spread one per frame.
+For the waist hardware this cues front 10.8 (corners 1–2), front 15.2 (3–4),
+rear 12.4 (2) and rear 13.6 (4). Line of sight, reach and rope rules are unchanged.
+Six new `rope_access_test` checks; all 53 routine cases pass. Verified against a
+copy of the player's save; no rendered review.
+
+Deferred options: the obstruction prompt could say “approach from above” when
+the player is below a connection; the manual's rope hint could name corner groups.
+
+**Second round of player feedback (same day) and decisions:**
+- Rope ends left within a person's height (1.8 m) of their davit now stow on
+  unclip, and opening or closing the upper gantry stows every front rope nobody
+  is clipped to. Only a clipped rider still holds the leaves.
+- Crane connectors release per corner: fastener slots belong to their nearest
+  lifting point, so each connector comes off once its own hardware is in while
+  another still holds. The last attached connector still needs full retention.
+  Guided and fixture-supported loads keep their existing rule. The chest note now
+  says so and no longer asks to recall front ropes.
+- Q while **hanging** with something in hand drops it (unclipping needs a floor
+  anyway). On a floor Q still unclips without dropping. *Pushback:* always
+  dropping when full would drop a carried part when the player lands and unclips.
+- The player rejects the pull-in lanyard (“very unintuitive, just another
+  keybind”) and asked for a swinging mechanic to build momentum. Implemented
+  in [Rope swinging](#rope-swinging--2026-10-30) above; feel awaits player recheck.
+
+- [ ] Unclip at the top deck: the rope stows itself. Close the gantry with a free
+      rope out: it stows instead of refusing.
+- [ ] Bolt one waist corner, detach that corner's connector on the same descent;
+      the others refuse until their own corners are in.
+- [ ] Holding a connector while hanging, Q drops it; on a floor Q unclips.
+
+- [ ] At the waist hardware step on the 20.6 m deck, only serving ropes glow
+      (the swing table above replaces the original four; UPPER GANTRY Close is
+      cued while the leaves are open).
+- [ ] The glow appears without a noticeable hitch on reaching the deck.
+- [ ] Each glowing rope reaches its corners by lowering to just above the flange.
+- [ ] Other rope-cued steps still glow a usable rope.
+
 ## Free-drive mobile platform — 2026-10-28
 
 **Player decision:** “Can we make the moveable platform free drive? It should

@@ -16,6 +16,7 @@ class Ropes extends WorkshopEquipment:
 	var clear=true
 	var hanging=false
 	func front_ropes_clear() -> bool:return clear
+	func stow_free_front() -> void:pass # `clear=false` models a clipped rider
 	func attached() -> bool:return false
 var game: World
 var crane: Crane
@@ -119,14 +120,14 @@ func interlocks() -> void:
 	crane.station="receiver";crane.motion="down";crane.progress=0
 	access.request("upper_close");access.physics(7)
 	expect(access.front_closed("upper") and crane._access_error(.1).is_empty(),"upper leaves close while pelvis is still held at Z26")
-	# Reverse route reopens only at the crossing; deployed ropes hold it.
+	# Reverse route reopens only at the crossing; a clipped front rope holds it.
 	crane.motion="go:source";crane.progress=.12;ropes.clear=false
 	before=crane.progress;crane.physics(.2)
 	expect(crane.progress==before and crane.moving and crane.blocked_reason==Production.UPPER_WAIT,"return crossing asks the player to open the upper leaves")
 	access.request("upper_open");access.physics(7)
-	expect(access.blocked_reason==ropes.LEAF_REASON,"player opening still waits for the deployed rope")
+	expect(access.blocked_reason==ropes.LEAF_REASON,"player opening still waits for the clipped front rope")
 	ropes.clear=true;access.physics(7);crane.physics(.2)
-	expect(crane.progress>before,"recalling front rope resumes the pending crossing")
+	expect(crane.progress>before,"unclipping the front rope resumes the pending crossing")
 	select("left_arm")
 	access.request("upper_close");access.request("lower_close");access.physics(7)
 	expect(not crane._access_error(.01).is_empty(),"arm waits for the player to open the lower front")

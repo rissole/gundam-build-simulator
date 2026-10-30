@@ -106,65 +106,120 @@ func _rope_physics(rope: Node, delta: float) -> void:
 	var move=Vector2(float(movement_pressed(KEY_D))-float(movement_pressed(KEY_A)),float(movement_pressed(KEY_S))-float(movement_pressed(KEY_W))).normalized()
 	var direction: Vector3=game.player.basis*Vector3(move.x,0,move.y)
 	var vertical=float(movement_pressed(KEY_SPACE))-float(movement_pressed(KEY_CTRL))
-	var can_travel: bool=rope.pull_in==null and (vertical>0 or (vertical<0 and rope.horizontal(at-anchor).length()<=rope.SLACK+.01))
+	var boarding: bool=at.y>=deck-.08
+	# Away from the boarding solids, use the actual harness-to-anchor radius.
+	# Length changes move along that radius and retain its angle.
+	if not grounded and rope.below_boarding(at):
+		update_crouch(false,delta)
+		_swing_physics(rope,direction,vertical,delta)
+		return
+	rope.reset_swing()
+	# Draw underneath the long rear boom before paying out. Mid-swing travel
+	# is unrestricted; this guard belongs only to the top boarding corridor.
+	var can_travel: bool=vertical>0 or (vertical<0 and rope.horizontal(at-anchor).length()<=rope.SLACK+.01)
 	var rise: float=rope.vertical_step(vertical if can_travel else 0.0,delta)
-	# Anticipate the actual accelerated step before entering a low davit/boom.
 	update_crouch(rope.boarding_duck(at.y+maxf(0,rise)),delta)
 	var target=at
-	if rope.pull_in!=null:
-		var outward: Vector3=rope.horizontal(anchor-rope.pull_in).normalized()
-		target=rope.pull_in+outward*rope.PULL_GAP
-		target.y=at.y # Lanyard holds this working height until G releases it.
+	if boarding:
+		var toward: Vector3=rope.deck_direction(rope.attachment)
+		var side=Vector3(toward.z,0,-toward.x)
+		var offset: Vector3=rope.horizontal(at-anchor)+direction*delta
+		var along=clampf(offset.dot(toward),-rope.SLACK,2.6 if rope.stations[rope.attachment].edge=="rear" else .8)
+		var across_limit=sqrt(maxf(0,rope.SLACK*rope.SLACK-minf(along,0)*minf(along,0)))
+		var across=clampf(offset.dot(side),-across_limit,across_limit)
+		target=anchor+toward*along+side*across;target.y=at.y
+		if not grounded and move.is_zero_approx():target.x=anchor.x;target.z=anchor.z
+	elif grounded:
+		var offset: Vector3=rope.horizontal(at+direction*delta-anchor).limit_length(rope.SLACK)
+		target=anchor+offset;target.y=at.y
 	else:
-		# At the top only, a narrow boarding corridor reaches the rear boom's
-		# walkway. Below deck height WASD is strictly limited to 0.35 m slack.
-		var boarding: bool=at.y>=deck-.08
-		if boarding:
-			var toward: Vector3=rope.deck_direction(rope.attachment)
-			var side=Vector3(toward.z,0,-toward.x)
-			var offset: Vector3=rope.horizontal(at-anchor)+direction*delta*1.0
-			var along=clampf(offset.dot(toward),-rope.SLACK,2.6 if rope.stations[rope.attachment].edge=="rear" else .8)
-			var across_limit=sqrt(maxf(0,rope.SLACK*rope.SLACK-minf(along,0)*minf(along,0)))
-			var across=clampf(offset.dot(side),-across_limit,across_limit)
-			target=anchor+toward*along+side*across
-			target.y=at.y
-			if not grounded and move.is_zero_approx():
-				target.x=anchor.x;target.z=anchor.z
-		elif grounded:
-			target=at+direction*delta
-			var offset: Vector3=rope.horizontal(target-anchor).limit_length(rope.SLACK)
-			target.x=anchor.x+offset.x;target.z=anchor.z+offset.z
-		else:
-			rope.slack=(rope.slack+direction*delta*.5).limit_length(rope.SLACK)
-			target=anchor+rope.slack;target.y=at.y
-		# Do not descend alongside a two-metre boom: first draw to its plumb
-		# line, with collisions, then pay out. Space still lifts from any floor.
-		if can_travel:
-			target.y=clampf(at.y+rise,0,anchor.y-rope.HARNESS-rope.MIN_LENGTH)
-	# The front davit is 0.15 m past the leaf edge, less than the capsule's
-	# 0.26 m radius. Bias the line outward within its slack while passing the
-	# deck, so ascent/descent does not require a precise sideways adjustment.
-	if rope.pull_in==null and not grounded and rope.stations[rope.attachment].edge=="front" and at.y>deck-1.9 and (vertical!=0 or at.y<deck-.08 or move.is_zero_approx()):
+		# The deck-clearance zone has no slack steering or pendulum motion.
+		target.x=anchor.x;target.z=anchor.z
+	if can_travel:target.y=clampf(at.y+rise,0,anchor.y-rope.HARNESS-rope.MIN_LENGTH)
+	# The front davit sits less than a capsule radius beyond the leaf edge.
+	if not grounded and rope.stations[rope.attachment].edge=="front" and at.y>deck-rope.BOARDING_CLEARANCE and (vertical!=0 or at.y<deck-.08 or move.is_zero_approx()):
 		var toward: Vector3=rope.deck_direction(rope.attachment)
 		var offset: Vector3=rope.horizontal(target-anchor)
 		if offset.dot(toward)>-.14:offset-=toward*(offset.dot(toward)+.14)
 		offset=offset.limit_length(rope.SLACK)
 		target.x=anchor.x+offset.x;target.z=anchor.z+offset.z
 		if vertical>0 and rope.horizontal(at-anchor).dot(toward)>-.13:target.y=at.y
-	var horizontal: Vector3=rope.horizontal(target-at).limit_length(delta*rope.TRAVERSE_SPEED)
-	_rope_move(horizontal)
+	_rope_move(rope.horizontal(target-at).limit_length(delta*rope.TRAVERSE_SPEED))
 	_rope_move(Vector3(0,target.y-game.player.global_position.y,0))
-	# A floor, ceiling, boarding edge or rope end must not bank up acceleration.
 	if absf(game.player.global_position.y-at.y)+.001<absf(rise):rope.reset_motion()
-	# Establish floor contact without gravity/free fall. The locked length then
-	# comes from the actual collision-resolved pose, including a deck landing.
 	if grounded and vertical<=0:_rope_move(Vector3.DOWN*.015)
 	rope.hanging=not rope.on_floor()
-	if not rope.hanging:rope.pull_in=null
-	rope.ropes[rope.attachment].length=clampf(anchor.y-game.player.global_position.y-rope.HARNESS,rope.MIN_LENGTH,rope.max_length(rope.attachment))
+	rope.ropes[rope.attachment].length=clampf(rope.pose_length(rope.attachment,game.player.global_position),rope.MIN_LENGTH,rope.max_length(rope.attachment))
 
-func _rope_move(motion: Vector3) -> void:
-	if motion.is_zero_approx():return
-	# A slide along a deck edge can shove the capsule beyond the slack circle
-	# or under a landing. Stop at contact; subsequent input chooses a clear path.
-	game.player.move_and_collide(motion)
+func _swing_physics(rope: Node, direction: Vector3, vertical: float, delta: float) -> void:
+	var anchor: Vector3=rope.anchor(rope.attachment)
+	var rise: float=rope.vertical_step(vertical,delta)
+	# Recheck contact so removing/moving a surface cannot leave a floating brace.
+	if not rope.brace_normal.is_zero_approx():
+		var hit=KinematicCollision3D.new()
+		if direction.dot(rope.brace_normal)<-.15 and game.player.test_move(game.player.global_transform,-rope.brace_normal*.025,hit) and hit.get_normal().dot(rope.brace_normal)>.9:
+			rope.swing_velocity=Vector3.ZERO
+			if is_zero_approx(rise):return
+		rope.brace_normal=Vector3.ZERO
+	# Small fixed maximum steps keep the curved path swept by the capsule,
+	# including a long input tick. No position is assigned outside collision.
+	var steps=maxi(1,ceili(delta/rope.SWING_STEP))
+	var dt=delta/steps
+	for step in steps:
+		var at: Vector3=game.player.global_position
+		var radial: Vector3=at+Vector3.UP*rope.HARNESS-anchor
+		var normal=radial.normalized()
+		var length=clampf(float(rope.ropes[rope.attachment].length)-rise/steps,rope.MIN_LENGTH,rope.max_length(rope.attachment))
+		var velocity: Vector3=rope.swing_velocity.slide(normal)
+		var damping: float=rope.SWING_RELEASE_DAMPING if direction.is_zero_approx() else rope.SWING_DAMPING
+		var force: Vector3=(Vector3.DOWN*rope.SWING_RESTORE*length+direction*rope.SWING_PUMP).slide(normal)
+		velocity=(velocity+force*dt)*exp(-damping*dt)
+		var next=(normal*length+velocity*dt).normalized()*length
+		var offset: Vector3=rope.horizontal(next)
+		var cap: float=rope.swing_radius(length)
+		if offset.length()>cap:
+			offset=offset.limit_length(cap)
+			next=offset-Vector3.UP*sqrt(maxf(0,length*length-cap*cap))
+			var outward=offset.normalized().slide(next.normalized()).normalized()
+			velocity-=outward*maxf(0,velocity.dot(outward))
+		var target: Vector3=anchor+next-Vector3.UP*rope.HARNESS
+		# Ascend back under the davit before entering its clearance zone.
+		# This is a collision-resolved draw toward plumb, never a pose snap.
+		if target.y>=rope.deck_height(rope.attachment)-rope.BOARDING_CLEARANCE and offset.length()>rope.SLACK:
+			target.y=minf(at.y,rope.deck_height(rope.attachment)-rope.BOARDING_CLEARANCE-.001)
+			velocity.y=minf(0,velocity.y)
+		rope.swing_velocity=velocity
+		var normals=_rope_move(target-at,rope,cap)
+		# A contact may leave a slightly slack line; retain the resolved radius
+		# rather than correcting through the obstacle on the next frame.
+		var actual: Vector3=game.player.global_position+Vector3.UP*rope.HARNESS-anchor
+		rope.ropes[rope.attachment].length=clampf(actual.length(),rope.MIN_LENGTH,rope.max_length(rope.attachment))
+		rope.swing_velocity=rope.swing_velocity.slide(actual.normalized())
+		for surface in normals:
+			if rope.swing_velocity.dot(surface)<0:rope.swing_velocity=rope.swing_velocity.slide(surface)
+			if direction.dot(surface)<-.15 and absf(surface.y)<.65:
+				rope.brace_normal=surface;rope.swing_velocity=Vector3.ZERO
+		if not normals.is_empty() and not is_zero_approx(rise):rope.reset_motion()
+		rope.hanging=not rope.on_floor()
+		if not rope.hanging:
+			rope.reset_swing();break
+		if not rope.brace_normal.is_zero_approx() and is_zero_approx(rise):break
+
+func _rope_move(motion: Vector3, rope: Node=null, cap: float=0.0) -> Array[Vector3]:
+	var normals: Array[Vector3]=[]
+	for slide in (3 if rope!=null else 1):
+		if rope!=null:
+			# Sliding against an oblique wall must also stay inside the cap.
+			var at: Vector3=game.player.global_position
+			var anchor: Vector3=rope.anchor(rope.attachment)
+			var offset: Vector3=rope.horizontal(at+motion-anchor).limit_length(cap)
+			motion.x=anchor.x+offset.x-at.x;motion.z=anchor.z+offset.z-at.z
+		if motion.is_zero_approx():break
+		var hit=game.player.move_and_collide(motion)
+		if hit==null:break
+		var normal: Vector3=hit.get_normal()
+		normals.append(normal)
+		motion=hit.get_remainder().slide(normal)
+		if rope!=null and rope.swing_velocity.dot(normal)<0:rope.swing_velocity=rope.swing_velocity.slide(normal)
+	# Boarding stops at first contact to stay within the narrow gate corridor.
+	return normals

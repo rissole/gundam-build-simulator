@@ -5,7 +5,11 @@ class Hands extends RefCounted:
 class Workshop extends "res://tests/kit/model_workshop.gd":
 	var hands: RefCounted
 class Crane extends "res://scripts/service_crane.gd":
+	var lifting={}
+	var fasteners={}
 	func _refresh() -> void:pass # visual projection only
+	func point_position(id: String) -> Vector3:return lifting[id]
+	func _fastener_position(sid: String) -> Vector3:return fasteners[sid]
 	func _interaction_error(_point: Vector3, _allowed: Array = []) -> String:return ""
 class Gate extends WorkshopEquipment:
 	var refusal="receiver unavailable"
@@ -52,6 +56,32 @@ func retention(game: Node, crane: Node) -> void:
 	for sid in crane.fastener_slots:game.model.assemblies.left_leg.slots[sid]=""
 	expect(crane.hardware_count()==0 and not crane.secured() and crane.action_error("up").is_empty(),"clearing the retaining hardware allows the existing lift")
 	expect(not crane.status_text().contains("Connection retention"),"console and crane sign share status without a retention count")
+	corner_release(game,crane)
+
+## Each connector releases once the fasteners nearest its lifting point are in;
+## the last attached connector still waits for full retention.
+func corner_release(game: Node, crane: Node) -> void:
+	crane.POINT_IDS=crane.tasks.shin.magnetic_points.keys()
+	crane.lifting={crane.POINT_IDS[0]:Vector3.ZERO,crane.POINT_IDS[1]:Vector3(0,10,0)}
+	var near: Array=[];var far: Array=[]
+	for i in crane.fastener_slots.size():
+		var sid: String=crane.fastener_slots[i]
+		(near if i%2==0 else far).append(sid)
+		crane.fasteners[sid]=Vector3(0,.5 if i%2==0 else 9.5,0)
+	var a: String=crane.END_IDS[0];var b: String=crane.END_IDS[1]
+	crane.endpoints[a]={"state":"attached","point":crane.POINT_IDS[0]}
+	crane.endpoints[b]={"state":"attached","point":crane.POINT_IDS[1]}
+	for sid in near.slice(1):game.model.assemblies.left_leg.slots[sid]="fitted"
+	expect(not crane.action_error("detach:"+a).is_empty(),"a connector waits while any of its own fasteners is missing")
+	game.model.assemblies.left_leg.slots[near[0]]="fitted"
+	expect(not crane.secured() and crane.action_error("detach:"+a).is_empty(),"a connector releases once its own fasteners are in")
+	expect(not crane.action_error("detach:"+b).is_empty(),"the other connector still waits for its fasteners")
+	crane.endpoints[a]={"state":"stowed","point":""}
+	for sid in far:game.model.assemblies.left_leg.slots[sid]="fitted"
+	expect(crane.secured() and crane.action_error("detach:"+b).is_empty(),"the last connector releases with full retention")
+	for sid in far:game.model.assemblies.left_leg.slots[sid]=""
+	expect(not crane.action_error("detach:"+b).is_empty(),"the last attached connector never releases an unsecured load")
+	for sid in crane.fastener_slots:game.model.assemblies.left_leg.slots[sid]=""
 
 func run() -> void:
 	var game=Workshop.new();game.hands=Hands.new();root.add_child(game)

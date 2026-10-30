@@ -29,6 +29,7 @@ class World extends Node3D:
 	var manual_progress=Progress.new()
 	var interaction_outline: Node3D
 	var hud=Hud.new()
+	var hands=HandStub.new()
 	var desktop_input: RefCounted
 	var player_controller: RefCounted
 	var targeting: RefCounted
@@ -49,6 +50,9 @@ class World extends Node3D:
 		var mat=StandardMaterial3D.new();mat.albedo_color=color;mat.roughness=roughness;return mat
 	func box(parent: Node3D, at: Vector3, size: Vector3, mat: Material) -> MeshInstance3D:
 		var node=MeshInstance3D.new();node.mesh=BoxMesh.new();node.mesh.size=size;node.material_override=mat;parent.add_child(node);node.position=at;return node
+class HandStub extends RefCounted:
+	var full=false
+	func occupied() -> bool:return full
 class Progress extends RefCounted:
 	signal updated
 	var _queued=false
@@ -80,11 +84,49 @@ func obstacle(at: Vector3, size: Vector3) -> StaticBody3D:
 
 func place(at: Vector3) -> void:
 	game.player.position=at;game.player.velocity=Vector3.ZERO
+	if rope!=null and rope.attached() and rope.ropes[rope.attachment].deployed:
+		rope.reset_swing()
+		rope.ropes[rope.attachment].length=clampf(rope.pose_length(rope.attachment,at),Rope.MIN_LENGTH,rope.max_length(rope.attachment))
 	PhysicsServer3D.body_set_state(game.player.get_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM,game.player.global_transform)
 
 func key(code: Key, pressed: bool) -> void:
 	var event=InputEventKey.new();event.physical_keycode=code;event.pressed=pressed
 	game.desktop_input.handle(event)
+
+## Cues name ropes that can actually serve the work, not every nearby line.
+func served(id: String, point: Vector3) -> bool:
+	rope._served.clear();rope._prediction_budget=1
+	return rope.serves(id,{"point":point,"allowed":[],"body_hit":false,"depth":.065})
+
+func check_service_prediction() -> void:
+	var neighbour="front_l_10.8"
+	# A connection on top of a flange between two front lines: hidden from below.
+	var top=Vector3(10.05,13.0,26.0)
+	var flange=obstacle(top-Vector3(0,.1,0),Vector3(.6,.2,.8))
+	var shoulder=obstacle(Vector3(9.3,16,24.75),Vector3(.8,.2,.8))
+	await frames(2)
+	expect(not served(FRONT,top) and served(neighbour,top),"A descent stopped above the work is not cued; a clear neighbouring line is")
+	shoulder.free();await frames(2)
+	expect(served(FRONT,top),"With its line clear the same rope serves the flange connection")
+	flange.free()
+	var enclosed=obstacle(top,Vector3(.6,.6,.6))
+	await frames(2)
+	expect(not served(FRONT,top) and not served(neighbour,top),"A connection enclosed by structure is never cued")
+	enclosed.free()
+	# Beyond plumb reach, a capsule sweep reaches a holdable working pose.
+	await frames(2)
+	expect(not served(neighbour,Vector3(10.8,13.0,27.0)),"A fleeting extreme in empty air offers no brace for out-of-reach work")
+	var block=obstacle(Vector3(10.8,12.5,26.9),Vector3(1,1,1.4))
+	var far=Vector3(10.8,13.0,26.9)
+	await frames(2)
+	expect(not rope._sees(Vector3(10.8,13,24.75),{"point":far,"allowed":[],"body_hit":false,"depth":.065}) and served(neighbour,far),"Work beyond plumb reach is cued from the collision-stopped swing/brace pose")
+	var barrier=obstacle(Vector3(10.8,13,25.4),Vector3(2,7,.2))
+	await frames(2)
+	expect(not served(neighbour,far),"A capsule sweep cannot cue work through an intervening wall")
+	barrier.free()
+	rope._served.clear();rope._prediction_budget=0
+	expect(not rope.serves(neighbour,{"point":far,"allowed":[],"body_hit":false,"depth":.065}),"An exhausted per-frame budget defers new predictions")
+	block.free();rope._served.clear();await frames(2)
 
 func tick(count: int=1, delta: float=.1) -> void:
 	for i in count:
@@ -210,10 +252,15 @@ func run() -> void:
 	expect(access.front_closed("lower") and access.front_closed("upper"),"Lower Close preserves the upper front")
 	place(Vector3(3.92,20.6,24.2));await frames(1)
 	expect(rope.on_floor() and aim_panel("upper_open"),"Upper panel stands beside a supported fixed landing and is normally targetable")
-	rope.ropes[FRONT].deployed=true
+	rope.ropes[FRONT].deployed=true;rope.attachment=FRONT
 	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
-	expect(access.blocked_reason==Rope.LEAF_REASON and game.hud.message==Rope.LEAF_REASON and access.channels["20.6"].value==0,"Physical Open reports the named deployed-rope hold through normal interaction")
-	rope.ropes[FRONT].deployed=false;access.physics(1)
+	expect(access.blocked_reason==Rope.LEAF_REASON and game.hud.message==Rope.LEAF_REASON and access.channels["20.6"].value==0 and rope.ropes[FRONT].deployed,"Physical Open reports the named clipped-rope hold through normal interaction")
+	rope.attachment="";access.request("upper_close");access.physics(.1)
+	rope.ropes[FRONT]={"deployed":true,"length":6.0};rope.ropes["front_l_10.8"]={"deployed":true,"length":Rope.MIN_LENGTH}
+	expect(access.request("upper_open").is_empty() and not rope.ropes[FRONT].deployed and not rope.ropes["front_l_10.8"].deployed,"Moving the upper gantry stows every free front rope")
+	access.physics(.1)
+	expect(access.blocked_reason.is_empty() and access.channels["20.6"].value>0,"Stowed ropes no longer hold the leaves")
+	access.physics(1)
 	var parked_crane=CraneOccupancy.new();game.add_child(parked_crane);parked_crane.equipment_id="service_crane";game.equipment.register(parked_crane)
 	expect(aim_panel("upper_close"),"Upper Close button is targetable from its fixed landing")
 	key(KEY_E,true);key(KEY_E,false);access.physics(.1)
@@ -237,9 +284,11 @@ func run() -> void:
 	aim_panel("upper_close");cue.update()
 	expect(cue.visible_controls.has(game.target.node),"Upper work cues the physical Close prerequisite while front ropes are unavailable")
 	key(KEY_E,true);key(KEY_E,false);access.physics(1)
+	rope.physics(0) # The workshop ticks rope fixtures after leaf motion.
 	place(Vector3(9.3,20.6,24.1));await frames(1)
 	game.camera.look_at(rope.fixtures[FRONT].clip.global_position);cue.update()
 	expect(cue.visible_controls.has(rope.fixtures[FRONT].clip),"An upper manual control objective cues a visible rope station through shared guidance")
+	await check_service_prediction()
 
 	expect(not rope.gate_passable(FRONT) and game.player.test_move(game.player.global_transform,Vector3(0,0,.8)),"Unclipped gate is a real collision barrier")
 	expect(aim("clip:"+FRONT),"Camera aim and ordinary reach target the walkway clip control")
@@ -257,7 +306,11 @@ func run() -> void:
 	expect(rope.hanging and absf(game.player.position.y-20.6)<.02,"Stepping beyond support locks height without free fall")
 	expect(not rope.unclip().is_empty() and rope.attached(),"Hanging player cannot unclip")
 	key(KEY_Q,true);key(KEY_Q,false)
-	expect(rope.attached() and game.drops==0 and game.hud.message.contains("Land on a floor"),"Q refuses an airborne unclip without dropping carried parts")
+	expect(rope.attached() and game.drops==0 and game.hud.message.contains("Land on a floor"),"Q with empty hands refuses an airborne unclip")
+	game.hands.full=true
+	key(KEY_Q,true);key(KEY_Q,false)
+	expect(rope.attached() and game.drops==1,"Hanging with something in hand, Q is the hand's drop")
+	game.hands.full=false;game.drops=0
 	rope.attachment=""
 	expect(rope.action_error("clip:"+FRONT).contains("floor"),"Airborne player cannot clip a station")
 	rope.attachment=FRONT
@@ -269,12 +322,10 @@ func run() -> void:
 	var paused_at=game.player.position;await tick(5)
 	expect(game.player.position.is_equal_approx(paused_at),"Paused rope movement is locked despite held input")
 	key(KEY_CTRL,false);game.paused=false
-	var held=game.player.position;await tick(5)
-	expect(game.player.position.distance_to(held)<.02,"Released descender stays locked")
-	key(KEY_D,true);await tick(20);key(KEY_D,false)
-	expect(rope.slack.length()<=Rope.SLACK+.001 and rope.horizontal(game.player.position-rope.anchor(FRONT)).length()<=Rope.SLACK+.01,"WASD slack remains inside the 0.35 metre circle")
-	# Pull-in ray hits supported robot structure, with actual normal collision.
-	place(Vector3(9.3,15,24.75));rope.slack=Vector3.ZERO;await tick()
+	var held: float=rope.ropes[FRONT].length;await tick(5)
+	expect(absf(rope.ropes[FRONT].length-held)<.002,"Released descender locks length while the pendulum remains free")
+	await check_swing(work)
+	place(Vector3(9.3,15,24.75));await tick()
 	game.target=work.controls()[0];game.camera.look_at(game.target.point)
 	key(KEY_E,true);key(KEY_E,false)
 	expect(work.operated==1,"Normal E interaction reaches a nearby connection while hanging")
@@ -282,26 +333,7 @@ func run() -> void:
 	key(KEY_E,true);key(KEY_E,false)
 	expect(work.operated==1,"Hanging never bypasses the normal camera reach limit")
 	work.handle.position.x-=4
-	var robot=obstacle(Vector3(9.3,15.8,26.15),Vector3(1,2,.3));robot.set_meta("assembly_id","chest")
-	game.model.assemblies={"chest":{"parent":"","location":"support:gantry"}}
-	await frames(2)
-	expect(not rope.attach_lanyard(Vector3(9.3,16,26.5),robot).is_empty(),"Pull-in beyond 1.6 metres horizontally is refused")
-	game.camera.look_at(Vector3(9.3,16.4,26));key(KEY_G,true);key(KEY_G,false)
-	expect(rope.pull_in!=null,"Dedicated G key ray clips a supported robot surface")
-	await tick(20)
-	expect(absf(game.player.position.z-25.55)<.03 and game.player.position.y>14.99,"Pull-in holds about 0.45 metres from structure at the working height")
-	var saved: Dictionary=JSON.parse_string(JSON.stringify(rope.capture()))
-	var world={"player":[game.player.position.x,game.player.position.y,game.player.position.z,0.0,0.0]}
-	expect(rope.validate(saved,null,world).is_empty(),"Pulled-in snapshot is valid at rest")
-	rope.apply(saved)
-	expect(JSON.parse_string(JSON.stringify(rope.capture()))==saved,"Pulled-in rope save round-trips")
-	check_save_path("pulled in")
-	key(KEY_G,true);key(KEY_G,false);await tick(20)
-	expect(rope.pull_in==null and rope.horizontal(game.player.position-rope.anchor(FRONT)).length()<.02,"G releases the lanyard and returns toward plumb")
-	var wall=obstacle(Vector3(9.65,15.8,24.75),Vector3(.1,2,1));await frames(2)
-	key(KEY_D,true);await tick(10);key(KEY_D,false)
-	expect(game.player.position.x<9.4,"Slack movement never crosses a solid")
-	wall.free();robot.free();rope.slack=Vector3.ZERO
+	var saved: Dictionary
 	key(KEY_CTRL,true);await tick(90);key(KEY_CTRL,false)
 	expect(not rope.hanging and absf(game.player.position.y-8.4)<.04 and rope.attached(),"Descending lands on an 8.4 metre deck still clipped")
 	var landed=game.player.position
@@ -309,8 +341,6 @@ func run() -> void:
 	expect(EquipmentRegistry.rider_floor(game)==null,"A hanging player above a deck is never carried as its rider")
 	place(landed);await tick()
 
-	key(KEY_G,true);key(KEY_G,false)
-	expect(rope.attached(),"G is reserved for the lanyard and no longer unclips on a floor")
 	key(KEY_Q,true);key(KEY_Q,false)
 	expect(not rope.attached() and rope.ropes[FRONT].deployed and not rope.front_ropes_clear() and game.drops==0,"Q unclips on a floor and leaves a deployed rope interlocking leaves")
 	key(KEY_Q,true);key(KEY_Q,false)
@@ -331,13 +361,10 @@ func run() -> void:
 	access.request("upper_close");access.request("lower_close")
 	# Return pose supplied; capsule drops onto real walkway without teleport in mode.
 	place(Vector3(9.3,20.6,24.2));await tick();expect(rope.unclip().is_empty(),"Top walkway supports landing and unclipping")
+	expect(not rope.ropes[FRONT].deployed,"An end left within a person's height of its davit stows on unclip")
 	expect(access.request("upper_open").is_empty(),"A pending leaf trip is accepted")
 	access.physics(.1)
-	expect(access.moving and access.channels["20.6"].value==0 and access.blocked_reason==Rope.LEAF_REASON,"Leaf motion pauses with the named recall reason")
-	# Free ropes must remain recallable while the access trip is waiting.
-	expect(aim("recall:"+FRONT) and rope.request("recall:"+FRONT).is_empty(),"Station reel recalls a free line while leaves wait")
-	access.physics(.1)
-	expect(access.blocked_reason.contains("Step off") and access.channels["20.6"].value==0,"Recalling the rope still waits for its unroped rider to leave")
+	expect(access.blocked_reason.contains("Step off") and access.channels["20.6"].value==0,"The stowed rope's leaf trip still waits for its unroped rider to leave")
 	place(Vector3(0,0,0));await frames(1)
 	access.physics(1)
 	expect(rope.front_ropes_clear() and not access.moving and access.channels["20.6"].value==1,"Recalled ropes release the pending leaf motion")
@@ -374,15 +401,14 @@ func run() -> void:
 	rope.unclip()
 	expect(rope.travel_error("work",.3,.4).is_empty(),"Unclipping releases the platform travel guard")
 	var valid: Dictionary=rope.capture()
-	for corrupt in ["station","length","nan","stowed","pull","slack","identity"]:
+	for corrupt in ["station","length","nan","stowed","version","identity"]:
 		var invalid=valid.duplicate(true)
 		match corrupt:
 			"station":invalid.attachment="missing"
 			"length":invalid.ropes[REAR].length=999
 			"nan":invalid.ropes[REAR].length=NAN
 			"stowed":invalid.attachment=FRONT
-			"pull":invalid.pull_in=[1,2,3]
-			"slack":invalid.slack=[2,0,0]
+			"version":invalid.version=1
 			"identity":invalid.ropes.erase(FRONT)
 		expect(not rope.validate(invalid).is_empty(),"Invalid snapshot rejected: "+corrupt)
 	game.hud.browser.free();game.free();await frames(1)
@@ -390,11 +416,111 @@ func run() -> void:
 	print("ROPE_ACCESS ","PASS " if passed else "FAIL ",checks.size()," checks")
 	quit(0 if passed else 1)
 
+## Real capsule dynamics in free space and against a surface, at supplied poses.
+func check_swing(work: Work) -> void:
+	var origin=Vector3(9.3,11.8,24.75) # nine metre harness radius
+	place(origin);rope.hanging=true;rope.reset_motion()
+	var initial_length: float=rope.ropes[FRONT].length
+	# Holding one direction only leans the bob; range comes from pumping.
+	var held_peak=0.0
+	game.scripted_controls[KEY_D]=true
+	for i in 360:
+		await tick(1,1.0/60)
+		held_peak=maxf(held_peak,rope.horizontal(game.player.position-rope.anchor(FRONT)).length())
+	game.scripted_controls.clear()
+	print("SWING_HOLD peak_6s=",held_peak)
+	expect(held_peak>.3 and held_peak<1.2,"Holding one direction leans and sways but cannot reach the cap")
+	place(origin);rope.reset_swing();rope.reset_motion();await tick(1,1.0/60)
+	var peak=0.0
+	var peak_two=0.0
+	var max_rise=0.0
+	var reached_cap=-1.0
+	for i in 600:
+		# Pump in the direction of motion, reversing after each turning point.
+		var right: bool=rope.swing_velocity.x>=0
+		game.scripted_controls[KEY_D]=right;game.scripted_controls[KEY_A]=not right
+		await tick(1,1.0/60)
+		var offset: float=rope.horizontal(game.player.position-rope.anchor(FRONT)).length()
+		peak=maxf(peak,offset)
+		max_rise=maxf(max_rise,game.player.position.y-origin.y)
+		if i<120:peak_two=maxf(peak_two,offset)
+		if offset>Rope.SWING_CAP-.01 and reached_cap<0:reached_cap=(i+1)/60.0
+		if offset>Rope.SWING_CAP+.002:expect(false,"Swing exceeded cap at tick "+str(i))
+	game.scripted_controls.clear()
+	print("SWING_TUNING peak_2s=",peak_two," peak_10s=",peak," cap_seconds=",reached_cap)
+	expect(peak_two<Rope.SWING_CAP-.1 and peak>Rope.SWING_CAP-.01 and reached_cap>=2.5 and reached_cap<=6,"Pumping with the swing reaches the cap in about a swing, not at once")
+	expect(absf(rope.ropes[FRONT].length-initial_length)<.01 and max_rise>.08,"Swing follows an upward arc at fixed harness radius")
+	var crossings=0
+	var previous=game.player.position.x-origin.x
+	for i in 240:
+		await tick(1,1.0/60)
+		var offset=game.player.position.x-origin.x
+		if offset*previous<0:crossings+=1
+		previous=offset
+	print("SWING_SETTLE offset_4s=",rope.horizontal(game.player.position-origin).length())
+	expect(rope.horizontal(game.player.position-origin).length()<.12 and rope.swing_velocity.length()<.2,"Released swing settles near plumb within four seconds")
+	expect(crossings>0,"Released pendulum overshoots plumb instead of sliding to a stop")
+	place(Vector3(11.8,3,24.75));await tick(240,1.0/60)
+	expect(rope.horizontal(game.player.position-rope.anchor(FRONT)).length()<.12,"A long rope near the ground also settles within four seconds")
+	# Mouse yaw chooses the pumping frame; camera pitch remains free.
+	place(origin);game.player.rotation.y=PI/2;game.camera.rotation.x=.7
+	key(KEY_W,true);await tick(30,1.0/60);key(KEY_W,false)
+	expect(game.player.position.x<origin.x-.05 and absf(game.player.position.z-origin.z)<.01 and is_equal_approx(game.camera.rotation.x,.7),"W pumps along horizontal camera facing without taking over mouse look")
+	game.player.rotation.y=0;game.camera.rotation=Vector3.ZERO
+	# Change length at a nonzero angle from rest: a tap follows that radius.
+	place(origin+Vector3(1.5,0,0));rope.reset_motion()
+	for code in [KEY_SPACE,KEY_CTRL]:
+		var before: Vector3=game.player.position
+		var normal=(before+Vector3.UP*Rope.HARNESS-rope.anchor(FRONT)).normalized()
+		var length: float=rope.ropes[FRONT].length
+		key(code,true);await tick(1,.05);key(code,false)
+		var after=(game.player.position+Vector3.UP*Rope.HARNESS-rope.anchor(FRONT)).normalized()
+		expect(absf(absf(rope.ropes[FRONT].length-length)-.03)<.003 and after.distance_to(normal)<.01 and game.player.position.distance_to(before)<.05,"Mid-swing rappel tap changes length along the same angle without a jump: "+str(code))
+	key(KEY_D,true);await tick(12,1.0/60)
+	var frozen: Vector3=game.player.position
+	var speed: Vector3=rope.swing_velocity
+	game.paused=true;await tick(6);game.paused=false
+	expect(game.player.position.is_equal_approx(frozen) and rope.swing_velocity.is_equal_approx(speed),"Pause freezes swing position and momentum")
+	var modal=RefCounted.new();game.desktop_input.push_modal(modal);await tick(6);game.desktop_input.pop_modal(modal)
+	expect(game.player.position.is_equal_approx(frozen),"Modal input freezes swinging")
+	key(KEY_D,false)
+	var saved: Dictionary=JSON.parse_string(JSON.stringify(rope.capture()))
+	var world={"player":[frozen.x,frozen.y,frozen.z,0.0,0.0]}
+	expect(saved.version==2 and rope.validate(saved,null,world).is_empty() and speed.length()>.1,"New snapshot validates a swing pose without serializing velocity")
+	rope.apply(saved)
+	expect(rope.swing_velocity.is_zero_approx() and game.player.position.is_equal_approx(frozen) and JSON.parse_string(JSON.stringify(rope.capture()))==saved,"Swing restore keeps the saved position at rest")
+	check_save_path("swing")
+	var invalid=world.duplicate(true);invalid.player[0]=rope.anchor(FRONT).x+Rope.SWING_CAP+.2
+	expect(not rope.validate(saved,null,invalid).is_empty(),"Snapshot rejects a player outside the swing envelope")
+	# First contact must stop inward velocity; holding the same direction pins
+	# the capsule so normal E/placement need no timing at the swing extreme.
+	place(origin);rope.reset_motion()
+	# Within a held lean; a farther surface needs pumping first.
+	var wall=obstacle(Vector3(10.0,12.7,24.75),Vector3(.2,6,4))
+	await frames(2)
+	key(KEY_D,true);await tick(120,1.0/60)
+	var braced: Vector3=game.player.position
+	expect(braced.x>9.6 and braced.x<9.641 and rope.swing_velocity.is_zero_approx() and not rope.brace_normal.is_zero_approx(),"Surface contact stops inward motion without penetrating and establishes a brace")
+	await tick(60,1.0/60)
+	expect(game.player.position.distance_to(braced)<.001,"Holding into the surface pins the working pose")
+	var handle_at=work.handle.position
+	work.handle.position=braced+Vector3(.15,1.2,.6)
+	game.target=work.controls()[0];game.camera.look_at(game.target.point)
+	key(KEY_E,true);key(KEY_E,false);await tick(20,1.0/60)
+	expect(work.operated==1 and game.player.position.distance_to(braced)<.001,"Normal E interaction works from a held brace without timing the swing")
+	work.handle.position=handle_at;work.operated=0
+	key(KEY_D,false);await tick(60,1.0/60)
+	expect(game.player.position.x<braced.x-(braced.x-origin.x)/3.0 and rope.brace_normal.is_zero_approx(),"Releasing the brace swings back toward plumb")
+	key(KEY_D,true);await tick(120,1.0/60)
+	var pinned: Vector3=game.player.position
+	wall.free();await frames(2);await tick(60,1.0/60);key(KEY_D,false)
+	expect(rope.brace_normal.is_zero_approx() and game.player.position.distance_to(pinned)>.01,"Removing a brace surface releases the player instead of pinning empty air")
+	place(origin);rope.reset_motion()
+
 func check_acceleration() -> void:
 	var original: Vector3=game.player.position
-	var original_slack: Vector3=rope.slack
 	for code in [KEY_CTRL,KEY_SPACE]:
-		place(Vector3(9.3,16,24.75));rope.slack=Vector3.ZERO;rope.reset_motion();await tick()
+		place(Vector3(9.3,16,24.75));rope.reset_motion();await tick()
 		var start=game.player.position.y
 		key(code,true);await tick();key(code,false)
 		var tap=absf(game.player.position.y-start)
@@ -425,7 +551,7 @@ func check_acceleration() -> void:
 	var saved: Dictionary=rope.capture();rope.apply(saved)
 	start=game.player.position.y;await tick();key(KEY_CTRL,false);await tick()
 	expect(absf(start-game.player.position.y-.06)<.003,"Reloading a rope snapshot restarts at precision speed")
-	place(original);rope.slack=original_slack;rope.reset_motion();await tick()
+	place(original);rope.reset_motion();await tick()
 
 func check_save_path(label: String) -> void:
 	var save=Save.new(game,"user://rope-access-test.json")
@@ -433,7 +559,7 @@ func check_save_path(label: String) -> void:
 	var snapshot: Dictionary=JSON.parse_string(JSON.stringify(save.snapshot()))
 	expect(save._check(snapshot).is_empty() and Vector3(snapshot.player[0],snapshot.player[1],snapshot.player[2]).distance_to(game.player.position)<.001,"Save uses current hanging pose instead of stale rider pose: "+label)
 	var expected: Vector3=game.player.position
-	place(Vector3(0,0,0));rope.attachment="";rope.pull_in=null;rope.hanging=false
+	place(Vector3(0,0,0));rope.attachment="";rope.hanging=false
 	game.equipment.apply_saved(snapshot.equipment)
 	save._player=snapshot.player;save.place_player()
 	expect(rope.attached() and game.player.position.distance_to(expected)<.001,"Equipment and player restore preserve attachment: "+label)

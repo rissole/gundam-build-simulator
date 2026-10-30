@@ -1,6 +1,6 @@
 # Workshop: current state
 
-Updated 2026-10-28. Read this before continuing workshop development. Keep it short:
+Updated 2026-10-30. Read this before continuing workshop development. Keep it short:
 current state, active rules and open decisions. Record player findings in the
 [playtest checklist](robot-workshop-playtest-checklist.md). When a piece of
 work finishes, move its narrative and evidence into [history/](history/) and leave
@@ -10,6 +10,22 @@ a one-line summary here. Earlier versions of this file are
 last version before consolidation.
 
 ## Where things stand
+
+- **Rope swinging (2026-10-30):** **Player accepted** (“love it”) after two retunes (held key only leans; 1.5 m cap). WASD pendulum pumping and held surface bracing
+  replace the lanyard/G key; 1.5 m cap (player retune), free look and mid-swing rappelling. Cue
+  prediction uses plumb or braceable capsule sweeps; centre front ropes stay
+  uncued for waist washers. Snapshots v2 restore at rest. All 53 routine cases
+  pass (54.383 s); feel/player acceptance remain open in the
+  [swinging checklist](robot-workshop-playtest-checklist.md#rope-swinging--2026-10-30).
+
+- **Rope cues predict service (2026-10-30):** the manual glows only ropes whose
+  descent reaches the work and which then see it within reach, using the shared
+  sight check (swing/brace prediction now supersedes pull-in). Fixes the chest
+  waist-washer confusion.
+  Follow-up: ropes stow at the top and when the upper gantry moves; crane
+  connectors release per corner; Q drops while hanging. 53 routine cases pass;
+  player recheck pending. Swing replacement is recorded above.
+  [Finding and recheck](robot-workshop-playtest-checklist.md#chest-waist-hardware-and-rope-cues--2026-10-30).
 
 - **Coplanar repairs (2026-10-28):** visible joints in the cassette, rope
   access, gantry supports, lift guides and mobile platform no longer report
@@ -282,7 +298,8 @@ last version before consolidation.
 
 **Gantry v2 (2026-10-27; merge into main approved):** developed on `gantry-v2`, worktree
 `/private/tmp/gantry-v2`: 20.6 m rope walkways, relocated lifts, collision-resolved
-rope/lanyard work, physical upper-leaf controls and crossing-based crane routes.
+rope work (now swinging/bracing), physical upper-leaf controls and crossing-based
+crane routes.
 The low hip frame and 8.4 m work remain. [Implementation and mechanical evidence](gantry-v2/overhead-access.md)
 are separate from the [pending player recheck](robot-workshop-playtest-checklist.md#gantry-v2-rope-access--2026-10-27).
 The user explicitly approved merging into main after the docking renderer fix.
@@ -418,8 +435,8 @@ checks; retain the broader playtest obligations below.
   [archived](history/leg-workshop-m3-plan.md#deferred-reverse-investigation). It is
   not required work.
 - A later PDA could reduce console walks; how it is acquired and unlocked is open.
-- Out of scope for now: detailed component internals, finished art, loose-chain or
-  swing physics, detailed Blender leg assets, powered mechanisms, armor, more robot
+- Out of scope for now: detailed component internals, finished art, loose-chain
+  physics, detailed Blender leg assets, powered mechanisms, armor, more robot
   branches and AR.
 
 ## Human checkpoints

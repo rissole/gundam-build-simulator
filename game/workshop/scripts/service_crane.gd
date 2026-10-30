@@ -397,7 +397,7 @@ func action_error(action: String) -> String:
 			if config.spec.has("source_equipment"):
 				var support_error: String=game.equipment.get_equipment(config.spec.source_equipment).release_error(uid)
 				if not support_error.is_empty():return support_error
-			if _installed() and not secured():return _retention_block(false)
+			if _installed() and not secured() and not _end_retained(id):return _retention_block(false)
 			var braces=game.equipment.get_equipment("joint_restraints")
 			if braces!=null and _installed() and load_owner in ["left_leg","right_leg"]:
 				var brace_error: String=braces.required_error(load_owner,secured_milestone)
@@ -553,6 +553,26 @@ func hardware_count(model: AssemblyModel = null) -> int:
 	for sid in fastener_slots:
 		if not m.assemblies[load_owner].slots[sid].is_empty():count += 1
 	return count
+
+## Fastener slots belong to their nearest lifting point. Before the load is
+## secured, a connector may come off once its own hardware is in, while
+## another connector still holds; guided and fixture supports keep their rule.
+func _end_retained(end_id: String) -> bool:
+	if _guide()!=null or not receiver_support.is_empty() or fastener_slots.is_empty() or attached_count()<=1:return false
+	var own: String=endpoints[end_id].point
+	if not POINT_IDS.has(own):return false
+	var owned=false
+	for sid in fastener_slots:
+		var at: Vector3=_fastener_position(sid)
+		var nearest=""
+		for point in POINT_IDS:
+			if nearest.is_empty() or at.distance_to(point_position(point))<at.distance_to(point_position(nearest)):nearest=point
+		if nearest!=own:continue
+		if str(game.model.assemblies[load_owner].slots[sid]).is_empty():return false
+		owned=true
+	return owned
+
+func _fastener_position(sid: String) -> Vector3:return game.components.slot_point(load_owner,sid)
 
 func secured(model: AssemblyModel = null) -> bool:
 	var m: AssemblyModel = game.model if model == null else model
