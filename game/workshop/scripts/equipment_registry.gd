@@ -7,8 +7,10 @@ const Codec = preload("res://scripts/pose_codec.gd")
 const Sweep = preload("res://scripts/motion_sweep.gd")
 const Motion = preload("res://scripts/equipment_motion.gd")
 var _deck_cargo = preload("res://scripts/loose_deck_cargo.gd").new()
-## How far above a deck a hopping player still counts as riding it.
-const RIDE_HOP = 0.6
+## How far above a deck a jumping player still counts as riding it. A full jump
+## (JUMP_SPEED 5.2 m/s against 14 m/s² gravity) peaks at 0.97 m; dropping the rider
+## any lower would make their own lift see them as an intruder and hold mid-shaft.
+const RIDE_HOP = 1.05
 var _items: Array = []
 ## Each machine's capture at its most recent stop (or first tick). A save uses it
 ## for a machine that is still moving, so motion is never saved halfway.

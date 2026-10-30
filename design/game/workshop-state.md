@@ -11,6 +11,11 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Jumping on elevators (2026-10-30):** jumps no longer make a lift hold
+  mid-shaft. The rider check reaches 1.05 m (a full jump), and lifts reserve an
+  airborne rider's head. 8 affected routine suites pass. **Player verified.**
+  [Finding and recheck](robot-workshop-playtest-checklist.md#jumping-on-the-elevators--2026-10-30).
+
 - **Rope swinging (2026-10-30):** **Player accepted** (“love it”) after two retunes (held key only leans; 1.5 m cap). WASD pendulum pumping and held surface bracing
   replace the lanyard/G key; 1.5 m cap (player retune), free look and mid-swing rappelling. Cue
   prediction uses plumb or braceable capsule sweeps; centre front ropes stay

@@ -14,6 +14,7 @@ class Harness extends Node3D:
 	var components: Node
 	var paused = false
 	var lift: Node3D
+	var jump = false
 	var equipment = EquipmentRegistry.new()
 	func material(color: Color, _metal = 0.0) -> StandardMaterial3D:
 		var mat = StandardMaterial3D.new()
@@ -30,7 +31,10 @@ class Harness extends Node3D:
 		return mesh
 	func _physics_process(delta: float) -> void:
 		if not is_instance_valid(lift):return
-		player.velocity.y = -0.1 if player.is_on_floor() else player.velocity.y-14*delta
+		# Same jump and gravity as the workshop player.
+		if jump and player.is_on_floor():player.velocity.y = 5.2
+		else:player.velocity.y = -0.1 if player.is_on_floor() else player.velocity.y-14*delta
+		jump = false
 		player.move_and_slide()
 		# Match the workshop: player collision first, then shared rider transport.
 		equipment.physics(delta)
@@ -181,6 +185,33 @@ func run() -> void:
 	expect(lift.request("ground").is_empty(),"Ground call selects baseline from highest stop")
 	await frames(60)
 	expect(absf(lift.height-0.15)<0.001 and absf(game.player.position.y-0.15)<0.06 and lift.gate.disabled,"Full-height return preserves rider and opens entrance")
+	expect(lift.request("up").is_empty(),"Jumping rider sends the car up")
+	var jumps = 0
+	var hold = ""
+	for tick in range(100):
+		if game.player.is_on_floor() and lift.moving:
+			game.jump = true
+			jumps += 1
+		await frames(1)
+		if not lift.blocked_reason.is_empty():hold = lift.blocked_reason
+	expect(jumps >= 2 and hold.is_empty() and not lift.moving and is_equal_approx(lift.height,1.2) and absf(game.player.position.y-1.2)<0.06,"Repeated jumps keep the rider a passenger; the car never holds (%d jumps, '%s')" % [jumps,hold])
+	var low_ceiling = obstacle(Vector3(game.player.position.x,3.75,game.player.position.z),Vector3(1,0.1,1))
+	await frames(3)
+	expect(lift.request("up").is_empty(),"Clear standing headroom lets the car start")
+	game.jump = true
+	var intrusion = 0.0
+	var held_airborne = false
+	for tick in range(90):
+		await frames(1)
+		intrusion = maxf(intrusion,game.player.position.y+col.position.y+capsule.height/2-3.7)
+		held_airborne = held_airborne or (not game.player.is_on_floor() and not lift.blocked_reason.is_empty())
+	# Standing headroom alone would let the car rise under the airborne head.
+	expect(held_airborne and intrusion < 0.005 and lift.moving and not lift.blocked_reason.is_empty(),"The car holds for a jumping rider's head below an overhead solid (%.3f m)" % intrusion)
+	low_ceiling.queue_free()
+	await frames(3)
+	expect(lift.request("ground").is_empty(),"Held car returns after the jump test")
+	await until_held()
+	expect(not lift.moving and is_equal_approx(lift.height,0.15),"Car is back at the ground for the hand-load checks")
 	var own_control = StaticBody3D.new()
 	lift.deck.add_child(own_control)
 	var control_col = CollisionShape3D.new()

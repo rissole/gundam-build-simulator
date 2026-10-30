@@ -2,6 +2,28 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Jumping on the elevators — 2026-10-30
+
+- Player request: “you simply must be able to jump while on the elevators, my
+  players need to stim!”
+- **Player verified (2026-10-30):** “good job, verified.”
+- Diagnosis: Space already jumped (~0.97 m), but the rider check reached only
+  0.6 m above a deck. Near each apex the left/right lift lost its rider, saw the
+  player in its shaft and held with “Step back out of the lift doorway.” A probe
+  of repeated jumps on a 4 s onboard ride covered 1.16 m instead of 3 m.
+- Fix: the shared rider check now reaches 1.05 m, a full jump plus margin. It applies to every carrier:
+  lifts, the scissor platform and gantry decks. A lift also reserves the jumping
+  rider's current height above the deck in its overhead sweep, so it waits
+  rather than carry an airborne head into a solid (relevant for fast calls).
+- Evidence: real-workshop probe (both lifts; onboard up/down and calls) shows
+  no holds and on-time arrivals while jumping repeatedly. `access_lift_test`
+  gains two checks; each fails on the old code. Eight affected routine suites
+  pass (740 checks). No rendered review.
+- [x] Spam-jump on both lifts riding up, down and on a landing call: the car
+  never pauses or shows a waiting message, and landings feel natural.
+- [ ] Jumping near the top stop under the crane bridge: any brief hold reads
+  sensibly, or say if it should behave differently.
+
 ## Rope swinging — 2026-10-30
 
 **Player accepted (2026-10-30):** “it feels good” after the hold retune, then

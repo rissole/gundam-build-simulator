@@ -329,9 +329,11 @@ func _sweep_error(from: float, to: float) -> String:
 	var current_rider = rider()
 	var clearance = 1.12
 	if current_rider != null:
+		# A jumping rider is carried at their height above the deck; reserve it too.
+		var lifted = maxf(0.0,current_rider.global_position.y-deck.global_position.y)
 		for child in current_rider.get_children():
 			if child is CollisionShape3D and not child.disabled:
-				clearance = maxf(clearance,child.position.y+child.shape.get_debug_mesh().get_aabb().end.y+0.06)
+				clearance = maxf(clearance,lifted+child.position.y+child.shape.get_debug_mesh().get_aabb().end.y+0.06)
 	var low = minf(from,to)-THICKNESS+0.008
 	var high = maxf(from,to)+clearance
 	var box = BoxShape3D.new()
