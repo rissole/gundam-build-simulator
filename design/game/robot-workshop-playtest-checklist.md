@@ -38,8 +38,26 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
     shell), 0–10 of about 430.
   - Head: M24×160 ×4 and M12×100 /001, /003 behind the baseplate; M12×160 ×4
     behind the head top; sensor M10×160 ×2 behind the mask. 0–8 of about 450.
-- [ ] **Narrow, review:** chest services 1–2 (PV-320 shell, 10%); arm drive_1_b
-  keepers (11%); head M12×100 /002, /004 (6%).
+- [x] **Buried targets resolved (same day): audit now 308 targets, 0 buried.**
+  - Shoulders (`tools/author_shoulders.py`): washers and bolts aim at the bore
+    mouth above the ring face, pins beyond their head, ring halves at the outer rim
+    (their bounds centre lay inside the ball), the brace at its crossbar. The
+    brace and drive cartridges get per-primitive collision (boxes and octagonal
+    prisms), like the shoulder harness: their single bounds box filled the open
+    frame and buried every keeper and pin.
+  - Pauldron bolts aim at the head, which faces the open front or rear
+    (`target_offset`, `tools/author_pauldrons.py`).
+  - Head bolts aim at their head face (`tools/author_head.py`): M24 neck, M12 side,
+    top and crown, and the M8/M10 sensor-stage bolts.
+  - 55 routine suites pass (55.0 s); generator byte check passes. Not checked in
+    game; no rendered review.
+- [ ] **Narrow (10), review in play:** pauldron bolts 2–4 left and 3 right (11–15%,
+  a tight pocket between shell, lugs and arm boss; every better-scoring spot is
+  outside the shell wall); arm drive_1_b and drive_2_b keepers (12–14%); chest
+  services 1–2 (10%).
+- [ ] **Unaudited:** the crown's retention bolts, because the sequence stops
+  before them (next item). They use the same head-face target as the other M12
+  bolts.
 - [x] **Backpack lower latches and service covers (narrow, about 11%):** aim
   point inside their own lever or cover, the strut family. Fixed the same way
   (own body see-through). Probe on the closed pack: latches 493/500 and 482/491,
@@ -47,10 +65,11 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
   the audit itself was not rerun.
 - [ ] In game: close the backpack, engage both lower latches, close both service
   covers.
-- [ ] **Not audit-caused:** the shared sequence stops in head sensor fitting
-  (`service_crane up` waits for "wing left 20 6 floorSolid"). Plain
-  `run_to("complete")` stops at the same point, so the crown and `complete`
-  stage are unaudited until it is fixed.
+- [ ] **Not audit-caused:** the shared sequence stops in head sensor fitting.
+  Lifting the head crown off its store (`head_crown_to_fixture`, `service_crane
+  up`) collides with `wing_left_20.6_floor`, the upper walkway laid out on
+  2026-10-27. Plain `run_to("complete")` stops at the same point. The crown store
+  or its route needs to move; the crown and `complete` stage stay unaudited.
 - [ ] **Unmatched:** `left_lift ground` has no control under that action name.
 
 ## Backpack struts would not extend — 2026-10-31

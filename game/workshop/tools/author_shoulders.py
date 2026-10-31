@@ -27,6 +27,21 @@ def extend(trial, chest, arms, kinds, diagram):
     def link(a, b, radius):
         d = [y-x for x,y in zip(a,b)]; length = math.sqrt(sum(x*x for x in d))
         return tube([(x+y)/2 for x,y in zip(a,b)], radius, 0, length, [x/length for x in d])
+    def profile(shapes):
+        """Solid boxes and octagonal prisms per primitive. A single bounds box
+        fills the open frame of a brace or drive and buries its pins and keepers."""
+        result = []
+        for p in shapes:
+            if p["shape"] == "box":
+                result.append(dict(type="box", position=list(p["center"]), size=list(p["size"]))); continue
+            axis = [1,0,0] if p["axis"] == "x" else list(p["axis"])
+            seed = [0,1,0] if abs(axis[1]) < .9 else [1,0,0]
+            cross = lambda a,b: [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]
+            u = cross(axis,seed); n = math.sqrt(sum(x*x for x in u)); u = [x/n for x in u]; v = cross(axis,u)
+            radius = p["outer"]/math.cos(math.pi/8)
+            result.append(dict(type="convex", points=[[round(p["center"][i]+end*axis[i]*p["length"]/2+radius*(u[i]*math.cos(k*math.pi/4)+v[i]*math.sin(k*math.pi/4)),6)
+                for i in range(3)] for end in (-1,1) for k in range(8)]))
+        return result
     for key, title, carry in [("ring-front","Front keyed ring half","hand"),("ring-rear","Rear relieved ring half","hand"),
             ("washer","M24 shoulder washer","pocket"),("bolt","M24 × 240 shoulder bolt","pocket"),
             ("brace-left","Left keyed neutral service brace","two_hand"),("brace-right","Right keyed neutral service brace","two_hand"),("pin","Ø40 shoulder pin","pocket"),
@@ -43,7 +58,9 @@ def extend(trial, chest, arms, kinds, diagram):
         def source(source_uid, shapes, origin=(0,0,0)):
             for shape in shapes:shape["center"]=[a-b for a,b in zip(shape["center"],origin)]
             trial["sources"][source_uid]=dict(family=source_uid.split("__")[0],position=parent_point(origin),rotation_degrees=rotation,primitives=shapes)
-        def part(name, key, shapes, requires, origin=(0,0,0), structural=True):
+        # `target` is the exposed aim point in the part frame. The default
+        # bounds centre of nested hardware lies inside its neighbours.
+        def part(name, key, shapes, requires, origin=(0,0,0), structural=True, target=None):
             serial[key]=serial.get(key,0)+1
             source_uid="SH-"+key.upper()+f"__{serial[key]:03}"
             source(source_uid,shapes,origin)
@@ -51,6 +68,7 @@ def extend(trial, chest, arms, kinds, diagram):
             trial["parts"].append(dict(instance_id=source_uid,source_id=source_uid,part_id=kinds["sh-"+key]["family"],kind="sh-"+key,location="bin"))
             slots[sid]=dict(accepts="sh-"+key,pose_source=source_uid,requires=list(requires),label=kinds["sh-"+key]["title"],access_policy="mounted")
             if structural:slots[sid]["undo_requires_support"]="crane_rigging"
+            if target is not None:slots[sid]["target_offset"]=list(target)
             return sid
         seat="SH-"+side.upper()+"-SEAT__001"
         source(seat,[dict(shape="sphere",center=[0,0,0],radius=.34)])
@@ -69,12 +87,15 @@ def extend(trial, chest, arms, kinds, diagram):
                 shapes.append(dict(shape="ring_plate",center=[0,0,(low+high)/2],axis=[0,0,1],outer=.48,
                     inner=max(.24,math.sqrt(.345**2-low**2)),length=.01,start_degrees=start,end_degrees=end,holes=holes))
             if front:shapes += [box([0,e,.12],[.048,.026,.018]) for e in [-.45,.45]]
-            rings.append(part("ring_"+("front" if front else "rear"),"ring-front" if front else "ring-rear",shapes,[uid],(0,0,.17)))
+            # Aim at the outer rim: the half ring's bounds centre lies in the ball.
+            rim=sign if front else -sign
+            rings.append(part("ring_"+("front" if front else "rear"),"ring-front" if front else "ring-rear",shapes,[uid],(0,0,.17),target=(rim*.50,0,0)))
         retention=rings.copy()
         for n,theta in enumerate([45,135,225,315],1):
             a=math.radians(theta);f=sign*.405*math.sin(a);e=.405*math.cos(a)
-            w=part("washer_"+str(n),"washer",[tube([f,e,.205],.024,.0128,.006,[0,0,1])],rings,(f,e,.205))
-            b=part("bolt_"+str(n),"bolt",[tube([f,e,.088],.012,0,.24,[0,0,1]),tube([f,e,.220],.018,0,.024,[0,0,1])],[w],(f,e,.208))
+            # Washer and bolt aim at the bore mouth, clear of the ring's face.
+            w=part("washer_"+str(n),"washer",[tube([f,e,.205],.024,.0128,.006,[0,0,1])],rings,(f,e,.205),target=(0,0,.10))
+            b=part("bolt_"+str(n),"bolt",[tube([f,e,.088],.012,0,.24,[0,0,1]),tube([f,e,.220],.018,0,.024,[0,0,1])],[w],(f,e,.208),target=(0,0,.10))
             retention += [w,b]
         # Moving keys and fixed tabs belong to their actual prepared bodies.
         bridge=trial["sources"]["CH-"+side.upper()+"-DRIVE-BRIDGE__001"]["primitives"]
@@ -98,10 +119,12 @@ def extend(trial, chest, arms, kinds, diagram):
                       link([key[0],key[1],.97],[key[0],.16,.97],.020)]
             brace += [box([key[0]+d,key[1],.995],[.03,.06,.06]) for d in [-.055,.055]]
         brace.append(link([keys[0][0],.16,.97],[keys[1][0],.16,.97],.025))
-        br=part("brace","brace-"+side,brace,retention,(0,0,.85));bracing=[br]
+        # Aim at the crossbar; the bounds centre lies inside the ball beam.
+        br=part("brace","brace-"+side,brace,retention,(0,0,.85),target=(0,.16,.12));bracing=[br]
+        slots[br]["collision_shapes"]=profile(brace)
         def pin_pair(name,eye,direction,head,requires):
             f,e,t=eye;h=f+direction*head
-            p=part(name+"_pin","pin",[tube([h-direction*.11,e,t],.020,0,.22),tube([h,e,t],.032,0,.014)],requires,(h,e,t))
+            p=part(name+"_pin","pin",[tube([h-direction*.11,e,t],.020,0,.22),tube([h,e,t],.032,0,.014)],requires,(h,e,t),target=(direction*.09,0,0))
             k=part(name+"_keeper","keeper",[tube([h-direction*.205,e,t],.030,.0202,.008)],[p],(h-direction*.205,e,t))
             return [p,k]
         for n,key in enumerate(keys,1):bracing += pin_pair("brace_"+str(n),key,1 if key[0]>0 else -1,.10,[br])
@@ -118,6 +141,7 @@ def extend(trial, chest, arms, kinds, diagram):
             shapes.append(link([B[0]-.055,B[1],B[2]-.09],[B[0]+.055,B[1],B[2]-.09],.025))
             shapes += [box([B[0]+d,B[1],B[2]-.06],[.03,.06,.08]) for d in [-.055,.055]]
             drive=part("drive_"+str(n),"drive",shapes,bracing,[(x+y)/2 for x,y in zip(A,B)])
+            slots[drive]["collision_shapes"]=profile(shapes)
             ids=[drive]+pin_pair("drive_"+str(n)+"_a",A,sign if theta==180 else (1 if A[0]>0 else -1),.10,[drive])
             ids+=pin_pair("drive_"+str(n)+"_b",B,1 if B[0]>0 else -1,.12,[drive]);drives+=ids;drive_pages.append(ids)
         # Isolated service couplings and a bounded protected-run source proxy.

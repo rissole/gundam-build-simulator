@@ -170,11 +170,14 @@ def extend(trial,chest,kinds,layout,diagram):
         ("hd-m12-100","HD-M12100","M12 × 100 side bolt"),("hd-m12-160","HD-M12160","M12 × 160 top bolt"),
         ("hd-loom","HD-LOOM","Keyed central power/data loom and strain relief")]:
         kinds[key]=dict(family=family,variant=key,title=family+" · "+title,short_title=title,carry_class="pocket")
-    def item(kind,uid,at,shapes,requires):
+    # `target` aims a bolt at its exposed head; the shank's bounds centre lies
+    # inside the part it passes through.
+    def item(kind,uid,at,shapes,requires,target=None):
         source(uid,[at[0],round(at[1]+4.10,6),at[2]],shapes)
         trial["parts"].append(dict(instance_id=uid,source_id=uid,part_id=kinds[kind]["family"],kind=kind,location="bin"))
         sid=uid.lower().replace("__","/")
         slots[sid]=dict(accepts=kind,pose_source=uid,requires=requires,label=kinds[kind]["title"],access_policy="mounted",undo_requires_support="crane_rigging")
+        if target is not None:slots[sid]["target_offset"]=list(target)
         return sid
     crane, fixture = "service_crane", "module_supports"
     def operate(machine, command, task=None):
@@ -302,7 +305,7 @@ def extend(trial,chest,kinds,layout,diagram):
         if uid=="head_baseplate":
             for n,(x,y) in enumerate([(x,y) for x in [-.27,.27] for y in [-.27,.27]],1):
                 washer=item("hd-w24",f"HD-W24__{n:03}",point(x,y,15.522),[tube([0,0,0],.025,.0125,.004)],[uid]);hardware.append(washer)
-                hardware.append(item("hd-m24-160",f"HD-M24160__{n:03}",point(x,y,15.526),[tube([0,-.08,0],.012,0,.16),tube([0,.016,0],.021,0,.032)],[washer]))
+                hardware.append(item("hd-m24-160",f"HD-M24160__{n:03}",point(x,y,15.526),[tube([0,-.08,0],.012,0,.16),tube([0,.016,0],.021,0,.032)],[washer],target=[0,.04,0]))
         else:
             positions=([(x,.66,17.28) for x in [-.20,.20]] if uid=="head_crown" else [( -.66 if uid=="head_left" else .66,.52,z) for z in [15.80,16.18]] if uid!="head_top" else [(x,y,17.02) for x in [-.66,.66] for y in [.68,-.90]])
             kind="hd-m12-160" if uid=="head_top"  else "hd-m12-100";length=.16 if uid=="head_top" else .10
@@ -310,7 +313,7 @@ def extend(trial,chest,kinds,layout,diagram):
             for n,(x,y,z) in enumerate(positions,start):
                 direction=1 if y>0 else -1
                 hardware.append(item(kind,f"{kinds[kind]['family']}__{n:03}",point(x,y,z),
-                    [tube([0,0,direction*length/2],.006,0,length,[0,0,1]),tube([0,0,-direction*.006],.010,0,.012,[0,0,1])],[uid]))
+                    [tube([0,0,direction*length/2],.006,0,length,[0,0,1]),tube([0,0,-direction*.006],.010,0,.012,[0,0,1])],[uid],target=[0,0,-direction*.03]))
         retained[uid]=[uid]+hardware;slots[uid]["secured_by"]=hardware.copy()
         chest["milestones"][uid+"_retained"]=retained[uid]
         retain_note=("Descend a workshop-side rope from the left lift's ROPE ACCESS stop; the rear pair uses the deeper tool lane." if uid=="head_baseplate" else
@@ -356,13 +359,14 @@ def hand_pieces(trial,chest,kinds,diagram,source,page):
         ("hd-m10-80","HD-M10080","M10 × 80 faceplate bolt","pocket"),
         ("hd-m10-160","HD-M10160","M10 × 160 mask bolt","pocket")]:
         kinds[key]=dict(family=family,variant=key,title=family+" · "+title,short_title=title,carry_class=carry)
-    def add(kind,uid,at,shapes,requires,sid=None,captive=False):
+    def add(kind,uid,at,shapes,requires,sid=None,captive=False,target=None):
         source(uid,[at[0],round(at[1]+4.10,6),at[2]],shapes)
         support="captive_"+uid.lower()
         trial["parts"].append(dict(instance_id=uid,source_id=uid,part_id=kinds[kind]["family"],kind=kind,
             location="support:"+support if captive else "bin"))
         sid=sid or uid.lower().replace("__","/")
         slots[sid]=dict(accepts=kind,pose_source=uid,requires=list(requires),label=kinds[kind]["title"],access_policy="mounted")
+        if target is not None:slots[sid]["target_offset"]=list(target)
         if captive:
             trial["supports"][support]=dict(parts=[kind],item_ids=[uid])
             slots[sid].update(support_required=True,source_supports=[support])
@@ -371,7 +375,7 @@ def hand_pieces(trial,chest,kinds,diagram,source,page):
         return sid
     def bolt(kind,uid,at,length,requires,captive=False):
         return add(kind,uid,point(*at),[tube([0,0,length/2],.004 if captive else .005,0,length,[0,0,1]),
-            tube([0,0,.004 if kind=="hd-m10-80" else -.006],.007 if captive else .009,0,.012,[0,0,1])],requires,captive=captive)
+            tube([0,0,.004 if kind=="hd-m10-80" else -.006],.007 if captive else .009,0,.012,[0,0,1])],requires,captive=captive,target=[0,0,-.03])
     # Identical camera bodies/lenses and two M6 screws per supplied module.
     # The compact .32 m-deep carrier fits inside the specified .42 m insertion envelope.
     sensor=perforated([0,1.42,-.20],[1.02,.64,.04],[[x,z-16.82,.04,.05] for x in [-.49,.49] for z in [16.52,17.08]])

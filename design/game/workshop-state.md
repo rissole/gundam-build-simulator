@@ -13,10 +13,11 @@ last version before consolidation.
 
 - **Aim point audit (2026-10-31):** new expensive diagnostic
   `aim_point_audit_test` (about 47 s; run after major changes) checks sight to
-  every staged control and connection fill in its working state. First run:
-  74 buried, all in arm, pauldron and head hardware, plus 10 narrow. Not yet
-  confirmed in game. The shared sequence also stops in head sensor fitting
-  (pre-existing).
+  every staged control and connection fill in its working state. First run
+  found 74 buried (arm, pauldron, head hardware); all resolved with exposed
+  targets and per-primitive brace/drive collision: 0 buried, 10 narrow. 55
+  routine suites pass; not checked in game. Open: the head crown's lift from its
+  store hits the 20.6 m walkway, so staging stops before the crown.
   [Findings](robot-workshop-playtest-checklist.md#aim-point-audit--2026-10-31).
 
 - **Backpack strut controls (2026-10-31):** player could not extend the struts.

@@ -131,6 +131,9 @@ def extend(trial, chest, arms, kinds, layout, diagram):
             trial["parts"].append(dict(instance_id=bolt_uid,source_id=bolt_uid,part_id=kinds[kind]["family"],kind=kind,location="bin"))
             sid=root+"bolt_"+str(n);bolts.append(sid)
             slots[sid]=dict(accepts=kind,pose_source=bolt_uid,requires=[uid],label=kinds[kind]["title"],access_policy="mounted",undo_requires_support="crane_rigging")
+            # Aim at the head, which faces the open front or rear; the shank's
+            # bounds centre lies inside the arm-owned boss.
+            slots[sid]["target_offset"]=[0,0,dz*.02]
         lug_uid="PD-"+side.upper()+"-LUGS__001"
         source(lug_uid,[0,0,0],lugs);context.append(lug_uid)
         # Tight separate proxies preserve the empty cup cavity, never one full box.

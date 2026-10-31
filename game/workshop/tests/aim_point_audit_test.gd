@@ -128,8 +128,10 @@ func part_name(collider: Object, shape: int) -> String:
 
 func finish(elapsed: int) -> void:
 	var passed=checks.all(func(check):return check.passed)
-	var buried:=results.filter(func(r):return r.fraction<BURIED)
-	var narrow:=results.filter(func(r):return r.fraction>=BURIED and r.fraction<NARROW)
+	# Classify on the unrounded fraction, as the checks and AIM NARROW lines do.
+	var share:=func(r):return float(r.seen)/r.clear if r.clear>0 else 0.0
+	var buried:=results.filter(func(r):return share.call(r)<BURIED)
+	var narrow:=results.filter(func(r):return share.call(r)>=BURIED and share.call(r)<NARROW)
 	write_evidence("res://verification/aim-point-audit.json",{"scope":"geometric sight from clear viewpoints within reach of every staged control and connection fill, pelvis to complete; not reachability, foot chapters or magnetic connectors","thresholds":{"buried":BURIED,"narrow":NARROW},"buried":buried,"narrow":narrow,"unmatched_controls":unmatched,"targets":results,"checks":checks})
 	for key in unmatched:print("AIM UNMATCHED ",key," x",unmatched[key])
 	print("AIM SUMMARY %d targets, %d buried, %d narrow, %d unmatched control actions, %.1f s"%[results.size(),buried.size(),narrow.size(),unmatched.size(),elapsed/1000.0])
