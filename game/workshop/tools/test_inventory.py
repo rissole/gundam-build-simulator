@@ -24,6 +24,7 @@ ROUTINE = (
     'manual_diagram_cache_test',
     'manual_completion_test',
     'manual_control_guidance_test',
+    'manual_placement_guidance_test',
     'manual_objectives_test',
     'manual_panel_test',
     'manual_progress_test',

@@ -2,6 +2,37 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Held-part destination glow — 2026-10-31
+
+**Player request:** when holding the correct part for the next manual step, always
+glow where it goes, through walls and geometry, so the player can find it.
+
+**Implemented:** while the held or selected-pocket part matches the tracked step's
+current objective, every empty destination that the recipe would accept now shows
+the part's ghost with a soft amber pulse (1.4 s, fresnel rim, no depth test).
+That covers fit slots, hand-seated assembly mounts and, when holding the step's
+own build, the nearest free preparation station large enough for it.
+Machine-guided seats keep their control cues instead. Reach, sightline and access
+are not checked for the glow; clicking still checks them. Aiming at the
+connection replaces the pulse with the usual steady snap preview (green ready /
+amber distant). `manual_placement_guidance_test` (16 checks) plus six affected
+routine suites pass; a headless probe on the real heel-pad step showed the station
+glow, then four sleeve glows. No rendered review.
+
+**Player feedback, same day:** the first version pulsed green at any distance and
+through obstructions, but green must mean a left click will place the part. The pulse
+is now amber (the existing "not placeable yet" preview colour). Green appears only
+from the aimed snap preview, which already requires reach, a visible connection,
+access and recipe order: the checks the click runs. **Player approved** the
+amber/green revision (2026-10-31).
+
+**Recheck:**
+- [ ] Green appears only when left click places the part; amber everywhere else.
+- [ ] The glow is easy to spot through the gantry, rig and walls without becoming noise.
+- [ ] The amber pulse reads as "goes here", distinct from the steady amber/green snap preview and the gold control cues.
+- [ ] Large bolt sets (4+ glows) and whole-assembly ghosts are not overwhelming.
+- [ ] Open: should the glow fade or stop beyond some distance, or when the part is already in reach?
+
 ## Manual regresses after core rig delivery — 2026-10-31
 
 **Player report:** after lowering the core onto the heavy module rig and

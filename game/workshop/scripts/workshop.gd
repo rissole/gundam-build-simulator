@@ -80,6 +80,7 @@ var ghost: MeshInstance3D
 var ghost_material: StandardMaterial3D
 var ghost_assembly_signature: String = ""
 var manual_control_guidance: Node3D
+var manual_placement_guidance: Node3D
 var interaction_outline: Node3D
 var foot: AnimatableBody3D
 var prep: Node3D
@@ -201,6 +202,9 @@ func _ready() -> void:
 	manual_control_guidance = preload("res://scripts/manual_control_guidance.gd").new()
 	add_child(manual_control_guidance)
 	manual_control_guidance.setup(self)
+	manual_placement_guidance = preload("res://scripts/manual_placement_guidance.gd").new()
+	add_child(manual_placement_guidance)
+	manual_placement_guidance.setup(self)
 	hud = HUD.new()
 	hud.game = self
 	add_child(hud)
@@ -307,6 +311,7 @@ func set_paused(value: bool) -> void:
 	jump_requested = false
 	if value and is_instance_valid(interaction_outline):interaction_outline.clear()
 	if value and is_instance_valid(manual_control_guidance):manual_control_guidance.clear()
+	if value and is_instance_valid(manual_placement_guidance):manual_placement_guidance.clear()
 	rotate_held = false
 	rotation_station = ""
 	last_rotate_tap = -1000
@@ -346,10 +351,12 @@ func _process(_delta: float) -> void:
 	if not started:return
 	if paused or desktop_input.modal_active():
 		manual_control_guidance.clear()
+		manual_placement_guidance.clear()
 		return
 	_update_target()
 	_update_markers()
 	manual_control_guidance.update()
+	manual_placement_guidance.update()
 
 func bind_build_views(scenario: Dictionary) -> void:
 	builds.clear()

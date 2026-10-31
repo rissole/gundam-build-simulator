@@ -1,6 +1,6 @@
 # Workshop: current state
 
-Updated 2026-10-30. Read this before continuing workshop development. Keep it short:
+Updated 2026-10-31. Read this before continuing workshop development. Keep it short:
 current state, active rules and open decisions. Record player findings in the
 [playtest checklist](robot-workshop-playtest-checklist.md). When a piece of
 work finishes, move its narrative and evidence into [history/](history/) and leave
@@ -10,6 +10,14 @@ a one-line summary here. Earlier versions of this file are
 last version before consolidation.
 
 ## Where things stand
+
+- **Held-part destination glow (2026-10-31):** holding a part the tracked
+  objective needs makes its accepted destinations (slots, hand-seated mounts, or a
+  free prep station for the step's own build) pulse amber through geometry. Green
+  is reserved for the aimed snap preview, shown only when left click will place
+  the part (player feedback). Routine suites pass; no rendered review.
+  **Player approved.**
+  [Request and recheck](robot-workshop-playtest-checklist.md#held-part-destination-glow--2026-10-31).
 
 - **Jumping on elevators (2026-10-30):** jumps no longer make a lift hold
   mid-shaft. The rider check reaches 1.05 m (a full jump), and lifts reserve an
