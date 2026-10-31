@@ -1,5 +1,5 @@
 extends "res://tests/kit/harness.gd"
-## Real resolver mappings, retained contours and actual physics sightlines in a
+## Real resolver mappings, retained contours and a real physics obstruction in a
 ## tiny fixture. No workshop construction, walked acceptance or rendered review.
 const Guidance = preload("res://scripts/manual_control_guidance.gd")
 const Objectives = preload("res://scripts/manual_objectives.gd")
@@ -145,6 +145,7 @@ func run() -> void:
 	expect(cue.visible_controls==[node],"Brace metadata contract resolves the actual handle without English parsing")
 	var material=cue.outlines[0].outline_material
 	expect(material.shader.resource_path.ends_with("manual_control_glow.gdshader") and material.next_pass.shader==game.interaction_outline.outline_material.shader and game.interaction_outline.outline_material.next_pass==null,"Control cues glow over a thin contour while pickup focus keeps its plain contour")
+	expect(material.shader.code.contains("depth_test_disabled") and not material.next_pass.shader.code.contains("depth_test_disabled"),"The glow draws through models; only its contour keeps the depth test")
 	var contour=cue.outlines[0].copies[node.get_instance_id()].outline
 	for i in range(120):cue.update()
 	expect(cue.outlines[0].copies[node.get_instance_id()].outline==contour and cue.outlines.all(func(outline):return outline.outline_material==material),"120 stable cue updates reuse contours and one shared material")
@@ -168,7 +169,7 @@ func run() -> void:
 	game.paused=false;cue.update()
 	expect(cue.visible_controls==[node],"Resume retains the tracked objective and restores guidance")
 	node.hide();cue.update();expect(cue.visible_controls.is_empty(),"Hidden handles cannot leave a stale cue")
-	node.show();game.camera.position=Vector3(0,0,Guidance.RANGE);cue.update();expect(cue.visible_controls.is_empty(),"Distant controls have no waypoint-like cue")
+	node.show();game.camera.position=Vector3(0,0,200);cue.update();expect(cue.visible_controls==[node],"A control 200 m away keeps its cue: there is no range limit")
 	game.camera.position=Vector3.ZERO;game.camera.rotation.y=PI;cue.update();expect(cue.visible_controls.is_empty(),"Offscreen controls have no cue")
 	game.camera.rotation.y=0
 	game.interaction_outline.focus(node);cue.update();expect(cue.visible_controls.is_empty(),"Meaningful interaction focus takes priority over guidance")
@@ -176,21 +177,12 @@ func run() -> void:
 	var blocker=StaticBody3D.new();game.add_child(blocker);blocker.position=Vector3(0,0,-1)
 	var shape=CollisionShape3D.new();shape.shape=BoxShape3D.new();blocker.add_child(shape)
 	await frames(2)
-	cue.update();expect(cue.visible_controls.is_empty(),"Real physics obstruction suppresses a fully occluded control")
+	cue.update();expect(cue.visible_controls==[node],"A control behind a real physics obstruction keeps its cue")
 	blocker.queue_free();await frames(2);cue.update()
-	expect(cue.visible_controls==[node],"Removing the obstruction restores the retained cue")
 	game.desktop_input.held={"controller":machine,"action":control.action};cue.update()
 	expect(cue.visible_controls.is_empty(),"The cue rests while E holds its control")
 	game.desktop_input.held={};cue.update()
 	expect(cue.visible_controls==[node],"Letting go restores the cue")
-	# A control that is its own collider (the leg rig's foot support pad).
-	var pad=StaticBody3D.new();game.add_child(pad);pad.position=Vector3(0,0,-2)
-	var pad_shape=CollisionShape3D.new();pad_shape.shape=BoxShape3D.new();pad_shape.shape.size=Vector3(.3,.3,.3);pad.add_child(pad_shape)
-	await frames(2)
-	cue.update();expect(cue.visible_controls.is_empty(),"A control's own solid hides its centre without sight_self")
-	control.allowed=[pad];control.sight_self=true;cue.update()
-	expect(cue.visible_controls==[node],"A sight_self control is seen when the sightline reaches its own solid")
-	pad.queue_free();await frames(2);control.erase("allowed");control.erase("sight_self")
 	game.manual_progress._queued=true;cue.update();expect(cue.visible_controls.is_empty(),"Queued manual changes clear stale cues before deferred recomputation")
 	expect(Objectives.note({"objectives":[{"op":"operate"}],"note":{"at":0,"text":"Fit both end pins first."}},0)=="Fit both end pins first." and Objectives.note({"objectives":[{"op":"connect"}]},0).is_empty(),"Machine notes show only authored details")
 	var passed=checks.all(func(check):return check.passed)

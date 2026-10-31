@@ -1,9 +1,10 @@
 extends Node3D
-## The tracked objective selects controls only on manual updates. View/availability
-## checks stay live, so undo, equipment motion and occlusion cannot leave a cue.
+## The tracked objective selects controls only on manual updates. Availability
+## checks stay live, so undo and equipment motion cannot leave a cue. Like the
+## held part's destination glow, a cue shows at any distance and through models;
+## operating the control still checks reach and sight.
 const Outline = preload("res://scripts/interaction_outline.gd")
 const MAX_CONTROLS = 8
-const RANGE = 10.0
 ## Emitted when the tracked objective changes, so a machine's ghost can follow it.
 signal objective_changed
 var game: Node
@@ -15,14 +16,17 @@ var visible_controls: Array[Node3D] = []
 
 func setup(workshop: Node) -> void:
 	game = workshop
-	# Pulsing face tint, then a steady thin contour that keeps small parts
-	# readable at range. One override renders both passes on each mesh copy.
+	# Pulsing face tint drawn through geometry, then a steady thin contour that
+	# keeps small parts readable where they are in plain view. The contour keeps
+	# its depth test: an inverted hull without one fills the whole silhouette.
+	# One override renders both passes on each mesh copy.
 	var contour = ShaderMaterial.new()
 	contour.shader = preload("res://scripts/interaction_outline.gdshader")
 	contour.set_shader_parameter("outline_color",Color("d6ad59"))
 	contour.set_shader_parameter("width_pixels",1.25)
 	var material = ShaderMaterial.new()
 	material.shader = preload("res://scripts/manual_control_glow.gdshader")
+	material.render_priority = 10
 	material.next_pass = contour
 	for i in MAX_CONTROLS:
 		var outline = Outline.new()
@@ -73,14 +77,10 @@ func update() -> void:
 	for entry in entries:
 		var node = entry.get("node") as Node3D
 		if not is_instance_valid(node) or not node.is_visible_in_tree():continue
-		var point: Vector3 = entry.get("point",node.global_position)
-		if game.camera.global_position.distance_squared_to(point)>RANGE*RANGE or not game.camera.is_position_in_frustum(point):continue
+		# Offscreen controls would only take a slot from visible ones.
+		if not game.camera.is_position_in_frustum(entry.get("point",node.global_position)):continue
 		# The cue rests while E holds this control, so the player knows they found it.
 		if not held.is_empty() and held.get("controller")==entry.get("controller") and held.get("action")==entry.get("action"):continue
-		# Local controls never inherit receiver proxy exclusions: the same
-		# machine can obscure a handle on its far side, as can unrelated scenery.
-		# A control that is its own collider (`sight_self`) is seen when hit.
-		if not game.targeting.can_see(point,entry.get("allowed",[]),entry.get("sight_self",false)):continue
 		# Pickup/obstruction focus wins over the quieter manual cue.
 		var focus: Node3D = game.interaction_outline.focused
 		if is_instance_valid(focus) and (focus==node or focus.is_ancestor_of(node)):continue

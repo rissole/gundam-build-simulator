@@ -2,6 +2,23 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Control cues through models — 2026-10-31
+
+- [x] **Player rule:** the glowing "use machine" steps follow the same rules as
+  the held-part destination glow: infinite distance and through models.
+- [x] **Change:** the gold control cue lost its 10 m range and sightline checks;
+  its pulsing tint draws without a depth test. Offscreen controls stay uncued so
+  the eight cue slots go to visible ones. The thin contour keeps its depth test
+  (an inverted hull without one fills the silhouette), so it shows only in plain
+  view. Rope stations cued for the work follow the same rule; which ropes
+  are cued is unchanged.
+- [x] **Automated:** `manual_control_guidance_test` (57 checks) now expects a cue
+  200 m away and behind a real obstruction; six other affected routine suites
+  pass. No rendered review.
+- [ ] Through-model gold cues stay readable next to the amber part glow and are
+  not mistaken for "operable from here". E still needs reach and sight.
+- [ ] Open, shared with the part glow: fade or stop beyond some distance?
+
 ## Backpack hinge pins obstructed — 2026-10-31
 
 - [x] **Finding:** "the first bolts and washers for the backpack seem

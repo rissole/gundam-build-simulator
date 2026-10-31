@@ -1,8 +1,9 @@
 shader_type spatial;
 // Tint the control's own faces with a soft pulse. Alpha blending keeps the
 // original shading readable; a brighter fresnel rim carries the silhouette.
-// Depth testing stays enabled; the guidance manager also checks sightlines.
-render_mode unshaded, blend_mix, cull_back, depth_draw_never, shadows_disabled;
+// Depth testing is disabled, as for the held part's destination glow, so the
+// cue shows through walls and equipment.
+render_mode unshaded, blend_mix, cull_back, depth_draw_never, depth_test_disabled, shadows_disabled;
 
 uniform vec4 glow_color : source_color = vec4(1.0, 0.74, 0.3, 1.0);
 uniform float pulse_seconds = 1.4;
@@ -10,11 +11,6 @@ uniform float dim_alpha = 0.12;
 uniform float bright_alpha = 0.55;
 uniform float rim_alpha = 0.35;
 uniform float brightness = 1.4;
-
-void vertex() {
-	// Separate the duplicate surface just enough to avoid coplanar flicker.
-	VERTEX += NORMAL * 0.0005;
-}
 
 void fragment() {
 	float pulse = 0.5 - 0.5 * cos(TIME * 6.28318530718 / pulse_seconds);

@@ -59,8 +59,11 @@ operation cues only unfinished eligible controls. Commands and control IDs are
 machine metadata; the renderer never parses instruction text. A console is cued
 only when it offers the current operation for the matching machine.
 
-Cues stay within 5 m, the camera view and an unobstructed sightline. They do not
-grant reach or bypass prerequisites. Pickup and obstruction outlines have
+Cues follow the held part's destination glow (player rule, 2026-10-31): they
+show at any distance and draw through walls and equipment; only offscreen
+controls go uncued. The thin contour appears only where the control is in plain
+view. Cues do not grant reach or bypass prerequisites: operating the control
+still checks reach and sight. Pickup and obstruction outlines have
 priority. Completion, undo, restaging, reload, pause and changing the tracked
 step clear or refresh the cue. Hiding the manual panel keeps the tracked step.
 This is a narrow physical-control exception to the deferred waypoint system.
@@ -69,7 +72,7 @@ PV-200's current source puts its gold handle at the cylinder midpoint, including
 the mirrored copies. The note therefore says **after fitting both end pins**,
 aim **halfway along the cylinder**, rather than claiming the handle is at its
 lower end. Detail work must make handle shapes/markings and local access clear.
-Automated resolver/lifecycle and sightline tests are mechanical evidence; no
+Automated resolver/lifecycle tests are mechanical evidence; no
 rendered readability or player acceptance is implied.
 
 ## Objective operations

@@ -11,6 +11,12 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Control cues through models (2026-10-31):** player rule: gold "use machine"
+  cues follow the held-part glow, at any distance and through geometry (the thin
+  contour stays depth-tested). Operating still checks reach and sight. 7
+  affected routine suites pass; no rendered review.
+  [Rule and recheck](robot-workshop-playtest-checklist.md#control-cues-through-models--2026-10-31).
+
 - **Backpack hinge pins (2026-10-31):** player found the hinge pins always
   "obstructed". Their targets sat inside the backpack eye; hinge and strut pins
   now aim at the exposed outboard head. 14 routine suites pass; the new
@@ -110,7 +116,7 @@ last version before consolidation.
   supported shelf poses, carry recovery, loose deck riding, manual control cues
   and connection discovery. Control cues tint the control's faces with a soft
   pulsing gold (1.4-second cycle, fresnel rim) over a thin steady gold outline,
-  within 10 m; four relevant routines pass. The 45-suite routine run exposed one shelf-cache
+  at any distance and through models since 2026-10-31; four relevant routines pass. The 45-suite routine run exposed one shelf-cache
   defect; corrected affected suites pass. No rendered review or new player
   acceptance. [Evidence and task record](handoff/left-leg-feedback/README.md#implementation-evidence--2026-10-26);
   [focused player recheck](robot-workshop-playtest-checklist.md#focused-left-leg-recheck).
