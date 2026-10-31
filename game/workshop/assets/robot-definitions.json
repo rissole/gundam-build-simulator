@@ -7028,7 +7028,12 @@
           ],
           "label": "BP-P60 · 60 mm hinge pin",
           "access_policy": "mounted",
-          "undo_requires_support": "crane_rigging"
+          "undo_requires_support": "crane_rigging",
+          "target_offset": [
+            -0.008,
+            0,
+            0
+          ]
         },
         "backpack/hinge_keeper_1": {
           "accepts": "bp-hinge-keeper",
@@ -7051,7 +7056,12 @@
           ],
           "label": "BP-P40 · 40 mm strut-base pin",
           "access_policy": "mounted",
-          "undo_requires_support": "crane_rigging"
+          "undo_requires_support": "crane_rigging",
+          "target_offset": [
+            -0.008,
+            0,
+            0
+          ]
         },
         "backpack/strut_keeper_1": {
           "accepts": "bp-strut-keeper",
@@ -7071,7 +7081,12 @@
           ],
           "label": "BP-P60 · 60 mm hinge pin",
           "access_policy": "mounted",
-          "undo_requires_support": "crane_rigging"
+          "undo_requires_support": "crane_rigging",
+          "target_offset": [
+            0.008,
+            0,
+            0
+          ]
         },
         "backpack/hinge_keeper_2": {
           "accepts": "bp-hinge-keeper",
@@ -7094,7 +7109,12 @@
           ],
           "label": "BP-P40 · 40 mm strut-base pin",
           "access_policy": "mounted",
-          "undo_requires_support": "crane_rigging"
+          "undo_requires_support": "crane_rigging",
+          "target_offset": [
+            0.008,
+            0,
+            0
+          ]
         },
         "backpack/strut_keeper_2": {
           "accepts": "bp-strut-keeper",

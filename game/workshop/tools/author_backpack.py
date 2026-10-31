@@ -115,7 +115,9 @@ def extend(trial, chest, layout, kinds, diagram):
                 tube([-side*groove,0,0],radius-.006,0,.010),tube([-side*(length-.0075),0,0],radius,0,.015),
                 tube([side*.008,0,0],radius+.012,0,.016)]
             req=["backpack"] if name=="hinge" else list(hinge)
-            target.append(connection(sid,"bp-"+name+"-pin",uid,req,at,shapes,undo_requires_support="crane_rigging"))
+            # Aim at the outboard head: the shank's centre lies inside the
+            # backpack eye, whose collision would hide it from every side.
+            target.append(connection(sid,"bp-"+name+"-pin",uid,req,at,shapes,undo_requires_support="crane_rigging",target_offset=[side*.008,0,0]))
             keeper=f"BP-K{family}__{n:03}"
             shape=dict(shape="ring_plate",center=[0,0,0],outer=radius+.008,inner=radius-.006,length=.006,axis="x",start_degrees=35,end_degrees=325)
             target.append(connection(f"backpack/{name}_keeper_{n}","bp-"+name+"-keeper",keeper,[sid],

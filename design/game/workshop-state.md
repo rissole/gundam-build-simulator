@@ -11,6 +11,12 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Backpack hinge pins (2026-10-31):** player found the hinge pins always
+  "obstructed". Their targets sat inside the backpack eye; hinge and strut pins
+  now aim at the exposed outboard head. 14 routine suites pass; the new
+  `backpack_delivery_test` aim check is not run. Keeper access stays open design.
+  [Finding and recheck](robot-workshop-playtest-checklist.md#backpack-hinge-pins-obstructed--2026-10-31).
+
 - **Pockets saved (2026-10-31):** player found saving forgot pocket contents.
   Saves now keep every pocket stack and the selected pocket; pocketing counts as
   an unsaved change. Hands and loose parts still return to drawers.

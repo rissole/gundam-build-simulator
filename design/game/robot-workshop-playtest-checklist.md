@@ -2,6 +2,34 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Backpack hinge pins obstructed — 2026-10-31
+
+- [x] **Finding:** "the first bolts and washers for the backpack seem
+  uninstallable, just get constant 'obstructed' error" (Retain both backpack
+  hinges).
+- [x] **Cause:** each 60 mm hinge pin aimed at the centre of its shank, inside the
+  open backpack's hinge eye. That eye's collision belongs to the backpack, not the
+  receiving chest, so the sight check failed from almost every side. A headless
+  probe saw the target from 40 of 1,100 clear viewpoints within 2.2 m, and no rope
+  predicted service, so none glowed. The 40 mm strut pins had the same defect
+  (32 of 1,136).
+- [x] **Change:** all four pins aim at their exposed outboard head
+  (`target_offset` in `tools/author_backpack.py`), like bolt heads elsewhere.
+  Same probe after: hinge pins 649 of 1,107, strut pins 819 of 1,140. The outer
+  rear ropes (X11.0 left, X15.0 right) now predict service for the pins. Keeper
+  targets are unchanged; they were already exposed on their inboard side.
+- [x] **Automated:** 14 affected routine suites pass; the generator byte check
+  passes. A new check in the diagnostic `backpack_delivery_test` aims at each pin
+  through the real targeting path from the outer rear rope's hanging position.
+  **Not run** (diagnostics need an explicit request).
+- [ ] **Open, access design:** keepers sit on the inboard pin ends. The probe found
+  them visible crouched at the front edge of the open backpack's top (about
+  1.8 m), but from no hanging rope pose, so no rope glows for them. Backpack hinge
+  access remains the [open challenge](gantry-v2/overhead-access.md#decisions-and-open-items-user-2026-10-27).
+- [ ] In game: hang beside the open backpack from an outer rear rope, near hinge
+  height, and fit each hinge pin; then fit its keeper. Note where the keeper
+  could be reached from.
+
 ## Pockets not saved — 2026-10-31
 
 - [x] **Finding:** "Saving doesn't remember your pockets." Pockets had been

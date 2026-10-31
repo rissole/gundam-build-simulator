@@ -11,6 +11,27 @@ func fit_backpack(ids: Array) -> void:
 		expect(game.equipment.placement_error("chest",sid).is_empty(),"backpack connection permits current supported state: "+sid+" "+game.equipment.placement_error("chest",sid))
 		Staging.fill(game,"chest",[sid])
 
+## Reported 2026-10-31: every pin view was obstructed because its target lay
+## inside the backpack eye. Hanging outboard and to the rear of the open pack, as
+## from the outer rear ropes, the player aims at the exposed pin head.
+func expect_pin_aim(sid: String) -> void:
+	var chest: Node3D=game.assembly_node("chest")
+	var point: Vector3=game.components.slot_point("chest",sid)
+	var side: float=signf((chest.global_transform.affine_inverse()*point).x)
+	var kind: String=game.model.slot_definition("chest",sid).accepts
+	var uid: String=game.model.find_item(kind,"bin")
+	var home: Vector3=game.player.global_position
+	game.model.transfer(kind,"bin","pocket",uid)
+	game.automation.place_player(point+chest.global_basis*Vector3(side*.97,0,1.1)-Vector3.UP*game.camera.position.y)
+	game.automation.look_at_point(point)
+	await frames(2)
+	var target: Dictionary=game.automation.refresh_target()
+	var error: String=game.components.access() if target.get("sid","")==sid else "aimed at "+str(target.get("sid",target.get("type","nothing")))
+	expect(error.is_empty() and game.ghost.visible,"hanging outboard of the open backpack aims at and can fit "+sid+": "+error)
+	game.model.transfer(kind,"pocket","bin",uid)
+	game.automation.place_player(home)
+	await frames(2)
+
 func deliver_backpack() -> bool:
 	var fixture=game.equipment.get_equipment("module_supports")
 	var crane=game.equipment.get_equipment("service_crane")
@@ -29,6 +50,7 @@ func deliver_backpack() -> bool:
 	expect(pack.active and game.model.assemblies.backpack.parent=="chest" and pack.tension==1,"crane seats the same open backpack while retaining its full weight")
 	expect(not pack.rig_error("detach","backpack_left").is_empty(),"unretained hinges cannot release crane support")
 	expect(not pack.request("strut:0").is_empty(),"struts cannot deploy before both hinge pin/keeper pairs")
+	for sid in pack.spec.hinge_slots.filter(func(sid):return "_pin_" in sid):await expect_pin_aim(sid)
 	game.model.transfer("bp-hinge-pin","bin","pocket","BP-P60__002")
 	expect(game.model.install("chest","backpack/hinge_pin_1","BP-P60__002").ok,"interchangeable hinge pin keeps its identity at the opposite bracket")
 	expect(not game.model.placement_error("chest","backpack/hinge_pin_2","BP-P40__001").is_empty(),"40 mm strut pin cannot replace a 60 mm hinge pin")
@@ -37,6 +59,7 @@ func deliver_backpack() -> bool:
 	pack.request("strut:0");pack.physics(1);pack.request("stop")
 	expect(pack.struts[0]>0 and pack.struts[0]<1,"prepared telescope moves continuously from its stowed position")
 	if not command(pack,"resume") or not command(pack,"strut:1"):return false
+	for sid in pack.spec.strut_slots.filter(func(sid):return "_pin_" in sid):await expect_pin_aim(sid)
 	fit_backpack(pack.spec.strut_slots)
 	expect(not pack.rig_error("detach","backpack_left").is_empty(),"pins alone do not establish positive open support")
 	if not command(pack,"lock:0") or not command(pack,"lock:1"):return false
