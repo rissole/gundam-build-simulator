@@ -143,7 +143,8 @@ def extend(trial, chest, layout, kinds, diagram):
         else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
         return steps
     def park():
-        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+        # The magnetic connectors release themselves once the load is retained.
+        return [operate(crane, "up")]
     def objective_page(title, goal, ids, objectives, note=None):
         record = dict(title=title, view="components", slots=list(ids), goal=goal, objectives=objectives)
         if note is not None: record["note"] = note
@@ -156,14 +157,14 @@ def extend(trial, chest, layout, kinds, diagram):
         objective_page("Retain both backpack hinges", "Pin both hinges.", hinge,
             [dict(op="fit", slots=list(hinge))], dict(at=0, text="Insert each pin from the outboard side, then its keeper.")),
         objective_page("Attach the backpack struts", "Extend both struts, pin them and lock them open.", struts,
-            [operate(pack, "extend_struts"), dict(op="fit", slots=list(struts)), operate(pack, "lock_struts"), dict(op="detach", machine=crane)],
-            dict(at=3, text="Leave the crane lowered at the backpack: it closes the backpack later.")),
+            [operate(pack, "extend_struts"), dict(op="fit", slots=list(struts)), operate(pack, "lock_struts")],
+            dict(at=2, text="The magnetic connectors release once the struts are locked. Leave the crane lowered at the backpack: it closes the backpack later.")),
         objective_page("Connect the supported backpack", "Plug in both backpack service runs.", services,
             [dict(op="fit", slots=list(services))]),
         objective_page("Close and latch the backpack", "Close the backpack with the crane, latch it and shut the service covers.", [],
             [dict(op="connect", machine=crane),
              operate(pack, "take_weight"), operate(pack, "release_struts"), operate(pack, "close"),
-             operate(pack, "engage_latches")] + park() + [operate(pack, "close_covers")])]
+             operate(pack, "engage_latches"), dict(op="detach", machine=crane)] + park() + [operate(pack, "close_covers")])]
     chest["manual"][-5]["diagram_views"]=[diagram("Open backpack onto fixed hinge forks",context,["CH-BACKPACK-ROOT__001","CH-BACKPACK-ROOT__002"],offsets={uid:[0,2.8,1.2] for uid in context})]
     chest["milestones"]["backpack_retained"]=["backpack"]+hinge+struts
     chest["milestones"]["backpack_connected"]=["backpack"]+hinge+struts+services

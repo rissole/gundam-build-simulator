@@ -11,6 +11,8 @@ class Crane extends "res://scripts/service_crane.gd":
 	func point_position(id: String) -> Vector3:return lifting[id]
 	func _fastener_position(sid: String) -> Vector3:return fasteners[sid]
 	func _interaction_error(_point: Vector3, _allowed: Array = []) -> String:return ""
+class Console extends CanvasLayer:
+	func physics() -> void:pass
 class Gate extends WorkshopEquipment:
 	var refusal="receiver unavailable"
 	func receiving_error(_uid: String, _support: String = "") -> String:return refusal
@@ -81,6 +83,39 @@ func corner_release(game: Node, crane: Node) -> void:
 	expect(crane.secured() and crane.action_error("detach:"+b).is_empty(),"the last connector releases with full retention")
 	for sid in far:game.model.assemblies.left_leg.slots[sid]=""
 	expect(not crane.action_error("detach:"+b).is_empty(),"the last attached connector never releases an unsecured load")
+	for sid in crane.fastener_slots:game.model.assemblies.left_leg.slots[sid]=""
+	auto_release(game,crane)
+
+## After lowering a load, the connectors stow themselves once every attached
+## one may be detached. Connectors attached for a lift never release themselves.
+func auto_release(game: Node, crane: Node) -> void:
+	var a: String=crane.END_IDS[0];var b: String=crane.END_IDS[1]
+	if crane.console==null:crane.console=Console.new();crane.add_child(crane.console)
+	for id in crane.END_IDS:crane.endpoints[id]={"state":"attached","point":crane.POINT_IDS[crane.END_IDS.find(id)]}
+	crane.station="receiver";crane.raised=false;crane.motion="";crane.moving=false
+	crane.release_pending=false
+	for sid in game.runtime.definition("left_leg").milestones.shin_secured:
+		if str(game.model.assemblies.left_leg.slots[sid]).is_empty():game.model.assemblies.left_leg.slots[sid]="fitted"
+	crane.physics(0)
+	expect(crane.attached_count()==2,"connectors attached for a lift stay attached on a retained load")
+	for sid in crane.fastener_slots:game.model.assemblies.left_leg.slots[sid]=""
+	crane.release_pending=true
+	crane.physics(0)
+	expect(crane.attached_count()==2 and crane.release_pending,"a lowered, unretained load keeps its connectors and waits")
+	for sid in crane.fastener_slots:
+		if crane.fasteners[sid].y<5:game.model.assemblies.left_leg.slots[sid]="fitted"
+	crane.physics(0)
+	expect(crane.attached_count()==2,"one releasable corner does not release the set while the other must hold")
+	for sid in crane.fastener_slots:game.model.assemblies.left_leg.slots[sid]="fitted"
+	crane.physics(0)
+	expect(crane.attached_count()==0 and not crane.release_pending and crane.endpoints[a].state=="stowed" and crane.endpoints[b].point.is_empty(),"full retention releases and stows every connector")
+	expect(crane.capture().has("release_pending"),"the pending release is saved with the crane")
+	crane.endpoints[a]={"state":"attached","point":crane.POINT_IDS[0]};crane.release_pending=true;crane.raised=true
+	crane.physics(0)
+	expect(crane.attached_count()==1,"a raised crane never releases its connectors")
+	crane.raised=false;crane.endpoints[a]={"state":"stowed","point":""}
+	crane.physics(0)
+	expect(not crane.release_pending,"manually released connectors clear the pending release")
 	for sid in crane.fastener_slots:game.model.assemblies.left_leg.slots[sid]=""
 
 func run() -> void:

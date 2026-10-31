@@ -20,7 +20,8 @@ def extend(trial, chest, arms, kinds, diagram):
         else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
         return steps
     def park():
-        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+        # The magnetic connectors release themselves once the load is retained.
+        return [operate(crane, "up")]
     def box(at, size): return dict(shape="box", center=at, size=size)
     def tube(at, outer, inner, length, axis="x"):
         return dict(shape="tube", center=at, outer=outer, inner=inner, length=length, axis=axis)

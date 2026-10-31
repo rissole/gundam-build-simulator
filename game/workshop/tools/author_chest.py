@@ -129,7 +129,8 @@ def extend(trial, kinds, pelvis, layout, diagram):
         else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
         return steps
     def park():
-        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+        # The magnetic connectors release themselves once the load is retained.
+        return [operate(crane, "up")]
     def objective_page(title, goal, ids, objectives, note=None):
         record = dict(title=title, view="components", slots=list(ids), goal=goal, objectives=objectives)
         if note is not None: record["note"] = note
@@ -139,8 +140,8 @@ def extend(trial, kinds, pelvis, layout, diagram):
             [operate(rig, "template:chest")] + crane_to("chest_store") + park()),
         objective_page("Seat the prepared chest", "Crane the chest from the heavy module rig onto the waist.", ["chest"],
             crane_to("chest", "chest"), dict(at=2, text="Keep all four connectors attached until the chest is bolted.")),
-        objective_page("Retain the chest on the waist", "Bolt the chest to the waist, then release and park the crane.", hardware,
-            [dict(op="fit", slots=list(hardware))] + park(), dict(at=0, text="Use the glowing ropes and stop just above the waist flange; insert the hardware downward. Each magnetic connector can come off once the bolt at its corner is in.")),
+        objective_page("Retain the chest on the waist", "Bolt the chest to the waist, then raise the crane.", hardware,
+            [dict(op="fit", slots=list(hardware))] + park(), dict(at=0, text="Use the glowing ropes and stop just above the waist flange; insert the hardware downward. The magnetic connectors release once every bolt is in.")),
         objective_page("Connect chest services", "Plug both chest service lines into the waist.", services,
             [dict(op="fit", slots=list(services))], dict(at=0, text="Keep both waist lock pins in."))]
     pelvis["manual"][-3]["diagram_views"]=[diagram("Prepared chest onto the locked waist",context,["PV-320__001"],

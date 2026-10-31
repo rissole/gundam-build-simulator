@@ -171,8 +171,9 @@ and deliver the hip assembly first. The original leg-only journey's evidence is
    next leg part in build order (shin, knee fork, upper-leg beam) and says what
    is missing if that part isn't ready yet. **Lower crane**, then Q to leave the console. E-pick and aim/click each magnetic
    end onto a separate marked point. Return to the console: **Raise crane → Move to delivery →
-   Lower crane**. Fit the task's retaining hardware before detaching/stowing
-   the magnets, raising the empty crane and parking it.
+   Lower crane**. Fit the task's retaining hardware; the magnetic connectors
+   release and stow themselves once the load is retained. Raise the empty
+   crane. It waits there; the next **Move to pickup** starts from where it hangs.
 3. Follow the **Structural left leg** manual for ankle fasteners, the main
    disconnect, bearings, spacers, fork, axle, cap and beam fastening. Small
    hardware uses pockets; knee components and the harness use ordinary carrying.
@@ -180,7 +181,7 @@ and deliver the hip assembly first. The original leg-only journey's evidence is
    knee work can proceed independently after the ankle flange is secured.
    Fit the harness from the side away from the crane racks, standing back toward
    the knee so its upright bundle has room to turn clear of the ankle brace.
-4. With every structural connection complete and the crane parked, open the
+4. With every structural connection complete and the crane raised, open the
    **Gantry** manual. Use the local rail **Advance** controls for travel,
    upright tilt and upward docking. The holder continues supporting the leg.
 5. Carry either **PV-120** half onto a personnel lift, click the component shelf

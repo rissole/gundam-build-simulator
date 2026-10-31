@@ -17,6 +17,11 @@ def front(command):
     return dict(op="operate", machine="workshop_access", command=command)
 
 
+def position(objectives, objective):
+    """Index by identity: separate "up" commands compare equal."""
+    return next(i for i, o in enumerate(objectives) if o is objective)
+
+
 def insert(page, index, objective):
     page["objectives"].insert(index, objective)
     if page.get("note", {}).get("at", -1) >= index:
@@ -38,7 +43,10 @@ def bind_fronts(recipes, chapters):
             if task not in CROSSING_TASKS or not crane:
                 continue
             delivery = next((o for o in crane if o.get("command") == "go:receiver"), None)
-            park = next((o for o in crane if o.get("command") == "go:park"), None)
+            # A return raises the released crane from the connection. The crane
+            # waits there, so the upper leaves stay open for its next pickup.
+            ups = [o for o in crane if o.get("command") == "up"]
+            ret = ups[-1] if ups and (delivery is None or position(objectives, ups[-1]) > position(objectives, delivery)) else None
             if delivery:
                 if task in ARM_TASKS:
                     # Arm routes stop in front of the leaves; the receiver's
@@ -50,36 +58,30 @@ def bind_fronts(recipes, chapters):
                     insert(page, objectives.index(seat), front("upper_open"))
                 else:
                     insert(page, objectives.index(delivery), front("upper_open"))
-            if park:
+            if ret:
                 # Rope work may have closed the leaves since delivery. Reopen
                 # before raising the empty spreader: some head spreaders still
-                # touch the band there, before the actual return translation.
-                detach = next(o for o in crane if o["op"] == "detach" and "point" not in o)
-                at = objectives.index(detach)
-                if task == "pelvis":
-                    insert(page, at, front("upper_close"))
-                    page["note"] = dict(at=at, text="At the UPPER GANTRY panel at 20.6 m beside the left lift, close the upper gantry, then descend from ROPE ACCESS to the lifting eyes. Land, unclip and recall the rope before moving the crane.")
-                at = objectives.index(detach) + 1
+                # touch the band while rising.
+                at = position(objectives, ret)
                 if task in ARM_TASKS:
                     insert(page, at, front("lower_close"))
                     at += 1
-                insert(page, at, front("upper_open"))
-                insert(page, objectives.index(park) + 1, front("upper_close"))
-            if delivery or park:
-                if task != "pelvis":
-                    page["goal"] = page["goal"].rstrip(".") + ", using the UPPER GANTRY panel at 20.6 m beside the left lift to " + ("open the way before crossing." if delivery else "open the return route and close the upper gantry after parking.")
+                if not delivery:
+                    insert(page, at, front("upper_open"))
+            if delivery or ret:
+                page["goal"] = page["goal"].rstrip(".") + ", using the UPPER GANTRY panel at 20.6 m beside the left lift to " + ("open the way before crossing." if delivery else "open the leaves before raising the crane.")
                 # The core's individual connector and guide operations and the
                 # backpack's closing operation stay explicit. Their patterns
                 # differ from an ordinary delivery/release.
-                if delivery and not park and task != "core":
+                if delivery and not ret and task != "core":
                     groups["arm_delivery" if task in ARM_TASKS else "upper_delivery"].append([owner, index])
-                if park and not delivery and task != "backpack":
+                if ret and not delivery and task != "backpack":
                     groups["arm_return" if task in ARM_TASKS else "upper_return"].append([owner, index])
     titles = {
         "upper_delivery": "Crane a load through the upper gantry",
-        "upper_return": "Release the load, park the crane and close the upper gantry",
+        "upper_return": "Open the upper gantry and raise the released crane",
         "arm_delivery": "Open both gantries and crane the arm to its shoulder",
-        "arm_return": "Release the arm, close the lower gantry and park the crane",
+        "arm_return": "Close the lower gantry, open the upper gantry and raise the released crane",
     }
     return {key: dict(title=titles[key], machines=["service_crane", "workshop_access"], pages=pages)
             for key, pages in groups.items()}

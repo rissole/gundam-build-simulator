@@ -37,9 +37,9 @@
     "leg_delivery": {"title": "Jog the leg to its hip", "machines": ["leg_rail", "workshop_access"], "first": ["pelvis", 1]},
     "leg_return": {"title": "Release the leg rig and drive it home", "machines": ["leg_rail", "foot_carrier"], "first": ["pelvis", 11]},
     "upper_delivery": {"title": "Crane a load through the upper gantry", "machines": ["service_crane", "workshop_access"], "first": ["pelvis", 26]},
-    "upper_return": {"title": "Release the load, park the crane and close the upper gantry", "machines": ["service_crane", "workshop_access"], "first": ["pelvis", 27]},
+    "upper_return": {"title": "Open the upper gantry and raise the released crane", "machines": ["service_crane", "workshop_access"], "first": ["pelvis", 27]},
     "arm_delivery": {"title": "Open both gantries and crane the arm to its shoulder", "machines": ["service_crane", "workshop_access"], "first": ["chest", 11]},
-    "arm_return": {"title": "Release the arm, close the lower gantry and park the crane", "machines": ["service_crane", "workshop_access"], "first": ["chest", 17]}
+    "arm_return": {"title": "Close the lower gantry, open the upper gantry and raise the released crane", "machines": ["service_crane", "workshop_access"], "first": ["chest", 17]}
   },
   "reference": {
     "title": "Recovery and undo",

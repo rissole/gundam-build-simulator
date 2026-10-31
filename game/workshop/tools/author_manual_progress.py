@@ -74,6 +74,14 @@ def bind(recipes, chapters):
                 phase = "delivered"
                 if any(o.get("machine") == "service_crane" and o.get("op") == "detach" and "point" not in o for o in objectives):
                     phase = "released"
+                # Raising after the delivery leaves the load behind: the
+                # connectors released themselves once it was retained.
+                crane_objectives = [o for o in objectives if o.get("machine") == "service_crane"]
+                commands = [o.get("command") for o in crane_objectives]
+                if commands and commands[-1] == "up" and ("go:receiver" not in commands or commands.index("go:receiver") < len(commands) - 1):
+                    phase = "released"
+                    crane_objectives[-1]["requires_state"] = transport(task, "released")
+                    crane_objectives[-1]["released"] = True
                 if any(o.get("command") == "go:park" for o in objectives):
                     phase = "parked"
                 proofs.append(transport(task, phase))
@@ -100,8 +108,10 @@ def bind(recipes, chapters):
                     # The connected services supersede the earlier temporary
                     # detach instruction; required strut retention still applies.
                     services = recipes[owner]["milestones"]["backpack_connected"]
-                    released = proofs.pop()
-                    assert released == transport(task, "released")
+                    # The connectors release themselves once the struts lock.
+                    released = transport(task, "released")
+                    if "service_crane" in machines:
+                        assert proofs.pop() == released
                     proofs.append(dict(any=[released, dict(all=[mounted(owner, sid) for sid in services])]))
                     proofs.append(dict(any=[state("backpack_hinge", struts=2, locks=2), latched]))
                 else:

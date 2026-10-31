@@ -78,14 +78,18 @@ static func run(h) -> void:
 			for index in Objectives.display_indices(page,procedure):displayed.append(texts[index])
 			h.expect(texts.all(func(t):return not t.is_empty()),row.title+" renders every typed objective")
 			h.expect((str(page.goal)+str(page.get("note",{}).get("text",""))).count("UPPER GANTRY panel at 20.6 m beside the left lift")==1,row.title+" locates the panel once in authored guidance")
-			var delivery=commands.find("service_crane:go:receiver");var park=commands.find("service_crane:go:park")
+			var delivery=commands.find("service_crane:go:receiver")
+			# A return raises the released crane last; it waits at the connection.
+			var raise=commands.rfind("service_crane:up")
+			var returning=raise>delivery and page.objectives[raise].get("released",false)
 			if delivery>=0:h.expect(commands.find("workshop_access:upper_open")==delivery+(1 if task in ["left_arm","right_arm"] else -1),row.title+" opens the upper leaves before the first crossing objective")
-			if park>=0:
-				h.expect(commands[park+1]=="workshop_access:upper_close" and commands.rfind("workshop_access:upper_open")<commands.rfind("service_crane:up"),row.title+" reopens before raising the empty crane and closes after parking")
+			h.expect(not commands.has("service_crane:go:park") and not commands.has("workshop_access:upper_close"),row.title+" neither parks the crane nor closes the upper leaves")
+			if returning and delivery<0:
+				h.expect(commands[raise-1]=="workshop_access:upper_open",row.title+" reopens the upper leaves before raising the empty crane")
 			if task in ["left_arm","right_arm"]:
 				if delivery>=0:h.expect(commands[commands.find("service_crane:up")-1]=="workshop_access:lower_open",row.title+" opens the lower front before the loaded lift and transfer")
-				if park>=0:h.expect(commands[commands.find("service_crane:detach")+1]=="workshop_access:lower_close",row.title+" closes the lower front after releasing the arm")
-			if task=="pelvis":h.expect(page.objectives[page.note.at].command=="upper_close" and commands.count("workshop_access:upper_open")==2,row.title+" closes for rope work and reopens for the empty return")
+				if returning:h.expect(commands[raise-2]=="workshop_access:lower_close",row.title+" closes the lower front after the arm is released")
+			if task=="pelvis":h.expect(returning and commands.count("workshop_access:upper_open")==1,row.title+" opens the upper leaves once; the released crane raises through them")
 			if procedure.get("repeat",false):
 				h.expect(Objectives.display_indices(page,procedure).all(func(i):return page.objectives[i].get("machine",page.objectives[i].get("via",{}).get("machine","")) not in ["service_crane","workshop_access"]),row.title+" hides repeated machine controls and retains independent work")
 			pages.append({"owner":row.owner,"page_index":row.page,"title":row.title,"goal":page.goal,"note":page.get("note",{}),"slots":page.slots,"objectives":page.objectives,"rendered_objective_text":texts,"displayed_objective_text":displayed,"procedure":procedure.get("label","") if procedure.get("repeat",false) else ""})
@@ -126,6 +130,8 @@ static func sequence(h, game, crane, front, owner: String, authored: Dictionary,
 		elif action=="pickup":crane.station="source"
 		elif action.begins_with("go:"):crane.station=action.get_slice(":",1)
 		elif action in ["up","down"]:
+			# The connectors released themselves once the load was retained.
+			if o.get("released",false):connectors(crane,false)
 			crane.raised=action=="up"
 			if crane.station=="receiver" and action=="down":
 				load.location="support:"+str(spec.get("receiver_support","crane_rigging"))

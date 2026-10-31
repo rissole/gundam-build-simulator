@@ -50,23 +50,16 @@ func run() -> void:
 	var progress=Progress.new(game)
 	expect(not progress.complete(),"fresh workshop is not complete")
 	expect(evaluate("left_leg",1).current == 0,"initial parked crane does not tick a delivery")
-	# A parked delivery cannot bypass its final CLOSE. Later actual delivery is
-	# durable proof of the earlier reset, even while fronts serve another load.
+	# A released delivery has no final CLOSE: the empty crane stays at the
+	# connection and its next pickup leaves through the open upper leaves.
 	var hip_location: String=game.model.assemblies.pelvis.location
-	var foot_location: String=game.model.assemblies.foot.location
 	game.model.assemblies.pelvis.location="support:pelvis_gantry"
-	crane.task="pelvis"
-	front.set_front("upper",1.0)
-	expect(evaluate("pelvis",0).current!=-1,"parked hip delivery still needs its upper leaves closed")
-	front.set_front("upper",0.5,0.0,true)
-	expect(evaluate("pelvis",0).current!=-1,"closing upper leaves do not yet complete hip delivery")
-	front.set_front("upper",0.0)
-	expect(evaluate("pelvis",0).current==-1,"stopped closed upper leaves complete the parked hip delivery")
-	game.model.assemblies.foot.location="support:foot_carrier";crane.task="foot"
-	front.set_front("upper",1.0)
-	expect(evaluate("pelvis",0).current==-1,"the next delivered foot preserves hip completion during front reuse")
-	game.model.assemblies.foot.location=foot_location
-	expect(evaluate("pelvis",0).current!=-1,"changing crane task without delivered stock cannot prove the front reset")
+	crane.task="pelvis";crane.station="receiver"
+	for value in [1.0,0.0]:
+		front.set_front("upper",value)
+		expect(evaluate("pelvis",0).current==-1,"released hip delivery is complete with the upper leaves at "+str(value))
+	crane.task="foot";crane.station="park"
+	expect(evaluate("pelvis",0).current==-1,"the next crane task preserves hip completion")
 	game.model.assemblies.pelvis.location=hip_location;front.set_front("upper",0.0)
 	# Reproduce leaving a captive pin out and starting the next cylinder.
 	fill("pelvis",page("pelvis",8).slots)
@@ -184,9 +177,8 @@ func run() -> void:
 			if progress.status(step.owner,step.page)!="done":unfinished.append(str(chapter.id)+" / "+str(step.title)+" "+str(progress.evaluation(step.owner,step.page).ticked))
 	expect(unfinished.is_empty() and progress.complete(),"all chapters complete from retained physical state: "+str(unfinished))
 	front.set_front("upper",1.0);progress.refresh()
-	expect(not progress.complete() and evaluate("chest",56).current!=-1,"the final crown page still needs its upper leaves closed after parking")
+	expect(progress.complete() and evaluate("chest",56).current==-1,"the final crown page is complete with the upper leaves left open")
 	front.set_front("upper",0.0);progress.refresh()
-	expect(progress.complete(),"closing the final front restores whole-manual completion")
 	crane.task="backpack";crane.station="receiver";crane.raised=false
 	crane.endpoints.a.state="attached";crane.endpoints.b.state="attached"
 	pack.angle=0.0;pack.latches.fill(false);pack.covers.fill(false);pack.locks.fill(true)
@@ -194,9 +186,9 @@ func run() -> void:
 	pack.locks.fill(false)
 	expect(evaluate("chest",7).current != -1,"service connections alone cannot hide unlocked open struts")
 	pack.angle=1.0;pack.latches.fill(true);crane.endpoints.a.state="stowed";crane.endpoints.b.state="stowed"
-	crane.station="park";crane.raised=true
+	crane.station="receiver";crane.raised=true;front.set_front("upper",1.0)
 	crane.task="backpack";pack.covers.fill(false)
-	expect(evaluate("chest",9).current==10,"latched backpack retires crane tension but still requires its covers")
+	expect(evaluate("chest",9).current==8,"latched backpack retires crane tension but still requires its covers")
 	pack.covers.fill(true)
 	expect(evaluate("chest",9).current == -1,"closed covers complete the latched backpack")
 	crane.task="head_crown"

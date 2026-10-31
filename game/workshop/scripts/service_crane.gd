@@ -71,6 +71,10 @@ var receiver_support = ""
 # travels to it from its current beam pose. Undo can request one route back.
 var travel_from: Variant = null
 var reacquire = ""
+## Set when the crane lowers a load onto a rig or connection. The magnetic
+## connectors then release themselves as soon as detaching is allowed: at once on
+## a rig, or after the retaining hardware on a connection.
+var release_pending = false
 var required_ends: int:
 	get:return END_IDS.size()
 
@@ -288,7 +292,9 @@ func manual_effect(objective: Dictionary) -> Dictionary:
 	match action:
 		"pickup":return {"task":objective.get("task",""),"station":objective.get("at","source")}
 		"down":return {"raised":false}
-		"up":return {"raised":true}
+		# Raising after a delivery leaves the load behind: the connectors
+		# released themselves once it was retained.
+		"up":return {"raised":true,"attached":0,"held":false} if objective.get("released",false) else {"raised":true}
 	if action.begins_with("go:"):return {"station":action.get_slice(":",1)}
 	return {}
 
@@ -390,18 +396,8 @@ func action_error(action: String) -> String:
 		if not error.is_empty():return error
 		if action.begins_with("pick:") and endpoints[id].state != "stowed":return "That magnetic connector is already attached."
 		if action.begins_with("detach:"):
-			if endpoints[id].state != "attached":return "That magnetic connector is not attached."
-			if _guided_live():
-				var guide_error: String=_guide().rig_error("detach",endpoints[id].point)
-				if not guide_error.is_empty():return guide_error
-			if config.spec.has("source_equipment"):
-				var support_error: String=game.equipment.get_equipment(config.spec.source_equipment).release_error(uid)
-				if not support_error.is_empty():return support_error
-			if _installed() and not secured() and not _end_retained(id):return _retention_block(false)
-			var braces=game.equipment.get_equipment("joint_restraints")
-			if braces!=null and _installed() and load_owner in ["left_leg","right_leg"]:
-				var brace_error: String=braces.required_error(load_owner,secured_milestone)
-				if not brace_error.is_empty():return brace_error
+			var rule_error := _detach_rule_error(id)
+			if not rule_error.is_empty():return rule_error
 		return _interaction_error(end_nodes[id].global_position,[load_body,game.runtime.node(load_owner)])
 	if action.begins_with("attach:"):
 		var point = action.get_slice(":",1)
@@ -473,6 +469,37 @@ func action_error(action: String) -> String:
 		return ""
 	return "Unknown crane command."
 
+## Whether the load's support lets this attached connector go, ignoring reach.
+func _detach_rule_error(id: String) -> String:
+	if endpoints[id].state != "attached":return "That magnetic connector is not attached."
+	if _guided_live():
+		var guide_error: String=_guide().rig_error("detach",endpoints[id].point)
+		if not guide_error.is_empty():return guide_error
+	if config.spec.has("source_equipment"):
+		var support_error: String=game.equipment.get_equipment(config.spec.source_equipment).release_error(uid)
+		if not support_error.is_empty():return support_error
+	if _installed() and not secured() and not _end_retained(id):return _retention_block(false)
+	var braces=game.equipment.get_equipment("joint_restraints")
+	if braces!=null and _installed() and load_owner in ["left_leg","right_leg"]:
+		var brace_error: String=braces.required_error(load_owner,secured_milestone)
+		if not brace_error.is_empty():return brace_error
+	return ""
+
+## Release every attached connector together once all of them may go. Some
+## connectors staying (the core's aft lift while it is guided) keeps them all.
+func _auto_release() -> void:
+	if not release_pending:return
+	if attached_count()==0:release_pending=false;return
+	if raised or not motion.is_empty() or station=="park" or _crane_owned() or not hand_payload().is_empty():return
+	for id in END_IDS:
+		if endpoints[id].state=="attached" and not _detach_rule_error(id).is_empty():return
+	for id in END_IDS:
+		if endpoints[id].state=="attached":endpoints[id]={"state":"stowed","point":""}
+	release_pending=false
+	_refresh()
+	if is_instance_valid(game.hud):
+		game.hud.refresh();game.hud.toast("Magnetic connectors released and stowed.",true)
+
 func request(action: String) -> String:
 	var error = action_error(action)
 	if not error.is_empty():return error
@@ -497,13 +524,14 @@ func request(action: String) -> String:
 	elif action == "stow":endpoints[hand_payload()] = {"state":"stowed","point":""}
 	elif action.begins_with("pick:") or action.begins_with("detach:"):endpoints[action.get_slice(":",1)] = {"state":"held","point":""}
 	elif action.begins_with("attach:"):
-		endpoints[hand_payload()] = {"state":"attached","point":action.get_slice(":",1)}
+		endpoints[hand_payload()] = {"state":"attached","point":action.get_slice(":",1)};release_pending = false
 		if reacquire == task:reacquire = ""
 	else:
 		if action=="up" and _guided_live():_guide().depart()
 		if action == "up" and _installed() and attached_count()==required_ends and not config.spec.get("receiver_contact",false):
 			error = _undo_beam()
 			if not error.is_empty():return error
+		if action == "up":release_pending = false
 		motion = action;progress = 0;moving = true;blocked_reason = ""
 	_refresh()
 	if is_instance_valid(game.hud):game.hud.refresh()
@@ -861,9 +889,11 @@ func physics(delta: float) -> void:
 				else:
 					var error=_seat()
 					if not error.is_empty():blocked_reason=error;moving=false;return
+				release_pending = true
 			if motion.begins_with("go:"):station = motion.get_slice(":",1);travel_from = null
 			else:raised = motion == "up"
 			motion = "";progress = 0;moving = false
+	_auto_release()
 	_refresh()
 
 func _route_error(from_path: float, destination: float) -> String:
@@ -1093,6 +1123,7 @@ func capture() -> Dictionary:
 	var result = {"version":VERSION,"station":station,"raised":raised,"motion":motion,"progress":progress,"moving":moving,"blocked_reason":blocked_reason,"endpoints":endpoints.duplicate(true)}
 	result["task"] = task
 	result["reacquire"] = reacquire
+	result["release_pending"] = release_pending
 	result["travel_from"] = Codec.pose(travel_from) if travel_from != null else []
 	return result
 
@@ -1204,6 +1235,7 @@ func apply(data: Dictionary) -> void:
 	for id in endpoints:
 		if endpoints[id].state == "held":endpoints[id] = {"state":"stowed","point":""}
 	reacquire = data.get("reacquire","")
+	release_pending = bool(data.get("release_pending",false))
 	travel_from = Codec.to_pose(data.travel_from) if not data.get("travel_from",[]).is_empty() else null
 	if console.is_open:console.shut()
 	_refresh()

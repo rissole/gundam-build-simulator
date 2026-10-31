@@ -11,6 +11,18 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Crane streamlining (2026-10-31):** after the crane lowers a load, its
+  magnetic connectors release and stow themselves once detaching is allowed:
+  straight away on a rig, or when the last retaining hardware is in on a
+  connection. Re-attaching cancels this, so undo lifts and the backpack's
+  close (which re-attaches the crane) keep their manual detach. The core's forward
+  detach during guiding also stays manual. Manuals no longer park the crane or
+  close the upper gantry after a delivery: the crane is raised and waits at the
+  connection, and the next pickup leaves through the open leaves. The hip
+  delivery no longer needs a rope trip to the lifting eyes. `--stage` jumps
+  still park the crane at their boundaries. 55 routine suites pass, including a
+  new auto-release policy check; not checked in game
+  ([recheck](robot-workshop-playtest-checklist.md#crane-streamlining--2026-10-31)).
 - **Aim point audit (2026-10-31):** new expensive diagnostic
   `aim_point_audit_test` (about 47 s; run after major changes) checks sight to
   every staged control and connection fill in its working state. First run

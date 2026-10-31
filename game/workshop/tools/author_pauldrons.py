@@ -56,7 +56,8 @@ def extend(trial, chest, arms, kinds, layout, diagram):
         else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
         return steps
     def park():
-        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+        # The magnetic connectors release themselves once the load is retained.
+        return [operate(crane, "up")]
     sources = trial["sources"]
     for key,title in [("long","Long"),("short","Short")]:
         family="PD-M20-"+key.upper()
@@ -184,7 +185,7 @@ def extend(trial, chest, arms, kinds, layout, diagram):
             return record
         chest["manual"] += [page("deliver carrier","Crane the "+side+" pauldron carrier onto the shoulder.",[uid],
                 crane_to(uid, uid), dict(at=2, text="Keep both connectors attached until the carrier is bolted.")),
-            page("retain carrier","Bolt the carrier to the arm, then release and park the crane.",bolts,
+            page("retain carrier","Bolt the carrier to the arm, then raise the crane.",bolts,
                 [dict(op="fit", slots=list(bolts))]+park(),
                 dict(at=0, text="The long bolts go in the bosses nearest the shoulder, the short ones farther along the arm.")),
             page("front closure","Fit the front panel.",[panels[0]],

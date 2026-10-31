@@ -191,7 +191,8 @@ def extend(trial,chest,kinds,layout,diagram):
         else: steps.append(dict(op="seat", slot=seat, via=dict(machine=crane, command="down")))
         return steps
     def park():
-        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+        # The magnetic connectors release themselves once the load is retained.
+        return [operate(crane, "up")]
     def page(title, goal, ids, objectives, note=None):
         record = dict(title=title, goal=goal, slots=list(ids), objectives=objectives, view="components")
         if ids: record["diagram_views"]=[diagram(title,[slots[s]["pose_source"] for s in ids])]
@@ -323,14 +324,14 @@ def extend(trial,chest,kinds,layout,diagram):
         # The baseplate loom is part of receiver retention, so the crane cannot
         # release until that page. Every other piece parks on its retain page.
         retain_steps=[dict(op="fit", slots=list(hardware))]
-        retain_goal="Bolt the "+name+" down, then release and park the crane."
+        retain_goal="Bolt the "+name+" down, then raise the crane."
         if uid!="head_baseplate": retain_steps+=park()
         else: retain_goal="Bolt the head baseplate down."
         page(title+": retain", retain_goal, hardware, retain_steps, dict(at=0, text=retain_note))
         if uid=="head_baseplate":
             loom=item("hd-loom","HD-LOOM__001",point(.10,.25,15.69),[box([0,0,0],[.06,.06,.06]),tube([.47,.32,0],.016,0,.64) ],hardware.copy())
             connected=retained[uid]+[loom];chest["milestones"]["head_baseplate_connected"]=connected.copy()
-            page("Head baseplate: connect loom", "Plug in the head loom, then release and park the crane.", [loom],
+            page("Head baseplate: connect loom", "Plug in the head loom, then raise the crane.", [loom],
                 [dict(op="fit", slots=[loom])]+park(), dict(at=0, text="Clip the strain relief up the right portal."))
         receiver_requires=(["chest:head_mask_retained"] if uid=="head_crown" else ["chest:left_pauldron_closed","chest:right_pauldron_closed","chest:backpack_connected"] if uid=="head_baseplate" else ["chest:head_baseplate_connected"] if uid!="head_top" else ["chest:head_left_retained","chest:head_right_retained"])
         clear_zones=["head_top_rig"] if uid=="head_crown" else [] if uid=="head_baseplate" else ["head_baseplate_rig"] if uid!="head_top" else ["head_left_rig","head_right_rig"]

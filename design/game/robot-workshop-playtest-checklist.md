@@ -2,6 +2,28 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Crane streamlining — 2026-10-31
+
+Player request: stop the repeated connector detaching and the trips to the
+Parking bay. Implemented; routine suites pass; **not yet played.** Check:
+- After **Lower crane** onto a rig (chest, core, backpack, head part stores,
+  foot, arm rig), the connectors release by themselves with a short notice.
+- On a connection that needs hardware (leg flanges, chest, pauldrons, head
+  parts, arms), they stay attached until the last retaining part goes in, then
+  release by themselves. Does the release read clearly at that moment?
+- The hip assembly releases once the jaws close, with no rope trip to the lifting
+  eyes.
+- After **Raise crane**, the empty crane waits where it is, and **Move to
+  pickup** goes straight to the next load. Does it ever hang somewhere awkward
+  (above the robot during rope work, or over the Limb Bay while the leg rig
+  moves)?
+- The upper gantry now stays open between loads. Does leaving it open get in
+  the way of walking or rope work?
+- Still manual: the backpack's final detach after latching, and the core's
+  forward connector during guiding.
+- Possible follow-up, not done: have **Move to pickup** raise the empty crane
+  itself, which would remove the leftover **Raise crane** step.
+
 ## Final-gantry milestones and crane feel — 2026-10-31
 
 Design discussion, nothing implemented. **Player findings:** each move to the final

@@ -28,7 +28,8 @@ CRANE_SUPPORT = LAYOUT["crane"]["support"]
 SPAR_SECURED = "spar_secured"
 SPAR_UID = "LG-120__001"
 CRANE = "service_crane"
-RELEASE = [dict(op="detach", machine=CRANE), dict(op="operate", machine=CRANE, command="up"), dict(op="operate", machine=CRANE, command="go:park")]
+# The magnetic connectors release themselves once the load is retained.
+RELEASE = [dict(op="operate", machine=CRANE, command="up")]
 
 
 def kind(key, family, title, carry="hand", variant="structural"):
@@ -600,9 +601,7 @@ def robot_documents(check=False):
         dict(op="operate", machine=CRANE, command="up"),
         dict(op="operate", machine=CRANE, command="go:receiver", task="foot"),
         dict(op="operate", machine=CRANE, command="down"),
-        dict(op="detach", machine=CRANE),
-        dict(op="operate", machine=CRANE, command="up"),
-        dict(op="operate", machine=CRANE, command="go:park")])
+        dict(op="operate", machine=CRANE, command="up")])
     page(pages, "Dock the prepared foot", "", ["foot"], goal="Hand the foot from the foot rig to the leg rig.", objectives=[
         dict(op="operate", machine="foot_carrier", command="advance:1"),
         dict(op="operate", machine="foot_carrier", command="advance:2"),
@@ -621,16 +620,16 @@ def robot_documents(check=False):
         return [dict(op="operate", machine="joint_restraints", command=f"engage:left_leg:{group}:{side}")
                 for side in ("outboard", "inboard")]
     delivery("Deliver the structural shin", "shin", "LG-100", "foot adapter")
-    page(pages, "Secure the ankle flange", "", flange_slots, ["LG-100__001", "FA-201__001"], goal="Bolt the shin flange, engage both ankle braces, then release and park the crane.", objectives=[dict(op="fit", slots=list(flange_slots))] + engage("ankle") + deepcopy(RELEASE), note=dict(at=0, text="Insert the bolts from the knee side, toward the foot."))
+    page(pages, "Secure the ankle flange", "", flange_slots, ["LG-100__001", "FA-201__001"], goal="Bolt the shin flange, engage both ankle braces, then raise the crane.", objectives=[dict(op="fit", slots=list(flange_slots))] + engage("ankle") + deepcopy(RELEASE), note=dict(at=0, text="Insert the bolts from the knee side, toward the foot."))
     page(pages, "Connect the shin disconnect", "", ["main_input"], ["FA-604__001", "LG-100__001"], goal="Plug the shin harness into the foot socket and the shin.", objectives=[dict(op="fit", slots=["main_input"])], note=dict(at=0, text="Approach from the side away from the part rigs, standing back toward the knee."))
     page(pages, "Seat bearings and thrust spacers", "", bearings + thrust, ["LG-100__001"], goal="Fit both knee bearings, then a thrust spacer at each end of the knee boss.", objectives=[dict(op="fit", slots=list(bearings)), dict(op="fit", slots=list(thrust))], note=dict(at=0, text="Keep the marked knee axle aisle clear."))
     delivery("Deliver the knee fork", "fork", "LG-110", "shin knee boss and thrust spacers")
     page(pages, "Insert the knee axle", "", ["axle"], ["LG-110__001"], goal="Slide the knee axle through the fork and bearings.", objectives=[dict(op="fit", slots=["axle"])], note=dict(at=0, text="Carry it lengthwise with both hands from the marked axle aisle."))
     assert cap_slots[0] == "cap"
-    page(pages, "Retain the knee axle", "", cap_slots, ["LG-110__001", "LG-140__001"], goal="Cap the axle, engage both knee braces, then release and park the crane.", objectives=[dict(op="fit", slots=[cap_slots[0]]), dict(op="fit", slots=list(cap_slots[1:]))] + engage("knee") + deepcopy(RELEASE), note=dict(at=0, text="Work from the side opposite the axle aisle."))
+    page(pages, "Retain the knee axle", "", cap_slots, ["LG-110__001", "LG-140__001"], goal="Cap the axle, engage both knee braces, then raise the crane.", objectives=[dict(op="fit", slots=[cap_slots[0]]), dict(op="fit", slots=list(cap_slots[1:]))] + engage("knee") + deepcopy(RELEASE), note=dict(at=0, text="Work from the side opposite the axle aisle."))
     delivery("Deliver the Upper-leg beam", "spar", "LG-120", "fork flange")
-    page(pages, "Fasten the Upper-leg beam flange", "", spar_slots[1:], ["LG-110__001", "LG-120__001"], goal="Bolt the beam flange, engage both flange braces, then release and park the crane.", objectives=[dict(op="fit", slots=list(spar_slots[1:]))] + engage("beam") + deepcopy(RELEASE), note=dict(at=0, text="Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the hip assembly M24 × 140."))
-    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to the far left (PARK), seen from the foot end. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."))
+    page(pages, "Fasten the Upper-leg beam flange", "", spar_slots[1:], ["LG-110__001", "LG-120__001"], goal="Bolt the beam flange, engage both flange braces, then raise the crane.", objectives=[dict(op="fit", slots=list(spar_slots[1:]))] + engage("beam") + deepcopy(RELEASE), note=dict(at=0, text="Insert the bolts from the hip side, toward the knee. These are M24 × 100, not the hip assembly M24 × 140."))
+    pages.append(dict(title="Structural leg ready", view="prepared", slots=[], body="All leg construction is complete. Raise the empty crane. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to the far left (PARK), seen from the foot end. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."))
     pages.append(dict(title="Supported construction recovery", view="overview", slots=[], body="Before construction disassembly, move the transfer table lever to the middle detent (RIGHT HIP · BUILD), seen from the foot end. Use the turnover box at the head end of the table for rear access: with the foot support under the foot and braces locked, hold RAISE, then ROLL to each 90° stop. ROLL back to neutral, then LOWER before moving the table. To park the supported leg, pull the foot support away and move the table lever to the far left (PARK), seen from the foot end. Select the affected crane task, lower at the leg rig and attach both magnetic connectors to take the weight before Z removes its retaining hardware. Reverse each task: remove all flange pairs before lifting shin or beam; remove cap screws, washers, cap and axle before lifting the fork. Raise crane withdraws the supported part through the reverse axial approach; Put back and Lower crane returns it. Detach and stow only after it is seated on its rig. Undo FA-605 before shin removal. With all structural work removed and the leg rig home, use the foot rig to take the foot back and lower it to dispatch."))
     trial_leg["manual"] = pages
     pages = []
@@ -644,7 +643,7 @@ def robot_documents(check=False):
              dict(op="seat", slot="left_leg", via=dict(machine="leg_rail", command="rise")),
              dict(op="operate", machine="workshop_access", command="lower_close"),
          ],
-         note=dict(at=0, text="Park the empty crane first. Find the foot support under the foot (reach it from either side of the rig), the transfer table lever by the sole of the foot, the bogie box beside the table, and the LOWER GANTRY panel at 8.4 m beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."))
+         note=dict(at=0, text="Find the foot support under the foot (reach it from either side of the rig), the transfer table lever by the sole of the foot, the bogie box beside the table, and the LOWER GANTRY panel at 8.4 m beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."))
     for half, pairs in ((1, (3, 4)), (2, (1, 2))):
         ordinal = "first" if half == 1 else "second"
         page(pages, "Carry retaining half " + str(half), "", ["ring_" + str(half)], ["PV-110__001", "PV-V-HIP-BALL"],

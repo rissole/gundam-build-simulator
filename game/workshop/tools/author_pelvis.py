@@ -51,7 +51,6 @@ def extend(trial, pelvis, layout):
     pelvis.update(carry_class="equipment",work_locations=["support"],bounds=[4.02,4.1,2.0])
     pelvis["manual"].insert(0,dict(title="Deliver the prepared hip assembly",view="components",slots=[],
         goal="Lock the waist straight, crane the hip assembly onto the gantry and close its jaws.",
-        note=dict(at=8, text="Close the upper gantry, take the left lift to ROPE ACCESS and descend to the lifting eyes. Land, unclip and recall the rope before moving the crane."),
         objectives=[
             dict(op="operate",machine="module_supports",command="insert_pins"),
             dict(op="operate",machine="service_crane",command="pickup",task="pelvis"),
@@ -61,9 +60,7 @@ def extend(trial, pelvis, layout):
             dict(op="operate",machine="service_crane",command="go:receiver",task="pelvis"),
             dict(op="operate",machine="service_crane",command="down"),
             dict(op="operate",machine="module_supports",command="close_jaws"),
-            dict(op="detach",machine="service_crane"),
-            dict(op="operate",machine="service_crane",command="up"),
-            dict(op="operate",machine="service_crane",command="go:park")]))
+            dict(op="operate",machine="service_crane",command="up")]))
     for parent in trial["parents"]:
         if parent["id"]=="pelvis":parent.update(label="Prepared hip assembly",location="support:bulky_fixture",home=[3.25,1.2,13])
     for name in ["bulky_fixture","pelvis_gantry"]:trial["supports"][name]=dict(assemblies=["pelvis"],assembly_ids=["pelvis"])

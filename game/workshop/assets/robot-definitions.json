@@ -4845,11 +4845,7 @@
           "title": "Deliver the prepared hip assembly",
           "view": "components",
           "slots": [],
-          "goal": "Lock the waist straight, crane the hip assembly onto the gantry and close its jaws.",
-          "note": {
-            "at": 9,
-            "text": "At the UPPER GANTRY panel at 20.6 m beside the left lift, close the upper gantry, then descend from ROPE ACCESS to the lifting eyes. Land, unclip and recall the rope before moving the crane."
-          },
+          "goal": "Lock the waist straight, crane the hip assembly onto the gantry and close its jaws, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the way before crossing.",
           "objectives": [
             {
               "op": "operate",
@@ -4904,47 +4900,14 @@
             },
             {
               "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
-            },
-            {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "pelvis",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_open"
-            },
-            {
-              "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "pelvis",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "pelvis",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "machine_scope": {
@@ -4957,7 +4920,7 @@
               {
                 "machine": "service_crane",
                 "task": "pelvis",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "module_supports",
@@ -4970,21 +4933,6 @@
                 "state": {
                   "jaws_closed": 4
                 }
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "foot",
-                    "phase": "delivered"
-                  }
-                ]
               }
             ]
           }
@@ -5042,7 +4990,7 @@
           ],
           "note": {
             "at": 0,
-            "text": "Park the empty crane first. Find the foot support under the foot (reach it from either side of the rig), the transfer table lever by the sole of the foot, the bogie box beside the table, and the LOWER GANTRY panel at 8.4 m beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."
+            "text": "Find the foot support under the foot (reach it from either side of the rig), the transfer table lever by the sole of the foot, the bogie box beside the table, and the LOWER GANTRY panel at 8.4 m beside the left lift. Each control moves one thing; the lamps say what is still needed. Keep the leg clamps closed until hip retention and both cylinder lock pins are fitted."
           },
           "diagram_views": [
             {
@@ -6427,33 +6375,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "chest_store",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "chest_store",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "chest_store",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "machine_scope": {
@@ -6466,7 +6396,7 @@
               {
                 "machine": "service_crane",
                 "task": "chest_store",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -6651,7 +6581,7 @@
             "chest/washer_4",
             "chest/bolt_4"
           ],
-          "goal": "Bolt the chest to the waist, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Bolt the chest to the waist, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "objectives": [
             {
               "op": "fit",
@@ -6667,15 +6597,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "chest",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "upper_open"
@@ -6687,28 +6608,14 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "chest",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "chest",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "note": {
             "at": 0,
-            "text": "Use the glowing ropes and stop just above the waist flange; insert the hardware downward. Each magnetic connector can come off once the bolt at its corner is in."
+            "text": "Use the glowing ropes and stop just above the waist flange; insert the hardware downward. The magnetic connectors release once every bolt is in."
           },
           "diagram_views": [
             {
@@ -6838,22 +6745,7 @@
               {
                 "machine": "service_crane",
                 "task": "chest",
-                "phase": "parked"
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "core_store",
-                    "phase": "delivered"
-                  }
-                ]
+                "phase": "released"
               }
             ]
           },
@@ -18124,33 +18016,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "core_store",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "core_store",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "core_store",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "machine_scope": {
@@ -18163,7 +18037,7 @@
               {
                 "machine": "service_crane",
                 "task": "core_store",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -18323,7 +18197,7 @@
           "title": "Retain and connect the core",
           "view": "components",
           "slots": [],
-          "goal": "Bolt the core in, connect it, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Bolt the core in, connect it, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "objectives": [
             {
               "op": "operate",
@@ -18334,15 +18208,6 @@
               "op": "operate",
               "machine": "core_guide",
               "command": "connection"
-            },
-            {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "core",
-                "phase": "arrived"
-              }
             },
             {
               "op": "operate",
@@ -18356,23 +18221,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "core",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "core",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "machine_scope": {
@@ -18385,7 +18236,7 @@
               {
                 "machine": "service_crane",
                 "task": "core",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "core_guide",
@@ -18401,21 +18252,6 @@
                 "state": {
                   "connected": true
                 }
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "backpack_store",
-                    "phase": "delivered"
-                  }
-                ]
               }
             ]
           },
@@ -18469,33 +18305,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "backpack_store",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "backpack_store",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "backpack_store",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "machine_scope": {
@@ -18508,7 +18326,7 @@
               {
                 "machine": "service_crane",
                 "task": "backpack_store",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -18808,25 +18626,11 @@
               "op": "operate",
               "machine": "backpack_hinge",
               "command": "lock_struts"
-            },
-            {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "backpack",
-                "phase": "arrived"
-              }
             }
           ],
           "note": {
-            "at": 3,
-            "text": "Leave the crane lowered at the backpack: it closes the backpack later."
-          },
-          "machine_scope": {
-            "service_crane": {
-              "task": "backpack"
-            }
+            "at": 2,
+            "text": "The magnetic connectors release once the struts are locked. Leave the crane lowered at the backpack: it closes the backpack later."
           },
           "completed_by": {
             "all": [
@@ -18930,7 +18734,7 @@
           "title": "Close and latch the backpack",
           "view": "components",
           "slots": [],
-          "goal": "Close the backpack with the crane, latch it and shut the service covers, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Close the backpack with the crane, latch it and shut the service covers, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "objectives": [
             {
               "op": "connect",
@@ -18989,23 +18793,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "backpack",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "backpack",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             },
             {
               "op": "operate",
@@ -19023,7 +18813,7 @@
               {
                 "machine": "service_crane",
                 "task": "backpack",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "backpack_hinge",
@@ -19033,21 +18823,6 @@
                   "covers": 2,
                   "locks": 0
                 }
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "cassette",
-                    "phase": "delivered"
-                  }
-                ]
               }
             ]
           }
@@ -19099,33 +18874,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "cassette",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "cassette",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "cassette",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -19143,7 +18900,7 @@
               {
                 "machine": "service_crane",
                 "task": "cassette",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "leg_rail",
@@ -19543,7 +19300,7 @@
         },
         {
           "title": "Left shoulder: connect services",
-          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "left_arm/service"
           ],
@@ -19565,15 +19322,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "left_arm",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "lower_close"
@@ -19590,23 +19338,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "left_arm",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "left_arm",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -19632,7 +19366,7 @@
             }
           ],
           "note": {
-            "at": 3,
+            "at": 5,
             "text": "Leave the shoulder brace and the arm's joint restraints engaged."
           },
           "machine_scope": {
@@ -19645,7 +19379,7 @@
               {
                 "machine": "service_crane",
                 "task": "left_arm",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "left_shoulder",
@@ -19665,21 +19399,6 @@
                     "machine": "workshop_access",
                     "state": {
                       "lower_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "right_arm_store",
-                    "phase": "delivered"
-                  }
-                ]
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
                     }
                   },
                   {
@@ -19735,33 +19454,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_arm_store",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "right_arm_store",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_arm_store",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -19775,7 +19476,7 @@
               {
                 "machine": "service_crane",
                 "task": "right_arm_store",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -20169,7 +19870,7 @@
         },
         {
           "title": "Right shoulder: connect services",
-          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Hand the arm's weight to the shoulder, plug in its services and release the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "right_arm/service"
           ],
@@ -20191,15 +19892,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_arm",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "lower_close"
@@ -20216,23 +19908,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "right_arm",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_arm",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -20258,7 +19936,7 @@
             }
           ],
           "note": {
-            "at": 3,
+            "at": 5,
             "text": "Leave the shoulder brace and the arm's joint restraints engaged."
           },
           "machine_scope": {
@@ -20271,7 +19949,7 @@
               {
                 "machine": "service_crane",
                 "task": "right_arm",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "right_shoulder",
@@ -20291,21 +19969,6 @@
                     "machine": "workshop_access",
                     "state": {
                       "lower_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "left_pauldron",
-                    "phase": "delivered"
-                  }
-                ]
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
                     }
                   },
                   {
@@ -20414,7 +20077,7 @@
         },
         {
           "title": "Left pauldron: retain carrier",
-          "goal": "Bolt the carrier to the arm, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Bolt the carrier to the arm, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "left_pauldron/bolt_1",
             "left_pauldron/bolt_2",
@@ -20432,15 +20095,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "left_pauldron",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "upper_open"
@@ -20452,23 +20106,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "left_pauldron",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "left_pauldron",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -20510,22 +20150,7 @@
               {
                 "machine": "service_crane",
                 "task": "left_pauldron",
-                "phase": "parked"
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "right_pauldron",
-                    "phase": "delivered"
-                  }
-                ]
+                "phase": "released"
               }
             ]
           },
@@ -20718,7 +20343,7 @@
         },
         {
           "title": "Right pauldron: retain carrier",
-          "goal": "Bolt the carrier to the arm, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Bolt the carrier to the arm, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "right_pauldron/bolt_1",
             "right_pauldron/bolt_2",
@@ -20736,15 +20361,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_pauldron",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "upper_open"
@@ -20756,23 +20372,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "right_pauldron",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_pauldron",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -20814,22 +20416,7 @@
               {
                 "machine": "service_crane",
                 "task": "right_pauldron",
-                "phase": "parked"
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "head_baseplate_to_fixture",
-                    "phase": "delivered"
-                  }
-                ]
+                "phase": "released"
               }
             ]
           },
@@ -20974,33 +20561,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_baseplate_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_baseplate_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_baseplate_to_fixture",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -21014,7 +20583,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_baseplate_to_fixture",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -21176,7 +20745,7 @@
         },
         {
           "title": "Head baseplate: connect loom",
-          "goal": "Plug in the head loom, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Plug in the head loom, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "hd-loom/001"
           ],
@@ -21186,15 +20755,6 @@
               "slots": [
                 "hd-loom/001"
               ]
-            },
-            {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_baseplate",
-                "phase": "arrived"
-              }
             },
             {
               "op": "operate",
@@ -21208,23 +20768,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_baseplate",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_baseplate",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -21263,22 +20809,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_baseplate",
-                "phase": "parked"
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "head_left_to_fixture",
-                    "phase": "delivered"
-                  }
-                ]
+                "phase": "released"
               }
             ]
           },
@@ -21331,33 +20862,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_left_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_left_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_left_to_fixture",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -21371,7 +20884,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_left_to_fixture",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -21471,7 +20984,7 @@
         },
         {
           "title": "Left wraparound side: retain",
-          "goal": "Bolt the left wraparound side down, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Bolt the left wraparound side down, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "hd-m12100/001",
             "hd-m12100/002"
@@ -21485,15 +20998,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_left",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "upper_open"
@@ -21505,23 +21009,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_left",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_left",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -21561,22 +21051,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_left",
-                "phase": "parked"
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "head_right_to_fixture",
-                    "phase": "delivered"
-                  }
-                ]
+                "phase": "released"
               }
             ]
           },
@@ -21629,33 +21104,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_right_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_right_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_right_to_fixture",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -21669,7 +21126,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_right_to_fixture",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -21769,7 +21226,7 @@
         },
         {
           "title": "Right wraparound side: retain",
-          "goal": "Bolt the right wraparound side down, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Bolt the right wraparound side down, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "hd-m12100/003",
             "hd-m12100/004"
@@ -21783,15 +21240,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_right",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "upper_open"
@@ -21803,23 +21251,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_right",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_right",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -21859,22 +21293,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_right",
-                "phase": "parked"
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "head_top_to_fixture",
-                    "phase": "delivered"
-                  }
-                ]
+                "phase": "released"
               }
             ]
           },
@@ -21927,33 +21346,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_top_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_top_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_top_to_fixture",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -21967,7 +21368,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_top_to_fixture",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -22067,7 +21468,7 @@
         },
         {
           "title": "Structural head top: retain",
-          "goal": "Bolt the structural head top down, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Bolt the structural head top down, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "hd-m12160/001",
             "hd-m12160/002",
@@ -22085,15 +21486,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_top",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "upper_open"
@@ -22105,23 +21497,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_top",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_top",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -22163,22 +21541,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_top",
-                "phase": "parked"
-              },
-              {
-                "any": [
-                  {
-                    "machine": "workshop_access",
-                    "state": {
-                      "upper_closed": true
-                    }
-                  },
-                  {
-                    "machine": "service_crane",
-                    "task": "head_crown_to_fixture",
-                    "phase": "delivered"
-                  }
-                ]
+                "phase": "released"
               }
             ]
           },
@@ -22533,33 +21896,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_crown_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_crown_to_fixture",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_crown_to_fixture",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -22573,7 +21918,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_crown_to_fixture",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -22673,7 +22018,7 @@
         },
         {
           "title": "Decorative head crown: retain",
-          "goal": "Bolt the decorative head crown down, then release and park the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the return route and close the upper gantry after parking.",
+          "goal": "Bolt the decorative head crown down, then raise the crane, using the UPPER GANTRY panel at 20.6 m beside the left lift to open the leaves before raising the crane.",
           "slots": [
             "hd-m12100/005",
             "hd-m12100/006"
@@ -22687,15 +22032,6 @@
               ]
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_crown",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "workshop_access",
               "command": "upper_open"
@@ -22707,23 +22043,9 @@
               "requires_state": {
                 "machine": "service_crane",
                 "task": "head_crown",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "head_crown",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "workshop_access",
-              "command": "upper_close"
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -22763,13 +22085,7 @@
               {
                 "machine": "service_crane",
                 "task": "head_crown",
-                "phase": "parked"
-              },
-              {
-                "machine": "workshop_access",
-                "state": {
-                  "upper_closed": true
-                }
+                "phase": "released"
               }
             ]
           },
@@ -25127,33 +24443,15 @@
               }
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_foot",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "right_foot",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_foot",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -25187,7 +24485,7 @@
               {
                 "machine": "service_crane",
                 "task": "right_foot",
-                "phase": "parked"
+                "phase": "released"
               }
             ]
           }
@@ -25349,7 +24647,7 @@
         },
         {
           "title": "Secure the ankle flange",
-          "goal": "Bolt the shin flange, engage both ankle braces, then release and park the crane.",
+          "goal": "Bolt the shin flange, engage both ankle braces, then raise the crane.",
           "slots": [
             "ankle/W-36__021",
             "ankle/H-36090__001",
@@ -25385,33 +24683,15 @@
               "command": "engage:right_leg:ankle:inboard"
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_shin",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "right_shin",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_shin",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -25464,7 +24744,7 @@
               {
                 "machine": "service_crane",
                 "task": "right_shin",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "joint_restraints",
@@ -25725,7 +25005,7 @@
         },
         {
           "title": "Retain the knee axle",
-          "goal": "Cap the axle, engage both knee braces, then release and park the crane.",
+          "goal": "Cap the axle, engage both knee braces, then raise the crane.",
           "slots": [
             "cap",
             "cap/washer_1",
@@ -25760,33 +25040,15 @@
               "command": "engage:right_leg:knee:inboard"
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_fork",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "right_fork",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_fork",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -25836,7 +25098,7 @@
               {
                 "machine": "service_crane",
                 "task": "right_fork",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "joint_restraints",
@@ -25943,7 +25205,7 @@
         },
         {
           "title": "Fasten the Upper-leg beam flange",
-          "goal": "Bolt the beam flange, engage both flange braces, then release and park the crane.",
+          "goal": "Bolt the beam flange, engage both flange braces, then raise the crane.",
           "slots": [
             "fork/washer_1",
             "fork/bolt_1",
@@ -25979,33 +25241,15 @@
               "command": "engage:right_leg:beam:inboard"
             },
             {
-              "op": "detach",
-              "machine": "service_crane",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_spar",
-                "phase": "arrived"
-              }
-            },
-            {
               "op": "operate",
               "machine": "service_crane",
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
                 "task": "right_spar",
-                "phase": "arrived"
-              }
-            },
-            {
-              "op": "operate",
-              "machine": "service_crane",
-              "command": "go:park",
-              "requires_state": {
-                "machine": "service_crane",
-                "task": "right_spar",
-                "phase": "arrived"
-              }
+                "phase": "released"
+              },
+              "released": true
             }
           ],
           "view": "components",
@@ -26058,7 +25302,7 @@
               {
                 "machine": "service_crane",
                 "task": "right_spar",
-                "phase": "parked"
+                "phase": "released"
               },
               {
                 "machine": "joint_restraints",
@@ -26079,7 +25323,7 @@
           "title": "Structural leg ready",
           "view": "prepared",
           "slots": [],
-          "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to the far left (PARK), seen from the foot end. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
+          "body": "All leg construction is complete. Raise the empty crane. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to the far left (PARK), seen from the foot end. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
         },
         {
           "title": "Supported construction recovery",
@@ -30124,33 +29368,15 @@
                 }
               },
               {
-                "op": "detach",
-                "machine": "service_crane",
-                "requires_state": {
-                  "machine": "service_crane",
-                  "task": "foot",
-                  "phase": "arrived"
-                }
-              },
-              {
                 "op": "operate",
                 "machine": "service_crane",
                 "command": "up",
                 "requires_state": {
                   "machine": "service_crane",
                   "task": "foot",
-                  "phase": "arrived"
-                }
-              },
-              {
-                "op": "operate",
-                "machine": "service_crane",
-                "command": "go:park",
-                "requires_state": {
-                  "machine": "service_crane",
-                  "task": "foot",
-                  "phase": "arrived"
-                }
+                  "phase": "released"
+                },
+                "released": true
               }
             ],
             "view": "components",
@@ -30184,7 +29410,7 @@
                 {
                   "machine": "service_crane",
                   "task": "foot",
-                  "phase": "parked"
+                  "phase": "released"
                 }
               ]
             }
@@ -30346,7 +29572,7 @@
           },
           {
             "title": "Secure the ankle flange",
-            "goal": "Bolt the shin flange, engage both ankle braces, then release and park the crane.",
+            "goal": "Bolt the shin flange, engage both ankle braces, then raise the crane.",
             "slots": [
               "ankle/W-36__021",
               "ankle/H-36090__001",
@@ -30382,33 +29608,15 @@
                 "command": "engage:left_leg:ankle:inboard"
               },
               {
-                "op": "detach",
-                "machine": "service_crane",
-                "requires_state": {
-                  "machine": "service_crane",
-                  "task": "shin",
-                  "phase": "arrived"
-                }
-              },
-              {
                 "op": "operate",
                 "machine": "service_crane",
                 "command": "up",
                 "requires_state": {
                   "machine": "service_crane",
                   "task": "shin",
-                  "phase": "arrived"
-                }
-              },
-              {
-                "op": "operate",
-                "machine": "service_crane",
-                "command": "go:park",
-                "requires_state": {
-                  "machine": "service_crane",
-                  "task": "shin",
-                  "phase": "arrived"
-                }
+                  "phase": "released"
+                },
+                "released": true
               }
             ],
             "view": "components",
@@ -30461,7 +29669,7 @@
                 {
                   "machine": "service_crane",
                   "task": "shin",
-                  "phase": "parked"
+                  "phase": "released"
                 },
                 {
                   "machine": "joint_restraints",
@@ -30722,7 +29930,7 @@
           },
           {
             "title": "Retain the knee axle",
-            "goal": "Cap the axle, engage both knee braces, then release and park the crane.",
+            "goal": "Cap the axle, engage both knee braces, then raise the crane.",
             "slots": [
               "cap",
               "cap/washer_1",
@@ -30757,33 +29965,15 @@
                 "command": "engage:left_leg:knee:inboard"
               },
               {
-                "op": "detach",
-                "machine": "service_crane",
-                "requires_state": {
-                  "machine": "service_crane",
-                  "task": "fork",
-                  "phase": "arrived"
-                }
-              },
-              {
                 "op": "operate",
                 "machine": "service_crane",
                 "command": "up",
                 "requires_state": {
                   "machine": "service_crane",
                   "task": "fork",
-                  "phase": "arrived"
-                }
-              },
-              {
-                "op": "operate",
-                "machine": "service_crane",
-                "command": "go:park",
-                "requires_state": {
-                  "machine": "service_crane",
-                  "task": "fork",
-                  "phase": "arrived"
-                }
+                  "phase": "released"
+                },
+                "released": true
               }
             ],
             "view": "components",
@@ -30833,7 +30023,7 @@
                 {
                   "machine": "service_crane",
                   "task": "fork",
-                  "phase": "parked"
+                  "phase": "released"
                 },
                 {
                   "machine": "joint_restraints",
@@ -30940,7 +30130,7 @@
           },
           {
             "title": "Fasten the Upper-leg beam flange",
-            "goal": "Bolt the beam flange, engage both flange braces, then release and park the crane.",
+            "goal": "Bolt the beam flange, engage both flange braces, then raise the crane.",
             "slots": [
               "fork/washer_1",
               "fork/bolt_1",
@@ -30976,33 +30166,15 @@
                 "command": "engage:left_leg:beam:inboard"
               },
               {
-                "op": "detach",
-                "machine": "service_crane",
-                "requires_state": {
-                  "machine": "service_crane",
-                  "task": "spar",
-                  "phase": "arrived"
-                }
-              },
-              {
                 "op": "operate",
                 "machine": "service_crane",
                 "command": "up",
                 "requires_state": {
                   "machine": "service_crane",
                   "task": "spar",
-                  "phase": "arrived"
-                }
-              },
-              {
-                "op": "operate",
-                "machine": "service_crane",
-                "command": "go:park",
-                "requires_state": {
-                  "machine": "service_crane",
-                  "task": "spar",
-                  "phase": "arrived"
-                }
+                  "phase": "released"
+                },
+                "released": true
               }
             ],
             "view": "components",
@@ -31055,7 +30227,7 @@
                 {
                   "machine": "service_crane",
                   "task": "spar",
-                  "phase": "parked"
+                  "phase": "released"
                 },
                 {
                   "machine": "joint_restraints",
@@ -31076,7 +30248,7 @@
             "title": "Structural leg ready",
             "view": "prepared",
             "slots": [],
-            "body": "All leg construction is complete. Park the empty crane with both magnetic connectors stowed. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to the far left (PARK), seen from the foot end. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
+            "body": "All leg construction is complete. Raise the empty crane. To park an unfinished leg without losing progress, pull its foot support away, then move the transfer table lever by the sole of the foot to the far left (PARK), seen from the foot end. For rear work at RIGHT HIP · BUILD, keep the foot support under the foot and the transport braces locked, and park the movable platform. At the turnover box at the head end of the table, hold RAISE fully, then hold ROLL in either direction; each fresh press turns to the next 90° stop. ROLL back to neutral, then hold LOWER to return to construction height. Open the hip assembly manual for delivery."
           },
           {
             "title": "Supported construction recovery",

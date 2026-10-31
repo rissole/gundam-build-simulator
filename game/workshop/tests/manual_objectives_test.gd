@@ -198,8 +198,9 @@ func run() -> void:
 	expect(cartridge_text == "Fasten 4 × W-12 + H-12040 · upper holes","drive cartridge fasteners, got "+cartridge_text)
 	var ankle := page_named(definitions[left_definition].manual,"Secure the ankle flange")
 	var ankle_text: Array[String] = []
-	for index in [3,4,5]:ankle_text.append(Objectives.text(game,"left_leg",ankle.objectives[index]))
-	expect(ankle_text == ["Crane: Detach and stow magnetic connectors","Crane console: Raise crane","Crane console: Move to Parking bay"],"ankle release text, got "+str(ankle_text))
+	for index in range(3,ankle.objectives.size()):ankle_text.append(Objectives.text(game,"left_leg",ankle.objectives[index]))
+	# The connectors release themselves once the braces hold the flange.
+	expect(ankle_text == ["Crane console: Raise crane"],"ankle release text, got "+str(ankle_text))
 	crane.task = "pelvis";crane.uid = "pelvis";crane.config = {"spec":crane.tasks.pelvis};crane.reacquire = ""
 	crane.station = "park";crane.raised = true;crane.motion = "";crane.moving = false
 	crane.endpoints.a.state = "stowed";crane.endpoints.b.state = "stowed"
@@ -237,14 +238,14 @@ func run() -> void:
 	var bolt_state := Objectives.evaluate(game,"chest",bolt_page)
 	expect(bolt_text == "Core: Secure captive flange bolts" and bolt_state.counts[0] == "0/4","core bolts, got "+bolt_text+" "+str(bolt_state.counts))
 	var closed := page_named(definitions.chest.manual,"Close and latch the backpack")
-	expect(closed.objectives.size() == 11 and str(closed.objectives[0].op) == "connect","backpack close starts by refitting the connectors on the lowered crane, got "+str(closed.objectives.size()))
+	expect(closed.objectives.size() == 9 and str(closed.objectives[0].op) == "connect","backpack close starts by refitting the connectors on the lowered crane, got "+str(closed.objectives.size()))
 	var struts := page_named(definitions.chest.manual,"Attach the backpack struts")
-	expect(str(struts.objectives.back().op) == "detach" and struts.objectives.size() == 4,"struts page leaves the crane lowered at the backpack")
+	expect(str(struts.objectives.back().get("command","")) == "lock_struts" and struts.objectives.size() == 3,"struts page leaves the crane lowered at the backpack; its connectors release themselves")
 	var pelvis_pin := Objectives.text(game,"pelvis",pelvis_page.objectives[0])
 	var pelvis_pickup := Objectives.text(game,"pelvis",pelvis_page.objectives[1])
 	var pelvis_receiver := Objectives.text(game,"pelvis",pelvis_page.objectives[6])
 	var pelvis_jaws := Objectives.text(game,"pelvis",pelvis_page.objectives[8])
-	expect(pelvis_page.objectives.size() == 15 and pelvis_pin == "Waist: Insert both lock pins" and pelvis_pin == "Waist: "+supports.command_label("insert_pins"),"pelvis pin objective, got "+pelvis_pin)
+	expect(pelvis_page.objectives.size() == 10 and pelvis_pin == "Waist: Insert both lock pins" and pelvis_pin == "Waist: "+supports.command_label("insert_pins"),"pelvis pin objective, got "+pelvis_pin)
 	expect(pelvis_pickup == "Crane console: Move to Heavy Module Bay","pelvis pickup objective, got "+pelvis_pickup)
 	expect(pelvis_receiver == "Crane console: Move to Final Assembly Bay","pelvis receiver objective, got "+pelvis_receiver)
 	expect(pelvis_jaws == "Gantry: Close the hold-down jaws" and pelvis_jaws == "Gantry: "+supports.command_label("close_jaws"),"pelvis jaw objective, got "+pelvis_jaws)
@@ -386,7 +387,7 @@ func run() -> void:
 	expect(insert_line=="Heavy module rig: Fit head baseplate contact inserts","head inserts, got "+insert_line)
 	var crown := page_named(definitions.chest.manual,"Decorative head crown: retain")
 	var crown_last := Objectives.text(game,"chest",crown.objectives.back())
-	expect(crown_last=="Upper gantry: Close — UPPER GANTRY panel at 20.6 m beside the left lift","crown closes the leaves after parking, got "+crown_last)
+	expect(crown_last=="Crane console: Raise crane","crown ends by raising the released crane, got "+crown_last)
 	var prose: Array[String] = []
 	var chapters = JSON.parse_string(FileAccess.get_file_as_string("res://assets/manual-chapters.json"))
 	for chapter in chapters.chapters:
