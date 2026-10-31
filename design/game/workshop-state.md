@@ -11,6 +11,12 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Pockets saved (2026-10-31):** player found saving forgot pocket contents.
+  Saves now keep every pocket stack and the selected pocket; pocketing counts as
+  an unsaved change. Hands and loose parts still return to drawers.
+  `save_roundtrip_test` (34 checks) and `rope_access_test` pass; player approved.
+  [Finding](robot-workshop-playtest-checklist.md#pockets-not-saved--2026-10-31).
+
 - **Held-part destination glow (2026-10-31):** holding a part the tracked
   objective needs makes its accepted destinations (slots, hand-seated mounts, or a
   free prep station for the step's own build) pulse amber through geometry. Green
@@ -183,8 +189,10 @@ last version before consolidation.
   there are unsaved build changes. A save holds the model, every machine's last
   stop and the player's position and view. Saved mid-ride, the player reloads on
   the deck at that machine's last stop. Saves are never refused: a moving crane
-  is saved stopped where it is, load hanging, and Resume continues. A reload
-  puts hands, pockets and loose parts back in drawers. Invalid saves are
+  is saved stopped where it is, load hanging, and Resume continues. Pockets
+  (stacks and selection) are saved, and filling or emptying one is an unsaved
+  change (player request, 2026-10-31). A reload puts hands and loose parts back
+  in drawers. Invalid saves are
   deleted, never migrated. The pause menu offers **New workshop**. Mechanical
   checks: `save_roundtrip_test` (fresh boot, mid-ride, mid-lift crane) and the
   diagnostic `save_roundtrip_stages_test` (145 checks), which passes at every stage

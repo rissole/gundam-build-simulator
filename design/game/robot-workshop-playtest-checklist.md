@@ -2,6 +2,19 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Pockets not saved — 2026-10-31
+
+- [x] **Finding:** "Saving doesn't remember your pockets." Pockets had been
+  reset on load since the 2026-10-25 save design, alongside hands and loose parts.
+- [x] **Change:** saves keep every pocket stack and the selected pocket; filling
+  or emptying a pocket is an unsaved change, so Quit without saving warns.
+  Held and loose parts still go back to their drawers.
+- [x] **Automated:** `save_roundtrip_test` stocks a pocket before saving and
+  checks the reload keeps its type, count and selection (34 checks pass);
+  `rope_access_test` passes.
+- [x] **Player approved** the change before an in-game recheck.
+- [ ] In game: fill pockets, Save & quit, relaunch; the same stacks are there.
+
 ## Held-part destination glow — 2026-10-31
 
 **Player request:** when holding the correct part for the next manual step, always

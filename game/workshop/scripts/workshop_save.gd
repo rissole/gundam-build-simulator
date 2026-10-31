@@ -3,7 +3,7 @@ extends RefCounted
 ## Save & quit, or closing the window). It holds the assembly model, each
 ## machine's last stop (the crane is halted where it is, as its Stop leaves it)
 ## and where the player stands and looks. Anything invalid is deleted: there are
-## no migrations. Hands, pockets, loose parts and the manual are not saved.
+## no migrations. Pockets are kept; hands, loose parts and the manual are not.
 const PATH = "user://workshop-save.json"
 ## Bump to discard every existing save after an incompatible change.
 const FORMAT = 1
@@ -11,7 +11,7 @@ const FORMAT = 1
 static var notice: String = ""
 var game: Node
 var path: String = ""
-## Build and machine state as last saved or loaded; position alone is not a change.
+## Build, pocket and machine state as last saved or loaded; position alone is not a change.
 var _last: int = 0
 ## Saved [x, y, z, yaw, pitch], placed once the player exists; empty keeps the spawn.
 var _player: Array = []
@@ -22,19 +22,17 @@ func _init(workshop: Node, save_path: String) -> void:
 
 func enabled() -> bool:return not path.is_empty()
 
-## Model state with hands, pockets and loose parts returned to their sources.
+## Model state with hands and loose parts returned to their sources. Pocket
+## stacks are plain model state with no world pose, so they are kept as they are.
 func normalised_model() -> Dictionary:
 	var data: Dictionary = game.model.capture()
 	for uid in data.items:
 		var item: Dictionary = data.items[uid]
-		if item.owner.is_empty() and item.location in ["held","loose","pocket"]:
+		if item.owner.is_empty() and item.location in ["held","loose"]:
 			item.location = game.part_defs.get(uid,{}).get("location","bin")
 			item.pocket = -1
 	for id in data.assemblies:
 		if data.assemblies[id].location == "held":data.assemblies[id].location = "loose"
-	data.pockets = []
-	for index in range(AssemblyModel.POCKET_SLOTS):data.pockets.append("")
-	data.selected_pocket = 0
 	return data
 
 func snapshot() -> Dictionary:
@@ -49,7 +47,7 @@ func snapshot() -> Dictionary:
 func _signature() -> int:
 	return JSON.stringify([normalised_model(),game.equipment.save_capture()]).hash()
 
-## Whether the build or a machine changed since the last save or load.
+## Whether the build, pockets or a machine changed since the last save or load.
 func unsaved() -> bool:return enabled() and _signature() != _last
 
 ## Treats the current build as saved, e.g. once a --stage launch is prepared.
@@ -96,7 +94,7 @@ func load_saved() -> bool:
 		if error.is_empty():
 			_rebuild(data.equipment)
 			_player = data.get("player",[])
-			notice = "Restored your saved workshop. Loose parts went back to their drawers; a crane that was moving is stopped where it was."
+			notice = "Restored your saved workshop. Your pockets are as you left them; loose and held parts went back to their drawers; a crane that was moving is stopped where it was."
 			restored = true
 		else:discard(error)
 	_last = _signature()

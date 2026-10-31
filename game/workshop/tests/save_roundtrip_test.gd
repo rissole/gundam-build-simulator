@@ -1,6 +1,6 @@
 extends "res://tests/kit/harness.gd"
 ## Workshop save round trip from a fresh boot: manual saving, build state, machine
-## stops, the player's position, the crane stopped mid-delivery and deletion of
+## stops, the player's position, pockets, the crane stopped mid-delivery and deletion of
 ## invalid files. Later stages: save_roundtrip_stages_test.
 const Save = preload("res://scripts/workshop_save.gd")
 const Stages = preload("res://scripts/build_stages.gd")
@@ -40,6 +40,15 @@ func run() -> void:
 	await frames(2,false)
 	await frames(20)
 	expect(lift.moving and lift.rider() != null and game.player.global_position.y > pose.origin.y+.05,"the lift is still carrying the player up when the save is written: moving="+str(lift.moving)+" riding="+str(lift.rider() != null)+" rise="+str(game.player.global_position.y-pose.origin.y))
+	var pocket_kind: String = ""
+	for item in game.model.items.values():
+		if item.location == "bin" and game.model.definitions.parts[item.kind].carry_class == "pocket":
+			pocket_kind = item.kind
+			break
+	var stocked: Dictionary = game.model.stock_pocket(pocket_kind)
+	var pocket_index: int = game.model.pocket_for(pocket_kind)
+	var pocket_count: int = game.model.pocket_size(pocket_index)
+	expect(stocked.ok and pocket_count > 0 and game.save.unsaved(),"filling a pocket is an unsaved change")
 	expect(game.save.save_now().is_empty(),"Save writes mid-ride")
 	var file: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PATH))
 	expect(JSON.stringify(Save.coerce(file.equipment.left_lift,lift.capture())) == lift_rest,"a moving machine is saved at its last stop")
@@ -54,7 +63,7 @@ func run() -> void:
 	expect(loaded.player.global_position.distance_to(pose.origin) < .05 and is_equal_approx(loaded.player.rotation.y,.7) and is_equal_approx(loaded.camera.rotation.x,-.3) and not loaded.save.unsaved(),"the player reloads on the deck at the lift's last stop, looking the same way, with nothing unsaved")
 	var crane = loaded.equipment.get_equipment("service_crane")
 	expect(crane.station == "park" and crane.attached_count() == 0,"the crane reloads parked with its ends stowed")
-	expect(loaded.model.integrity_errors().is_empty() and loaded.model.held_item().is_empty() and loaded.held_build().is_empty() and loaded.model.pockets.all(func(kind):return kind.is_empty()),"the reload is valid with empty hands and pockets")
+	expect(loaded.model.integrity_errors().is_empty() and loaded.model.held_item().is_empty() and loaded.held_build().is_empty() and loaded.model.pocket_for(pocket_kind) == pocket_index and loaded.model.pocket_size(pocket_index) == pocket_count and loaded.model.selected_pocket == pocket_index,"the reload is valid with empty hands and the same pockets")
 	expect(Save.notice.begins_with("Restored"),"the pause menu notice reports the restore")
 	# Invalid files are deleted before anything live changes.
 	var good: String = FileAccess.get_file_as_string(PATH)
