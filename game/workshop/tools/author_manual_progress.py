@@ -27,6 +27,13 @@ def bind(recipes, chapters):
         for objective in page.get("objectives", []):
             if objective.get("machine") == "service_crane" and objective.get("command") == "pickup":
                 following_task = objective["task"]
+    # bind() writes guards into objectives in place, so a dict shared by two
+    # objectives would receive the later page's crane task.
+    seen = {}
+    for page in ordered:
+        for objective in page.get("objectives", []):
+            assert id(objective) not in seen, ("objective dict reused", seen.get(id(objective)), page["title"])
+            seen[id(objective)] = page["title"]
     task = ""
     for chapter in chapters:
         for owner, index, *_ in chapter["steps"]:

@@ -27,6 +27,7 @@ ROUTINE = (
     'manual_objectives_test',
     'manual_panel_test',
     'manual_progress_test',
+    'manual_walk_test',
     'mobile_platform_test',
     'nested_runtime_test',
     'part_variants_test',

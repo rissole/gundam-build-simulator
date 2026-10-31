@@ -147,6 +147,19 @@ otherwise it says work remains and directs the player to the manual.
   shapes; machine scopes name registered manual machines.
 - Text is generated: part names come from the part registry, control labels from
   the machine's `menu_options()` and `controls()` labels.
+- An objective's crane `requires_state` names the page's own crane scope task. A
+  guard on another trip can never pass during this one (2026-10-31).
+
+### Forward walk
+
+`manual_walk_test` (routine, about 0.1 s of walking) performs every action step in
+chapter order against synthetic machine states: each machine reports the cumulative
+`manual_effect()` of the objectives walked so far, fits and seats fill the model,
+and the real crane answers transport proofs. After each objective, it and every
+earlier objective must be ticked; at the end every step must be Done. It proves the
+manual data and evaluation agree, not that real machines reach those states (stage
+runs) or that the player can do the work. Authoring also rejects one objective dict
+reused across pages, since `bind()` writes guards in place.
 
 ### The stage progression executes the manual
 

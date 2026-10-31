@@ -240,6 +240,11 @@ static func errors(definitions: Dictionary, machines: Dictionary) -> Array[Strin
 				if not objective is Dictionary:continue
 				for field in ["completed_by","requires_state"]:
 					if objective.has(field):_check_proof(objective[field],definitions,machines,prefix,found)
+				# A guard on another crane trip can never pass during this one.
+				var guard = objective.get("requires_state")
+				if guard is Dictionary and guard.get("machine") == "service_crane" and guard.has("task"):
+					var scoped = page.get("machine_scope",{}).get("service_crane",{}) if page.get("machine_scope") is Dictionary else {}
+					if not scoped is Dictionary or scoped.get("task") != guard.task:found.append(prefix+"crane guard names task %s outside the page's crane scope"%str(guard.task))
 			if page.has("machine_scope"):
 				if not page.machine_scope is Dictionary:found.append(prefix+"invalid machine scope")
 				else:

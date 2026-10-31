@@ -82,10 +82,11 @@ def extend(trial, chest, layout, diagram):
     def crane_to(task):
         return [operate(crane, "pickup", task), operate(crane, "down"), dict(op="connect", machine=crane),
                 operate(crane, "up"), operate(crane, "go:receiver", task), operate(crane, "down")]
-    park = [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
+    def park():
+        return [dict(op="detach", machine=crane), operate(crane, "up"), operate(crane, "go:park")]
     chest["manual"] += [dict(title="Bring the core to the heavy module rig", view="components", slots=[],
         goal="Fit core inserts on the heavy module rig and crane the core onto it.",
-        objectives=[operate(rig, "template:core")] + crane_to("core_store") + park),
+        objectives=[operate(rig, "template:core")] + crane_to("core_store") + park()),
         dict(title="Deliver and guide the core", view="components", slots=["core"],
         goal="Crane the core to the chest's rear dock, then guide it in from an exit-side rope.",
         objectives=crane_to("core") + [operate(guide, "next:capture"),
@@ -95,7 +96,7 @@ def extend(trial, chest, layout, diagram):
         diagram_views=[diagram("Core and captured guides", context, dock, offsets={uid: [0, .65, 0] for uid in context})]),
         dict(title="Retain and connect the core", view="components", slots=[],
         goal="Bolt the core in, connect it, then release and park the crane.",
-        objectives=[operate(guide, "secure_bolts"), operate(guide, "connection")] + park)]
+        objectives=[operate(guide, "secure_bolts"), operate(guide, "connection")] + park())]
     trial["robot"]["playable_slots"]["chest"]=["core"]
     trial["robot"]["controlled_mount_slots"].append("chest.core")
     trial["equipment"]["core_guide"]=dict(owner="chest",uid="core",slot="core",support="core_guide",travel=2.20,capture=.85,

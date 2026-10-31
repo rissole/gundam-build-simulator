@@ -163,6 +163,9 @@ func run() -> void:
 	var untasked = {"title":"Deliver","goal":"g","view":"components","slots":[],"objectives":[{"op":"operate","machine":"service_crane","command":"go:receiver"}]}
 	var untasked_errors = Objectives.errors(manual_of(untasked),commands)
 	expect(not untasked_errors.is_empty() and joined(untasked_errors).contains("go:receiver needs a task"),"go:receiver without a task is rejected: "+joined(untasked_errors))
+	var foreign_guard = {"title":"Park","goal":"g","view":"components","slots":[],"machine_scope":{"service_crane":{"task":"core_store"}},"objectives":[{"op":"detach","machine":"service_crane","requires_state":{"machine":"service_crane","task":"core","phase":"arrived"}}]}
+	var foreign_errors = Objectives.errors(manual_of(foreign_guard),commands)
+	expect(joined(foreign_errors).contains("outside the page's crane scope"),"a crane guard on another trip is rejected: "+joined(foreign_errors))
 	var goalless = {"title":"Bolt","view":"components","slots":["a"],"objectives":[{"op":"fit","slots":["a"]}]}
 	expect(not Objectives.errors(manual_of(goalless),commands).is_empty(),"missing goal is rejected")
 	var prepared = {"title":"Done","goal":"g","view":"prepared","slots":["a"],"objectives":[{"op":"fit","slots":["a"]}]}

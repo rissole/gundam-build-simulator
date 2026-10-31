@@ -301,6 +301,12 @@ last version before consolidation.
 
 ## Next
 
+**Manual walk guard (2026-10-31):** the core's heavy-module-rig step jumped back to
+its pickup after detaching (a shared authoring list carried the next trip's crane
+guard). Fixed at source; authoring, load validation and the new routine
+`manual_walk_test` now reject this class
+([finding](robot-workshop-playtest-checklist.md#manual-regresses-after-core-rig-delivery--2026-10-31)).
+
 **Recheck sweep passed (2026-10-31):** left leg, gantry v2, ramp, free drive,
 docking smoothness and coplanar repair all passed the player's recheck. Next: a full
 playthrough focused on why the crane and rigs feel "not great"

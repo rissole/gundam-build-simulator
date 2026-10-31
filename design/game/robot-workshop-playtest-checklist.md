@@ -2,6 +2,29 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Manual regresses after core rig delivery — 2026-10-31
+
+**Player report:** after lowering the core onto the heavy module rig and
+detaching the magnetic connectors, the current step jumps back to objective 2
+(crane pickup) as if the trip had not started. The player sees this as a
+systemic problem with manual progression.
+
+**Source diagnosis:** on "Bring the core to the heavy module rig", the detach, up
+and go:park objectives carry `requires_state` for crane task `core` (the next
+trip, to the chest) instead of `core_store`. That guard can never pass during this
+trip. Detaching also breaks the earlier prefixes (they expect connectors attached),
+so `evaluate()` falls back to the last prefix that still matches: the untouched rig
+inserts. Cause: `author_core.py` shared one `park` objective list between this page and
+"Retain and connect the core", and `bind()` wrote the later page's guards into it.
+
+**Repair, awaiting player recheck:** each page builds its own park objectives;
+authoring rejects reused objective dicts; load validation rejects a crane guard
+outside the page's crane scope; the new routine `manual_walk_test` walks every
+action step forwards (fails on the old data with "current is 2", as reported).
+All 54 routine cases pass (59.1 s). User declined a runtime hold-progress safety
+net for now so this class of bug stays visible. Recheck: lower the core on the
+heavy module rig, detach both connectors; the step should advance to raising.
+
 ## Recheck sweep passed — 2026-10-31
 
 Player reports all outstanding rechecks passed: focused left-leg recheck, gantry v2

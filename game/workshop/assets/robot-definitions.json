@@ -11206,7 +11206,7 @@
               "machine": "service_crane",
               "requires_state": {
                 "machine": "service_crane",
-                "task": "core",
+                "task": "core_store",
                 "phase": "arrived"
               }
             },
@@ -11216,7 +11216,7 @@
               "command": "up",
               "requires_state": {
                 "machine": "service_crane",
-                "task": "core",
+                "task": "core_store",
                 "phase": "arrived"
               }
             },
@@ -11226,7 +11226,7 @@
               "command": "go:park",
               "requires_state": {
                 "machine": "service_crane",
-                "task": "core",
+                "task": "core_store",
                 "phase": "arrived"
               }
             }
