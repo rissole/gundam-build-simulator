@@ -301,6 +301,11 @@ last version before consolidation.
 
 ## Next
 
+**Recheck sweep passed (2026-10-31):** left leg, gantry v2, ramp, free drive,
+docking smoothness and coplanar repair all passed the player's recheck. Next: a full
+playthrough focused on why the crane and rigs feel "not great"
+([checklist](robot-workshop-playtest-checklist.md#recheck-sweep-passed--2026-10-31)).
+
 **Gantry v2 (2026-10-27; merge into main approved):** developed on `gantry-v2`, worktree
 `/private/tmp/gantry-v2`: 20.6 m rope walkways, relocated lifts, collision-resolved
 rope work (now swinging/bracing), physical upper-leaf controls and crossing-based

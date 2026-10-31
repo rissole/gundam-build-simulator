@@ -2,6 +2,15 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Recheck sweep passed — 2026-10-31
+
+Player reports all outstanding rechecks passed: focused left-leg recheck, gantry v2
+rope access (corners, movement feel), boarding ramp and moving-platform flicker,
+free platform driving/nudging, left-leg docking smoothness and the coplanar
+geometry repair. Open-ended detail items in those sections are superseded by this
+pass. **Still open:** the player finds the crane and the rigs "not great"; a full
+playthrough follows to pin down why. Record those findings in a new section.
+
 ## Jumping on the elevators — 2026-10-30
 
 - Player request: “you simply must be able to jump while on the elevators, my
