@@ -38,10 +38,15 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
     shell), 0–10 of about 430.
   - Head: M24×160 ×4 and M12×100 /001, /003 behind the baseplate; M12×160 ×4
     behind the head top; sensor M10×160 ×2 behind the mask. 0–8 of about 450.
-- [ ] **Narrow, review:** chest services 1–2 (PV-320 shell, 10%); backpack lower
-  latches and service covers (about 11%, aim point inside their own lever or
-  cover, same family as the struts); arm drive_1_b keepers (11%); head M12×100
-  /002, /004 (6%).
+- [ ] **Narrow, review:** chest services 1–2 (PV-320 shell, 10%); arm drive_1_b
+  keepers (11%); head M12×100 /002, /004 (6%).
+- [x] **Backpack lower latches and service covers (narrow, about 11%):** aim
+  point inside their own lever or cover, the strut family. Fixed the same way
+  (own body see-through). Probe on the closed pack: latches 493/500 and 482/491,
+  covers 464/475 and 460/472; the rest is the chest frame. 4 routine suites pass;
+  the audit itself was not rerun.
+- [ ] In game: close the backpack, engage both lower latches, close both service
+  covers.
 - [ ] **Not audit-caused:** the shared sequence stops in head sensor fitting
   (`service_crane up` waits for "wing left 20 6 floorSolid"). Plain
   `run_to("complete")` stops at the same point, so the crown and `complete`

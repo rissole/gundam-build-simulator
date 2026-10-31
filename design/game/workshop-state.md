@@ -21,7 +21,8 @@ last version before consolidation.
 
 - **Backpack strut controls (2026-10-31):** player could not extend the struts.
   The Extend handles and strut locks aimed inside their own eye and against the
-  shell; they now treat the backpack body as their own, like gantry jaws. Rope
+  shell; they, the lower latches and the service covers now treat the backpack
+  body as their own, like gantry jaws. Rope
   prediction uses the same flag. 7 routine suites pass; the new
   `backpack_delivery_test` check is not run.
   [Finding and recheck](robot-workshop-playtest-checklist.md#backpack-struts-would-not-extend--2026-10-31).
