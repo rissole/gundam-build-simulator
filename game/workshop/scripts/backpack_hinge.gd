@@ -97,10 +97,13 @@ func crane_options() -> Array[Dictionary]:
 func controls() -> Array[Dictionary]:
 	var result: Array[Dictionary]=[]
 	if not active:return result
+	# Strut handles and their locks sit against the pack's own shell and
+	# frame, as gantry jaws and cassette clamps do: only other bodies obstruct.
+	var own={"allowed":[game.runtime.node(spec.uid)],"allow_body_hit":true}
 	for n in range(2):
 		var uid="BP-STRUT-A__%03d"%(n+1);var handle=source_nodes[uid]
-		result.append(control_entry(handle,"strut:"+str(n),"Backpack strut: "+("Retract" if struts[n]==1 else "Extend"),.07,{"point":handle.global_position}))
-		result.append(control_entry(lock_nodes[n],"lock:"+str(n),"Backpack strut: "+("Release" if locks[n] else "Lock open"),.075,{"point":lock_nodes[n].global_position}))
+		result.append(control_entry(handle,"strut:"+str(n),"Backpack strut: "+("Retract" if struts[n]==1 else "Extend"),.07,own.merged({"point":handle.global_position})))
+		result.append(control_entry(lock_nodes[n],"lock:"+str(n),"Backpack strut: "+("Release" if locks[n] else "Lock open"),.075,own.merged({"point":lock_nodes[n].global_position})))
 		var latch=source_nodes["BP-LATCH-LEVER__%03d"%(n+1)]
 		result.append(control_entry(latch,"latch:"+str(n),"Backpack latch: "+("Release" if latches[n] else "Engage"),.075,{"point":load_pose()*AssemblyRuntime.vec(spec.latch_positions[n])}))
 		if angle==1:result.append(control_entry(cover_nodes[n],"cover:"+str(n),"Service cover: "+("Open" if covers[n] else "Close"),.10,{"point":cover_nodes[n].global_position}))

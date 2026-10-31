@@ -32,6 +32,24 @@ func expect_pin_aim(sid: String) -> void:
 	game.automation.place_player(home)
 	await frames(2)
 
+## Reported 2026-10-31: the strut Extend handle aimed at the centre of its own
+## eye, tucked against the shell, so it read as obstructed. From the same
+## outboard hanging position the player can operate it.
+func expect_strut_aim(n: int) -> void:
+	var pack=game.equipment.get_equipment("backpack_hinge")
+	var chest: Node3D=game.assembly_node("chest")
+	var point: Vector3=pack.source_nodes["BP-STRUT-A__%03d"%(n+1)].global_position
+	var side: float=signf((chest.global_transform.affine_inverse()*point).x)
+	var home: Vector3=game.player.global_position
+	game.automation.place_player(point+chest.global_basis*Vector3(side*.97,0,1.1)-Vector3.UP*game.camera.position.y)
+	game.automation.look_at_point(point)
+	await frames(2)
+	var target: Dictionary=game.automation.refresh_target()
+	var error: String=game.automation.access_error() if target.get("action","")=="strut:"+str(n) else "aimed at "+str(target.get("action",target.get("type","nothing")))
+	expect(error.is_empty(),"hanging outboard of the open backpack aims at and can extend strut "+str(n+1)+": "+error)
+	game.automation.place_player(home)
+	await frames(2)
+
 func deliver_backpack() -> bool:
 	var fixture=game.equipment.get_equipment("module_supports")
 	var crane=game.equipment.get_equipment("service_crane")
@@ -56,6 +74,7 @@ func deliver_backpack() -> bool:
 	expect(not game.model.placement_error("chest","backpack/hinge_pin_2","BP-P40__001").is_empty(),"40 mm strut pin cannot replace a 60 mm hinge pin")
 	fit_backpack(pack.spec.hinge_slots.filter(func(sid):return sid!="backpack/hinge_pin_1"))
 	expect(not game.equipment.placement_error("chest","backpack/strut_pin_1").is_empty(),"strut base pin needs the actual deployed eye")
+	for n in range(2):await expect_strut_aim(n)
 	pack.request("strut:0");pack.physics(1);pack.request("stop")
 	expect(pack.struts[0]>0 and pack.struts[0]<1,"prepared telescope moves continuously from its stowed position")
 	if not command(pack,"resume") or not command(pack,"strut:1"):return false

@@ -333,7 +333,7 @@ func access_control_entries(objective: Dictionary, owner: String, machine: Node)
 	var work: Array[Dictionary]=[]
 	if is_instance_valid(machine):
 		for entry in machine.manual_control_entries(objective):
-			if entry.has("point"):work.append({"point":entry.point,"allowed":entry.get("allowed",[]),"body_hit":entry.get("sight_self",false),"depth":.065})
+			if entry.has("point"):work.append({"point":entry.point,"allowed":entry.get("allowed",[]),"body_hit":entry.get("allow_body_hit",false),"depth":.065})
 	if objective.get("op","") in ["fit","seat"] and game.model.assemblies.has(owner):
 		var slots: Array=objective.get("slots",[objective.get("slot","")])
 		for sid in slots:

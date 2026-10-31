@@ -8,6 +8,10 @@ const FOOT_STAGES = ["foot","actuator"]
 const STAGES = ["pelvis","left_leg_build","left_leg_dock","right_leg_build","right_leg_dock","chest","core","backpack","left_arm","right_arm","pauldrons","head","head_sensors","complete"]
 const TITLES = {"foot":"Left-foot heel pads","actuator":"Left-foot pitch actuator","pelvis":"Hip assembly delivery","left_leg_build":"Left-leg construction","left_leg_dock":"Left-leg docking","right_leg_build":"Right-leg construction","right_leg_dock":"Right-leg docking","chest":"Chest delivery","core":"Core delivery","backpack":"Backpack delivery","left_arm":"Left-arm delivery","right_arm":"Right-arm delivery","pauldrons":"Pauldron fitting","head":"Head fitting","head_sensors":"Head sensor fitting","complete":"Robot structure complete"}
 var game: Node
+## Optional diagnostic observer, told before each staged control and given each
+## fill, so an audit sees every control and connection in its working state.
+## It implements before_control(controller, action) and fill(owner, permitted).
+var observer: Object = null
 
 func _init(workshop: Node) -> void:game=workshop
 
@@ -172,6 +176,7 @@ func _access_physics() -> void:
 
 func command(controller: Node, action: String) -> String:
 	var step: String=controller.equipment_id+" "+action
+	_observe(controller,action)
 	var error: String=controller.request(action)
 	if error.is_empty():error=settle(controller)
 	return "" if error.is_empty() else step+": "+error
@@ -182,6 +187,7 @@ func jog(controller: Node, action: String, limit: int = 1600) -> String:
 	var step: String=controller.equipment_id+" "+action
 	var error: String=controller.action_error(action)
 	if not error.is_empty():return step+": "+error
+	_observe(controller,action)
 	controller.set_jog(action)
 	for tick in range(limit):
 		_access_physics()
@@ -193,6 +199,7 @@ func jog(controller: Node, action: String, limit: int = 1600) -> String:
 
 ## Throws the transfer table lever to the notch at x and waits for the table.
 func index_to(rail: Node, x: float) -> String:
+	_observe(rail,"lever")
 	var error: String=rail.throw_lever(x)
 	if error.is_empty():error=settle(rail)
 	if error.is_empty() and not is_equal_approx(rail.index_x,x):error="The table did not reach X"+str(x)+"."
@@ -200,6 +207,7 @@ func index_to(rail: Node, x: float) -> String:
 
 ## Drags the foot support to a stroke (0 under the foot, 1 clear), as the player does.
 func pull_support(rail: Node, goal: float) -> String:
+	_observe(rail,"support")
 	var error: String=rail.pull_support(goal)
 	if error.is_empty():error=settle(rail)
 	return "" if error.is_empty() else "leg_rail foot support: "+error
@@ -216,6 +224,11 @@ func supply_rig(crane: Node, attached: bool) -> void:
 	for index in range(crane.END_IDS.size()):state.endpoints[crane.END_IDS[index]]={"state":"attached" if attached else "stowed","point":crane.POINT_IDS[index] if attached else ""}
 	crane.apply(state)
 
+func _observe(controller: Node, action: String) -> void:
+	if observer!=null:observer.before_control(controller,action)
+func _fill(owner: String, permitted: Array = []) -> void:
+	if observer!=null:observer.fill(owner,permitted)
+	else:Staging.fill(game,owner,permitted)
 func _equipment(id: String) -> Node:return game.equipment.get_equipment(id)
 func _need(errors: Array[String], okay: bool, message: String) -> void:
 	if not okay:errors.append(message)
@@ -280,7 +293,7 @@ func _leg_build(side: String) -> String:
 	for task in ["shin","fork","spar"]:
 		error=_transfer(task if side=="left" else "right_"+task)
 		if not error.is_empty():return error
-		Staging.fill(game,owner,game.runtime.definition(owner).slots.keys().filter(func(sid):return sid not in ["shin","fork","spar"]))
+		_fill(owner,game.runtime.definition(owner).slots.keys().filter(func(sid):return sid not in ["shin","fork","spar"]))
 		if not crane.secured():return owner+" "+task+": Supplied structural fastening did not secure the load."
 		var braces=_equipment("joint_restraints")
 		for fixture in braces.fixtures:
@@ -301,10 +314,11 @@ func _leg_dock(side: String) -> String:
 	if error.is_empty():error=gantry_front("lower",false)
 	if not error.is_empty():return error
 	if not rail.supports_seated(side+"_leg") or game.model.assemblies[side+"_leg"].parent!="pelvis":return side+" leg docking: Holder did not seat the leg at its hip."
-	Staging.fill(game,"pelvis")
+	_fill("pelvis")
 	var locks=_equipment("captive_controls")
 	for id in locks.specs:
 		if not id.begins_with(side+"_"):continue
+		_observe(locks,id)
 		var lock_error: String=locks.request(id)
 		if not lock_error.is_empty():return id+": "+lock_error
 	error=settle(_equipment("workshop_access"))
@@ -329,10 +343,10 @@ func _chest() -> String:
 	if not error.is_empty():return error
 	error=_transfer("chest")
 	if not error.is_empty():return error
-	Staging.fill(game,"pelvis",game.runtime.definition("pelvis").milestones.chest_secured.filter(func(sid):return sid!="chest"))
+	_fill("pelvis",game.runtime.definition("pelvis").milestones.chest_secured.filter(func(sid):return sid!="chest"))
 	error=_park()
 	if not error.is_empty():return error
-	Staging.fill(game,"pelvis",["chest/service_1","chest/service_2"])
+	_fill("pelvis",["chest/service_1","chest/service_2"])
 	return ""
 
 func _core() -> String:
@@ -365,15 +379,15 @@ func _backpack() -> String:
 	if not error.is_empty():return error
 	error=_transfer("backpack")
 	if not error.is_empty():return error
-	Staging.fill(game,"chest",pack.spec.hinge_slots)
+	_fill("chest",pack.spec.hinge_slots)
 	error=_commands(pack,["strut:0","strut:1"])
 	if not error.is_empty():return error
-	Staging.fill(game,"chest",pack.spec.strut_slots)
+	_fill("chest",pack.spec.strut_slots)
 	error=_commands(pack,["lock:0","lock:1"])
 	if not error.is_empty():return error
 	error=_park()
 	if not error.is_empty():return error
-	Staging.fill(game,"chest",pack.spec.service_slots)
+	_fill("chest",pack.spec.service_slots)
 	error=gantry_front("upper",true)
 	if error.is_empty():error=_commands(crane,["go:receiver","down"])
 	if not error.is_empty():return error
@@ -398,10 +412,10 @@ func _arm(side: String) -> String:
 	error=_transfer(side+"_arm")
 	if not error.is_empty():return error
 	var shoulder=_equipment(side+"_shoulder")
-	Staging.fill(game,"chest",shoulder.spec.structural_slots.filter(func(sid):return sid!=side+"_arm"))
+	_fill("chest",shoulder.spec.structural_slots.filter(func(sid):return sid!=side+"_arm"))
 	error=_commands(shoulder,["check_brakes","transfer_weight"])
 	if not error.is_empty():return error
-	Staging.fill(game,"chest",shoulder.spec.service_slots)
+	_fill("chest",shoulder.spec.service_slots)
 	return _park()
 
 func _pauldrons() -> String:
@@ -409,10 +423,10 @@ func _pauldrons() -> String:
 		var receiver=_equipment(side+"_pauldron_receiver")
 		var error=_transfer(side+"_pauldron")
 		if not error.is_empty():return error
-		Staging.fill(game,receiver.spec.owner,receiver.spec.retention_slots)
+		_fill(receiver.spec.owner,receiver.spec.retention_slots)
 		error=_park()
 		if not error.is_empty():return error
-		Staging.fill(game,receiver.spec.owner,receiver.spec.closure_slots)
+		_fill(receiver.spec.owner,receiver.spec.closure_slots)
 		for operation in receiver.spec.operations:
 			error=receiver.request("release:"+operation.id)
 			if not error.is_empty():return side+" "+operation.id+": "+error
@@ -429,7 +443,7 @@ func _head() -> String:
 		if not error.is_empty():return error
 		error=_transfer(uid)
 		if not error.is_empty():return error
-		Staging.fill(game,receiver.spec.owner,receiver.spec.retention_slots)
+		_fill(receiver.spec.owner,receiver.spec.retention_slots)
 		error=_park()
 		if not error.is_empty():return error
 	return ""
@@ -463,7 +477,7 @@ func _head_closure() -> String:
 		for sid in receiver.spec.get("captive_slots",[]):
 			error=receiver.request("fasten:"+sid)
 			if not error.is_empty():return error
-		Staging.fill(game,"chest",receiver.spec.retention_slots)
+		_fill("chest",receiver.spec.retention_slots)
 		if not receiver.retained():return uid+": Retain and connect the seated hand-carried piece."
 	var error=command(_equipment("module_supports"),"template:head_crown")
 	if not error.is_empty():return error
@@ -473,5 +487,5 @@ func _head_closure() -> String:
 	if not error.is_empty():return error
 	error=_transfer("head_crown")
 	if not error.is_empty():return error
-	Staging.fill(game,"chest",_equipment("head_crown_receiver").spec.retention_slots)
+	_fill("chest",_equipment("head_crown_receiver").spec.retention_slots)
 	return _park()

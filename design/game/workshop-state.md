@@ -11,6 +11,21 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Aim point audit (2026-10-31):** new expensive diagnostic
+  `aim_point_audit_test` (about 47 s; run after major changes) checks sight to
+  every staged control and connection fill in its working state. First run:
+  74 buried, all in arm, pauldron and head hardware, plus 10 narrow. Not yet
+  confirmed in game. The shared sequence also stops in head sensor fitting
+  (pre-existing).
+  [Findings](robot-workshop-playtest-checklist.md#aim-point-audit--2026-10-31).
+
+- **Backpack strut controls (2026-10-31):** player could not extend the struts.
+  The Extend handles and strut locks aimed inside their own eye and against the
+  shell; they now treat the backpack body as their own, like gantry jaws. Rope
+  prediction uses the same flag. 7 routine suites pass; the new
+  `backpack_delivery_test` check is not run.
+  [Finding and recheck](robot-workshop-playtest-checklist.md#backpack-struts-would-not-extend--2026-10-31).
+
 - **Control cues through models (2026-10-31):** player rule: gold "use machine"
   cues follow the held-part glow, at any distance and through geometry (the thin
   contour stays depth-tested). Operating still checks reach and sight. 7

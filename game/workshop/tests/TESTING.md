@@ -29,6 +29,25 @@ simulate a run-all command. Diagnostics default to one worker. Files remain in
 place where useful to existing visual-review inheritance; classification, not
 filename suffix, determines which runner can execute them.
 
+## Aim point audit
+
+`python3 game/workshop/tools/run_diagnostics.py --only aim_point_audit_test`
+
+Expensive (about 47 s); run it after major geometry, content or interaction
+changes, not as routine verification. It runs the shared stage sequence from a
+fresh workshop with an observer in `build_stages.gd`. Just before each staged
+control use, and each connection fill (one at a time, in authored order), it
+samples 640 viewpoints within reach of the aim point. It keeps those with a
+head's clearance (0.15 m) and runs the real `targeting.can_see` from each.
+Below 5% of clear viewpoints fails as buried; below 15% prints `AIM NARROW` for
+review. Each result names the top blocking parts and any solid that encloses the
+aim point. Evidence: `verification/aim-point-audit.json`.
+
+It judges geometric sight from free space only, not whether the player can
+walk, ride or hang there. Foot chapters (supplied in one step), magnetic
+connectors (supplied rig state) and controls staging never operates are outside
+its scope; unmatched staged actions are listed as `AIM UNMATCHED`.
+
 ## Coplanar surface regression
 
 `python3 game/workshop/tools/run_regressions.py --only workshop_surfaces_test geometry_surface_audit_test`

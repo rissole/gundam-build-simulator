@@ -60,6 +60,7 @@ ROUTINE = (
 
 DIAGNOSTIC = (
     'foot_render_test',  # Cheap isolated fixture; explicitly opt-in, never routine.
+    'aim_point_audit_test',  # Expensive: whole stage sequence; run after major changes.
     'arm_cassette_test',
     'arm_delivery_test',
     'arm_preflight_test',

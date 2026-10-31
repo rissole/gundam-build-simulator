@@ -19,6 +19,62 @@ Walk the complete wider workshop yourself. A stage jump only sets the scene.
   not mistaken for "operable from here". E still needs reach and sight.
 - [ ] Open, shared with the part glow: fade or stop beyond some distance?
 
+## Aim point audit — 2026-10-31
+
+- [x] **Request:** "build that audit as one of the expensive tests that i only
+  run after major changes", after the strut finding below.
+- [x] **Built:** diagnostic `aim_point_audit_test`; method and scope in
+  [TESTING.md](../../game/workshop/tests/TESTING.md#aim-point-audit). With the
+  strut fix temporarily undone it fails both Extend controls (3 of 513
+  viewpoints), matching the headless probe.
+- [ ] **First run, 308 targets: 74 buried (fail), 10 narrow.** Not confirmed in
+  game; no player has fitted these yet. Each buried aim point sits inside a
+  fitted part or behind a shell, the hinge-pin and strut signature:
+  - Both arms, 27 connections per side: ring_front/rear (inside the ball
+    beam), ring washers and bolts (inside SH-RING-FRONT/REAR), brace, brace pins
+    and keepers (inside SH-BRACE), drive pins and keepers (inside SH-DRIVE, behind
+    CH-*-DRIVE-BRIDGE). Seen from 0–4 of about 450 viewpoints.
+  - Pauldron bolts 1–4 each side (inside or behind the arm ball beam and pauldron
+    shell), 0–10 of about 430.
+  - Head: M24×160 ×4 and M12×100 /001, /003 behind the baseplate; M12×160 ×4
+    behind the head top; sensor M10×160 ×2 behind the mask. 0–8 of about 450.
+- [ ] **Narrow, review:** chest services 1–2 (PV-320 shell, 10%); backpack lower
+  latches and service covers (about 11%, aim point inside their own lever or
+  cover, same family as the struts); arm drive_1_b keepers (11%); head M12×100
+  /002, /004 (6%).
+- [ ] **Not audit-caused:** the shared sequence stops in head sensor fitting
+  (`service_crane up` waits for "wing left 20 6 floorSolid"). Plain
+  `run_to("complete")` stops at the same point, so the crown and `complete`
+  stage are unaudited until it is fixed.
+- [ ] **Unmatched:** `left_lift ground` has no control under that action name.
+
+## Backpack struts would not extend — 2026-10-31
+
+- [x] **Finding:** "I can't seem to extend the backpack struts, I think they are
+  within geometry. This is a common problem."
+- [x] **Cause:** each strut's Extend control aimed at the centre of its own
+  handle eye, and the stowed handle sits against the backpack shell and frame.
+  The sight check counted both as obstructions. A headless probe saw Extend from
+  3 and 6 of about 600 clear viewpoints within 2.2 m, and the strut locks from
+  about 35 of 600. Same family as the foot support (e012430) and the hinge pins
+  above: an aim point buried in its own model.
+- [x] **Change:** strut handles and strut locks treat the backpack body as their
+  own, like gantry jaws, cassette clamps and joint restraints
+  (`allowed` + `allow_body_hit`). Same probe after: all clear viewpoints see
+  Extend and the locks. When extended, Retract is visible from about 45%; the
+  rest is the chest clevis around the eye, as intended. Rope prediction now uses
+  the operate check's `allow_body_hit` instead of a separate `sight_self` flag,
+  so ropes predict service for these controls.
+- [x] **Automated:** 7 affected routine suites pass. A new check in the
+  diagnostic `backpack_delivery_test` aims at each Extend handle from the outer
+  rear rope position. **Not run** (diagnostics need an explicit request).
+- [ ] **Tradeoff:** the backpack's own shell no longer hides these controls, so
+  they can be operated through it from the inboard side.
+- [ ] In game: hang from an outer rear rope beside the open backpack, extend
+  both struts, pin them and lock them open.
+- [ ] **Open:** the lower latch controls were not probed (they need the closed
+  pose). A general audit of control aim points would catch the next case early.
+
 ## Backpack hinge pins obstructed — 2026-10-31
 
 - [x] **Finding:** "the first bolts and washers for the backpack seem

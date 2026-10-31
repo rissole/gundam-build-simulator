@@ -110,7 +110,7 @@ func build_controls() -> void:
 		# The pad and its link are the control's own solids: a sightline that
 		# reaches either sees the foot support.
 		var own: Array=[piece.body,layout.cradle.pieces["BolsterLink_"+str(side)].body]
-		buttons.append(control_entry(piece.visual,"support","support",.3,{"side":side,"allowed":own,"allow_body_hit":true,"sight_self":true}))
+		buttons.append(control_entry(piece.visual,"support","support",.3,{"side":side,"allowed":own,"allow_body_hit":true}))
 
 ## A control box whose face points along local −X; `yaw` turns the whole box.
 func _box(at: Vector3, yaw: float, title: String, id: String) -> Node3D:
