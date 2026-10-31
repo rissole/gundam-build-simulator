@@ -2,6 +2,40 @@
 
 Walk the complete wider workshop yourself. A stage jump only sets the scene.
 
+## Final-gantry milestones and crane feel — 2026-10-31
+
+Design discussion, nothing implemented. **Player findings:** each move to the final
+gantry feels like a repeat of the same crane cycle, not a milestone. The player stands
+on the floor and can't see the part meet the body. **Positive reference:** the leg
+install feels awesome. The rig slides the leg up into its socket at an angle, at a
+height the player can watch, with real scale.
+
+**Goal (large design challenge, not scheduled):** the robot puts on its own head.
+The player climbs into the mech for the first time and uses its own hands to lift
+and seat the head. The crane could break down beforehand so that this is the only
+way. The control scheme will need help with alignment so the finale doesn't turn
+into a dexterity test.
+
+**Proposed order change (open):** install the core last, just before the head, so the
+robot has power for the head finale. The core is too delicate and volatile for the
+crane, so the robot goes underground to receive it. The current order installs the
+core after the chest. Moving it affects the backpack, arms and pauldrons, and the
+eventual whole-robot lowering.
+
+**Crane: open problem.** The crane is how parts travel between rigs, so it is used
+constantly and has to be fun and satisfying in its own right, not only at
+milestones. Ideas raised, none chosen:
+- Make chest-onto-waist an alignment puzzle, run from a crane console on the lower
+  gantry level where the player can see the joint.
+- Lift the player to docking height (crane cab or rising platform).
+- Ceiling claw arms that insert parts at angles, like the leg rig.
+- A two-stage handoff: the crane brings the part to a staging pose, then a gantry
+  arm installs it.
+- The gantry lowers or turns to meet each section.
+- Power-on handshakes as each section connects, with a full ceremony saved for the
+  finale.
+- One-off sequences: a countdown checklist before each move, and viewing stations.
+
 ## Control cues through models — 2026-10-31
 
 - [x] **Player rule:** the glowing "use machine" steps follow the same rules as

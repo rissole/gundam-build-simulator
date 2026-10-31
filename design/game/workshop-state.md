@@ -346,6 +346,12 @@ last version before consolidation.
 
 ## Next
 
+**Final-gantry milestones (2026-10-31, design only):** goals are recorded for the robot
+putting on its own head (the player's first time in the mech), moving the core to
+last-before-head with an underground install, and making the crane satisfying for
+everyday transfers. Nothing is decided
+([notes](robot-workshop-playtest-checklist.md#final-gantry-milestones-and-crane-feel--2026-10-31)).
+
 **Manual walk guard (2026-10-31):** the core's heavy-module-rig step jumped back to
 its pickup after detaching (a shared authoring list carried the next trip's crane
 guard). Fixed at source; authoring, load validation and the new routine
