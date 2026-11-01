@@ -6,7 +6,9 @@ from kit import (tube,cylinder,combine,difference,loft,chamfered_rect,bell_nozzl
 from thigh import box,bore,strut,tag,register,captive_detail
 
 THRUSTER_AXIS=(0,-math.cos(math.radians(12)),-math.sin(math.radians(12)))
-THRUSTER_SEATS=[(0,-.72,3.98),(0,-.72,2.93)]
+# P6F1 C2: lip centres Y−1.55, Z3.88/2.73; same 12° rear/down axis.
+# These are appearance-driven seat choices, not specified mating interfaces.
+THRUSTER_SEATS=[(0,-.865296,4.025538),(0,-.865296,2.875538)]
 
 
 def build(ctx):
@@ -72,23 +74,23 @@ def build(ctx):
                    tube(.565,.415,.040,p+w*.105,w,6,.006,steel)]
         # Ribs transfer ring loads into the broad shin beam, not the nozzle skin.
         for s in (-1,1):
-            cradle += [strut((s*.34,-.29,p.z),(s*.48,-.70,p.z),.18,.20,gun),
-                       box((.19,.22,.30),(s*.46,-.67,p.z),gun,.022),
-                       strut((s*.46,-.70,p.z),(s*.30,-.72,p.z+.28),.15,.13,gun)]
+            cradle += [strut((s*.34,-.29,p.z),(s*.48,p.y+.02,p.z),.18,.20,gun),
+                       box((.19,.22,.30),(s*.46,p.y+.05,p.z),gun,.022),
+                       strut((s*.46,p.y+.02,p.z),(s*.30,p.y,p.z+.28),.15,.13,gun)]
             for dz in (-.07,.07):
-                cradle.append(captive_detail((s*.46,-.766,p.z+dz),(0,-1,0),steel,.027))
+                cradle.append(captive_detail((s*.46,p.y-.046,p.z+dz),(0,-1,0),steel,.027))
     for s in (-1,1):
-        cradle += [box((.14,.20,1.80),(s*.48,-.69,3.45),gun,.020),
-                   strut((s*.48,-.69,2.50),(s*.25,-.22,2.25),.16,.17,gun)]
+        cradle += [box((.14,.20,1.80),(s*.48,-.835296,3.45),gun,.020),
+                   strut((s*.48,-.835296,2.50),(s*.25,-.22,2.25),.16,.17,gun)]
     # Cross tie is below the open knee and behind the future bridge panel.
-    cradle.append(box((1.04,.20,.15),(0,-.69,3.45),gun,.018))
+    cradle.append(box((1.04,.20,.15),(0,-.835296,3.45),gun,.018))
     register(ctx,combine(cradle,'Open twin-ring engine cradle'),'LG-440')
 
     for i,seat in enumerate(THRUSTER_SEATS,1):
         p=Vector(seat)
         engine=[tag(tube(.318,.170,.40,p-w*.12,w,48,.008,gun),'engine_seat'),
                 tube(.352,.170,.045,p+w*.074,w,48,.004,steel)]
-        nozzle=bell_nozzle(.170,.320,.60,.024,gun,m['bronze'],64)
+        nozzle=bell_nozzle(.170,.390,.60,.024,gun,m['bronze'],64)
         place(nozzle,p+w*.10,w)
         engine.append(tag(nozzle,'nozzle'))
         # Clocked longitudinal cooling fins and a bolted locking collar.

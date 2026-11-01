@@ -60,3 +60,35 @@ so work could continue; the user can overturn any of them.
 | P4B-03 | 4 | Where should shell receivers live without adding bracket inventory or changing internal generator files? | Add integral drilled bosses, braces and open locator sockets to the two rear rails, two forefoot rails and fixed cradle from `foot_fa02_armor.py`; the exact additions are recorded in MODELING_NOTES. |
 | P4B-04 | 4 | How should captive retention and tread details be represented? | Separate 4 mm collars seated in dedicated back counterbores, nominal shafts without hidden helical threads, separate washers/sleeves, and real underside grooves interrupted around solid bolt lands. No decorative bolts. |
 | P4B-05 | 4 | Should exploded display positions be mistaken for assembly removal paths? | No. Retain documented per-object removal vectors in the neutral model; turn and lay out all six pads in a foreground row only for the labeled exploded inspection. Stop at three visual fix rounds. |
+
+## Phase 6 round 1 — leg
+
+| # | Phase | Question | Default chosen / status |
+| --- | --- | --- | --- |
+| P6F1-LEG-01 | 6 | Which appearance-driven thruster numbers replace the buried-nozzle layout? | Ø780 mouths, 12° rear/down, lip centres (0,−1.550,3.880)/(0,−1.550,2.730); seats (0,−0.865296,4.025538)/(0,−0.865296,2.875538). Preserve machined seat diameters/depths and Y≥−1.64. Update only corresponding chosen expectations in verify_interfaces.py. |
+| P6F1-LEG-02 | 6 | How should close-fitting armor preserve removal and hip-cylinder channels? | Fold returns into their existing plates, retain nominal 35 mm dark backed side seams, keep the front/front/rear channel approaches and the open rear knee. No added inventory or torso-owned hip guards. Full articulated hip/armor solid sweeps remain open. |
+| P6F1-LEG-03 | 6 | Should calf depth include the exposed nozzle geometry? | Existing verify_envelopes.py measures armor/service geometry only, but the 2.24 m target includes the rear thruster enclosure. Requested permission for the narrow depth-only LG-450 inclusion because that audit is outside the assigned source ownership. Prepared/tested `work/p6f1-leg/include-nozzles-in-depth.patch`: candidate exits 0, measuring 2.231085 m; unchanged audit exits 1, measuring armor alone at 2.000 m. Still pending authorization. Width, lower taper and all safety/clearance bounds stay unchanged. |
+| P6F1-LEG-04 | 6 | How can the broader front inserts coexist with the inner/front channel? | Shift their centres to X±0.69 from the suggested ±0.60; preserve 150 × 850 mm faces. Cut intersecting detail solids individually before joining, keeping all meshes closed and the channel open. |
+| P6F1-LEG-05 | 6 | Does this pass settle nozzle lining tone and renderer sampling? | No: R2 remains separate. Scratch-only front tone probe moves from LG-210/X−0.76 to the LG-200 folded corner/X−0.82 because the old ray misses the reshaped part. Shared renderer remains owned by its parallel agent. |
+
+
+## Phase 6 round 1 — foot
+
+| # | Phase | Question | Default chosen / status |
+| --- | --- | --- | --- |
+| P6F1-01 | 6 | Should visible mechanics be recovered by narrowing the guard to the drawing? | No. Preserve the four specified M12 axes, full crown and Z1600 top; add a 400×360 mm window at Y0/Z1000 with 60 mm chamfers. Both pitch caps are visible through the installed assembly. Resolved. |
+| P6F1-02 | 6 | Are the triangular corner holes required articulation openings? | No. Close roof/side joins within each of the existing toe, upper and heel shells with a continuous 20 mm folded skin. Preserve the rear-open X±590 notch and Y1210…1500 hinge channel. Resolved. |
+| P6F1-03 | 6 | How can broad perimeter facets and wells remain readable inside a 20 mm guard wall? | Use 80 mm facets with 6 mm relief and 130 mm octagonal depressions at the existing seats, retaining all screw/receiver axes. Machine the recesses before adding intersecting lands and use planar guard shading. Confirmed in the second/final render round; no receiver or foot_fa02.py edits needed. |
+| P6F1-04 | 6 | Do the scratch passes approve the concurrently changing combined leg or the concept's extra panels/accents? | No. Retain five shells, toe-only ochre and every written constraint in review-r1. All requested commands pass on the captured scratch source snapshot; coordinator integration and the separate rendering work remain. No F1–F3 major is open in the inspected final views. |
+
+
+## Build sequence decisions (P5)
+
+| # | Phase | Question | Default chosen / status |
+| --- | --- | --- | --- |
+| P5-01 | 5 | Does spar/fork before shin respect the mount dependencies? | No. Foot → shin with foot-owned M36 flange bolts → bearings/spacers → bolted fork/spar unit → outboard axle and cap. The unit's internal fork/spar relationship is preserved in the mount graph. |
+| P5-02 | 5 | How can one translation per instance show bench preparation and later installation? | Keep the forefoot frame, each 91-piece actuator and the fork/spar as prepared groups, retaining every instance and internal parent. Pitch/roll bushings travel with their receiving ring/adapter; exposed pins remain axial steps. Full bench choreography needs a richer viewer schema. |
+| P5-03 | 5 | Which independent order changes preserve approach access? | Fit the forefoot drive and its outboard pins before the pitch base clevis. Fit the thruster cradle before the knee cylinders and use side approaches for those brackets/cartridges; keep engine installation after services and before armor. |
+| P5-04 | 5 | Should filled-in bounding boxes waive all collisions around hollow frames? | No unconditional family waiver. Recheck evaluated mesh surfaces and connected-solid containment at every flagged sample; retain all 291 mesh-proven pair records. This is sampled geometry evidence, not a continuous/tool/flexible-cable clearance claim. |
+| P5-05 | 5 | Can the upper plate's low skirt/locators follow the required straight upward removal path past the cradle receivers? | The audited Phase 4 snapshot still contacts the cradle at 80% of a 3 m descent. Preserve a single exact-pair/sample exception, separate from box false positives. Receiver revision or a tipped/multiple-segment path remains open; P5 does not modify generators or claim that path is clear. |
+| P5-06 | 5 | Which scene and viewer export were verified while geometry repairs were concurrent? | Audit the complete 813-part scratch snapshot, retain it in work/p5, publish the production steps and refresh the stale 651-part viewer GLB through the existing exporter. Leave the production blend untouched; coordinator reruns sequence/audit/export on the final repaired scene. |

@@ -12,6 +12,7 @@ import bmesh
 from mathutils import Vector
 from kit import (prism, plate, chamfered_rect, chamfered_box, cylinder, tube,
                  combine, difference, finish, place, mesh_object)
+from kit.plates import loft
 
 SPEC=Path(__file__).resolve().parents[3]/'design/legs/foot-and-ankle'
 ROWS=list(csv.DictReader((SPEC/'foot-components.csv').open()))
@@ -68,7 +69,7 @@ def closed_bore(obj,radius,depth,p,axis):
             difference(piece,cutter(radius,depth,p,axis))
         parts.append(piece)
     bm.free()
-    joined=combine(parts,'Machined closed shells')
+    joined=parts[0] if len(parts)==1 else combine(parts,'Machined closed shells')
     obj.data=joined.data.copy()
     bpy.data.objects.remove(joined,do_unlink=True)
     # All shell source objects are baked at world identity before machining.
@@ -135,16 +136,21 @@ def pads(ctx):
                 hardware(ctx,(x,y,.060),(0,0,-1),.024,.120,'Sole pad mounts',n,obj)
 
 
-def side_panel(ctx,outline,sign,x=.730,material='armor'):
+def side_panel(ctx,outline,sign,x=.730,material='armor',facet=.005):
     # Local XY = (fore/aft, height), local thickness = lateral wall.
-    obj=plate(outline,.020,.005,material=ctx.materials[material])
+    obj=plate(outline,.020,facet,material=ctx.materials[material])
     for v in obj.data.vertices:
         y,z,t=v.co;v.co=(sign*(x-.020+t),y,z)
     return finish(obj,wear=True)
 
 
-def roof(ctx,outline,zfunc,material='armor',crease=.630,drop=.060):
-    """One closed 20 mm skin with broad folded edge facets, no internal seams."""
+def folded_shell(ctx,regions,zfunc,open_y,crease=.630,drop=.060,bottom=None):
+    """Continuous roof/side/nose skin, thickened inward from shared fold edges.
+
+    Regions only divide paint or roof slopes; they never divide the physical
+    skin. Side walls use the exact roof boundary, including crease intersections
+    at plan chamfers. This prevents triangular daylight at folded corners.
+    """
     def clip(poly,x,greater):
         result=[]
         for a,b in zip(poly,poly[1:]+poly[:1]):
@@ -154,27 +160,37 @@ def roof(ctx,outline,zfunc,material='armor',crease=.630,drop=.060):
             if ina!=inb:
                 t=(x-a[0])/(b[0]-a[0]);result.append((x,a[1]+t*(b[1]-a[1])))
         return result
-    regions=[clip(outline,-crease,False),clip(clip(outline,-crease,True),crease,False),clip(outline,crease,True)]
-    xy=[];lookup={};polygons=[]
-    for poly in regions:
-        if len(poly)<3:continue
-        indices=[]
-        for q in poly:
-            key=tuple(round(v,8) for v in q)
-            if key not in lookup:lookup[key]=len(xy);xy.append(q)
-            idx=lookup[key]
-            if not indices or indices[-1]!=idx:indices.append(idx)
-        if indices[0]==indices[-1]:indices.pop()
-        if len(indices)>=3:polygons.append(indices)
-    size=len(xy)
-    vertices=[(x,y,zfunc(y)-max(0,abs(x)-crease)*drop/(.730-crease)-depth)
-              for depth in (.020,0) for x,y in xy]
-    faces=[tuple(reversed(f)) for f in polygons]+[tuple(k+size for k in f) for f in polygons]
-    edges=Counter(tuple(sorted((a,b))) for f in polygons for a,b in zip(f,f[1:]+f[:1]))
-    for f in polygons:
+    vertices=[];lookup={};faces=[];indices=[]
+    materials=list(dict.fromkeys(material for outline,material in regions))
+    def vertex(p):
+        key=tuple(round(v,8) for v in p)
+        if key not in lookup:lookup[key]=len(vertices);vertices.append(p)
+        return lookup[key]
+    for outline,material in regions:
+        polys=[clip(outline,-crease,False),clip(clip(outline,-crease,True),crease,False),clip(outline,crease,True)]
+        for poly in polys:
+            ids=[]
+            for x,y in poly:
+                idx=vertex((x,y,zfunc(y)-max(0,abs(x)-crease)*drop/(.730-crease)))
+                if not ids or ids[-1]!=idx:ids.append(idx)
+            if ids and ids[0]==ids[-1]:ids.pop()
+            if len(ids)>=3:faces.append(ids);indices.append(materials.index(material))
+    edges=Counter(tuple(sorted((a,b))) for f in faces for a,b in zip(f,f[1:]+f[:1]))
+    for f,material_index in list(zip(faces,indices)):
         for a,b in zip(f,f[1:]+f[:1]):
-            if edges[tuple(sorted((a,b)))]==1:faces.append((a,b,b+size,a+size))
-    return finish(mesh_object('Folded faceted skin',vertices,faces,ctx.materials[material]),wear=True)
+            if edges[tuple(sorted((a,b)))]!=1:continue
+            ax,ay,az=vertices[a];bx,by,bz=vertices[b]
+            if any(abs(ay-y)<1e-8 and abs(by-y)<1e-8 for y in open_y):continue
+            low_a=vertex((ax,ay,bottom(ax,ay) if bottom else .200))
+            low_b=vertex((bx,by,bottom(bx,by) if bottom else .200))
+            faces.append((b,a,low_a,low_b));indices.append(material_index)
+    obj=mesh_object('Continuous folded shell',vertices,faces,
+                    [ctx.materials[m] for m in materials],indices)
+    bpy.context.view_layer.objects.active=obj
+    mod=obj.modifiers.new('20 mm inward folded skin','SOLIDIFY')
+    mod.thickness=.020;mod.offset=-1;mod.use_even_offset=True
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+    return finish(obj,wear=True)
 
 
 def toe_z(y):return .600-(y-1.500)*(.080/.900) if y<=2.400 else .520-(y-2.400)*2
@@ -187,42 +203,21 @@ def shell_meshes(ctx):
     white=[(-.630,1.500),(.630,1.500),(.730,1.600),(.730,2.240),(-.730,2.240),(-.730,1.600)]
     band=[(-.730,2.240),(.730,2.240),(.730,2.360),(.690,2.400),(-.690,2.400),(-.730,2.360)]
     nose=[(-.690,2.400),(.690,2.400),(.630,2.460),(-.630,2.460)]
-    toe=[roof(ctx,white,toe_z),roof(ctx,band,toe_z,'ochre'),roof(ctx,nose,toe_z,'ochre')]
-    for s in (-1,1):
-        toe.append(side_panel(ctx,[(1.500,.280),(1.580,.200),(2.240,.200),(2.240,toe_z(2.240)-.060),
-                                  (1.500,.540)],s))
-        # Wrap the painted nose around its beveled plan corners.
-        path=[(s*.730,2.240),(s*.730,2.360),(s*.630,2.460)]
-        for (ax,ay),(bx,by) in zip(path,path[1:]):
-            verts=[(x,y,z) for offset in (0,-s*.020) for x,y,z in
-                   [(ax+offset,ay,.200),(bx+offset,by,.200),(bx+offset,by,toe_z(by)-max(0,abs(bx)-.630)*.6),(ax+offset,ay,toe_z(ay)-max(0,abs(ax)-.630)*.6)]]
-            toe.append(finish(mesh_object('Painted folded toe band',verts,
-                [(3,2,1,0),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],m['ochre']),wear=True))
-    face=plate([(-.630,.200),(.630,.200),(.630,.400),(-.630,.400)],.020,.005,material=m['ochre'])
-    for v in face.data.vertices:x,z,t=v.co;v.co=(x,2.460-t,z)
-    toe.append(finish(face,wear=True))
-    toe=combine(toe,'FA-400 folded toe cap')
+    toe=folded_shell(ctx,[(white,'armor'),(band,'ochre'),(nose,'ochre')],toe_z,(1.500,),
+                     bottom=lambda x,y:.200+max(0,1.580-y))
 
     # Rear-open U shell. Cuts extend through every folded feature in their area.
     outline=[(x,y+.355) for x,y in chamfered_rect(1.460,1.710,.080)]
-    upper=roof(ctx,outline,lambda y:.700,crease=.680,drop=.080)
+    upper=folded_shell(ctx,[(outline,'armor')],lambda y:.700,(-.500,1.210),crease=.650,drop=.080,
+                       bottom=lambda x,y:.200+max(0,y-1.130,-.420-y))
     difference(upper,chamfered_box((1.180,1.100,.2),(0,0,.700),0))
     difference(upper,chamfered_box((.170,.320,.2),(-.535,.710,.700),0))
     # One sparse 25 mm panel score; 4 mm deep in the 20 mm skin.
     difference(upper,chamfered_box((.950,.025,.010),(0,1.135,.701),.001))
-    walls=[side_panel(ctx,[(-.500,.280),(-.420,.200),(1.130,.200),(1.210,.280),
-                           (1.210,.540),(1.130,.620),(-.420,.620),(-.500,.540)],s) for s in (-1,1)]
-    upper=combine([upper,*walls],'FA-401 rear-open upper shell')
 
     # Heel: short rear closure with front opening; sparse red caution bar.
-    face=plate([(-.650,.200),(.650,.200),(.730,.280),(.730,.500),(.630,.600),
-                (-.630,.600),(-.730,.500),(-.730,.280)],.020,.005,material=m['armor'])
-    for v in face.data.vertices:x,z,t=v.co;v.co=(x,-.900+t,z)
-    heel=[finish(face,wear=True)]
-    for s in (-1,1):
-        heel.append(side_panel(ctx,[(-.900,.280),(-.820,.200),(-.500,.200),(-.500,.500),(-.900,.500)],s))
-    heel.append(roof(ctx,[(-.630,-.900),(.630,-.900),(.730,-.800),(.730,-.500),
-                          (-.730,-.500),(-.730,-.800)],lambda y:.600,drop=.100))
+    heel=[folded_shell(ctx,[([(-.630,-.900),(.630,-.900),(.730,-.800),(.730,-.500),
+                             (-.730,-.500),(-.730,-.800)],'armor')],lambda y:.600,(-.500,),drop=.100)]
     heel.append(chamfered_box((.250,.0003,.014),(0,-.90015,.460),0,m['red']))
     heel.append(chamfered_box((.170,.0003,.004),(-.040,-.90015,.437),0,m['red']))
     heel=combine(heel,'FA-402 heel with caution paint')
@@ -230,7 +225,20 @@ def shell_meshes(ctx):
     guards=[]
     contour=[(-.730,.700),(-.630,.600),(.750,.600),(.950,.800),(.850,1.090),
              (.570,1.530),(.450,1.600),(-.450,1.600),(-.570,1.530),(-.730,1.050)]
-    for s in (1,-1):guards.append(side_panel(ctx,contour,s))
+    for s in (1,-1):
+        guard=side_panel(ctx,contour,s,facet=.080)
+        window=prism(chamfered_rect(.400,.360,.060),.100)
+        for v in window.data.vertices:
+            y,z,t=v.co;v.co=(s*(.680+t),y,1.000+z)
+        difference(guard,finish(window))
+        # Machine depressions while the wall is one continuous solid, before
+        # adding the intersecting integral lands and locator feature shells.
+        for y,z in GUARD_SITES:
+            outline=chamfered_rect(.130,.130,.038)
+            well=loft([(-.016,[(a*.43,b*.43) for a,b in outline]),
+                       (0,outline),(.025,outline)])
+            difference(guard,place(well,(s*.730,y,z),(s,0,0)))
+        guards.append(guard)
     return [('FA-400',toe,'FA-106',(0,0,1)),('FA-401-L',upper,'FA-102',(0,0,1)),
             ('FA-402',heel,'FA-101',(0,-1,0)),('FA-403-L',guards[0],'FA-103-L',(1,0,0)),
             ('FA-404-L',guards[1],'FA-103-L',(-1,0,0))]
@@ -259,8 +267,9 @@ def armor(ctx):
             add(shell,[land])
             # A thin octagonal annulus returns the cut skin to its land and
             # creates a visible dark well. It never adds a decorative bolt.
-            rim=tube(.026,.020,.016,p-n*.008,n,segments=8,bevel=.0004,material=m['armor'])
-            add(shell,[rim])
+            if pid not in {'FA-403-L','FA-404-L'}:
+                rim=tube(.026,.020,.016,p-n*.008,n,segments=8,bevel=.0004,material=m['armor'])
+                add(shell,[rim])
             collar=tube(.009,.006,.004,p-n*.044,n,segments=24,bevel=.0002,material=m['gunmetal'])
             register(ctx,collar,'FA-405',number,owner=shell,removal=removal)
             hardware(ctx,p-n*.0135,n,.012,.050,'Armor captive bolts',number,shell)
@@ -314,6 +323,10 @@ def armor(ctx):
             else:receiver=owner;anchor=(p.x*.78,0,1.100)
             add(receiver,[socket,beam(anchor,p-n*.020,.018,m['gunmetal'])])
         finish(shell,wear=True)
+        if pid in {'FA-403-L','FA-404-L'}:
+            # The perimeter only drops 6 mm across an 80 mm facet. Weighted
+            # smooth normals erase that shallow fold and the octagonal wells.
+            for face in shell.data.polygons:face.use_smooth=False
 
 
 def build(ctx):

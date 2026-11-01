@@ -117,9 +117,16 @@ def run(only_leg=False):
         lo,hi=p.min(0),p.max(0); zlo,zhi=ap[:,2].min(),ap[:,2].max()
         slices=[slab(p,e,z,min(z+.10,zhi)) for z in np.arange(zlo,zhi,.10)]
         bottom=slab(ap,ae,zlo,zlo+.30)
-        widths=float(np.ptp(p[:,0])); depths=float(np.ptp(p[:,1]))
+        widths=float(np.ptp(p[:,0])); depth_points=p
+        # The calf depth contract includes the exposed nozzle mouths (C2).
+        # Keep armor/service width, lower taper and sweep inputs unchanged.
+        engines=[o for o in objects if name=='calf' and o.get('part_id')=='LG-450']
+        if engines: depth_points=np.concatenate([p,geometry(engines)[0]])
+        depths=float(np.ptp(depth_points[:,1]))
         sections[name]={'objects':[o['instance_id'] for o in parts],'bounds_min':lo.tolist(),'bounds_max':hi.tolist(),
                         'width_m':widths,'depth_m':depths,'target_width_m':width,'target_depth_m':depth,
+                        'depth_bounds_y_m':[float(depth_points[:,1].min()),float(depth_points[:,1].max())],
+                        'depth_includes_nozzles':bool(engines),
                         'lowest_300mm':bottom,'z_slices_100mm':slices}
         check(name+' maximum width target',widths,width-.10,width+.05)
         check(name+' maximum depth target',depths,depth-.10,depth+.05)

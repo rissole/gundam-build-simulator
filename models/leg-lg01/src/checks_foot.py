@@ -200,9 +200,68 @@ def checks():
                 q=first_hit(target,p+tangent+n*.040,-n,.150)
                 record(name+' '+label+' exists',q is not None,{})
                 if q is not None:near(name+' '+label+' plane',np.dot(q-p,n),-depth,.001)
+    # Cache neutral bounds once for pitch-cap visibility's broad phase.
+    cap_occluders=[(o,*bounds(o)) for o in objs]
     # Check an actual central open corridor, including both guard objects.
     for pid in ('FA-403-L','FA-404-L'):
-        v=vertices(get(pid)[0]);record(pid+' lateral wall / no roof',np.min(abs(v[:,0]))>=.679,{'innermost_x':float(np.min(abs(v[:,0])))})
+        guard=get(pid)[0];v=vertices(guard)
+        record(pid+' lateral wall / no roof',np.min(abs(v[:,0]))>=.679,{'innermost_x':float(np.min(abs(v[:,0])))})
+        s=1 if pid=='FA-403-L' else -1
+        # P6F1: measure the cut wall itself, independently of generator datums.
+        rim=v[(abs(v[:,1])<=.2001)&(abs(v[:,2]-1)<=.1801)&(abs(v[:,0])>.7099)]
+        record(pid+' access window rim exists',len(rim)>=16,{'vertices':len(rim)})
+        if len(rim):
+            near(pid+' access window bounds',[rim[:,1:].min(0),rim[:,1:].max(0)],
+                 [[-.200,.820],[.200,1.180]],.0002)
+            near(pid+' access window wall thickness',np.ptp(abs(rim[:,0])),.020,.0002)
+            for y,z in [(-.140,.820),(.140,.820),(.200,.880),(.200,1.120),
+                        (.140,1.180),(-.140,1.180),(-.200,1.120),(-.200,.880)]:
+                distance=np.linalg.norm(rim[:,1:]-[y,z],axis=1).min()
+                near(pid+f' window 60 mm chamfer {y} {z}',distance,0,.0002)
+        blocked=[]
+        for y in np.linspace(-.198,.198,9):
+            for z in np.linspace(.822,1.178,9):
+                if abs(y)+abs(z-1)>.318:continue
+                if first_hit(guard,(s*.800,y,z),(-s,0,0),.115) is not None:
+                    blocked.append([float(y),float(z)])
+        record(pid+' access window through wall',not blocked,{'blocked_samples':blocked})
+        for y,z in [(-.190,.830),(.190,.830),(-.190,1.170),(.190,1.170)]:
+            record(pid+f' window chamfer retains corner {y} {z}',
+                   first_hit(guard,(s*.800,y,z),(-s,0,0),.115) is not None,{})
+        cap=min(get('FA-208'),key=lambda o:abs(sum(bounds(o))[0]/2-s*.585))
+        visible=[];obstructed=[]
+        samples=[(0,1)]+[(.060*math.cos(t),1+.060*math.sin(t))
+                        for t in np.linspace(0,math.tau,8,endpoint=False)]
+        for y,z in samples:
+            start=(s*.800,y,z);direction=(-s,0,0)
+            hit=first_hit(cap,start,direction,.250)
+            if hit is None:continue
+            visible.append([float(y),float(z)])
+            distance=abs(start[0]-hit[0])-.0005
+            for obj,lo,hi in cap_occluders:
+                if obj==cap:continue
+                if not (lo[1]<=y<=hi[1] and lo[2]<=z<=hi[2]):continue
+                if (s>0 and hi[0]<hit[0]) or (s<0 and lo[0]>hit[0]):continue
+                q=first_hit(obj,start,direction,distance)
+                if q is not None:obstructed.append({'part_id':obj['part_id'],'point':q.tolist()})
+        record(pid+' pitch cap visible through installed assembly',len(visible)==9 and not obstructed,
+               {'cap_samples':len(visible),'obstructions':obstructed})
+        near(pid+' independent lateral removal',list(guard['removal_direction']),[s,0,0],.0001)
+        # The facets stay within the specified wall; sample a plain crown edge.
+        q=first_hit(guard,(s*.800,0,1.570),(-s,0,0),.120)
+        record(pid+' broad perimeter facet exists',q is not None,{})
+        if q is not None:near(pid+' crown facet relief',abs(q[0]),.72625,.0003)
+        for y,z in ((-.600,.720),(.700,.720),(-.500,1.450),(.500,1.450)):
+            q=first_hit(guard,(s*.800,y,z+.045),(-s,0,0),.120)
+            record(pid+f' octagonal recessed land {y} {z}',q is not None and .714<abs(q[0])<.728,
+                   {'hit':q.tolist() if q is not None else None})
+    # Rays cross the former triangular daylight at roof/side junctions. These
+    # are within each shell and deliberately outside the open hinge channel.
+    for pid,y,z in [('FA-400',2.390,.452),('FA-401-L',1.180,.630),('FA-402',-.850,.515)]:
+        for s in (-1,1):
+            q=first_hit(get(pid)[0],(s*.800,y,z),(-s,0,0),.200)
+            record(pid+f' continuous folded corner {s}',q is not None,
+                   {'hit':q.tolist() if q is not None else None})
     upper=get('FA-401-L')[0]
     for y in (-.500,-.250,0,.250,.530):
         record('Upper rear-open notch '+str(y),first_hit(upper,(0,y,.800),(0,0,-1),.5) is None,{})

@@ -220,20 +220,22 @@ def leg_checks(a):
             a.value('Cylinder eye distance '+str(s),np.linalg.norm(measured_eyes[1]-measured_eyes[0]),2.1004761365)
     axis=np.array([0,-math.cos(math.radians(12)),-math.sin(math.radians(12))])
     cradle=objects('LG-440')[0]
-    for i,z in enumerate((3.98,2.93)):
-        engine=objects('LG-450')[i]; seat=np.array([0,-.72,z])
+    for i,z in enumerate((4.025538,2.875538)):
+        engine=objects('LG-450')[i]; seat=np.array([0,-.865296,z])
         a.ring('Cradle ring '+str(i),cradle,'thruster_seat_'+str(i+1),seat,axis,.370,.320,.100)
         a.ring('Engine seat '+str(i),engine,'engine_seat',seat-axis*.12,axis,.318,.170,.40)
         pts=vertices(engine,'nozzle'); along=(pts-seat)@axis
         a.value('Nozzle axial ends '+str(i),[along.min(),along.max()],[.10,.70])
         radial=(pts-seat)-np.outer(along,axis)
-        a.value('Nozzle mouth diameter '+str(i),np.linalg.norm(radial,axis=1).max()*2,.640)
+        a.value('Nozzle mouth diameter '+str(i),np.linalg.norm(radial,axis=1).max()*2,.780)
         full=vertices(engine)
         a.condition('Thruster rear envelope '+str(i),full[:,1].min()>=-1.64,
                     measured_min_y=float(full[:,1].min()),limit=-1.64)
-        a.condition('Thruster rear shroud allowance '+str(i),full[:,1].min()>=-1.50,
-                    clearance_m=float(full[:,1].min()+1.58),minimum=.08,
-                    assumed_shroud_thickness_m=.06)
+        # C2 replaces the old burial allowance with deliberate exposed bells.
+        # Recess face Y−1.40; the 12° mouth projects while respecting Y−1.64.
+        a.condition('Thruster exposed beyond recess '+str(i),full[:,1].min()<=-1.55,
+                    projection_m=float(-1.40-full[:,1].min()),minimum=.15,
+                    recess_face_y_m=-1.40)
 
 
 def main():

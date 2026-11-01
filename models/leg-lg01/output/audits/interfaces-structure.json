@@ -1,7 +1,7 @@
 {
   "audit": "measured-interfaces",
   "tolerance_m": 0.01,
-  "blend": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01-v4/output/leg-lg01.blend",
+  "blend": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01/output/leg-lg01.blend",
   "scope": "leg-and-foot",
   "passed": true,
   "checks": [
@@ -2789,9 +2789,9 @@
     {
       "check": "cylinder_lower-1 cartridge pin tunnel bore diameter",
       "passed": true,
-      "measured": 0.09488308940336394,
+      "measured": 0.09488308940336396,
       "expected": 0.09503,
-      "error_m": 0.0001469105966360601,
+      "error_m": 0.00014691059663604622,
       "tolerance_m": 0.01
     },
     {
@@ -3284,23 +3284,23 @@
       "passed": true,
       "measured": [
         0.0,
-        -0.7200000357895047,
-        3.9800000175474857
+        -0.8652960133819728,
+        4.025537966155883
       ],
       "expected": [
         0.0,
-        -0.72,
-        3.98
+        -0.865296,
+        4.025538
       ],
-      "error_m": 3.5789504693184426e-08,
+      "error_m": 3.3844116842374206e-08,
       "tolerance_m": 0.01
     },
     {
       "check": "Cradle ring 0 outer diameter",
       "passed": true,
-      "measured": 0.7400003449496835,
+      "measured": 0.7400003449496851,
       "expected": 0.74,
-      "error_m": 3.449496834839749e-07,
+      "error_m": 3.4494968514930946e-07,
       "tolerance_m": 0.01
     },
     {
@@ -3314,9 +3314,9 @@
     {
       "check": "Cradle ring 0 length",
       "passed": true,
-      "measured": 0.10000024262334162,
+      "measured": 0.1000002426233415,
       "expected": 0.1,
-      "error_m": 2.426233416119583e-07,
+      "error_m": 2.42623341500936e-07,
       "tolerance_m": 0.01
     },
     {
@@ -3324,15 +3324,15 @@
       "passed": true,
       "measured": [
         0.0,
-        -0.6026223399318202,
-        4.004949567631196
+        -0.7479183077812195,
+        4.050487518310547
       ],
       "expected": [
         0.0,
-        -0.6026222879119433,
-        4.004949402898131
+        -0.7479182879119433,
+        4.050487402898131
       ],
-      "error_m": 1.647330654108714e-07,
+      "error_m": 1.1541241562440518e-07,
       "tolerance_m": 0.01
     },
     {
@@ -3346,92 +3346,92 @@
     {
       "check": "Engine seat 0 bore diameter",
       "passed": true,
-      "measured": 0.3399995542950238,
+      "measured": 0.3399995542950254,
       "expected": 0.34,
-      "error_m": 4.4570497620410876e-07,
+      "error_m": 4.457049746497965e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Engine seat 0 length",
       "passed": true,
-      "measured": 0.4000002720851827,
+      "measured": 0.4000002920066523,
       "expected": 0.4,
-      "error_m": 2.7208518266208515e-07,
+      "error_m": 2.9200665230266765e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Nozzle axial ends 0",
       "passed": true,
       "measured": [
-        0.09999982265098163,
-        0.7000000552438937
+        0.0999998626672447,
+        0.700000146668153
       ],
       "expected": [
         0.1,
         0.7
       ],
-      "error_m": 1.7734901837374029e-07,
+      "error_m": 1.4666815306707548e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Nozzle mouth diameter 0",
       "passed": true,
-      "measured": 0.6400012906203966,
-      "expected": 0.64,
-      "error_m": 1.290620396554587e-06,
+      "measured": 0.780000598096755,
+      "expected": 0.78,
+      "error_m": 5.980967550112126e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Thruster rear envelope 0",
       "passed": true,
-      "measured_min_y": -1.4712350368499756,
+      "measured_min_y": -1.63108491897583,
       "limit": -1.64
     },
     {
-      "check": "Thruster rear shroud allowance 0",
+      "check": "Thruster exposed beyond recess 0",
       "passed": true,
-      "clearance_m": 0.10876496315002449,
-      "minimum": 0.08,
-      "assumed_shroud_thickness_m": 0.06
+      "projection_m": 0.23108491897583017,
+      "minimum": 0.15,
+      "recess_face_y_m": -1.4
     },
     {
       "check": "Cradle ring 1 centre",
       "passed": true,
       "measured": [
-        1.4901161193847656e-08,
-        -0.7200000710277067,
-        2.930000308829027
+        -1.4901161193847656e-08,
+        -0.8652959812534697,
+        2.8755378712828965
       ],
       "expected": [
         0.0,
-        -0.72,
-        2.93
+        -0.865296,
+        2.875538
       ],
-      "error_m": 3.088290267960758e-07,
+      "error_m": 1.2871710364237288e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Cradle ring 1 outer diameter",
       "passed": true,
-      "measured": 0.7400003695226504,
+      "measured": 0.7400003611261498,
       "expected": 0.74,
-      "error_m": 3.695226503674931e-07,
+      "error_m": 3.611261497615814e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Cradle ring 1 bore diameter",
       "passed": true,
-      "measured": 0.6399994699775929,
+      "measured": 0.6399996465861999,
       "expected": 0.64,
-      "error_m": 5.300224070747817e-07,
+      "error_m": 3.5341380011377765e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Cradle ring 1 length",
       "passed": true,
-      "measured": 0.1000002545956924,
+      "measured": 0.10000023453583684,
       "expected": 0.1,
-      "error_m": 2.5459569238939217e-07,
+      "error_m": 2.3453583683497037e-07,
       "tolerance_m": 0.01
     },
     {
@@ -3439,23 +3439,23 @@
       "passed": true,
       "measured": [
         0.0,
-        -0.6026223342559341,
-        2.9549493781027794
+        -0.7479183177930947,
+        2.9004874208150255
       ],
       "expected": [
         0.0,
-        -0.6026222879119433,
-        2.9549494028981313
+        -0.7479182879119433,
+        2.9004874028981313
       ],
-      "error_m": 4.6343990867114826e-08,
+      "error_m": 2.988115144209047e-08,
       "tolerance_m": 0.01
     },
     {
       "check": "Engine seat 1 outer diameter",
       "passed": true,
-      "measured": 0.6360002052085086,
+      "measured": 0.6360002052085078,
       "expected": 0.636,
-      "error_m": 2.0520850863015028e-07,
+      "error_m": 2.0520850774197186e-07,
       "tolerance_m": 0.01
     },
     {
@@ -3469,45 +3469,45 @@
     {
       "check": "Engine seat 1 length",
       "passed": true,
-      "measured": 0.4000001873136896,
+      "measured": 0.40000021610087444,
       "expected": 0.4,
-      "error_m": 1.8731368955915428e-07,
+      "error_m": 2.1610087441725767e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Nozzle axial ends 1",
       "passed": true,
       "measured": [
-        0.09999985963975347,
-        0.7000001197768374
+        0.09999982873693342,
+        0.7000000899932987
       ],
       "expected": [
         0.1,
         0.7
       ],
-      "error_m": 1.4036024653663048e-07,
+      "error_m": 1.7126306658954427e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Nozzle mouth diameter 1",
       "passed": true,
-      "measured": 0.6400003242982255,
-      "expected": 0.64,
-      "error_m": 3.2429822549584486e-07,
+      "measured": 0.7800006281924652,
+      "expected": 0.78,
+      "error_m": 6.2819246515744e-07,
       "tolerance_m": 0.01
     },
     {
       "check": "Thruster rear envelope 1",
       "passed": true,
-      "measured_min_y": -1.4712350368499756,
+      "measured_min_y": -1.63108491897583,
       "limit": -1.64
     },
     {
-      "check": "Thruster rear shroud allowance 1",
+      "check": "Thruster exposed beyond recess 1",
       "passed": true,
-      "clearance_m": 0.10876496315002449,
-      "minimum": 0.08,
-      "assumed_shroud_thickness_m": 0.06
+      "projection_m": 0.23108491897583017,
+      "minimum": 0.15,
+      "recess_face_y_m": -1.4
     },
     {
       "check": "Foot checks()",
@@ -4734,9 +4734,9 @@
       "FA-101 land bore -0.395 -0.055 diameter",
       true,
       {
-        "measured": 0.03834111518063896,
+        "measured": 0.03834111518063897,
         "expected": 0.038,
-        "max_error_m": 0.0003411151806389581
+        "max_error_m": 0.000341115180638972
       }
     ],
     [
@@ -4768,7 +4768,7 @@
       {
         "measured": [
           -0.39500074513561,
-          -0.6149992445045868,
+          -0.6149992445045869,
           0.3700000196695328
         ],
         "expected": [
@@ -4776,7 +4776,7 @@
           -0.6150000000000001,
           0.37
         ],
-        "max_error_m": 7.554954133404124e-07
+        "max_error_m": 7.554954132293901e-07
       }
     ],
     [
@@ -5119,9 +5119,9 @@
       "FA-100-B ledge bore -0.56 0.055 diameter",
       true,
       {
-        "measured": 0.03829735302946308,
+        "measured": 0.038297353029463084,
         "expected": 0.038,
-        "max_error_m": 0.000297353029463078
+        "max_error_m": 0.00029735302946308495
       }
     ],
     [
@@ -5231,9 +5231,9 @@
       "FA-100-A ledge bore 1.12 -0.055 diameter",
       true,
       {
-        "measured": 0.0382973528951135,
+        "measured": 0.038297352895113504,
         "expected": 0.038,
-        "max_error_m": 0.00029735289511349794
+        "max_error_m": 0.0002973528951135049
       }
     ],
     [
@@ -5343,9 +5343,9 @@
       "FA-100-A ledge bore 1.12 0.055 diameter",
       true,
       {
-        "measured": 0.038297137465271074,
+        "measured": 0.03829713746527105,
         "expected": 0.038,
-        "max_error_m": 0.00029713746527107454
+        "max_error_m": 0.0002971374652710537
       }
     ],
     [
@@ -5567,9 +5567,9 @@
       "FA-100-B ledge bore 1.12 0.055 diameter",
       true,
       {
-        "measured": 0.038297378087070955,
+        "measured": 0.03829737808707095,
         "expected": 0.038,
-        "max_error_m": 0.00029737808707095553
+        "max_error_m": 0.0002973780870709486
       }
     ],
     [
@@ -5679,9 +5679,9 @@
       "FA-100-A ledge bore 0 -0.11 diameter",
       true,
       {
-        "measured": 0.03829609483264617,
+        "measured": 0.03829609483264618,
         "expected": 0.038,
-        "max_error_m": 0.000296094832646171
+        "max_error_m": 0.0002960948326461779
       }
     ],
     [
@@ -5903,9 +5903,9 @@
       "FA-100-B ledge bore 0 -0.11 diameter",
       true,
       {
-        "measured": 0.038295198226067674,
+        "measured": 0.03829519822606768,
         "expected": 0.038,
-        "max_error_m": 0.000295198226067675
+        "max_error_m": 0.0002951982260676819
       }
     ],
     [
@@ -6015,9 +6015,9 @@
       "FA-100-B ledge bore 0 0.11 diameter",
       true,
       {
-        "measured": 0.03829609630093424,
+        "measured": 0.038296096300934244,
         "expected": 0.038,
-        "max_error_m": 0.0002960963009342385
+        "max_error_m": 0.00029609630093424544
       }
     ],
     [
@@ -6526,9 +6526,9 @@
       "FA-106 land bore -0.395 -0.045 diameter",
       true,
       {
-        "measured": 0.038082979500707374,
+        "measured": 0.03808297950070737,
         "expected": 0.038,
-        "max_error_m": 8.297950070737525e-05
+        "max_error_m": 8.297950070736831e-05
       }
     ],
     [
@@ -6638,9 +6638,9 @@
       "FA-106 land bore -0.395 0.045 diameter",
       true,
       {
-        "measured": 0.038089796594232304,
+        "measured": 0.03808979659423231,
         "expected": 0.038,
-        "max_error_m": 8.979659423230535e-05
+        "max_error_m": 8.979659423231229e-05
       }
     ],
     [
@@ -6750,9 +6750,9 @@
       "FA-106 land bore 0.395 -0.045 diameter",
       true,
       {
-        "measured": 0.03808297948764242,
+        "measured": 0.03808297948764243,
         "expected": 0.038,
-        "max_error_m": 8.297948764242336e-05
+        "max_error_m": 8.29794876424303e-05
       }
     ],
     [
@@ -6862,9 +6862,9 @@
       "FA-106 land bore 0.395 0.045 diameter",
       true,
       {
-        "measured": 0.038089796616490354,
+        "measured": 0.03808979661649035,
         "expected": 0.038,
-        "max_error_m": 8.979661649035492e-05
+        "max_error_m": 8.979661649034798e-05
       }
     ],
     [
@@ -8333,9 +8333,9 @@
       "F0 clevis diameter",
       true,
       {
-        "measured": 0.040435796271827994,
+        "measured": 0.04043579627182799,
         "expected": 0.04,
-        "max_error_m": 0.00043579627182799285
+        "max_error_m": 0.0004357962718279859
       }
     ],
     [
@@ -13339,9 +13339,9 @@
       "FA-400 shell mount 0 land diameter",
       true,
       {
-        "measured": 0.013203010838569174,
+        "measured": 0.01320301083856918,
         "expected": 0.013,
-        "max_error_m": 0.00020301083856917417
+        "max_error_m": 0.0002030108385691811
       }
     ],
     [
@@ -15693,9 +15693,9 @@
       "FA-402 shell mount 2 land diameter",
       true,
       {
-        "measured": 0.013203030651527293,
+        "measured": 0.0132030306515273,
         "expected": 0.013,
-        "max_error_m": 0.0002030306515272938
+        "max_error_m": 0.00020303065152730074
       }
     ],
     [
@@ -16408,9 +16408,9 @@
       "FA-403-L shell mount 1 land diameter",
       true,
       {
-        "measured": 0.013203019715779895,
+        "measured": 0.01320301971577989,
         "expected": 0.013,
-        "max_error_m": 0.0002030197157798959
+        "max_error_m": 0.00020301971577989068
       }
     ],
     [
@@ -16639,9 +16639,9 @@
       "FA-403-L shell mount 2 land diameter",
       true,
       {
-        "measured": 0.01320301150973374,
+        "measured": 0.013203011509733742,
         "expected": 0.013,
-        "max_error_m": 0.0002030115097337408
+        "max_error_m": 0.00020301150973374253
       }
     ],
     [
@@ -17585,9 +17585,9 @@
       "FA-404-L shell mount 2 land diameter",
       true,
       {
-        "measured": 0.013203011509733737,
+        "measured": 0.013203011509733738,
         "expected": 0.013,
-        "max_error_m": 0.00020301150973373733
+        "max_error_m": 0.00020301150973373906
       }
     ],
     [
@@ -18027,10 +18027,526 @@
       }
     ],
     [
+      "FA-403-L access window rim exists",
+      true,
+      {
+        "vertices": 17
+      }
+    ],
+    [
+      "FA-403-L access window bounds",
+      true,
+      {
+        "measured": [
+          [
+            -0.20000000298023224,
+            0.8199999928474426
+          ],
+          [
+            0.20000000298023224,
+            1.1800000667572021
+          ]
+        ],
+        "expected": [
+          [
+            -0.2,
+            0.82
+          ],
+          [
+            0.2,
+            1.18
+          ]
+        ],
+        "max_error_m": 6.675720221060999e-08
+      }
+    ],
+    [
+      "FA-403-L access window wall thickness",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L window 60 mm chamfer -0.14 0.82",
+      true,
+      {
+        "measured": 7.17734962419438e-09,
+        "expected": 0,
+        "max_error_m": 7.17734962419438e-09
+      }
+    ],
+    [
+      "FA-403-L window 60 mm chamfer 0.14 0.82",
+      true,
+      {
+        "measured": 7.17734962419438e-09,
+        "expected": 0,
+        "max_error_m": 7.17734962419438e-09
+      }
+    ],
+    [
+      "FA-403-L window 60 mm chamfer 0.2 0.88",
+      true,
+      {
+        "measured": 5.623090939821412e-09,
+        "expected": 0,
+        "max_error_m": 5.623090939821412e-09
+      }
+    ],
+    [
+      "FA-403-L window 60 mm chamfer 0.2 1.12",
+      true,
+      {
+        "measured": 5.6230908456746884e-09,
+        "expected": 0,
+        "max_error_m": 5.6230908456746884e-09
+      }
+    ],
+    [
+      "FA-403-L window 60 mm chamfer 0.14 1.18",
+      true,
+      {
+        "measured": 6.675986307910068e-08,
+        "expected": 0,
+        "max_error_m": 6.675986307910068e-08
+      }
+    ],
+    [
+      "FA-403-L window 60 mm chamfer -0.14 1.18",
+      true,
+      {
+        "measured": 6.675986307910068e-08,
+        "expected": 0,
+        "max_error_m": 6.675986307910068e-08
+      }
+    ],
+    [
+      "FA-403-L window 60 mm chamfer -0.2 1.12",
+      true,
+      {
+        "measured": 5.6230908456746884e-09,
+        "expected": 0,
+        "max_error_m": 5.6230908456746884e-09
+      }
+    ],
+    [
+      "FA-403-L window 60 mm chamfer -0.2 0.88",
+      true,
+      {
+        "measured": 5.623090939821412e-09,
+        "expected": 0,
+        "max_error_m": 5.623090939821412e-09
+      }
+    ],
+    [
+      "FA-403-L access window through wall",
+      true,
+      {
+        "blocked_samples": []
+      }
+    ],
+    [
+      "FA-403-L window chamfer retains corner -0.19 0.83",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window chamfer retains corner 0.19 0.83",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window chamfer retains corner -0.19 1.17",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window chamfer retains corner 0.19 1.17",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L pitch cap visible through installed assembly",
+      true,
+      {
+        "cap_samples": 9,
+        "obstructions": []
+      }
+    ],
+    [
+      "FA-403-L independent lateral removal",
+      true,
+      {
+        "measured": [
+          1,
+          0,
+          0
+        ],
+        "expected": [
+          1,
+          0,
+          0
+        ],
+        "max_error_m": 0.0
+      }
+    ],
+    [
+      "FA-403-L broad perimeter facet exists",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L crown facet relief",
+      true,
+      {
+        "measured": 0.7262499928474426,
+        "expected": 0.72625,
+        "max_error_m": 7.152557324197062e-09
+      }
+    ],
+    [
+      "FA-403-L octagonal recessed land -0.6 0.72",
+      true,
+      {
+        "hit": [
+          0.7213630676269531,
+          -0.6000000238418579,
+          0.7649999856948853
+        ]
+      }
+    ],
+    [
+      "FA-403-L octagonal recessed land 0.7 0.72",
+      true,
+      {
+        "hit": [
+          0.7213630676269531,
+          0.699999988079071,
+          0.7649999856948853
+        ]
+      }
+    ],
+    [
+      "FA-403-L octagonal recessed land -0.5 1.45",
+      true,
+      {
+        "hit": [
+          0.7213630080223083,
+          -0.5,
+          1.4950000047683716
+        ]
+      }
+    ],
+    [
+      "FA-403-L octagonal recessed land 0.5 1.45",
+      true,
+      {
+        "hit": [
+          0.7213630080223083,
+          0.5,
+          1.4950000047683716
+        ]
+      }
+    ],
+    [
       "FA-404-L lateral wall / no roof",
       true,
       {
         "innermost_x": 0.6800000071525574
+      }
+    ],
+    [
+      "FA-404-L access window rim exists",
+      true,
+      {
+        "vertices": 17
+      }
+    ],
+    [
+      "FA-404-L access window bounds",
+      true,
+      {
+        "measured": [
+          [
+            -0.20000000298023224,
+            0.8199999928474426
+          ],
+          [
+            0.20000000298023224,
+            1.1800000667572021
+          ]
+        ],
+        "expected": [
+          [
+            -0.2,
+            0.82
+          ],
+          [
+            0.2,
+            1.18
+          ]
+        ],
+        "max_error_m": 6.675720221060999e-08
+      }
+    ],
+    [
+      "FA-404-L access window wall thickness",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L window 60 mm chamfer -0.14 0.82",
+      true,
+      {
+        "measured": 7.17734962419438e-09,
+        "expected": 0,
+        "max_error_m": 7.17734962419438e-09
+      }
+    ],
+    [
+      "FA-404-L window 60 mm chamfer 0.14 0.82",
+      true,
+      {
+        "measured": 7.17734962419438e-09,
+        "expected": 0,
+        "max_error_m": 7.17734962419438e-09
+      }
+    ],
+    [
+      "FA-404-L window 60 mm chamfer 0.2 0.88",
+      true,
+      {
+        "measured": 5.623090939821412e-09,
+        "expected": 0,
+        "max_error_m": 5.623090939821412e-09
+      }
+    ],
+    [
+      "FA-404-L window 60 mm chamfer 0.2 1.12",
+      true,
+      {
+        "measured": 5.6230908456746884e-09,
+        "expected": 0,
+        "max_error_m": 5.6230908456746884e-09
+      }
+    ],
+    [
+      "FA-404-L window 60 mm chamfer 0.14 1.18",
+      true,
+      {
+        "measured": 6.675986307910068e-08,
+        "expected": 0,
+        "max_error_m": 6.675986307910068e-08
+      }
+    ],
+    [
+      "FA-404-L window 60 mm chamfer -0.14 1.18",
+      true,
+      {
+        "measured": 6.675986307910068e-08,
+        "expected": 0,
+        "max_error_m": 6.675986307910068e-08
+      }
+    ],
+    [
+      "FA-404-L window 60 mm chamfer -0.2 1.12",
+      true,
+      {
+        "measured": 5.6230908456746884e-09,
+        "expected": 0,
+        "max_error_m": 5.6230908456746884e-09
+      }
+    ],
+    [
+      "FA-404-L window 60 mm chamfer -0.2 0.88",
+      true,
+      {
+        "measured": 5.623090939821412e-09,
+        "expected": 0,
+        "max_error_m": 5.623090939821412e-09
+      }
+    ],
+    [
+      "FA-404-L access window through wall",
+      true,
+      {
+        "blocked_samples": []
+      }
+    ],
+    [
+      "FA-404-L window chamfer retains corner -0.19 0.83",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window chamfer retains corner 0.19 0.83",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window chamfer retains corner -0.19 1.17",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window chamfer retains corner 0.19 1.17",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L pitch cap visible through installed assembly",
+      true,
+      {
+        "cap_samples": 9,
+        "obstructions": []
+      }
+    ],
+    [
+      "FA-404-L independent lateral removal",
+      true,
+      {
+        "measured": [
+          -1,
+          0,
+          0
+        ],
+        "expected": [
+          -1,
+          0,
+          0
+        ],
+        "max_error_m": 0.0
+      }
+    ],
+    [
+      "FA-404-L broad perimeter facet exists",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L crown facet relief",
+      true,
+      {
+        "measured": 0.7262499928474426,
+        "expected": 0.72625,
+        "max_error_m": 7.152557324197062e-09
+      }
+    ],
+    [
+      "FA-404-L octagonal recessed land -0.6 0.72",
+      true,
+      {
+        "hit": [
+          -0.7213630676269531,
+          -0.6000000238418579,
+          0.7649999856948853
+        ]
+      }
+    ],
+    [
+      "FA-404-L octagonal recessed land 0.7 0.72",
+      true,
+      {
+        "hit": [
+          -0.7213630676269531,
+          0.699999988079071,
+          0.7649999856948853
+        ]
+      }
+    ],
+    [
+      "FA-404-L octagonal recessed land -0.5 1.45",
+      true,
+      {
+        "hit": [
+          -0.7213630080223083,
+          -0.5,
+          1.4950000047683716
+        ]
+      }
+    ],
+    [
+      "FA-404-L octagonal recessed land 0.5 1.45",
+      true,
+      {
+        "hit": [
+          -0.7213630080223083,
+          0.5,
+          1.4950000047683716
+        ]
+      }
+    ],
+    [
+      "FA-400 continuous folded corner -1",
+      true,
+      {
+        "hit": [
+          -0.6999999284744263,
+          2.390000104904175,
+          0.4519999921321869
+        ]
+      }
+    ],
+    [
+      "FA-400 continuous folded corner 1",
+      true,
+      {
+        "hit": [
+          0.6999999284744263,
+          2.390000104904175,
+          0.4519999921321869
+        ]
+      }
+    ],
+    [
+      "FA-401-L continuous folded corner -1",
+      true,
+      {
+        "hit": [
+          -0.6800000667572021,
+          1.1799999475479126,
+          0.6299999952316284
+        ]
+      }
+    ],
+    [
+      "FA-401-L continuous folded corner 1",
+      true,
+      {
+        "hit": [
+          0.6800000667572021,
+          1.1799999475479126,
+          0.6299999952316284
+        ]
+      }
+    ],
+    [
+      "FA-402 continuous folded corner -1",
+      true,
+      {
+        "hit": [
+          -0.6799999475479126,
+          -0.8500000238418579,
+          0.5149999856948853
+        ]
+      }
+    ],
+    [
+      "FA-402 continuous folded corner 1",
+      true,
+      {
+        "hit": [
+          0.6799999475479126,
+          -0.8500000238418579,
+          0.5149999856948853
+        ]
       }
     ],
     [
@@ -18110,10 +18626,10 @@
       "Foot triangle budget",
       true,
       {
-        "triangles": 436404,
+        "triangles": 435456,
         "limit": 800000
       }
     ]
   ],
-  "blend_sha256": "e2ae7efdb8fece7bfe5b24f04a52ab35dd8fff67ecc297d89a56b6d12b40f559"
+  "blend_sha256": "97360c2aca7f4905b87097589c4836fad3f2b086950a671a86688f7e0d4b854b"
 }
