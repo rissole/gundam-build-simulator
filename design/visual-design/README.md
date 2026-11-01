@@ -19,7 +19,7 @@ before any further component art or detailed in-game models.
 | 1. Silhouette | [Blender mannequin and turnaround sheets](../../models/silhouette-mannequin/README.md) | **Approved for now, 2026-11-01**, after two rounds of studies; envelopes recorded in [proportions.md](../proportions.md) |
 | 2. Concept exploration | Four whole-robot directions, each a front/side/back turnaround plus a three-quarter view, generated from the brief below with the mannequin as proportion guide | Done 2026-11-01: four directions; the user selected [**B, industrial service, turnaround v1**](concepts/README.md) |
 | 3. Approved turnaround and style sheet | One iterated front/side/back reference plus a style sheet: edge treatment, plate layering, panel lines, detail density and placement, palette, markings | **Approved 2026-11-01:** [turnaround and style guide](turnaround/README.md) |
-| 4. Component concept sheets | Per-section sheets consistent with step 3, starting with the leg; the FA-01 foot sheets are redrawn | Not started |
+| 4. Component concept sheets | Per-section sheets consistent with step 3, starting with the leg; the FA-01 foot sheets are redrawn | Leg: [LG-01 sheets](../legs/images/README.md) **approved 2026-11-01**, with the [leg component list](../legs/leg-components.csv). Foot: FA-02 sheets are phase 1 of the [leg model plan](leg-model-plan.md) |
 | 5. In-game visual models | Generated visual meshes per part from traced profiles, layered over the unchanged gameplay geometry | Not started |
 
 Step 3's turnaround becomes the "approved whole-robot reference" that

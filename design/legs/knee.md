@@ -1,6 +1,6 @@
 # Knee
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
@@ -9,6 +9,8 @@ The right leg will mirror this design.
 Connected assemblies and clearance checks: [shin and calf](shin-and-calf.md), [thigh and hip](thigh-and-hip.md).
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#legs-and-feet).
+
+> **Concept sheets, 2026-11-01:** [LG-01](images/README.md) draws the knee in the approved look; part numbers are in the [leg component list](leg-components.csv). The sheets' knee cylinders are drawn wrongly (thigh to fork); this specification governs.
 
 ## Confirmed design
 

@@ -1,0 +1,31 @@
+Use case: infographic-diagram. Create sheet 3 of the original giant robot LEFT leg concept set, a high-resolution landscape technical industrial concept sheet.
+Reference 1 lg01-assembled-v3.jpg is the design identity and proportions: show the dark internal SKELETON of that SAME leg, with ALL armor removed. Reference 2 turnaround-v3.jpg and reference 3 style-sheet-v3.jpg guide original robot mechanical style and materials. Reference 4 lg01-armor-v3.jpg guides plate-mount correspondence, BUT correct its ambiguous knee cylinders: each must bridge from thigh to upper shin across knee joint. Do not reproduce its remaining armor.
+White background, thin dark drafting frame, small blue leaders/arrows, bold dark technical typography matching sheet1. Crisp industrial-design rendering with soft studio shading, satin rough gunmetal #4C4C4B machined structural members and darker recesses, polished hydraulic rods. Subtle metal wear, hex bolt groups, clean plausible engineering. No scenery, logo, stencil text, foot, pelvis, torso socket, hip guards, or ANY off-white armor. No ochre kneecap since all armor removed.
+
+Composition: one large full-length upright dark bare-leg skeleton at left/centre, elevated three-quarter REAR-OUTER camera showing rear cables, knee fork, rear-side hydraulic pair, separate calf cradle, and structural beam. One large knee close-up inset on right in a thin dark rectangle; inset uses rear three-quarter camera, same exact joint geometry and two cylinders as main view. Blue leader from main knee to inset can connect them, no extra inset title. Main skeleton hip centre9.20/knee5.10/ankle1.00 equivalent, equal4.10 joint spans, stop at lower shin flange. Do not print dimensions. Armor absent, but mount outriggers reach plausible1.80 thigh/1.65 calf envelopes from assembled reference. Do not make a solid monolithic leg-shaped slab.
+Structure:
+- LG-120 central box-section thigh spar, integral narrowed neck and dark spherical hip ball at upper end, ONE manufactured member. NO separate bolted ball module, NO surrounding socket frame.
+- Three physically distinct keyed lug carriers on upper spar around neck transition, outer/front, inner/front, inner/rear, each with paired clevis cheeks and eye-pin bore. Show only camera-visible ones, do not falsely line them up in one row; exactly3 total. No torso-owned hip cylinders.
+- LG-250 compact dark power/data/hydraulic dry-break service block near upper spar/front-inner side, with protected U-loop and reasonable cable routing.
+- LG-230 narrow dark rear service-channel cable guard along thigh spar, protecting cables. It is a service guard, not outer armor. Do not label whole spar as cable guard.
+- LG-110 detachable thigh knee fork with two structural cheeks straddling upper shin.
+- LG-140 ONE horizontal transverse knee axle, runs through fork cheeks and shin bearing boss. In inset expose an axle end/retaining cap or slightly withdraw cap, NOT multiple hinges.
+- LG-340 exactly TWO gunmetal hydraulic cylinders with polished rods, one at each REAR SIDE of knee, no central cylinder. Each cylinder's UPPER eye attaches to LOWER THIGH above axle, and each LOWER eye attaches to UPPER SHIN below axle. Both MUST physically span across the knee-axis height; do not stop above knee, do not mount both ends to thigh. Leave open rear centre between them. Show coherent pin and clevis connections. In inset repeat the SAME pair from closer camera, not extra components.
+- LG-100 continuous dark structural shin beam connects knee bearing boss down to compact flat ankle-interface base flange, independent of rear thruster cradle.
+- LG-440 separate empty dark thruster cradle behind shin beam, exactly TWO vertically stacked engine mounting saddles/rings, corresponding to two engines on other sheets. Engines and nozzles OMITTED to reveal bare mounting structure; no false third mounting station. Keep it inside calf envelope. Show beam and cradle as distinct structures.
+- Small rectangular structural lifting pads on both sides of knee fork at6.10 and shin beam at2.80, not mounted to cylinders. No printed dimensions.
+Allow white space behind open structures, respect occlusion, do not draw through metal.
+
+EXACT TEXT ONLY, once each except no duplicate labels needed inside inset:
+Title "STRUCTURE / JOINTS"
+Subtitle "LG-01 | CONCEPT REFERENCE"
+"LG-120 SPAR / BALL"
+"LG-240 LUG CARRIERS"
+"LG-110 KNEE FORK"
+"LG-140 AXLE"
+"LG-340 KNEE CYLINDERS"
+"LG-100 SHIN BEAM"
+"LG-440 THRUSTER CRADLE"
+"LG-250 SERVICE BLOCK"
+"LG-230 CABLE GUARD"
+All text crisp readable dark technical sans-serif, line wrap permitted. Blue precise leaders end on the named component; grouped cylinder/lug labels use forked leaders. Use knee inset for LG-110, LG-140, LG-340 labels and main view for the others, ample whitespace. No other text or numbers.

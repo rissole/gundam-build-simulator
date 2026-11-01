@@ -1,0 +1,32 @@
+Use case: infographic-diagram. Produce sheet 2, a high-resolution landscape exploded concept reference for the original robot LEFT leg, thigh/knee/shin/calf only.
+Input reference 1 lg01-assembled-v3.jpg is the design identity to carry over: SAME leg panel shapes, same joints, same broad masses, same hip ball, ochre kneecap, hatches, rails, bronze nozzles and drafting style. Input 2 turnaround-v3.jpg is the authoritative original robot appearance. Input 3 style-sheet-v3.jpg gives finishes/details. Input 4 03-shells-soles-v2.png is layout-only, never copy its foot or grey palette.
+White background, thin dark drafting frame, crisp industrial-design rendering with soft studio shading. Large satin warm off-white #D2C8BC faceted armor with broad chamfers and grouped recessed hex bolts, gunmetal #4C4C4B frame and joints, safety ochre #D4861D kneecap/short grab rails, bronze nozzle lining, tiny red caution bars but NO stencil letters or extra numbers. Subtle wear, clean surfaces. No scenery or logos.
+
+Show ONE upright exploded LEFT leg, large across sheet with open space around it for parts and labels. Use coherent elevated three-quarter view that reveals detached front and side parts and rear engine pieces after explosion. Core remains centered, removable plates pulled away along short clear DASHED BLUE arrows from their seats. All parts in one consistent coordinate system. Some core armor can remain near its seat to read as the armored leg being opened, but do not duplicate ANY panel. Show only camera-visible surfaces, no x-ray. No foot, no pelvis, no hip guards, no socket bowl, no ankle foot assembly: stop at lower shin beam interface.
+Keep equal 4.10m hip-knee and knee-ankle spans; thigh armor 1.80 wide/deep tapering to1.32, calf1.65 wide tapering1.06 and2.24 deep including thrusters. Do NOT print these dimensions. A dark integral hip ball on neck/spar above thigh, narrow mechanical gap and three discrete lug carriers. Dark fork with ONE horizontal knee axle. Two rear-side hydraulic cylinders with polished rods; central knee rear open. Small exposed gunmetal lifting pads at fork sides and shin sides.
+
+Required removable parts displayed exactly once each, all visibly related to mounting seats:
+- broad off-white thigh front plate pulled front-left;
+- separate off-white thigh outer and inner side plates spread to left and right;
+- TWO narrower rear thigh covers grouped at upper rear/right, leaving visible recessed service channel and dark cable guard;
+- ONE compact faceted OCHRE kneecap, wider at top and tapered down, pulled forward off its upper-shin bracket;
+- TWO off-white angular knee side guards, with recessed circular gunmetal bearing covers, pulled sideways;
+- long off-white front shin plate pulled forward-left;
+- TWO calf side shells spread left/right, each with an off-white bolted access hatch, flush latch and SHORT ochre grab rail, and a cutout exposing gunmetal lifting pad;
+- rear angular off-white shroud pulled backward/right, with TWO vertically stacked separate angular nozzle openings;
+- ONE small rectangular off-white removable bridge panel separately pulled from BETWEEN the two nozzle openings, clearly call it out;
+- EXACTLY TWO thruster units pulled behind/right from dark cradle: each a gunmetal cylindrical engine body with round bell nozzle and bronze-lined dark mouth. Arrange units VERTICALLY stacked, not side by side; mouths rearward/slightly down. Do not also draw installed copies. Rear shroud goes around engine bodies leaving mouths clear. Do not turn thrusters into separate giant external backpack.
+
+Text allowed, exact strings, each once, dark technical sans-serif, generous clear space; blue small leader lines from labels to correct individual parts, with forked leaders for paired groups. Top title "ARMOR / THRUSTERS". Subtitle "LG-01 | EXPLODED CONCEPT REFERENCE". Labels:
+"LG-200 FRONT PLATE"
+"LG-210 OUTER SIDE PLATE"
+"LG-215 INNER SIDE PLATE"
+"LG-220 / LG-225 REAR COVERS"
+"LG-300 KNEECAP"
+"LG-320 / LG-325 KNEE GUARDS"
+"LG-400 SHIN PLATE"
+"LG-410 / LG-415 CALF SHELLS"
+"LG-420 REAR SHROUD"
+"LG-430 BRIDGE PANEL"
+"LG-450 THRUSTER UNITS"
+Line wrapping permitted without changing words. No other text, no added section titles, no dimensions or footer. All labels must fit within frame, no collisions. The sheet must be a coherent explosion of the referenced leg, not a collage of unrelated leg designs.

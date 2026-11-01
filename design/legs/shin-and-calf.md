@@ -10,7 +10,7 @@ Connected assemblies and clearance checks: [foot and ankle](foot-and-ankle.md), 
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#legs-and-feet).
 
-> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: calf armor up to 1.65 m wide, tapering to 1.06 m toward the ankle, 2.24 m deep including the thruster enclosure (was 1.40 / 0.90 / 1.90). Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: calf armor up to 1.65 m wide, tapering to 1.06 m toward the ankle, 2.24 m deep including the thruster enclosure (was 1.40 / 0.90 / 1.90). Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating. Concept sheets: [LG-01](images/README.md); part numbers: [leg component list](leg-components.csv).
 
 ## Confirmed design
 
