@@ -1,0 +1,34 @@
+Use case: infographic-diagram. Create the FA-02 LEFT FOOT armor and sole exploded concept sheet, continuing the supplied FA-02 assembled design. White background, thin dark drafting frame, crisp industrial render, soft studio shadows, black legible technical typography, blue leader lines.
+References: FA-02 assembled is the identity and palette, turnaround-v3 the approved angular foot look, style-sheet-v3 the surface finish, lg01-assembled-v3 the lower-shin neighbor ONLY. FA-01 shells/soles is layout and ownership reference ONLY, never copy its grey palette or incorrect ghosted ankle. All shells satin warm off-white #D2C8BC, structure and carriers gunmetal #4C4C4B, six tread pads dark rubber, narrow painted ochre #D4861D toe nose, tiny red #C2332A caution bars. No bronze, no thrusters.
+
+ONE coherent elevated front-outer three-quarter exploded LEFT foot. A faint dark bare frame in centre is context only: horizontal open ankle ring with compact adapter at rear, two rear rails, two forefoot rails connected at one transverse hinge. Do not draw installed copies of detached shells. Overall footprint3360 long and1460 wide, ankle pivot1000, side guard1600, main shell700; do not print dimensions on this sheet.
+
+Display exactly FIVE separately countable armor shells across the top/side tier, no extra panels:
+1 FA-400 Toe cap, one broad low faceted hood with integral narrow ochre painted nose, lifted vertically above moving toe.
+2 FA-401-L Upper foot plate, one broad faceted U-shaped hood lifted vertically above fixed rear frame, rear-open notch all the way to edge, outer-side actuator relief, top lower than the tall guards.
+3 FA-402 Heel cover, one rear cap pulled rearward, entirely off-white.
+4 FA-403-L Inner ankle guard, ONE thin tall faceted lateral wall pulled inward.
+5 FA-404-L Outer ankle guard, ONE thin tall faceted lateral wall pulled outward.
+Four recessed captive bolt wells per shell. Five shells total; do not treat their chamfers, side folds or painted band as separate pieces. No armor roof across shin; guard pair remains open at front/back/top.
+
+Below the frame show exactly TWO separate broad metal carrier plates, pulled DOWN from corresponding rear and toe frames:
+FA-300 Rear sole carrier is the longer carrier for heel AND midfoot pad pairs; its bolt-hole pattern should accommodate four pads.
+FA-301 Forefoot sole carrier is shorter and carries the two toe pads.
+Below these show exactly SIX separate dark rubber pads in THREE clearly separated PAIRS, all countable without overlap. Each pair is a left/right pair across foot width, not two consecutive longitudinal pads. Rear-to-front: two short heel pads, two long midfoot pads, two medium forefoot pads. Approximate individual pad sizes: heel670x740, midfoot670x1290, forefoot670x960; thickness140. Each pad has exactly FOUR recessed bolt wells and broad transverse tread grooves. No extra isolated tread blocks. Do not merge pads into one rubber belt.
+Blue dashed explosion paths connect each shell/carrier/pad to its correct seat. Paths illustrate removal: upper/toe up, heel rear, guards sideways, carriers/pads down. Avoid crossing labels. No hardware insets or electrical parts, prioritize large clear parts and labels.
+
+Exact text, each once in dark readable technical sans-serif, line wrapping allowed:
+Title "ARMOR / SOLES"
+Subtitle "FA-02 | EXPLODED CONCEPT REFERENCE"
+"FA-400 TOE CAP"
+"FA-401-L UPPER FOOT PLATE"
+"FA-402 HEEL COVER"
+"FA-403-L INNER ANKLE GUARD"
+"FA-404-L OUTER ANKLE GUARD"
+"FA-300 REAR SOLE CARRIER"
+"FA-301 FOREFOOT SOLE CARRIER"
+"FA-302 HEEL GRIP PAD x2"
+"FA-303 MIDFOOT GRIP PAD x2"
+"FA-304 FOREFOOT GRIP PAD x2"
+Footer "5 SHELLS | 2 CARRIERS | 6 PADS"
+Precise blue leaders to the named part; forked leaders to BOTH members of each pad pair. All IDs include the shown suffixes. No other text.

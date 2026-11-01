@@ -1,0 +1,28 @@
+Use case: infographic-diagram. Create the FA-02 LEFT FOOT structure and joints sheet in the same white drafting frame and industrial illustration style as the supplied assembled reference. Use FA-02 assembled for identity; turnaround-v3 and style-sheet-v3 for materials; lg01-assembled-v3 for the mating shin context ONLY; FA-01 structure sheet for mechanism layout ONLY, never its grey palette.
+Title "STRUCTURE / JOINTS". Subtitle "FA-02 | CONCEPT REFERENCE".
+ALL ARMOR, SOLE CARRIERS AND RUBBER PADS ARE REMOVED. Satin rough gunmetal #4C4C4B on the frame and actuator barrels; polished rods and machined pin surfaces. No off-white bodywork, no ochre guards, no bronze or nozzles, no calf or complete leg. White background with open spaces visible through the frame, subtle edge wear, crisp chamfers, recessed hex bolts. Small blue leaders and dashed assembly alignment lines. Large legible dark technical sans-serif.
+
+Composition: ONE large slightly exploded foot skeleton in an elevated FRONT-OUTER three-quarter view, toe toward lower-left, ankle/heel at upper-right. Use most of the sheet for this connected mechanism, with generous margins for labels. Explode the ankle ring/adapter core vertically a short distance above the fixed cradle to expose the difference between them. Explode the forefoot frame a short distance forward and the continuous axle sideways toward the viewer to expose the interleaving lugs. All pieces appear ONCE, not duplicate inset assemblies. No blank filler panels, no hardware catalog, no tiny text.
+Overall neutral proportions3360 length,1460 width,1000 pivot and1600 guard envelope (guards removed). Keep rail centers1120 apart and180x240 box sections. Rear rails2050 long; forefoot rails940 long. The ankle pivot is900 forward from heel,2460 behind toe. Do not print these numbers.
+Rear frame exactly FIVE main manufactured pieces: two parallel long hollow rails; one rear crossmember; one front crossmember with integral fixed toe-hinge lugs; one open cradle with two bearing cheeks and an integral outer outrigger. Cradle is one component, not a solid giant block; receiving legs reach laterally to frame seats. Keep central underside open.
+Forefoot exactly FOUR main pieces: two short rails, one toe crossmember, one rear hinge beam with integral moving lugs. Two fixed support lugs outside two moving lugs, all on one axis. ONE long continuous transverse axle belongs to toe hinge, pulled to outer side, not an axle running up foot length.
+Ankle ring FA-200 is an ANGULAR HORIZONTAL OPEN RECTANGULAR RING,880 wide720 deep, with central rectangular hole. It is NOT a vertical hoop, not a steering wheel, not a solid slab. Adapter FA-201 is compact upright member inside that ring, ending in a keyed520x440 flange at1380. Ring pivots on two short X-axis pins in cradle, adapter on two short Y-axis pins inside ring; four short opposed pins total, no intersecting shafts through center. Show a little gap around core for the leaders. Two sleeves and thrust washers per axis can be suggested without labeling.
+Three COMPLETE electric screw actuator assemblies, one per role, visible and separately countable: pitch longer barrel at OUTER edge from cradle-outrigger base to ring, roll shorter behind ring from ring to adapter, forefoot low centerline from front crossmember's rearward bracket to moving hinge lever. Each has ONE barrel, polished rod and two spherical eyes. Partially offset these three drives off their seats with short blue dashed alignment lines if needed to make all three readable. Their labels point specifically to their cylindrical BARRELS whose valid component IDs are FA-510-A/B/C; do not invent FA-500 inventory parts. No extra front-facing symmetric pitch cylinder pair.
+Do not fill open frame with decorative plates. Small fasteners representative only; no loose hardware cloud.
+
+Exact labels, each once, line wrapping allowed. Give every leader its own clear route to the correct physical part:
+"FA-100-A / FA-100-B REAR RAILS"
+"FA-101 REAR CROSSMEMBER"
+"FA-102 FRONT CROSSMEMBER"
+"FA-103-L FIXED ANKLE CRADLE"
+"FA-104-A / FA-104-B FOREFOOT RAILS"
+"FA-105 TOE CROSSMEMBER"
+"FA-106 HINGE BEAM WITH MOVING LUGS"
+"FA-200 ANGULAR PITCH RING"
+"FA-201 ROLL ADAPTER WITH KEYED SHIN FLANGE"
+"FA-210 CONTINUOUS FOREFOOT AXLE"
+"FA-510-A PITCH CYLINDRICAL BARREL"
+"FA-510-B ROLL CYLINDRICAL BARREL"
+"FA-510-C FOREFOOT CYLINDRICAL BARREL"
+Paired rail labels use forked leaders to BOTH rails. No incorrect suffixes. Footer "ARMOR REMOVED | THREE ELECTRIC SCREW ACTUATORS".
+No additional text, no dimensions.

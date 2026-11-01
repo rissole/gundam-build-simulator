@@ -1,0 +1,33 @@
+Use case: precise-object-edit. Correct this FA-02 structure sheet while preserving its white border, industrial gunmetal material, exploded viewpoint, large open horizontal ring, compact adapter, open rail frame and absence of armor.
+Make the technical labels correct and legible. Replace all existing part callouts with DARK NAVY/BLACK lettering, clean technical sans serif, and thin BLUE leader lines. Do not keep distorted duplicate text underneath. The ring MUST read FA-200, digits TWO ZERO ZERO; it currently has a wrong identifier. The low central actuator MUST read FA-510-C, digits FIVE ONE ZERO suffix C; its current identifier is garbled. The paired rear rail label MUST say FA-100-A / FA-100-B, not FA-106-A. Add the missing FA-102 FRONT CROSSMEMBER leader at the fixed beam carrying the rear pair of forefoot-hinge support lugs. Keep labels large and do not overlap parts.
+Complete exact callout set, each once:
+FA-100-A / FA-100-B
+REAR RAILS
+FA-101
+REAR CROSSMEMBER
+FA-102
+FRONT CROSSMEMBER
+FA-103-L
+FIXED ANKLE CRADLE
+FA-104-A / FA-104-B
+FOREFOOT RAILS
+FA-105
+TOE CROSSMEMBER
+FA-106
+HINGE BEAM WITH MOVING LUGS
+FA-200
+ANGULAR PITCH RING
+FA-201
+ROLL ADAPTER WITH KEYED SHIN FLANGE
+FA-210
+CONTINUOUS FOREFOOT AXLE
+FA-510-A
+PITCH CYLINDRICAL BARREL
+FA-510-B
+ROLL CYLINDRICAL BARREL
+FA-510-C
+FOREFOOT CYLINDRICAL BARREL
+Retain exact title STRUCTURE / JOINTS, subtitle FA-02 | CONCEPT REFERENCE, and footer ARMOR REMOVED | THREE ELECTRIC SCREW ACTUATORS. No other text.
+
+Also remove the unlabelled fourth diagonal cylinder descending from the underside of the ring to the cradle's near cheek. Keep ONLY the three clearly labelled complete drives: outer large pitch, rear roll, low central forefoot. Each drive has a barrel, extending rod and two eye ends, no additional disconnected rod pretending to be a fourth actuator. Small short cylindrical ankle pins remain; those are not actuators.
+Do not alter shell-free appearance or add any plates. Preserve four rails total: two long rear rails, two short forefoot rails; the rail pair leaders must fork to each corresponding pair. Front crossmember fixed supports and hinge-beam moving lugs must share ONE transverse axis and the single long FA-210 axle aligns with them.

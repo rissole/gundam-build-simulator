@@ -6,6 +6,241 @@ Revision: FA-01, incorporating FA-01-3D-01 refinements · 2026-10-21
 
 These are assistant-selected working dimensions under the user's instruction to proceed with recommendations. They preserve the confirmed construction and overall proportions. All dimensions here are **millimetres**, with angles in degrees. They describe fictional reference geometry, not production tolerances or a load-rated machine.
 
+## FA-02 revision (2026-11-01)
+
+This section supersedes **only the listed dimensions and part-number mappings** for
+FA-02. The FA-01 sections below remain intact as interface/mechanism history.
+[Approved proportions](../../proportions.md#legs-and-feet) govern the envelope;
+[foot-components.csv](foot-components.csv) is the FA-02 physical inventory and
+[the FA-02 sheets](images/README.md) guide appearance, not measured geometry.
+Units are **mm**. Left foot master: ground beneath ankle is (0,0,0), +X inner,
++Y forward, +Z up; mirror X for the other foot. Neutral pose and rotation signs
+remain as below. These are reference-design decisions, not manufacturing limits.
+
+### Scaling rule and fixed interfaces
+
+Plan positions start from X × 1460/1300 = **1.1230769**, Y × 3360/3000 =
+**1.12** about the ankle, then are rounded to useful 5/10 mm coordinates. Explicit
+values here win over applying the factors again. Outer ends are pinned to the
+approved −900/+2460, rather than the raw scaled −896/+2464. Sections, wall
+thicknesses, bolt diameters/lengths, bearing stacks and all Z values remain fixed;
+rail lengths, transverse spans, seat positions and cover/pad plan outlines grow.
+The frame is not a uniformly scaled solid. Integral arms connect widened frame
+seats to the unchanged ankle core. No additional physical components or bolts.
+
+| Datum / retained interface | FA-02 value |
+| --- | --- |
+| Neutral outer envelope | X −730…730; Y −900…2460; length 3360, width 1460 |
+| Ankle pivot C | (0,0,1000), unchanged |
+| Forefoot hinge H | (0,1340,350), axis X; +140 in Y |
+| Main shell / guard maximum | Z700 / Z1600, unchanged |
+| Shin flange / bolt centres | Mating plane Z1380; X±200, Y±150; four M36×90 and W-36 |
+| Adapter flange / key | 520×440×60, Z1320…1380; key180×100×20, unchanged |
+| Ring / adapter / ankle journals | All FA-200…209 envelopes, bores, pin lengths, bosses and bearing stacks below unchanged; ring X±440, Y±360, Z940…1060, opening X±300/Y±220 |
+| Fixed cradle cheeks | X450…550 and −550…−450; Y−140…140; Z800…1150, unchanged |
+| Articulation | Pitch −20…20°, roll −10…10°, forefoot 0…30°, unchanged |
+| Lower shin / tool corridors | Beam300×200, baseplate Z1380…1410; four Ø80×120 socket corridors; armor starts Z1650, first450 high stays within900×900 |
+| Stance / axle removal | Ankle spacing2200; foot inner gap740; preserve1300 clear workspace OUTSIDE the outer foot for axle extraction |
+
+### Frame limits and bolt-centre schedule
+
+All rail box sections remain180×240, walls20, rail Z200…440, chamfers20.
+Crossmember bodies retain their fore/aft section depths (200 rear/front,160 toe),
+Z200…440; their transverse spans and integral seats grow. Limits below include
+listed connection lands but not separately stated local hinge ears/clevis arms.
+
+| Part / quantity | FA-02 plan limits and placement |
+| --- | --- |
+| FA-100-A/B rear rails, one each | Centres X±560; inner rail X470…650, outer rail X−650…−470; Y−785…1265, length2050 |
+| FA-101 rear crossmember | X−650…650; Y−660…−460; end seats at X±395 |
+| FA-102 front crossmember | X−650…650; body Y1020…1220; local fixed hinge supports extend toY1420 around H |
+| FA-103-L cradle feet / outriggers | Four feet centred X±395,Y±110; each land X centre±60,Y centre±40,Z390…430. Open arms reach the unchanged cheeks; integral outer truss reaches fixed pitch eye (−540,800,480). No solid underside block |
+| FA-104-A/B forefoot rails, one each | X/Z as rear rails; Y1500…2440, length940 |
+| FA-105 toe crossmember | X−650…650; Y2270…2430; end seats at X±395 |
+| FA-106 hinge beam | Main beam X−450…450,Y1425…1545,Z220…480; mounting feet extend Y1500…1680 to seats X±395; moving lugs project rearward to H |
+| Rail ledges and joint lands | Ledges X335…470 and mirror,Z350…390; widened inward to put bolts atX±395 while meeting rail inner faces±470. Joint lands X335…455 and mirror,Z390…430; keep5-deep locating tongues clear of bolt bores |
+| FA-107-A nut plates, four | 80 wide×200 long×54 thick, hole pitch110; centres (±395,−560) and (±395,1120) |
+| FA-107-B nut plates, two | 80×310×54, hole pitch220; centres (±395,0) |
+| FA-107-C nut plates, four | 80×180×54, hole pitch90; centres (±395,1590) and (±395,2350) |
+
+Nut plates stay atZ296…350. M36 frame bolt under-head planeZ436, tipZ296;
+6 mm washer,40 mm land,40 mm ledge,54 mm thread engagement unchanged.
+For each nut plate place its two M12 keeper axes at (plate centre X±55,
+plate centre Y); integral lateral ears provide10 mm lands atZ350…360, leaving17.5 mm
+thread engagement after the2.5 mm washer.
+These ears, pockets and screw approaches must stay outside the M36 bores.
+
+| Connection / owner | FA-02 bolt centres in foot X,Y | Count / hardware |
+| --- | --- | --- |
+| Rear crossmember / rear rails | X±395; Y−615,−505 | 4 H-36140 |
+| Front crossmember / rear rails | X±395; Y1065,1175 | 4 H-36140 |
+| Cradle / rear rails | X±395; Y−110,110 | 4 H-36140 |
+| Hinge beam / forefoot rails | X±395; Y1545,1635 | 4 H-36140 |
+| Toe crossmember / forefoot rails | X±395; Y2305,2395 | 4 H-36140 |
+| Nut-plate keepers | For each of10 centres above, Xcentre±55,Ycentre | 20 H-12030 |
+| Rear carrier / rear rails | X±560; Y−670,170,1040 | 6 H-24070 |
+| Forefoot carrier / forefoot rails | X±560; Y1640,2280 | 4 H-24070 |
+| Shin flange | X±200; Y±150; unchanged | 4 H-36090 |
+
+The forefoot bearing stack is an explicit exception to lateral scaling: preserve
+fixed lugs X460…580 and mirror, moving lugs X310…450 and mirror, journalØ120
+spanningX−580…580, bushings140 long and washers8 thick in10 mm gaps. Translate
+all to H atY1340; extend their integral arms to the new beam/frame, do not stretch
+the bushings or axle. FA-210 remains1160 journal/1185 extraction length. Beam rear
+faceY1425 is85 ahead of H, leaving25 to the Ø120 axle surface (was15).
+
+### Actuator endpoints, stops and services
+
+Actuator internals, eye sizes and pin-to-guide lengths in [actuators.md](actuators.md)
+are unchanged. The pitch **clevis eyes are not scaled**: extend the cradle's
+outrigger/receiving arms to the widened frame, retaining the original eyes.
+Roll stays wholly on the unchanged ring/adapter. Forefoot needs a controlled
+translation: keeping its old fixed eye atY650 while moving H140 forward would
+make its neutral length751.66, outside its640 usable maximum. Therefore translate
+both forefoot eye trajectories +140Y; keep its lever vector and internal stroke.
+This is the only actuator placement exception to the default of fixed clevis eyes.
+
+| Drive | FA-02 neutral base eye | FA-02 neutral rod eye | Neutral eye-to-eye / change | Required range |
+| --- | --- | --- | --- | --- |
+| Pitch | (−540,800,480), cradle | (−540,300,1000), ring | 721.39 / 0.00 | 665.31…809.97 within640…860 |
+| Roll | (500,−450,850), ring | (200,−450,1320), adapter | 557.58 / 0.00 | 496.48…615.20 within480…640 |
+| Forefoot | (0,790,520), front-frame clevis | (0,1400,570), H+(0,60,220) | 612.05 / 0.00 | 494.55…612.05 within470…640 |
+
+These lengths follow the written rotation transforms, not image pixels. Six
+FA-220 brackets retain two M24×70 each and unchanged eye/pin stacks. Bracket
+arms/receiving ears can change while eyes remain at these coordinates; their
+mounting pairs use the original local keyed interface, not globally scaled holes.
+Pitch/roll stops remain on their unscaled joint datums. Forefoot stops and contact
+lever translate+140Y with H, retaining X≈220, local(Y60,Z220),0°/30° contacts,
+140×80 flanges and80 mm bolt pitch. All six stops keep two M24×70 each.
+
+The controller box remains X150…450,Y650…950,Z460…620, with300×300×160 body.
+Extend its integral frame ears to meet the new frame. Keep four box screws, four
+lid screws, four board screws, four box sockets, three actuator sockets and twelve
+clips. Harness lengths2200/1800/2200/900 remain trim-to-fit allowances, not a proved
+routing solution; preserve100 minimum loop radius and300 free cable per ankle
+crossing. Recheck the shifted forefoot branch route in the source-model stage.
+
+### Sole limits, pads and underside bolt centres
+
+| Part / pair | FA-02 X limits | FA-02 Y limits | Z / size |
+| --- | --- | --- | --- |
+| FA-300 rear carrier | −685…685 | −850…1230 | Z140…200;60 thick |
+| FA-301 forefoot carrier | −685…685 | 1470…2450 | Z140…200;60 thick |
+| FA-302 heel pads,2 | −695…−25 and25…695 | −850…−110 | Z0…140;670×740×140 each |
+| FA-303 midfoot pads,2 | Same as heel pair | −70…1220 | Z0…140;670×1290×140 each |
+| FA-304 forefoot pads,2 | Same as heel pair | 1480…2440 | Z0…140;670×960×140 each |
+
+The central pad gap rounds to50; pads overhang carrier edges10. Tread grooves
+remain30×12 on120 pitch, ending40 from edges; pad bevel20. Each pad still has
+four corners with bolt centres100 inward, twenty-four sleeves total.
+
+| Pad pair | X bolt coordinates (two per pad) | Y bolt coordinates | Count |
+| --- | --- | --- | ---: |
+| Heel | Outer pad−595,−125; inner pad125,595 | −750,−210 | 8 |
+| Midfoot | Same | 30,1120 | 8 |
+| Forefoot | Same | 1580,2340 | 8 |
+
+Pad bolts stay M24×120 pointing upward, under-headZ60; washersZ60…64,
+ID26/OD42×76 sleevesZ64…140,40 engagement. Carrier bolts stay M24×70,
+under-headZ168, washerZ168…172, landZ172…200,38 engagement. Pad and carrier
+holes are distinct: carrier Y centres deliberately depart from simple scaling
+to separate theirØ56 counterbores from pad threaded holes/sleeve axes; minimum
+plan centre distance is69.46 (35 lateral,60 longitudinal). A naive rounded scale
+would put some centres only35 apart. Preserve this offset in the solid model. Access remains from below:
+remove pads to expose carrier fasteners.
+
+### Shell look, limits, ownership and removal
+
+Match the approved turnaround feet: angular chamfered/faceted plates, broad warm
+off-white **#D2C8BC**, gunmetal **#4C4C4B** frame/sole carriers, dark rubber tread,
+small red **#C2332A** caution bars and a safety-ochre **#D4861D toe accent band**.
+Ochre is paint on the toe cap, not an extra inventory shell. No foot nozzles or
+bronze accents. Broad60…120 visual edge facets must be formed in the shell outline,
+not a bevel larger than its20 mm material thickness. Use sparse25-wide panel
+lines and recessed hex wells; avoid an invented crowd of separate cover plates.
+
+| Shell | FA-02 envelope / relief | Owner / removal |
+| --- | --- | --- |
+| FA-400 toe cap | X±730; rearY1500/Z600 toY2400/Z520, chisel tipY2460/Z400; lowerZ200,20 thick; chamfer plan corners inward | Forefoot; upward+Z |
+| FA-401-L upper foot plate | X±730; Y−500…1210; topZ700/underside680; rear-open notch X±590 fromY−500 to550. Outer actuator relief stays X−620…−450,Y550…870 because pitch actuator stays fixed | Rear frame; upward+Z around attached shin |
+| FA-402 heel cover | X±730; Y−900…−500; Z200…600; open front meets upper-plate boundary | Rear frame; rearward−Y |
+| FA-403-L inner ankle guard | Outer wallX730, inner wallX710; Y−730…950; Z600…1600; faceted lateral outline within these bounds | Fixed cradle; inward+X |
+| FA-404-L outer ankle guard | Outer wallX−730, inner wallX−710; Y−730…950; Z600…1600; mirrored lateral wall with outer service details | Fixed cradle; outward−X |
+
+Guard walls remain20 thick, now1420 apart internally. Both ends and the top of
+the guard pair remain OPEN. No armor roof, bridge or stiff crossbar across the
+moving shin. Fixed upper plate endsY1210; moving toe startsY1500; the290-wide
+hinge channel includes H at1340 and must not be bridged. All five shells retain
+two10-engagement sliding tabs and four captive M12×50 bolts/retaining collars.
+Thirty-thick lands, washers and17.5 engagement are unchanged. Integral receivers
+must meet the following selected neutral bolt axes; four per shell, no extras.
+
+| Shell attachment axes | Four FA-02 centres / head approach |
+| --- | --- |
+| Toe cap | X±560 atY1630 and2310, vertical axes; heads above roof lands |
+| Upper plate | X±650 atY−300 and1060, vertical axes; outside notch and fixed actuator relief |
+| Heel cover | X±560 atZ300 and500, Y−900 rear-face axes; rear access |
+| Inner guard | X730, (Y,Z)=(-600,720),(700,720),(-500,1450),(500,1450); lateral axes, inner access |
+| Outer guard | X−730, same(Y,Z); lateral axes, outer access |
+
+Guard receiver arms extend from the fixed cradle at those sites; keep them outside
+the moving core, pitch actuator and the open tool corridors. Their contour and
+all shell lands/tab sweeps remain source-model checks; dimensions select intended
+seats, not already collision-tested solids.
+
+### FA-02 part-number and compatibility mapping
+
+The CSV uses exactly the leg-list columns; its source paths are relative to
+`design/legs/` (as requested, e.g. `foot-and-ankle/parts.md#frame`). `qty_per_leg`
+means one complete foot, including its four shin bolts. No FA-500 assembly objects
+are added. Hardware is one row per **use and part**, so identical hardware IDs
+repeat with use-qualified names; they remain one compatible hardware type.
+
+| FA-01 working family / suffix | FA-02 IDs and decision |
+| --- | --- |
+| FA-100-IN/OUT; FA-104-IN/OUT | -A/-B, one each: A has ledge on its +X side (outer rail of left foot), B on its −X side (inner rail). These are distinct ledge orientations, not loose instance numbers. Mirror the pair by exchanging A/B for the right foot; neither means left/right foot handedness. Keep common section and fore/aft hole pattern |
+| FA-101/102/105/106 | Retain numbers; centred, laterally symmetric interfaces. Local electrical mounting provision is paired so mirroring does not require another counted bracket |
+| FA-103 | FA-103-L for true left-foot outer-outrigger geometry; right-foot counterpart FA-103-R |
+| FA-107 | -A crossmember plates×4, -B cradle plates×2, -C forefoot plates×4; lengths/pitches differ as tabulated |
+| FA-200…213 | Retain numbers and family quantities; pins/bushings/caps are reusable rotated copies; axle inserted from outer side, not a separately handed axle |
+| FA-220 six location variants | -A pitch cradle, -B pitch ring, -C roll ring, -D roll adapter, -E forefoot fixed, -F forefoot lever; one each, with symmetric keyed local receiving interfaces; mirrored placement uses the same bracket type |
+| FA-221/222 | -A pitchØ50 pins/keepers×2, -B roll+forefootØ40 pins/keepers×4; same-sized eye interfaces share copies |
+| FA-230 six angular variants | -A pitch rear limit, -B pitch forward limit, -C roll outer limit, -D roll inner limit, -E forefoot flat, -F forefoot raised; one each. These describe stop angles/functions, never use -R for rear or roll |
+| FA-300…305 /400/402/405 | Retain numbers; symmetric carrier/pad/hardware shapes and toe/heel shells. Pair pads are interchangeable copies, not separate handed IDs |
+| FA-401/403/404 | FA-401-L/403-L/404-L: asymmetric relief/tab/service layout mirrors for right foot as -R on the same base number; inner/outer guard families retain their separate ownership names |
+| FA-510…523 actuator pieces | -A pitch, -B roll, -C forefoot, one each per family. Reserve distinct packaging/fit variants even when a bore diameter happens to match; do not infer interchangeability without the later solid interface audit |
+| FA-524 collar halves | -A/B pitch clearance-hole/threaded half; -C/D roll equivalents; -E/F forefoot equivalents; one each |
+| FA-525 eye housings | -A/B pitch base/rod; -C/D roll base/rod; -E/F forefoot base/rod; one each |
+| FA-526/527 | -A pitch bearings/rings×2; -B roll+forefoot bearings/rings×4; share the same specified eye size |
+| FA-528 /530 | Common end sensors×6 / common actuator sockets×3; locations do not create variants |
+| FA-529 gaskets | -A/B pitch front/rear; -C/D roll front/rear; -E/F forefoot front/rear; one each |
+| FA-600…604/607 | Retain IDs; unchanged housing/lid/gasket/controller, four sockets and twelve interchangeable clips |
+| FA-605 /606 | FA-605-L matches existing handed main-harness convention (right FA-605-R); FA-606-A pitch1800, -B roll2200, -C forefoot900 branches, one each; branch routing flexes, length/connectors distinguish them |
+| Hardware from hardware.csv | Retain all IDs, including H-12050-C captive variant; one optional suffix only. Counts and hardware.csv unchanged |
+
+All IDs match `[A-Z]+(-[A-Z])?-[A-Z]?\d+(-[A-Z])?`. Only true foot-handed
+parts use -L/-R; the left-foot CSV lists -L only. Variants of one family use
+-A/-B/etc, never doubled suffixes or words such as -IN/-OUT. Mapping is a
+concept-level compatibility decision; it does not modify existing game IDs.
+
+### Review plan and evidence boundary
+
+The [notes](images/notes-fa02.md) record the inventory validation and inspection of
+the generated sheets. Preserve the existing assembly dependencies: nut plates
+before frame bolts, core/pins before closures, sleeves before pad bolts, accessible
+wiring before upper-plate closure. The forefoot owns its rails/beam/carrier/two
+pads/toe shell; the fixed cradle owns both guards. Hardware allocations stay745
+objects total. No game/source-model geometry changes are part of this revision.
+
+Next source-model checks: verify the20 scaled frame bolt seats,10 carrier seats,
+24 pad seats and20 shell seats; unscaled ankle/shin mating interfaces; translated
+forefoot eye/stop trajectories; pad versus carrier counterbore clearance; full
+joint sweeps, bracket/guard/tab contacts, extraction/tool paths and flexible harness
+loops. The FA-01 review script still describes FA-01 and must not be run or cited
+as FA-02 clearance evidence. Analytical actuator length preservation is narrower
+than collision-free solids or successful playable assembly.
+
 ## Coordinates and movement
 
 Use the **left foot** as the master. X points toward the robot's right, Y forward, Z upward. The origin is on the ground directly beneath the ankle. Thus +X is the inner side of this foot. Mirror X for the right foot, including brackets, wiring and axle extraction direction.
