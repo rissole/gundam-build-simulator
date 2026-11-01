@@ -1,183 +1,183 @@
 part_id,name,subassembly,category,qty_per_leg,handed,finish,visibility,status,source
-FA-100-A,Rear rail with positive-X ledge,foot-frame,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-100-B,Rear rail with negative-X ledge,foot-frame,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-101,Rear crossmember,foot-frame,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-102,Front crossmember with fixed hinge supports,foot-frame,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-103-L,Fixed ankle cradle with outer actuator outrigger,foot-frame,structure,1,yes,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-104-A,Forefoot rail with positive-X ledge,forefoot,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-104-B,Forefoot rail with negative-X ledge,forefoot,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-105,Toe crossmember,forefoot,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-106,Hinge beam with moving lugs,forefoot,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-107-A,Crossmember two-hole nut plate,foot-frame,structure,4,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-107-B,Cradle two-hole nut plate,foot-frame,structure,2,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-107-C,Forefoot two-hole nut plate,foot-frame,structure,4,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#frame
-FA-200,Angular pitch ring,ankle,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-201,Roll adapter with keyed shin flange,ankle,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-202,Short pitch pin,ankle,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-203,Short roll pin,ankle,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-204,Pitch sleeve bushing,ankle,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-205,Roll sleeve bushing,ankle,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-206,Pitch thrust washer,ankle,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-207,Roll thrust washer,ankle,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-208,Pitch pin retaining cap,ankle,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-209,Roll pin retaining cap,ankle,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-210,Continuous forefoot axle,forefoot,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-211,Forefoot sleeve bushing,forefoot,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-212,Forefoot thrust washer,forefoot,joint,2,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-213,Forefoot axle retaining cap,forefoot,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-220-A,Pitch cradle clevis,actuators,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-220-B,Pitch ring clevis,actuators,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-220-C,Roll ring clevis,actuators,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-220-D,Roll adapter clevis,actuators,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-220-E,Forefoot fixed clevis,actuators,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-220-F,Forefoot lever clevis,actuators,joint,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-221-A,Pitch eye pin diameter 50,actuators,joint,2,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-221-B,Roll and forefoot eye pin diameter 40,actuators,joint,4,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-222-A,Pitch eye-pin keeper,actuators,joint,2,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-222-B,Roll and forefoot eye-pin keeper,actuators,joint,4,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-230-A,Pitch rear-limit stop,ankle,joint,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-230-B,Pitch forward-limit stop,ankle,joint,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-230-C,Roll outer-limit stop,ankle,joint,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-230-D,Roll inner-limit stop,ankle,joint,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-230-E,Forefoot flat stop,ankle,joint,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-230-F,Forefoot raised stop,ankle,joint,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#joints-clevises-and-stops
-FA-300,Rear sole carrier,soles,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-301,Forefoot sole carrier,soles,structure,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-302,Heel grip pad,soles,sole,2,no,dark rubber,exposed,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-303,Midfoot grip pad,soles,sole,2,no,dark rubber,exposed,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-304,Forefoot grip pad,soles,sole,2,no,dark rubber,exposed,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-305,Pad compression sleeve,soles,hardware,24,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-400,Toe cap,foot-armor,armor,1,no,off-white / ochre,exposed,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-401-L,Upper foot plate,foot-armor,armor,1,yes,off-white,exposed,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-402,Heel cover,foot-armor,armor,1,no,off-white,exposed,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-403-L,Inner ankle guard,foot-armor,armor,1,yes,off-white,exposed,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-404-L,Outer ankle guard,foot-armor,armor,1,yes,off-white,exposed,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-405,Captive armor-bolt retaining collar,foot-armor,hardware,20,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#soles-and-armor
-FA-510-A,Pitch cylindrical barrel,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-510-B,Roll cylindrical barrel,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-510-C,Forefoot cylindrical barrel,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-511-A,Pitch front guide cap,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-511-B,Roll front guide cap,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-511-C,Forefoot front guide cap,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-512-A,Pitch rear drive cap,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-512-B,Roll rear drive cap,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-512-C,Forefoot rear drive cap,actuators,mechanism,1,no,gunmetal,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-513-A,Pitch motor cartridge with position feedback,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-513-B,Roll motor cartridge with position feedback,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-513-C,Forefoot motor cartridge with position feedback,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-514-A,Pitch reduction gearbox cartridge,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-514-B,Roll reduction gearbox cartridge,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-514-C,Forefoot reduction gearbox cartridge,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-515-A,Pitch clamp coupling,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-515-B,Roll clamp coupling,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-515-C,Forefoot clamp coupling,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-516-A,Pitch lead screw,actuators,mechanism,1,no,polished steel,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-516-B,Roll lead screw,actuators,mechanism,1,no,polished steel,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-516-C,Forefoot lead screw,actuators,mechanism,1,no,polished steel,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-517-A,Pitch travelling nut,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-517-B,Roll travelling nut,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-517-C,Forefoot travelling nut,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-518-A,Pitch hollow extending rod,actuators,mechanism,1,no,polished steel,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-518-B,Roll hollow extending rod,actuators,mechanism,1,no,polished steel,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-518-C,Forefoot hollow extending rod,actuators,mechanism,1,no,polished steel,gap,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-519-A,Pitch front guide bushing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-519-B,Roll front guide bushing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-519-C,Forefoot front guide bushing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-520-A,Pitch rod wiper seal,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-520-B,Roll rod wiper seal,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-520-C,Forefoot rod wiper seal,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-521-A,Pitch anti-rotation guide key,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-521-B,Roll anti-rotation guide key,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-521-C,Forefoot anti-rotation guide key,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-522-A,Pitch rear radial/thrust bearing cartridge,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-522-B,Roll rear radial/thrust bearing cartridge,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-522-C,Forefoot rear radial/thrust bearing cartridge,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-523-A,Pitch bearing retaining plate,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-523-B,Roll bearing retaining plate,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-523-C,Forefoot bearing retaining plate,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-524-A,Pitch clearance-hole shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-524-B,Pitch threaded shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-524-C,Roll clearance-hole shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-524-D,Roll threaded shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-524-E,Forefoot clearance-hole shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-524-F,Forefoot threaded shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-525-A,Pitch base eye housing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-525-B,Pitch rod eye housing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-525-C,Roll base eye housing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-525-D,Roll rod eye housing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-525-E,Forefoot base eye housing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-525-F,Forefoot rod eye housing,actuators,mechanism,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-529-A,Pitch front cap gasket,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-529-B,Pitch rear cap gasket,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-529-C,Roll front cap gasket,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-529-D,Roll rear cap gasket,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-529-E,Forefoot front cap gasket,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-529-F,Forefoot rear cap gasket,actuators,mechanism,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-526-A,Pitch spherical eye bearing,actuators,mechanism,2,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-526-B,Roll and forefoot spherical eye bearing,actuators,mechanism,4,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-527-A,Pitch eye bearing retaining ring,actuators,mechanism,2,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-527-B,Roll and forefoot eye bearing retaining ring,actuators,mechanism,4,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-528,End-position sensor with captive wiring,actuators,electrical,6,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-530,Actuator bulkhead connector module,actuators,electrical,3,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#actuator-internals
-FA-600,Junction box lower housing,electrical,electrical,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-601,Junction box lid,electrical,electrical,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-602,Junction box lid gasket,electrical,electrical,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-603,Three-channel controller board module,electrical,electrical,1,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-604,Junction box bulkhead connector module,electrical,electrical,4,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-605-L,Main input harness including two plugs,electrical,electrical,1,yes,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-607,Cable clip,electrical,electrical,12,no,gunmetal,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-606-A,Pitch branch harness including two plugs,electrical,electrical,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-606-B,Roll branch harness including two plugs,electrical,electrical,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-FA-606-C,Forefoot branch harness including two plugs,electrical,electrical,1,no,dark rubber,hidden,concept (FA-02),foot-and-ankle/parts.md#wiring-and-control
-H-36140,M36 x 140 bolt - Rear frame joints,foot-hardware,bolt,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-36,M36 washer - Rear frame joints,foot-hardware,washer,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-36140,M36 x 140 bolt - Forefoot frame joints,foot-hardware,bolt,8,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-36,M36 washer - Forefoot frame joints,foot-hardware,washer,8,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-36090,M36 x 90 bolt - Shin flange,foot-hardware,bolt,4,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-36,M36 washer - Shin flange,foot-hardware,washer,4,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-24060,M24 x 60 bolt - Ankle pin caps,foot-hardware,bolt,8,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-24,M24 washer - Ankle pin caps,foot-hardware,washer,8,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-24060,M24 x 60 bolt - Forefoot axle cap,foot-hardware,bolt,2,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-24,M24 washer - Forefoot axle cap,foot-hardware,washer,2,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-24070,M24 x 70 bolt - Actuator clevis mounts,foot-hardware,bolt,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-24,M24 washer - Actuator clevis mounts,foot-hardware,washer,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-24070,M24 x 70 bolt - Mechanical stops,foot-hardware,bolt,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-24,M24 washer - Mechanical stops,foot-hardware,washer,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-24070,M24 x 70 bolt - Sole carrier mounts,foot-hardware,bolt,10,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-24,M24 washer - Sole carrier mounts,foot-hardware,washer,10,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-24120,M24 x 120 bolt - Sole pad mounts,foot-hardware,bolt,24,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-24,M24 washer - Sole pad mounts,foot-hardware,washer,24,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12050-C,M12 x 50 bolt - Armor captive bolts,foot-hardware,bolt,20,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Armor captive bolts,foot-hardware,washer,20,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12050,M12 x 50 bolt - Actuator front and rear caps,foot-hardware,bolt,24,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Actuator front and rear caps,foot-hardware,washer,24,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12030,M12 x 30 bolt - Nut plate keepers,foot-hardware,bolt,20,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Nut plate keepers,foot-hardware,washer,20,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12030,M12 x 30 bolt - Actuator attachment pin keepers,foot-hardware,bolt,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Actuator attachment pin keepers,foot-hardware,washer,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12030,M12 x 30 bolt - Cable clips,foot-hardware,bolt,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Cable clips,foot-hardware,washer,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12030,M12 x 30 bolt - Actuator coupling clamps,foot-hardware,bolt,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Actuator coupling clamps,foot-hardware,washer,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12030,M12 x 30 bolt - Actuator antirotation guides,foot-hardware,bolt,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Actuator antirotation guides,foot-hardware,washer,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12030,M12 x 30 bolt - Actuator end sensors,foot-hardware,bolt,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Actuator end sensors,foot-hardware,washer,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12030,M12 x 30 bolt - Actuator split shaft collars,foot-hardware,bolt,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Actuator split shaft collars,foot-hardware,washer,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12040,M12 x 40 bolt - Motor flanges,foot-hardware,bolt,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Motor flanges,foot-hardware,washer,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12040,M12 x 40 bolt - Gearbox flanges,foot-hardware,bolt,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Gearbox flanges,foot-hardware,washer,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12040,M12 x 40 bolt - Travelling nut to output rod,foot-hardware,bolt,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Travelling nut to output rod,foot-hardware,washer,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12040,M12 x 40 bolt - Actuator bearing retainer plates,foot-hardware,bolt,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Actuator bearing retainer plates,foot-hardware,washer,6,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12040,M12 x 40 bolt - Actuator eye housings,foot-hardware,bolt,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Actuator eye housings,foot-hardware,washer,12,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12040,M12 x 40 bolt - Junction box mounting,foot-hardware,bolt,4,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Junction box mounting,foot-hardware,washer,4,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12040,M12 x 40 bolt - Junction box lid,foot-hardware,bolt,4,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Junction box lid,foot-hardware,washer,4,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-H-12040,M12 x 40 bolt - Controller board mounting,foot-hardware,bolt,4,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
-W-12,M12 washer - Controller board mounting,foot-hardware,washer,4,no,gunmetal,hidden,specified,foot-and-ankle/hardware.csv
+FA-100-A,Rear rail with positive-X ledge,foot-frame,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-100-B,Rear rail with negative-X ledge,foot-frame,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-101,Rear crossmember,foot-frame,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-102,Front crossmember with fixed hinge supports,foot-frame,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-103-L,Fixed ankle cradle with outer actuator outrigger,foot-frame,structure,1,yes,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-104-A,Forefoot rail with positive-X ledge,forefoot,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-104-B,Forefoot rail with negative-X ledge,forefoot,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-105,Toe crossmember,forefoot,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-106,Hinge beam with moving lugs,forefoot,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-107-A,Crossmember two-hole nut plate,foot-frame,structure,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-107-B,Cradle two-hole nut plate,foot-frame,structure,2,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-107-C,Forefoot two-hole nut plate,foot-frame,structure,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#frame
+FA-200,Angular pitch ring,ankle,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-201,Roll adapter with keyed shin flange,ankle,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-202,Short pitch pin,ankle,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-203,Short roll pin,ankle,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-204,Pitch sleeve bushing,ankle,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-205,Roll sleeve bushing,ankle,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-206,Pitch thrust washer,ankle,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-207,Roll thrust washer,ankle,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-208,Pitch pin retaining cap,ankle,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-209,Roll pin retaining cap,ankle,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-210,Continuous forefoot axle,forefoot,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-211,Forefoot sleeve bushing,forefoot,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-212,Forefoot thrust washer,forefoot,joint,2,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-213,Forefoot axle retaining cap,forefoot,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-220-A,Pitch cradle clevis,actuators,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-220-B,Pitch ring clevis,actuators,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-220-C,Roll ring clevis,actuators,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-220-D,Roll adapter clevis,actuators,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-220-E,Forefoot fixed clevis,actuators,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-220-F,Forefoot lever clevis,actuators,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-221-A,Pitch eye pin diameter 50,actuators,joint,2,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-221-B,Roll and forefoot eye pin diameter 40,actuators,joint,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-222-A,Pitch eye-pin keeper,actuators,joint,2,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-222-B,Roll and forefoot eye-pin keeper,actuators,joint,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-230-A,Pitch rear-limit stop,ankle,joint,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-230-B,Pitch forward-limit stop,ankle,joint,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-230-C,Roll outer-limit stop,ankle,joint,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-230-D,Roll inner-limit stop,ankle,joint,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-230-E,Forefoot flat stop,ankle,joint,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-230-F,Forefoot raised stop,ankle,joint,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#joints-clevises-and-stops
+FA-300,Rear sole carrier,soles,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-301,Forefoot sole carrier,soles,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-302,Heel grip pad,soles,sole,2,no,dark rubber,exposed,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-303,Midfoot grip pad,soles,sole,2,no,dark rubber,exposed,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-304,Forefoot grip pad,soles,sole,2,no,dark rubber,exposed,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-305,Pad compression sleeve,soles,hardware,24,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-400,Toe cap,foot-armor,armor,1,no,off-white / ochre,exposed,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-401-L,Upper foot plate,foot-armor,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-402,Heel cover,foot-armor,armor,1,no,off-white,exposed,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-403-L,Inner ankle guard,foot-armor,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-404-L,Outer ankle guard,foot-armor,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-405,Captive armor-bolt retaining collar,foot-armor,hardware,20,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#soles-and-armor
+FA-510-A,Pitch cylindrical barrel,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-510-B,Roll cylindrical barrel,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-510-C,Forefoot cylindrical barrel,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-511-A,Pitch front guide cap,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-511-B,Roll front guide cap,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-511-C,Forefoot front guide cap,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-512-A,Pitch rear drive cap,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-512-B,Roll rear drive cap,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-512-C,Forefoot rear drive cap,actuators,mechanism,1,no,gunmetal,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-513-A,Pitch motor cartridge with position feedback,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-513-B,Roll motor cartridge with position feedback,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-513-C,Forefoot motor cartridge with position feedback,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-514-A,Pitch reduction gearbox cartridge,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-514-B,Roll reduction gearbox cartridge,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-514-C,Forefoot reduction gearbox cartridge,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-515-A,Pitch clamp coupling,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-515-B,Roll clamp coupling,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-515-C,Forefoot clamp coupling,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-516-A,Pitch lead screw,actuators,mechanism,1,no,polished steel,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-516-B,Roll lead screw,actuators,mechanism,1,no,polished steel,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-516-C,Forefoot lead screw,actuators,mechanism,1,no,polished steel,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-517-A,Pitch travelling nut,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-517-B,Roll travelling nut,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-517-C,Forefoot travelling nut,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-518-A,Pitch hollow extending rod,actuators,mechanism,1,no,polished steel,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-518-B,Roll hollow extending rod,actuators,mechanism,1,no,polished steel,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-518-C,Forefoot hollow extending rod,actuators,mechanism,1,no,polished steel,gap,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-519-A,Pitch front guide bushing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-519-B,Roll front guide bushing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-519-C,Forefoot front guide bushing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-520-A,Pitch rod wiper seal,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-520-B,Roll rod wiper seal,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-520-C,Forefoot rod wiper seal,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-521-A,Pitch anti-rotation guide key,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-521-B,Roll anti-rotation guide key,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-521-C,Forefoot anti-rotation guide key,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-522-A,Pitch rear radial/thrust bearing cartridge,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-522-B,Roll rear radial/thrust bearing cartridge,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-522-C,Forefoot rear radial/thrust bearing cartridge,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-523-A,Pitch bearing retaining plate,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-523-B,Roll bearing retaining plate,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-523-C,Forefoot bearing retaining plate,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-524-A,Pitch clearance-hole shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-524-B,Pitch threaded shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-524-C,Roll clearance-hole shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-524-D,Roll threaded shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-524-E,Forefoot clearance-hole shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-524-F,Forefoot threaded shaft-collar half,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-525-A,Pitch base eye housing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-525-B,Pitch rod eye housing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-525-C,Roll base eye housing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-525-D,Roll rod eye housing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-525-E,Forefoot base eye housing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-525-F,Forefoot rod eye housing,actuators,mechanism,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-529-A,Pitch front cap gasket,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-529-B,Pitch rear cap gasket,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-529-C,Roll front cap gasket,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-529-D,Roll rear cap gasket,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-529-E,Forefoot front cap gasket,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-529-F,Forefoot rear cap gasket,actuators,mechanism,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-526-A,Pitch spherical eye bearing,actuators,mechanism,2,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-526-B,Roll and forefoot spherical eye bearing,actuators,mechanism,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-527-A,Pitch eye bearing retaining ring,actuators,mechanism,2,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-527-B,Roll and forefoot eye bearing retaining ring,actuators,mechanism,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-528,End-position sensor with captive wiring,actuators,electrical,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-530,Actuator bulkhead connector module,actuators,electrical,3,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#actuator-internals
+FA-600,Junction box lower housing,electrical,electrical,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-601,Junction box lid,electrical,electrical,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-602,Junction box lid gasket,electrical,electrical,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-603,Three-channel controller board module,electrical,electrical,1,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-604,Junction box bulkhead connector module,electrical,electrical,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-605-L,Main input harness including two plugs,electrical,electrical,1,yes,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-607,Cable clip,electrical,electrical,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-606-A,Pitch branch harness including two plugs,electrical,electrical,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-606-B,Roll branch harness including two plugs,electrical,electrical,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+FA-606-C,Forefoot branch harness including two plugs,electrical,electrical,1,no,dark rubber,hidden,modelled (LG-01-3D-01),foot-and-ankle/parts.md#wiring-and-control
+H-36140,M36 x 140 bolt - Rear frame joints,foot-hardware,bolt,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-36,M36 washer - Rear frame joints,foot-hardware,washer,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-36140,M36 x 140 bolt - Forefoot frame joints,foot-hardware,bolt,8,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-36,M36 washer - Forefoot frame joints,foot-hardware,washer,8,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-36090,M36 x 90 bolt - Shin flange,foot-hardware,bolt,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-36,M36 washer - Shin flange,foot-hardware,washer,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-24060,M24 x 60 bolt - Ankle pin caps,foot-hardware,bolt,8,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-24,M24 washer - Ankle pin caps,foot-hardware,washer,8,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-24060,M24 x 60 bolt - Forefoot axle cap,foot-hardware,bolt,2,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-24,M24 washer - Forefoot axle cap,foot-hardware,washer,2,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-24070,M24 x 70 bolt - Actuator clevis mounts,foot-hardware,bolt,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-24,M24 washer - Actuator clevis mounts,foot-hardware,washer,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-24070,M24 x 70 bolt - Mechanical stops,foot-hardware,bolt,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-24,M24 washer - Mechanical stops,foot-hardware,washer,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-24070,M24 x 70 bolt - Sole carrier mounts,foot-hardware,bolt,10,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-24,M24 washer - Sole carrier mounts,foot-hardware,washer,10,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-24120,M24 x 120 bolt - Sole pad mounts,foot-hardware,bolt,24,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-24,M24 washer - Sole pad mounts,foot-hardware,washer,24,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12050-C,M12 x 50 bolt - Armor captive bolts,foot-hardware,bolt,20,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Armor captive bolts,foot-hardware,washer,20,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12050,M12 x 50 bolt - Actuator front and rear caps,foot-hardware,bolt,24,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Actuator front and rear caps,foot-hardware,washer,24,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12030,M12 x 30 bolt - Nut plate keepers,foot-hardware,bolt,20,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Nut plate keepers,foot-hardware,washer,20,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12030,M12 x 30 bolt - Actuator attachment pin keepers,foot-hardware,bolt,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Actuator attachment pin keepers,foot-hardware,washer,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12030,M12 x 30 bolt - Cable clips,foot-hardware,bolt,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Cable clips,foot-hardware,washer,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12030,M12 x 30 bolt - Actuator coupling clamps,foot-hardware,bolt,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Actuator coupling clamps,foot-hardware,washer,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12030,M12 x 30 bolt - Actuator antirotation guides,foot-hardware,bolt,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Actuator antirotation guides,foot-hardware,washer,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12030,M12 x 30 bolt - Actuator end sensors,foot-hardware,bolt,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Actuator end sensors,foot-hardware,washer,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12030,M12 x 30 bolt - Actuator split shaft collars,foot-hardware,bolt,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Actuator split shaft collars,foot-hardware,washer,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12040,M12 x 40 bolt - Motor flanges,foot-hardware,bolt,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Motor flanges,foot-hardware,washer,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12040,M12 x 40 bolt - Gearbox flanges,foot-hardware,bolt,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Gearbox flanges,foot-hardware,washer,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12040,M12 x 40 bolt - Travelling nut to output rod,foot-hardware,bolt,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Travelling nut to output rod,foot-hardware,washer,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12040,M12 x 40 bolt - Actuator bearing retainer plates,foot-hardware,bolt,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Actuator bearing retainer plates,foot-hardware,washer,6,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12040,M12 x 40 bolt - Actuator eye housings,foot-hardware,bolt,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Actuator eye housings,foot-hardware,washer,12,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12040,M12 x 40 bolt - Junction box mounting,foot-hardware,bolt,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Junction box mounting,foot-hardware,washer,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12040,M12 x 40 bolt - Junction box lid,foot-hardware,bolt,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Junction box lid,foot-hardware,washer,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+H-12040,M12 x 40 bolt - Controller board mounting,foot-hardware,bolt,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv
+W-12,M12 washer - Controller board mounting,foot-hardware,washer,4,no,gunmetal,hidden,modelled (LG-01-3D-01),foot-and-ankle/hardware.csv

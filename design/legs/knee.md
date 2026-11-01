@@ -12,6 +12,26 @@ Dimensions and reference pose: [shared proportion layout](../proportions.md#legs
 
 > **Concept sheets, 2026-11-01:** [LG-01](images/README.md) draws the knee in the approved look; part numbers are in the [leg component list](leg-components.csv). The sheets' knee cylinders are drawn wrongly (thigh to fork); this specification governs.
 
+> **Modelled 2026-11-01:** [LG-01-3D-01](../../models/leg-lg01/README.md) includes the hinge, thigh-to-shin cylinders and knee armor.
+> Neutral interfaces pass the recorded audits; joint travel, force sizing and game integration remain open.
+
+## Model-settled working values — 2026-11-01
+
+Coordinates are **leg-local metres**, ground origin beneath the ankle, +X inner,
++Y forward, +Z up. The workshop interface below predates the silhouette revision;
+its transport bound and Z6.300 flange reference are not the model's final geometry.
+
+- Cylinder eyes are (±0.460,−0.460,6.400) on the thigh and
+  (±0.440,−0.500,4.300) on the shin. Neutral span is 2.100476; retracted length
+  1.650, extension 0.450476 and usable kit stroke 1.208. These do not prove knee travel.
+- Axle Ø0.200 spans X±0.500 at Z5.100 and enters from outboard −X. Bearings
+  are OD0.298/ID0.204 × 0.120 at X±0.210; spacers are 0.075 long at X±0.3175.
+- Fork transport bearing faces are X±0.800, Y−0.110…+0.170,
+  Z5.980…6.220; backing remains below Z6.300. Spar/fork flanges meet at Z5.920.
+  Revised thigh armor requires openings and a later workshop-fit revision.
+- Knee eye pins/keepers still lack inventory allocation. Guard returns remain
+  within absolute X0.670; no wider knee interface has been selected.
+
 ## Confirmed design
 
 ### Knee

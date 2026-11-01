@@ -8,6 +8,31 @@ The left foot is the master; mirror it for the right. This overview preserves th
 
 > **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: each foot 3.36 × 1.46 m (was 3.00 × 1.30), heel 0.90 behind and toe 2.46 ahead of the ankle. FA-01, its sheets and models are built to the earlier size; its reference sheets are not the target look. Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
 
+> **Modelled 2026-11-01:** [LG-01-3D-01](../../models/leg-lg01/README.md) includes all 745 FA-02 foot objects in the revised envelope.
+> The [FA-02 dimensions](foot-and-ankle/dimensions.md#fa-02-revision-2026-11-01) and model values below supersede the older FA-01 envelope; this model is not yet in the game.
+
+## Model-settled working values — 2026-11-01
+
+These values use **leg-local metres**, ground origin beneath the ankle, +X inner,
++Y forward, +Z up. The FA-01 interface sections below remain as reference history;
+apply the FA-02 revision and these model refinements when rebuilding the new foot.
+
+- Envelope is nominally X±0.730/Y−0.900…2.460; hinge is (0,1.340,0.350).
+  Both forefoot actuator eyes translate +0.140Y; ankle pivot Z1.000, shin
+  flange Z1.380 and the pitch/roll internals remain fixed. Hardware stays at
+  258 bolts and 258 separate washers per foot.
+- Upper plate keeps its flat roof/underside at Z0.700/0.680, rear-open
+  X±0.590 notch to Y0.550 and hinge channel Y1.210…1.500. Relief slots from
+  absolute X0.625 at Y−0.540…−0.440, +0.460…+0.540 and +0.660…+0.830,
+  with cradle backbones at X±0.650/Z0.580, provide 16.00 mm conservative
+  clearance over its full 3 m vertical removal path. The old contact exception is removed.
+- Guards remain 20 mm walls at absolute X0.710…0.730, top Z1.600, with
+  400 × 360 mm pitch-cap windows and a 320 mm flat crown. Fixed bolt axes
+  govern the outline; thicker frontal returns need a revised clearance contract.
+- Toe locator tabs are at (±0.680,1.850,0.472889), sockets 15 mm below,
+  retaining 10 mm engagement. Toe/upper shoulder folds preserve 20 mm skins;
+  existing rail-end/plan-chamfer contacts still need separate repair.
+
 ## Completion status
 
 **The foot-and-ankle reference-design detail pass is complete, with three reference sheets generated for review.** This is a fictional mechanical design with a documented inventory and bounded envelope review, not fabrication-ready engineering. Exact solid geometry, flexible-cable motion and real load sizing remain later modeling work.

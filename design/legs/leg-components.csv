@@ -1,42 +1,42 @@
 part_id,name,subassembly,category,qty_per_leg,handed,finish,visibility,status,source
-LG-120,Spar with integral hip neck and ball,thigh,structure,1,yes,gunmetal,gap,in game (blockout),leg-prototype-interface.md
-LG-110,Detachable knee fork,thigh,structure,1,yes,gunmetal,gap,in game (blockout),leg-prototype-interface.md
-LG-200,Thigh front plate,thigh,armor,1,no,off-white,exposed,concept,thigh-and-hip.md#thigh
-LG-210,Thigh outer side plate,thigh,armor,1,yes,off-white,exposed,concept,thigh-and-hip.md#thigh
-LG-215,Thigh inner side plate,thigh,armor,1,yes,off-white,exposed,concept,thigh-and-hip.md#thigh
-LG-220,Thigh rear cover outer,thigh,armor,1,yes,off-white,exposed,concept,thigh-and-hip.md#thigh
-LG-225,Thigh rear cover inner,thigh,armor,1,yes,off-white,exposed,concept,thigh-and-hip.md#thigh
-LG-230,Rear service channel cable guard,thigh,service,1,no,gunmetal,gap,concept,thigh-and-hip.md#thigh
-LG-240,Hip cylinder lug carrier outer front,thigh,structure,1,yes,gunmetal,gap,specified,thigh-and-hip.md#three-hydraulic-lower-lug-connections
-LG-242,Hip cylinder lug carrier inner front,thigh,structure,1,yes,gunmetal,gap,specified,thigh-and-hip.md#three-hydraulic-lower-lug-connections
-LG-244,Hip cylinder lug carrier inner rear,thigh,structure,1,yes,gunmetal,gap,specified,thigh-and-hip.md#three-hydraulic-lower-lug-connections
-LG-250,Leg service block (power/data/hydraulic dry-break),thigh,service,1,yes,gunmetal,hidden,specified,thigh-and-hip.md#services-armor-gaps-and-preparation-boundary
-LG-255,Protected service U-loop,thigh,service,1,no,gunmetal,hidden,specified,thigh-and-hip.md#services-armor-gaps-and-preparation-boundary
-LG-130,Knee journal bearing,knee,joint,2,no,gunmetal,hidden,in game (blockout),leg-prototype-interface.md
-LG-135,Knee thrust spacer,knee,joint,2,no,gunmetal,hidden,in game (blockout),leg-prototype-interface.md
-LG-140,Shouldered knee axle,knee,joint,1,no,gunmetal,hidden,in game (blockout),leg-prototype-interface.md
-LG-150,Axle retaining cap,knee,joint,1,no,gunmetal,gap,in game (blockout),leg-prototype-interface.md
-LG-300,Kneecap shield,knee,armor,1,no,safety ochre,exposed,concept,knee.md#knee
-LG-310,Kneecap bracket,knee,structure,1,no,gunmetal,hidden,concept,knee.md#knee
-LG-320,Knee side guard outer,knee,armor,1,yes,off-white,exposed,concept,knee.md#knee
-LG-325,Knee side guard inner,knee,armor,1,yes,off-white,exposed,concept,knee.md#knee
-LG-330,Recessed knee bearing cover,knee,armor,2,no,gunmetal,exposed,concept,knee.md#knee
-LG-340,Knee hydraulic cylinder,knee,actuator,2,no,gunmetal with polished rod,gap,concept,knee.md#knee
-LG-345,Knee cylinder upper mount bracket,knee,structure,2,yes,gunmetal,hidden,concept,knee.md#knee
-LG-346,Knee cylinder lower mount bracket,knee,structure,2,yes,gunmetal,gap,concept,knee.md#knee
-LG-100,Structural shin beam,shin-calf,structure,1,yes,gunmetal,gap,in game (blockout),leg-prototype-interface.md
-LG-400,Front shin plate,shin-calf,armor,1,no,off-white,exposed,concept,shin-and-calf.md#shin-and-calf-structure
-LG-410,Calf side shell outer,shin-calf,armor,1,yes,off-white,exposed,concept,shin-and-calf.md#shin-and-calf-structure
-LG-415,Calf side shell inner,shin-calf,armor,1,yes,off-white,exposed,concept,shin-and-calf.md#shin-and-calf-structure
-LG-420,Rear engine shroud,shin-calf,armor,1,no,off-white,exposed,concept,shin-and-calf.md#shin-and-calf-structure
-LG-430,Central bridge panel,shin-calf,armor,1,no,off-white,exposed,concept,shin-and-calf.md#calf-thrusters
-LG-440,Thruster cradle,shin-calf,structure,1,no,gunmetal,hidden,concept,shin-and-calf.md#shin-and-calf-structure
-LG-450,Calf thruster unit (engine body with bell nozzle),shin-calf,thruster,2,no,gunmetal with bronze nozzle lining,exposed,concept,shin-and-calf.md#calf-thrusters
-LG-460,Calf access hatch,shin-calf,service,2,yes,off-white,exposed,concept,visual-design/turnaround/README.md
-LG-470,Grab rail,shin-calf,service,2,no,safety ochre,exposed,concept,visual-design/turnaround/README.md
-LG-H24100,M24x100 knee fork bolt,thigh,hardware,4,no,steel,hidden,in game (blockout),leg-prototype-interface.md
-W-24,M24 washer (knee fork),thigh,hardware,4,no,steel,hidden,in game (blockout),leg-prototype-interface.md
-H-12050,M12x50 axle cap screw,knee,hardware,2,no,steel,gap,in game (blockout),leg-prototype-interface.md
-W-12,M12 washer (axle cap),knee,hardware,2,no,steel,gap,in game (blockout),leg-prototype-interface.md
-LG-H24100,M24x100 lug carrier bolt,thigh,hardware,6,no,steel,hidden,specified,thigh-and-hip.md#three-hydraulic-lower-lug-connections
-W-24,M24 washer (lug carriers),thigh,hardware,6,no,steel,hidden,specified,thigh-and-hip.md#three-hydraulic-lower-lug-connections
+LG-120,Spar with integral hip neck and ball,thigh,structure,1,yes,gunmetal,gap,modelled (LG-01-3D-01),leg-prototype-interface.md
+LG-110,Detachable knee fork,thigh,structure,1,yes,gunmetal,gap,modelled (LG-01-3D-01),leg-prototype-interface.md
+LG-200,Thigh front plate,thigh,armor,1,no,off-white,exposed,modelled (LG-01-3D-01),thigh-and-hip.md#thigh
+LG-210,Thigh outer side plate,thigh,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),thigh-and-hip.md#thigh
+LG-215,Thigh inner side plate,thigh,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),thigh-and-hip.md#thigh
+LG-220,Thigh rear cover outer,thigh,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),thigh-and-hip.md#thigh
+LG-225,Thigh rear cover inner,thigh,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),thigh-and-hip.md#thigh
+LG-230,Rear service channel cable guard,thigh,service,1,no,gunmetal,gap,modelled (LG-01-3D-01),thigh-and-hip.md#thigh
+LG-240,Hip cylinder lug carrier outer front,thigh,structure,1,yes,gunmetal,gap,modelled (LG-01-3D-01),thigh-and-hip.md#three-hydraulic-lower-lug-connections
+LG-242,Hip cylinder lug carrier inner front,thigh,structure,1,yes,gunmetal,gap,modelled (LG-01-3D-01),thigh-and-hip.md#three-hydraulic-lower-lug-connections
+LG-244,Hip cylinder lug carrier inner rear,thigh,structure,1,yes,gunmetal,gap,modelled (LG-01-3D-01),thigh-and-hip.md#three-hydraulic-lower-lug-connections
+LG-250,Leg service block (power/data/hydraulic dry-break),thigh,service,1,yes,gunmetal,hidden,modelled (LG-01-3D-01),thigh-and-hip.md#services-armor-gaps-and-preparation-boundary
+LG-255,Protected service U-loop,thigh,service,1,no,gunmetal,hidden,modelled (LG-01-3D-01),thigh-and-hip.md#services-armor-gaps-and-preparation-boundary
+LG-130,Knee journal bearing,knee,joint,2,no,gunmetal,hidden,modelled (LG-01-3D-01),leg-prototype-interface.md
+LG-135,Knee thrust spacer,knee,joint,2,no,gunmetal,hidden,modelled (LG-01-3D-01),leg-prototype-interface.md
+LG-140,Shouldered knee axle,knee,joint,1,no,gunmetal,hidden,modelled (LG-01-3D-01),leg-prototype-interface.md
+LG-150,Axle retaining cap,knee,joint,1,no,gunmetal,gap,modelled (LG-01-3D-01),leg-prototype-interface.md
+LG-300,Kneecap shield,knee,armor,1,no,safety ochre,exposed,modelled (LG-01-3D-01),knee.md#knee
+LG-310,Kneecap bracket,knee,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),knee.md#knee
+LG-320,Knee side guard outer,knee,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),knee.md#knee
+LG-325,Knee side guard inner,knee,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),knee.md#knee
+LG-330,Recessed knee bearing cover,knee,armor,2,no,gunmetal,exposed,modelled (LG-01-3D-01),knee.md#knee
+LG-340,Knee hydraulic cylinder,knee,actuator,2,no,gunmetal with polished rod,gap,modelled (LG-01-3D-01),knee.md#knee
+LG-345,Knee cylinder upper mount bracket,knee,structure,2,yes,gunmetal,hidden,modelled (LG-01-3D-01),knee.md#knee
+LG-346,Knee cylinder lower mount bracket,knee,structure,2,yes,gunmetal,gap,modelled (LG-01-3D-01),knee.md#knee
+LG-100,Structural shin beam,shin-calf,structure,1,yes,gunmetal,gap,modelled (LG-01-3D-01),leg-prototype-interface.md
+LG-400,Front shin plate,shin-calf,armor,1,no,off-white,exposed,modelled (LG-01-3D-01),shin-and-calf.md#shin-and-calf-structure
+LG-410,Calf side shell outer,shin-calf,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),shin-and-calf.md#shin-and-calf-structure
+LG-415,Calf side shell inner,shin-calf,armor,1,yes,off-white,exposed,modelled (LG-01-3D-01),shin-and-calf.md#shin-and-calf-structure
+LG-420,Rear engine shroud,shin-calf,armor,1,no,off-white,exposed,modelled (LG-01-3D-01),shin-and-calf.md#shin-and-calf-structure
+LG-430,Central bridge panel,shin-calf,armor,1,no,off-white,exposed,modelled (LG-01-3D-01),shin-and-calf.md#calf-thrusters
+LG-440,Thruster cradle,shin-calf,structure,1,no,gunmetal,hidden,modelled (LG-01-3D-01),shin-and-calf.md#shin-and-calf-structure
+LG-450,Calf thruster unit (engine body with bell nozzle),shin-calf,thruster,2,no,gunmetal with bronze nozzle lining,exposed,modelled (LG-01-3D-01),shin-and-calf.md#calf-thrusters
+LG-460,Calf access hatch,shin-calf,service,2,yes,off-white,exposed,modelled (LG-01-3D-01),visual-design/turnaround/README.md
+LG-470,Grab rail,shin-calf,service,2,no,safety ochre,exposed,modelled (LG-01-3D-01),visual-design/turnaround/README.md
+LG-H24100,M24x100 knee fork bolt,thigh,hardware,4,no,steel,hidden,modelled (LG-01-3D-01),leg-prototype-interface.md
+W-24,M24 washer (knee fork),thigh,hardware,4,no,steel,hidden,modelled (LG-01-3D-01),leg-prototype-interface.md
+H-12050,M12x50 axle cap screw,knee,hardware,2,no,steel,gap,modelled (LG-01-3D-01),leg-prototype-interface.md
+W-12,M12 washer (axle cap),knee,hardware,2,no,steel,gap,modelled (LG-01-3D-01),leg-prototype-interface.md
+LG-H24100,M24x100 lug carrier bolt,thigh,hardware,6,no,steel,hidden,modelled (LG-01-3D-01),thigh-and-hip.md#three-hydraulic-lower-lug-connections
+W-24,M24 washer (lug carriers),thigh,hardware,6,no,steel,hidden,modelled (LG-01-3D-01),thigh-and-hip.md#three-hydraulic-lower-lug-connections

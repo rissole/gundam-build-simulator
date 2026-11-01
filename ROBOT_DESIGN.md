@@ -1,6 +1,6 @@
 # Robot design record
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 This is the working record for the robot and its engineering-style reference images. Update it as decisions are made so later design sessions and diagrams preserve the same details.
 
@@ -16,6 +16,13 @@ The current pass develops the final robot's major interfaces after the implement
 
 ## 3D assembly work
 
+**Step 4, foot: FA-02 sheets done** — [assembled, armor and structure register](design/legs/foot-and-ankle/images/README.md), generated and inspected; user approval remains separate.
+
+**Step 5: Leg modelled (LG-01-3D-01, branch model/leg-lg01), not yet in the game.**
+The [left-leg model](models/leg-lg01/README.md) contains 813 separate objects and
+a 69-step viewer. Its audits, inspected comparisons, remaining concept mismatches
+and engineering limits are recorded in the package.
+
 The first [FA-01 3D model package](models/foot-fa01/README.md) contains all 745 inventory objects as separate editable meshes, plus static/animated GLBs and individual OBJ exports. The saved scene, export and decoded-video audits pass. The completed 41-second construction/deconstruction film is included in the model package. [Modeling notes](models/foot-fa01/MODELING_NOTES.md) record the nut-plate variants, toe-roof clearance correction and other resolved details.
 
 ## Shared documents
@@ -23,7 +30,7 @@ The first [FA-01 3D model package](models/foot-fa01/README.md) contains all 745 
 - [Shared robot design](design/global.md): scope, 18 m scale, appearance, assembly boundaries, detail-development approach, and whole-robot open questions.
 - [Proportions and dimensional layout](design/proportions.md): accepted dimensions, working component envelopes, reference coordinates, stance, and visual benchmark.
 - [Final gantry and assembly plan](design/game/final-assembly-plan.md): active workshop access and major-section installation discussion, working backwards from the completed robot; mechanical dimensions remain in the component specifications.
-- [Whole-robot visual design](design/visual-design/README.md): the path from the [approved silhouette](models/silhouette-mannequin/README.md) (2026-11-01, approved for now) to an approved whole-robot look, and the concept exploration brief. Proportions and masses are approved; the surface look, colours and markings are not.
+- [Whole-robot visual design](design/visual-design/README.md): the path from the [approved silhouette](models/silhouette-mannequin/README.md) (2026-11-01, approved for now) to an approved whole-robot look, and the concept exploration brief. Proportions, turnaround and style guide are approved; the FA-02 sheets and model have separate review status.
 - [Reference-image requirements and workflow](design/reference-images.md): confirmed style, proposed sheet contents, and how to prepare focused briefs and review consistency.
 - [Decision history](design/decisions.md): the preserved record of choices and superseded proposals.
 

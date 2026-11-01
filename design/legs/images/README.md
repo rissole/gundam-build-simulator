@@ -18,6 +18,15 @@ the agent's [review](notes.md) record how they were made.
 
 ![Assembled](lg01-assembled-v3.jpg)
 
+## Model comparison sheets
+
+[LG-01-3D-01 model](../../../models/leg-lg01/README.md), 2026-11-01: final
+[assembled](../../../models/leg-lg01/output/compare/cmp-lg01-assembled.jpg),
+[armor](../../../models/leg-lg01/output/compare/cmp-lg01-armor.jpg) and
+[structure](../../../models/leg-lg01/output/compare/cmp-lg01-structure.jpg) comparisons.
+[Remaining mismatches and review scores](../../../models/leg-lg01/MODELING_NOTES.md#remaining-mismatches-with-the-concept-sheets)
+record inspected appearance separately from geometry audits and user approval.
+
 ## Known drawing errors
 
 The written specifications govern. These errors are in the drawings, not
@@ -38,8 +47,8 @@ design changes:
 - Leaders on the armor sheet's knee guards point partly at the joint; the
   assembled sheet's width leaders don't span the widest edges.
 - Seams, hatches, rails and nozzle spacing vary slightly between sheets.
-- The foot on the assembled sheet is placeholder context; the foot is being
-  redrawn separately.
+- The foot on the assembled sheet is placeholder context; use the completed
+  [FA-02 sheets](../foot-and-ankle/images/README.md) for the current foot.
 
 ## Workshop consequence
 

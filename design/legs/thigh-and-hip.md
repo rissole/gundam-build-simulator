@@ -12,6 +12,27 @@ Dimensions and reference pose: [shared proportion layout](../proportions.md#legs
 
 > **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: thigh armor up to 1.80 × 1.80 m, tapering to 1.32 m near the knee (was 1.50 / 1.10). Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating. Concept sheets: [LG-01](images/README.md); part numbers: [leg component list](leg-components.csv).
 
+> **Modelled 2026-11-01:** [LG-01-3D-01](../../models/leg-lg01/README.md) includes the complete left thigh and integral hip ball.
+> Neutral interfaces and revised armor envelopes pass the recorded audits; full hip sweeps and game integration remain open.
+
+## Model-settled working values — 2026-11-01
+
+Coordinates below are **leg-local metres**, ground origin beneath the ankle,
++X inner, +Y forward, +Z up. These model values supplement the older interfaces
+below; the hip-relative datum and workshop constraints there must not be applied
+unchanged to the revised armor. Remaining engineering and access work stays open.
+
+- Spar load boxes are 0.660 × 0.540 at Z6.020…7.200 and Z7.660…8.240,
+  retaining the local 0.300 × 0.200 interfaces and Ø0.900 ball at Z9.200.
+- Spar/fork flanges are 0.680 × 0.600, meeting at Z5.920; four M24×100 bolts
+  use X±0.250/Y±0.200. This is the model's flange datum, not the older Z6.300 reference.
+- The three Y-axis carrier eyes remain at (−0.339,+0.339,7.400),
+  (+0.464,+0.124,7.400), (−0.124,−0.464,7.400). Main armor top is Z8.230,
+  with real channels to Z7.250 and measured neutral R80 mm cartridge corridors.
+- Exterior half-width/depth stations are 0.660/0.760/0.840/0.900 at
+  Z6.050/6.350/6.850/7.880. Pad openings preserve the fork contacts listed in
+  [knee.md](knee.md#model-settled-working-values--2026-11-01).
+
 ## Confirmed design
 
 ### Thigh

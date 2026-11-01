@@ -20,6 +20,15 @@ All final files are 1536×1024 JPEG, Pillow quality 92, produced using Codex's b
 image_gen. No FA-02 PNGs were placed or retained in the repository. Existing FA-01
 PNGs below were preserved because the task excludes changing historical outputs.
 
+## Model comparison sheets
+
+[LG-01-3D-01 model](../../../../models/leg-lg01/README.md), 2026-11-01: final
+[assembled](../../../../models/leg-lg01/output/compare/cmp-fa02-assembled.jpg),
+[armor](../../../../models/leg-lg01/output/compare/cmp-fa02-armor.jpg) and
+[structure](../../../../models/leg-lg01/output/compare/cmp-fa02-structure.jpg) comparisons.
+[Remaining mismatches and review scores](../../../../models/leg-lg01/MODELING_NOTES.md#remaining-mismatches-with-the-concept-sheets)
+record inspected appearance separately from geometry audits and user approval.
+
 ## FA-02 prompts and review
 
 - Assembled: [v1 prompt](prompt-fa02-assembled-v1.txt), [v2 correction](prompt-fa02-assembled-v2.txt); [v1 draft](fa02-assembled-v1.jpg).

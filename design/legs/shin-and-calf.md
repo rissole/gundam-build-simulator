@@ -12,6 +12,32 @@ Dimensions and reference pose: [shared proportion layout](../proportions.md#legs
 
 > **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: calf armor up to 1.65 m wide, tapering to 1.06 m toward the ankle, 2.24 m deep including the thruster enclosure (was 1.40 / 0.90 / 1.90). Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating. Concept sheets: [LG-01](images/README.md); part numbers: [leg component list](leg-components.csv).
 
+> **Modelled 2026-11-01:** [LG-01-3D-01](../../models/leg-lg01/README.md) includes the shin, twin engines and revised calf armor.
+> Neutral interfaces and bounded calf/guard clearance pass; full articulation and workshop integration remain open.
+
+## Model-settled working values — 2026-11-01
+
+Coordinates are **leg-local metres**, ground origin beneath the ankle, +X inner,
++Y forward, +Z up. The older 900 × 900 lower-armor box and workshop transport
+limits below are superseded for this model; the narrow structural beam and keyed
+foot interface remain. The older sections are retained pending coordinated revision.
+
+- Thruster seats are (0,−0.865296,4.025538) and (0,−0.865296,2.875538).
+  Ø0.780 mouths have centres (0,−1.550,3.880)/(0,−1.550,2.730), pointing
+  12° rearward/downward along (0,−0.978148,−0.207912). Measured calf depth,
+  including mouths, is 2.231085; the rear limit remains Y−1.640.
+- Upper cradle crown ends at Z4.500. The front armor saddle is Z4.360 at
+  X±0.280, with Z4.600 shoulders. Two separate 920 mm shroud apertures retain
+  a 900 × 220 mm bridge at Z3.305.
+- Shin flange is 0.540 × 0.440 × 0.030 at Z1.380…1.410, with foot-owned
+  M36 bolts at X±0.200/Y±0.150. The beam stays 0.300 × 0.200 through Z2.100,
+  then expands to 0.640 × 0.620 by Z2.420. Exposed support faces are
+  X±0.800/Y±0.140/Z2.690…2.910.
+- Calf armor begins Z1.650; the lowest 300 mm measures 1.064912 wide.
+  Against FA-02 inner guard walls at absolute X0.710, 3,321 poses give
+  38.76 mm sampled clearance and a 6.495 mm continuous vertex/edge bound.
+  This is not a complete swept-facet solid check or tool-access approval.
+
 ## Confirmed design
 
 ### Shin and calf structure

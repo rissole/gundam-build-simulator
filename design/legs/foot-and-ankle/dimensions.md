@@ -8,6 +8,9 @@ These are assistant-selected working dimensions under the user's instruction to 
 
 ## FA-02 revision (2026-11-01)
 
+> **Modelled 2026-11-01:** [LG-01-3D-01](../../../models/leg-lg01/README.md) contains the complete FA-02 foot.
+> Model-settled relief and clearance values below supplement this revision; the FA-01 sections remain historical interfaces, not full solid-clearance evidence.
+
 This section supersedes **only the listed dimensions and part-number mappings** for
 FA-02. The FA-01 sections below remain intact as interface/mechanism history.
 [Approved proportions](../../proportions.md#legs-and-feet) govern the envelope;
@@ -188,6 +191,25 @@ Guard receiver arms extend from the fixed cradle at those sites; keep them outsi
 the moving core, pitch actuator and the open tool corridors. Their contour and
 all shell lands/tab sweeps remain source-model checks; dimensions select intended
 seats, not already collision-tested solids.
+
+### Model-settled relief and clearance — 2026-11-01
+
+All values here are **mm**. Keep the flat upper roof/underside Z700/680 and
+rear-open X±590 notch to Y550. Three relief slots per side start at absolute
+X625 and span Y−540…−440, +460…+540 and +660…+830. Integral cradle backbones
+run at X±650/Z580, Y−650…+790. Together they give a conservative 16.00 mm
+plate/cradle separation over the full 3000 mm vertical removal; no contact waiver remains.
+
+Toe locator tabs are centred (±680,1850,472.889), sockets 15 mm below, with
+10 mm engagement and measured side/roof gaps 5.00/9.69 mm. Bolt axes are unchanged.
+Guard walls remain at absolute X710…730 and top Z1600, with 400 × 360 windows
+at Y0/Z1000 and a 320 mm crown. These refinements retain all five shells and hardware.
+
+The earlier 900 × 900 lower-shin armor box is superseded for this model by the
+revised calf taper and measured guard checks: 38.76 mm sampled clearance,
+6.495 mm continuous vertex/edge lower bound. The 300 × 200 structural beam stays.
+Full swept-facet articulation, general tool access and existing shell/rail contacts
+remain open; see the [model notes](../../../models/leg-lg01/MODELING_NOTES.md).
 
 ### FA-02 part-number and compatibility mapping
 
