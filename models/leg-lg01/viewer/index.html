@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LG-01 Leg Build</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {"imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }}
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="identity"><span class="model-mark">LG / 01</span><div><h1>LG-01 Leg Build</h1><p>Left leg · Assembly study</p></div></div>
+    <div class="model-info"><span id="sequence-kind">Build sequence</span><span id="model-stats">Loading model…</span></div>
+  </header>
+  <main>
+    <section id="stage" aria-label="Interactive 3D leg model">
+      <canvas id="viewport" aria-label="Orbit with drag, pan with right drag, zoom with scroll"></canvas>
+      <div class="stage-toolbar" aria-label="Camera presets">
+        <span class="toolbar-label">View</span>
+        <button data-view="front">Front</button><button data-view="side">Side</button><button data-view="back">Back</button><button data-view="three-quarter" aria-pressed="true">¾ view</button>
+        <button id="fit" title="Frame the entire current layout">Fit all</button>
+      </div>
+      <div class="stage-caption"><span id="layout-caption">Exploded layout</span><span>Drag to orbit · Scroll to zoom</span></div>
+      <div id="loading" role="status"><div><span class="model-mark">LG / 01</span><h2 id="loading-title">Preparing the build</h2><p id="loading-detail">Loading geometry and materials…</p><progress id="load-progress" max="100" value="0"></progress></div></div>
+      <div id="tooltip" role="tooltip" hidden></div>
+    </section>
+    <aside class="step-panel" aria-label="Build step details">
+      <div class="step-heading"><span class="eyebrow">Assembly sequence</span><span id="step-number">00 / —</span></div>
+      <h2 id="step-title">Exploded layout</h2>
+      <p id="step-context">Drag the timeline to fit each group of parts.</p>
+      <p id="section-progress" aria-label="Section progress"></p>
+      <div class="parts-heading"><h3 id="parts-label">Parts in this step</h3><span id="parts-count"></span></div>
+      <ul id="parts-list"></ul>
+      <div class="view-options">
+        <label class="check"><input id="follow" type="checkbox" checked> Follow active step</label>
+        <label class="check"><input id="pending" type="checkbox" checked> Ghost pending parts · 20%</label>
+        <div class="spread-label"><label for="spread">Explode spread</label><output id="spread-value" for="spread">1.6×</output></div>
+        <input id="spread" type="range" min="1" max="3" step="0.1" value="1.6" aria-label="Explode spread">
+        <div class="armor-option"><label class="select-label" for="armor">Armor</label>
+          <select id="armor"><option value="shown">Shown</option><option value="ghost">Ghosted · 15%</option><option value="hidden">Hidden</option></select>
+        </div>
+        <label class="check"><input id="exploded" type="checkbox"> Show all exploded</label>
+        <p class="option-help">Return to your place by turning this off.</p>
+      </div>
+    </aside>
+  </main>
+  <footer class="timeline" aria-label="Build timeline">
+    <div class="transport-row">
+      <div class="transport">
+        <button id="previous" title="Previous step (←)" aria-label="Previous step">←</button>
+        <button id="play" title="Play / pause (Space)" aria-label="Play build">▶ <span>Play</span></button>
+        <button id="next" title="Next step (→)" aria-label="Next step">→</button>
+        <label for="speed">Speed</label><select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
+      </div>
+      <p class="scrub-hint">Drag to assemble <span>← → Step &nbsp; / &nbsp; Space Play</span></p>
+      <output id="timeline-value" for="timeline">0 / —</output>
+    </div>
+    <div class="slider-wrap"><input id="timeline" type="range" min="0" max="1" step="any" value="0" aria-label="Build position" disabled><div id="ticks" aria-hidden="true"></div></div>
+    <div class="timeline-ends"><span>00 &nbsp; Exploded</span><span id="timeline-end">Assembled</span></div>
+  </footer>
+  <script type="module" src="viewer.js"></script>
+</body>
+</html>

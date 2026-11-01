@@ -3,27 +3,33 @@
     "ok": true,
     "errors": [],
     "glb": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01/viewer/leg-lg01.glb",
-    "glb_sha256": "7fb182d426a63dd44f0ec3b772f9a0ba56df871f7871a333b2b20035a1cd90bd",
-    "bytes": 13803816,
-    "megabytes": 13.804,
-    "triangle_count": 420574,
-    "material_count": 7,
-    "node_count": 651,
-    "scene_part_count": 651,
+    "glb_sha256": "5291e0e56f62bf166689fe805ac48871779f30359060ac360865b8e683fadc99",
+    "bytes": 22177340,
+    "megabytes": 22.177,
+    "triangle_count": 578046,
+    "material_count": 13,
+    "node_count": 813,
+    "scene_part_count": 813,
     "source": {
       "source": "output/leg-lg01.blend",
-      "source_sha256": "4d40b4d05d4fc8eae1fcdf100374364833860759774127c2fcb0be9c25004ab5",
-      "scene_part_count": 651,
-      "evaluated_triangles": 420574,
-      "material_count": 7,
+      "source_sha256": "71838631325edabb9883d3b484bd55aeedfb8e16e3f1427e37b87e03cc5ef09f",
+      "scene_part_count": 813,
+      "evaluated_triangles": 578046,
+      "material_count": 13,
       "materials": [
         "LG01 Amber sensor",
+        "LG01 Armor satin",
         "LG01 Bronze nozzle lining",
+        "LG01 Caution red",
         "LG01 Dark recess",
+        "LG01 Decal caution",
+        "LG01 Decal red_marks",
+        "LG01 Decal unit01",
         "LG01 Fastener steel",
         "LG01 Gunmetal",
         "LG01 Polished rod chrome",
-        "LG01 Rubber"
+        "LG01 Rubber",
+        "LG01 Safety ochre"
       ],
       "coordinates": "glTF Y-up: (Blender X, Blender Z, -Blender Y)",
       "pose": "assembled",
@@ -33,8 +39,8 @@
     "duplicate_nodes": [],
     "missing_manifest_nodes": [],
     "extra_manifest_nodes": [],
-    "step_count": 40,
-    "install_count": 651,
+    "step_count": 69,
+    "install_count": 813,
     "missing_from_glb": [],
     "extra_glb_nodes": [],
     "duplicate_installs": [],
@@ -47,26 +53,79 @@
       1280,
       800
     ],
-    "load_seconds": 0.252,
+    "load_seconds": 0.403,
     "scrub": {
-      "samples": 321,
-      "unique_steps": 41,
-      "unique_titles": 41,
-      "moving_parts": 651,
+      "samples": 553,
+      "unique_steps": 70,
+      "unique_titles": 70,
+      "moving_parts": 813,
       "maximum_position_error": 0,
-      "armor_parts": 1,
+      "armor_parts": 85,
+      "mode_samples": 252,
+      "spreads": [
+        1,
+        1.6,
+        3
+      ],
+      "pending": true,
+      "follow": true,
       "exploded_restore": true,
       "reverse_scrub": true
     },
     "keyboard": true,
     "playback_positions": {
-      "0.5": 0.2083214285714285,
-      "1": 0.41664285714285704,
-      "2": 0.8332857142857141,
-      "4": 1.6665714285714275
+      "0.5": 0.21424999999999997,
+      "1": 0.4166428571428572,
+      "2": 0.857142857142857,
+      "4": 1.7142857142857137
     },
     "camera_presets": true,
     "follow": true,
+    "follow_orbit_pause_seconds": 3,
+    "sustained_glow": true,
+    "arrival_fade": true,
+    "framing": {
+      "start": {
+        "min": [
+          -0.27825258979546075,
+          -0.905911925007828
+        ],
+        "max": [
+          0.292277835398286,
+          0.8090801370676773
+        ]
+      },
+      "mid": {
+        "min": [
+          -0.280563206644752,
+          -0.6952035165723851
+        ],
+        "max": [
+          0.21498068673837487,
+          0.4784423060591912
+        ]
+      },
+      "end": {
+        "min": [
+          -0.17398110908292866,
+          -0.906304018249193
+        ],
+        "max": [
+          0.1561399649219541,
+          0.7826697771097969
+        ]
+      },
+      "ghost": {
+        "min": [
+          -0.17398110908292866,
+          -0.906304018249193
+        ],
+        "max": [
+          0.1561399649219541,
+          0.7826697771097969
+        ]
+      }
+    },
     "coordinate_conversion": true,
     "mismatch_fallback": {
       "missing": [
@@ -74,14 +133,14 @@
       ],
       "duplicate": [],
       "unassigned": [
-        "FA-528.001"
+        "FA-100-A.001"
       ]
     },
     "console_errors": [],
     "page_errors": [],
     "warnings": [
       "Step IDs missing from GLB; skipped: [__unknown_test_instance__]",
-      "GLB parts without a step; kept assembled: [FA-528.001]"
+      "GLB parts without a step; kept assembled: [FA-100-A.001]"
     ],
     "screenshots": [
       "output/viewer-shots/viewer-start.jpg",
