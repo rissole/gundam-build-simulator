@@ -71,7 +71,7 @@ def mapped(obj, face, surface, side=1):
     return clean(normals(obj))
 
 
-def panel(ctx, outline, bolts=(), grooves=(), cuts=(), marks=(), slots=(), accent=None, chamfer=None, inserts=(), channels=()):
+def panel(ctx, outline, bolts=(), grooves=(), cuts=(), marks=(), slots=(), accent=None, chamfer=None, inserts=(), channels=(), recesses=()):
     m=ctx.materials
     center=(min(z for u,z in outline)+max(z for u,z in outline))/2
     local=[(u,z-center) for u,z in outline]
@@ -80,6 +80,10 @@ def panel(ctx, outline, bolts=(), grooves=(), cuts=(), marks=(), slots=(), accen
     skin.location.y=center
     for cut_center,size in cuts:
         difference(skin,chamfered_box(size,cut_center,.025,m['recess']))
+    for loop,depth in recesses:
+        # Blind service field in the same skin; mapped() splits the floor and
+        # walls at the limb stations before bending them into planar facets.
+        difference(skin,prism(loop,depth+.004,'Integral recessed service field',z=.060-depth))
     channel_loops=[]
     for u,z,width in channels:
         # Top-open channel with a faceted entry and a real inward return.
@@ -202,14 +206,16 @@ def corner_returns(ctx, zs, edge, surface, lateral, side, rear=False):
 
 def build(ctx):
     m=ctx.materials
-    zs=[5.77,6.05,6.65,7.88,8.21]
-    # Full mass through most of the thigh; only the final 0.9 m tapers to knee.
-    side_surface=profile([(5.75,.600),(6.05,.600),(6.65,.810),(7.88,.840),(8.23,.755)])
-    front_surface=profile([(5.75,.46),(6.05,.60),(6.65,.810),(7.88,.840),(8.23,.770)])
-    rear_surface=profile([(5.75,.46),(6.05,.60),(6.65,.810),(7.88,.840),(8.23,.76)])
-    front_edge=profile([(5.75,.47),(6.05,.59),(6.65,.765),(7.88,.795),(8.23,.685)])
-    outline=[(-front_edge(z),z) for z in reversed([5.75,6.05,6.65,7.88,8.23])]
-    outline += [(front_edge(z),z) for z in [5.75,6.05,6.65,7.88,8.23]]
+    zs=[5.77,6.05,6.35,6.85,7.88,8.21]
+    # Exterior stations include the 60 mm skin: .66/.76/.84/.90 half-size.
+    # Spread the taper over deliberate planes, without the old Z6.65 belt.
+    side_surface=profile([(5.75,.600),(6.05,.600),(6.35,.700),(6.85,.780),(7.88,.840),(8.23,.755)])
+    front_surface=profile([(5.75,.46),(6.05,.60),(6.35,.700),(6.85,.780),(7.88,.840),(8.23,.770)])
+    rear_surface=profile([(5.75,.46),(6.05,.60),(6.35,.700),(6.85,.780),(7.88,.840),(8.23,.76)])
+    front_edge=profile([(5.75,.47),(6.05,.59),(6.35,.655),(6.85,.735),(7.88,.795),(8.23,.685)])
+    front_zs=[5.75,6.05,6.35,6.85,7.88,8.23]
+    outline=[(-front_edge(z),z) for z in reversed(front_zs)]
+    outline += [(front_edge(z),z) for z in front_zs]
     front=panel(ctx,outline,chamfer=.020,
         bolts=[(-.43,5.91),(.43,5.91),(-.63,7.89),(.63,7.89)],
         grooves=[[(-.36,5.87),(-.40,6.10),(.40,6.10),(.36,5.87)]],
@@ -220,7 +226,7 @@ def build(ctx):
     lips=[]
     for u,width in [(-.339,.23),(.464,.24)]:
         for sign in (-1,1):
-            path=[(z,u+sign*(width/2+flare)) for z,flare in [(7.25,0),(7.97,0),(8.20,.071)]]
+            path=[(z,u+sign*(width/2+flare)) for z,flare in [(7.25,0),(7.88,0),(7.97,0),(8.20,.071)]]
             rows=[((x,front_surface(z)+.022,z),(x+sign*.014,front_surface(z)-.080,z)) for z,x in path]
             lips.append(folded_strip(rows,m['gunmetal'],'Channel inward return',.020))
     mapped(front,'front',front_surface)
@@ -247,7 +253,8 @@ def build(ctx):
         skin=panel(ctx,outline,chamfer=.012,
                    bolts=[(-.43,6.64),(.35,6.60),(-.52,7.95),(.57,7.75)],
                    grooves=[service] if side<0 else [[(-.39,6.53),(-.50,6.90),(-.50,7.53)]],
-                   slots=[(.53,7.25,.15,.85)],
+                   recesses=[(service[:-1],.012)] if side<0 else [],
+                   slots=[(.53,7.25,.15,.85)]+([(.01,7.22,.055,.16)] if side<0 else []),
                    channels=[(.339 if side<0 else .124,7.25,.30)],
                    cuts=[((.03,6.10,.03),(.46,.42,.22))],
                    marks=[('red_marks',-.18 if side<0 else -.35,6.63 if side<0 else 6.78,.20)])
@@ -261,10 +268,10 @@ def build(ctx):
         y_mount=.02 if side<0 else -.10
         attach(ctx,skin,pid,[((side*.50,.02,6.62),(side*(side_surface(6.62)+.01),.02,6.62)),
                              ((side*.74,y_mount,7.94),(side*(side_surface(7.94)+.01),y_mount,7.94))])
-    rear_zs=[5.89,6.05,6.65,7.88,8.21]
-    rear_edge=profile([(5.89,.46),(6.05,.53),(6.65,.765),(7.88,.795),(8.23,.675)])
+    rear_zs=[5.89,6.05,6.35,6.85,7.88,8.21]
+    rear_edge=profile([(5.89,.46),(6.05,.53),(6.35,.655),(6.85,.735),(7.88,.795),(8.23,.675)])
     for side,pid in [(-1,'LG-220'),(1,'LG-225')]:
-        outline=[(.22,5.89)]+[(rear_edge(z),z) for z in rear_zs if z!=6.05]+[(.22,8.21)]
+        outline=[(.22,5.89)]+[(rear_edge(z),z) for z in rear_zs]+[(.22,8.21)]
         if side<0: outline=[(-x,z) for x,z in reversed(outline)]
         skin=panel(ctx,outline,chamfer=.020,bolts=[(side*.34,6.51),(side*.34,8.06),(side*.55,7.85)],
                    grooves=[[(side*.23,7.51),(side*.65,7.51)]],

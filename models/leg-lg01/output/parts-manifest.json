@@ -25,7 +25,7 @@
     0.0
   ],
   "object_count": 813,
-  "triangles": 581828,
+  "triangles": 582230,
   "parts": [
     {
       "instance_id": "LG-120.spar-with-integral-hip-neck-and-ball.01",
@@ -1731,7 +1731,7 @@
         0.0
       ],
       "bbox_min": [
-        -0.7149999737739563,
+        -0.7049999833106995,
         1.5000001192092896,
         0.20000000298023224
       ],
@@ -2438,7 +2438,7 @@
         0.20000000298023224
       ],
       "bbox_max": [
-        0.7149999737739563,
+        0.7049999833106995,
         2.440000057220459,
         0.5424444675445557
       ],
@@ -16976,7 +16976,7 @@
         0.8999999761581421,
         8.229999542236328
       ],
-      "triangles": 2784,
+      "triangles": 2902,
       "object_name": "LG-200.thigh-front-plate.01 Thigh front plate"
     },
     {
@@ -17002,7 +17002,7 @@
         0.699999988079071,
         8.210000038146973
       ],
-      "triangles": 2474,
+      "triangles": 2506,
       "object_name": "LG-210.thigh-outer-side-plate.01 Thigh outer side plate"
     },
     {
@@ -17028,7 +17028,7 @@
         0.699999988079071,
         8.210000038146973
       ],
-      "triangles": 2292,
+      "triangles": 2252,
       "object_name": "LG-215.thigh-inner-side-plate.01 Thigh inner side plate"
     },
     {
@@ -17054,7 +17054,7 @@
         -0.30033332109451294,
         8.210000038146973
       ],
-      "triangles": 1676,
+      "triangles": 1728,
       "object_name": "LG-220.thigh-rear-cover-outer.01 Thigh rear cover outer"
     },
     {
@@ -17080,7 +17080,7 @@
         -0.30033332109451294,
         8.210000038146973
       ],
-      "triangles": 1670,
+      "triangles": 1720,
       "object_name": "LG-225.thigh-rear-cover-inner.01 Thigh rear cover inner"
     },
     {
@@ -17106,7 +17106,7 @@
         0.8499999642372131,
         5.480000019073486
       ],
-      "triangles": 1946,
+      "triangles": 1978,
       "object_name": "LG-300.kneecap-shield.01 Kneecap shield"
     },
     {
@@ -17262,7 +17262,7 @@
         0.4000000059604645,
         4.599999904632568
       ],
-      "triangles": 2190,
+      "triangles": 2158,
       "object_name": "LG-410.calf-side-shell-outer.01 Calf side shell outer"
     },
     {
@@ -17340,7 +17340,7 @@
         0.4000000059604645,
         4.599999904632568
       ],
-      "triangles": 2190,
+      "triangles": 2158,
       "object_name": "LG-415.calf-side-shell-inner.01 Calf side shell inner"
     },
     {
@@ -19498,7 +19498,7 @@
         2.4600000381469727,
         0.6000000238418579
       ],
-      "triangles": 3860,
+      "triangles": 3926,
       "object_name": "FA-400.toe-cap.01 Toe cap"
     },
     {
@@ -19827,16 +19827,16 @@
         0.0
       ],
       "bbox_min": [
-        -0.7300000190734863,
-        -0.5,
-        0.20000000298023224
+        -0.7300108075141907,
+        -0.5000093579292297,
+        0.19999781250953674
       ],
       "bbox_max": [
-        0.7300000190734863,
-        1.2100000381469727,
-        0.699999988079071
+        0.7300108075141907,
+        1.2100093364715576,
+        0.7000100016593933
       ],
-      "triangles": 4082,
+      "triangles": 4260,
       "object_name": "FA-401-L.upper-foot-plate.01 Upper foot plate"
     },
     {
@@ -20512,7 +20512,7 @@
         0.949999988079071,
         1.600000023841858
       ],
-      "triangles": 3410,
+      "triangles": 3400,
       "object_name": "FA-403-L.inner-ankle-guard.01 Inner ankle guard"
     },
     {
@@ -20850,7 +20850,7 @@
         0.949999988079071,
         1.600000023841858
       ],
-      "triangles": 3410,
+      "triangles": 3398,
       "object_name": "FA-404-L.outer-ankle-guard.01 Outer ankle guard"
     },
     {

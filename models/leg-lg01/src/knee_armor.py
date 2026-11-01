@@ -32,14 +32,31 @@ def build(ctx):
     outline,inner=outer_ring,inner_ring
     verts=[(x,.640,z) for x,z in outline]+[(x,ridge(z)+.052,z) for x,z in inner]
     verts += [(x,.610,z) for x,z in outline]+[(x,ridge(z)+.012,z) for x,z in inner]
-    n=len(outline); faces=[]
+    n=len(outline); faces=[]; face_materials=[]
+    # Carry ochre 35 mm over the front of the retained 80 mm rim. Split each
+    # original triangle along that paint boundary, preserving its plane and
+    # the pale outer returns; no overlay skin or change to the shield bounds.
+    t=1-.035/.080
+    for i in range(n):
+        verts.append(tuple(a+(b-a)*t for a,b in zip(verts[i],verts[n+i])))
     for i in range(n):
         j=(i+1)%n
-        patches=[(i,j,n+j,n+i),(2*n+i,3*n+i,3*n+j,2*n+j),
+        verts.append(tuple(a+(b-a)*t for a,b in zip(verts[i],verts[n+j])))
+    for i in range(n):
+        j=(i+1)%n
+        a,b,d=4*n+i,4*n+j,5*n+i
+        faces.extend([(i,j,b),(i,b,d),(d,b,n+j),
+                      (i,d,a),(a,d,n+j),(a,n+j,n+i)])
+        face_materials.extend([0,0,1,0,1,1])
+        patches=[(2*n+i,3*n+i,3*n+j,2*n+j),
                  (i,2*n+i,2*n+j,j),(n+i,n+j,3*n+j,3*n+i)]
         for a,b,c,d in patches:
             faces.extend([(a,b,c),(a,c,d)])
-    rim=clean(mesh_object('Pale folded kneecap returns',verts,faces,m['armor']))
+            face_materials.extend([0,0])
+    rim=mesh_object('Kneecap rim with ochre frontal band and pale returns',verts,faces,m['armor'])
+    rim.data.materials.append(m['ochre'])
+    for face,material in zip(rim.data.polygons,face_materials): face.material_index=material
+    clean(rim)
     shield=combine([shield,rim],'Ochre chisel shield with pale folded rim')
     attach(ctx,shield,'LG-300',[( (x,.54,5.04),(x,.76,5.04)) for x in (-.15,.15)])
     for s,pid in [(-1,'LG-320'),(1,'LG-325')]:

@@ -5,6 +5,7 @@ bosses/tab sockets here; no extra inventory objects or FA-01 source edits. Solid
 features are closed visualization shells, matching the common kit contract.
 """
 import csv
+import math
 from collections import Counter
 from pathlib import Path
 import bpy
@@ -95,7 +96,9 @@ def cap_machining_slivers(obj):
         verts=list({v for e in rim for v in e.verts})
         assert len(rim)==len(verts)==3 and max(v.co.y for v in verts)-min(v.co.y for v in verts)<1e-6, \
             'Unexpected non-triangular slot-end boundary'
-        assert all(.600<abs(v.co.x)<.731 and .600<v.co.z<.701 for v in verts)
+        # The F6 100 mm shoulder puts the inside slot rim at Z593; its
+        # 20 mm skin still lies above Z580. Only this folded band may be capped.
+        assert all(.600<abs(v.co.x)<.731 and .580<v.co.z<.701 for v in verts)
         # holes_fill can skip these narrow triangles after bore retessellation;
         # the measured closed three-edge rim defines its cap unambiguously.
         bm.faces.new(verts)
@@ -166,7 +169,8 @@ def side_panel(ctx,outline,sign,x=.730,material='armor',facet=.005):
     return finish(obj,wear=True)
 
 
-def folded_shell(ctx,regions,zfunc,open_y,crease=.630,drop=.060,bottom=None,lower_facet=None):
+def folded_shell(ctx,regions,zfunc,open_y,crease=.630,drop=.060,bottom=None,lower_facet=None,
+                 constrained_skin=False):
     """Continuous roof/side/nose skin, thickened inward from shared fold edges.
 
     Regions only divide paint or roof slopes; they never divide the physical
@@ -234,12 +238,57 @@ def folded_shell(ctx,regions,zfunc,open_y,crease=.630,drop=.060,bottom=None,lowe
     mod=obj.modifiers.new('20 mm inward folded skin','SOLIDIFY')
     mod.thickness=.020;mod.offset=-1;mod.use_even_offset=True
     if lower_facet:
-        mod.solidify_mode='EXTRUDE';mod.use_quality_normals=True
+        mod.solidify_mode='NON_MANIFOLD' if constrained_skin else 'EXTRUDE'
+        mod.use_quality_normals=True
+        if constrained_skin:
+            # Intersect offset face planes: averaged vertex normals thicken
+            # the steep upper shoulder to 22 mm instead of the required 20.
+            mod.nonmanifold_thickness_mode='CONSTRAINTS'
     bpy.ops.object.modifier_apply(modifier=mod.name)
     return finish(obj,wear=True)
 
 
 def toe_z(y):return .600-(y-1.500)*(.080/.900) if y<=2.400 else .520-(y-2.400)*2
+
+
+def toe_nose_score(ctx,toe):
+    """One blind 25 mm seam, continuous over the roof/folds to side Z300.
+
+    Intersect parallel face planes to keep the floor 4 mm below each face,
+    including the longitudinal roof slope. The 20 mm skin stays closed; this
+    surface segmentation is part of FA-400, never an additional nose shell.
+    """
+    slope=.090/(.730-.610)
+    central_normal=math.sqrt(1+(.080/.900)**2)
+    shoulder_normal=math.sqrt(1+slope*slope+(.080/.900)**2)
+    def section(y,offset):
+        crease=.610+offset*(shoulder_normal-central_normal)/slope
+        side=.730+offset
+        roof=toe_z(y)+offset*central_normal
+        shoulder=toe_z(y)-slope*(side-.610)+offset*shoulder_normal
+        return [(-side,.300),(-side,shoulder),(-crease,roof),
+                (crease,roof),(side,shoulder),(side,.300)]
+    vertices=[]
+    for y in (2.240-.0125,2.240+.0125):
+        outline=section(y,.008)+list(reversed(section(y,-.004)))
+        vertices.extend((x,y,z) for x,z in outline)
+    n=12
+    faces=[tuple(reversed(range(n))),tuple(range(n,2*n))]
+    faces.extend((i,(i+1)%n,(i+1)%n+n,i+n) for i in range(n))
+    tool=finish(mesh_object('Blind toe nose score',vertices,faces,ctx.materials['armor']))
+    difference(toe,tool)
+    # Colour only the machined floor; sidewalls retain the adjacent paint.
+    toe.data.materials.append(ctx.materials['gunmetal'])
+    dark=len(toe.data.materials)-1
+    for face in toe.data.polygons:
+        x,y,z=face.center
+        if not 2.22749<y<2.25251 or abs(face.normal.y)>.5:continue
+        roof_floor=toe_z(y)-.004*central_normal
+        shoulder_floor=toe_z(y)-slope*(abs(x)-.610)-.004*shoulder_normal
+        if (abs(z-roof_floor)<1e-5 or abs(z-shoulder_floor)<1e-5
+                or abs(abs(x)-.726)<1e-5):
+            face.material_index=dark
+    finish(toe,wear=True)
 
 
 def shell_meshes(ctx):
@@ -250,12 +299,24 @@ def shell_meshes(ctx):
     band=[(-.730,2.240),(.730,2.240),(.730,2.360),(.690,2.400),(-.690,2.400),(-.730,2.360)]
     nose=[(-.690,2.400),(.690,2.400),(.630,2.460),(-.630,2.460)]
     toe=folded_shell(ctx,[(white,'armor'),(band,'ochre'),(nose,'ochre')],toe_z,(1.500,),
+                     crease=.610,drop=.090,
                      bottom=lambda x,y:.200+max(0,1.580-y),lower_facet=(1.600,2.360))
+    # Trim the offset skin's rear edge to the written opening plane; its
+    # longitudinal normal otherwise projects 1.77 mm into the hinge channel.
+    for v in toe.data.vertices:v.co.y=max(v.co.y,1.500)
+    toe_nose_score(ctx,toe)
 
     # Rear-open U shell. Cuts extend through every folded feature in their area.
     outline=[(x,y+.355) for x,y in chamfered_rect(1.460,1.710,.080)]
-    upper=folded_shell(ctx,[(outline,'armor')],lambda y:.700,(-.500,1.210),crease=.650,drop=.080,
-                       bottom=lambda x,y:.200+max(0,y-1.130,-.420-y),lower_facet=(-.420,1.130))
+    upper=folded_shell(ctx,[(outline,'armor')],lambda y:.700,(-.500,1.210),crease=.650,drop=.100,
+                       bottom=lambda x,y:.200+max(0,y-1.130,-.420-y),lower_facet=(-.420,1.130),
+                       constrained_skin=True)
+    # Resolve the inward offset's long facet faces before machining. At the
+    # steeper F6 shoulder, Boolean retessellation of those n-gons otherwise
+    # drops inside-fold triangles between adjacent receiver slots.
+    bm=bmesh.new();bm.from_mesh(upper.data)
+    bmesh.ops.triangulate(bm,faces=list(bm.faces))
+    bm.to_mesh(upper.data);bm.free();upper.data.update()
     difference(upper,chamfered_box((1.180,1.100,.2),(0,0,.700),0))
     difference(upper,chamfered_box((.170,.320,.2),(-.535,.710,.700),0))
     # Straight +Z clearance for the fixed guard posts, bosses and tab sockets.
@@ -282,7 +343,7 @@ def shell_meshes(ctx):
 
     guards=[]
     contour=[(-.730,.700),(-.630,.600),(.750,.600),(.950,.800),(.850,1.090),
-             (.570,1.530),(.450,1.600),(-.450,1.600),(-.570,1.530),(-.730,1.050)]
+             (.600,1.500),(.160,1.600),(-.160,1.600),(-.600,1.500),(-.730,1.050)]
     for s in (1,-1):
         guard=side_panel(ctx,contour,s,facet=.080)
         window=prism(chamfered_rect(.400,.360,.060),.100)
@@ -292,8 +353,9 @@ def shell_meshes(ctx):
         # Machine depressions while the wall is one continuous solid, before
         # adding the intersecting integral lands and locator feature shells.
         for y,z in GUARD_SITES:
-            outline=chamfered_rect(.130,.130,.038)
-            well=loft([(-.016,[(a*.43,b*.43) for a,b in outline]),
+            outline=chamfered_rect(.080,.080,.038*.080/.130)
+            floor=chamfered_rect(.130*.43,.130*.43,.038*.43)
+            well=loft([(-.016,floor),
                        (0,outline),(.025,outline)])
             difference(guard,place(well,(s*.730,y,z),(s,0,0)))
         guards.append(guard)
@@ -366,7 +428,11 @@ def armor(ctx):
         # the removal axis; tabs do not hook across or trap adjacent shells.
         if pid in {'FA-400','FA-401-L'}:
             y=1.850 if pid=='FA-400' else 1.100
-            tab_sites=[(s*.690,y,(toe_z(y)-.036 if pid=='FA-400' else .684)-.030) for s in (-1,1)]
+            # F6's deeper toe fold needs both locator/socket pairs 30 mm lower
+            # and 10 mm inboard, clearing the roof and the side skin with the
+            # original socket walls. Keep 10 mm engagement and all upper tabs.
+            tab_sites=[(s*(.680 if pid=='FA-400' else .690),y,
+                        (toe_z(y)-.066 if pid=='FA-400' else .684)-.030) for s in (-1,1)]
         elif pid=='FA-402':tab_sites=[(s*.660,-.870,.380) for s in (-1,1)]
         else:
             s=1 if pid=='FA-403-L' else -1

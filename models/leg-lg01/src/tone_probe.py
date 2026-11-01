@@ -55,7 +55,7 @@ def cell(p):
 
 def write_notes(path, data, result, table, evidence_path):
     passed = result['all_targets_met']
-    lines = ['# P6R3 — rendering round 2, R5–R9', '',
+    lines = ['# P6R4 — rendering round 3, R10–R12', '',
              '**Tone targets ' + ('PASS' if passed else 'FAIL — see diagnostic table') + '.** '
              'This receipt is regenerated from the current render evidence, not copied from a previous scene.', '',
              f"Loaded scene SHA-256: `{result['blend_sha256']}`.",
@@ -90,22 +90,32 @@ def write_notes(path, data, result, table, evidence_path):
               'Assembled foot and exploded diagrams are also orthographic. Remaining structure '
               'presentation cameras use 120 mm. Contact shadows are retained under assembled '
               'three-quarter views. Side images are reflected for reference alignment and labeled.', '',
-              'Approved palette hex values are unchanged. Source material factors retain glTF '
+              'Approved palette hex values and materials.py are unchanged. Source materials retain glTF '
               'Principled compatibility: armor roughness 0.49; bronze 0.43; recess metallic '
-              '0.03 / roughness 0.90. The loaded scene receives the same factors in memory. '
-              'Bronze receives local cavity AO (0.85 m, exponent 2.5) plus an axial cavity attenuation (0.025 at the throat, rising cubically to 1 at the rim) in the studio shader; '
-              'the open throat and mouth geometry are untouched. Existing Wear attribute '
-              'variation is amplified 1.65× (at most about 10% darkening on small lands/edges; broad sloped faces stay clean). Painted facets '
-              'use geometric normals on mesh copies. Foot recessed faces reuse Dark recess; '
-              'no added or resized fasteners. These appearance overrides are renderer-only '
-              'except the source material factors.', '',
+              '0.03 / roughness 0.90. Viewer GLB is unchanged; the following finish is renderer-only.', '',
+              '**R10:** mouth positions/depths are measured from the loaded bronze meshes. '
+              'A cubic aperture-visibility approximation (1 at the lip, 0.012 at/behind the throat), '
+              'with local cavity AO on bronze (0.85 m, power 1.3), attenuates the entire BSDF, including '
+              'metal reflections. The engine bore and rear-facing LG-100 receiving surfaces share '
+              'the cavity shadow; the beam front and external barrel remain unaffected. '
+              'Receiver attenuation is disabled when the engines are moved away in the exploded '
+              'display. No disc, cap, geometry edit, palette replacement or image-space correction is used.', '',
+              '**R11:** spatial noise gates existing small edge lands and 0.055 m crevice AO. '
+              'Maximum localized linear-value reduction is 32%, roughness increase 0.17; '
+              'broad sloped fields are excluded from the source Wear heuristic. The mask is '
+              'constant per face before shader noise, avoiding random vertex-gradient fans.', '',
+              '**R12:** structure views use a 1.25× key with a narrower softbox, 0.65× fill, '
+              '3.2× rear rim and a dedicated tall reflection strip. Assembled lighting stays '
+              'unchanged. Painted faces use geometric split normals on mesh copies; mechanical '
+              'smoothing is preserved. Both carriers are also shown from below, with the six '
+              'pad undersides retained. Foot recesses still reuse Dark recess; no hardware added.', '',
               f"Source script SHA-256: `{json.dumps(data['script_sha256'], sort_keys=True)}`.", '',
               f"Dark foot-well faces: `{json.dumps(data['finish_audit']['dark_well_faces'], sort_keys=True)}`.", '',
               '## Exploded display and evidence', '',
               'Leg plates and two engines occupy separated rows/columns around the frame; '
               'major pieces have part-number labels and short leaders. Foot shells and carriers '
               'are spread above/around the assembled frame, with all six pads separately shown '
-              'from below at a common scale, with grazing illumination across the tread. Captive hardware follows its owner. Rear skins and engines turn to show their exterior. These are '
+              'from below at a common scale, with grazing illumination across the tread. Both carrier undersides have their own labelled inset. Captive hardware follows its owner. Rear skins and engines turn to show their exterior. These are '
               'display transforms only; they neither modify nor certify installation paths.', '',
               f"Evidence: `{evidence_path}`; sibling `tone-probe.json`, `tone-probe.md` and "
               '`tone-patches-*.png` contain diagnostic results and overlays. '
@@ -115,6 +125,8 @@ def write_notes(path, data, result, table, evidence_path):
     for sheet in data['sheets']:
         file = path.parent / ('cmp-'+sheet+'.jpg')
         if file.exists(): lines.append(f'| {file.name} | `{sha256(file)}` |')
+    lines += ['', '## Rear-throat diagnostic', '', result.get('throat_table', 'Not sampled.'), '',
+              'The fixed rear rays must hit LG-100 through both open engines. Target Y′ ≤35 is a rendering diagnostic, separate from the unchanged R5 tone targets.', '']
     lines += ['', 'Automated receipt: image generation and tone measurements only. '
               'Human inspection findings and material-board verification are recorded below '
               'after review; generation alone is not visual approval.', '']
@@ -174,15 +186,29 @@ def main():
     result['all_targets_met'] = not data['source_changed_during_render'] and all(
         all(v.get('status') == 'PASS' for k,v in view.items() if k != 'difference') and
         view['difference'] is not None and view['difference'] >= 30 for view in result['views'].values())
+    back = data['renders'].get('lg01-assembled-back', {})
+    throat_table = ['| Throat | Receiving part / world point | RGB / Y′ | Rays | Status |',
+                    '| --- | --- | --- | --- | --- |']
+    result['throats'] = {}
+    if back.get('jpg'):
+        rear = Image.open(back['jpg']).convert('RGB')
+        for name, point in (back.get('throat_points') or {}).items():
+            value = patch(rear,point['pixel'],point['radius']) if point.get('valid') else {}
+            value['status'] = 'PASS' if point.get('valid') and value['y_srgb'] <= 35 else 'MISS'
+            result['throats'][name] = value
+            throat_table.append(f"| {name} | {point.get('part_id')} / {point.get('world')} | {value.get('rgb')} / {value.get('y_srgb')} | {point['matching_rays']}/{point['patch_rays']} | {value['status']} |")
+    result['throat_targets_met'] = len(result['throats']) == 2 and all(v['status']=='PASS' for v in result['throats'].values())
+    result['throat_table'] = '\n'.join(throat_table)
     text = '\n'.join(table)+'\n'
     if not result['all_targets_met']:
         text = '**TONE PROBE FAILURE — invalid anchors or targets not met. Rendering is not blocked.**\n\n'+text
     print(text, flush=True)
+    print(result['throat_table'], flush=True)
     (args.evidence.parent/'tone-probe.json').write_text(json.dumps(result,indent=2)+'\n')
     (args.evidence.parent/'tone-probe.md').write_text(text)
     if args.notes:
         write_notes(args.notes, data, result, text, args.evidence)
-    return 0 if result['all_targets_met'] else 1
+    return 0 if result['all_targets_met'] and result['throat_targets_met'] else 1
 
 
 if __name__ == '__main__':

@@ -156,10 +156,12 @@ def main():
             put(left, cache[f'{name}-exploded'], (55, 120, 1426, 815))
             text(left, (32, 980), 'Display offsets only; installation paths unchanged.  |  Foot omitted.', 19, BLUE)
         elif name == 'fa02-armor':
-            left = panel('ARMOR / SOLES', 'FA-02  |  SHELLS / CARRIERS + SIX PAD UNDERSIDES')
-            put(left, cache[f'{name}-exploded'], (44, 111, 1448, 626))
-            text(left, (50, 744), 'PAD UNDERSIDES / COMMON SCALE', 19, BLUE)
-            put(left, cache[f'{name}-underside'], (44, 775, 1448, 185))
+            left = panel('ARMOR / SOLES', 'FA-02  |  SHELLS / CARRIERS / SIX PADS')
+            put(left, cache[f'{name}-exploded'], (44, 111, 1448, 550))
+            text(left, (50, 677), 'CARRIER UNDERSIDES', 19, BLUE)
+            put(left, cache[f'{name}-carrier-underside'], (44, 710, 460, 250))
+            text(left, (540, 718), 'SIX PAD UNDERSIDES / COMMON SCALE', 19, BLUE)
+            put(left, cache[f'{name}-underside'], (530, 760, 970, 185))
             text(left, (32, 989), '5 shells / 2 carriers / 6 pads  |  Display offsets only; installation paths unchanged.', 17, BLUE)
         elif name == 'fa02-structure':
             left = panel('STRUCTURE / JOINTS', 'FA-02  |  ELEVATED FRONT OUTER')

@@ -2607,9 +2607,9 @@
     {
       "check": "cylinder_upper-1 cartridge pin tunnel bore diameter",
       "passed": true,
-      "measured": 0.09488311990240526,
+      "measured": 0.09488311990240524,
       "expected": 0.09503,
-      "error_m": 0.00014688009759473986,
+      "error_m": 0.0001468800975947676,
       "tolerance_m": 0.01
     },
     {
@@ -2979,9 +2979,9 @@
     {
       "check": "cylinder_upper1 cartridge pin tunnel bore diameter",
       "passed": true,
-      "measured": 0.09488312418930532,
+      "measured": 0.09488312418930533,
       "expected": 0.09503,
-      "error_m": 0.0001468758106946827,
+      "error_m": 0.00014687581069466882,
       "tolerance_m": 0.01
     },
     {
@@ -3161,9 +3161,9 @@
     {
       "check": "cylinder_lower1 cartridge pin tunnel bore diameter",
       "passed": true,
-      "measured": 0.09488308940336396,
+      "measured": 0.09488308940336394,
       "expected": 0.09503,
-      "error_m": 0.00014691059663604622,
+      "error_m": 0.0001469105966360601,
       "tolerance_m": 0.01
     },
     {
@@ -4783,9 +4783,9 @@
       "FA-100-A ledge bore -0.56 -0.055 diameter",
       true,
       {
-        "measured": 0.03829734945120708,
+        "measured": 0.038297349451207094,
         "expected": 0.038,
-        "max_error_m": 0.00029734945120708095
+        "max_error_m": 0.00029734945120709483
       }
     ],
     [
@@ -4895,9 +4895,9 @@
       "FA-100-A ledge bore -0.56 0.055 diameter",
       true,
       {
-        "measured": 0.03829711174789202,
+        "measured": 0.038297111747892035,
         "expected": 0.038,
-        "max_error_m": 0.0002971117478920218
+        "max_error_m": 0.0002971117478920357
       }
     ],
     [
@@ -5007,9 +5007,9 @@
       "FA-100-B ledge bore -0.56 -0.055 diameter",
       true,
       {
-        "measured": 0.03829710818523731,
+        "measured": 0.03829710818523732,
         "expected": 0.038,
-        "max_error_m": 0.0002971081852373089
+        "max_error_m": 0.0002971081852373228
       }
     ],
     [
@@ -5231,9 +5231,9 @@
       "FA-100-A ledge bore 1.12 -0.055 diameter",
       true,
       {
-        "measured": 0.0382973528951135,
+        "measured": 0.03829735289511351,
         "expected": 0.038,
-        "max_error_m": 0.00029735289511349794
+        "max_error_m": 0.0002973528951135118
       }
     ],
     [
@@ -5343,9 +5343,9 @@
       "FA-100-A ledge bore 1.12 0.055 diameter",
       true,
       {
-        "measured": 0.038297137465271074,
+        "measured": 0.03829713746527106,
         "expected": 0.038,
-        "max_error_m": 0.00029713746527107454
+        "max_error_m": 0.00029713746527106066
       }
     ],
     [
@@ -5455,9 +5455,9 @@
       "FA-100-B ledge bore 1.12 -0.055 diameter",
       true,
       {
-        "measured": 0.03829711159915575,
+        "measured": 0.03829711159915574,
         "expected": 0.038,
-        "max_error_m": 0.00029711159915574853
+        "max_error_m": 0.0002971115991557416
       }
     ],
     [
@@ -5567,9 +5567,9 @@
       "FA-100-B ledge bore 1.12 0.055 diameter",
       true,
       {
-        "measured": 0.038297378087070955,
+        "measured": 0.03829737808707095,
         "expected": 0.038,
-        "max_error_m": 0.00029737808707095553
+        "max_error_m": 0.0002973780870709486
       }
     ],
     [
@@ -5679,9 +5679,9 @@
       "FA-100-A ledge bore 0 -0.11 diameter",
       true,
       {
-        "measured": 0.03829609483264617,
+        "measured": 0.03829609483264618,
         "expected": 0.038,
-        "max_error_m": 0.000296094832646171
+        "max_error_m": 0.0002960948326461779
       }
     ],
     [
@@ -5903,9 +5903,9 @@
       "FA-100-B ledge bore 0 -0.11 diameter",
       true,
       {
-        "measured": 0.03829519822606768,
+        "measured": 0.038295198226067674,
         "expected": 0.038,
-        "max_error_m": 0.0002951982260676819
+        "max_error_m": 0.000295198226067675
       }
     ],
     [
@@ -6015,9 +6015,9 @@
       "FA-100-B ledge bore 0 0.11 diameter",
       true,
       {
-        "measured": 0.03829609630093424,
+        "measured": 0.038296096300934224,
         "expected": 0.038,
-        "max_error_m": 0.0002960963009342385
+        "max_error_m": 0.0002960963009342246
       }
     ],
     [
@@ -6750,9 +6750,9 @@
       "FA-106 land bore 0.395 -0.045 diameter",
       true,
       {
-        "measured": 0.03808297948764243,
+        "measured": 0.038082979487642436,
         "expected": 0.038,
-        "max_error_m": 8.29794876424303e-05
+        "max_error_m": 8.297948764243723e-05
       }
     ],
     [
@@ -8333,9 +8333,9 @@
       "F0 clevis diameter",
       true,
       {
-        "measured": 0.040435796271827994,
+        "measured": 0.04043579627182799,
         "expected": 0.04,
-        "max_error_m": 0.00043579627182799285
+        "max_error_m": 0.0004357962718279859
       }
     ],
     [
@@ -13339,9 +13339,9 @@
       "FA-400 shell mount 0 land diameter",
       true,
       {
-        "measured": 0.01320301083856918,
+        "measured": 0.013203010838569177,
         "expected": 0.013,
-        "max_error_m": 0.0002030108385691811
+        "max_error_m": 0.00020301083856917763
       }
     ],
     [
@@ -13570,9 +13570,9 @@
       "FA-400 shell mount 1 land diameter",
       true,
       {
-        "measured": 0.013203025823422698,
+        "measured": 0.013203025823422697,
         "expected": 0.013,
-        "max_error_m": 0.00020302582342269886
+        "max_error_m": 0.00020302582342269712
       }
     ],
     [
@@ -14239,17 +14239,17 @@
       "FA-401-L top",
       true,
       {
-        "measured": 0.699999988079071,
+        "measured": 0.7000100016593933,
         "expected": 0.7,
-        "max_error_m": 1.1920928910669204e-08
+        "max_error_m": 1.0001659393354956e-05
       }
     ],
     [
       "FA-401-L lateral envelope",
       true,
       {
-        "min_x": -0.7300000190734863,
-        "max_x": 0.7300000190734863
+        "min_x": -0.7300108075141907,
+        "max_x": 0.7300108075141907
       }
     ],
     [
@@ -15693,9 +15693,9 @@
       "FA-402 shell mount 2 land diameter",
       true,
       {
-        "measured": 0.0132030306515273,
+        "measured": 0.013203030651527293,
         "expected": 0.013,
-        "max_error_m": 0.00020303065152730074
+        "max_error_m": 0.0002030306515272938
       }
     ],
     [
@@ -16408,9 +16408,9 @@
       "FA-403-L shell mount 1 land diameter",
       true,
       {
-        "measured": 0.01320301971577989,
+        "measured": 0.013203019715779895,
         "expected": 0.013,
-        "max_error_m": 0.00020301971577989068
+        "max_error_m": 0.0002030197157798959
       }
     ],
     [
@@ -17585,9 +17585,9 @@
       "FA-404-L shell mount 2 land diameter",
       true,
       {
-        "measured": 0.013203011509733738,
+        "measured": 0.013203011509733737,
         "expected": 0.013,
-        "max_error_m": 0.00020301150973373906
+        "max_error_m": 0.00020301150973373733
       }
     ],
     [
@@ -18030,7 +18030,7 @@
       "FA-403-L access window rim exists",
       true,
       {
-        "vertices": 17
+        "vertices": 16
       }
     ],
     [
@@ -18169,6 +18169,221 @@
       {}
     ],
     [
+      "FA-403-L window retained surrounding skin 0 0.808",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window surrounding 20 mm wall 0 0.808",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L window retained surrounding skin 0 1.192",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window surrounding 20 mm wall 0 1.192",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L window retained surrounding skin -0.212 1",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window surrounding 20 mm wall -0.212 1",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L window retained surrounding skin 0.212 1",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window surrounding 20 mm wall 0.212 1",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L window retained surrounding skin -0.18 0.84",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window surrounding 20 mm wall -0.18 0.84",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L window retained surrounding skin 0.18 0.84",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window surrounding 20 mm wall 0.18 0.84",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L window retained surrounding skin -0.18 1.16",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window surrounding 20 mm wall -0.18 1.16",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L window retained surrounding skin 0.18 1.16",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L window surrounding 20 mm wall 0.18 1.16",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-403-L tapered crown vertex -0.73 1.05",
+      true,
+      {
+        "measured": 5.135693370961981e-08,
+        "expected": 0,
+        "max_error_m": 5.135693370961981e-08
+      }
+    ],
+    [
+      "FA-403-L tapered crown vertex -0.6 1.5",
+      true,
+      {
+        "measured": 2.384185793236071e-08,
+        "expected": 0,
+        "max_error_m": 2.384185793236071e-08
+      }
+    ],
+    [
+      "FA-403-L tapered crown vertex -0.16 1.6",
+      true,
+      {
+        "measured": 2.4108586720096637e-08,
+        "expected": 0,
+        "max_error_m": 2.4108586720096637e-08
+      }
+    ],
+    [
+      "FA-403-L tapered crown vertex 0.16 1.6",
+      true,
+      {
+        "measured": 2.4108586720096637e-08,
+        "expected": 0,
+        "max_error_m": 2.4108586720096637e-08
+      }
+    ],
+    [
+      "FA-403-L tapered crown vertex 0.6 1.5",
+      true,
+      {
+        "measured": 2.384185793236071e-08,
+        "expected": 0,
+        "max_error_m": 2.384185793236071e-08
+      }
+    ],
+    [
+      "FA-403-L tapered crown vertex 0.85 1.09",
+      true,
+      {
+        "measured": 4.1019083290614875e-08,
+        "expected": 0,
+        "max_error_m": 4.1019083290614875e-08
+      }
+    ],
+    [
+      "FA-403-L flat crown length",
+      true,
+      {
+        "measured": 0.3199999928474426,
+        "expected": 0.32,
+        "max_error_m": 7.152557379708213e-09
+      }
+    ],
+    [
+      "FA-403-L crown outside clear -0.38 1.55",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L crown inside retained -0.38 1.55",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L crown outside clear 0.38 1.55",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L crown inside retained 0.38 1.55",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L crown outside clear -0.665 1.275",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L crown inside retained -0.665 1.275",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L crown outside clear 0.725 1.295",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L crown inside retained 0.725 1.295",
+      true,
+      {}
+    ],
+    [
       "FA-403-L pitch cap visible through installed assembly",
       true,
       {
@@ -18180,7 +18395,7 @@
       "FA-403-L window clears actual pitch cap extraction",
       true,
       {
-        "continuous_lower_bound_m": 0.03505460172891617,
+        "continuous_lower_bound_m": 0.030143779231730578,
         "required_m": 0.01,
         "translation_m": [
           0.3,
@@ -18190,7 +18405,7 @@
         "initial_solids_disjoint": true,
         "lower_facet_y_range_m": null,
         "moving_triangles": 688,
-        "narrow_triangle_pairs": 290,
+        "narrow_triangle_pairs": 1216,
         "unresolved_pairs": 0,
         "examples": []
       }
@@ -18231,9 +18446,59 @@
       true,
       {
         "hit": [
-          0.7213630676269531,
+          0.7193775773048401,
           -0.6000000238418579,
-          0.7649999856948853
+          0.7519999742507935
+        ]
+      }
+    ],
+    [
+      "FA-403-L small well slope -0.6 0.72 -0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L small well profile -0.6 0.72 -0.035",
+      true,
+      {
+        "measured": 0.7233609557151794,
+        "expected": 0.7233609958506224,
+        "max_error_m": 4.013544296910254e-08
+      }
+    ],
+    [
+      "FA-403-L small well slope -0.6 0.72 0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L small well profile -0.6 0.72 0.035",
+      true,
+      {
+        "measured": 0.723361074924469,
+        "expected": 0.7233609958506224,
+        "max_error_m": 7.907384658167871e-08
+      }
+    ],
+    [
+      "FA-403-L skin outside small well -0.6 0.72 -0.045",
+      true,
+      {
+        "hit": [
+          0.7295684814453125,
+          -0.6449999809265137,
+          0.7200000286102295
+        ]
+      }
+    ],
+    [
+      "FA-403-L skin outside small well -0.6 0.72 0.045",
+      true,
+      {
+        "hit": [
+          0.7300000190734863,
+          -0.5550000071525574,
+          0.7200000286102295
         ]
       }
     ],
@@ -18242,9 +18507,59 @@
       true,
       {
         "hit": [
-          0.7213630676269531,
+          0.7193775773048401,
           0.699999988079071,
-          0.7649999856948853
+          0.7519999742507935
+        ]
+      }
+    ],
+    [
+      "FA-403-L small well slope 0.7 0.72 -0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L small well profile 0.7 0.72 -0.035",
+      true,
+      {
+        "measured": 0.7233609557151794,
+        "expected": 0.7233609958506224,
+        "max_error_m": 4.013544296910254e-08
+      }
+    ],
+    [
+      "FA-403-L small well slope 0.7 0.72 0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L small well profile 0.7 0.72 0.035",
+      true,
+      {
+        "measured": 0.723361074924469,
+        "expected": 0.7233609958506224,
+        "max_error_m": 7.907384658167871e-08
+      }
+    ],
+    [
+      "FA-403-L skin outside small well 0.7 0.72 -0.045",
+      true,
+      {
+        "hit": [
+          0.7300000190734863,
+          0.6549999713897705,
+          0.7200000286102295
+        ]
+      }
+    ],
+    [
+      "FA-403-L skin outside small well 0.7 0.72 0.045",
+      true,
+      {
+        "hit": [
+          0.7300000190734863,
+          0.7450000047683716,
+          0.7200000286102295
         ]
       }
     ],
@@ -18253,9 +18568,59 @@
       true,
       {
         "hit": [
-          0.7213630080223083,
+          0.7193775773048401,
           -0.5,
-          1.4950000047683716
+          1.4819999933242798
+        ]
+      }
+    ],
+    [
+      "FA-403-L small well slope -0.5 1.45 -0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L small well profile -0.5 1.45 -0.035",
+      true,
+      {
+        "measured": 0.723361074924469,
+        "expected": 0.7233609958506224,
+        "max_error_m": 7.907384658167871e-08
+      }
+    ],
+    [
+      "FA-403-L small well slope -0.5 1.45 0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L small well profile -0.5 1.45 0.035",
+      true,
+      {
+        "measured": 0.7233610153198242,
+        "expected": 0.7233609958506224,
+        "max_error_m": 1.9469201806288083e-08
+      }
+    ],
+    [
+      "FA-403-L skin outside small well -0.5 1.45 -0.045",
+      true,
+      {
+        "hit": [
+          0.7285709381103516,
+          -0.5450000166893005,
+          1.4500000476837158
+        ]
+      }
+    ],
+    [
+      "FA-403-L skin outside small well -0.5 1.45 0.045",
+      true,
+      {
+        "hit": [
+          0.7300000190734863,
+          -0.45500001311302185,
+          1.4500000476837158
         ]
       }
     ],
@@ -18264,9 +18629,59 @@
       true,
       {
         "hit": [
-          0.7213630080223083,
+          0.7193775177001953,
           0.5,
-          1.4950000047683716
+          1.4819999933242798
+        ]
+      }
+    ],
+    [
+      "FA-403-L small well slope 0.5 1.45 -0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L small well profile 0.5 1.45 -0.035",
+      true,
+      {
+        "measured": 0.7233610153198242,
+        "expected": 0.7233609958506224,
+        "max_error_m": 1.9469201806288083e-08
+      }
+    ],
+    [
+      "FA-403-L small well slope 0.5 1.45 0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-403-L small well profile 0.5 1.45 0.035",
+      true,
+      {
+        "measured": 0.723361074924469,
+        "expected": 0.7233609958506224,
+        "max_error_m": 7.907384658167871e-08
+      }
+    ],
+    [
+      "FA-403-L skin outside small well 0.5 1.45 -0.045",
+      true,
+      {
+        "hit": [
+          0.7300000190734863,
+          0.45500001311302185,
+          1.4500000476837158
+        ]
+      }
+    ],
+    [
+      "FA-403-L skin outside small well 0.5 1.45 0.045",
+      true,
+      {
+        "hit": [
+          0.7285709381103516,
+          0.5450000166893005,
+          1.4500000476837158
         ]
       }
     ],
@@ -18281,7 +18696,7 @@
       "FA-404-L access window rim exists",
       true,
       {
-        "vertices": 17
+        "vertices": 16
       }
     ],
     [
@@ -18420,6 +18835,221 @@
       {}
     ],
     [
+      "FA-404-L window retained surrounding skin 0 0.808",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window surrounding 20 mm wall 0 0.808",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L window retained surrounding skin 0 1.192",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window surrounding 20 mm wall 0 1.192",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L window retained surrounding skin -0.212 1",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window surrounding 20 mm wall -0.212 1",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L window retained surrounding skin 0.212 1",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window surrounding 20 mm wall 0.212 1",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L window retained surrounding skin -0.18 0.84",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window surrounding 20 mm wall -0.18 0.84",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L window retained surrounding skin 0.18 0.84",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window surrounding 20 mm wall 0.18 0.84",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L window retained surrounding skin -0.18 1.16",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window surrounding 20 mm wall -0.18 1.16",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L window retained surrounding skin 0.18 1.16",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L window surrounding 20 mm wall 0.18 1.16",
+      true,
+      {
+        "measured": 0.020000040531158447,
+        "expected": 0.02,
+        "max_error_m": 4.053115844684929e-08
+      }
+    ],
+    [
+      "FA-404-L tapered crown vertex -0.73 1.05",
+      true,
+      {
+        "measured": 5.135693370961981e-08,
+        "expected": 0,
+        "max_error_m": 5.135693370961981e-08
+      }
+    ],
+    [
+      "FA-404-L tapered crown vertex -0.6 1.5",
+      true,
+      {
+        "measured": 2.384185793236071e-08,
+        "expected": 0,
+        "max_error_m": 2.384185793236071e-08
+      }
+    ],
+    [
+      "FA-404-L tapered crown vertex -0.16 1.6",
+      true,
+      {
+        "measured": 2.4108586720096637e-08,
+        "expected": 0,
+        "max_error_m": 2.4108586720096637e-08
+      }
+    ],
+    [
+      "FA-404-L tapered crown vertex 0.16 1.6",
+      true,
+      {
+        "measured": 2.4108586720096637e-08,
+        "expected": 0,
+        "max_error_m": 2.4108586720096637e-08
+      }
+    ],
+    [
+      "FA-404-L tapered crown vertex 0.6 1.5",
+      true,
+      {
+        "measured": 2.384185793236071e-08,
+        "expected": 0,
+        "max_error_m": 2.384185793236071e-08
+      }
+    ],
+    [
+      "FA-404-L tapered crown vertex 0.85 1.09",
+      true,
+      {
+        "measured": 4.1019083290614875e-08,
+        "expected": 0,
+        "max_error_m": 4.1019083290614875e-08
+      }
+    ],
+    [
+      "FA-404-L flat crown length",
+      true,
+      {
+        "measured": 0.3199999928474426,
+        "expected": 0.32,
+        "max_error_m": 7.152557379708213e-09
+      }
+    ],
+    [
+      "FA-404-L crown outside clear -0.38 1.55",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L crown inside retained -0.38 1.55",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L crown outside clear 0.38 1.55",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L crown inside retained 0.38 1.55",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L crown outside clear -0.665 1.275",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L crown inside retained -0.665 1.275",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L crown outside clear 0.725 1.295",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L crown inside retained 0.725 1.295",
+      true,
+      {}
+    ],
+    [
       "FA-404-L pitch cap visible through installed assembly",
       true,
       {
@@ -18431,7 +19061,7 @@
       "FA-404-L window clears actual pitch cap extraction",
       true,
       {
-        "continuous_lower_bound_m": 0.03505460172891617,
+        "continuous_lower_bound_m": 0.03073824942111969,
         "required_m": 0.01,
         "translation_m": [
           -0.3,
@@ -18441,7 +19071,7 @@
         "initial_solids_disjoint": true,
         "lower_facet_y_range_m": null,
         "moving_triangles": 688,
-        "narrow_triangle_pairs": 444,
+        "narrow_triangle_pairs": 608,
         "unresolved_pairs": 0,
         "examples": []
       }
@@ -18482,9 +19112,59 @@
       true,
       {
         "hit": [
-          -0.7213630676269531,
+          -0.7193775773048401,
           -0.6000000238418579,
-          0.7649999856948853
+          0.7519999742507935
+        ]
+      }
+    ],
+    [
+      "FA-404-L small well slope -0.6 0.72 -0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L small well profile -0.6 0.72 -0.035",
+      true,
+      {
+        "measured": 0.7233609557151794,
+        "expected": 0.7233609958506224,
+        "max_error_m": 4.013544296910254e-08
+      }
+    ],
+    [
+      "FA-404-L small well slope -0.6 0.72 0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L small well profile -0.6 0.72 0.035",
+      true,
+      {
+        "measured": 0.723361074924469,
+        "expected": 0.7233609958506224,
+        "max_error_m": 7.907384658167871e-08
+      }
+    ],
+    [
+      "FA-404-L skin outside small well -0.6 0.72 -0.045",
+      true,
+      {
+        "hit": [
+          -0.7295684814453125,
+          -0.6449999809265137,
+          0.7200000286102295
+        ]
+      }
+    ],
+    [
+      "FA-404-L skin outside small well -0.6 0.72 0.045",
+      true,
+      {
+        "hit": [
+          -0.7300000190734863,
+          -0.5550000071525574,
+          0.7200000286102295
         ]
       }
     ],
@@ -18493,9 +19173,59 @@
       true,
       {
         "hit": [
-          -0.7213630676269531,
+          -0.7193775773048401,
           0.699999988079071,
-          0.7649999856948853
+          0.7519999742507935
+        ]
+      }
+    ],
+    [
+      "FA-404-L small well slope 0.7 0.72 -0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L small well profile 0.7 0.72 -0.035",
+      true,
+      {
+        "measured": 0.7233609557151794,
+        "expected": 0.7233609958506224,
+        "max_error_m": 4.013544296910254e-08
+      }
+    ],
+    [
+      "FA-404-L small well slope 0.7 0.72 0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L small well profile 0.7 0.72 0.035",
+      true,
+      {
+        "measured": 0.723361074924469,
+        "expected": 0.7233609958506224,
+        "max_error_m": 7.907384658167871e-08
+      }
+    ],
+    [
+      "FA-404-L skin outside small well 0.7 0.72 -0.045",
+      true,
+      {
+        "hit": [
+          -0.7300000190734863,
+          0.6549999713897705,
+          0.7200000286102295
+        ]
+      }
+    ],
+    [
+      "FA-404-L skin outside small well 0.7 0.72 0.045",
+      true,
+      {
+        "hit": [
+          -0.7300000190734863,
+          0.7450000047683716,
+          0.7200000286102295
         ]
       }
     ],
@@ -18504,9 +19234,59 @@
       true,
       {
         "hit": [
-          -0.7213630080223083,
+          -0.7193775177001953,
           -0.5,
-          1.4950000047683716
+          1.4819999933242798
+        ]
+      }
+    ],
+    [
+      "FA-404-L small well slope -0.5 1.45 -0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L small well profile -0.5 1.45 -0.035",
+      true,
+      {
+        "measured": 0.723361074924469,
+        "expected": 0.7233609958506224,
+        "max_error_m": 7.907384658167871e-08
+      }
+    ],
+    [
+      "FA-404-L small well slope -0.5 1.45 0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L small well profile -0.5 1.45 0.035",
+      true,
+      {
+        "measured": 0.7233610153198242,
+        "expected": 0.7233609958506224,
+        "max_error_m": 1.9469201806288083e-08
+      }
+    ],
+    [
+      "FA-404-L skin outside small well -0.5 1.45 -0.045",
+      true,
+      {
+        "hit": [
+          -0.7285709381103516,
+          -0.5450000166893005,
+          1.4500000476837158
+        ]
+      }
+    ],
+    [
+      "FA-404-L skin outside small well -0.5 1.45 0.045",
+      true,
+      {
+        "hit": [
+          -0.7300000190734863,
+          -0.45500001311302185,
+          1.4500000476837158
         ]
       }
     ],
@@ -18515,9 +19295,59 @@
       true,
       {
         "hit": [
-          -0.7213630080223083,
+          -0.7193775177001953,
           0.5,
-          1.4950000047683716
+          1.4819999933242798
+        ]
+      }
+    ],
+    [
+      "FA-404-L small well slope 0.5 1.45 -0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L small well profile 0.5 1.45 -0.035",
+      true,
+      {
+        "measured": 0.7233610153198242,
+        "expected": 0.7233609958506224,
+        "max_error_m": 1.9469201806288083e-08
+      }
+    ],
+    [
+      "FA-404-L small well slope 0.5 1.45 0.035",
+      true,
+      {}
+    ],
+    [
+      "FA-404-L small well profile 0.5 1.45 0.035",
+      true,
+      {
+        "measured": 0.723361074924469,
+        "expected": 0.7233609958506224,
+        "max_error_m": 7.907384658167871e-08
+      }
+    ],
+    [
+      "FA-404-L skin outside small well 0.5 1.45 -0.045",
+      true,
+      {
+        "hit": [
+          -0.7300000190734863,
+          0.45500001311302185,
+          1.4500000476837158
+        ]
+      }
+    ],
+    [
+      "FA-404-L skin outside small well 0.5 1.45 0.045",
+      true,
+      {
+        "hit": [
+          -0.7285709381103516,
+          0.5450000166893005,
+          1.4500000476837158
         ]
       }
     ],
@@ -18548,7 +19378,7 @@
       true,
       {
         "hit": [
-          -0.6800000667572021,
+          -0.6800141930580139,
           1.1799999475479126,
           0.6299999952316284
         ]
@@ -18559,7 +19389,7 @@
       true,
       {
         "hit": [
-          0.6800000667572021,
+          0.6800141930580139,
           1.1799999475479126,
           0.6299999952316284
         ]
@@ -18588,6 +19418,539 @@
       }
     ],
     [
+      "FA-400 shoulder section exists -1 0",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder section -1 0",
+      true,
+      {
+        "measured": 0.5555555820465088,
+        "expected": 0.5555555555555556,
+        "max_error_m": 2.6490953208835322e-08
+      }
+    ],
+    [
+      "FA-400 shoulder section exists -1 0.6",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder section -1 0.6",
+      true,
+      {
+        "measured": 0.5555555820465088,
+        "expected": 0.5555555555555556,
+        "max_error_m": 2.6490953208835322e-08
+      }
+    ],
+    [
+      "FA-400 shoulder section exists -1 0.635",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder section -1 0.635",
+      true,
+      {
+        "measured": 0.5368055701255798,
+        "expected": 0.5368055555555555,
+        "max_error_m": 1.4570024298166118e-08
+      }
+    ],
+    [
+      "FA-400 shoulder section exists -1 0.725",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder section -1 0.725",
+      true,
+      {
+        "measured": 0.4693055748939514,
+        "expected": 0.4693055555555556,
+        "max_error_m": 1.933839582912711e-08
+      }
+    ],
+    [
+      "FA-400 shoulder has both skins -1",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder 20 mm skin -1",
+      true,
+      {
+        "measured": 0.019999928772449493,
+        "expected": 0.02,
+        "max_error_m": 7.122755050700813e-08
+      }
+    ],
+    [
+      "FA-400 shoulder section exists 1 0",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder section 1 0",
+      true,
+      {
+        "measured": 0.5555555820465088,
+        "expected": 0.5555555555555556,
+        "max_error_m": 2.6490953208835322e-08
+      }
+    ],
+    [
+      "FA-400 shoulder section exists 1 0.6",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder section 1 0.6",
+      true,
+      {
+        "measured": 0.5555555820465088,
+        "expected": 0.5555555555555556,
+        "max_error_m": 2.6490953208835322e-08
+      }
+    ],
+    [
+      "FA-400 shoulder section exists 1 0.635",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder section 1 0.635",
+      true,
+      {
+        "measured": 0.5368056297302246,
+        "expected": 0.5368055555555555,
+        "max_error_m": 7.417466907355674e-08
+      }
+    ],
+    [
+      "FA-400 shoulder section exists 1 0.725",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder section 1 0.725",
+      true,
+      {
+        "measured": 0.46930551528930664,
+        "expected": 0.4693055555555556,
+        "max_error_m": 4.0266248946263516e-08
+      }
+    ],
+    [
+      "FA-400 shoulder has both skins 1",
+      true,
+      {}
+    ],
+    [
+      "FA-400 shoulder 20 mm skin 1",
+      true,
+      {
+        "measured": 0.02000001259148121,
+        "expected": 0.02,
+        "max_error_m": 1.2591481208384936e-08
+      }
+    ],
+    [
+      "FA-401-L shoulder section exists -1 0",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder section -1 0",
+      true,
+      {
+        "measured": 0.7000100016593933,
+        "expected": 0.7,
+        "max_error_m": 1.0001659393354956e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder section exists -1 0.64",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder section -1 0.64",
+      true,
+      {
+        "measured": 0.7000100016593933,
+        "expected": 0.7,
+        "max_error_m": 1.0001659393354956e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder section exists -1 0.675",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder section -1 0.675",
+      true,
+      {
+        "measured": 0.6687660217285156,
+        "expected": 0.66875,
+        "max_error_m": 1.602172851566941e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder section exists -1 0.725",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder section -1 0.725",
+      true,
+      {
+        "measured": 0.6062660217285156,
+        "expected": 0.60625,
+        "max_error_m": 1.602172851566941e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder has both skins -1",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder 20 mm skin -1",
+      true,
+      {
+        "measured": 0.020010007545351982,
+        "expected": 0.02,
+        "max_error_m": 1.00075453519817e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder section exists 1 0",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder section 1 0",
+      true,
+      {
+        "measured": 0.7000100016593933,
+        "expected": 0.7,
+        "max_error_m": 1.0001659393354956e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder section exists 1 0.64",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder section 1 0.64",
+      true,
+      {
+        "measured": 0.7000100016593933,
+        "expected": 0.7,
+        "max_error_m": 1.0001659393354956e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder section exists 1 0.675",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder section 1 0.675",
+      true,
+      {
+        "measured": 0.6687660217285156,
+        "expected": 0.66875,
+        "max_error_m": 1.602172851566941e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder section exists 1 0.725",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder section 1 0.725",
+      true,
+      {
+        "measured": 0.6062660217285156,
+        "expected": 0.60625,
+        "max_error_m": 1.602172851566941e-05
+      }
+    ],
+    [
+      "FA-401-L shoulder has both skins 1",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L shoulder 20 mm skin 1",
+      true,
+      {
+        "measured": 0.020010007545351982,
+        "expected": 0.02,
+        "max_error_m": 1.00075453519817e-05
+      }
+    ],
+    [
+      "Upper flat central underside",
+      true,
+      {
+        "measured": 0.6800000071525574,
+        "expected": 0.68,
+        "max_error_m": 7.152557324197062e-09
+      }
+    ],
+    [
+      "Toe nose score floor and backing 0",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score depth 0",
+      true,
+      {
+        "measured": 0.003999948715706543,
+        "expected": 0.004,
+        "max_error_m": 5.128429345687552e-08
+      }
+    ],
+    [
+      "Toe nose score retained skin 0",
+      true,
+      {
+        "measured": 0.01600001255486474,
+        "expected": 0.016,
+        "max_error_m": 1.2554864738112403e-08
+      }
+    ],
+    [
+      "Toe nose score floor and backing -0.67",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score depth -0.67",
+      true,
+      {
+        "measured": 0.003999993884155907,
+        "expected": 0.004,
+        "max_error_m": 6.115844093310119e-09
+      }
+    ],
+    [
+      "Toe nose score retained skin -0.67",
+      true,
+      {
+        "measured": 0.01599995508427243,
+        "expected": 0.016,
+        "max_error_m": 4.491572757128748e-08
+      }
+    ],
+    [
+      "Toe nose score floor and backing 0.67",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score depth 0.67",
+      true,
+      {
+        "measured": 0.003999993884155907,
+        "expected": 0.004,
+        "max_error_m": 6.115844093310119e-09
+      }
+    ],
+    [
+      "Toe nose score retained skin 0.67",
+      true,
+      {
+        "measured": 0.01599999075697834,
+        "expected": 0.016,
+        "max_error_m": 9.243021660554351e-09
+      }
+    ],
+    [
+      "Toe nose score side floor -1 0.299",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score side depth/end -1 0.299",
+      true,
+      {
+        "measured": 0.7297000288963318,
+        "expected": 0.73,
+        "max_error_m": 0.0002999711036681951
+      }
+    ],
+    [
+      "Toe nose score side floor -1 0.301",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score side depth/end -1 0.301",
+      true,
+      {
+        "measured": 0.7260000109672546,
+        "expected": 0.726,
+        "max_error_m": 1.0967254659988157e-08
+      }
+    ],
+    [
+      "Toe nose score side floor -1 0.35",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score side depth/end -1 0.35",
+      true,
+      {
+        "measured": 0.7260000109672546,
+        "expected": 0.726,
+        "max_error_m": 1.0967254659988157e-08
+      }
+    ],
+    [
+      "Toe nose score side floor -1 0.42",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score side depth/end -1 0.42",
+      true,
+      {
+        "measured": 0.7260000109672546,
+        "expected": 0.726,
+        "max_error_m": 1.0967254659988157e-08
+      }
+    ],
+    [
+      "Toe nose score side floor 1 0.299",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score side depth/end 1 0.299",
+      true,
+      {
+        "measured": 0.7297000288963318,
+        "expected": 0.73,
+        "max_error_m": 0.0002999711036681951
+      }
+    ],
+    [
+      "Toe nose score side floor 1 0.301",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score side depth/end 1 0.301",
+      true,
+      {
+        "measured": 0.7260000109672546,
+        "expected": 0.726,
+        "max_error_m": 1.0967254659988157e-08
+      }
+    ],
+    [
+      "Toe nose score side floor 1 0.35",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score side depth/end 1 0.35",
+      true,
+      {
+        "measured": 0.7260000109672546,
+        "expected": 0.726,
+        "max_error_m": 1.0967254659988157e-08
+      }
+    ],
+    [
+      "Toe nose score side floor 1 0.42",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score side depth/end 1 0.42",
+      true,
+      {
+        "measured": 0.7260000109672546,
+        "expected": 0.726,
+        "max_error_m": 1.0967254659988157e-08
+      }
+    ],
+    [
+      "Toe nose score width sample 2.2265",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score width/depth 2.2265",
+      true,
+      {
+        "measured": 0.5354222059249878,
+        "expected": 0.5354222222222222,
+        "max_error_m": 1.6297234450846076e-08
+      }
+    ],
+    [
+      "Toe nose score width sample 2.2285",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score width/depth 2.2285",
+      true,
+      {
+        "measured": 0.5312287211418152,
+        "expected": 0.5312286730673506,
+        "max_error_m": 4.807446463139797e-08
+      }
+    ],
+    [
+      "Toe nose score width sample 2.2515",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score width/depth 2.2515",
+      true,
+      {
+        "measured": 0.5291842222213745,
+        "expected": 0.5291842286229061,
+        "max_error_m": 6.401531638111635e-09
+      }
+    ],
+    [
+      "Toe nose score width sample 2.2535",
+      true,
+      {}
+    ],
+    [
+      "Toe nose score width/depth 2.2535",
+      true,
+      {
+        "measured": 0.5330222845077515,
+        "expected": 0.5330222222222222,
+        "max_error_m": 6.228552928977393e-08
+      }
+    ],
+    [
+      "Toe nose score dark floor",
+      true,
+      {
+        "material": "LG01 Gunmetal"
+      }
+    ],
+    [
       "Upper plate clears cradle throughout full +Z descent",
       true,
       {
@@ -18600,10 +19963,200 @@
         ],
         "initial_solids_disjoint": true,
         "lower_facet_y_range_m": null,
-        "moving_triangles": 4082,
-        "narrow_triangle_pairs": 34912,
+        "moving_triangles": 4260,
+        "narrow_triangle_pairs": 47584,
         "unresolved_pairs": 0,
         "examples": []
+      }
+    ],
+    [
+      "Toe locator -1 actual bounds",
+      true,
+      {
+        "measured": [
+          [
+            -0.6959999799728394,
+            1.8420000076293945,
+            0.4528888761997223
+          ],
+          [
+            -0.6640000343322754,
+            1.8580000400543213,
+            0.4928888976573944
+          ]
+        ],
+        "expected": [
+          [
+            -0.6960000000000001,
+            1.842,
+            0.4528888889
+          ],
+          [
+            -0.664,
+            1.858,
+            0.49288888890000004
+          ]
+        ],
+        "max_error_m": 4.005432119313923e-08
+      }
+    ],
+    [
+      "Toe locator -1 socket bounds",
+      true,
+      {
+        "measured": [
+          [
+            -0.7049999833106995,
+            1.8330000638961792,
+            0.4528889060020447
+          ],
+          [
+            -0.6550000309944153,
+            1.8669999837875366,
+            0.4628888964653015
+          ]
+        ],
+        "expected": [
+          [
+            -0.7050000000000001,
+            1.8330000000000002,
+            0.4528888889
+          ],
+          [
+            -0.655,
+            1.867,
+            0.4628888889
+          ]
+        ],
+        "max_error_m": 6.389617901447764e-08
+      }
+    ],
+    [
+      "Toe locator -1 engagement",
+      true,
+      {
+        "measured": 0.009999990463256836,
+        "expected": 0.01,
+        "max_error_m": 9.536743164270667e-09
+      }
+    ],
+    [
+      "Toe skin clears locator socket -1",
+      true,
+      {
+        "triangle_contacts": 0,
+        "containment": false
+      }
+    ],
+    [
+      "Toe locator socket -1 side clearance",
+      true,
+      {
+        "distance_m": 0.0050014047883450985,
+        "minimum_m": 0.0049
+      }
+    ],
+    [
+      "Toe locator socket -1 roof clearance",
+      true,
+      {
+        "distance_m": 0.009686899371445179,
+        "minimum_m": 0.009
+      }
+    ],
+    [
+      "Toe locator 1 actual bounds",
+      true,
+      {
+        "measured": [
+          [
+            0.6640000343322754,
+            1.8420000076293945,
+            0.4528888761997223
+          ],
+          [
+            0.6959999799728394,
+            1.8580000400543213,
+            0.4928888976573944
+          ]
+        ],
+        "expected": [
+          [
+            0.664,
+            1.842,
+            0.4528888889
+          ],
+          [
+            0.6960000000000001,
+            1.858,
+            0.49288888890000004
+          ]
+        ],
+        "max_error_m": 4.005432119313923e-08
+      }
+    ],
+    [
+      "Toe locator 1 socket bounds",
+      true,
+      {
+        "measured": [
+          [
+            0.6550000309944153,
+            1.8330000638961792,
+            0.4528889060020447
+          ],
+          [
+            0.7049999833106995,
+            1.8669999837875366,
+            0.4628888964653015
+          ]
+        ],
+        "expected": [
+          [
+            0.655,
+            1.8330000000000002,
+            0.4528888889
+          ],
+          [
+            0.7050000000000001,
+            1.867,
+            0.4628888889
+          ]
+        ],
+        "max_error_m": 6.389617901447764e-08
+      }
+    ],
+    [
+      "Toe locator 1 engagement",
+      true,
+      {
+        "measured": 0.009999990463256836,
+        "expected": 0.01,
+        "max_error_m": 9.536743164270667e-09
+      }
+    ],
+    [
+      "Toe skin clears locator socket 1",
+      true,
+      {
+        "triangle_contacts": 0,
+        "containment": false
+      }
+    ],
+    [
+      "Toe locator socket 1 side clearance",
+      true,
+      {
+        "distance_m": 0.005000094883143902,
+        "minimum_m": 0.0049
+      }
+    ],
+    [
+      "Toe locator socket 1 roof clearance",
+      true,
+      {
+        "distance_m": 0.01046452485024929,
+        "minimum_m": 0.009
       }
     ],
     [
@@ -18771,9 +20324,9 @@
       "FA-400 lower facet profile -1 0.25",
       true,
       {
-        "measured": 0.7149999737739563,
+        "measured": 0.7150000333786011,
         "expected": 0.715,
-        "max_error_m": 2.622604367008563e-08
+        "max_error_m": 3.3378601105304995e-08
       }
     ],
     [
@@ -18834,7 +20387,7 @@
           1.6,
           2.36
         ],
-        "moving_triangles": 48,
+        "moving_triangles": 58,
         "narrow_triangle_pairs": 0,
         "unresolved_pairs": 0,
         "examples": []
@@ -18863,9 +20416,9 @@
       "FA-400 lower facet profile 1 0.25",
       true,
       {
-        "measured": 0.7150000333786011,
+        "measured": 0.7149999737739563,
         "expected": 0.715,
-        "max_error_m": 3.3378601105304995e-08
+        "max_error_m": 2.622604367008563e-08
       }
     ],
     [
@@ -18926,7 +20479,7 @@
           1.6,
           2.36
         ],
-        "moving_triangles": 48,
+        "moving_triangles": 58,
         "narrow_triangle_pairs": 0,
         "unresolved_pairs": 0,
         "examples": []
@@ -18941,9 +20494,9 @@
       "FA-401-L lower facet profile -1 0.21",
       true,
       {
-        "measured": 0.703000009059906,
+        "measured": 0.7030104398727417,
         "expected": 0.703,
-        "max_error_m": 9.05990604760376e-09
+        "max_error_m": 1.0439872741740963e-05
       }
     ],
     [
@@ -18955,9 +20508,9 @@
       "FA-401-L lower facet profile -1 0.25",
       true,
       {
-        "measured": 0.7150000333786011,
+        "measured": 0.7150104641914368,
         "expected": 0.715,
-        "max_error_m": 3.3378601105304995e-08
+        "max_error_m": 1.0464191436798664e-05
       }
     ],
     [
@@ -18969,9 +20522,9 @@
       "FA-401-L lower facet profile -1 0.3",
       true,
       {
-        "measured": 0.7300000190734863,
+        "measured": 0.7300100326538086,
         "expected": 0.73,
-        "max_error_m": 1.907348634588857e-08
+        "max_error_m": 1.0032653808611514e-05
       }
     ],
     [
@@ -18983,9 +20536,9 @@
       "FA-401-L lower facet profile -1 0.35",
       true,
       {
-        "measured": 0.7300000190734863,
+        "measured": 0.7300100326538086,
         "expected": 0.73,
-        "max_error_m": 1.907348634588857e-08
+        "max_error_m": 1.0032653808611514e-05
       }
     ],
     [
@@ -18997,9 +20550,9 @@
       "FA-401-L lower facet 20 mm skin -1",
       true,
       {
-        "measured": 0.0199901033192873,
+        "measured": 0.020009957253932953,
         "expected": 0.02,
-        "max_error_m": 9.896680712700306e-06
+        "max_error_m": 9.957253932952465e-06
       }
     ],
     [
@@ -19018,7 +20571,7 @@
           -0.42,
           1.13
         ],
-        "moving_triangles": 76,
+        "moving_triangles": 111,
         "narrow_triangle_pairs": 0,
         "unresolved_pairs": 0,
         "examples": []
@@ -19033,9 +20586,9 @@
       "FA-401-L lower facet profile 1 0.21",
       true,
       {
-        "measured": 0.703000009059906,
+        "measured": 0.7030104398727417,
         "expected": 0.703,
-        "max_error_m": 9.05990604760376e-09
+        "max_error_m": 1.0439872741740963e-05
       }
     ],
     [
@@ -19047,9 +20600,9 @@
       "FA-401-L lower facet profile 1 0.25",
       true,
       {
-        "measured": 0.7150000333786011,
+        "measured": 0.7150104641914368,
         "expected": 0.715,
-        "max_error_m": 3.3378601105304995e-08
+        "max_error_m": 1.0464191436798664e-05
       }
     ],
     [
@@ -19061,9 +20614,9 @@
       "FA-401-L lower facet profile 1 0.3",
       true,
       {
-        "measured": 0.7300000190734863,
+        "measured": 0.7300100326538086,
         "expected": 0.73,
-        "max_error_m": 1.907348634588857e-08
+        "max_error_m": 1.0032653808611514e-05
       }
     ],
     [
@@ -19075,9 +20628,9 @@
       "FA-401-L lower facet profile 1 0.35",
       true,
       {
-        "measured": 0.7300000190734863,
+        "measured": 0.7300100326538086,
         "expected": 0.73,
-        "max_error_m": 1.907348634588857e-08
+        "max_error_m": 1.0032653808611514e-05
       }
     ],
     [
@@ -19089,9 +20642,9 @@
       "FA-401-L lower facet 20 mm skin 1",
       true,
       {
-        "measured": 0.0199901033192873,
+        "measured": 0.020009957253932953,
         "expected": 0.02,
-        "max_error_m": 9.896680712700306e-06
+        "max_error_m": 9.957253932952465e-06
       }
     ],
     [
@@ -19110,7 +20663,7 @@
           -0.42,
           1.13
         ],
-        "moving_triangles": 76,
+        "moving_triangles": 111,
         "narrow_triangle_pairs": 0,
         "unresolved_pairs": 0,
         "examples": []
@@ -19178,12 +20731,12 @@
       true,
       {
         "min": [
-          -0.7300000190734863,
+          -0.7300108075141907,
           -0.9003000259399414,
           0.0
         ],
         "max": [
-          0.7300000190734863,
+          0.7300108075141907,
           2.4600000381469727,
           1.600000023841858
         ]
@@ -19193,10 +20746,10 @@
       "Foot triangle budget",
       true,
       {
-        "triangles": 435646,
+        "triangles": 435868,
         "limit": 800000
       }
     ]
   ],
-  "blend_sha256": "f60bc18feb862a8ffba4185b7c7ad31ce3536679bae38429723f2ed20733d994"
+  "blend_sha256": "f45531bd2e6e738aa54363204ebca64c6f42c9b43b2a256ffc14a5dabb2b6fbc"
 }

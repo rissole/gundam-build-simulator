@@ -287,6 +287,28 @@ def checks():
         for y,z in [(-.190,.830),(.190,.830),(-.190,1.170),(.190,1.170)]:
             record(pid+f' window chamfer retains corner {y} {z}',
                    first_hit(guard,(s*.800,y,z),(-s,0,0),.115) is not None,{})
+        # F7: the new crown must retain the complete window return, not just
+        # its open centre. Probe the surrounding skin from both sides.
+        for y,z in ((0,.808),(0,1.192),(-.212,1),(.212,1),
+                    (-.180,.840),(.180,.840),(-.180,1.160),(.180,1.160)):
+            front=first_hit(guard,(s*.800,y,z),(-s,0,0),.115)
+            back=first_hit(guard,(s*.680,y,z),(s,0,0),.115)
+            record(pid+f' window retained surrounding skin {y} {z}',
+                   front is not None and back is not None,{})
+            if front is not None and back is not None:
+                near(pid+f' window surrounding 20 mm wall {y} {z}',
+                     abs(front[0]-back[0]),.020,.0002)
+        for y,z in ((-.730,1.050),(-.600,1.500),(-.160,1.600),
+                    (.160,1.600),(.600,1.500),(.850,1.090)):
+            near(pid+f' tapered crown vertex {y} {z}',
+                 np.linalg.norm(v[:,1:]-[y,z],axis=1).min(),0,.0002)
+        crown=v[v[:,2]>1.5999]
+        near(pid+' flat crown length',np.ptp(crown[:,1]),.320,.0002)
+        for y,z in ((-.380,1.550),(.380,1.550),(-.665,1.275),(.725,1.295)):
+            record(pid+f' crown outside clear {y} {z}',
+                   first_hit(guard,(s*.800,y,z+.010),(-s,0,0),.115) is None,{})
+            record(pid+f' crown inside retained {y} {z}',
+                   first_hit(guard,(s*.800,y,z-.010),(-s,0,0),.115) is not None,{})
         cap=min(get('FA-208'),key=lambda o:abs(sum(bounds(o))[0]/2-s*.585))
         visible=[];obstructed=[]
         samples=[(0,1)]+[(.060*math.cos(t),1+.060*math.sin(t))
@@ -313,9 +335,21 @@ def checks():
         record(pid+' broad perimeter facet exists',q is not None,{})
         if q is not None:near(pid+' crown facet relief',abs(q[0]),.72625,.0003)
         for y,z in ((-.600,.720),(.700,.720),(-.500,1.450),(.500,1.450)):
-            q=first_hit(guard,(s*.800,y,z+.045),(-s,0,0),.120)
+            q=first_hit(guard,(s*.800,y,z+.032),(-s,0,0),.120)
             record(pid+f' octagonal recessed land {y} {z}',q is not None and .714<abs(q[0])<.728,
                    {'hit':q.tolist() if q is not None else None})
+            # F8: measure the sloped depression beside the bore and skin just
+            # outside its new 80 mm mouth. Upper wells can meet a crown facet.
+            for dy in (-.035,.035):
+                q=first_hit(guard,(s*.800,y+dy,z),(-s,0,0),.120)
+                record(pid+f' small well slope {y} {z} {dy}',q is not None,{})
+                if q is not None:
+                    near(pid+f' small well profile {y} {z} {dy}',abs(q[0]),
+                         .714+.016*(.035-.02795)/(.040-.02795),.0003)
+            for dy in (-.045,.045):
+                q=first_hit(guard,(s*.800,y+dy,z),(-s,0,0),.120)
+                record(pid+f' skin outside small well {y} {z} {dy}',
+                       q is not None and abs(q[0])>.727,{'hit':q.tolist() if q is not None else None})
     # Rays cross the former triangular daylight at roof/side junctions. These
     # are within each shell and deliberately outside the open hinge channel.
     for pid,y,z in [('FA-400',2.390,.452),('FA-401-L',1.180,.630),('FA-402',-.850,.515)]:
@@ -324,6 +358,52 @@ def checks():
             record(pid+f' continuous folded corner {s}',q is not None,
                    {'hit':q.tolist() if q is not None else None})
     upper=get('FA-401-L')[0]
+    # F6: independent section rays verify both shoulder folds, retained flat
+    # roof and actual 20 mm skin away from lands, grooves and receiver slots.
+    toe=get('FA-400')[0]
+    for pid,y,crease,drop,zroof in (('FA-400',2.000,.610,.090,ztoe(2.000)),
+                                  ('FA-401-L',.950,.650,.100,.700)):
+        shell=get(pid)[0];slope=drop/(.730-crease)
+        for s in (-1,1):
+            for x in (0,crease-.010,crease+.025,.725):
+                expected=zroof-max(0,x-crease)*slope
+                q=first_hit(shell,(s*x,y,.800),(0,0,-1),.500)
+                record(pid+f' shoulder section exists {s} {x}',q is not None,{})
+                if q is not None:near(pid+f' shoulder section {s} {x}',q[2],expected,.0002)
+            x=crease+.035
+            centre=np.array([s*x,y,zroof-(x-crease)*slope])
+            normal=np.array([s*slope,.080/.900 if pid=='FA-400' else 0,1])
+            normal/=np.linalg.norm(normal)
+            outer=first_hit(shell,centre+normal*.050,-normal,.100)
+            inner=first_hit(shell,centre-normal*.050,normal,.100)
+            record(pid+f' shoulder has both skins {s}',outer is not None and inner is not None,{})
+            if outer is not None and inner is not None:
+                near(pid+f' shoulder 20 mm skin {s}',np.linalg.norm(outer-inner),.020,.0003)
+    near('Upper flat central underside',first_hit(upper,(0,.950,.600),(0,0,1),.150)[2],.680,.0002)
+    for x in (0,-.670,.670):
+        normal=np.array([0 if x==0 else math.copysign(.75,x),.080/.900,1])
+        normal/=np.linalg.norm(normal)
+        centre=np.array([x,2.240,ztoe(2.240)-max(0,abs(x)-.610)*.75])
+        floor=first_hit(toe,centre+normal*.030,-normal,.100)
+        back=first_hit(toe,centre-normal*.040,normal,.080)
+        record(f'Toe nose score floor and backing {x}',floor is not None and back is not None,{})
+        if floor is not None and back is not None:
+            near(f'Toe nose score depth {x}',np.dot(centre-floor,normal),.004,.0002)
+            near(f'Toe nose score retained skin {x}',np.dot(floor-back,normal),.016,.0003)
+    for s in (-1,1):
+        for z,expected in ((.299,.730),(.301,.726),(.350,.726),(.420,.726)):
+            q=first_hit(toe,(s*.800,2.240,z),(-s,0,0),.120)
+            record(f'Toe nose score side floor {s} {z}',q is not None,{})
+            if q is not None:near(f'Toe nose score side depth/end {s} {z}',abs(q[0]),expected,.0004)
+    for y,recess in ((2.2265,False),(2.2285,True),(2.2515,True),(2.2535,False)):
+        q=first_hit(toe,(0,y,.700),(0,0,-1),.250)
+        record(f'Toe nose score width sample {y}',q is not None,{})
+        if q is not None:near(f'Toe nose score width/depth {y}',q[2],
+                             ztoe(y)-(.004*math.sqrt(1+(.080/.900)**2) if recess else 0),.0002)
+    inv=toe.matrix_world.inverted()
+    hit,point,normal,index=toe.ray_cast(inv@Vector((0,2.240,.700)),Vector((0,0,-1)),distance=.250)
+    record('Toe nose score dark floor',hit and toe.data.materials[toe.data.polygons[index].material_index].name=='LG01 Gunmetal',
+           {'material':toe.data.materials[toe.data.polygons[index].material_index].name if hit else None})
     clear,detail=translation_clearance(upper,get('FA-103-L')[0])
     record('Upper plate clears cradle throughout full +Z descent',clear,detail)
     # Independently measure the two preserved upper locators and their sockets.
@@ -331,6 +411,33 @@ def checks():
     # it is a mating feature, not part of the unrelated cradle-clearance check.
     from verify_sequence import MeshClearance
     features=MeshClearance()
+    # F6: the two toe locators follow the lowered shoulder, with intact socket
+    # walls moved inboard of the side skin. Test the actual receiving solids,
+    # excluding the tab's intentional engagement with its own socket.
+    toe_body=max(features.geometry(toe['instance_id'])[3],
+                 key=lambda f:np.prod(np.array(f[1])-f[0]))
+    for s in (-1,1):
+        x=s*.680;y=1.850;z=.4728888889
+        tab=min(features.geometry(toe['instance_id'])[3],
+                key=lambda f:np.linalg.norm((np.array(f[0])+f[1])/2-[x,y,z]))
+        near(f'Toe locator {s} actual bounds',[tab[0],tab[1]],
+             [[x-.016,y-.008,z-.020],[x+.016,y+.008,z+.020]],.0001)
+        rail=get('FA-104-'+('A' if s<0 else 'B'))[0]
+        socket=min(features.geometry(rail['instance_id'])[3],
+                   key=lambda f:np.linalg.norm((np.array(f[0])+f[1])/2-[x,y,z-.015]))
+        near(f'Toe locator {s} socket bounds',[socket[0],socket[1]],
+             [[x-.025,y-.017,z-.020],[x+.025,y+.017,z-.010]],.0001)
+        near(f'Toe locator {s} engagement',min(tab[1][2],socket[1][2])-max(tab[0][2],socket[0][2]),.010,.0001)
+        overlaps=toe_body[3].overlap(socket[3])
+        contained=features.inside(socket[2],[toe_body]) or features.inside(toe_body[2],[socket])
+        record(f'Toe skin clears locator socket {s}',not overlaps and not contained,
+               {'triangle_contacts':len(overlaps),'containment':contained})
+        for label,start,direction,minimum in (
+                ('side',(s*.705,y,z-.015),(s,0,0),.0049),
+                ('roof',(s*.705,y,z-.010),(0,0,1),.009)):
+            point,normal,index,distance=toe_body[3].ray_cast(Vector(start),Vector(direction),.100)
+            record(f'Toe locator socket {s} {label} clearance',point is not None and distance>=minimum,
+                   {'distance_m':distance,'minimum_m':minimum})
     for s in (-1,1):
         x=s*.690;y=1.100
         tab=min(features.geometry(upper['instance_id'])[3],

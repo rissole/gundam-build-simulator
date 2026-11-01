@@ -135,9 +135,10 @@ def setup_studio(scene, args):
     for name, delta, energy, size in (
             ('Key / upper left', (.64086, .64086, .42262), args.key_energy, .50),
             ('Fill', (-.68301, .68301, .25882), args.key_energy * args.fill_ratio, .60),
-            ('Rim / back', (-.6064, -.7762, .17365), args.rim_energy, .40)):
+            ('Rim / back', (-.6064, -.7762, .17365), args.rim_energy, .40),
+            ('Structure reflection strip', (.15, .965, .216), 1000, .15)):
         light_data = bpy.data.lights.new(name, 'AREA')
-        light_data.shape = 'DISK'
+        light_data.shape = 'RECTANGLE' if name.startswith('Structure') else 'DISK'
         light_data.use_shadow = True
         light = bpy.data.objects.new(name, light_data)
         collection.objects.link(light)
@@ -172,12 +173,16 @@ def prepare_facets(parts):
             continue
         painted = {i for i, m in enumerate(obj.data.materials) if m and
                    m.get('palette_srgb') in {'#D2C8BC', '#D4861D'}}
-        count = sum(p.use_smooth and p.material_index in painted for p in obj.data.polygons)
+        count = sum(p.material_index in painted for p in obj.data.polygons)
         if count:
             obj.data = obj.data.copy()
+            normals = [tuple(n.vector) for n in obj.data.corner_normals]
             for polygon in obj.data.polygons:
                 if polygon.material_index in painted:
                     polygon.use_smooth = False
+                    for loop in polygon.loop_indices:
+                        normals[loop] = tuple(polygon.normal)
+            obj.data.normals_split_custom_set(normals)
             obj.data.update()
             audit['flat_shaded_copies'][obj['instance_id']] = count
         for material in obj.data.materials:
@@ -203,7 +208,7 @@ def tone_points(scene, camera, parts, resolution, oblique=False):
     from bpy_extras.object_utils import world_to_camera_view
     specs = {
         'lit_thigh': ('LG-200', (0, 3, 7), (0, -1, 0), '#D2C8BC'),
-        'shaded_thigh': ('LG-200', (-.82, 3, 7), (0, -1, 0), '#D2C8BC'),
+        'shaded_thigh': ('LG-200', (-.82, 3, 7.6), (0, -1, 0), '#D2C8BC'),
         'ochre_kneecap': ('LG-300', (0, 3, 5.10), (0, -1, 0), '#D4861D'),
         'calf_front': ('LG-400', (0, 3, 3.30), (0, -1, 0), '#D2C8BC'),
         'dark_knee': ('LG-110', (-.43, 3, 5.10), (0, -1, 0), '#4C4C4B'),
@@ -255,17 +260,196 @@ def tone_points(scene, camera, parts, resolution, oblique=False):
     return result
 
 
-def prepare_finish(parts):
-    """Unsaved material/attribute overrides; no vertex or fastener changes.
+def shader_math(nodes, links, operation, *values):
+    node = nodes.new('ShaderNodeMath')
+    node.operation = operation
+    for socket, value in zip(node.inputs, values):
+        if isinstance(value, (float, int)):
+            socket.default_value = value
+        else:
+            links.new(value, socket)
+    return node.outputs[0]
 
-    The source material factors stay glTF compatible. Cavity AO is a studio
-    shader only, applied to bronze; dark foot well floors reuse Dark recess.
+
+def paint_history(material):
+    """Sparse dirt in actual creases; leave unoccluded broad fields clean."""
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    bsdf = next(n for n in nodes if n.type == 'BSDF_PRINCIPLED')
+    ao = nodes.new('ShaderNodeAmbientOcclusion')
+    ao.inputs['Distance'].default_value = .055
+    ao.only_local = False  # adjacent shells, bolt collars and seam walls count
+    noise = nodes.new('ShaderNodeTexNoise')
+    noise.inputs['Scale'].default_value = 48
+    noise.inputs['Detail'].default_value = 2
+    coords = nodes.new('ShaderNodeTexCoord')
+    links.new(coords.outputs['Object'], noise.inputs['Vector'])
+    sparse = nodes.new('ShaderNodeMapRange')
+    sparse.clamp = True
+    sparse.inputs['From Min'].default_value = .54
+    sparse.inputs['From Max'].default_value = .72
+    links.new(noise.outputs['Fac'], sparse.inputs['Value'])
+    crevice = shader_math(nodes, links, 'SUBTRACT', 1, ao.outputs['AO'])
+    wear = nodes.new('ShaderNodeVertexColor'); wear.layer_name = 'Wear'
+    edge = shader_math(nodes, links, 'MINIMUM', 1,
+                       shader_math(nodes, links, 'MULTIPLY', 18,
+                                   shader_math(nodes, links, 'SUBTRACT', 1, wear.outputs['Color'])))
+    local = shader_math(nodes, links, 'MAXIMUM', edge, crevice)
+    mask = shader_math(nodes, links, 'MULTIPLY', local, sparse.outputs['Result'])
+    factor = shader_math(nodes, links, 'SUBTRACT', 1,
+                         shader_math(nodes, links, 'MULTIPLY', mask, .32))
+    color = nodes.new('ShaderNodeMixRGB'); color.blend_type = 'MULTIPLY'
+    color.inputs[0].default_value = 1
+    base = bsdf.inputs['Base Color']
+    # Wear now supplies a location mask, not an unbroken dark strip.
+    color.inputs[1].default_value = base.default_value
+    links.new(factor, color.inputs[2])
+    links.new(color.outputs[0], base)
+    rough = shader_math(nodes, links, 'ADD', bsdf.inputs['Roughness'].default_value,
+                        shader_math(nodes, links, 'MULTIPLY', mask, .17))
+    links.new(rough, bsdf.inputs['Roughness'])
+
+
+def nozzle_cavities(parts):
+    """Measure the open mouths from the loaded meshes, without source imports."""
+    from mathutils import Vector
+    axis = Vector((0, -math.cos(math.radians(12)), -math.sin(math.radians(12))))
+    cavities = []
+    for obj in parts:
+        if obj.get('part_id') != 'LG-450': continue
+        mesh = obj.data
+        vertices = {v for f in mesh.polygons
+                    if mesh.materials[f.material_index].get('palette_srgb') == '#A77738'
+                    for v in f.vertices}
+        points = [obj.matrix_world @ mesh.vertices[v].co for v in vertices]
+        low, high = min(p.dot(axis) for p in points), max(p.dot(axis) for p in points)
+        lip = [p for p in points if abs(p.dot(axis)-high) < .0001]
+        mouth = sum(lip, Vector()) / len(lip)
+        cavities.append({'instance_id': obj['instance_id'], 'mouth': list(mouth),
+                         'axis': list(axis), 'length': high-low,
+                         'radius': max((p-mouth).length for p in lip)})
+    return cavities
+
+
+def cavity_material(material, obj, cavities):
+    """Aperture visibility attenuates the complete BSDF, including metal fill.
+
+    This is a studio occlusion approximation on existing bore/receiver surfaces,
+    not a new surface, cap, palette color or image-space patch. Object-space
+    coordinates keep the engine treatment attached during display explosions.
     """
+    from mathutils import Vector
+    mat = material.copy(); mat.name = 'Comparison cavity / '+obj.name+' / '+material.name
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    coords = nodes.new('ShaderNodeTexCoord')
+    visibility = None
+    bronze = mat.get('palette_srgb') == '#A77738'
+    for cavity in cavities:
+        if obj.get('part_id') == 'LG-450' and cavity['instance_id'] != obj['instance_id']:
+            continue
+        inv = obj.matrix_world.inverted()
+        mouth = inv @ Vector(cavity['mouth'])
+        axis = (inv.to_3x3() @ Vector(cavity['axis'])).normalized()
+        delta = nodes.new('ShaderNodeVectorMath'); delta.operation = 'SUBTRACT'
+        links.new(coords.outputs['Object'], delta.inputs[0]); delta.inputs[1].default_value = mouth
+        depth = nodes.new('ShaderNodeVectorMath'); depth.operation = 'DOT_PRODUCT'
+        links.new(delta.outputs['Vector'], depth.inputs[0]); depth.inputs[1].default_value = -axis
+        d = shader_math(nodes, links, 'MAXIMUM', depth.outputs['Value'], 0)
+        # The throat sees a small aperture solid angle. Preserve the restrained
+        # bronze lip, then rapidly suppress fill deeper than its first 0.10 m.
+        ramp = nodes.new('ShaderNodeMapRange'); ramp.clamp = True
+        ramp.inputs['From Min'].default_value = .025
+        ramp.inputs['From Max'].default_value = cavity['length']
+        ramp.inputs['To Min'].default_value = 1
+        ramp.inputs['To Max'].default_value = 0
+        links.new(d, ramp.inputs['Value'])
+        axial = shader_math(nodes, links, 'ADD', .012,
+                            shader_math(nodes, links, 'MULTIPLY', .988,
+                                        shader_math(nodes, links, 'POWER', ramp.outputs['Result'], 3)))
+        if not bronze:
+            # Only surfaces inside the bore and its receiving shadow volume.
+            # The soft boundary includes the rear camera's off-axis beam hits;
+            # the beam's front face and the engine exterior remain unchanged.
+            projected = nodes.new('ShaderNodeVectorMath'); projected.operation = 'SCALE'
+            projected.inputs[0].default_value = axis
+            links.new(d, projected.inputs['Scale'])
+            radial = nodes.new('ShaderNodeVectorMath'); radial.operation = 'ADD'
+            links.new(delta.outputs['Vector'], radial.inputs[0]); links.new(projected.outputs['Vector'], radial.inputs[1])
+            radius = nodes.new('ShaderNodeVectorMath'); radius.operation = 'LENGTH'
+            links.new(radial.outputs['Vector'], radius.inputs[0])
+            mask = nodes.new('ShaderNodeMapRange'); mask.clamp = True
+            mask.inputs['From Min'].default_value = .175 if obj.get('part_id') == 'LG-450' else .30
+            mask.inputs['From Max'].default_value = .198 if obj.get('part_id') == 'LG-450' else .40
+            mask.inputs['To Min'].default_value = 1; mask.inputs['To Max'].default_value = 0
+            links.new(radius.outputs['Value'], mask.inputs['Value'])
+            geometry = nodes.new('ShaderNodeNewGeometry')
+            normal = nodes.new('ShaderNodeVectorTransform'); normal.vector_type = 'NORMAL'
+            normal.convert_from = 'WORLD'; normal.convert_to = 'OBJECT'
+            links.new(geometry.outputs['Normal'], normal.inputs['Vector'])
+            facing = nodes.new('ShaderNodeVectorMath'); facing.operation = 'DOT_PRODUCT'
+            links.new(normal.outputs['Vector'], facing.inputs[0]); facing.inputs[1].default_value = axis
+            # Interior tube walls are tangent; receiver must face into the bore.
+            facing_mask = shader_math(nodes, links, 'GREATER_THAN', facing.outputs['Value'], -.15)
+            behind = shader_math(nodes, links, 'GREATER_THAN', d, .30)
+            weight = shader_math(nodes, links, 'MULTIPLY', mask.outputs['Result'],
+                                 shader_math(nodes, links, 'MULTIPLY', facing_mask, behind))
+            axial = shader_math(nodes, links, 'SUBTRACT', 1,
+                                shader_math(nodes, links, 'MULTIPLY', weight,
+                                            shader_math(nodes, links, 'SUBTRACT', 1, axial)))
+        visibility = axial if visibility is None else shader_math(nodes, links, 'MINIMUM', visibility, axial)
+    if bronze:
+        ao = nodes.new('ShaderNodeAmbientOcclusion')
+        ao.inputs['Distance'].default_value = .85; ao.only_local = False
+        visibility = shader_math(nodes, links, 'MULTIPLY', visibility,
+                                 shader_math(nodes, links, 'POWER', ao.outputs['AO'], 1.3))
+    enabled = nodes.new('ShaderNodeValue'); enabled.name = 'Cavity enabled'; enabled.outputs[0].default_value = 1
+    visibility = shader_math(nodes, links, 'SUBTRACT', 1,
+                             shader_math(nodes, links, 'MULTIPLY', enabled.outputs[0],
+                                         shader_math(nodes, links, 'SUBTRACT', 1, visibility)))
+    output = next(n for n in nodes if n.type == 'OUTPUT_MATERIAL' and n.is_active_output)
+    surface = output.inputs['Surface'].links[0].from_socket
+    dark = nodes.new('ShaderNodeBsdfDiffuse'); dark.inputs['Color'].default_value = (0,0,0,1)
+    mix = nodes.new('ShaderNodeMixShader')
+    links.new(visibility, mix.inputs[0]); links.new(dark.outputs[0], mix.inputs[1]); links.new(surface, mix.inputs[2])
+    links.new(mix.outputs[0], output.inputs['Surface'])
+    return mat
+
+
+def throat_points(scene, camera, resolution):
+    """Fixed rear rays through the real openings; no brightness selection."""
+    from mathutils import Vector
+    from bpy_extras.object_utils import world_to_camera_view
+    points = {}
+    depsgraph = scene.view_layers[0].depsgraph
+    pixel_size = camera.data.ortho_scale / max(resolution)
+    for name, z in (('upper', 3.95), ('lower', 2.80)):
+        hits = []
+        for dx in (-1,0,1):
+            for dz in (-1,0,1):
+                hit, point, normal, face, obj, _ = scene.ray_cast(
+                    depsgraph, Vector((dx*pixel_size,-5,z+dz*pixel_size)), Vector((0,1,0)))
+                hits.append(bool(hit and obj.get('part_id') == 'LG-100'))
+        hit, point, normal, face, obj, _ = scene.ray_cast(
+            depsgraph, Vector((0,-5,z)), Vector((0,1,0)))
+        row = {'valid': all(hits), 'matching_rays': sum(hits), 'patch_rays': len(hits), 'radius': 1}
+        if hit:
+            projected = world_to_camera_view(scene,camera,point)
+            row.update(part_id=obj.get('part_id'), world=list(point),
+                       pixel=[round(projected.x*resolution[0]),round((1-projected.y)*resolution[1])])
+        points[name] = row
+    return points
+
+
+def prepare_finish(parts):
+    """Unsaved material/attribute overrides; no vertex or fastener changes."""
     import bpy
     from mathutils import Vector
     sys.path.insert(0, str(SRC))
     from materials import PALETTE
-    audit = {'material_factors': {}, 'dark_well_faces': {}, 'wear_corners': {}}
+    cavities = nozzle_cavities(parts)
+    audit = {'material_factors': {}, 'dark_well_faces': {}, 'wear_corners': {},
+             'cavities': cavities, 'cavity_receivers': [],
+             'history': {'ao_distance': .055, 'max_value_reduction': .32,
+                         'max_roughness_increase': .17, 'noise_scale': 48}}
     for _, (name, palette, metal, rough) in PALETTE.items():
         mat = bpy.data.materials.get('LG01 ' + name)
         if not mat: continue
@@ -273,40 +457,16 @@ def prepare_finish(parts):
         bsdf.inputs['Metallic'].default_value = metal
         bsdf.inputs['Roughness'].default_value = rough
         audit['material_factors'][name] = {'palette': palette, 'metallic': metal, 'roughness': rough}
-        if palette == '#A77738':
-            nodes, links = mat.node_tree.nodes, mat.node_tree.links
-            ao = nodes.new('ShaderNodeAmbientOcclusion')
-            ao.inputs['Distance'].default_value = .85
-            ao.only_local = True
-            power = nodes.new('ShaderNodeMath'); power.operation = 'POWER'
-            power.inputs[1].default_value = 2.5
-            links.new(ao.outputs['AO'], power.inputs[0])
-            multiply = nodes.new('ShaderNodeMixRGB'); multiply.blend_type = 'MULTIPLY'
-            multiply.inputs[0].default_value = 1
-            multiply.inputs[1].default_value = bsdf.inputs['Base Color'].default_value
-            cavity = nodes.new('ShaderNodeVertexColor'); cavity.layer_name = 'NozzleCavity'
-            attenuation = nodes.new('ShaderNodeMath'); attenuation.operation = 'MULTIPLY'
-            links.new(power.outputs[0], attenuation.inputs[0])
-            links.new(cavity.outputs['Color'], attenuation.inputs[1])
-            links.new(attenuation.outputs[0], multiply.inputs[2])
-            links.new(multiply.outputs[0], bsdf.inputs['Base Color'])
-            audit['bronze_cavity'] = {'distance_m': .85, 'power': 2.5, 'only_local': True, 'axial_cavity_floor': .025, 'axial_exponent': 3.0}
+        if palette in {'#D2C8BC', '#D4861D'}:
+            paint_history(mat)
     recess = bpy.data.materials.get('LG01 Dark recess')
     for obj in parts:
-        if obj.get('part_id') == 'LG-450':
+        if obj.get('part_id') in {'LG-450', 'LG-100'}:
             obj.data = obj.data.copy()
-            mesh = obj.data
-            axis = Vector((0, -math.cos(math.radians(12)), -math.sin(math.radians(12))))
-            bronze_faces = [f for f in mesh.polygons if mesh.materials[f.material_index].get('palette_srgb') == '#A77738']
-            depths = [(obj.matrix_world @ mesh.vertices[v].co).dot(axis) for f in bronze_faces for v in f.vertices]
-            low, high = min(depths), max(depths)
-            cavity = mesh.color_attributes.new(name='NozzleCavity', type='FLOAT_COLOR', domain='CORNER')
-            for face in bronze_faces:
-                for loop in face.loop_indices:
-                    point = obj.matrix_world @ mesh.vertices[mesh.loops[loop].vertex_index].co
-                    t = max(0, min(1, (point.dot(axis)-low)/(high-low)))
-                    value = .025 + .975*t**3
-                    cavity.data[loop].color = (value,value,value,1)
+            for i, material in enumerate(obj.data.materials):
+                if material and material.get('palette_srgb') in {'#A77738','#4C4C4B','#72777A'}:
+                    obj.data.materials[i] = cavity_material(material, obj, cavities)
+            audit['cavity_receivers'].append(obj['instance_id'])
         if not is_shell(obj): continue
         obj.data = obj.data.copy()
         mesh = obj.data
@@ -319,11 +479,12 @@ def prepare_finish(parts):
                 for loop in face.loop_indices:
                     value = wear.data[loop].color[0]
                     if .90 < value < .995:
-                        # The source heuristic treats all sloped faces as wear;
-                        # reserve it for small lands/edges, not whole sloped plates.
-                        amount = 1 if face.area > .03 else 1 - 1.65 * (1 - value)
+                        # Spatial shader noise breaks up these small edge
+                        # lands. A constant mask per face avoids diagonal fans
+                        # from interpolating random values across large n-gons.
+                        amount = 1 if face.area > .03 else value
                         wear.data[loop].color = (amount, amount, amount, 1)
-                        touched += 1
+                        touched += amount < 1
         audit['wear_corners'][obj['instance_id']] = touched
         pid = obj.get('part_id')
         if pid not in SHELLS or recess is None: continue
@@ -373,6 +534,8 @@ def display_layout(parts, kind, camera):
         pid = obj.get('part_id'); position = layout.get(pid)
         if kind == 'leg-exploded' and pid == 'LG-450':
             position = (7.1, 3.8 if obj['instance_id'].endswith('.01') else 2.0)
+        if kind == 'foot-carriers':
+            position = (-1.1 if pid == 'FA-300' else 1.1, 0) if pid in {'FA-300','FA-301'} else None
         if kind == 'foot-pads':
             position = ((pads.index(obj)-2.5)*1.7, 0) if pid in PADS else None
         if position is None: continue
@@ -404,6 +567,7 @@ def label_points(scene, camera, parts, resolution, kind):
     from bpy_extras.object_utils import world_to_camera_view
     ids = set(LEG_LAYOUT) | {'LG-450'} if kind == 'leg-exploded' else set(FOOT_LAYOUT)
     if kind == 'foot-pads': ids = PADS
+    if kind == 'foot-carriers': ids = {'FA-300','FA-301'}
     result = []
     for obj in parts:
         if obj.hide_render or obj.get('part_id') not in ids: continue
@@ -540,6 +704,13 @@ def main():
                 obj.hide_render = True
             if kind == 'foot-pads':
                 obj.hide_render = pid not in PADS
+            if kind == 'foot-carriers':
+                obj.hide_render = pid not in {'FA-300','FA-301'}
+            if pid == 'LG-100':
+                for material in obj.data.materials:
+                    toggle = material.node_tree.nodes.get('Cavity enabled') if material else None
+                    if toggle:
+                        toggle.outputs[0].default_value = 0 if kind == 'leg-exploded' else 1
         if kind == 'foot':
             for slot, _, material in original_materials:
                 slot.link = 'OBJECT'
@@ -550,7 +721,7 @@ def main():
 
     def render(key, kind, direction, size, perspective=False, fixed_height=None, region=None):
         points = state(kind)
-        if 'exploded' in kind or kind == 'foot-pads':
+        if 'exploded' in kind or kind in {'foot-pads','foot-carriers'}:
             orient(camera, direction)
             evidence['explosion']['instances'][kind] = display_layout(parts, kind, camera)
             bpy.context.view_layer.update()
@@ -578,7 +749,20 @@ def main():
             # going dark while the upper thigh clips. Angular softness is kept.
             lighting_delta = delta.copy()
             light_power, light_size = energy, size
-            if kind == 'foot-pads':
+            structure = kind in {'leg-structure', 'foot-structure', 'foot-carriers'}
+            if light.name.startswith('Structure'):
+                light_power = energy if structure else 0
+                if kind == 'foot-carriers':
+                    lighting_delta = Vector((.15, .40, -.904))
+            elif structure:
+                if light.name.startswith('Key'):
+                    light_power *= 1.25; light_size = .26
+                elif light.name.startswith('Fill'):
+                    light_power *= .65; light_size = .70
+                else:
+                    lighting_delta = Vector((-.90, -.32, .30))
+                    light_power *= 3.2; light_size = .22
+            if kind in {'foot-pads', 'foot-carriers'} and not light.name.startswith('Structure'):
                 # A small grazing source casts real shadows across 12 mm tread
                 # cuts; a soft weak fill keeps the rubber from becoming black.
                 if light.name.startswith('Key'):
@@ -594,6 +778,8 @@ def main():
             light.rotation_euler = (light_target - light.location).to_track_quat('-Z', 'Y').to_euler()
             light.data.energy = light_power * (subject_size / 10) ** 2 * 576
             light.data.size = light_size * subject_size * 24
+            if light.data.shape == 'RECTANGLE':
+                light.data.size_y = subject_size * 24 * 1.1
         ground.hide_render = True
         bpy.context.view_layer.update()
         projected = [world_to_camera_view(scene, camera, p) for p in points]
@@ -634,7 +820,9 @@ def main():
             scene.render.resolution_percentage = 100
         evidence['renders'][key] = {'png': str(path), 'seconds': round(time.monotonic() - began, 2),
                                    'bounds_normalized': extents, 'resolution': resolution,
-                                   'tone_points': probes, 'labels': label_points(scene,camera,parts,resolution,kind) if 'exploded' in kind or kind == 'foot-pads' else [], 'camera_location': list(camera.location),
+                                   'tone_points': probes,
+                                   'throat_points': throat_points(scene,camera,resolution) if key == 'lg01-assembled-back' else None,
+                                   'labels': label_points(scene,camera,parts,resolution,kind) if 'exploded' in kind or kind in {'foot-pads','foot-carriers'} else [], 'camera_location': list(camera.location),
                                    'camera_target': list(target),
                                    'elevation_degrees': math.degrees(math.atan2(direction[2], math.hypot(*direction[:2]))),
                                    'azimuth_off_front_degrees': math.degrees(math.atan2(abs(direction[0]), direction[1])),
@@ -671,6 +859,7 @@ def main():
         render('fa02-assembled-top', 'foot', (0, 0, 1), (1660, 640))
     if 'fa02-armor' in args.only:
         render('fa02-armor-exploded', 'foot-exploded', (-1, 1.25, 1.1), (3300, 1500))
+        render('fa02-armor-carrier-underside', 'foot-carriers', (0, -.45, -1), (1500, 850))
         render('fa02-armor-underside', 'foot-pads', (0, -.45, -1), (3300, 420))
     if 'fa02-structure' in args.only:
         render('fa02-structure-three-quarter', 'foot-structure', (-1, 1.25, 1.05), (3300, 1900), True)

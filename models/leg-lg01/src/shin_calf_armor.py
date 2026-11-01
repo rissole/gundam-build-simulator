@@ -41,7 +41,9 @@ def build(ctx):
         outline += [(front(z)-.140,z) for z in side_zs]
         skin=panel(ctx,outline,chamfer=0,
                    bolts=[(.19,2.13),(.25,4.18),(-.71,4.25),(-.72,2.48)],
-                   grooves=[[(-.92,2.75),(-.96,3.85),(-.72,4.13)]],
+                   # 67.5 mm from the 25 mm groove edge to the hatch outline;
+                   # stop below its top corner instead of drawing a diagonal.
+                   grooves=[[(-.96,2.75),(-.96,3.80)]],
                    cuts=[((0,2.80,.03),(.40,.38,.24)),
                          ((-.57,3.40,.03),(.67,1.11,.24)),
                          ((.22,3.58,.03),(.22,.82,.24))],

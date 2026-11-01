@@ -1448,3 +1448,156 @@ whole-foot interference certification. Those baseline contacts need a separate
 rail/chamfer repair. Existing actuator/frame contacts and full articulation/tool
 clearance are likewise not certified by this plate-to-cradle fix. These findings
 do not reinstate the removed upper-plate path exception.
+
+
+## Phase 6 round 3 — leg
+
+2026-11-01, P6F3-LEG. Final surgical pass for review-r3 T7, T8, K5 and C10.
+Authoritative changes are confined to `src/thigh_armor.py`,
+`src/knee_armor.py` and `src/shin_calf_armor.py`. No structural changes, no
+interface expectation changes, no commit. Built from a frozen source copy in
+`models/leg-lg01-f3leg`; shared production outputs and foot/render sources were
+not written by this task. Retained evidence is in `work/p6f3-leg/`.
+
+| Item | Disposition and selected geometry |
+| --- | --- |
+| T7 | **Done.** Recess the existing 500 × 950 mm outer-thigh service field by 12 mm from its tapered skin, retaining its closed 25 × 15 mm perimeter groove. Add a 55 × 160 mm integral latch recess at Y+0.01/Z7.22, with its dark face 24 mm below the original skin. No new inventory panel. |
+| T8 | **Done.** Exterior half-width/depth stations are 0.66 at Z6.05, 0.76 at Z6.35, 0.84 at Z6.85 and 0.90 at Z7.88. Front, side and rear skins and their integral folds follow the same slope changes, retaining 35 mm backed side seams. The rear outline now also includes its Z6.05 station; the upper channel lips split at Z7.88. |
+| K5 | **Done.** Carry ochre 35 mm outward onto the front of the existing 80 mm folded rim. Explicit triangle subdivisions retain the original facet planes, outer X±0.39/Z4.69…5.48 bounds and leading Y≈0.85. Outer/lateral returns stay pale; the bearing stack is unchanged. |
+| C10 | **Done.** Remove the long diagonal above the hatch. The rear groove now runs straight at Y−0.96 from Z2.75 to Z3.80, retaining its 25 mm width and 15 mm depth. Its nearest edge is 67.5 mm from the hatch perimeter, exceeding the requested 60 mm; the hatch and Z2.80 support opening stay put. |
+
+Preserved constraints: real upper rod/service channels, mechanical hip gap and
+all three fixed lug carriers; broad front inserts and forward-shoulder ochre;
+Z6.10/2.80 pad access; the long thigh-to-shin knee cylinders, open rear knee,
+frontal side-guard returns and recessed bearing covers; lowered shin saddle,
+caution frame/inserts, enclosed cradle crown, rear brow, separate nozzle
+apertures, bridge and collar bands. `shin_calf.py` and `verify_interfaces.py`
+are unchanged. No thigh/calf envelope growth, extra plate, hip guard or engine
+exposure. The review's resolved-items and constraints sections remain intact.
+
+Verification on the saved scratch scene: **all exit 0** — `build.py`,
+`verify_scene.py -- --expect full`, `verify_interfaces.py`,
+`verify_envelopes.py`, `verify_mirror.py`, and
+`render_compare.py -- --only lg01-assembled,lg01-structure`. The scene contains
+813 instances / 582,008 triangles. Interfaces include 320 leg checks and 1,521
+foot checks. A separate read-only measurement script passes **63 checks** on the
+actual built meshes: recess/latch depths, retained outline, all four width/depth
+stations, knee materials/bounds, groove depth/width/clearance, and planar painted
+faces with geometric corner normals. Thigh max width/depth is 1.800 m; its lower
+300 mm is 1.320 m wide. Calf envelope remains 1.6516 m wide / 2.2311 m deep.
+
+Rendered inspection: **one render round, zero render-fix rounds**. Inspected
+[assembled comparison](work/p6f3-leg/compare/cmp-lg01-assembled.jpg),
+[structure comparison](work/p6f3-leg/compare/cmp-lg01-structure.jpg), and full-size
+side, front and three-quarter views against the approved LG-01 v3 sheets. The
+latch and shallow recessed field read in side/oblique views; the thigh now narrows
+through multiple planes; the ochre shield has a slimmer pale frontal border;
+the calf hatch has no competing upper diagonal. All four assigned items are
+complete within the requested dimensions. The structure retains the specified
+long thigh-to-shin cylinders and open rear knee. General concept simplification,
+subtle service-field depth at sheet scale, R10–R12 rendering work and concurrent
+foot changes are outside this final surgical leg pass. No fresh player approval,
+full motion/assembly-path clearance or combined parallel-source approval is implied.
+
+Renderer handoff: the unchanged snapshot renderer's front `shaded_thigh` anchor
+at X−0.82/Y3/Z7 is no longer valid after T8: 20/25 patch rays hit LG-200 and 5/25
+hit LG-210. This is a probe-boundary issue, not a failed required command.
+A read-only geometry check at **X−0.80/Y3/Z7** gives **25/25** rays on the painted
+LG-200 facet; the existing rendered JPEG patch is RGB **188/178/168**, Y′**179.4**
+(target 165–190), with lit−shade **41.9**. Selection was by geometry, not pixel
+brightness. All other original tone probes pass. The shared renderer and its
+receipt are untouched; its owner should adopt/revalidate this anchor in the
+integrated render. See `work/p6f3-leg/renderer-anchor-handoff.json`.
+
+[Receipt](work/p6f3-leg/receipt.json) records command exit codes, source/capture
+hashes and preserved evidence paths. Audited scene SHA-256:
+`d69a43dbbabad92c11458d96cb88b44935722cd9c2cd0803b73bbe0f91a00594`.
+The exact scene, source snapshot, audit reports, captures and a separately packed
+inspection copy are retained under `work/p6f3-leg/`; the scratch package is deleted.
+Original render evidence contains the former scratch paths; the receipt maps them
+to retained files. No commit or production-scene save by this task.
+
+
+## Phase 6 round 3 — foot
+
+2026-11-01, **P6F3-FOOT, final geometry round**. Implemented review-r3 F6,
+F7 and F8 in `src/foot_fa02_armor.py`; extended `src/checks_foot.py`.
+**No `foot_fa02.py`, sequence, shared renderer, leg-source or production-output
+edits by this task. No commit.** Built the copied source in
+`models/leg-lg01-f3foot`; retained the tested source, logs, audits, renders and
+[receipt](work/p6f3-foot/receipt.json) in `work/p6f3-foot` before deleting scratch.
+
+| Item | Final result and inspected evidence |
+| --- | --- |
+| **F6, priority 1** | Toe shoulder crease at X±0.610, dropping 0.090 to X±0.730. A genuine 0.025-wide / 0.004-deep groove at Y2.240 crosses the roof and both shoulders, continuing down both sides to Z0.300; its floor is gunmetal. It leaves 0.016 backing in the nominal 0.020 skin and makes a nose boundary within FA-400. Upper shoulders now drop 0.100 across X±0.650…0.730. The seam and stronger facets read in assembled side/three-quarter/top and exploded views. |
+| **F7, priority 2** | Both upper contours use the requested stations (-0.730,1.050), (-0.600,1.500), (-0.160,1.600), (+0.160,1.600), (+0.600,1.500), (+0.850,1.090), in (Y,Z). The flat crown is 0.320 long. Lower outlines, 0.080 perimeter facets, all four seats and the 0.400 Y × 0.360 Z cap windows remain. Inspected shorter crowns and exposed pitch caps; the windows remain deliberate. |
+| **F8** | Depression mouths reduced from 0.130 to 0.080 across. Retained the existing 0.0559 octagonal floor, 0.050 bore, 0.016 recess depth, lands and M12 hardware at all eight guard sites. Final inspected wells are small collars around readable heads. |
+
+The written toe roof remains Y1.500/Z0.600 → Y2.400/Z0.520 →
+Y2.460/Z0.400. The inward offset's rear edge is trimmed to Y1.500, preventing
+its longitudinal normal from projecting 1.77 mm into the hinge channel. The
+upper roof remains flat at Z0.700 / underside Z0.680 over the central field and
+bolt lands. Its steeper fold uses intersected offset planes to keep nominal
+20 mm skin; direct normal rays measure 20.01 mm there and 20.00 mm on the toe.
+Triangulating the upper skin before machining avoids missing inside-fold faces;
+the narrowly bounded slot-end cap routine accepts the lowered Z0.593 rim.
+
+Preserved: exactly five shells, four captive bolts each, six pads, toe-only
+ochre, all bolt sites, X±0.730/Y−0.900…2.460, the compact heel, lower inset to
+X±0.700/Z0.200, the Y1.210…1.500 hinge channel, upper rear notch X±0.590 to
+Y0.550, actuator relief and every upper receiver-clearance slot. Guard wall
+band remains |X|0.710…0.730; no roof, crossbar, extra skin or extra fastener.
+
+**Receiver adjustment ledger — only two toe locator pairs, generated in
+`foot_fa02_armor.py`:** the deeper toe shoulder met the original socket roofs
+and side corners. Move each tab/socket pair **30 mm down and 10 mm inboard**;
+keep original tab/socket sizes, removal axis and 10 mm engagement. Their integral
+support beams follow the new endpoints. No upper locator, cradle receiver,
+threaded armor seat or bolt axis moves.
+
+| Receiver | Tab centre (X,Y,Z) | Socket centre (X,Y,Z) | Support anchor → endpoint |
+| --- | --- | --- | --- |
+| FA-104-A | (−0.680,1.850,0.472889) | (−0.680,1.850,0.457889) | (−0.6188,1.850,0.420) → (−0.680,1.850,0.452889) |
+| FA-104-B | (+0.680,1.850,0.472889) | (+0.680,1.850,0.457889) | (+0.6188,1.850,0.420) → (+0.680,1.850,0.452889) |
+
+Actual socket/skin triangle and containment checks find no contact. Minimum
+measured socket side clearance is **5.00 mm**, roof clearance **9.69 mm**.
+The earlier unchanged rail-end/plan-chamfer contacts remain a separate recorded
+limitation; this is not whole-foot fabrication or full articulation/tool approval.
+
+**Final scratch acceptance: all exit 0** — `build.py`, `sequence.py`,
+`verify_scene.py -- --expect full`, `verify_interfaces.py`, `verify_envelopes.py`,
+`verify_mirror.py`, `verify_sequence.py`, and
+`render_compare.py -- --only fa02-assembled,fa02-armor`. Model: **813 objects,
+582,050 triangles; 1,718/1,718 foot checks; 69 sequence steps**. The upper
+plate/cradle continuous 3 m +Z check retains **16.00 mm** separation, with
+**no upper-plate exception**. Sequence has no violations; its 293 conditional
+nonconvex-box records each require fresh mesh evidence. Both cap-extraction
+checks retain a conservative 30.74 mm bound over 300 mm lateral travel.
+Guard-window surround, crown stations, well profiles, toe score depth/backing,
+new locator seats and previous 231-pose shin sweep all pass.
+
+All five audits and both render rounds identify scene SHA-256
+`4630ec055064fb9c6fe0963b903dd6191a7664b343bc4cfcaf3834df8eb60f21`.
+Blender 5.2.3 LTS, EEVEE, 32 samples. **Two render rounds; one render-only fix;
+no geometry changes after the passing acceptance build.** Inspected final
+[assembled comparison](work/p6f3-foot/compare/cmp-fa02-assembled.jpg),
+[armor comparison](work/p6f3-foot/compare/cmp-fa02-armor.jpg) and full-size side;
+round-one full-size side/explosion were also inspected.
+
+**Renderer handoff:** the shared `prepare_finish` well mask uses face-centre
+proximity and the old 67 mm guard radius. With the new contour, it incorrectly
+paints whole adjacent crown/corner facets black, and also catches an upper-plate
+facet. The final inspection uses a **scratch-only** correction: 45 mm guard
+radius, and all face vertices must fit the well/land footprint before darkening.
+The exact [patch](work/p6f3-foot/render-only.patch), patched renderer/compositor
+snapshot, both rounds and image hashes are retained. The shared renderer must
+adopt equivalent bounds for its integrated render; it was not edited here.
+R11/R12 finish, guard tonal fans and carrier-underside presentation remain with
+the separate rendering work.
+
+F6–F8 are complete within the written dimensions. Remaining appearance differences
+are the mandated flat instep, broad fixed upper-seat spacing, open cap windows
+and thin frontal guard edges; a tall instep or single-point fin is not permitted.
+No additional foot geometry round is proposed. Parallel leg/renderer integration
+and user acceptance are separate from this inspected source snapshot.
