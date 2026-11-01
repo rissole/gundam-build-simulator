@@ -31,3 +31,6 @@ models/silhouette-mannequin/output/clean-*.png
 models/silhouette-mannequin/output/mannequin-front.png
 models/silhouette-mannequin/output/mannequin-side.png
 models/silhouette-mannequin/output/mannequin-back.png
+
+# Terra comparison run of the concept prompts (2026-11-01); kept locally, not committed.
+design/visual-design/concepts-terra/
