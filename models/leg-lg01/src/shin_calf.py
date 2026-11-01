@@ -1,7 +1,7 @@
 """Structural shin with enlarged calf load frame and twin rear/down thrusters."""
 import math
 from mathutils import Vector
-from kit import (tube,cylinder,combine,difference,loft,chamfered_rect,bell_nozzle,
+from kit import (tube,cylinder,combine,difference,loft,lathe,chamfered_rect,bell_nozzle,
                  place,cable_bundle,frame)
 from thigh import box,bore,strut,tag,register,captive_detail
 
@@ -70,8 +70,14 @@ def build(ctx):
         cradle.append(tag(tube(.370,.320,.100,p,w,48,.008,gun),'thruster_seat_'+str(i)))
         # Hexagonal fabricated load ring surrounds the unchanged machined seat.
         # The broad corners read as structure even when engines/shroud are absent.
-        cradle += [tube(.60,.40,.18,p,w,6,.012,gun),
-                   tube(.565,.415,.040,p+w*.105,w,6,.006,steel)]
+        rings=[tube(.60,.40,.18,p,w,6,.012,gun),
+               tube(.565,.415,.040,p+w*.105,w,6,.006,steel)]
+        if i==1:
+            # Flat fabricated crown below the shroud brow, not the former
+            # protruding hexagon tips. Machined circular seats are unchanged.
+            for ring in rings:
+                difference(ring,box((2,2,1),(0,p.y,5.00),gun,0))
+        cradle += rings
         # Ribs transfer ring loads into the broad shin beam, not the nozzle skin.
         for s in (-1,1):
             cradle += [strut((s*.34,-.29,p.z),(s*.48,p.y+.02,p.z),.18,.20,gun),
@@ -93,6 +99,15 @@ def build(ctx):
         nozzle=bell_nozzle(.170,.390,.60,.024,gun,m['bronze'],64)
         place(nozzle,p+w*.10,w)
         engine.append(tag(nozzle,'nozzle'))
+        # Two 50 mm barrel collars forward of the bronze lip. Taper their
+        # insides with the bell exterior (2–3 mm wall overlap); a plain tube
+        # would intrude into the lining at its wide end. The mouth is unchanged.
+        for start,radius,inner_a,inner_b in [(.615,.395,.356,.385),
+                                            (.530,.365,.309,.336)]:
+            collar=lathe([(radius-.004,0),(radius,.004),(radius,.046),
+                          (radius-.004,.050),(inner_b,.050),(inner_a,0)],
+                         64,gun,name='Integral nozzle barrel collar')
+            engine.append(place(collar,p+w*start,w))
         # Clocked longitudinal cooling fins and a bolted locking collar.
         u,v,_=frame(w)
         for j in range(12):

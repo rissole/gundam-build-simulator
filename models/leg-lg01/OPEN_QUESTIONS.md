@@ -92,3 +92,32 @@ so work could continue; the user can overturn any of them.
 | P5-04 | 5 | Should filled-in bounding boxes waive all collisions around hollow frames? | No unconditional family waiver. Recheck evaluated mesh surfaces and connected-solid containment at every flagged sample; retain all 291 mesh-proven pair records. This is sampled geometry evidence, not a continuous/tool/flexible-cable clearance claim. |
 | P5-05 | 5 | Can the upper plate's low skirt/locators follow the required straight upward removal path past the cradle receivers? | The audited Phase 4 snapshot still contacts the cradle at 80% of a 3 m descent. Preserve a single exact-pair/sample exception, separate from box false positives. Receiver revision or a tipped/multiple-segment path remains open; P5 does not modify generators or claim that path is clear. |
 | P5-06 | 5 | Which scene and viewer export were verified while geometry repairs were concurrent? | Audit the complete 813-part scratch snapshot, retain it in work/p5, publish the production steps and refresh the stale 651-part viewer GLB through the existing exporter. Leave the production blend untouched; coordinator reruns sequence/audit/export on the final repaired scene. |
+
+
+## Viewer decisions (P7B)
+
+| # | Phase | Question | Decision |
+| --- | --- | --- | --- |
+| P7B-01 | 7 | How should pending ghosts interact with armor ghosting and spread? | Pending parts beyond current panel step + 1 use 20% desaturated ghosts at their scaled start positions. Armor ghosting wins at 15%; hidden armor stays hidden. Default spread is 1.6× with a 1–3× control; authored offsets and sequence files are unchanged. |
+| P7B-02 | 7 | How can default follow coexist with manual camera control? | Frame current plus assembled active-part bounds; suspend during manual orbit/pan/zoom and for 3 s after release, then resume at that viewing direction. Fit all turns follow off; turning follow off returns to whole-layout framing. |
+| P7B-03 | 7 | Which section totals should the panel display? | Use the production JSON's actual 42 foot / 27 leg steps. Step 35 reads Foot 35/42 · Leg 0/27; the task's 44/25 values were illustrative. |
+| P7B-04 | 7 | Does the polish require extra outline geometry or revised offsets? | The larger follow view and sustained emissive pulse make the active board/sockets readable without extra shells. Three inspected rounds show a separated kit at 1.6×; no offset change is proposed. Coordinator/user acceptance of the interaction remains open. |
+
+## Phase 6 round 2 — leg
+
+| # | Phase | Question | Default chosen / status |
+| --- | --- | --- | --- |
+| P6F2-LEG-01 | 6 | How can the shroud enclose the cradle without moving engine interfaces? | Flatten only the upper fabricated ring crown to Z4.500. Use shroud back-skin stations Y−1.34/Z4.15, −1.20/Z4.40 and −1.14/Z4.60, with 60 mm outward skin. Neutral crown/brow clearance lower bound 67.85 mm; cylinder/shroud ≥221.80 mm and cylinder/side-shell ≥116.51 mm. Seats, mouths and interface expectations remain unchanged. Full articulated clearance remains separate. |
+| P6F2-LEG-02 | 6 | Should the old central shin peak become another drawn seam? | No. Cut a real saddle at X±0.28/Z4.36 with shoulders at X±0.50…0.60/Z4.60 and 100 mm upper facets. Move only the armor-side upper stand-off endpoint to Z4.30; its structural land remains Z4.44. Preserve bracket access and the open knee. Resolved in the final front/three-quarter views. |
+| P6F2-LEG-03 | 6 | Does the requested knee readability fix establish a wider joint? | No authoritative replacement width is selected. Add 110 mm frontal returns within the existing |X|0.67 envelope and retain the axle, bearings and stepped caps. The requested local return geometry is done; any broader knee-width revision stays open. |
+| P6F2-LEG-04 | 6 | How should grooves, folds and nozzle collars avoid new surface defects? | Explicit triangles at every fold/profile station; 25 × 15 mm straight groove cuts; geometric corner normals after bending. Complete the 500 × 950 mm thigh outline and 650 × 300 mm shin frame. Put lower shin bolts at X±0.25/Z1.97 inside the frame. Two 50 mm collars per bell have tapered insides matching its exterior, preserving the bronze lining and Ø780 mouths. No new inventory. |
+| P6F2-LEG-05 | 6 | What do the final scratch checks and two render rounds approve? | All five required commands and 48 focused geometry checks pass on the retained 813-part snapshot. The assigned C5/C6 majors and seven minors are implemented and inspected within the recorded constraints. No fresh user acceptance, full motion proof, R5–R9 tonal approval or integrated parallel foot/renderer verification is implied. See MODELING_NOTES “Phase 6 round 2 — leg” and work/p6f2-leg/evidence.json. |
+
+## Phase 6 round 2 — foot
+
+| # | Phase | Question | Default chosen / status |
+| --- | --- | --- | --- |
+| P6F2-FOOT-01 | 6 | Can FA-401-L keep a straight +Z path without moving its bolts or tabs? | Yes. Added skirt/roof clearance slots and rerouted the integral FA-103-L guard supports below the roof, with a Z580 backbone above the earlier forefoot-pin corridor. The full 3 m continuous bound is 16.00 mm. Removed only `upper-plate-locator-lift`; sequence now passes without an actual-contact waiver. Supersedes P5-05. No `foot_fa02.py` changes. |
+| P6F2-FOOT-02 | 6 | How should the 30 mm lower inset meet the existing corners? | Use a 100 mm-high lateral facet and taper the inset out over 80 mm before each plan chamfer. Preserve 20 mm skin, roof/bolt datums, notch, hinge channel and tabs. New facet/frame separation is at least 30.44 mm. Resolved within the changed lateral surfaces. |
+| P6F2-FOOT-03 | 6 | Should F5's thin guard edges be bulked up now? | No. Leave the current 20 mm walls and Z1600 crowns intact. Open: a 60–80 mm front-facing return needs a revised guard/moving-core clearance contract. |
+| P6F2-FOOT-04 | 6 | Do these passes certify all existing shell/rail contacts? | No. Read-only checks of the original scene confirm rail-end contacts at the toe and front upper-plate plan chamfers; retain those unchanged corners in this scoped repair and record a separate rail/chamfer follow-up. The new F4 facets/tapers and complete upper-plate/cradle path are independently checked. See the round-2 foot notes and `work/p6f2-foot/corner-baseline.log`. |

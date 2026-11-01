@@ -3,18 +3,18 @@
     "ok": true,
     "errors": [],
     "glb": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01/viewer/leg-lg01.glb",
-    "glb_sha256": "5291e0e56f62bf166689fe805ac48871779f30359060ac360865b8e683fadc99",
-    "bytes": 22177340,
-    "megabytes": 22.177,
-    "triangle_count": 578046,
+    "glb_sha256": "26b9c004f64081a6958f1fffc32e097714c2c60f3ac0ed1026031528d2e1a0b5",
+    "bytes": 22417652,
+    "megabytes": 22.418,
+    "triangle_count": 581828,
     "material_count": 13,
     "node_count": 813,
     "scene_part_count": 813,
     "source": {
       "source": "output/leg-lg01.blend",
-      "source_sha256": "71838631325edabb9883d3b484bd55aeedfb8e16e3f1427e37b87e03cc5ef09f",
+      "source_sha256": "f60bc18feb862a8ffba4185b7c7ad31ce3536679bae38429723f2ed20733d994",
       "scene_part_count": 813,
-      "evaluated_triangles": 578046,
+      "evaluated_triangles": 581828,
       "material_count": 13,
       "materials": [
         "LG01 Amber sensor",
@@ -53,7 +53,7 @@
       1280,
       800
     ],
-    "load_seconds": 0.403,
+    "load_seconds": 0.413,
     "scrub": {
       "samples": 553,
       "unique_steps": 70,
@@ -74,10 +74,10 @@
     },
     "keyboard": true,
     "playback_positions": {
-      "0.5": 0.21424999999999997,
-      "1": 0.4166428571428572,
-      "2": 0.857142857142857,
-      "4": 1.7142857142857137
+      "0.5": 0.21428571428571425,
+      "1": 0.4167142857142857,
+      "2": 0.8331428571428573,
+      "4": 1.714
     },
     "camera_presets": true,
     "follow": true,

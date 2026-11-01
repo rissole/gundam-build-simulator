@@ -88,6 +88,20 @@ def main():
         image.paste(raw, mask=raw.getchannel('A'))
         if info['mirror_display']:
             image = ImageOps.mirror(image)
+        # Short leaders stay in the reserved gap below each part silhouette.
+        # Source meshes and camera projections are never moved by composition.
+        draw = ImageDraw.Draw(image)
+        label_font = font(max(12, round(image.width * .0105)))
+        for item in info.get('labels', []):
+            x0,y0,x1,y1 = item['bounds']
+            x = (x0+x1)/2
+            y = min(image.height-20, y1 + image.height*.018)
+            label = item['text']
+            box = draw.textbbox((0,0), label, font=label_font)
+            tx = min(image.width-(box[2]-box[0])-5, max(5, x-(box[2]-box[0])/2))
+            draw.line((x,y1-2,x,y-3), fill=BLUE, width=max(1,round(data['res_scale']*2)))
+            draw.rectangle((tx-4,y-2,tx+box[2]-box[0]+4,y+box[3]+2),fill='white')
+            draw.text((tx,y),label,font=label_font,fill=BLUE)
         image.save(render_out / f'r-{key}.jpg', quality=90, subsampling=0)
         info['jpg'] = str((render_out / f'r-{key}.jpg').resolve())
         cache[key] = image
@@ -110,24 +124,14 @@ def main():
         text(canvas, (34, 70), subtitle, 19, BLUE)
         return canvas
 
-    def explosion_caption(kind):
-        modes = list(data['explosion'].get('instances', {}).get(kind, {}).values())
-        radial = modes.count('radial fallback')
-        steps = modes.count('steps')
-        if radial and steps:
-            return f'Offsets: steps × 0.5 ({steps}) / radial 0.6 m fallback ({radial})'
-        if radial:
-            return f'Radial 0.6 m fallback ({radial} parts; no matching production step IDs)'
-        return data['explosion']['mode']
-
     for name in data['sheets']:
         if name == 'lg01-assembled':
             left = panel('LEFT LEG / ASSEMBLED', 'LG-01  |  EEVEE MODEL COMPARISON')
             for i, view in enumerate(('three-quarter', 'side', 'front', 'back')):
                 x = 28 + i * 376
                 put(left, cache[f'{name}-{view}'], (x, 106, 350, 828))
-                label = {'three-quarter': 'THREE-QUARTER', 'side': 'OUTER SIDE*'}.get(view, view.upper())
-                text(left, (x + 25, 941), label, 22)
+                label = {'three-quarter': 'THREE-QUARTER / ORTHO', 'side': 'OUTER SIDE*'}.get(view, view.upper())
+                text(left, (x + 25, 941), label, 18)
             text(left, (32, 989), 'Hip 9.20 m / Knee 5.10 m / Ankle 1.00 m   |   *Side display reflected; toe right.', 17, BLUE)
         elif name == 'fa02-assembled':
             left = panel('LEFT FOOT / ANKLE', 'FA-02  |  ASSEMBLED MODEL + LOWER SHIN STUB')
@@ -148,13 +152,15 @@ def main():
             text(left, (674, 174), 'KNEE / THIGH-TO-SHIN CYLINDERS', 23)
             text(left, (32, 980), 'Armor / service parts hidden; thrusters and foot internals retained.', 19, BLUE)
         elif name == 'lg01-armor':
-            left = panel('ARMOR / THRUSTERS', 'LG-01  |  COMPACT EXPLODED MODEL')
+            left = panel('ARMOR / THRUSTERS', 'LG-01  |  SEPARATED ARMOR / ENGINE DISPLAY')
             put(left, cache[f'{name}-exploded'], (55, 120, 1426, 815))
-            text(left, (32, 980), explosion_caption('leg-exploded') + '  |  Foot omitted.', 19, BLUE)
+            text(left, (32, 980), 'Display offsets only; installation paths unchanged.  |  Foot omitted.', 19, BLUE)
         elif name == 'fa02-armor':
-            left = panel('ARMOR / SOLES', 'FA-02  |  COMPACT EXPLODED MODEL')
-            put(left, cache[f'{name}-exploded'], (44, 121, 1448, 815))
-            text(left, (32, 980), '5 shells / 2 carriers / 6 pads  |  ' + explosion_caption('foot-exploded'), 18, BLUE)
+            left = panel('ARMOR / SOLES', 'FA-02  |  SHELLS / CARRIERS + SIX PAD UNDERSIDES')
+            put(left, cache[f'{name}-exploded'], (44, 111, 1448, 626))
+            text(left, (50, 744), 'PAD UNDERSIDES / COMMON SCALE', 19, BLUE)
+            put(left, cache[f'{name}-underside'], (44, 775, 1448, 185))
+            text(left, (32, 989), '5 shells / 2 carriers / 6 pads  |  Display offsets only; installation paths unchanged.', 17, BLUE)
         elif name == 'fa02-structure':
             left = panel('STRUCTURE / JOINTS', 'FA-02  |  ELEVATED FRONT OUTER')
             put(left, cache[f'{name}-three-quarter'], (44, 120, 1448, 815))

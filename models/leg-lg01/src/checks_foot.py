@@ -24,6 +24,65 @@ class Check(tuple):
         return {'name':self[0],'check':self[0],'ok':self[1],'passed':self[1],'detail':self[2]}.get(key,default)
 
 
+def translation_clearance(moving,static,travel=(0,0,3),required=.010,facet_region=None):
+    """Conservative continuous solid separation, including the seating interval.
+
+    Sweep each actual mesh triangle into a convex prism. A separating projection
+    between that prism and every static triangle bounds their Euclidean distance
+    from below. AABB gaps reject easy pairs; triangle/prism face normals and
+    cross-edge axes resolve diagonal folds. No pose sampling or mount exemption.
+    Surface separation plus an independent initial containment test proves the
+    solids remain disjoint. Unresolved/degenerate pairs fail conservatively.
+    """
+    def triangles(obj):
+        obj.data.calc_loop_triangles()
+        points=np.array([obj.matrix_world@v.co for v in obj.data.vertices])
+        return points[np.array([t.vertices[:] for t in obj.data.loop_triangles])]
+    a,b=triangles(moving),triangles(static);delta=np.array(travel,dtype=float)
+    if facet_region is not None:
+        # F4 changes only the straight lateral lower folds, tapering to zero
+        # before the original plan chamfers. Include their full inner/outer skin.
+        y0,y1=facet_region
+        a=a[(a[:,:,2].max(1)<=.311)&(abs(a[:,:,0]).min(1)>=.670)&
+            (a[:,:,1].min(1)>=y0-.001)&(a[:,:,1].max(1)<=y1+.001)]
+        if not len(a):return False,{'error':'No lower facet triangles found'}
+    blo,bhi=b.min(1),b.max(1);be=np.roll(b,-1,axis=1)-b
+    bn=np.cross(be[:,0],be[:,1]);worst=float('inf');unresolved=[];pairs=0
+    for i,tri in enumerate(a):
+        prism=np.concatenate((tri,tri+delta));lo,hi=prism.min(0),prism.max(0)
+        gap=np.linalg.norm(np.maximum(np.maximum(blo-hi,lo-bhi),0),axis=1)
+        selected=np.flatnonzero(gap<max(.030,required+1e-6))
+        if not len(selected):
+            worst=min(worst,float(gap.min()));continue
+        pairs+=len(selected);other=b[selected];edges=be[selected]
+        ae=np.roll(tri,-1,axis=0)-tri
+        fixed=[np.cross(ae[0],ae[1]),*[np.cross(e,delta) for e in ae]]
+        axes=[np.broadcast_to(n,(len(selected),3)) for n in fixed]
+        axes.extend([bn[selected],*[np.cross(e,edges[:,j]) for e in [*ae,delta] for j in range(3)]])
+        lower=gap[selected].copy()
+        for axis in axes:
+            lengths=np.linalg.norm(axis,axis=1)
+            unit=axis/np.maximum(lengths[:,None],1e-30)
+            pa=prism@unit.T;pb=np.einsum('nvc,nc->nv',other,unit)
+            separation=np.maximum(pb.min(1)-pa.max(0),pa.min(0)-pb.max(1))
+            lower=np.maximum(lower,np.where(lengths>1e-12,separation,0))
+        gap[selected]=lower;worst=min(worst,float(gap.min()))
+        unresolved.extend((i,int(j),float(d)) for j,d in zip(selected,lower) if d<required-1e-6)
+    from verify_sequence import MeshClearance
+    solid=MeshClearance()
+    # The full shell intentionally mates to rail receivers above the F4 region.
+    # Only full-object sweeps use the connected-solid containment check.
+    if facet_region is None:
+        initial=solid.clear(moving['instance_id'],static['instance_id'],(0,0,0))
+    else:
+        shells=solid.geometry(static['instance_id'])[3]
+        initial=not any(solid.inside(Vector(p),shells) for p in np.unique(a.reshape(-1,3),axis=0))
+    return not unresolved and initial,{'continuous_lower_bound_m':worst,
+        'required_m':required,'translation_m':list(travel),'initial_solids_disjoint':initial,
+        'lower_facet_y_range_m':facet_region,'moving_triangles':len(a),
+        'narrow_triangle_pairs':pairs,'unresolved_pairs':len(unresolved),'examples':unresolved[:8]}
+
+
 def checks():
     result=[]
     objs=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.get('component')=='foot']
@@ -246,6 +305,8 @@ def checks():
                 if q is not None:obstructed.append({'part_id':obj['part_id'],'point':q.tolist()})
         record(pid+' pitch cap visible through installed assembly',len(visible)==9 and not obstructed,
                {'cap_samples':len(visible),'obstructions':obstructed})
+        clear,detail=translation_clearance(cap,guard,travel=(s*.300,0,0))
+        record(pid+' window clears actual pitch cap extraction',clear,detail)
         near(pid+' independent lateral removal',list(guard['removal_direction']),[s,0,0],.0001)
         # The facets stay within the specified wall; sample a plain crown edge.
         q=first_hit(guard,(s*.800,0,1.570),(-s,0,0),.120)
@@ -263,6 +324,46 @@ def checks():
             record(pid+f' continuous folded corner {s}',q is not None,
                    {'hit':q.tolist() if q is not None else None})
     upper=get('FA-401-L')[0]
+    clear,detail=translation_clearance(upper,get('FA-103-L')[0])
+    record('Upper plate clears cradle throughout full +Z descent',clear,detail)
+    # Independently measure the two preserved upper locators and their sockets.
+    # The clear bore itself is only 0.5 mm around the intended 10 mm engagement;
+    # it is a mating feature, not part of the unrelated cradle-clearance check.
+    from verify_sequence import MeshClearance
+    features=MeshClearance()
+    for s in (-1,1):
+        x=s*.690;y=1.100
+        tab=min(features.geometry(upper['instance_id'])[3],
+                key=lambda f:np.linalg.norm((np.array(f[0])+f[1])/2-[x,y,.654]))
+        near(f'Upper locator {s} actual bounds',[tab[0],tab[1]],
+             [[x-.016,y-.008,.634],[x+.016,y+.008,.674]],.0001)
+        rail=get('FA-100-'+('A' if s<0 else 'B'))[0]
+        socket=min(features.geometry(rail['instance_id'])[3],
+                   key=lambda f:np.linalg.norm((np.array(f[0])+f[1])/2-[x,y,.639]))
+        near(f'Upper locator {s} socket bounds',[socket[0],socket[1]],
+             [[x-.025,y-.017,.634],[x+.025,y+.017,.644]],.0001)
+        near(f'Upper locator {s} engagement',min(tab[1][2],socket[1][2])-max(tab[0][2],socket[0][2]),.010,.0001)
+    # F4: solid skin normals/thickness and inset measured away from relief slots.
+    for pid,y in [('FA-400',2.000),('FA-401-L',.950)]:
+        shell=get(pid)[0]
+        for s in (-1,1):
+            for z,expected in ((.210,.703),(.250,.715),(.300,.730),(.350,.730)):
+                q=first_hit(shell,(s*.800,y,z),(-s,0,0),.180)
+                record(pid+f' lower facet {s} {z}',q is not None,{})
+                if q is not None:near(pid+f' lower facet profile {s} {z}',abs(q[0]),expected,.0003)
+            normal=np.array([s,0,-.3]);normal/=np.linalg.norm(normal)
+            centre=np.array([s*.715,y,.250])
+            outer=first_hit(shell,centre+normal*.050,-normal,.100)
+            inner=first_hit(shell,centre-normal*.050,normal,.100)
+            record(pid+f' lower facet has both skins {s}',outer is not None and inner is not None,{})
+            if outer is not None and inner is not None:
+                near(pid+f' lower facet 20 mm skin {s}',np.linalg.norm(outer-inner),.020,.0003)
+            rail=get(('FA-104-' if pid=='FA-400' else 'FA-100-')+('A' if s<0 else 'B'))[0]
+            # Shell lands and tabs intentionally mate with rail receivers. F4's
+            # lower skin is checked independently against the frame below Z300.
+            region=(1.600,2.360) if pid=='FA-400' else (-.420,1.130)
+            clear,detail=translation_clearance(shell,rail,travel=(0,0,0),facet_region=region)
+            record(pid+f' inset lower skin clears frame {s}',clear,detail)
     for y in (-.500,-.250,0,.250,.530):
         record('Upper rear-open notch '+str(y),first_hit(upper,(0,y,.800),(0,0,-1),.5) is None,{})
     record('Upper actuator relief',first_hit(upper,(-.535,.710,.800),(0,0,-1),.5) is None,{})

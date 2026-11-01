@@ -3210,8 +3210,7 @@
     "eroded_empty_bounds": 250,
     "strict_aabb_clear": false,
     "exception_counts": {
-      "nonconvex-envelope": 292,
-      "upper-plate-locator-lift": 1
+      "nonconvex-envelope": 293
     },
     "violations": [],
     "documented_exceptions": [
@@ -3219,21 +3218,6 @@
         "id": "nonconvex-envelope",
         "pairs": [],
         "reason": "A single AABB fills open frames, shell notches and cable loops. Except only when fresh evaluated-mesh surface AND connected-solid containment checks find no contact at every offending sample. All applied pairs and samples are enumerated in the audit."
-      },
-      {
-        "id": "upper-plate-locator-lift",
-        "pairs": [
-          [
-            "FA-401-L.upper-foot-plate.01",
-            "FA-103-L.001"
-          ]
-        ],
-        "reason": "The upper plate must lift along +Z, but its integral low skirt/locator geometry crosses a high cradle guard receiver at 60-80% of the 3 m descent in the Phase 6 round-1 scene. A tipped/multiple-segment placement or receiver revision is needed. The schema has only one straight translation and P5 cannot edit generators. This exact pair remains an acknowledged path limitation, not a hollow-box or collision-free claim.",
-        "progress": [
-          0.6,
-          0.7,
-          0.8
-        ]
       }
     ],
     "excepted_intersections": [
@@ -4619,12 +4603,8 @@
           0.7,
           0.8
         ],
-        "exception": "upper-plate-locator-lift",
-        "mesh_contact_progress": [
-          0.6,
-          0.7,
-          0.8
-        ]
+        "exception": "nonconvex-envelope",
+        "evidence": "no intersecting surfaces or contained connected solids"
       },
       {
         "step": 40,
@@ -6509,10 +6489,10 @@
     ]
   },
   "source": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01/output/leg-lg01.blend",
-  "source_sha256": "71838631325edabb9883d3b484bd55aeedfb8e16e3f1427e37b87e03cc5ef09f",
+  "source_sha256": "f60bc18feb862a8ffba4185b7c7ad31ce3536679bae38429723f2ed20733d994",
   "scope": "full saved Blender scene",
   "steps_sha256": "44f5a062801da3c8c54a6bf1b21845d1d7b63cf0db864211d3cce083a932d494",
   "sequence_source_sha256": "f61e2f6b2c8908d9f5afacca1199a9ab62c917f72a2ee4012fdd57596b03f358",
-  "audit_source_sha256": "fda9fed78242317d61efd72c0d93a6cacc5dbf4698e63449582d7800b5fe4ce8",
-  "elapsed_seconds": 1.464
+  "audit_source_sha256": "5ccf770a0575e2dadcf08211d57adf464c6c285f66942b98f05799480c74c4aa",
+  "elapsed_seconds": 1.526
 }

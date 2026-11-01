@@ -10,16 +10,16 @@ import bpy
 
 DECALS = Path(__file__).resolve().parent / 'decals'
 PALETTE = {
-    'armor': ('Armor satin', '#D2C8BC', 0.0, .45),
+    'armor': ('Armor satin', '#D2C8BC', 0.0, .49),
     'gunmetal': ('Gunmetal', '#4C4C4B', .6, .5),
     'ochre': ('Safety ochre', '#D4861D', .05, .45),
     'red': ('Caution red', '#C2332A', 0.0, .48),
     'chrome': ('Polished rod chrome', '#C7D0D7', 1.0, .17),
-    'bronze': ('Bronze nozzle lining', '#A77738', .8, .33),
+    'bronze': ('Bronze nozzle lining', '#A77738', .8, .43),
     'rubber': ('Rubber', '#222421', 0.0, .82),
     'amber': ('Amber sensor', '#FFAC32', .15, .28),
     'steel': ('Fastener steel', '#72777A', .8, .36),
-    'recess': ('Dark recess', '#222322', .15, .72),
+    'recess': ('Dark recess', '#222322', .03, .90),
 }
 
 

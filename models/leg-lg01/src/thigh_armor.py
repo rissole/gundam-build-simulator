@@ -17,11 +17,25 @@ def clean(obj):
     """Remove collapsed kit bevel edges without moving the visible surface."""
     bm=bmesh.new(); bm.from_mesh(obj.data)
     bmesh.ops.dissolve_degenerate(bm,dist=1e-7,edges=list(bm.edges))
+    bm.normal_update()
+    # A painted polygon must have one plane. Explicit triangles resolve bent
+    # bevel/groove returns; do not leave renderer-dependent warped quads.
+    warped=[f for f in bm.faces if len(f.verts)>3 and
+            max(abs((v.co-f.verts[0].co).dot(f.normal)) for v in f.verts)>1e-6]
+    if warped:
+        bmesh.ops.triangulate(bm,faces=warped,quad_method='FIXED',ngon_method='EAR_CLIP')
     bm.to_mesh(obj.data); bm.free(); obj.data.update()
     finish(obj,angle=12,wear=True)
     # Flat armor facets must not inherit broad interpolated normals from the
     # unbent kit plate, which produce false dents around grooves and bolt wells.
     for face in obj.data.polygons: face.use_smooth=False
+    # Smooth=False alone does not discard the custom corner normals carried
+    # through Boolean cuts/bending. Reset them to each new geometric plane.
+    loop_normals=[(0,0,0)]*len(obj.data.loops)
+    for face in obj.data.polygons:
+        for i in face.loop_indices: loop_normals[i]=tuple(face.normal)
+    obj.data.normals_split_custom_set(loop_normals)
+    obj.data.update()
     return obj
 
 
@@ -76,7 +90,13 @@ def panel(ctx, outline, bolts=(), grooves=(), cuts=(), marks=(), slots=(), accen
         channel_loops.append(loop)
         difference(skin,prism(loop,.24,'Faceted cartridge channel',z=-.12))
     for path in grooves:
-        panel_line(skin,[(u,z-center) for u,z in path],.060,.025,.015,m['recess'])
+        # Synchronize the newly positioned plate before making LOCAL cuts.
+        # Machine each straight edge at constant width. The kit's open ribbon
+        # crosses itself when closed and skews widths at unequal-length turns.
+        bpy.context.view_layer.update()
+        paths=[[a,b] for a,b in zip(path,path[1:])]
+        for segment in paths:
+            panel_line(skin,[(u,z-center) for u,z in segment],.060,.025,.015,m['recess'])
     features=[skin]
     for u,z in bolts:
         features.append(recessed_hex_bolt(skin,(u,z-center,.060),.025,
@@ -150,8 +170,12 @@ def folded_strip(rows, material, name='Integral folded corner', thickness=.060):
         verts.extend([a,b,b+inward*thickness,a+inward*thickness])
     count=len(rows)
     faces=[(3,2,1,0),tuple(range((count-1)*4,count*4))]
-    faces += [(k*4+i,k*4+(i+1)%4,(k+1)*4+(i+1)%4,(k+1)*4+i)
-              for k in range(count-1) for i in range(4)]
+    # Each station gets the same deliberate diagonal on both skin layers.
+    # Changing rail slopes cannot create an implicitly twisted painted quad.
+    for k in range(count-1):
+        for i in range(4):
+            a,b,c,d=k*4+i,k*4+(i+1)%4,(k+1)*4+(i+1)%4,(k+1)*4+i
+            faces.extend([(a,b,c),(a,c,d)])
     return clean(mesh_object(name,verts,faces,material))
 
 
@@ -159,7 +183,13 @@ def corner_returns(ctx, zs, edge, surface, lateral, side, rear=False):
     """Front/rear fold with a recessed lap covering the 35 mm side seam."""
     direction=-1 if rear else 1
     fold=[]; lap=[]
-    for z in zs:
+    # Every rail slope change needs its own station, including narrow lower
+    # tapers and the calf brow; sampling only one of the three profiles twists
+    # the corners across missed changes of direction.
+    stations=set(zs)
+    for rail in (edge,surface,lateral):
+        stations.update(z for z in getattr(rail,'knots',[]) if min(zs)<z<max(zs))
+    for z in sorted(stations):
         y=direction*surface(z)
         a=(side*(edge(z)-.045),y+direction*.048,z)
         b=(side*(lateral(z)+.040),y-direction*.105,z)
@@ -212,13 +242,15 @@ def build(ctx):
         # Both long corner seams follow the front/back returns with 35 mm gaps.
         outline=[(-rear_surface(z)+.140,z) for z in reversed(zs)]
         outline += [(front_surface(z)-.140,z) for z in zs]
+        service=[(u-.18,z+7.22) for u,z in chamfered_rect(.50,.95,.055)]
+        service.append(service[0])
         skin=panel(ctx,outline,chamfer=.012,
                    bolts=[(-.43,6.64),(.35,6.60),(-.52,7.95),(.57,7.75)],
-                   grooves=[[(-.39,6.53),(-.50,6.90),(-.50,7.53)]],
+                   grooves=[service] if side<0 else [[(-.39,6.53),(-.50,6.90),(-.50,7.53)]],
                    slots=[(.53,7.25,.15,.85)],
                    channels=[(.339 if side<0 else .124,7.25,.30)],
                    cuts=[((.03,6.10,.03),(.46,.42,.22))],
-                   marks=[('red_marks',-.35,6.78,.20)])
+                   marks=[('red_marks',-.18 if side<0 else -.35,6.63 if side<0 else 6.78,.20)])
         mapped(skin,'side',side_surface,side)
         if side<0:
             # Paint-sized angular region on the existing forward shoulder.

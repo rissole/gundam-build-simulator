@@ -39,15 +39,6 @@ CLEARANCE_EXCEPTIONS = [
                 'Except only when fresh evaluated-mesh surface AND connected-solid '
                 'containment checks find no contact at every offending sample. '
                 'All applied pairs and samples are enumerated in the audit.'),
-    dict(id='upper-plate-locator-lift',
-         pairs=[['FA-401-L.upper-foot-plate.01','FA-103-L.001']],
-         reason='The upper plate must lift along +Z, but its integral low skirt/locator '
-                'geometry crosses a high cradle guard receiver at 60-80% of the 3 m descent '
-                'in the Phase 6 round-1 scene. A tipped/multiple-segment placement or receiver '
-                'revision is needed. The schema has only one straight translation and '
-                'P5 cannot edit generators. This exact pair remains an acknowledged '
-                'path limitation, not a hollow-box or collision-free claim.',
-         progress=[.6,.7,.8]),
 ]
 
 

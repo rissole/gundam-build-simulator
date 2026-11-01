@@ -2607,9 +2607,9 @@
     {
       "check": "cylinder_upper-1 cartridge pin tunnel bore diameter",
       "passed": true,
-      "measured": 0.09488311990240524,
+      "measured": 0.09488311990240526,
       "expected": 0.09503,
-      "error_m": 0.0001468800975947676,
+      "error_m": 0.00014688009759473986,
       "tolerance_m": 0.01
     },
     {
@@ -2789,9 +2789,9 @@
     {
       "check": "cylinder_lower-1 cartridge pin tunnel bore diameter",
       "passed": true,
-      "measured": 0.09488308940336396,
+      "measured": 0.09488308940336394,
       "expected": 0.09503,
-      "error_m": 0.00014691059663604622,
+      "error_m": 0.0001469105966360601,
       "tolerance_m": 0.01
     },
     {
@@ -2979,9 +2979,9 @@
     {
       "check": "cylinder_upper1 cartridge pin tunnel bore diameter",
       "passed": true,
-      "measured": 0.0948831241893053,
+      "measured": 0.09488312418930532,
       "expected": 0.09503,
-      "error_m": 0.00014687581069469657,
+      "error_m": 0.0001468758106946827,
       "tolerance_m": 0.01
     },
     {
@@ -3161,9 +3161,9 @@
     {
       "check": "cylinder_lower1 cartridge pin tunnel bore diameter",
       "passed": true,
-      "measured": 0.09488308940336394,
+      "measured": 0.09488308940336396,
       "expected": 0.09503,
-      "error_m": 0.0001469105966360601,
+      "error_m": 0.00014691059663604622,
       "tolerance_m": 0.01
     },
     {
@@ -4768,7 +4768,7 @@
       {
         "measured": [
           -0.39500074513561,
-          -0.6149992445045869,
+          -0.6149992445045868,
           0.3700000196695328
         ],
         "expected": [
@@ -4776,7 +4776,7 @@
           -0.6150000000000001,
           0.37
         ],
-        "max_error_m": 7.554954132293901e-07
+        "max_error_m": 7.554954133404124e-07
       }
     ],
     [
@@ -5007,9 +5007,9 @@
       "FA-100-B ledge bore -0.56 -0.055 diameter",
       true,
       {
-        "measured": 0.03829710818523732,
+        "measured": 0.03829710818523731,
         "expected": 0.038,
-        "max_error_m": 0.0002971081852373228
+        "max_error_m": 0.0002971081852373089
       }
     ],
     [
@@ -5231,9 +5231,9 @@
       "FA-100-A ledge bore 1.12 -0.055 diameter",
       true,
       {
-        "measured": 0.038297352895113504,
+        "measured": 0.0382973528951135,
         "expected": 0.038,
-        "max_error_m": 0.0002973528951135049
+        "max_error_m": 0.00029735289511349794
       }
     ],
     [
@@ -5343,9 +5343,9 @@
       "FA-100-A ledge bore 1.12 0.055 diameter",
       true,
       {
-        "measured": 0.03829713746527105,
+        "measured": 0.038297137465271074,
         "expected": 0.038,
-        "max_error_m": 0.0002971374652710537
+        "max_error_m": 0.00029713746527107454
       }
     ],
     [
@@ -5567,9 +5567,9 @@
       "FA-100-B ledge bore 1.12 0.055 diameter",
       true,
       {
-        "measured": 0.03829737808707095,
+        "measured": 0.038297378087070955,
         "expected": 0.038,
-        "max_error_m": 0.0002973780870709486
+        "max_error_m": 0.00029737808707095553
       }
     ],
     [
@@ -5679,9 +5679,9 @@
       "FA-100-A ledge bore 0 -0.11 diameter",
       true,
       {
-        "measured": 0.03829609483264618,
+        "measured": 0.03829609483264617,
         "expected": 0.038,
-        "max_error_m": 0.0002960948326461779
+        "max_error_m": 0.000296094832646171
       }
     ],
     [
@@ -6015,9 +6015,9 @@
       "FA-100-B ledge bore 0 0.11 diameter",
       true,
       {
-        "measured": 0.038296096300934244,
+        "measured": 0.03829609630093424,
         "expected": 0.038,
-        "max_error_m": 0.00029609630093424544
+        "max_error_m": 0.0002960963009342385
       }
     ],
     [
@@ -8333,9 +8333,9 @@
       "F0 clevis diameter",
       true,
       {
-        "measured": 0.04043579627182799,
+        "measured": 0.040435796271827994,
         "expected": 0.04,
-        "max_error_m": 0.0004357962718279859
+        "max_error_m": 0.00043579627182799285
       }
     ],
     [
@@ -13570,9 +13570,9 @@
       "FA-400 shell mount 1 land diameter",
       true,
       {
-        "measured": 0.0132030258234227,
+        "measured": 0.013203025823422698,
         "expected": 0.013,
-        "max_error_m": 0.0002030258234227006
+        "max_error_m": 0.00020302582342269886
       }
     ],
     [
@@ -16202,7 +16202,7 @@
       "FA-403-L shell mount 0 receiver rim exists",
       true,
       {
-        "rim_vertices": 213
+        "rim_vertices": 147
       }
     ],
     [
@@ -16211,24 +16211,24 @@
       {
         "measured": [
           0.6710000038146973,
-          -0.6000074519267289,
-          0.7199984781843148
+          -0.6000000238418579,
+          0.7200136919309092
         ],
         "expected": [
           0.671,
           -0.6,
           0.72
         ],
-        "max_error_m": 7.4519267289074875e-06
+        "max_error_m": 1.369193090927645e-05
       }
     ],
     [
       "FA-403-L shell mount 0 receiver diameter",
       true,
       {
-        "measured": 0.012122064914024436,
+        "measured": 0.012177159277644142,
         "expected": 0.012,
-        "max_error_m": 0.00012206491402443585
+        "max_error_m": 0.0001771592776441417
       }
     ],
     [
@@ -16433,7 +16433,7 @@
       "FA-403-L shell mount 1 receiver rim exists",
       true,
       {
-        "rim_vertices": 213
+        "rim_vertices": 147
       }
     ],
     [
@@ -16442,24 +16442,24 @@
       {
         "measured": [
           0.6710000038146973,
-          0.7000073880199675,
-          0.7199986708661424
+          0.699999988079071,
+          0.7200136919309092
         ],
         "expected": [
           0.671,
           0.7,
           0.72
         ],
-        "max_error_m": 7.388019967580206e-06
+        "max_error_m": 1.369193090927645e-05
       }
     ],
     [
       "FA-403-L shell mount 1 receiver diameter",
       true,
       {
-        "measured": 0.012121785153085166,
+        "measured": 0.012177159277644138,
         "expected": 0.012,
-        "max_error_m": 0.00012178515308516533
+        "max_error_m": 0.00017715927764413823
       }
     ],
     [
@@ -16639,9 +16639,9 @@
       "FA-403-L shell mount 2 land diameter",
       true,
       {
-        "measured": 0.013203011509733742,
+        "measured": 0.013203011509733735,
         "expected": 0.013,
-        "max_error_m": 0.00020301150973374253
+        "max_error_m": 0.0002030115097337356
       }
     ],
     [
@@ -16664,7 +16664,7 @@
       "FA-403-L shell mount 2 receiver rim exists",
       true,
       {
-        "rim_vertices": 149
+        "rim_vertices": 147
       }
     ],
     [
@@ -16673,24 +16673,24 @@
       {
         "measured": [
           0.6710000038146973,
-          -0.4999999982953171,
-          1.4500135283411284
+          -0.49999999873777384,
+          1.450013705463285
         ],
         "expected": [
           0.671,
           -0.5,
           1.45
         ],
-        "max_error_m": 1.35283411284437e-05
+        "max_error_m": 1.3705463284940933e-05
       }
     ],
     [
       "FA-403-L shell mount 2 receiver diameter",
       true,
       {
-        "measured": 0.012174749262047948,
+        "measured": 0.012177162140636568,
         "expected": 0.012,
-        "max_error_m": 0.00017474926204794766
+        "max_error_m": 0.00017716214063656817
       }
     ],
     [
@@ -16895,7 +16895,7 @@
       "FA-403-L shell mount 3 receiver rim exists",
       true,
       {
-        "rim_vertices": 149
+        "rim_vertices": 147
       }
     ],
     [
@@ -16904,24 +16904,24 @@
       {
         "measured": [
           0.6710000038146973,
-          0.4999999982953171,
-          1.4500135283411284
+          0.49999999873777384,
+          1.450013705463285
         ],
         "expected": [
           0.671,
           0.5,
           1.45
         ],
-        "max_error_m": 1.35283411284437e-05
+        "max_error_m": 1.3705463284940933e-05
       }
     ],
     [
       "FA-403-L shell mount 3 receiver diameter",
       true,
       {
-        "measured": 0.012174749262047944,
+        "measured": 0.012177162140636565,
         "expected": 0.012,
-        "max_error_m": 0.0001747492620479442
+        "max_error_m": 0.0001771621406365647
       }
     ],
     [
@@ -17148,7 +17148,7 @@
       "FA-404-L shell mount 0 receiver rim exists",
       true,
       {
-        "rim_vertices": 213
+        "rim_vertices": 147
       }
     ],
     [
@@ -17157,24 +17157,24 @@
       {
         "measured": [
           -0.6710000038146973,
-          -0.6000074588126022,
-          0.719998478241084
+          -0.6000000238418579,
+          0.7200136919309092
         ],
         "expected": [
           -0.671,
           -0.6,
           0.72
         ],
-        "max_error_m": 7.458812602223475e-06
+        "max_error_m": 1.369193090927645e-05
       }
     ],
     [
       "FA-404-L shell mount 0 receiver diameter",
       true,
       {
-        "measured": 0.012122056914511271,
+        "measured": 0.012177159277644142,
         "expected": 0.012,
-        "max_error_m": 0.00012205691451127113
+        "max_error_m": 0.0001771592776441417
       }
     ],
     [
@@ -17354,9 +17354,9 @@
       "FA-404-L shell mount 1 land diameter",
       true,
       {
-        "measured": 0.013203019715779895,
+        "measured": 0.013203019715779888,
         "expected": 0.013,
-        "max_error_m": 0.0002030197157798959
+        "max_error_m": 0.00020301971577988895
       }
     ],
     [
@@ -17379,7 +17379,7 @@
       "FA-404-L shell mount 1 receiver rim exists",
       true,
       {
-        "rim_vertices": 213
+        "rim_vertices": 147
       }
     ],
     [
@@ -17388,24 +17388,24 @@
       {
         "measured": [
           -0.6710000038146973,
-          0.7000073855853796,
-          0.7199986704165529
+          0.699999988079071,
+          0.7200136919309092
         ],
         "expected": [
           -0.671,
           0.7,
           0.72
         ],
-        "max_error_m": 7.385585379604542e-06
+        "max_error_m": 1.369193090927645e-05
       }
     ],
     [
       "FA-404-L shell mount 1 receiver diameter",
       true,
       {
-        "measured": 0.01212178829216435,
+        "measured": 0.01217715927764414,
         "expected": 0.012,
-        "max_error_m": 0.00012178829216434942
+        "max_error_m": 0.00017715927764413997
       }
     ],
     [
@@ -17610,7 +17610,7 @@
       "FA-404-L shell mount 2 receiver rim exists",
       true,
       {
-        "rim_vertices": 149
+        "rim_vertices": 147
       }
     ],
     [
@@ -17619,24 +17619,24 @@
       {
         "measured": [
           -0.6710000038146973,
-          -0.4999999982953171,
-          1.4500135283411284
+          -0.49999999873777384,
+          1.450013705463285
         ],
         "expected": [
           -0.671,
           -0.5,
           1.45
         ],
-        "max_error_m": 1.35283411284437e-05
+        "max_error_m": 1.3705463284940933e-05
       }
     ],
     [
       "FA-404-L shell mount 2 receiver diameter",
       true,
       {
-        "measured": 0.012174749262047944,
+        "measured": 0.012177162140636565,
         "expected": 0.012,
-        "max_error_m": 0.0001747492620479442
+        "max_error_m": 0.0001771621406365647
       }
     ],
     [
@@ -17841,7 +17841,7 @@
       "FA-404-L shell mount 3 receiver rim exists",
       true,
       {
-        "rim_vertices": 149
+        "rim_vertices": 147
       }
     ],
     [
@@ -17850,24 +17850,24 @@
       {
         "measured": [
           -0.6710000038146973,
-          0.4999999982953171,
-          1.4500135283411284
+          0.49999999873777384,
+          1.450013705463285
         ],
         "expected": [
           -0.671,
           0.5,
           1.45
         ],
-        "max_error_m": 1.35283411284437e-05
+        "max_error_m": 1.3705463284940933e-05
       }
     ],
     [
       "FA-404-L shell mount 3 receiver diameter",
       true,
       {
-        "measured": 0.012174749262047944,
+        "measured": 0.012177162140636565,
         "expected": 0.012,
-        "max_error_m": 0.0001747492620479442
+        "max_error_m": 0.0001771621406365647
       }
     ],
     [
@@ -18177,6 +18177,25 @@
       }
     ],
     [
+      "FA-403-L window clears actual pitch cap extraction",
+      true,
+      {
+        "continuous_lower_bound_m": 0.03505460172891617,
+        "required_m": 0.01,
+        "translation_m": [
+          0.3,
+          0,
+          0
+        ],
+        "initial_solids_disjoint": true,
+        "lower_facet_y_range_m": null,
+        "moving_triangles": 688,
+        "narrow_triangle_pairs": 290,
+        "unresolved_pairs": 0,
+        "examples": []
+      }
+    ],
+    [
       "FA-403-L independent lateral removal",
       true,
       {
@@ -18409,6 +18428,25 @@
       }
     ],
     [
+      "FA-404-L window clears actual pitch cap extraction",
+      true,
+      {
+        "continuous_lower_bound_m": 0.03505460172891617,
+        "required_m": 0.01,
+        "translation_m": [
+          -0.3,
+          0,
+          0
+        ],
+        "initial_solids_disjoint": true,
+        "lower_facet_y_range_m": null,
+        "moving_triangles": 688,
+        "narrow_triangle_pairs": 444,
+        "unresolved_pairs": 0,
+        "examples": []
+      }
+    ],
+    [
       "FA-404-L independent lateral removal",
       true,
       {
@@ -18550,6 +18588,535 @@
       }
     ],
     [
+      "Upper plate clears cradle throughout full +Z descent",
+      true,
+      {
+        "continuous_lower_bound_m": 0.015999972820281982,
+        "required_m": 0.01,
+        "translation_m": [
+          0,
+          0,
+          3
+        ],
+        "initial_solids_disjoint": true,
+        "lower_facet_y_range_m": null,
+        "moving_triangles": 4082,
+        "narrow_triangle_pairs": 34912,
+        "unresolved_pairs": 0,
+        "examples": []
+      }
+    ],
+    [
+      "Upper locator -1 actual bounds",
+      true,
+      {
+        "measured": [
+          [
+            -0.7059999704360962,
+            1.0920000076293945,
+            0.6340000033378601
+          ],
+          [
+            -0.6740000247955322,
+            1.1080000400543213,
+            0.6739999651908875
+          ]
+        ],
+        "expected": [
+          [
+            -0.706,
+            1.092,
+            0.634
+          ],
+          [
+            -0.6739999999999999,
+            1.108,
+            0.674
+          ]
+        ],
+        "max_error_m": 4.005432119313923e-08
+      }
+    ],
+    [
+      "Upper locator -1 socket bounds",
+      true,
+      {
+        "measured": [
+          [
+            -0.7149999737739563,
+            1.0830000638961792,
+            0.6340000033378601
+          ],
+          [
+            -0.6650000214576721,
+            1.1169999837875366,
+            0.6439999938011169
+          ]
+        ],
+        "expected": [
+          [
+            -0.715,
+            1.0830000000000002,
+            0.634
+          ],
+          [
+            -0.6649999999999999,
+            1.117,
+            0.644
+          ]
+        ],
+        "max_error_m": 6.389617901447764e-08
+      }
+    ],
+    [
+      "Upper locator -1 engagement",
+      true,
+      {
+        "measured": 0.009999990463256836,
+        "expected": 0.01,
+        "max_error_m": 9.536743164270667e-09
+      }
+    ],
+    [
+      "Upper locator 1 actual bounds",
+      true,
+      {
+        "measured": [
+          [
+            0.6740000247955322,
+            1.0920000076293945,
+            0.6340000033378601
+          ],
+          [
+            0.7059999704360962,
+            1.1080000400543213,
+            0.6739999651908875
+          ]
+        ],
+        "expected": [
+          [
+            0.6739999999999999,
+            1.092,
+            0.634
+          ],
+          [
+            0.706,
+            1.108,
+            0.674
+          ]
+        ],
+        "max_error_m": 4.005432119313923e-08
+      }
+    ],
+    [
+      "Upper locator 1 socket bounds",
+      true,
+      {
+        "measured": [
+          [
+            0.6650000214576721,
+            1.0830000638961792,
+            0.6340000033378601
+          ],
+          [
+            0.7149999737739563,
+            1.1169999837875366,
+            0.6439999938011169
+          ]
+        ],
+        "expected": [
+          [
+            0.6649999999999999,
+            1.0830000000000002,
+            0.634
+          ],
+          [
+            0.715,
+            1.117,
+            0.644
+          ]
+        ],
+        "max_error_m": 6.389617901447764e-08
+      }
+    ],
+    [
+      "Upper locator 1 engagement",
+      true,
+      {
+        "measured": 0.009999990463256836,
+        "expected": 0.01,
+        "max_error_m": 9.536743164270667e-09
+      }
+    ],
+    [
+      "FA-400 lower facet -1 0.21",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet profile -1 0.21",
+      true,
+      {
+        "measured": 0.7029999494552612,
+        "expected": 0.703,
+        "max_error_m": 5.0544738727786864e-08
+      }
+    ],
+    [
+      "FA-400 lower facet -1 0.25",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet profile -1 0.25",
+      true,
+      {
+        "measured": 0.7149999737739563,
+        "expected": 0.715,
+        "max_error_m": 2.622604367008563e-08
+      }
+    ],
+    [
+      "FA-400 lower facet -1 0.3",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet profile -1 0.3",
+      true,
+      {
+        "measured": 0.7300000190734863,
+        "expected": 0.73,
+        "max_error_m": 1.907348634588857e-08
+      }
+    ],
+    [
+      "FA-400 lower facet -1 0.35",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet profile -1 0.35",
+      true,
+      {
+        "measured": 0.7300000190734863,
+        "expected": 0.73,
+        "max_error_m": 1.907348634588857e-08
+      }
+    ],
+    [
+      "FA-400 lower facet has both skins -1",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet 20 mm skin -1",
+      true,
+      {
+        "measured": 0.019991913810372353,
+        "expected": 0.02,
+        "max_error_m": 8.086189627647816e-06
+      }
+    ],
+    [
+      "FA-400 inset lower skin clears frame -1",
+      true,
+      {
+        "continuous_lower_bound_m": 0.030436575412750244,
+        "required_m": 0.01,
+        "translation_m": [
+          0,
+          0,
+          0
+        ],
+        "initial_solids_disjoint": true,
+        "lower_facet_y_range_m": [
+          1.6,
+          2.36
+        ],
+        "moving_triangles": 48,
+        "narrow_triangle_pairs": 0,
+        "unresolved_pairs": 0,
+        "examples": []
+      }
+    ],
+    [
+      "FA-400 lower facet 1 0.21",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet profile 1 0.21",
+      true,
+      {
+        "measured": 0.7029999494552612,
+        "expected": 0.703,
+        "max_error_m": 5.0544738727786864e-08
+      }
+    ],
+    [
+      "FA-400 lower facet 1 0.25",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet profile 1 0.25",
+      true,
+      {
+        "measured": 0.7150000333786011,
+        "expected": 0.715,
+        "max_error_m": 3.3378601105304995e-08
+      }
+    ],
+    [
+      "FA-400 lower facet 1 0.3",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet profile 1 0.3",
+      true,
+      {
+        "measured": 0.7300000190734863,
+        "expected": 0.73,
+        "max_error_m": 1.907348634588857e-08
+      }
+    ],
+    [
+      "FA-400 lower facet 1 0.35",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet profile 1 0.35",
+      true,
+      {
+        "measured": 0.7300000190734863,
+        "expected": 0.73,
+        "max_error_m": 1.907348634588857e-08
+      }
+    ],
+    [
+      "FA-400 lower facet has both skins 1",
+      true,
+      {}
+    ],
+    [
+      "FA-400 lower facet 20 mm skin 1",
+      true,
+      {
+        "measured": 0.02000024914741516,
+        "expected": 0.02,
+        "max_error_m": 2.491474151607165e-07
+      }
+    ],
+    [
+      "FA-400 inset lower skin clears frame 1",
+      true,
+      {
+        "continuous_lower_bound_m": 0.030436575412750244,
+        "required_m": 0.01,
+        "translation_m": [
+          0,
+          0,
+          0
+        ],
+        "initial_solids_disjoint": true,
+        "lower_facet_y_range_m": [
+          1.6,
+          2.36
+        ],
+        "moving_triangles": 48,
+        "narrow_triangle_pairs": 0,
+        "unresolved_pairs": 0,
+        "examples": []
+      }
+    ],
+    [
+      "FA-401-L lower facet -1 0.21",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet profile -1 0.21",
+      true,
+      {
+        "measured": 0.703000009059906,
+        "expected": 0.703,
+        "max_error_m": 9.05990604760376e-09
+      }
+    ],
+    [
+      "FA-401-L lower facet -1 0.25",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet profile -1 0.25",
+      true,
+      {
+        "measured": 0.7150000333786011,
+        "expected": 0.715,
+        "max_error_m": 3.3378601105304995e-08
+      }
+    ],
+    [
+      "FA-401-L lower facet -1 0.3",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet profile -1 0.3",
+      true,
+      {
+        "measured": 0.7300000190734863,
+        "expected": 0.73,
+        "max_error_m": 1.907348634588857e-08
+      }
+    ],
+    [
+      "FA-401-L lower facet -1 0.35",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet profile -1 0.35",
+      true,
+      {
+        "measured": 0.7300000190734863,
+        "expected": 0.73,
+        "max_error_m": 1.907348634588857e-08
+      }
+    ],
+    [
+      "FA-401-L lower facet has both skins -1",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet 20 mm skin -1",
+      true,
+      {
+        "measured": 0.0199901033192873,
+        "expected": 0.02,
+        "max_error_m": 9.896680712700306e-06
+      }
+    ],
+    [
+      "FA-401-L inset lower skin clears frame -1",
+      true,
+      {
+        "continuous_lower_bound_m": 0.030436575412750244,
+        "required_m": 0.01,
+        "translation_m": [
+          0,
+          0,
+          0
+        ],
+        "initial_solids_disjoint": true,
+        "lower_facet_y_range_m": [
+          -0.42,
+          1.13
+        ],
+        "moving_triangles": 76,
+        "narrow_triangle_pairs": 0,
+        "unresolved_pairs": 0,
+        "examples": []
+      }
+    ],
+    [
+      "FA-401-L lower facet 1 0.21",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet profile 1 0.21",
+      true,
+      {
+        "measured": 0.703000009059906,
+        "expected": 0.703,
+        "max_error_m": 9.05990604760376e-09
+      }
+    ],
+    [
+      "FA-401-L lower facet 1 0.25",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet profile 1 0.25",
+      true,
+      {
+        "measured": 0.7150000333786011,
+        "expected": 0.715,
+        "max_error_m": 3.3378601105304995e-08
+      }
+    ],
+    [
+      "FA-401-L lower facet 1 0.3",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet profile 1 0.3",
+      true,
+      {
+        "measured": 0.7300000190734863,
+        "expected": 0.73,
+        "max_error_m": 1.907348634588857e-08
+      }
+    ],
+    [
+      "FA-401-L lower facet 1 0.35",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet profile 1 0.35",
+      true,
+      {
+        "measured": 0.7300000190734863,
+        "expected": 0.73,
+        "max_error_m": 1.907348634588857e-08
+      }
+    ],
+    [
+      "FA-401-L lower facet has both skins 1",
+      true,
+      {}
+    ],
+    [
+      "FA-401-L lower facet 20 mm skin 1",
+      true,
+      {
+        "measured": 0.0199901033192873,
+        "expected": 0.02,
+        "max_error_m": 9.896680712700306e-06
+      }
+    ],
+    [
+      "FA-401-L inset lower skin clears frame 1",
+      true,
+      {
+        "continuous_lower_bound_m": 0.030436575412750244,
+        "required_m": 0.01,
+        "translation_m": [
+          0,
+          0,
+          0
+        ],
+        "initial_solids_disjoint": true,
+        "lower_facet_y_range_m": [
+          -0.42,
+          1.13
+        ],
+        "moving_triangles": 76,
+        "narrow_triangle_pairs": 0,
+        "unresolved_pairs": 0,
+        "examples": []
+      }
+    ],
+    [
       "Upper rear-open notch -0.5",
       true,
       {}
@@ -18626,10 +19193,10 @@
       "Foot triangle budget",
       true,
       {
-        "triangles": 435456,
+        "triangles": 435646,
         "limit": 800000
       }
     ]
   ],
-  "blend_sha256": "97360c2aca7f4905b87097589c4836fad3f2b086950a671a86688f7e0d4b854b"
+  "blend_sha256": "f60bc18feb862a8ffba4185b7c7ad31ce3536679bae38429723f2ed20733d994"
 }

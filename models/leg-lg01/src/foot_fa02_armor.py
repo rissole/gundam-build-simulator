@@ -82,6 +82,28 @@ def beam(a,b,width,material):
                  (a+b)/2,b-a)
 
 
+def cap_machining_slivers(obj):
+    """Close only triangular Boolean rims left on shallow inside folds."""
+    bm=bmesh.new();bm.from_mesh(obj.data)
+    boundary={e for e in bm.edges if e.is_boundary}
+    while boundary:
+        edge=boundary.pop();rim={edge};pending=[edge]
+        while pending:
+            for v in pending.pop().verts:
+                for other in v.link_edges:
+                    if other in boundary:boundary.remove(other);rim.add(other);pending.append(other)
+        verts=list({v for e in rim for v in e.verts})
+        assert len(rim)==len(verts)==3 and max(v.co.y for v in verts)-min(v.co.y for v in verts)<1e-6, \
+            'Unexpected non-triangular slot-end boundary'
+        assert all(.600<abs(v.co.x)<.731 and .600<v.co.z<.701 for v in verts)
+        # holes_fill can skip these narrow triangles after bore retessellation;
+        # the measured closed three-edge rim defines its cap unambiguously.
+        bm.faces.new(verts)
+    assert all(e.is_manifold for e in bm.edges),'Unexpected upper-plate machining boundary'
+    bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+    bm.to_mesh(obj.data);bm.free();obj.data.update()
+
+
 def cutter(radius,depth,p,axis=(0,0,1),segments=32):
     return cylinder(radius,depth,p,axis,segments=segments,bevel=0)
 
@@ -144,7 +166,7 @@ def side_panel(ctx,outline,sign,x=.730,material='armor',facet=.005):
     return finish(obj,wear=True)
 
 
-def folded_shell(ctx,regions,zfunc,open_y,crease=.630,drop=.060,bottom=None):
+def folded_shell(ctx,regions,zfunc,open_y,crease=.630,drop=.060,bottom=None,lower_facet=None):
     """Continuous roof/side/nose skin, thickened inward from shared fold edges.
 
     Regions only divide paint or roof slopes; they never divide the physical
@@ -167,6 +189,17 @@ def folded_shell(ctx,regions,zfunc,open_y,crease=.630,drop=.060,bottom=None):
         if key not in lookup:lookup[key]=len(vertices);vertices.append(p)
         return lookup[key]
     for outline,material in regions:
+        if lower_facet:
+            # Taper the lower fold over 80 mm before each existing plan corner.
+            # The chamfered rail-end clearances keep their original profile.
+            split=[]
+            for a,b in zip(outline,outline[1:]+outline[:1]):
+                split.append(a)
+                if abs(abs(a[0])-.730)>1e-8 or abs(a[0]-b[0])>1e-8:continue
+                cuts=[y for y in (lower_facet[0]+.080,lower_facet[1]-.080)
+                      if min(a[1],b[1])<y<max(a[1],b[1])]
+                split.extend((a[0],y) for y in sorted(cuts,reverse=b[1]<a[1]))
+            outline=split
         polys=[clip(outline,-crease,False),clip(clip(outline,-crease,True),crease,False),clip(outline,crease,True)]
         for poly in polys:
             ids=[]
@@ -181,14 +214,27 @@ def folded_shell(ctx,regions,zfunc,open_y,crease=.630,drop=.060,bottom=None):
             if edges[tuple(sorted((a,b)))]!=1:continue
             ax,ay,az=vertices[a];bx,by,bz=vertices[b]
             if any(abs(ay-y)<1e-8 and abs(by-y)<1e-8 for y in open_y):continue
-            low_a=vertex((ax,ay,bottom(ax,ay) if bottom else .200))
-            low_b=vertex((bx,by,bottom(bx,by) if bottom else .200))
-            faces.append((b,a,low_a,low_b));indices.append(material_index)
+            za=bottom(ax,ay) if bottom else .200
+            zb=bottom(bx,by) if bottom else .200
+            def inset(x,y):
+                if not lower_facet or abs(abs(x)-.730)>1e-8:return x
+                taper=max(0,min(1,(y-lower_facet[0])/.080,(lower_facet[1]-y)/.080))
+                return x-(.030 if x>0 else -.030)*taper
+            low_a=vertex((inset(ax,ay),ay,za))
+            low_b=vertex((inset(bx,by),by,zb))
+            if lower_facet:
+                shoulder_a=vertex((ax,ay,.300));shoulder_b=vertex((bx,by,.300))
+                faces.extend([(b,a,shoulder_a,shoulder_b),(shoulder_b,shoulder_a,low_a,low_b)])
+                indices.extend([material_index]*2)
+            else:
+                faces.append((b,a,low_a,low_b));indices.append(material_index)
     obj=mesh_object('Continuous folded shell',vertices,faces,
                     [ctx.materials[m] for m in materials],indices)
     bpy.context.view_layer.objects.active=obj
     mod=obj.modifiers.new('20 mm inward folded skin','SOLIDIFY')
     mod.thickness=.020;mod.offset=-1;mod.use_even_offset=True
+    if lower_facet:
+        mod.solidify_mode='EXTRUDE';mod.use_quality_normals=True
     bpy.ops.object.modifier_apply(modifier=mod.name)
     return finish(obj,wear=True)
 
@@ -204,16 +250,28 @@ def shell_meshes(ctx):
     band=[(-.730,2.240),(.730,2.240),(.730,2.360),(.690,2.400),(-.690,2.400),(-.730,2.360)]
     nose=[(-.690,2.400),(.690,2.400),(.630,2.460),(-.630,2.460)]
     toe=folded_shell(ctx,[(white,'armor'),(band,'ochre'),(nose,'ochre')],toe_z,(1.500,),
-                     bottom=lambda x,y:.200+max(0,1.580-y))
+                     bottom=lambda x,y:.200+max(0,1.580-y),lower_facet=(1.600,2.360))
 
     # Rear-open U shell. Cuts extend through every folded feature in their area.
     outline=[(x,y+.355) for x,y in chamfered_rect(1.460,1.710,.080)]
     upper=folded_shell(ctx,[(outline,'armor')],lambda y:.700,(-.500,1.210),crease=.650,drop=.080,
-                       bottom=lambda x,y:.200+max(0,y-1.130,-.420-y))
+                       bottom=lambda x,y:.200+max(0,y-1.130,-.420-y),lower_facet=(-.420,1.130))
     difference(upper,chamfered_box((1.180,1.100,.2),(0,0,.700),0))
     difference(upper,chamfered_box((.170,.320,.2),(-.535,.710,.700),0))
+    # Straight +Z clearance for the fixed guard posts, bosses and tab sockets.
+    # These open skirt slots continue through the roof; a 40 mm half-width
+    # clears the 24/25 mm receiver radii by >=15 mm. The inboard roof ligament
+    # retains the original X+/-590 rear notch. Neither plate mount nor tab moves.
+    for s in (-1,1):
+        for y0,y1 in ((-.540,-.440),(.460,.540),(.660,.830)):
+            difference(upper,chamfered_box((.210,y1-y0,.800),
+                                          (s*.730,(y0+y1)/2,.450),0))
     # One sparse 25 mm panel score; 4 mm deep in the 20 mm skin.
     difference(upper,chamfered_box((.950,.025,.010),(0,1.135,.701),.001))
+    # Exact cuts through the shallow inside fold can leave triangular slivers
+    # uncapped at a slot end. Close only those planar three-edge machining rims;
+    # the notch and clearance slots themselves remain through the solid skin.
+    cap_machining_slivers(upper)
 
     # Heel: short rear closure with front opening; sparse red caution bar.
     heel=[folded_shell(ctx,[([(-.630,-.900),(.630,-.900),(.730,-.800),(.730,-.500),
@@ -256,6 +314,12 @@ def armor(ctx):
         else:
             s=1 if pid=='FA-403-L' else -1
             sites=[((s*.730,y,z),(s,0,0)) for y,z in GUARD_SITES]
+            # One low backbone per side, outside the pitch drive, supports the
+            # unchanged four threaded seats and two locator sockets. Its top
+            # remains below the upper roof; it clears the inset skirt as well.
+            add(owner,[beam((s*.530,0,.850),(s*.530,0,.580),.028,m['gunmetal']),
+                       beam((s*.530,0,.580),(s*.650,0,.580),.028,m['gunmetal']),
+                       beam((s*.650,-.650,.580),(s*.650,.790,.580),.018,m['gunmetal'])])
         shell['attachment_count']=4;shell['tab_count']=2
         for p,n in sites:
             p,n=Vector(p),Vector(n);number+=1
@@ -287,10 +351,11 @@ def armor(ctx):
                 anchor=(p.x,-.760,min(p.z,.420));end=seat-n*.023
             else:
                 receiver=owner;s=1 if p.x>0 else -1
-                # Edge posts stay lateral, outside the moving lower shin.
-                anchor=(s*.530,0,1.100 if p.z>1 else .850)
-                elbow=(s*.660,p.y,1.080 if p.z>1 else .720)
-                supports=[beam(anchor,elbow,.028,m['gunmetal']),beam(elbow,seat-n*.023,.028,m['gunmetal'])]
+                # Route below the upper roof, then rise through its dedicated
+                # skirt slots. The old diagonal high arms crossed the plate's
+                # bolt lands during +Z removal, even after the rear relief.
+                supports=[beam((s*.650,p.y,.580),(s*.661,p.y,.580),.018,m['gunmetal']),
+                          beam((s*.661,p.y,.580),seat-n*.023,.028,m['gunmetal'])]
                 anchor=None
             if anchor:supports=[beam(anchor,end,.030,m['gunmetal'])]
             for support in supports:
@@ -320,8 +385,14 @@ def armor(ctx):
                 anchor=(p.x*.91,p.y,.420)
             elif pid=='FA-402':
                 receiver=find(ctx,'FA-100-'+('A' if p.x<0 else 'B'));anchor=(p.x*.90,-.760,.380)
-            else:receiver=owner;anchor=(p.x*.78,0,1.100)
+            else:
+                receiver=owner;s=1 if p.x>0 else -1
+                route=[(s*.650,p.y,.580),(s*.680,p.y,.580),p-n*.020]
+                add(receiver,[socket,*[beam(a,b,.018,m['gunmetal']) for a,b in zip(route,route[1:])]])
+                continue
             add(receiver,[socket,beam(anchor,p-n*.020,.018,m['gunmetal'])])
+        # Bore machining can retriangulate those same shallow slot ends.
+        if pid=='FA-401-L':cap_machining_slivers(shell)
         finish(shell,wear=True)
         if pid in {'FA-403-L','FA-404-L'}:
             # The perimeter only drops 6 mm across an 80 mm facet. Weighted

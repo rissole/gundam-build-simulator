@@ -11,27 +11,31 @@ def build(ctx):
     lateral_points=[(1.65,.455),(1.95,.455),(2.50,.550),(3.30,.755),
                     (3.95,.765),(4.25,.755),(4.65,.60)]
     lateral=profile(lateral_points)
-    front=profile([(1.65,.32),(1.95,.37),(3.95,.54),(4.45,.54),(4.67,.35)])
-    # Face at Y−1.40 around both bells; shoulder slopes to Y−.75/Z4.60.
+    front=profile([(1.65,.32),(1.95,.37),(3.95,.54),(4.50,.54),(4.60,.48)])
+    # Broad rear brow encloses the flattened cradle crown with solid clearance.
     rear=profile([(1.65,.35),(1.95,.43),(2.40,1.30),(2.62,1.34),
-                  (4.15,1.34),(4.60,.69)])
+                  (4.15,1.34),(4.40,1.20),(4.60,1.14)])
     front_edge=profile([(1.65,.40),(1.93,.53),(2.50,.60),(3.30,.71),
-                        (3.95,.735),(4.38,.64),(4.67,.38)])
-    zs=[1.65,1.93,1.95,2.50,3.30,3.95,4.25,4.38,4.45,4.65,4.67]
+                        (3.95,.735),(4.38,.69),(4.60,.60)])
+    zs=[1.65,1.93,1.95,2.50,3.30,3.95,4.25,4.38,4.50,4.60]
     outline=[(-front_edge(z),z) for z in reversed(zs)]+[(front_edge(z),z) for z in zs]
+    # Return along a lowered central saddle, instead of capping the knee gap.
+    outline += [(.50,4.60),(.28,4.36),(-.28,4.36),(-.50,4.60)]
     caution=[(-.325,1.90),(.325,1.90),(.325,2.20),(-.325,2.20),(-.325,1.90)]
-    skin=panel(ctx,outline,chamfer=0,bolts=[(-.32,1.88),(.32,1.88),(-.51,4.22),(.51,4.22)],
-               grooves=[caution,[(-.63,4.07),(-.40,4.31),(0,4.46),(.40,4.31),(.63,4.07)]],
+    skin=panel(ctx,outline,chamfer=0,bolts=[(-.25,1.97),(.25,1.97),(-.51,4.22),(.51,4.22)],
+               grooves=[caution],
                inserts=[(-.52,2.95,.16,.83),(.52,2.95,.16,.83)],
                marks=[('caution',0,2.09,.42),('unit01',.19,3.54,.22)])
     mapped(skin,'front',front)
     # Returns stop before the narrow ankle skirt to keep its existing sweep.
-    fold_zs=[1.96,2.40,2.50,2.62,3.30,3.95,4.15,4.25,4.38,4.45,4.60]
+    fold_zs=[1.96,2.40,2.50,2.62,3.30,3.95,4.15,4.25,4.38,4.50,4.60]
     skin=combine([skin,*[obj for side in (-1,1) for obj in
                          corner_returns(ctx,fold_zs,front_edge,front,lateral,side)]],
                  'Shin plate and continuous folded front corners')
-    attach(ctx,skin,'LG-400',[( (0,.44,z),(0,front(z)+.01,z)) for z in (3.22,4.44)])
-    side_zs=[1.65,1.95,2.40,2.50,2.62,3.30,3.95,4.15,4.25,4.45,4.60]
+    # The upper stand-off meets the lowered skin; beam-side land stays Z4.44.
+    attach(ctx,skin,'LG-400',[((0,.44,3.22),(0,front(3.22)+.01,3.22)),
+                             ((0,.44,4.44),(0,front(4.30)+.01,4.30))])
+    side_zs=[1.65,1.95,2.40,2.50,2.62,3.30,3.95,4.15,4.25,4.40,4.50,4.60]
     for s,pid in [(-1,'LG-410'),(1,'LG-415')]:
         outline=[(-rear(z)+.140,z) for z in reversed(side_zs)]
         outline += [(front(z)-.140,z) for z in side_zs]
@@ -62,7 +66,7 @@ def build(ctx):
         register(ctx,clean(combine([rail,pocket,*feet],'Bent ochre rail and recessed mounting pocket')),'LG-470',1 if s<0 else 2)
     rear_edge=profile([(1.65,.38),(2.08,.54),(2.62,.68),(3.30,.715),
                        (4.09,.73),(4.60,.52)])
-    rear_zs=[1.65,1.95,2.08,2.40,2.50,2.62,3.30,3.95,4.09,4.15,4.25,4.60]
+    rear_zs=[1.65,1.95,2.08,2.40,2.50,2.62,3.30,3.95,4.09,4.15,4.25,4.40,4.60]
     outline=[(-rear_edge(z),z) for z in reversed(rear_zs)]+[(rear_edge(z),z) for z in rear_zs]
     shroud=panel(ctx,outline,chamfer=0,bolts=[(-.49,2.40),(.49,2.40),(-.45,4.33),(.45,4.33)],
                  marks=[('caution',0,4.45,.35)])
@@ -79,7 +83,7 @@ def build(ctx):
     mapped(shroud,'back',rear)
     for lip in lips: mapped(lip,'back',rear)
     returns=[obj for side in (-1,1) for obj in
-             corner_returns(ctx,[1.96,2.08,2.40,2.50,2.62,3.30,3.95,4.09,4.15,4.25,4.60],
+             corner_returns(ctx,[1.96,2.08,2.40,2.50,2.62,3.30,3.95,4.09,4.15,4.25,4.40,4.60],
                             rear_edge,rear,lateral,side,True)]
     shroud=combine([shroud,*lips,*returns],'Rear shroud with sloped shoulders and exposed-bell recesses')
     attach(ctx,shroud,'LG-420',[((s*.48,-.835296,z),(s*.56,-rear(z)-.01,z)) for s in (-1,1) for z in (2.51,4.30)])

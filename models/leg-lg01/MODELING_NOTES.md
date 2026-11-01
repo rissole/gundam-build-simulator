@@ -1200,3 +1200,251 @@ python3 models/leg-lg01/src/check_viewer.py
 Plain Python auditing launches Blender to read the actual saved scene. An explicit
 `--blend PATH` can select the retained P5 snapshot; `--manifest PATH` is labelled a
 snapshot-only authoring check and cannot grant the mesh-proven envelope exceptions.
+
+
+## Viewer — P7B (2026-11-01)
+
+Polished the viewer against the production **69-step / 813-part** sequence.
+Re-exported the saved scene through `src/export_viewer.py`: **22.177 MB,
+578,046 triangles, 13 materials, 813 root nodes**. SHA-256 comparisons before
+and after confirm that `output/leg-lg01.blend`, `viewer/build-steps.json` and
+`src/sequence.py` are unchanged. No commit was made.
+
+### Display and camera decisions
+
+- **Pending ghosts default on:** a part more than one step beyond the panel's
+  current step stays at its start position with 20% opacity and 90% desaturation
+  of its paint/emission. The active and next steps render normally. Armor ghost
+  mode takes precedence at 15%; hidden armor remains hidden. Transparent parts
+  do not write depth or cast the floor shadow.
+- **Explode spread 1–3×, default 1.6×:** multiplies every authored approach offset
+  after Blender-to-glTF conversion. Scrubbing still interpolates on the same
+  approach line, with unchanged assembled endpoints. No sequence-offset edits
+  or further offset proposals are needed for these reviewed views.
+- **Follow defaults on:** fits active parts' current and assembled bounds with
+  at least 1.2 m of context, easing about 99% of the way in 0.6 s. Orbit/pan/zoom
+  retain follow but suspend it while interacting and for three seconds after
+  release; resuming preserves the user's viewing direction. Fit all switches
+  follow off. Disabling follow, step zero, exploded preview and completed builds
+  frame the whole current layout. Actual assembled framing is **84.45%** of
+  viewport height at 1280×800.
+- Active parts pulse warm ochre throughout an unfinished step, including when
+  paused, then fade for one second on arrival/step change. A previously expired
+  glow does not restart when advancing after a pause. No extra outline shells
+  were added.
+- Studio lighting uses a warm upper-front-left key, weaker cool fill,
+  RoomEnvironment intensity 0.28, ACES exposure 1.55, and a faint blurred VSM
+  floor shadow. The shadow refreshes only when positions/visibility change.
+  A broad lit thigh patch in the final JPEG samples about **#DBD4CC**, near the
+  requested #E0D8CE; gunmetal remains dark. Paint/material data in the GLB is
+  preserved.
+- Section progress is derived from the JSON: the production split is **42 foot
+  / 27 leg**, not the brief's illustrative 44/25. Mid-build therefore reads
+  **Foot 35/42 · Leg 0/27**. The part-number/name list stays grouped and scrolls.
+
+### Automated checks and inspected presentation
+
+`python3 src/verify_export.py` passes. The final
+`work/viewer-venv/bin/python src/check_viewer.py --browser` passes **553 fractional
+scrub positions, 70 panel states, all 813 moving instances**, and **252 extra
+mode combinations/samples** across 1×/1.6×/3× spread, follow on/off, pending on/off,
+and all armor modes. Maximum position error is zero. Tests also cover reverse
+scrubbing, exploded-preview restoration, coordinate conversion, playback speeds,
+keyboard/buttons, camera presets, active current/assembled bounds, three-second
+orbit suspension and direction preservation, sustained glow, arrival fade,
+whole-leg fit, and production section progress. The intentional mismatched-ID
+probe still skips the unknown part and retains the unmatched mesh assembled.
+There are **zero console/page errors** and only its two expected warnings.
+Final warm load after server readiness: **0.339 s**. See
+[export audit](output/audits/export.json) and [viewer audit](output/audits/viewer.json).
+
+Launched the executable `open-viewer.command` from `/tmp`; it opened the default
+browser and returned HTTP 200 for the page, JS, CSS, sequence and full GLB.
+Ctrl-C exited 0 and released the port. The existing launcher needed no changes.
+
+Viewed all four JPEGs in **three rounds**. Round 1 exposed dull armor and a strong
+floor shadow; rounds 2/3 adjusted exposure, shadow softness/opacity and whole-leg
+framing. Final captures:
+[start / exploded kit](output/viewer-shots/viewer-start.jpg),
+[mid / follow and persistent glow](output/viewer-shots/viewer-mid.jpg),
+[end / whole leg](output/viewer-shots/viewer-end.jpg), and
+[armor ghost / 15%](output/viewer-shots/viewer-ghost.jpg).
+The active board/sockets and their receiving foot structure are visible in the
+close view; surrounding structure may extend beyond the viewport during follow.
+The full-layout views remain unclipped. These are automated behavior checks and
+agent-inspected presentation; coordinator/user interaction acceptance is still
+separate. Re-running the browser checker regenerates all four captures; it no
+longer overrides the mid-build follow camera with a whole-leg fit.
+
+## Phase 6 round 2 — leg
+
+P6F2-LEG, 2026-11-01. Implemented review-r2 C5/C6 first, followed by
+C7/C8/C9/T5/T6/K3/K4. Edited only the four assigned generators and appended
+these notes/decisions. No commit. Built and verified in the sibling
+`models/leg-lg01-f2leg`; evidence was retained in `work/p6f2-leg` before deleting
+that scratch directory. Production output and the parallel foot/rendering sources
+were not written by this task.
+
+| Review item | Result | Implemented change |
+| --- | --- | --- |
+| C5, major | Done | Flattened the upper LG-440 fabricated ring crown to Z4.500, retaining its circular machined seat. Reformed LG-420's brow: back-skin Y−1.34 at Z4.15, −1.20 at Z4.40, −1.14 at Z4.60, plus the 60 mm outward skin. Rear rays hit white armor before structure. |
+| C6, major | Done | Replaced the central Z4.67 cap/chevron with a real saddle at X±0.28/Z4.36, descending from shoulders at X±0.50…0.60/Z4.60. A 100 mm upper shoulder facet folds into the existing corners; no roof crosses the open centre. |
+| C7 | Done | Recut the closed 650 × 300 mm caution outline at X0/Z2.05, 25 mm wide and 15 mm deep with a dark floor. Moved its two cosmetic captive bolt centres from X±0.32/Z1.88 to X±0.25/Z1.97 so the border encloses them. |
+| C8 | Done | Added two integral 50 mm axial gunmetal collars per bell, centred 0.640/0.555 m along the existing seat axis. Their inside profiles follow the flare with 2–3 mm overlap into the exterior wall, leaving the bronze lining clear. Mouths remain Ø780 at the existing 12° axes. |
+| C9 | Done | Rebuilt folded returns as explicit planar triangles at every front/rear/lateral profile station, including the new brow. Kept 35 mm backed side seams, independent apertures, bridge and rails. |
+| T5 | Done | Completed an integral chamfered 500 × 950 mm outer-side service outline centred Y−0.18/Z7.22, following the tapered skin. It clears the forward rod channel and lifting-pad opening; the red stencil sits below its border. |
+| T6 | Done | Split lower return patches at the actual profile changes, including Z6.05/6.65. Projected constant-width 25 × 15 mm grooves through the piecewise planar skin; preserved 35 mm backed seams, 1.80 m maximum width/depth and 1.32 m lower width. |
+| K3 | Done within existing width | Added 110 mm frontal guard returns at approximately |X|0.56…0.67/Y0.415…0.490/Z4.88…5.38, with folded ends. No axle, bearing-seat or recessed-cap widening. A broader authoritative knee-width decision remains open. |
+| K4 | Done | Divided the pale shield rim into intentional triangles at the Z5.17 chisel ridge. Retained X±0.39/Z4.69…5.48, Y0.85 front and Y0.61…0.64 perimeter; bracket space remains open. |
+
+The LG-400 upper stand-off now meets the lowered plate at Z4.30 while its
+beam-side land remains Z4.44. Engine seats, lip centres and joint datums did not
+move; **no `verify_interfaces.py` expected values changed**. Added collars stay
+within the previous rear bound. All new detailing remains integral to existing
+inventory meshes.
+
+### P6F2-LEG verification
+
+Blender **5.2.3 LTS**, final build **813 objects / 581,638 triangles**. All required
+commands exit **0** on the final scratch scene:
+
+```sh
+blender --background --factory-startup --python-exit-code 1 --python models/leg-lg01-f2leg/src/build.py
+blender --background models/leg-lg01-f2leg/output/leg-lg01.blend --python-exit-code 1 --python models/leg-lg01-f2leg/src/verify_scene.py -- --expect full
+blender --background models/leg-lg01-f2leg/output/leg-lg01.blend --python-exit-code 1 --python models/leg-lg01-f2leg/src/verify_interfaces.py
+blender --background models/leg-lg01-f2leg/output/leg-lg01.blend --python-exit-code 1 --python models/leg-lg01-f2leg/src/verify_envelopes.py
+blender --background models/leg-lg01-f2leg/output/leg-lg01.blend --python-exit-code 1 --python models/leg-lg01-f2leg/src/verify_mirror.py
+```
+
+Scene/mirror: 813 objects, zero failures. Interfaces: 320 top-level checks plus
+1,468 foot checks, all passing. Measured thigh width/depth **1.800/1.800 m**,
+lower width **1.320 m**; calf width **1.651557 m**, depth including nozzles
+**2.231085 m**, lower width **1.064912 m**. Existing pad-access, neutral rod
+corridor, open rear-knee and bounded ankle-clearance checks pass unchanged.
+
+The additional [local geometry audit](work/p6f2-leg/local-geometry.json) passes
+**48 checks**. Painted polygon nonplanarity is at most **0.000991 mm**, versus
+up to 32 mm reported in r2. Crown/brow surface separation above Z4.40 is
+**72.85 mm sampled / 67.85 mm conservative** after a 5 mm edge-sampling allowance;
+there are no intersecting triangles. Intended cradle/armor mount contacts below
+that region are excluded. Both rear cylinders clear the shroud by at least
+**221.80 mm** and their corresponding upper side shells by **116.51 mm**, after
+the same allowance. These are neutral local checks, not a full articulation
+sweep. Four brow rays hit LG-420 first, four saddle rays confirm the actual top
+heights, and groove-floor rays confirm the closed outlines. Ninety-six radial
+rays through the collar stations hit bronze lining before any collar material.
+
+### P6F2-LEG inspected presentation and limits
+
+Completed **two render/inspect rounds**, using the scratch copy of
+`render_compare.py --only lg01-assembled,lg01-structure`, 32 samples/full size.
+Inspected both final comparison sheets and enlarged front/side/back/three-quarter
+views against LG-01 assembled v3, armor v3 and turnaround v3. The final
+[assembled comparison](work/p6f2-leg/final/compare/cmp-lg01-assembled.jpg) and
+[structure comparison](work/p6f2-leg/final/compare/cmp-lg01-structure.jpg) show the
+continuous white brow, lowered central saddle, framed caution panel, complete
+service outline, collar bands and clean planar returns. No assigned major
+geometry mismatch remains in these inspected views.
+
+Round 1 revealed that flat face flags alone retained inappropriate custom corner
+normals after Boolean cuts/bending. LG-200 normals differed by as much as 91.6°
+and LG-400 by 42.3°. The authoritative armor helper now writes geometric face
+normals at every corner; the maximum final stored-normal discrepancy is 0.328°
+(within the 0.010-radian audit tolerance). Round 2 removes the bright diagonal
+shin patch and uneven thigh-groove shading. Its collars also avoid the initial
+plain rings' intrusion into the lining. No third render round was run.
+
+Preserved all resolved r1 leg details: fitted corners, faceted channel mouths,
+forward ochre shoulder, broad inserts, volumetric shield, recessed stepped caps,
+large exposed bells, bridge and rail depth. Preserved the drawing-error
+constraints: true thigh-to-shin cylinder span, joint/envelope datums, three lug
+carriers, open rear knee, exposed lifting pads, and no torso-owned hip guards.
+Foot geometry and its documented exceptions belong to the parallel task.
+
+The frozen renderer still has the earlier overbright thigh/bronze response and
+an occluded tone probe. These captures establish geometry inspection, not R5–R9
+acceptance or user approval. They also use the foot/rendering source snapshot
+from the start of this task; the parallel agents' later changes require an
+integrated rebuild. The retained source hashes identify that boundary.
+
+[Evidence index](work/p6f2-leg/evidence.json) records all per-item dispositions,
+source/capture hashes, logs and relocated paths. The exact audited scene is
+`work/p6f2-leg/final/leg-lg01.blend`, SHA-256
+`9ec2ea1cfa05999c6987d94c22cb4000be83f0b08dbc14f23cda06a2fe561e1d`.
+A separate [packed copy](work/p6f2-leg/final/leg-lg01-packed.blend) embeds decals
+for inspection after scratch cleanup; the audited original is unchanged.
+To reproduce from `final/src`, copy it into a sibling package under `models/`
+so repository-relative source paths still resolve. Scratch directory deleted;
+no commit or production-scene save by this task.
+
+## Phase 6 round 2 — foot
+
+2026-11-01, P6F2-FOOT. Changes are limited to `src/foot_fa02_armor.py`,
+`src/checks_foot.py`, and deletion of the single `upper-plate-locator-lift`
+entry in `src/verify_sequence.py`. **No `foot_fa02.py` edits. No commit.**
+The isolated `models/leg-lg01-f2foot` source copy was built and tested; shared
+leg sources, production scenes/comparison sheets and renderer sources were not
+modified by this task. Evidence and the tested source snapshot are retained in
+`work/p6f2-foot/`; the scratch package was deleted after review.
+
+| Review item | Result |
+| --- | --- |
+| Separate assembly limitation, major | Resolved. Dedicated upper-plate skirt/roof slots and revised integral cradle supports give a conservative **16.00 mm continuous separation bound** over the full 3 m +Z removal/descent, including the seating interval. Four plate bolt axes and both 10 mm-engagement tabs are unchanged. The actual-contact exception is removed; the sequence audit passes with only independently mesh-checked nonconvex-box exceptions. |
+| F4, lower shell sides | Resolved for the new lateral folds: Z200…300, outer X±730 at the shoulder and X±700 at the lower edge, with nominal 20 mm skin. The inset tapers over 80 mm before the existing plan corners. Measured new-facet/frame separation is at least **30.44 mm**; the existing rail-end/chamfer profile is retained. Roof datums, rear-open notch, actuator relief and hinge channel remain intact. |
+| F5, guard thickness | Unchanged/open. Walls remain X±710…730, with Z1600 crowns and the existing bolt seats. Substantial front-facing returns require a revised guard/moving-core clearance contract. |
+| R2 resolved foot items / constraints | F1 continuous roof/side corners, F2 visible pitch caps and F3 guard facets/recessed wells are retained. Five shells, four captive bolts per shell, two carriers, six pads, toe-only ochre, the open ankle notch and unbridged hinge channel are preserved. |
+
+Receiver/relief ledger (metres, leg-local coordinates):
+
+- FA-401-L: cut three vertical corridors on each side from |X|0.625 outward,
+  at Y−0.540…−0.440, +0.460…+0.540 and +0.660…+0.830. The original
+  X±0.590 rear notch remains, with a 35 mm inboard roof ligament beside the
+  high-receiver corridors. Slot-end triangular Boolean slivers are explicitly
+  capped before and after bore machining; caps close the skin, not the slots.
+- FA-103-L receives one integral 18 mm backbone per side at X±0.650/Z0.580,
+  Y−0.650…+0.790, fed from (±0.530,0,0.850) down to Z0.580 and laterally
+  to the backbone. Short branches feed the unchanged threaded seats via posts
+  at X±0.661 and the unchanged guard-tab sockets via X±0.680 posts. No new
+  inventory objects, seat axes or guard dimensions. Z0.580 clears the earlier
+  FA-221-B.003 forefoot eye-pin approach; the rejected Z0.510 routing did not.
+- No base-cradle, rail or receiver edits were made in `foot_fa02.py`.
+
+The new continuous check sweeps every actual upper-plate triangle into a convex
+prism and bounds its distance to every cradle triangle using separating
+projections, with an initial connected-solid containment/intersection check.
+It is independent of the sequence audit's ten-percent sampling and seating
+exemption. The original scene fails this check. Added checks also measure the
+upper locator solids/socket engagement, facet profiles/thickness/frame clearance,
+and actual pitch-cap extraction through both guard windows (35.05/55.00 mm
+conservative separation over 300 mm lateral travel). The existing 231-pose
+shin/guard/receiver check remains active.
+
+Acceptance on the saved scratch build: **all exit 0** — `build.py`,
+`sequence.py`, `verify_scene.py -- --expect full`, `verify_interfaces.py`,
+`verify_envelopes.py`, `verify_mirror.py`, `verify_sequence.py`, and
+`render_compare.py -- --only fa02-assembled,fa02-armor`. The model contains
+813 instances / 578,236 triangles; interfaces include **1,521 passing foot
+checks** and the sequence covers 69 steps. All five audit reports and the render
+receipt identify scene SHA-256
+`1455fe90298f2d19fddb0aaf1ed589cd7e045a95ea866bd53fa0669e7c407fcb`.
+Command exit codes, source/image hashes and the continuous-clearance proof are in
+[`work/p6f2-foot/receipt.json`](work/p6f2-foot/receipt.json).
+
+Rendered inspection: **one render round, zero render-fix rounds**. Inspected
+[`cmp-fa02-assembled.jpg`](work/p6f2-foot/compare/cmp-fa02-assembled.jpg) and
+[`cmp-fa02-armor.jpg`](work/p6f2-foot/compare/cmp-fa02-armor.jpg), then the full-size
+side and three-quarter views. The lower facets and their corner tapers are
+readable; the intentional receiver slots remain visible, with connected roof
+ligaments. Pitch-cap windows, closed roof corners and broad guard facets/wells
+remain intact. F5 remains visually thin as expected. Lighting/finish and compact
+exploded layout remain with the separate rendering work. Concurrent leg/render
+changes require their own integrated verification.
+
+Scope limit discovered during F4 fitting: the original, unmodified scene already
+has toe/front-upper plan-chamfer contacts with rail ends (see
+`work/p6f2-foot/corner-baseline.log`). The new inset ends before those corners;
+its clearance check covers the changed lateral facets and tapers, not a new
+whole-foot interference certification. Those baseline contacts need a separate
+rail/chamfer repair. Existing actuator/frame contacts and full articulation/tool
+clearance are likewise not certified by this plate-to-cradle fix. These findings
+do not reinstate the removed upper-plate path exception.

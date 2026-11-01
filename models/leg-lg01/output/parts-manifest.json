@@ -25,7 +25,7 @@
     0.0
   ],
   "object_count": 813,
-  "triangles": 578046,
+  "triangles": 581828,
   "parts": [
     {
       "instance_id": "LG-120.spar-with-integral-hip-neck-and-ball.01",
@@ -1244,9 +1244,9 @@
       "bbox_max": [
         0.571685254573822,
         -0.1881968379020691,
-        4.62864351272583
+        4.5
       ],
-      "triangles": 4748,
+      "triangles": 4772,
       "object_name": "LG-440.thruster-cradle.01 Thruster cradle"
     },
     {
@@ -1263,7 +1263,7 @@
         0.0
       ],
       "bbox_min": [
-        -0.3899998664855957,
+        -0.39500001072883606,
         -1.63108491897583,
         3.4985222816467285
       ],
@@ -1272,7 +1272,7 @@
         -0.48783615231513977,
         4.4014573097229
       ],
-      "triangles": 6024,
+      "triangles": 7560,
       "object_name": "LG-450.calf-thruster-unit-engine-body-with-bell-nozzle.01 Calf thruster unit (engine body with bell nozzle)"
     },
     {
@@ -1289,7 +1289,7 @@
         0.0
       ],
       "bbox_min": [
-        -0.3899998664855957,
+        -0.39500001072883606,
         -1.63108491897583,
         2.348522663116455
       ],
@@ -1298,7 +1298,7 @@
         -0.48783615231513977,
         3.251457452774048
       ],
-      "triangles": 6024,
+      "triangles": 7560,
       "object_name": "LG-450.calf-thruster-unit-engine-body-with-bell-nozzle.02 Calf thruster unit (engine body with bell nozzle)"
     },
     {
@@ -3664,7 +3664,7 @@
         0.89000004529953,
         1.474000096321106
       ],
-      "triangles": 9952,
+      "triangles": 9760,
       "object_name": "FA-103-L.001 Fixed ankle cradle with outer actuator outrigger"
     },
     {
@@ -16976,7 +16976,7 @@
         0.8999999761581421,
         8.229999542236328
       ],
-      "triangles": 2754,
+      "triangles": 2784,
       "object_name": "LG-200.thigh-front-plate.01 Thigh front plate"
     },
     {
@@ -17002,7 +17002,7 @@
         0.699999988079071,
         8.210000038146973
       ],
-      "triangles": 2332,
+      "triangles": 2474,
       "object_name": "LG-210.thigh-outer-side-plate.01 Thigh outer side plate"
     },
     {
@@ -17028,7 +17028,7 @@
         0.699999988079071,
         8.210000038146973
       ],
-      "triangles": 2274,
+      "triangles": 2292,
       "object_name": "LG-215.thigh-inner-side-plate.01 Thigh inner side plate"
     },
     {
@@ -17054,7 +17054,7 @@
         -0.30033332109451294,
         8.210000038146973
       ],
-      "triangles": 1658,
+      "triangles": 1676,
       "object_name": "LG-220.thigh-rear-cover-outer.01 Thigh rear cover outer"
     },
     {
@@ -17080,7 +17080,7 @@
         -0.30033332109451294,
         8.210000038146973
       ],
-      "triangles": 1652,
+      "triangles": 1670,
       "object_name": "LG-225.thigh-rear-cover-inner.01 Thigh rear cover inner"
     },
     {
@@ -17129,10 +17129,10 @@
       ],
       "bbox_max": [
         -0.5149999856948853,
-        0.41999998688697815,
+        0.49000000953674316,
         5.590000152587891
       ],
-      "triangles": 1080,
+      "triangles": 1116,
       "object_name": "LG-320.knee-side-guard-outer.01 Knee side guard outer"
     },
     {
@@ -17181,10 +17181,10 @@
       ],
       "bbox_max": [
         0.6700000166893005,
-        0.41999998688697815,
+        0.49000000953674316,
         5.590000152587891
       ],
-      "triangles": 1080,
+      "triangles": 1116,
       "object_name": "LG-325.knee-side-guard-inner.01 Knee side guard inner"
     },
     {
@@ -17229,14 +17229,14 @@
       "bbox_min": [
         -0.8050000071525574,
         0.14585000276565552,
-        1.6500000953674316
+        1.649999976158142
       ],
       "bbox_max": [
         0.8050000071525574,
         0.6000000238418579,
-        4.670000076293945
+        4.599999904632568
       ],
-      "triangles": 2546,
+      "triangles": 2658,
       "object_name": "LG-400.front-shin-plate.01 Front shin plate"
     },
     {
@@ -17262,7 +17262,7 @@
         0.4000000059604645,
         4.599999904632568
       ],
-      "triangles": 2168,
+      "triangles": 2190,
       "object_name": "LG-410.calf-side-shell-outer.01 Calf side shell outer"
     },
     {
@@ -17340,7 +17340,7 @@
         0.4000000059604645,
         4.599999904632568
       ],
-      "triangles": 2168,
+      "triangles": 2190,
       "object_name": "LG-415.calf-side-shell-inner.01 Calf side shell inner"
     },
     {
@@ -17418,7 +17418,7 @@
         -0.22433333098888397,
         4.599999904632568
       ],
-      "triangles": 1914,
+      "triangles": 1956,
       "object_name": "LG-420.rear-engine-shroud.01 Rear engine shroud"
     },
     {
@@ -19498,7 +19498,7 @@
         2.4600000381469727,
         0.6000000238418579
       ],
-      "triangles": 3764,
+      "triangles": 3860,
       "object_name": "FA-400.toe-cap.01 Toe cap"
     },
     {
@@ -19836,7 +19836,7 @@
         1.2100000381469727,
         0.699999988079071
       ],
-      "triangles": 3796,
+      "triangles": 4082,
       "object_name": "FA-401-L.upper-foot-plate.01 Upper foot plate"
     },
     {

@@ -2,7 +2,7 @@
 from kit import combine, tube, cylinder, difference, mesh_object
 from kit.plates import inset_outline
 from thigh import register, box
-from thigh_armor import panel, mapped, attach, profile, clean
+from thigh_armor import panel, mapped, attach, profile, clean, folded_strip
 
 
 def build(ctx):
@@ -35,8 +35,10 @@ def build(ctx):
     n=len(outline); faces=[]
     for i in range(n):
         j=(i+1)%n
-        faces.extend([(i,j,n+j,n+i),(2*n+i,3*n+i,3*n+j,2*n+j),
-                      (i,2*n+i,2*n+j,j),(n+i,n+j,3*n+j,3*n+i)])
+        patches=[(i,j,n+j,n+i),(2*n+i,3*n+i,3*n+j,2*n+j),
+                 (i,2*n+i,2*n+j,j),(n+i,n+j,3*n+j,3*n+i)]
+        for a,b,c,d in patches:
+            faces.extend([(a,b,c),(a,c,d)])
     rim=clean(mesh_object('Pale folded kneecap returns',verts,faces,m['armor']))
     shield=combine([shield,rim],'Ochre chisel shield with pale folded rim')
     attach(ctx,shield,'LG-300',[( (x,.54,5.04),(x,.76,5.04)) for x in (-.15,.15)])
@@ -48,6 +50,14 @@ def build(ctx):
         # Sculpt the central guard land inward; outer perimeter stays |X|.67.
         # Facets span 60–80 mm outside the recessed concentric bearing cover.
         mapped(guard,'side',profile([(4.62,.580),(4.88,.610),(5.35,.610),(5.59,.580)]),s)
+        # 110 mm front-facing return adds joint mass beside the shield without
+        # widening the bearing/axle. Ends fold back to the original guard edge.
+        rows=[((s*x,.415,z),(s*inner,y,z)) for z,x,inner,y in
+              [(4.82,.654,.610,.440),(4.88,.670,.560,.490),
+               (5.35,.670,.560,.490),(5.38,.666,.560,.490),
+               (5.44,.658,.610,.440)]]
+        guard=combine([guard,folded_strip(rows,m['armor'],'Knee guard front return',.025)],
+                      'Faceted guard and frontal return')
         attach(ctx,guard,pid,[((s*.515,y,z),(s*.62,y,z)) for y,z in [(.25,5.34),(.25,4.92)]])
         cover=combine([tube(.274,.239,.045,(s*.6025,0,5.10),(1,0,0),64,.006,m['gunmetal']),
                        tube(.238,.206,.026,(s*.616,0,5.10),(1,0,0),64,.004,m['steel']),

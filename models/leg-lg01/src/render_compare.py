@@ -36,10 +36,10 @@ def arguments():
     parser.add_argument('--only', default=','.join(NAMES), metavar='NAME[,NAME]')
     parser.add_argument('--samples', type=int, default=32)
     parser.add_argument('--res-scale', type=float, default=1.0)
-    parser.add_argument('--key-energy', type=float, default=1850)
-    parser.add_argument('--fill-ratio', type=float, default=.30)
-    parser.add_argument('--rim-energy', type=float, default=500)
-    parser.add_argument('--world-strength', type=float, default=.055)
+    parser.add_argument('--key-energy', type=float, default=1170)
+    parser.add_argument('--fill-ratio', type=float, default=.72)
+    parser.add_argument('--rim-energy', type=float, default=350)
+    parser.add_argument('--world-strength', type=float, default=.045)
     parser.add_argument('--exposure', type=float, default=0)
     parser.add_argument('--view-transform', choices=('Standard', 'AgX'), default='Standard')
     parser.add_argument('--work', type=Path, default=WORK)
@@ -61,30 +61,21 @@ def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def placeholder(value):
-    if isinstance(value, dict):
-        return value.get('placeholder') is True or any(placeholder(v) for v in value.values())
-    return isinstance(value, list) and any(placeholder(v) for v in value)
-
-
-def offsets():
-    path = PACKAGE / 'viewer' / 'build-steps.json'
-    if not path.exists():
-        return {}, {'mode': 'radial fallback', 'reason': 'No build-steps.json'}
-    data = json.loads(path.read_text())
-    if placeholder(data) or not data.get('steps'):
-        return {}, {'mode': 'radial fallback', 'reason': 'Placeholder or empty build steps'}
-    result = {}
-    for step in data['steps']:
-        for item in step['installs']:
-            direction = item['approach']
-            distance = item['offset']
-            if len(direction) != 3 or not all(math.isfinite(v) for v in direction):
-                raise ValueError(f'Invalid approach: {item}')
-            if not math.isfinite(distance) or distance < 0:
-                raise ValueError(f'Invalid explosion distance: {item}')
-            result[item['instance_id']] = [v * distance * .5 for v in direction]
-    return result, {'mode': 'build steps × 0.5', 'sha256': sha256(path), 'steps': len(data['steps'])}
+# These coordinates are display centres in the camera plane (right, up).
+# They are not approaches, snap poses or a proposed installation sequence.
+LEG_LAYOUT = {
+    'LG-200': (-5.0, 7.3), 'LG-210': (-2.7, 7.3),
+    'LG-215': (2.5, 7.3), 'LG-220': (4.2, 7.3), 'LG-225': (5.7, 7.3),
+    'LG-300': (-5.0, 5.1), 'LG-320': (-2.7, 5.1), 'LG-325': (2.5, 5.1),
+    'LG-400': (-5.0, 2.7), 'LG-410': (-2.7, 2.7), 'LG-415': (2.5, 2.7),
+    'LG-420': (4.8, 2.7), 'LG-430': (4.8, .45),
+}
+FOOT_LAYOUT = {
+    'FA-400': (-4.6, 3.5), 'FA-401-L': (-2.2, 3.5), 'FA-402': (0, 3.5),
+    'FA-403-L': (2.2, 3.5), 'FA-404-L': (4.6, 3.5),
+    'FA-300': (-3.5, .1), 'FA-301': (3.5, .1),
+}
+PADS = {'FA-302', 'FA-303', 'FA-304'}
 
 
 def is_foot(obj):
@@ -136,13 +127,13 @@ def setup_studio(scene, args):
     collection.objects.link(camera)
     camera.data.clip_start = .01
     camera.data.clip_end = 250
-    camera.data.lens = 50
+    camera.data.lens = 120
     scene.camera = camera
     lights = []
-    # Camera-left is +X in the front view. One soft key at 45° az / 35° el;
-    # the opposite fill is about one quarter of its power at the same distance.
+    # Camera-left is +X in the front view. One soft key at 45° az / 25° el;
+    # the opposing fill preserves shade detail without flattening the folds.
     for name, delta, energy, size in (
-            ('Key / upper left', (.57923, .57923, .57358), args.key_energy, .50),
+            ('Key / upper left', (.64086, .64086, .42262), args.key_energy, .50),
             ('Fill', (-.68301, .68301, .25882), args.key_energy * args.fill_ratio, .60),
             ('Rim / back', (-.6064, -.7762, .17365), args.rim_energy, .40)):
         light_data = bpy.data.lights.new(name, 'AREA')
@@ -201,65 +192,227 @@ def prepare_facets(parts):
     return audit
 
 
-def tone_points(scene, camera, parts, resolution):
-    """Hit known part surfaces, then project them; never hand-pick render pixels.
+def tone_points(scene, camera, parts, resolution, oblique=False):
+    """Geometry anchors, validated over the entire patch, without reading pixels.
 
-    The front view cannot see a side bearing face, so its knee sample uses the
-    exposed front of the hinge. The oblique view samples the outer bearing.
-    Occlusion and first-hit material are recorded to reject invalid samples.
+    Front shade is the visible LG-200 outer fold, not the concealed LG-210
+    return. Oblique shade is LG-210's broad outer skin. Missing/occluded/wrong
+    material patches remain explicit failures; no brightness-based reselection.
     """
     from mathutils import Vector
     from bpy_extras.object_utils import world_to_camera_view
     specs = {
-        'lit_thigh': ('LG-200', (0, 3, 7.0), (0, -1, 0)),
-        'shaded_thigh': ('LG-210', (-.85, 3, 7.0), (0, -1, 0)),
-        'ochre_kneecap': ('LG-300', (0, 3, 5.10), (0, -1, 0)),
-        'calf_front': ('LG-400', (0, 3, 3.30), (0, -1, 0)),
+        'lit_thigh': ('LG-200', (0, 3, 7), (0, -1, 0), '#D2C8BC'),
+        'shaded_thigh': ('LG-200', (-.82, 3, 7), (0, -1, 0), '#D2C8BC'),
+        'ochre_kneecap': ('LG-300', (0, 3, 5.10), (0, -1, 0), '#D4861D'),
+        'calf_front': ('LG-400', (0, 3, 3.30), (0, -1, 0), '#D2C8BC'),
+        'dark_knee': ('LG-110', (-.43, 3, 5.10), (0, -1, 0), '#4C4C4B'),
     }
-    if camera.data.type == 'PERSP':
-        specs['shaded_thigh'] = ('LG-210', (-3, -.25, 7.0), (1, 0, 0))
+    if oblique:
+        specs['shaded_thigh'] = ('LG-210', (-3, -.25, 7), (1, 0, 0), '#D2C8BC')
+        specs['dark_knee'] = ('LG-330', (-3, 0, 5.10), (1, 0, 0), '#4C4C4B')
     depsgraph = scene.view_layers[0].depsgraph
     result = {}
-    for name, (pid, origin, direction) in specs.items():
-        obj = next(o for o in parts if o.get('part_id') == pid)
+    rotation = camera.rotation_euler.to_quaternion()
+    ray = rotation @ Vector((0, 0, -1))
+    pixel_size = camera.data.ortho_scale / max(resolution)
+    for name, (pid, origin, direction, palette) in specs.items():
+        row = {'part_id': pid, 'expected_palette': palette, 'valid': False}
+        result[name] = row
+        obj = next((o for o in parts if o.get('part_id') == pid), None)
+        if obj is None:
+            row['error'] = 'MISSING PART'; continue
         inv = obj.matrix_world.inverted()
         hit, local, normal, index = obj.ray_cast(inv @ Vector(origin), inv.to_3x3() @ Vector(direction))
         if not hit:
-            # A diagnostic probe must not block rendering after geometry changes.
-            print(f'WARNING: tone anchor misses {pid}: {name}')
-            result[name] = {'part_id': pid, 'missed': True}
-            continue
+            row['error'] = 'MISSED ANCHOR'; continue
         point = obj.matrix_world @ local
         p = world_to_camera_view(scene, camera, point)
-        # Cast from the actual camera ray (parallel for orthographic cameras).
-        ray = (point - camera.location).normalized() if camera.data.type == 'PERSP' else camera.rotation_euler.to_quaternion() @ Vector((0, 0, -1))
-        hit2, co2, _, face2, obj2, _ = scene.ray_cast(depsgraph, point - ray * 30, ray)
-        result[name] = {'part_id': pid, 'instance_id': obj['instance_id'],
-                        'world': list(point), 'normal': list(normal),
-                        'pixel': [round(p.x * resolution[0]), round((1-p.y) * resolution[1])],
-                        'radius': (max(1, round(resolution[0] / 820)) if name == 'shaded_thigh' and camera.data.type == 'ORTHO'
-                                   else max(2, round(4 * resolution[0] / 820))),
-                        'visible': bool(hit2 and (co2 - point).length < .025),
-                        'first_hit': obj2.get('instance_id') if hit2 else None,
-                        'material': obj.data.materials[obj.data.polygons[index].material_index].name}
-    # A camera-visible gunmetal patch on the knee hinge, with the same projection
-    # and occlusion validation as the painted patches.
-    pid = 'LG-330' if camera.data.type == 'PERSP' else 'LG-110'
-    obj = next((o for o in parts if o.get('part_id') == pid), None)
-    if obj:
-        origin, direction = ((-3, 0, 5.10), (1, 0, 0)) if pid == 'LG-330' else ((-.43, 3, 5.10), (0, -1, 0))
-        inv = obj.matrix_world.inverted()
-        hit, co, _, index = obj.ray_cast(inv @ Vector(origin), inv.to_3x3() @ Vector(direction))
-        if hit:
-            point = obj.matrix_world @ co
-            p = world_to_camera_view(scene, camera, point)
-            ray = (point-camera.location).normalized() if camera.data.type == 'PERSP' else Vector((0,-1,0))
-            h, c, _, _, o, _ = scene.ray_cast(depsgraph, point-ray*30, ray)
-            result['dark_knee'] = {'part_id': pid, 'instance_id': obj['instance_id'], 'world': list(point),
-                'pixel': [round(p.x*resolution[0]),round((1-p.y)*resolution[1])],
-                'radius': max(2,round(4*resolution[0]/820)), 'visible':bool(h and (c-point).length<.025),
-                'first_hit':o.get('instance_id') if h else None,
-                'material':obj.data.materials[obj.data.polygons[index].material_index].name}
+        material = obj.data.materials[obj.data.polygons[index].material_index]
+        radius = max(1, round(resolution[0] / 820)) if name == 'shaded_thigh' and not oblique else max(2, round(4 * resolution[0] / 820))
+        # Validate every pixel footprint, including half a pixel for rounding.
+        hits = []
+        for dx in range(-radius-1, radius+2):
+            for dy in range(-radius-1, radius+2):
+                offset = rotation @ Vector((dx * pixel_size, dy * pixel_size, 0))
+                origin2 = point + offset - ray * 30
+                h, co, _, face, first, _ = scene.ray_cast(depsgraph, origin2, ray)
+                matching = bool(h and first.get('instance_id') == obj['instance_id'])
+                if matching:
+                    matching = first.data.materials[first.data.polygons[face].material_index].get('palette_srgb') == palette
+                hits.append(matching)
+        visible = all(hits)
+        row.update(instance_id=obj['instance_id'], world=list(point), normal=list(normal),
+                   pixel=[round(p.x * resolution[0]), round((1-p.y) * resolution[1])],
+                   radius=radius, visible=visible, material=material.name,
+                   matching_rays=sum(hits), patch_rays=len(hits),
+                   valid=visible and material.get('palette_srgb') == palette and 0 < p.x < 1 and 0 < p.y < 1)
+        if not row['valid']:
+            row['error'] = 'OCCLUDED / WRONG MATERIAL / OUTSIDE FRAME'
+    for name, row in result.items():
+        if not row['valid']:
+            print(f"TONE PROBE FAILURE: {name}: {row.get('error')}", flush=True)
+    return result
+
+
+def prepare_finish(parts):
+    """Unsaved material/attribute overrides; no vertex or fastener changes.
+
+    The source material factors stay glTF compatible. Cavity AO is a studio
+    shader only, applied to bronze; dark foot well floors reuse Dark recess.
+    """
+    import bpy
+    from mathutils import Vector
+    sys.path.insert(0, str(SRC))
+    from materials import PALETTE
+    audit = {'material_factors': {}, 'dark_well_faces': {}, 'wear_corners': {}}
+    for _, (name, palette, metal, rough) in PALETTE.items():
+        mat = bpy.data.materials.get('LG01 ' + name)
+        if not mat: continue
+        bsdf = next(n for n in mat.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+        bsdf.inputs['Metallic'].default_value = metal
+        bsdf.inputs['Roughness'].default_value = rough
+        audit['material_factors'][name] = {'palette': palette, 'metallic': metal, 'roughness': rough}
+        if palette == '#A77738':
+            nodes, links = mat.node_tree.nodes, mat.node_tree.links
+            ao = nodes.new('ShaderNodeAmbientOcclusion')
+            ao.inputs['Distance'].default_value = .85
+            ao.only_local = True
+            power = nodes.new('ShaderNodeMath'); power.operation = 'POWER'
+            power.inputs[1].default_value = 2.5
+            links.new(ao.outputs['AO'], power.inputs[0])
+            multiply = nodes.new('ShaderNodeMixRGB'); multiply.blend_type = 'MULTIPLY'
+            multiply.inputs[0].default_value = 1
+            multiply.inputs[1].default_value = bsdf.inputs['Base Color'].default_value
+            cavity = nodes.new('ShaderNodeVertexColor'); cavity.layer_name = 'NozzleCavity'
+            attenuation = nodes.new('ShaderNodeMath'); attenuation.operation = 'MULTIPLY'
+            links.new(power.outputs[0], attenuation.inputs[0])
+            links.new(cavity.outputs['Color'], attenuation.inputs[1])
+            links.new(attenuation.outputs[0], multiply.inputs[2])
+            links.new(multiply.outputs[0], bsdf.inputs['Base Color'])
+            audit['bronze_cavity'] = {'distance_m': .85, 'power': 2.5, 'only_local': True, 'axial_cavity_floor': .025, 'axial_exponent': 3.0}
+    recess = bpy.data.materials.get('LG01 Dark recess')
+    for obj in parts:
+        if obj.get('part_id') == 'LG-450':
+            obj.data = obj.data.copy()
+            mesh = obj.data
+            axis = Vector((0, -math.cos(math.radians(12)), -math.sin(math.radians(12))))
+            bronze_faces = [f for f in mesh.polygons if mesh.materials[f.material_index].get('palette_srgb') == '#A77738']
+            depths = [(obj.matrix_world @ mesh.vertices[v].co).dot(axis) for f in bronze_faces for v in f.vertices]
+            low, high = min(depths), max(depths)
+            cavity = mesh.color_attributes.new(name='NozzleCavity', type='FLOAT_COLOR', domain='CORNER')
+            for face in bronze_faces:
+                for loop in face.loop_indices:
+                    point = obj.matrix_world @ mesh.vertices[mesh.loops[loop].vertex_index].co
+                    t = max(0, min(1, (point.dot(axis)-low)/(high-low)))
+                    value = .025 + .975*t**3
+                    cavity.data[loop].color = (value,value,value,1)
+        if not is_shell(obj): continue
+        obj.data = obj.data.copy()
+        mesh = obj.data
+        wear = mesh.color_attributes.get('Wear')
+        touched = 0
+        if wear:
+            for face in mesh.polygons:
+                mat = mesh.materials[face.material_index]
+                if not mat or mat.get('palette_srgb') not in {'#D2C8BC', '#D4861D'}: continue
+                for loop in face.loop_indices:
+                    value = wear.data[loop].color[0]
+                    if .90 < value < .995:
+                        # The source heuristic treats all sloped faces as wear;
+                        # reserve it for small lands/edges, not whole sloped plates.
+                        amount = 1 if face.area > .03 else 1 - 1.65 * (1 - value)
+                        wear.data[loop].color = (amount, amount, amount, 1)
+                        touched += 1
+        audit['wear_corners'][obj['instance_id']] = touched
+        pid = obj.get('part_id')
+        if pid not in SHELLS or recess is None: continue
+        if pid in {'FA-403-L', 'FA-404-L'}:
+            sign = 1 if pid == 'FA-403-L' else -1
+            sites = [(Vector((sign*.730, y, z)), Vector((sign,0,0)), .067)
+                     for y,z in ((-.600,.720),(.700,.720),(-.500,1.450),(.500,1.450))]
+        elif pid == 'FA-400':
+            sites = [(Vector((x,y,.600-(y-1.500)*(.080/.900))),Vector((0,0,1)),.027)
+                     for x in (-.560,.560) for y in (1.630,2.310)]
+        elif pid == 'FA-401-L':
+            sites = [(Vector((x,y,.700)),Vector((0,0,1)),.027)
+                     for x in (-.650,.650) for y in (-.300,1.060)]
+        else:
+            sites = [(Vector((x,-.900,z)),Vector((0,-1,0)),.027)
+                     for x in (-.560,.560) for z in (.300,.500)]
+        slot = next((i for i,m in enumerate(mesh.materials) if m == recess), None)
+        if slot is None:
+            slot = len(mesh.materials); mesh.materials.append(recess)
+        count = 0
+        for face in mesh.polygons:
+            mat = mesh.materials[face.material_index]
+            if not mat or mat.get('palette_srgb') != '#D2C8BC': continue
+            center = obj.matrix_world @ face.center
+            for site, normal, radius in sites:
+                delta = center-site; depth = -delta.dot(normal)
+                radial = (delta + normal*depth).length
+                if .0015 < depth < .047 and radial < radius:
+                    face.material_index = slot; count += 1; break
+        audit['dark_well_faces'][obj['instance_id']] = count
+    return audit
+
+
+def display_layout(parts, kind, camera):
+    """Space silhouettes in the view plane; attached hardware follows its owner."""
+    from mathutils import Vector, Matrix
+    import bpy
+    q = camera.rotation_euler.to_quaternion()
+    right, up = q @ Vector((1,0,0)), q @ Vector((0,1,0))
+    layout = LEG_LAYOUT if kind == 'leg-exploded' else FOOT_LAYOUT
+    original = {o['instance_id']:o.matrix_world.copy() for o in parts}
+    by_id = {o['instance_id']:o for o in parts}
+    transforms = {}
+    pads = sorted((o for o in parts if o.get('part_id') in PADS), key=lambda o:o['instance_id'])
+    for obj in parts:
+        if obj.hide_render: continue
+        pid = obj.get('part_id'); position = layout.get(pid)
+        if kind == 'leg-exploded' and pid == 'LG-450':
+            position = (7.1, 3.8 if obj['instance_id'].endswith('.01') else 2.0)
+        if kind == 'foot-pads':
+            position = ((pads.index(obj)-2.5)*1.7, 0) if pid in PADS else None
+        if position is None: continue
+        center = sum(world_corners(obj), Vector())/8
+        rotation = Matrix.Identity(4)
+        if kind == 'leg-exploded' and pid in {'LG-215','LG-220','LG-225','LG-415','LG-420','LG-430','LG-450'}:
+            rotation = Matrix.Translation(center) @ Matrix.Rotation(math.pi,4,'Z') @ Matrix.Translation(-center)
+        delta = right*(position[0]-center.dot(right)) + up*(position[1]-center.dot(up))
+        transforms[obj['instance_id']] = Matrix.Translation(delta) @ rotation
+    # Leg service modules have no owner metadata in the shared scene. Their
+    # matching side-shell relationship is explicit and uses the same transform.
+    for obj in parts:
+        if kind == 'leg-exploded' and obj.get('part_id') in {'LG-460', 'LG-470'}:
+            pid = 'LG-410' if obj['instance_id'].endswith('.01') else 'LG-415'
+            owner = next(o for o in parts if o.get('part_id') == pid)
+            transforms[obj['instance_id']] = transforms[owner['instance_id']]
+    for _ in range(5):
+        for obj in parts:
+            owner = obj.get('owner_instance')
+            if owner in transforms and obj['instance_id'] not in transforms:
+                transforms[obj['instance_id']] = transforms[owner]
+    for iid, transform in transforms.items():
+        by_id[iid].matrix_world = transform @ original[iid]
+    bpy.context.view_layer.update()
+    return {iid:[list(row) for row in transform] for iid,transform in transforms.items()}
+
+
+def label_points(scene, camera, parts, resolution, kind):
+    from bpy_extras.object_utils import world_to_camera_view
+    ids = set(LEG_LAYOUT) | {'LG-450'} if kind == 'leg-exploded' else set(FOOT_LAYOUT)
+    if kind == 'foot-pads': ids = PADS
+    result = []
+    for obj in parts:
+        if obj.hide_render or obj.get('part_id') not in ids: continue
+        pts = [world_to_camera_view(scene,camera,p) for p in world_corners(obj)]
+        box = [min(p.x for p in pts)*resolution[0], (1-max(p.y for p in pts))*resolution[1],
+               max(p.x for p in pts)*resolution[0], (1-min(p.y for p in pts))*resolution[1]]
+        pid = obj['part_id']
+        label = pid + (' / '+obj['instance_id'].split('.')[-1] if pid in PADS|{'LG-450'} else '')
+        result.append({'text':label,'instance_id':obj['instance_id'],'bounds':box})
     return result
 
 
@@ -349,11 +502,13 @@ def main():
     evidence = {'blend': str(source), 'blend_sha256_at_start': sha256(source),
                 'blender': bpy.app.version_string, 'samples': args.samples,
                 'res_scale': args.res_scale, 'sheets': args.only, 'renders': {},
+                'script_sha256': {name:sha256(SRC/name) for name in ('render_compare.py','compose_compare.py','tone_probe.py','materials.py')},
                 'view_transform': args.view_transform, 'exposure': args.exposure,
                 'lighting': {'key_energy': args.key_energy, 'fill_ratio': args.fill_ratio,
                              'rim_energy': args.rim_energy, 'world_strength': args.world_strength},
                 'side_display': 'Outer (-X), horizontally reflected to match the reference toe direction'}
-    approach, evidence['explosion'] = offsets()
+    evidence['explosion'] = {'mode': 'Separated display layout; installation poses unchanged', 'instances': {}}
+    evidence['finish_audit'] = prepare_finish(parts)
     original = {o.name: (o.matrix_world.copy(), o.hide_render) for o in parts}
     original_materials = [(slot, slot.link, slot.material) for o in parts
                           if o.get('part_id') == 'LG-100' for slot in o.material_slots]
@@ -381,21 +536,10 @@ def main():
                     visible = foot and not (is_shell(obj) or pid in SOLES or
                                             obj.get('subassembly') in {'foot-armor', 'soles'})
             obj.hide_render = not visible
-            explode = ('exploded' in kind and visible and
-                       (is_shell(obj) or pid in SOLES or pid == 'LG-450' or
-                        obj.get('subassembly') in {'foot-armor', 'soles'}))
-            if explode:
-                delta = approach.get(obj['instance_id'])
-                stats = evidence['explosion'].setdefault('instances', {}).setdefault(kind, {})
-                stats[obj['instance_id']] = 'steps' if delta is not None else 'radial fallback'
-                if delta is None:
-                    corners = world_corners(obj)
-                    centre = sum(corners, Vector()) / len(corners)
-                    radial = Vector((centre.x, centre.y, 0))
-                    if radial.length < .001:
-                        radial = Vector((0, 1, 0))
-                    delta = radial.normalized() * .6
-                obj.matrix_world.translation += Vector(delta)
+            if kind == 'foot-exploded' and (pid in PADS or obj.get('hardware_use') == 'Sole pad mounts' or pid == 'FA-305'):
+                obj.hide_render = True
+            if kind == 'foot-pads':
+                obj.hide_render = pid not in PADS
         if kind == 'foot':
             for slot, _, material in original_materials:
                 slot.link = 'OBJECT'
@@ -406,6 +550,11 @@ def main():
 
     def render(key, kind, direction, size, perspective=False, fixed_height=None, region=None):
         points = state(kind)
+        if 'exploded' in kind or kind == 'foot-pads':
+            orient(camera, direction)
+            evidence['explosion']['instances'][kind] = display_layout(parts, kind, camera)
+            bpy.context.view_layer.update()
+            points = [p for o in parts if not o.hide_render for p in world_corners(o)]
         if region:
             low, high = map(Vector, region)
             points = [Vector((x, y, z)) for x in (low.x, high.x)
@@ -427,10 +576,24 @@ def main():
         for light, delta, energy, size in lights:
             # A distant, proportionately larger softbox keeps the calf from
             # going dark while the upper thigh clips. Angular softness is kept.
-            light.location = light_target + subject_size * 6 * (right * delta.x + horizontal * delta.y + Vector((0, 0, delta.z)))
+            lighting_delta = delta.copy()
+            light_power, light_size = energy, size
+            if kind == 'foot-pads':
+                # A small grazing source casts real shadows across 12 mm tread
+                # cuts; a soft weak fill keeps the rubber from becoming black.
+                if light.name.startswith('Key'):
+                    lighting_delta = Vector((.98481, 0, -.17365))
+                    light_power *= 3; light_size = .08
+                elif light.name.startswith('Fill'):
+                    lighting_delta = Vector((-.5, -.5, -.70711))
+                    light_power *= .25; light_size = .35
+                else:
+                    lighting_delta = Vector((0, .95106, -.30902))
+                    light_power *= .5
+            light.location = light_target + subject_size * 24 * (right * lighting_delta.x + horizontal * lighting_delta.y + Vector((0, 0, lighting_delta.z)))
             light.rotation_euler = (light_target - light.location).to_track_quat('-Z', 'Y').to_euler()
-            light.data.energy = energy * (subject_size / 10) ** 2 * 36
-            light.data.size = size * subject_size * 6
+            light.data.energy = light_power * (subject_size / 10) ** 2 * 576
+            light.data.size = light_size * subject_size * 24
         ground.hide_render = True
         bpy.context.view_layer.update()
         projected = [world_to_camera_view(scene, camera, p) for p in points]
@@ -438,15 +601,21 @@ def main():
                    max(p.x for p in projected), max(p.y for p in projected)]
         if not region and not all(.015 < v < .985 for v in extents):
             raise RuntimeError(f'{key}: geometry would be clipped: {extents}')
-        probes = tone_points(scene, camera, parts, resolution) if key in {
-            'lg01-assembled-front', 'lg01-assembled-three-quarter'} else None
+        probes = None
+        if key in {'lg01-assembled-front', 'lg01-assembled-three-quarter'}:
+            try:
+                probes = tone_points(scene, camera, parts, resolution, key.endswith('three-quarter'))
+            except Exception as error:
+                # Diagnostics must never prevent the requested image delivery.
+                print(f'TONE PROBE FAILURE: {key}: {error}', flush=True)
+                probes = {'diagnostic_error': {'part_id':'unknown', 'valid':False, 'error':str(error)}}
         path = args.work / f'r-{key}.png'
         scene.render.filepath = str(path)
         began = time.monotonic()
         print(f'COMPARE {key}: {resolution}, {len([o for o in parts if not o.hide_render])} parts', flush=True)
         bpy.ops.render.render(write_still=True)
         shadow_paths = None
-        if perspective and 'exploded' not in kind and not region:
+        if key.endswith('three-quarter') and 'exploded' not in kind and not region:
             # Half-resolution shadows are softly filtered during composition.
             visibility = [(obj, obj.hide_render) for obj in parts]
             ground.hide_render = False
@@ -465,7 +634,7 @@ def main():
             scene.render.resolution_percentage = 100
         evidence['renders'][key] = {'png': str(path), 'seconds': round(time.monotonic() - began, 2),
                                    'bounds_normalized': extents, 'resolution': resolution,
-                                   'tone_points': probes, 'camera_location': list(camera.location),
+                                   'tone_points': probes, 'labels': label_points(scene,camera,parts,resolution,kind) if 'exploded' in kind or kind == 'foot-pads' else [], 'camera_location': list(camera.location),
                                    'camera_target': list(target),
                                    'elevation_degrees': math.degrees(math.atan2(direction[2], math.hypot(*direction[:2]))),
                                    'azimuth_off_front_degrees': math.degrees(math.atan2(abs(direction[0]), direction[1])),
@@ -484,24 +653,25 @@ def main():
     zmin, zmax = min(p.z for p in leg_points), max(p.z for p in leg_points)
     height = max((zmax - zmin) * 1.10, 3.6 / (820 / 1940))
     if 'lg01-assembled' in args.only:
-        render('lg01-assembled-three-quarter', 'leg', (-math.sin(math.radians(38)), math.cos(math.radians(38)), math.tan(math.radians(11))), (820, 1940), True)
+        render('lg01-assembled-three-quarter', 'leg', (-math.sin(math.radians(38)), math.cos(math.radians(38)), math.tan(math.radians(11))), (820, 1940))
     if {'lg01-assembled', 'turnaround-leg'} & set(args.only):
         for name, direction in [('side', (-1, 0, 0)), ('front', (0, 1, 0)), ('back', (0, -1, 0))]:
             render('lg01-assembled-' + name, 'leg', direction, (820, 1940), fixed_height=height)
     if 'lg01-armor' in args.only:
-        render('lg01-armor-exploded', 'leg-exploded', (-1, 1.5, .65), (2800, 1940), True)
+        render('lg01-armor-exploded', 'leg-exploded', (-1, 1.5, .65), (3300, 1940))
     if 'lg01-structure' in args.only:
         render('lg01-structure-rear-outer', 'leg-structure', (-.85, -1.4, .22), (1280, 1940), True)
         render('lg01-structure-knee', 'leg-structure', (-1, -1.4, .45), (1780, 1580), True,
                region=((-1.05, -.95, 4.05), (1.05, .50, 6.65)))
     if 'fa02-assembled' in args.only:
-        render('fa02-assembled-three-quarter', 'foot', (-.85, 1.3, .85), (1660, 1280), True)
+        render('fa02-assembled-three-quarter', 'foot', (-.85, 1.3, .85), (1660, 1280))
         render('fa02-assembled-side', 'foot', (-1, 0, 0), (1600, 900))
         render('fa02-assembled-front', 'foot', (0, 1, 0), (770, 950))
         render('fa02-assembled-back', 'foot', (0, -1, 0), (770, 950))
         render('fa02-assembled-top', 'foot', (0, 0, 1), (1660, 640))
     if 'fa02-armor' in args.only:
-        render('fa02-armor-exploded', 'foot-exploded', (-1, 1.25, 1.1), (3300, 1900), True)
+        render('fa02-armor-exploded', 'foot-exploded', (-1, 1.25, 1.1), (3300, 1500))
+        render('fa02-armor-underside', 'foot-pads', (0, -.45, -1), (3300, 420))
     if 'fa02-structure' in args.only:
         render('fa02-structure-three-quarter', 'foot-structure', (-1, 1.25, 1.05), (3300, 1900), True)
     evidence['blend_sha256_at_end'] = sha256(source)
@@ -516,7 +686,7 @@ def main():
                     '--out', str(args.out)], check=True)
     probe = SRC / 'tone_probe.py'
     if probe.is_file() and 'lg01-assembled' in args.only:
-        subprocess.run([python, str(probe), '--evidence', str(evidence_path)])  # diagnostic only; never fails the render
+        subprocess.run([python, str(probe), '--evidence', str(evidence_path), '--notes', str(args.out / 'notes-render.md')])  # diagnostic only; never fails the render
     print(f'COMPARE complete: {len(args.only)} sheets in {time.monotonic() - start:.1f}s; {args.out}', flush=True)
     if evidence['source_changed_during_render']:
         print('NOTE: another process replaced the blend during rendering; views use the scene loaded at startup.')
