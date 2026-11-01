@@ -1,0 +1,30 @@
+{
+  "revision": "LG-01-3D-01",
+  "units": "metres",
+  "axes": "X right, Y forward, Z up",
+  "joint_centres": {
+    "ankle": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "knee": [
+      0.0,
+      0.0,
+      5.1
+    ],
+    "hip": [
+      0.0,
+      0.0,
+      9.2
+    ]
+  },
+  "global_offset": [
+    -1.1,
+    0.0,
+    0.0
+  ],
+  "object_count": 0,
+  "triangles": 0,
+  "parts": []
+}

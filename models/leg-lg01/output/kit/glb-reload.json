@@ -1,0 +1,859 @@
+{
+  "blender": "5.2.3 LTS",
+  "fresh_factory_startup": true,
+  "object_count": 24,
+  "expected_object_count": 24,
+  "objects": [
+    {
+      "name": "KIT-001.octagonal-well-bolt-group.01 Octagonal well bolt group",
+      "instance_id": "KIT-001.octagonal-well-bolt-group.01",
+      "part_id": "KIT-001",
+      "part_name": "Octagonal well bolt group",
+      "materials": [
+        "LG01 Fastener steel"
+      ]
+    },
+    {
+      "name": "KIT-002.faceted-ochre-nose.01 Faceted ochre nose",
+      "instance_id": "KIT-002.faceted-ochre-nose.01",
+      "part_id": "KIT-002",
+      "part_name": "Faceted ochre nose",
+      "materials": [
+        "LG01 Safety ochre"
+      ]
+    },
+    {
+      "name": "KIT-003.inset-service-hatch.01 Inset service hatch",
+      "instance_id": "KIT-003.inset-service-hatch.01",
+      "part_id": "KIT-003",
+      "part_name": "Inset service hatch",
+      "materials": [
+        "LG01 Dark recess",
+        "LG01 Armor satin",
+        "LG01 Fastener steel"
+      ]
+    },
+    {
+      "name": "KIT-004.caution-stencil.01 CAUTION stencil",
+      "instance_id": "KIT-004.caution-stencil.01",
+      "part_id": "KIT-004",
+      "part_name": "CAUTION stencil",
+      "materials": [
+        "LG01 Decal caution"
+      ]
+    },
+    {
+      "name": "KIT-005.bent-grab-rail-with-bolted-feet.01 Bent grab rail with bolted feet",
+      "instance_id": "KIT-005.bent-grab-rail-with-bolted-feet.01",
+      "part_id": "KIT-005",
+      "part_name": "Bent grab rail with bolted feet",
+      "materials": [
+        "LG01 Safety ochre",
+        "LG01 Gunmetal"
+      ]
+    },
+    {
+      "name": "KIT-006.unit-01-stencil.01 Unit 01 stencil",
+      "instance_id": "KIT-006.unit-01-stencil.01",
+      "part_id": "KIT-006",
+      "part_name": "Unit 01 stencil",
+      "materials": [
+        "LG01 Decal unit01"
+      ]
+    },
+    {
+      "name": "KIT-007.red-caution-bars.01 Red caution bars",
+      "instance_id": "KIT-007.red-caution-bars.01",
+      "part_id": "KIT-007",
+      "part_name": "Red caution bars",
+      "materials": [
+        "LG01 Decal red_marks"
+      ]
+    },
+    {
+      "name": "KIT-008.ochre-intake-frame-and-vertical-louvers.01 Ochre intake frame and vertical louvers",
+      "instance_id": "KIT-008.ochre-intake-frame-and-vertical-louvers.01",
+      "part_id": "KIT-008",
+      "part_name": "Ochre intake frame and vertical louvers",
+      "materials": [
+        "LG01 Safety ochre",
+        "LG01 Gunmetal"
+      ]
+    },
+    {
+      "name": "KIT-009.calf-nozzle-recess.01 Calf nozzle recess",
+      "instance_id": "KIT-009.calf-nozzle-recess.01",
+      "part_id": "KIT-009",
+      "part_name": "Calf nozzle recess",
+      "materials": [
+        "LG01 Dark recess"
+      ]
+    },
+    {
+      "name": "KIT-010.calf-bell-nozzle.01 Calf bell nozzle",
+      "instance_id": "KIT-010.calf-bell-nozzle.01",
+      "part_id": "KIT-010",
+      "part_name": "Calf bell nozzle",
+      "materials": [
+        "LG01 Gunmetal",
+        "LG01 Bronze nozzle lining"
+      ]
+    },
+    {
+      "name": "KIT-011.calf-bell-nozzle.01 Calf bell nozzle",
+      "instance_id": "KIT-011.calf-bell-nozzle.01",
+      "part_id": "KIT-011",
+      "part_name": "Calf bell nozzle",
+      "materials": [
+        "LG01 Gunmetal",
+        "LG01 Bronze nozzle lining"
+      ]
+    },
+    {
+      "name": "KIT-012.aimed-hydraulic-cylinder.01 Aimed hydraulic cylinder",
+      "instance_id": "KIT-012.aimed-hydraulic-cylinder.01",
+      "part_id": "KIT-012",
+      "part_name": "Aimed hydraulic cylinder",
+      "materials": [
+        "LG01 Gunmetal",
+        "LG01 Fastener steel",
+        "LG01 Polished rod chrome"
+      ]
+    },
+    {
+      "name": "KIT-013.clevis-with-pin-bores.01 Clevis with pin bores",
+      "instance_id": "KIT-013.clevis-with-pin-bores.01",
+      "part_id": "KIT-013",
+      "part_name": "Clevis with pin bores",
+      "materials": [
+        "LG01 Fastener steel"
+      ]
+    },
+    {
+      "name": "KIT-014.four-swept-service-cables.01 Four swept service cables",
+      "instance_id": "KIT-014.four-swept-service-cables.01",
+      "part_id": "KIT-014",
+      "part_name": "Four swept service cables",
+      "materials": [
+        "LG01 Rubber"
+      ]
+    },
+    {
+      "name": "KIT-015.cable-restraint.01 Cable restraint",
+      "instance_id": "KIT-015.cable-restraint.01",
+      "part_id": "KIT-015",
+      "part_name": "Cable restraint",
+      "materials": [
+        "LG01 Fastener steel"
+      ]
+    },
+    {
+      "name": "KIT-016.cable-restraint.01 Cable restraint",
+      "instance_id": "KIT-016.cable-restraint.01",
+      "part_id": "KIT-016",
+      "part_name": "Cable restraint",
+      "materials": [
+        "LG01 Fastener steel"
+      ]
+    },
+    {
+      "name": "KIT-017.amber-service-sensor.01 Amber service sensor",
+      "instance_id": "KIT-017.amber-service-sensor.01",
+      "part_id": "KIT-017",
+      "part_name": "Amber service sensor",
+      "materials": [
+        "LG01 Amber sensor"
+      ]
+    },
+    {
+      "name": "KIT-018.caution-red-paint-sample.01 Caution red paint sample",
+      "instance_id": "KIT-018.caution-red-paint-sample.01",
+      "part_id": "KIT-018",
+      "part_name": "Caution red paint sample",
+      "materials": [
+        "LG01 Caution red"
+      ]
+    },
+    {
+      "name": "KIT-019.chamfered-armor-sample.01 Chamfered armor sample",
+      "instance_id": "KIT-019.chamfered-armor-sample.01",
+      "part_id": "KIT-019",
+      "part_name": "Chamfered armor sample",
+      "materials": [
+        "LG01 Armor satin",
+        "LG01 Dark recess"
+      ]
+    },
+    {
+      "name": "KIT-020.chamfered-armor-sample.01 Chamfered armor sample",
+      "instance_id": "KIT-020.chamfered-armor-sample.01",
+      "part_id": "KIT-020",
+      "part_name": "Chamfered armor sample",
+      "materials": [
+        "LG01 Armor satin"
+      ]
+    },
+    {
+      "name": "KIT-021.chamfered-armor-sample.01 Chamfered armor sample",
+      "instance_id": "KIT-021.chamfered-armor-sample.01",
+      "part_id": "KIT-021",
+      "part_name": "Chamfered armor sample",
+      "materials": [
+        "LG01 Armor satin"
+      ]
+    },
+    {
+      "name": "KIT-022.chamfered-armor-sample.01 Chamfered armor sample",
+      "instance_id": "KIT-022.chamfered-armor-sample.01",
+      "part_id": "KIT-022",
+      "part_name": "Chamfered armor sample",
+      "materials": [
+        "LG01 Armor satin"
+      ]
+    },
+    {
+      "name": "KIT-023.chamfered-armor-sample.01 Chamfered armor sample",
+      "instance_id": "KIT-023.chamfered-armor-sample.01",
+      "part_id": "KIT-023",
+      "part_name": "Chamfered armor sample",
+      "materials": [
+        "LG01 Armor satin"
+      ]
+    },
+    {
+      "name": "KIT-024.chamfered-armor-sample.01 Chamfered armor sample",
+      "instance_id": "KIT-024.chamfered-armor-sample.01",
+      "part_id": "KIT-024",
+      "part_name": "Chamfered armor sample",
+      "materials": [
+        "LG01 Armor satin"
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "LG01 Amber sensor",
+      "base_color": [
+        1,
+        0.4125426113605499,
+        0.03189603239297867,
+        1
+      ],
+      "metallic": 0.15000000596046448,
+      "roughness": 0.2800000011920929,
+      "imported_base_color": [
+        1.0,
+        0.4125426113605499,
+        0.03189603239297867,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Armor satin",
+      "base_color": [
+        0.6444796919822693,
+        0.577580451965332,
+        0.5028864741325378,
+        1
+      ],
+      "metallic": 0,
+      "roughness": 0.44999998807907104,
+      "imported_base_color": [
+        0.6444796919822693,
+        0.577580451965332,
+        0.5028864741325378,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Bronze nozzle lining",
+      "base_color": [
+        0.38642942905426025,
+        0.18447498977184296,
+        0.039546236395835876,
+        1
+      ],
+      "metallic": 0.800000011920929,
+      "roughness": 0.33000001311302185,
+      "imported_base_color": [
+        0.38642942905426025,
+        0.18447498977184296,
+        0.039546236395835876,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Caution red",
+      "base_color": [
+        0.5394794940948486,
+        0.03310476616024971,
+        0.023153366521000862,
+        1
+      ],
+      "metallic": 0,
+      "roughness": 0.47999998927116394,
+      "imported_base_color": [
+        0.5394794940948486,
+        0.03310476616024971,
+        0.023153366521000862,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Dark recess",
+      "base_color": [
+        0.01599629409611225,
+        0.016807375475764275,
+        0.01599629409611225,
+        1
+      ],
+      "metallic": 0.15000000596046448,
+      "roughness": 0.7200000286102295,
+      "imported_base_color": [
+        0.01599629409611225,
+        0.016807375475764275,
+        0.01599629409611225,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Decal caution",
+      "base_color": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "metallic": 0,
+      "roughness": 0.5,
+      "imported_base_color": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "decal_images": [
+        "caution"
+      ],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Decal red_marks",
+      "base_color": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "metallic": 0,
+      "roughness": 0.5,
+      "imported_base_color": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "decal_images": [
+        "red_marks"
+      ],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Decal unit01",
+      "base_color": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "metallic": 0,
+      "roughness": 0.5,
+      "imported_base_color": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "decal_images": [
+        "unit01"
+      ],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Fastener steel",
+      "base_color": [
+        0.16826939582824707,
+        0.18447498977184296,
+        0.1946178376674652,
+        1
+      ],
+      "metallic": 0.800000011920929,
+      "roughness": 0.36000001430511475,
+      "imported_base_color": [
+        0.16826939582824707,
+        0.18447498977184296,
+        0.1946178376674652,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Gunmetal",
+      "base_color": [
+        0.07227185368537903,
+        0.07227185368537903,
+        0.07036009430885315,
+        1
+      ],
+      "metallic": 0.6000000238418579,
+      "roughness": 0.5,
+      "imported_base_color": [
+        0.07227185368537903,
+        0.07227185368537903,
+        0.07036009430885315,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Polished rod chrome",
+      "base_color": [
+        0.5711248517036438,
+        0.6307571530342102,
+        0.6795424818992615,
+        1
+      ],
+      "metallic": 1,
+      "roughness": 0.17000000178813934,
+      "imported_base_color": [
+        0.5711248517036438,
+        0.6307571530342102,
+        0.6795424818992615,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Rubber",
+      "base_color": [
+        0.01599629409611225,
+        0.017641954123973846,
+        0.015208514407277107,
+        1
+      ],
+      "metallic": 0,
+      "roughness": 0.8199999928474426,
+      "imported_base_color": [
+        0.01599629409611225,
+        0.017641954123973846,
+        0.015208514407277107,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    },
+    {
+      "name": "LG01 Safety ochre",
+      "base_color": [
+        0.6583748459815979,
+        0.23839756846427917,
+        0.012286487966775894,
+        1
+      ],
+      "metallic": 0.05000000074505806,
+      "roughness": 0.44999998807907104,
+      "imported_base_color": [
+        0.6583748459815979,
+        0.23839756846427917,
+        0.012286487966775894,
+        1.0
+      ],
+      "decal_images": [],
+      "checks": {
+        "name": true,
+        "base_color": true,
+        "metallic": true,
+        "roughness": true,
+        "imported_base_color": true,
+        "imported_metallic": true,
+        "imported_roughness": true,
+        "decal_image": true,
+        "decal_alpha": true
+      },
+      "intact": true
+    }
+  ],
+  "geometry": {
+    "passed": true,
+    "objects": [
+      {
+        "name": "KIT-001.octagonal-well-bolt-group.01 Octagonal well bolt group",
+        "triangles": 1600,
+        "non_manifold_edges": 0,
+        "closed_shells": 12,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-002.faceted-ochre-nose.01 Faceted ochre nose",
+        "triangles": 44,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-003.inset-service-hatch.01 Inset service hatch",
+        "triangles": 2106,
+        "non_manifold_edges": 0,
+        "closed_shells": 17,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-004.caution-stencil.01 CAUTION stencil",
+        "triangles": 12,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-005.bent-grab-rail-with-bolted-feet.01 Bent grab rail with bolted feet",
+        "triangles": 1780,
+        "non_manifold_edges": 0,
+        "closed_shells": 15,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-006.unit-01-stencil.01 Unit 01 stencil",
+        "triangles": 12,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-007.red-caution-bars.01 Red caution bars",
+        "triangles": 12,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-008.ochre-intake-frame-and-vertical-louvers.01 Ochre intake frame and vertical louvers",
+        "triangles": 440,
+        "non_manifold_edges": 0,
+        "closed_shells": 7,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-009.calf-nozzle-recess.01 Calf nozzle recess",
+        "triangles": 60,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-010.calf-bell-nozzle.01 Calf bell nozzle",
+        "triangles": 1152,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-011.calf-bell-nozzle.01 Calf bell nozzle",
+        "triangles": 1152,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-012.aimed-hydraulic-cylinder.01 Aimed hydraulic cylinder",
+        "triangles": 3408,
+        "non_manifold_edges": 0,
+        "closed_shells": 9,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-013.clevis-with-pin-bores.01 Clevis with pin bores",
+        "triangles": 332,
+        "non_manifold_edges": 0,
+        "closed_shells": 3,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-014.four-swept-service-cables.01 Four swept service cables",
+        "triangles": 1328,
+        "non_manifold_edges": 0,
+        "closed_shells": 4,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-015.cable-restraint.01 Cable restraint",
+        "triangles": 44,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-016.cable-restraint.01 Cable restraint",
+        "triangles": 44,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-017.amber-service-sensor.01 Amber service sensor",
+        "triangles": 44,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-018.caution-red-paint-sample.01 Caution red paint sample",
+        "triangles": 44,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-019.chamfered-armor-sample.01 Chamfered armor sample",
+        "triangles": 246,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-020.chamfered-armor-sample.01 Chamfered armor sample",
+        "triangles": 60,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-021.chamfered-armor-sample.01 Chamfered armor sample",
+        "triangles": 60,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-022.chamfered-armor-sample.01 Chamfered armor sample",
+        "triangles": 60,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-023.chamfered-armor-sample.01 Chamfered armor sample",
+        "triangles": 60,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      },
+      {
+        "name": "KIT-024.chamfered-armor-sample.01 Chamfered armor sample",
+        "triangles": 60,
+        "non_manifold_edges": 0,
+        "closed_shells": 1,
+        "all_shells_outward": true,
+        "unapplied_modifiers": 0,
+        "has_wear": true
+      }
+    ],
+    "triangles": 14160,
+    "independent_mesh_datablocks": 24
+  },
+  "color_0_primitives": 33,
+  "imported_color_attribute_objects": 24,
+  "extras_intact": true,
+  "presentation_excluded": true,
+  "passed": true
+}
