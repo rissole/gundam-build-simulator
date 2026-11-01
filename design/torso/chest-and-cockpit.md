@@ -1,12 +1,14 @@
 # Chest, abdomen, and cockpit
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
 Connected assemblies and clearance checks: [hip assembly](pelvis-and-waist.md), [backpack, power, and cooling](backpack-and-power.md), [shoulder and upper arm](../arms/shoulder-and-upper-arm.md), [head](../head.md).
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#torso-and-backpack). [Canonical packaging sections](chest-and-cockpit-layout.svg).
+
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: upper chest armor 4.80 m wide, front at Y +1.65 (was +1.20; depth 2.85 m), rising into a collar to Z 15.62 around the head base; shoulder sockets move with the shoulder balls to |X| 2.45. The sternum hatch hinge, hatch sweep, entry patch and deck numbers below predate the deeper chest. Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
 
 ## Confirmed design
 

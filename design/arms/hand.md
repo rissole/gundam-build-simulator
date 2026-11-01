@@ -1,6 +1,6 @@
 # Hand
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
@@ -9,6 +9,8 @@ The right arm will mirror this design.
 Connected assemblies and clearance checks: [forearm and wrist](forearm-and-wrist.md).
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#arms-and-hands).
+
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: palm chassis with armor 1.08 wide × 0.54 thick, with correspondingly larger digits; concept art shows large fists. Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
 
 ## Confirmed design
 

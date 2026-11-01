@@ -1,6 +1,6 @@
 # Shoulder, upper arm, and elbow
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
@@ -9,6 +9,8 @@ The right arm will mirror this design.
 Connected assemblies and clearance checks: [chest and cockpit](../torso/chest-and-cockpit.md), [forearm and wrist](forearm-and-wrist.md), [head](../head.md), [backpack](../torso/backpack-and-power.md).
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#arms-and-hands).
+
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: shoulder balls at |X| 2.45 (this document uses 2.20); pauldron envelope |X| 1.95–3.62, Y ±0.95, Z 13.30–15.50 (7.24 m across, reaching outward with tops near chin level); upper-arm armor up to 1.01 × 1.12 m and no longer “relatively slim”. Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
 
 ## Confirmed design
 

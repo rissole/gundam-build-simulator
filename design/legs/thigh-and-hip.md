@@ -1,6 +1,6 @@
 # Thigh and hip
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
@@ -9,6 +9,8 @@ The right leg will mirror this design.
 Connected assemblies and clearance checks: [knee](knee.md), [hip assembly](../torso/pelvis-and-waist.md).
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#legs-and-feet).
+
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: thigh armor up to 1.80 × 1.80 m, tapering to 1.32 m near the knee (was 1.50 / 1.10). Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
 
 ## Confirmed design
 

@@ -1,6 +1,6 @@
 # Forearm and wrist
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
@@ -9,6 +9,8 @@ The right arm will mirror this design.
 Connected assemblies and clearance checks: [upper arm and elbow](shoulder-and-upper-arm.md), [hand](hand.md).
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#arms-and-hands).
+
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: elbow and wrist centres at |X| 3.23 and 3.90 (shoulder balls moved to |X| 2.45); forearm armor up to 1.45 × 1.45 m; wrist cuff 0.99 × 0.99 m. Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
 
 ## Confirmed design
 

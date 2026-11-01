@@ -1,10 +1,24 @@
 # Robot proportions and dimensional layout
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../ROBOT_DESIGN.md) · [Shared design rules](global.md)
 
 ## Status and visual reference
+
+**Approved silhouette, 2026-11-01 (approved for now).** The user found the
+earlier envelopes weak ("a total weenie", chiefly the shoulders) and approved a
+heavier silhouette with pauldrons reaching outward, a prominent forward-projecting
+chest, fuller limbs, a wider hip skirt and larger hands and feet. Every joint
+height is unchanged; the shoulder balls move out to |X| 2.45. The
+[silhouette mannequin](../models/silhouette-mannequin/README.md) is the
+geometric source of the revised envelopes below, and its turnaround is the
+proportion guide for [whole-robot concept art](visual-design/README.md).
+Values marked *(2026-11-01)* replace earlier accepted or working values, which
+are kept in [decision history](decisions.md). Component specifications whose
+detailed interfaces predate the revision say so at the top; their interface
+numbers still need updating to these envelopes. The workshop game still builds
+the earlier envelopes.
 
 The user accepted both proposed proportion batches and asked the assistant to choose the remaining proportions to match a typical Gundam. The first two tables record the explicitly accepted recommendations. The subsequent layout and component envelopes are assistant-selected working dimensions under that direction; they can be refined when the detailed geometry is developed.
 
@@ -20,10 +34,10 @@ All dimensions are in metres. This document owns shared landmarks, external enve
 | --- | --- | --- |
 | Height convention | Measure 18.0 m from the ground beneath the soles to the crest tips; helmet roof at 17.4 m | Give the complete silhouette a consistent total height |
 | Leg landmarks | Hip-ball centers at 9.2 m, knee-hinge axes at 5.1 m, and ankle-pivot intersections at 1.0 m above the ground | Equal 4.1 m hip-to-knee and knee-to-ankle spans, preserving the athletic humanlike direction |
-| Body widths | 5.6 m across the outer pauldrons in the reference pose; 4.0 m across the chest armor and 3.0 m across the fixed hip assembly armor, excluding thigh armor and hinged hip guards | Establish broad shoulders and a narrower lower torso |
+| Body widths | *(2026-11-01)* 7.24 m across the outer pauldrons in the reference pose; 4.80 m across the upper chest armor and 3.60 m across the fixed hip assembly armor, excluding thigh armor and hinged hip guards. Earlier: 5.6, 4.0 and 3.0 m | Broad shoulders reaching outward, a dominant upper chest and a narrow waist |
 | Reference pose | Stand upright with straight knees and parallel feet; arms held 15 degrees away from the torso, elbows straight, palms facing inward | Make the limb outlines and joint gaps easier to inspect |
 
-The leg heights describe joint centers, not removable-part lengths; sockets, forks, and armor overlap those boundaries. The 5.6 m shoulder width is measured across the pauldrons, not across the outward-angled arms and hands.
+The leg heights describe joint centers, not removable-part lengths; sockets, forks, and armor overlap those boundaries. The 7.24 m shoulder width is measured across the pauldrons, not across the outward-angled arms and hands.
 
 ## Confirmed upper-body dimensions
 
@@ -32,7 +46,7 @@ The leg heights describe joint centers, not removable-part lengths; sockets, for
 | Upper-body landmarks | Waist rotary-bearing center at 10.5 m, shoulder-ball centers at 14.4 m, and head-baseplate mounting plane at 15.4 m above ground | Establish the torso height and head position; the later working waist and chest interfaces are recorded below |
 | Head envelope | 2.0 m from baseplate mounting plane to helmet roof, 2.0 m wide across the side guards, and 1.8 m deep from mask front to rear guards | Excludes the decorative crest; roof remains at 17.4 m and crest tips at 18.0 m |
 | Arm lengths | 3.0 m shoulder-ball center to elbow axis, 2.6 m elbow axis to wrist-ball center, and 1.8 m wrist-ball center to the extended middle fingertip | Measure along the limb; with elbows, wrists, and fingers straight in the 15-degree reference pose, fingertips sit about 7.25 m above ground, near mid-thigh |
-| Torso and backpack depth | Chest armor envelope 2.4 m front to back, with the closed backpack projecting up to 1.0 m beyond the rear torso armor, including nozzle mouths | Keep a compact rear profile; cockpit, core, spine, and opening clearances still need to be laid out inside and around these envelopes |
+| Torso and backpack depth | *(2026-11-01)* Chest armor envelope 2.85 m front to back (Y −1.20…+1.65; earlier 2.4 m), with the closed backpack projecting up to 1.0 m beyond the rear torso armor, including nozzle mouths | Keep a compact rear profile; cockpit, core, spine, and opening clearances still need to be laid out inside and around these envelopes |
 
 ## Reference coordinates and stance
 
@@ -53,14 +67,14 @@ Working coordinate convention:
 | Waist lean axis | 0 | 10.90 | Working transverse X axis at Y0; [hip assembly interface](torso/pelvis-and-waist.md) |
 | Chest receiving plane | 0 | 11.30 | Working neutral seat; distinct from the rotary-bearing centre |
 | Power cartridge axis | 0 | 11.95 | Working front–back Y axis, below the cockpit; [core interface](torso/backpack-and-power.md) |
-| Shoulder-ball centers | ±2.20 | 14.40 | Selected spacing; confirmed height |
-| Elbow-axis centers | ±2.98 | 11.50 | Derived from 3.0 m upper arms at 15 degrees |
-| Wrist-ball centers | ±3.65 | 8.99 | Derived from upper-arm and forearm lengths |
-| Extended middle fingertips | ±4.12 | 7.25 | Derived with straight wrists and fingers |
+| Shoulder-ball centers | ±2.45 | 14.40 | *(2026-11-01)* approved silhouette, earlier ±2.20; confirmed height |
+| Elbow-axis centers | ±3.23 | 11.50 | Derived from 3.0 m upper arms at 15 degrees |
+| Wrist-ball centers | ±3.90 | 8.99 | Derived from upper-arm and forearm lengths |
+| Extended middle fingertips | ±4.37 | 7.25 | Derived with straight wrists and fingers |
 | Head-baseplate center | 0 | 15.40 | Confirmed mounting-plane height |
 | Fixed neck pilot tip | 0 | 15.58 | Working insertion feature above the unchanged head seat; [head interface](head.md) |
 
-Coordinates derived from angles are rounded to two decimals; the confirmed lengths and angles take precedence. With 1.30 m-wide feet, the 2.20 m center spacing leaves a 0.90 m gap between the inner foot edges. The approximately 8.23 m span between middle fingertips is not an outer-hand bounding dimension.
+Coordinates derived from angles are rounded to two decimals; the confirmed lengths and angles take precedence. With 1.46 m-wide feet, the 2.20 m center spacing leaves a 0.74 m gap between the inner foot edges. The approximately 8.74 m span between middle fingertips is not an outer-hand bounding dimension.
 
 ## Component envelopes
 
@@ -70,12 +84,12 @@ These assistant-selected values complete the initial proportion layout. Width an
 
 | Component | Working dimensions | Notes |
 | --- | --- | --- |
-| Each foot | 3.00 long × 1.30 wide | Heel edge 0.80 behind the ankle center; toe tip 2.20 ahead of it |
-| Forefoot hinge position | Transverse axis 2.00 forward of the heel edge; Y = +1.20 and Z = 0.35 | Accepted with the forefoot construction; leaves a 1.00 m hinged toe section within the foot's total length |
+| Each foot | *(2026-11-01)* 3.36 long × 1.46 wide; earlier 3.00 × 1.30 | Heel edge 0.90 behind the ankle center; toe tip 2.46 ahead of it. The FA-01 detailed foot is still built to 3.00 × 1.30 |
+| Forefoot hinge position | Transverse axis 2.00 forward of the heel edge; Y = +1.20 and Z = 0.35 (FA-01; scaling with the 2026-11-01 foot would put it near Y +1.34, to be decided in the foot revision) | Accepted with the forefoot construction; leaves a 1.00 m hinged toe section within the foot's total length |
 | Main foot shell | Maximum height 0.70 above ground | Includes sole pads; excludes the ankle mechanism and separate side guards |
 | Ankle side guards | Top at 1.60 above ground | Preserve a visible joint around the confirmed 1.00 m pivot height; exact guard outline remains open |
-| Thigh armor | Maximum width 1.50 and depth 1.50; width tapers to 1.10 near the knee | Thigh remains slightly broader than the calf |
-| Calf armor | Maximum width 1.40, tapering to 0.90 toward the ankle; maximum depth 1.90 including rear thruster enclosure | Keep the paired engines integrated into the calf |
+| Thigh armor | *(2026-11-01)* Maximum width 1.80 and depth 1.80; width tapers to 1.32 near the knee. Earlier 1.50 / 1.10 | Thigh remains slightly broader than the calf |
+| Calf armor | *(2026-11-01)* Maximum width 1.65, tapering to 1.06 toward the ankle; maximum depth 2.24 including rear thruster enclosure. Earlier 1.40 / 0.90 / 1.90 | Keep the paired engines integrated into the calf |
 
 Hip-to-knee and knee-to-ankle joint spans are both 4.10 m. Armor lengths and end gaps must be fitted around the knee, hip, and ankle mechanisms rather than equated to these spans.
 
@@ -84,8 +98,8 @@ Hip-to-knee and knee-to-ankle joint spans are both 4.10 m. Armor lengths and end
 | Component | Working dimensions or placement | Notes |
 | --- | --- | --- |
 | Waist outer envelope | 2.20 wide × 1.60 deep | Narrowest main torso region; neutral mechanical detail in [hip assembly](torso/pelvis-and-waist.md) |
-| Fixed hip assembly armor | 3.00 wide × 1.80 deep | Width already confirmed; hinged hip guards excluded |
-| Chest envelope placement | Front at Y = +1.20, rear at Y = −1.20 | Uses confirmed 2.40 m depth; shape tapers toward the waist |
+| Fixed hip assembly armor | *(2026-11-01)* 3.60 wide × 1.80 deep; earlier 3.00 | Hinged hip guards excluded; front hip guards now reach down to Z 7.85 over the thighs |
+| Chest envelope placement | *(2026-11-01)* Front at Y = +1.65, rear at Y = −1.20; earlier front +1.20 | The upper chest is the dominant mass: widest (4.80 m) and furthest forward around Z 13.1–15.35, rising into a collar to Z 15.62 around the head base so no neck shows; tapers toward the waist below Z 13.1 |
 | Closed backpack | 2.40 wide × 2.80 high; top at Z = 14.10, bottom at Z = 11.30 | Envelope includes its nozzles; selected X-axis hinge at Y−1.20/Z14.10, opening 90° |
 | Backpack rear limit | Y = −2.20 | Uses the confirmed maximum 1.00 m projection beyond the rear torso armor |
 
@@ -95,12 +109,12 @@ Leave fixed torso surface visible on each side of the backpack for the vertical 
 
 | Component | Working cross-section | Notes |
 | --- | --- | --- |
-| Upper-arm armor | Maximum 0.90 wide × 1.00 deep | Excludes the pauldron; taper toward the elbow |
-| Forearm armor | Maximum 1.10 wide × 1.10 deep | Slightly fuller than the upper arm |
-| Wrist cuff | 0.75 wide × 0.75 deep | External cuff envelope, not the socket or ball diameter |
-| Palm chassis with armor | 0.90 wide × 0.45 thick | Excludes the projecting thumb; digit lengths and full hand spread remain open |
+| Upper-arm armor | *(2026-11-01)* Maximum 1.01 wide × 1.12 deep; earlier 0.90 × 1.00 | Excludes the pauldron; taper toward the elbow |
+| Forearm armor | *(2026-11-01)* Maximum 1.45 wide × 1.45 deep; earlier 1.10 | Slightly fuller than the upper arm |
+| Wrist cuff | *(2026-11-01)* 0.99 wide × 0.99 deep; earlier 0.75 | External cuff envelope, not the socket or ball diameter |
+| Palm chassis with armor | *(2026-11-01)* 1.08 wide × 0.54 thick; earlier 0.90 × 0.45 | Excludes the projecting thumb; digit lengths and full hand spread remain open |
 
-Fit the rigid pauldrons to the confirmed 5.60 m total shoulder width and the selected shoulder-joint spacing. The [shoulder specification](arms/shoulder-and-upper-arm.md) selects a reference top at Z15.05, a relieved inner skirt and the actual fixed-frame interface. The maximum chest width need not occur at shoulder-joint height. Complete-arm handling uses its separate piecewise hand/thumb bounds and a restrained 15° pose; arbitrary finger spread or shoulder motion is not covered by the elevator clearance calculation.
+*(2026-11-01)* Each rigid pauldron's envelope is |X| 1.95–3.62, Y ±0.95, Z 13.30–15.50 (7.24 m total width): it reaches outward with its top near chin level, level with the chest top, sloping down outboard, and each arm hangs below its middle. Earlier: |X| 1.62–2.80, Y ±0.65, Z 13.65–15.05. The [shoulder specification](arms/shoulder-and-upper-arm.md)'s reference top at Z15.05, relieved inner skirt and fixed-frame interface predate this revision. The maximum chest width need not occur at shoulder-joint height. Complete-arm handling uses its separate piecewise hand/thumb bounds and a restrained 15° pose; arbitrary finger spread or shoulder motion is not covered by the elevator clearance calculation.
 
 ### Head and crest
 
@@ -108,6 +122,7 @@ The helmet envelope is the confirmed 2.00 m high × 2.00 m wide × 1.80 m deep. 
 
 ## Remaining dimensional work
 
+- Revising component interfaces, handling envelopes and the FA-01 foot to the 2026-11-01 silhouette: shoulder sockets and crossmember ends at |X| 2.45, the deeper chest and sternum hatch, the larger pauldrons, limbs, hip armor and feet.
 - Detailed armor outlines, overlap, and gaps within these envelopes.
 - Detailed solids and bearing stacks implementing the selected waist, hip and other component interfaces.
 - Pilot/manikin, service-route and tool-path verification of the selected cockpit/core/spine packaging; detailed sensor and thruster internals.

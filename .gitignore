@@ -24,3 +24,10 @@ models/foot-fa01/output/*.mp4
 /game/workshop/verification/*
 !game/workshop/verification/.gdignore
 .diffui/
+
+# Silhouette mannequin: keep the sheets, three-quarter and silhouettes; the rest regenerates.
+models/silhouette-mannequin/output/*.blend
+models/silhouette-mannequin/output/clean-*.png
+models/silhouette-mannequin/output/mannequin-front.png
+models/silhouette-mannequin/output/mannequin-side.png
+models/silhouette-mannequin/output/mannequin-back.png

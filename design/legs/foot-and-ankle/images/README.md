@@ -2,6 +2,8 @@
 
 2026-10-20 · **Initial concept set for user review; not user-approved**
 
+These sheets predate any whole-robot design and are not the target look (user, 2026-11-01). Redraw the foot once the [whole-robot turnaround](../../../visual-design/README.md) is approved; the written FA-01 specification still governs mechanisms and interfaces.
+
 [Design specification](../../foot-and-ankle.md) · [Parts inventory](../parts.md) · [Build steps and verification](../assembly-and-review.md)
 
 Generated with the **built-in image generation tool**, using the imagegen skill. Grayscale and blue are drawing conventions, not a confirmed robot paint scheme. Original generated files were copied into this project so the references do not depend on an external cache.

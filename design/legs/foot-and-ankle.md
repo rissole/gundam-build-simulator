@@ -1,10 +1,12 @@
 # Foot and ankle
 
-Last updated: 2026-10-20 · Reference revision **FA-01**
+Last updated: 2026-11-01 · Reference revision **FA-01**
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md) · [Whole-robot proportions](../proportions.md#legs-and-feet) · [Shin and calf](shin-and-calf.md)
 
 The left foot is the master; mirror it for the right. This overview preserves the confirmed choices. The linked detail packet contains the assistant-selected dimensions and assembly details developed under the user's instruction to proceed with recommendations and verification.
+
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: each foot 3.36 × 1.46 m (was 3.00 × 1.30), heel 0.90 behind and toe 2.46 ahead of the ankle. FA-01, its sheets and models are built to the earlier size; its reference sheets are not the target look. Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
 
 ## Completion status
 

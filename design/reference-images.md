@@ -35,4 +35,5 @@ Separate files make the brief easier to select and maintain; they do not by them
 
 ## Generated image sets
 
-- **FA-01 — Foot and ankle:** [selected sheets, exact prompts, source revision and image-review notes](legs/foot-and-ankle/images/README.md). Includes assembled views, structural explosion, and armor/sole/services. These are concept references awaiting user review. Known generated-image inconsistencies are recorded; the written design governs geometry and counts.
+- **Whole robot — not started:** the [visual design brief](visual-design/README.md) defines the concept exploration that produces the approved whole-robot reference used in step 4 above, guided by the [silhouette mannequin](../models/silhouette-mannequin/README.md).
+- **FA-01 — Foot and ankle:** [selected sheets, exact prompts, source revision and image-review notes](legs/foot-and-ankle/images/README.md). Includes assembled views, structural explosion, and armor/sole/services. These predate any whole-robot reference and are not the target look; they will be redrawn after the whole-robot turnaround is approved. Known generated-image inconsistencies are recorded; the written design governs geometry and counts.

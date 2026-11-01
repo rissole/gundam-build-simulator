@@ -23,6 +23,7 @@ The first [FA-01 3D model package](models/foot-fa01/README.md) contains all 745 
 - [Shared robot design](design/global.md): scope, 18 m scale, appearance, assembly boundaries, detail-development approach, and whole-robot open questions.
 - [Proportions and dimensional layout](design/proportions.md): accepted dimensions, working component envelopes, reference coordinates, stance, and visual benchmark.
 - [Final gantry and assembly plan](design/game/final-assembly-plan.md): active workshop access and major-section installation discussion, working backwards from the completed robot; mechanical dimensions remain in the component specifications.
+- [Whole-robot visual design](design/visual-design/README.md): the path from the [approved silhouette](models/silhouette-mannequin/README.md) (2026-11-01, approved for now) to an approved whole-robot look, and the concept exploration brief. Proportions and masses are approved; the surface look, colours and markings are not.
 - [Reference-image requirements and workflow](design/reference-images.md): confirmed style, proposed sheet contents, and how to prepare focused briefs and review consistency.
 - [Decision history](design/decisions.md): the preserved record of choices and superseded proposals.
 

@@ -1,6 +1,6 @@
 # Shared robot design
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../ROBOT_DESIGN.md)
 
@@ -17,7 +17,7 @@ Read this alongside the relevant component specification. These rules apply acro
 - **Arm-to-torso boundary:** each shoulder ball is integral to its upper-arm skeleton; the matching socket sits at the end of the torso's shoulder crossmember. The pauldron belongs to the arm.
 - **Head-to-torso boundary:** a fixed keyed neck spoke with a central wiring passage belongs to the torso skeleton; the head's baseplate bolts onto it and supports the head assembly.
 - **Current detail stage:** major-section interfaces and handling contracts are selected in the component documents; coordinated equipment geometry and each section's detailed internal workflow follow. Develop shared limb construction once, with explicitly handed interfaces where needed.
-- **Diagram status:** the FA-01 foot-and-ankle reference set is recorded in its [image register](legs/foot-and-ankle/images/README.md). The [torso packaging section](torso/chest-and-cockpit-layout.svg) and [workshop layout](game/final-assembly-layout.svg) are current dimensional schematics, not solid-clearance or gameplay evidence.
+- **Diagram status:** the [approved whole-robot silhouette](../models/silhouette-mannequin/README.md) (2026-11-01, for now) sets proportions and masses; whole-robot concept art follows the [visual design brief](visual-design/README.md). The FA-01 foot-and-ankle reference set, recorded in its [image register](legs/foot-and-ankle/images/README.md), predates it and is not the target look. The [torso packaging section](torso/chest-and-cockpit-layout.svg) and [workshop layout](game/final-assembly-layout.svg) are current dimensional schematics, not solid-clearance or gameplay evidence.
 
 “Confirmed” below means the user selected a choice or accepted the assistant's recommendation. A confirmed concept does not imply that its dimensions, detailed geometry, or fastener schedule have been resolved.
 
@@ -27,7 +27,7 @@ Read this alongside the relevant component specification. These rules apply acro
 | --- | --- |
 | Inspiration | Gundam-like giant piloted robot |
 | Height | 18 metres from the ground beneath the soles to the crest tips |
-| Overall character | Sleek and heroic |
+| Overall character | Heroic and imposing *(2026-11-01; earlier “sleek and heroic”)*: pauldrons reaching outward, a dominant forward-projecting upper chest, a narrow waist, full limbs. The [approved silhouette](../models/silhouette-mannequin/README.md) sets the masses |
 | Proportions | Humanlike, using the classic RX-78-2 silhouette as a visual benchmark; dimensions are recorded in the shared proportion layout |
 | Symmetry | Mirror left and right limbs for now |
 | Mechanical approach | Plausible fictional machinery |

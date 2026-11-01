@@ -1,12 +1,14 @@
 # Head
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../ROBOT_DESIGN.md) · [Shared design rules](global.md)
 
 Connected assemblies and clearance checks: [torso frame](torso/chest-and-cockpit.md), [shoulder pauldrons](arms/shoulder-and-upper-arm.md), [backpack](torso/backpack-and-power.md).
 
 Dimensions and reference pose: [shared proportion layout](proportions.md#head-and-crest).
+
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../models/silhouette-mannequin/README.md) changes this component's envelope: pauldron tops at Z 15.50 stand beside the lower head with a 0.95 m inner gap to the helmet (was 0.62); the chest collar rises to Z 15.62 around the head base. Revised values are in [proportions](proportions.md); the detailed interfaces below predate the revision and still need updating.
 
 ## Confirmed design
 

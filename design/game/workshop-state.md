@@ -11,6 +11,13 @@ last version before consolidation.
 
 ## Where things stand
 
+- **Approved silhouette (2026-11-01, robot design):** the whole-robot
+  silhouette was revised and approved for now: pauldrons 7.24 m across,
+  shoulder balls at |X| 2.45, a deeper chest (front Y +1.65) and fuller limbs,
+  hip armor and feet; joint heights unchanged
+  ([proportions](../proportions.md), [silhouette](../../models/silhouette-mannequin/README.md)).
+  The game still builds the earlier envelopes; nothing in the workshop changed.
+  Revising components and workshop clearances to it is open design work.
 - **Crane streamlining (2026-10-31):** after the crane lowers a load, its
   magnetic connectors release and stow themselves once detaching is allowed:
   straight away on a rig, or when the last retaining hardware is in on a

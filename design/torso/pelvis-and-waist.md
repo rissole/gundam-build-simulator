@@ -1,12 +1,14 @@
 # Hip assembly
 
-Last updated: 2026-10-24
+Last updated: 2026-11-01
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md)
 
 Connected assemblies and clearance checks: [thigh and hip](../legs/thigh-and-hip.md), [chest and cockpit](chest-and-cockpit.md), [backpack, power, and cooling](backpack-and-power.md).
 
 Dimensions and reference pose: [shared proportion layout](../proportions.md#torso-and-backpack).
+
+> **Silhouette revision, 2026-11-01:** the [approved whole-robot silhouette](../../models/silhouette-mannequin/README.md) changes this component's envelope: fixed hip assembly armor 3.60 m wide (was 3.00); front hip guards reach down to Z 7.85 over the thighs. Revised values are in [proportions](../proportions.md); the detailed interfaces below predate the revision and still need updating.
 
 ## Confirmed design
 
