@@ -1,0 +1,3515 @@
+{
+  "audit": "measured-interfaces",
+  "tolerance_m": 0.01,
+  "blend": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01/output/leg-lg01.blend",
+  "scope": "leg-only",
+  "passed": true,
+  "checks": [
+    {
+      "check": "LG-120 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-110 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-100 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-140 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-150 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-130 instance count",
+      "passed": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "check": "LG-135 instance count",
+      "passed": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "check": "LG-240 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-242 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-244 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-250 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-340 instance count",
+      "passed": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "check": "LG-345 instance count",
+      "passed": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "check": "LG-346 instance count",
+      "passed": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "check": "LG-440 instance count",
+      "passed": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "check": "LG-450 instance count",
+      "passed": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "check": "Hip ball minimum",
+      "passed": true,
+      "measured": [
+        -0.44999992847442627,
+        -0.44999992847442627,
+        8.75
+      ],
+      "expected": [
+        -0.45,
+        -0.45,
+        8.75
+      ],
+      "error_m": 7.152557374157098e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Hip ball maximum",
+      "passed": true,
+      "measured": [
+        0.44999992847442627,
+        0.44999992847442627,
+        9.649999618530273
+      ],
+      "expected": [
+        0.45,
+        0.45,
+        9.65
+      ],
+      "error_m": 3.8146972691777137e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Hip neck minimum",
+      "passed": true,
+      "measured": [
+        -0.15000000596046448,
+        -0.15000000596046448,
+        8.335000038146973
+      ],
+      "expected": [
+        -0.15,
+        -0.15,
+        8.335
+      ],
+      "error_m": 3.814697180359872e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Hip neck maximum",
+      "passed": true,
+      "measured": [
+        0.15000000596046448,
+        0.15000000596046448,
+        8.785000801086426
+      ],
+      "expected": [
+        0.15,
+        0.15,
+        8.785
+      ],
+      "error_m": 8.010864256391415e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Thigh structural box lower minimum",
+      "passed": true,
+      "measured": [
+        -0.33000001311302185,
+        -0.2849999964237213,
+        6.020000457763672
+      ],
+      "expected": [
+        -0.33,
+        -0.285,
+        6.02
+      ],
+      "error_m": 4.5776367230132564e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Thigh structural box lower maximum",
+      "passed": true,
+      "measured": [
+        0.33000001311302185,
+        0.2550000250339508,
+        7.200000286102295
+      ],
+      "expected": [
+        0.33,
+        0.255,
+        7.2
+      ],
+      "error_m": 2.861022947442393e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Thigh structural box upper minimum",
+      "passed": true,
+      "measured": [
+        -0.33000001311302185,
+        -0.2849999964237213,
+        7.659999847412109
+      ],
+      "expected": [
+        -0.33,
+        -0.285,
+        7.66
+      ],
+      "error_m": 1.5258789076710855e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Thigh structural box upper maximum",
+      "passed": true,
+      "measured": [
+        0.33000001311302185,
+        0.2550000250339508,
+        8.239999771118164
+      ],
+      "expected": [
+        0.33,
+        0.255,
+        8.24
+      ],
+      "error_m": 2.2888183615066282e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Upper spar interface section",
+      "passed": true,
+      "measured": [
+        0.30000001192092896,
+        0.20000000298023224
+      ],
+      "expected": [
+        0.3,
+        0.2
+      ],
+      "error_m": 1.1920928966180355e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar flange minimum",
+      "passed": true,
+      "measured": [
+        -0.3400000035762787,
+        -0.30000001192092896,
+        5.920000076293945
+      ],
+      "expected": [
+        -0.34,
+        -0.3,
+        5.92
+      ],
+      "error_m": 7.629394538355427e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar flange maximum",
+      "passed": true,
+      "measured": [
+        0.3400000035762787,
+        0.30000001192092896,
+        5.960000038146973
+      ],
+      "expected": [
+        0.34,
+        0.3,
+        5.96
+      ],
+      "error_m": 3.814697269177714e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork flange minimum",
+      "passed": true,
+      "measured": [
+        -0.3400000035762787,
+        -0.30000001192092896,
+        5.880000114440918
+      ],
+      "expected": [
+        -0.34,
+        -0.3,
+        5.88
+      ],
+      "error_m": 1.1444091807533141e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork flange maximum",
+      "passed": true,
+      "measured": [
+        0.3400000035762787,
+        0.30000001192092896,
+        5.920000076293945
+      ],
+      "expected": [
+        0.34,
+        0.3,
+        5.92
+      ],
+      "error_m": 7.629394538355427e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Four fork bolts",
+      "passed": true,
+      "actual": 4
+    },
+    {
+      "check": "Spar bolt bore 0 axis position",
+      "passed": true,
+      "measured": [
+        -0.24999999684963337,
+        -0.20000000298023224,
+        5.94
+      ],
+      "expected": [
+        -0.25,
+        -0.2,
+        5.94
+      ],
+      "error_m": 3.150366634230295e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 0 bore diameter",
+      "passed": true,
+      "measured": 0.02600000153326377,
+      "expected": 0.026,
+      "error_m": 1.5332637728904253e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 0 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.01999992370605508,
+        0.020000038146972265
+      ],
+      "expected": [
+        -0.02,
+        0.02
+      ],
+      "error_m": 7.629394492211783e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 0 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Fork tapped bore 0 axis position",
+      "passed": true,
+      "measured": [
+        -0.2500000035776678,
+        -0.20000000298023224,
+        5.9
+      ],
+      "expected": [
+        -0.25,
+        -0.2,
+        5.9
+      ],
+      "error_m": 3.577667773146942e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 0 bore diameter",
+      "passed": true,
+      "measured": 0.02100000423808324,
+      "expected": 0.021,
+      "error_m": 4.238083238516932e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 0 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.019999885559082387,
+        0.020000076293944957
+      ],
+      "expected": [
+        -0.02,
+        0.02
+      ],
+      "error_m": 1.1444091761389497e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 0 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Fork bolt 0 axis",
+      "passed": true,
+      "measured": [
+        -0.2500000074505806,
+        -0.20000000298023224
+      ],
+      "expected": [
+        -0.25,
+        -0.2
+      ],
+      "error_m": 7.450580596923828e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork bolt 0 ends",
+      "passed": true,
+      "measured": [
+        5.86400032043457,
+        5.979600429534912
+      ],
+      "expected": [
+        5.864,
+        5.9796
+      ],
+      "error_m": 4.2953491252717413e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 0 centre",
+      "passed": true,
+      "measured": [
+        -0.25,
+        -0.20000000298023224,
+        5.962000370025635
+      ],
+      "expected": [
+        -0.25,
+        -0.2,
+        5.962
+      ],
+      "error_m": 3.700256350214204e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 0 outer diameter",
+      "passed": true,
+      "measured": 0.04560001499357624,
+      "expected": 0.0456,
+      "error_m": 1.499357624168418e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 0 bore diameter",
+      "passed": true,
+      "measured": 0.02567997876309851,
+      "expected": 0.02568,
+      "error_m": 2.1236901490834237e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 0 length",
+      "passed": true,
+      "measured": 0.0039997100830078125,
+      "expected": 0.004,
+      "error_m": 2.8991699218758327e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 1 axis position",
+      "passed": true,
+      "measured": [
+        -0.24999999684963337,
+        0.20000000298023224,
+        5.94
+      ],
+      "expected": [
+        -0.25,
+        0.2,
+        5.94
+      ],
+      "error_m": 3.150366634230295e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 1 bore diameter",
+      "passed": true,
+      "measured": 0.02600000153326376,
+      "expected": 0.026,
+      "error_m": 1.5332637624820844e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.01999992370605508,
+        0.020000038146972265
+      ],
+      "expected": [
+        -0.02,
+        0.02
+      ],
+      "error_m": 7.629394492211783e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Fork tapped bore 1 axis position",
+      "passed": true,
+      "measured": [
+        -0.2500000035776678,
+        0.20000000298023224,
+        5.9
+      ],
+      "expected": [
+        -0.25,
+        0.2,
+        5.9
+      ],
+      "error_m": 3.577667773146942e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 1 bore diameter",
+      "passed": true,
+      "measured": 0.02100000423808325,
+      "expected": 0.021,
+      "error_m": 4.238083248925273e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.019999885559082387,
+        0.020000076293944957
+      ],
+      "expected": [
+        -0.02,
+        0.02
+      ],
+      "error_m": 1.1444091761389497e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Fork bolt 1 axis",
+      "passed": true,
+      "measured": [
+        -0.2500000074505806,
+        0.20000000298023224
+      ],
+      "expected": [
+        -0.25,
+        0.2
+      ],
+      "error_m": 7.450580596923828e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork bolt 1 ends",
+      "passed": true,
+      "measured": [
+        5.86400032043457,
+        5.979600429534912
+      ],
+      "expected": [
+        5.864,
+        5.9796
+      ],
+      "error_m": 4.2953491252717413e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 1 centre",
+      "passed": true,
+      "measured": [
+        -0.25,
+        0.20000000298023224,
+        5.962000370025635
+      ],
+      "expected": [
+        -0.25,
+        0.2,
+        5.962
+      ],
+      "error_m": 3.700256350214204e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 1 outer diameter",
+      "passed": true,
+      "measured": 0.04560001499357624,
+      "expected": 0.0456,
+      "error_m": 1.499357624168418e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 1 bore diameter",
+      "passed": true,
+      "measured": 0.02567997876309851,
+      "expected": 0.02568,
+      "error_m": 2.1236901490834237e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 1 length",
+      "passed": true,
+      "measured": 0.0039997100830078125,
+      "expected": 0.004,
+      "error_m": 2.8991699218758327e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 2 axis position",
+      "passed": true,
+      "measured": [
+        0.24999999684963337,
+        -0.20000000298023224,
+        5.94
+      ],
+      "expected": [
+        0.25,
+        -0.2,
+        5.94
+      ],
+      "error_m": 3.150366634230295e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 2 bore diameter",
+      "passed": true,
+      "measured": 0.02600000153326376,
+      "expected": 0.026,
+      "error_m": 1.5332637624820844e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 2 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.01999992370605508,
+        0.020000038146972265
+      ],
+      "expected": [
+        -0.02,
+        0.02
+      ],
+      "error_m": 7.629394492211783e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 2 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Fork tapped bore 2 axis position",
+      "passed": true,
+      "measured": [
+        0.2500000035776678,
+        -0.20000000298023224,
+        5.9
+      ],
+      "expected": [
+        0.25,
+        -0.2,
+        5.9
+      ],
+      "error_m": 3.577667773146942e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 2 bore diameter",
+      "passed": true,
+      "measured": 0.021000004238083247,
+      "expected": 0.021,
+      "error_m": 4.238083245455826e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 2 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.019999885559082387,
+        0.020000076293944957
+      ],
+      "expected": [
+        -0.02,
+        0.02
+      ],
+      "error_m": 1.1444091761389497e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 2 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Fork bolt 2 axis",
+      "passed": true,
+      "measured": [
+        0.2500000074505806,
+        -0.20000000298023224
+      ],
+      "expected": [
+        0.25,
+        -0.2
+      ],
+      "error_m": 7.450580596923828e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork bolt 2 ends",
+      "passed": true,
+      "measured": [
+        5.86400032043457,
+        5.979600429534912
+      ],
+      "expected": [
+        5.864,
+        5.9796
+      ],
+      "error_m": 4.2953491252717413e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 2 centre",
+      "passed": true,
+      "measured": [
+        0.25,
+        -0.20000000298023224,
+        5.962000370025635
+      ],
+      "expected": [
+        0.25,
+        -0.2,
+        5.962
+      ],
+      "error_m": 3.700256350214204e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 2 outer diameter",
+      "passed": true,
+      "measured": 0.04560001499357624,
+      "expected": 0.0456,
+      "error_m": 1.499357624168418e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 2 bore diameter",
+      "passed": true,
+      "measured": 0.02567997876309851,
+      "expected": 0.02568,
+      "error_m": 2.1236901490834237e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 2 length",
+      "passed": true,
+      "measured": 0.0039997100830078125,
+      "expected": 0.004,
+      "error_m": 2.8991699218758327e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 3 axis position",
+      "passed": true,
+      "measured": [
+        0.24999999684963337,
+        0.20000000298023224,
+        5.94
+      ],
+      "expected": [
+        0.25,
+        0.2,
+        5.94
+      ],
+      "error_m": 3.150366634230295e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 3 bore diameter",
+      "passed": true,
+      "measured": 0.026000001533263768,
+      "expected": 0.026,
+      "error_m": 1.5332637694209783e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 3 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.01999992370605508,
+        0.020000038146972265
+      ],
+      "expected": [
+        -0.02,
+        0.02
+      ],
+      "error_m": 7.629394492211783e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spar bolt bore 3 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Fork tapped bore 3 axis position",
+      "passed": true,
+      "measured": [
+        0.2500000035776678,
+        0.20000000298023224,
+        5.9
+      ],
+      "expected": [
+        0.25,
+        0.2,
+        5.9
+      ],
+      "error_m": 3.577667773146942e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 3 bore diameter",
+      "passed": true,
+      "measured": 0.02100000423808325,
+      "expected": 0.021,
+      "error_m": 4.238083248925273e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 3 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.019999885559082387,
+        0.020000076293944957
+      ],
+      "expected": [
+        -0.02,
+        0.02
+      ],
+      "error_m": 1.1444091761389497e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork tapped bore 3 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Fork bolt 3 axis",
+      "passed": true,
+      "measured": [
+        0.2500000074505806,
+        0.20000000298023224
+      ],
+      "expected": [
+        0.25,
+        0.2
+      ],
+      "error_m": 7.450580596923828e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork bolt 3 ends",
+      "passed": true,
+      "measured": [
+        5.86400032043457,
+        5.979600429534912
+      ],
+      "expected": [
+        5.864,
+        5.9796
+      ],
+      "error_m": 4.2953491252717413e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 3 centre",
+      "passed": true,
+      "measured": [
+        0.25,
+        0.20000000298023224,
+        5.962000370025635
+      ],
+      "expected": [
+        0.25,
+        0.2,
+        5.962
+      ],
+      "error_m": 3.700256350214204e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 3 outer diameter",
+      "passed": true,
+      "measured": 0.04560001499357624,
+      "expected": 0.0456,
+      "error_m": 1.499357624168418e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 3 bore diameter",
+      "passed": true,
+      "measured": 0.02567997876309851,
+      "expected": 0.02568,
+      "error_m": 2.1236901490834237e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork washer 3 length",
+      "passed": true,
+      "measured": 0.0039997100830078125,
+      "expected": 0.004,
+      "error_m": 2.8991699218758327e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork cheek -1 centre",
+      "passed": true,
+      "measured": [
+        -0.4299999922513962,
+        0.0,
+        5.099999904632568
+      ],
+      "expected": [
+        -0.43,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork cheek -1 outer diameter",
+      "passed": true,
+      "measured": 0.6800003051757812,
+      "expected": 0.68,
+      "error_m": 3.051757812011502e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork cheek -1 bore diameter",
+      "passed": true,
+      "measured": 0.2099996789346813,
+      "expected": 0.21,
+      "error_m": 3.2106531869247057e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork cheek -1 length",
+      "passed": true,
+      "measured": 0.14000001549720764,
+      "expected": 0.14,
+      "error_m": 1.5497207628278886e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork axle bore -1 axis position",
+      "passed": true,
+      "measured": [
+        -0.43,
+        1.0325735016205969e-18,
+        5.099999904632568
+      ],
+      "expected": [
+        -0.43,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork axle bore -1 bore diameter",
+      "passed": true,
+      "measured": 0.21000001690905204,
+      "expected": 0.21,
+      "error_m": 1.6909052047431317e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork axle bore -1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.06000000953674317,
+        0.05999999523162841
+      ],
+      "expected": [
+        -0.07,
+        0.07
+      ],
+      "error_m": 0.010000004768371595,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork axle bore -1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Bearing -1 centre",
+      "passed": true,
+      "measured": [
+        -0.21000000089406967,
+        0.0,
+        5.099999904632568
+      ],
+      "expected": [
+        -0.21,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Bearing -1 outer diameter",
+      "passed": true,
+      "measured": 0.298000452998875,
+      "expected": 0.298,
+      "error_m": 4.5299887502237013e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Bearing -1 bore diameter",
+      "passed": true,
+      "measured": 0.20399951934814453,
+      "expected": 0.204,
+      "error_m": 4.806518554556494e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Bearing -1 length",
+      "passed": true,
+      "measured": 0.12000001966953278,
+      "expected": 0.12,
+      "error_m": 1.96695327803198e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spacer -1 centre",
+      "passed": true,
+      "measured": [
+        -0.3174999952316284,
+        0.0,
+        5.099999904632568
+      ],
+      "expected": [
+        -0.3175,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spacer -1 outer diameter",
+      "passed": true,
+      "measured": 0.36000032715895397,
+      "expected": 0.36,
+      "error_m": 3.271589539832753e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spacer -1 bore diameter",
+      "passed": true,
+      "measured": 0.20399951934814453,
+      "expected": 0.204,
+      "error_m": 4.806518554556494e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spacer -1 length",
+      "passed": true,
+      "measured": 0.07500004768371582,
+      "expected": 0.075,
+      "error_m": 4.768371582308806e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork pad -1 minimum",
+      "passed": true,
+      "measured": [
+        -0.800000011920929,
+        -0.10999999940395355,
+        5.980000019073486
+      ],
+      "expected": [
+        -0.8,
+        -0.11,
+        5.98
+      ],
+      "error_m": 1.907348590179936e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork pad -1 maximum",
+      "passed": true,
+      "measured": [
+        -0.7900000214576721,
+        0.17000000178813934,
+        6.21999979019165
+      ],
+      "expected": [
+        -0.79,
+        0.17,
+        6.22
+      ],
+      "error_m": 2.0980834936068504e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin pad -1 minimum",
+      "passed": true,
+      "measured": [
+        -0.800000011920929,
+        -0.14000000059604645,
+        2.690000057220459
+      ],
+      "expected": [
+        -0.8,
+        -0.14,
+        2.69
+      ],
+      "error_m": 5.7220459037665705e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin pad -1 maximum",
+      "passed": true,
+      "measured": [
+        -0.7900000214576721,
+        0.14000000059604645,
+        2.9099998474121094
+      ],
+      "expected": [
+        -0.79,
+        0.14,
+        2.91
+      ],
+      "error_m": 1.5258789076710855e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork cheek 1 centre",
+      "passed": true,
+      "measured": [
+        0.4299999922513962,
+        0.0,
+        5.099999904632568
+      ],
+      "expected": [
+        0.43,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork cheek 1 outer diameter",
+      "passed": true,
+      "measured": 0.6800003051757812,
+      "expected": 0.68,
+      "error_m": 3.051757812011502e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork cheek 1 bore diameter",
+      "passed": true,
+      "measured": 0.2099996789346813,
+      "expected": 0.21,
+      "error_m": 3.2106531869247057e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork cheek 1 length",
+      "passed": true,
+      "measured": 0.14000001549720764,
+      "expected": 0.14,
+      "error_m": 1.5497207628278886e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork axle bore 1 axis position",
+      "passed": true,
+      "measured": [
+        0.43,
+        1.0325735016205969e-18,
+        5.099999904632568
+      ],
+      "expected": [
+        0.43,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork axle bore 1 bore diameter",
+      "passed": true,
+      "measured": 0.21000001690905204,
+      "expected": 0.21,
+      "error_m": 1.6909052047431317e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork axle bore 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.05999999523162841,
+        0.06000000953674317
+      ],
+      "expected": [
+        -0.07,
+        0.07
+      ],
+      "error_m": 0.010000004768371595,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork axle bore 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Bearing 1 centre",
+      "passed": true,
+      "measured": [
+        0.21000000089406967,
+        0.0,
+        5.099999904632568
+      ],
+      "expected": [
+        0.21,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Bearing 1 outer diameter",
+      "passed": true,
+      "measured": 0.298000452998875,
+      "expected": 0.298,
+      "error_m": 4.5299887502237013e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Bearing 1 bore diameter",
+      "passed": true,
+      "measured": 0.20399951934814453,
+      "expected": 0.204,
+      "error_m": 4.806518554556494e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Bearing 1 length",
+      "passed": true,
+      "measured": 0.12000001966953278,
+      "expected": 0.12,
+      "error_m": 1.96695327803198e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spacer 1 centre",
+      "passed": true,
+      "measured": [
+        0.3174999952316284,
+        0.0,
+        5.099999904632568
+      ],
+      "expected": [
+        0.3175,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spacer 1 outer diameter",
+      "passed": true,
+      "measured": 0.36000032715895397,
+      "expected": 0.36,
+      "error_m": 3.271589539832753e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spacer 1 bore diameter",
+      "passed": true,
+      "measured": 0.20399951934814453,
+      "expected": 0.204,
+      "error_m": 4.806518554556494e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Spacer 1 length",
+      "passed": true,
+      "measured": 0.07500004768371582,
+      "expected": 0.075,
+      "error_m": 4.768371582308806e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork pad 1 minimum",
+      "passed": true,
+      "measured": [
+        0.7900000214576721,
+        -0.10999999940395355,
+        5.980000019073486
+      ],
+      "expected": [
+        0.79,
+        -0.11,
+        5.98
+      ],
+      "error_m": 2.1457672083613488e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Fork pad 1 maximum",
+      "passed": true,
+      "measured": [
+        0.800000011920929,
+        0.17000000178813934,
+        6.21999979019165
+      ],
+      "expected": [
+        0.8,
+        0.17,
+        6.22
+      ],
+      "error_m": 2.0980834936068504e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin pad 1 minimum",
+      "passed": true,
+      "measured": [
+        0.7900000214576721,
+        -0.14000000059604645,
+        2.690000057220459
+      ],
+      "expected": [
+        0.79,
+        -0.14,
+        2.69
+      ],
+      "error_m": 5.7220459037665705e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin pad 1 maximum",
+      "passed": true,
+      "measured": [
+        0.800000011920929,
+        0.14000000059604645,
+        2.9099998474121094
+      ],
+      "expected": [
+        0.8,
+        0.14,
+        2.91
+      ],
+      "error_m": 1.5258789076710855e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin knee boss centre",
+      "passed": true,
+      "measured": [
+        0.0,
+        0.0,
+        5.099999904632568
+      ],
+      "expected": [
+        0.0,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin knee boss outer diameter",
+      "passed": true,
+      "measured": 0.5600005038581483,
+      "expected": 0.56,
+      "error_m": 5.038581482041948e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin knee boss bore diameter",
+      "passed": true,
+      "measured": 0.2999994245086061,
+      "expected": 0.3,
+      "error_m": 5.754913938726958e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin knee boss length",
+      "passed": true,
+      "measured": 0.5600000619888306,
+      "expected": 0.56,
+      "error_m": 6.198883051311554e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin knee bearing bore axis position",
+      "passed": true,
+      "measured": [
+        0.0,
+        1.445602897852805e-18,
+        5.099999904632568
+      ],
+      "expected": [
+        0.0,
+        0.0,
+        5.1
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin knee bearing bore bore diameter",
+      "passed": true,
+      "measured": 0.30000002611632803,
+      "expected": 0.3,
+      "error_m": 2.6116328044611947e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin knee bearing bore axial rim span",
+      "passed": true,
+      "measured": [
+        -0.27399998903274536,
+        0.27399998903274536
+      ],
+      "expected": [
+        -0.28,
+        0.28
+      ],
+      "error_m": 0.006000010967254665,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin knee bearing bore unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Axle journal minimum",
+      "passed": true,
+      "measured": [
+        -0.5,
+        -0.10000000149011612,
+        5.0
+      ],
+      "expected": [
+        -0.5,
+        -0.1,
+        5.0
+      ],
+      "error_m": 1.4901161138336505e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Axle journal maximum",
+      "passed": true,
+      "measured": [
+        0.5,
+        0.10000000149011612,
+        5.199999809265137
+      ],
+      "expected": [
+        0.5,
+        0.1,
+        5.2
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Axle shoulder minimum",
+      "passed": true,
+      "measured": [
+        -0.5399999618530273,
+        -0.15000000596046448,
+        4.949999809265137
+      ],
+      "expected": [
+        -0.54,
+        -0.15,
+        4.95
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Axle shoulder maximum",
+      "passed": true,
+      "measured": [
+        -0.4999999701976776,
+        0.15000000596046448,
+        5.25
+      ],
+      "expected": [
+        -0.5,
+        0.15,
+        5.25
+      ],
+      "error_m": 2.9802322387695312e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Axle cap minimum",
+      "passed": true,
+      "measured": [
+        0.5349999666213989,
+        -0.15000000596046448,
+        4.949999809265137
+      ],
+      "expected": [
+        0.535,
+        -0.15,
+        4.95
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Axle cap maximum",
+      "passed": true,
+      "measured": [
+        0.5590000152587891,
+        0.15000000596046448,
+        5.25
+      ],
+      "expected": [
+        0.559,
+        0.15,
+        5.25
+      ],
+      "error_m": 1.5258789010097473e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw bore 0 axis position",
+      "passed": true,
+      "measured": [
+        0.547,
+        9.214503737735937e-20,
+        5.014999770618133
+      ],
+      "expected": [
+        0.547,
+        0.0,
+        5.015
+      ],
+      "error_m": 2.2938186639009928e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw bore 0 bore diameter",
+      "passed": true,
+      "measured": 0.0129999727001724,
+      "expected": 0.013,
+      "error_m": 2.7299827599913673e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw bore 0 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.01199997377395634,
+        0.01200001525878902
+      ],
+      "expected": [
+        -0.012,
+        0.012
+      ],
+      "error_m": 2.622604365967729e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw bore 0 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Cap screw axis 0",
+      "passed": true,
+      "measured": [
+        0.0,
+        5.014999866485596
+      ],
+      "expected": [
+        0.0,
+        5.015
+      ],
+      "error_m": 1.3351440397713077e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw ends 0",
+      "passed": true,
+      "measured": [
+        0.5109999775886536,
+        0.5687999725341797
+      ],
+      "expected": [
+        0.511,
+        0.5688
+      ],
+      "error_m": 2.7465820284788833e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap washer 0 centre",
+      "passed": true,
+      "measured": [
+        0.5600000023841858,
+        0.0,
+        5.014999866485596
+      ],
+      "expected": [
+        0.56,
+        0.0,
+        5.015
+      ],
+      "error_m": 1.3351440397713077e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap washer 0 outer diameter",
+      "passed": true,
+      "measured": 0.022800445556640625,
+      "expected": 0.0228,
+      "error_m": 4.4555664062417843e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap washer 0 bore diameter",
+      "passed": true,
+      "measured": 0.012839999981224537,
+      "expected": 0.01284,
+      "error_m": 1.8775463822562344e-11,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap washer 0 length",
+      "passed": true,
+      "measured": 0.001999974250793457,
+      "expected": 0.002,
+      "error_m": 2.5749206543010383e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw bore 1 axis position",
+      "passed": true,
+      "measured": [
+        0.547,
+        2.7643511213207806e-19,
+        5.184999846912079
+      ],
+      "expected": [
+        0.547,
+        0.0,
+        5.185
+      ],
+      "error_m": 1.53087921006545e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw bore 1 bore diameter",
+      "passed": true,
+      "measured": 0.0129999727001724,
+      "expected": 0.013,
+      "error_m": 2.7299827599913673e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw bore 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.012000033378601116,
+        0.011999955654144245
+      ],
+      "expected": [
+        -0.012,
+        0.012
+      ],
+      "error_m": 4.434585575488481e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw bore 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Cap screw axis 1",
+      "passed": true,
+      "measured": [
+        0.0,
+        5.184999942779541
+      ],
+      "expected": [
+        0.0,
+        5.185
+      ],
+      "error_m": 5.7220458593576495e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap screw ends 1",
+      "passed": true,
+      "measured": [
+        0.5109999775886536,
+        0.5687999725341797
+      ],
+      "expected": [
+        0.511,
+        0.5688
+      ],
+      "error_m": 2.7465820284788833e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap washer 1 centre",
+      "passed": true,
+      "measured": [
+        0.5600000023841858,
+        0.0,
+        5.184999942779541
+      ],
+      "expected": [
+        0.56,
+        0.0,
+        5.185
+      ],
+      "error_m": 5.7220458593576495e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap washer 1 outer diameter",
+      "passed": true,
+      "measured": 0.022800445556640625,
+      "expected": 0.0228,
+      "error_m": 4.4555664062417843e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap washer 1 bore diameter",
+      "passed": true,
+      "measured": 0.012839999981224537,
+      "expected": 0.01284,
+      "error_m": 1.8775463822562344e-11,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cap washer 1 length",
+      "passed": true,
+      "measured": 0.001999974250793457,
+      "expected": 0.002,
+      "error_m": 2.5749206543010383e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange minimum",
+      "passed": true,
+      "measured": [
+        -0.27000001072883606,
+        -0.2199999988079071,
+        1.3799999952316284
+      ],
+      "expected": [
+        -0.27,
+        -0.22,
+        1.38
+      ],
+      "error_m": 1.0728836041806744e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange maximum",
+      "passed": true,
+      "measured": [
+        0.27000001072883606,
+        0.2199999988079071,
+        1.409999966621399
+      ],
+      "expected": [
+        0.27,
+        0.22,
+        1.41
+      ],
+      "error_m": 3.337860099428269e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin ankle interface section",
+      "passed": true,
+      "measured": [
+        0.30000001192092896,
+        0.20000000298023224
+      ],
+      "expected": [
+        0.3,
+        0.2
+      ],
+      "error_m": 1.1920928966180355e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin upper box section",
+      "passed": true,
+      "measured": [
+        0.6399999856948853,
+        0.6200000047683716
+      ],
+      "expected": [
+        0.64,
+        0.62
+      ],
+      "error_m": 1.4305114759416426e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 0 axis position",
+      "passed": true,
+      "measured": [
+        -0.199999249903232,
+        -0.14999855553513666,
+        1.395
+      ],
+      "expected": [
+        -0.2,
+        -0.15,
+        1.395
+      ],
+      "error_m": 1.444464863331607e-06,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 0 bore diameter",
+      "passed": true,
+      "measured": 0.03799630840332607,
+      "expected": 0.038,
+      "error_m": 3.6915966739256567e-06,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 0 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.0150000047683716,
+        0.014999966621398908
+      ],
+      "expected": [
+        -0.015,
+        0.015
+      ],
+      "error_m": 3.337860109142721e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 0 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Shin flange bore 1 axis position",
+      "passed": true,
+      "measured": [
+        -0.199999249903232,
+        0.14999855553513666,
+        1.395
+      ],
+      "expected": [
+        -0.2,
+        0.15,
+        1.395
+      ],
+      "error_m": 1.444464863331607e-06,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 1 bore diameter",
+      "passed": true,
+      "measured": 0.03799630840332607,
+      "expected": 0.038,
+      "error_m": 3.6915966739256567e-06,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.0150000047683716,
+        0.014999966621398908
+      ],
+      "expected": [
+        -0.015,
+        0.015
+      ],
+      "error_m": 3.337860109142721e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Shin flange bore 2 axis position",
+      "passed": true,
+      "measured": [
+        0.20000000298023224,
+        -0.15000000596046448,
+        1.395
+      ],
+      "expected": [
+        0.2,
+        -0.15,
+        1.395
+      ],
+      "error_m": 5.960464483090178e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 2 bore diameter",
+      "passed": true,
+      "measured": 0.038000002517531446,
+      "expected": 0.038,
+      "error_m": 2.5175314471992394e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 2 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.0150000047683716,
+        0.014999966621398908
+      ],
+      "expected": [
+        -0.015,
+        0.015
+      ],
+      "error_m": 3.337860109142721e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 2 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Shin flange bore 3 axis position",
+      "passed": true,
+      "measured": [
+        0.20000000298023224,
+        0.15000000596046448,
+        1.395
+      ],
+      "expected": [
+        0.2,
+        0.15,
+        1.395
+      ],
+      "error_m": 5.960464483090178e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 3 bore diameter",
+      "passed": true,
+      "measured": 0.03800000251753143,
+      "expected": 0.038,
+      "error_m": 2.5175314333214516e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 3 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.0150000047683716,
+        0.014999966621398908
+      ],
+      "expected": [
+        -0.015,
+        0.015
+      ],
+      "error_m": 3.337860109142721e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Shin flange bore 3 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Female key recess has vertices",
+      "passed": true,
+      "vertices_found": 8
+    },
+    {
+      "check": "Key recess plan extent",
+      "passed": true,
+      "measured": [
+        0.18199999630451202,
+        0.10199999809265137
+      ],
+      "expected": [
+        0.182,
+        0.102
+      ],
+      "error_m": 3.6954879711892374e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Key recess roof",
+      "passed": true,
+      "measured": 1.406999945640564,
+      "expected": 1.407,
+      "error_m": 5.435943606357796e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Ankle electrical sleeve centre",
+      "passed": true,
+      "measured": [
+        0.2646439950712399,
+        0.10915249002773791,
+        1.4292879132256993
+      ],
+      "expected": [
+        0.2646439877359821,
+        0.10915249233498882,
+        1.429287975471964
+      ],
+      "error_m": 6.224626480921813e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Ankle electrical sleeve outer diameter",
+      "passed": true,
+      "measured": 0.04800006497508719,
+      "expected": 0.048,
+      "error_m": 6.497508718561473e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Ankle electrical sleeve bore diameter",
+      "passed": true,
+      "measured": 0.03399994449935389,
+      "expected": 0.034,
+      "error_m": 5.550064611364869e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Ankle electrical sleeve length",
+      "passed": true,
+      "measured": 0.03200010636155426,
+      "expected": 0.032,
+      "error_m": 1.0636155425847171e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Ankle electrical sleeve axis position",
+      "passed": true,
+      "measured": [
+        0.26464401994056513,
+        0.10915251012634782,
+        1.4292879538098728
+      ],
+      "expected": [
+        0.2646439877359821,
+        0.10915249233498882,
+        1.429287975471964
+      ],
+      "error_m": 3.220458305586149e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Ankle electrical sleeve bore diameter",
+      "passed": true,
+      "measured": 0.03501428234291602,
+      "expected": 0.034,
+      "error_m": 0.0010142823429160203,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Ankle electrical sleeve axial rim span",
+      "passed": true,
+      "measured": [
+        -0.01600010426215219,
+        0.016000002099401986
+      ],
+      "expected": [
+        -0.016,
+        0.016
+      ],
+      "error_m": 1.0426215218961588e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Ankle electrical sleeve unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-240 paired eye centre",
+      "passed": true,
+      "measured": [
+        -0.33900000154972076,
+        0.33899998664855957,
+        7.400000095367432
+      ],
+      "expected": [
+        -0.339,
+        0.339,
+        7.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 eye -1 axis position",
+      "passed": true,
+      "measured": [
+        -0.33899998664855957,
+        0.267,
+        7.400000095367432
+      ],
+      "expected": [
+        -0.339,
+        0.267,
+        7.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 eye -1 bore diameter",
+      "passed": true,
+      "measured": 0.06200005329120215,
+      "expected": 0.062,
+      "error_m": 5.3291202152527806e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 eye -1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021000008106231705,
+        0.02099998760223387
+      ],
+      "expected": [
+        -0.025,
+        0.025
+      ],
+      "error_m": 0.00400001239776613,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 eye -1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-240 eye 1 axis position",
+      "passed": true,
+      "measured": [
+        -0.33900000845474376,
+        0.41100000000000003,
+        7.400000095367432
+      ],
+      "expected": [
+        -0.339,
+        0.41100000000000003,
+        7.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 eye 1 bore diameter",
+      "passed": true,
+      "measured": 0.062000056886177636,
+      "expected": 0.062,
+      "error_m": 5.688617763649484e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 eye 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021000014305114778,
+        0.020999981403350798
+      ],
+      "expected": [
+        -0.025,
+        0.025
+      ],
+      "error_m": 0.004000018596649203,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 eye 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-240 clevis gap",
+      "passed": true,
+      "measured": 0.09399995517730708,
+      "expected": 0.094,
+      "error_m": 4.482269291838925e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 total clevis width",
+      "passed": true,
+      "measured": 0.1940000057220459,
+      "expected": 0.194,
+      "error_m": 5.72204589266434e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-240 sampled pin/tool corridor clear of frame and services",
+      "passed": true,
+      "obstructions": [],
+      "radius_m": 0.08,
+      "length_m": 0.34,
+      "rays_per_part": 17
+    },
+    {
+      "check": "LG-242 paired eye centre",
+      "passed": true,
+      "measured": [
+        0.46400000154972076,
+        0.12399999890476465,
+        7.400000095367432
+      ],
+      "expected": [
+        0.464,
+        0.124,
+        7.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 eye -1 axis position",
+      "passed": true,
+      "measured": [
+        0.46399998664855957,
+        0.052000000000000005,
+        7.400000095367432
+      ],
+      "expected": [
+        0.464,
+        0.052000000000000005,
+        7.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 eye -1 bore diameter",
+      "passed": true,
+      "measured": 0.062000053291202166,
+      "expected": 0.062,
+      "error_m": 5.3291202166405593e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 eye -1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021000000506639485,
+        0.02099999892711639
+      ],
+      "expected": [
+        -0.025,
+        0.025
+      ],
+      "error_m": 0.004000001072883612,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 eye -1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-242 eye 1 axis position",
+      "passed": true,
+      "measured": [
+        0.4639999946446855,
+        0.196,
+        7.40000003803143
+      ],
+      "expected": [
+        0.464,
+        0.196,
+        7.4
+      ],
+      "error_m": 3.803142956115835e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 eye 1 bore diameter",
+      "passed": true,
+      "measured": 0.061999998426868964,
+      "expected": 0.062,
+      "error_m": 1.5731310351596584e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 eye 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021000002980232246,
+        0.02099999272823333
+      ],
+      "expected": [
+        -0.025,
+        0.025
+      ],
+      "error_m": 0.0040000072717666715,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 eye 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-242 clevis gap",
+      "passed": true,
+      "measured": 0.09399998593330383,
+      "expected": 0.094,
+      "error_m": 1.4066696168990589e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 total clevis width",
+      "passed": true,
+      "measured": 0.19400000385940075,
+      "expected": 0.194,
+      "error_m": 3.859400743433383e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-242 sampled pin/tool corridor clear of frame and services",
+      "passed": true,
+      "obstructions": [],
+      "radius_m": 0.08,
+      "length_m": 0.34,
+      "rays_per_part": 17
+    },
+    {
+      "check": "LG-244 paired eye centre",
+      "passed": true,
+      "measured": [
+        -0.12399999424815178,
+        -0.46399998664855957,
+        7.400000095367432
+      ],
+      "expected": [
+        -0.124,
+        -0.464,
+        7.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 eye -1 axis position",
+      "passed": true,
+      "measured": [
+        -0.12399999798078266,
+        -0.536,
+        7.400000095152326
+      ],
+      "expected": [
+        -0.124,
+        -0.536,
+        7.4
+      ],
+      "error_m": 9.515232601842172e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 eye -1 bore diameter",
+      "passed": true,
+      "measured": 0.06200005705881967,
+      "expected": 0.062,
+      "error_m": 5.7058819669109084e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 eye -1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021000041007995573,
+        0.021000014305114778
+      ],
+      "expected": [
+        -0.025,
+        0.025
+      ],
+      "error_m": 0.003999985694885223,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 eye -1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-244 eye 1 axis position",
+      "passed": true,
+      "measured": [
+        -0.1239999993950025,
+        -0.392,
+        7.400000095474985
+      ],
+      "expected": [
+        -0.124,
+        -0.392,
+        7.4
+      ],
+      "error_m": 9.54749843629088e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 eye 1 bore diameter",
+      "passed": true,
+      "measured": 0.06200005734252589,
+      "expected": 0.062,
+      "error_m": 5.734252588734945e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 eye 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.02099998760223387,
+        0.021000008106231705
+      ],
+      "expected": [
+        -0.025,
+        0.025
+      ],
+      "error_m": 0.00400001239776613,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 eye 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-244 clevis gap",
+      "passed": true,
+      "measured": 0.0940000085830689,
+      "expected": 0.094,
+      "error_m": 8.583068894507662e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 total clevis width",
+      "passed": true,
+      "measured": 0.1940000057220459,
+      "expected": 0.194,
+      "error_m": 5.72204589266434e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-244 sampled pin/tool corridor clear of frame and services",
+      "passed": true,
+      "obstructions": [],
+      "radius_m": 0.08,
+      "length_m": 0.34,
+      "rays_per_part": 17
+    },
+    {
+      "check": "Service block body minimum",
+      "passed": true,
+      "measured": [
+        0.16999998688697815,
+        0.5099999904632568,
+        8.180000305175781
+      ],
+      "expected": [
+        0.17,
+        0.51,
+        8.18
+      ],
+      "error_m": 3.051757815342171e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Service block body maximum",
+      "passed": true,
+      "measured": [
+        0.4699999988079071,
+        0.690000057220459,
+        8.520000457763672
+      ],
+      "expected": [
+        0.47,
+        0.69,
+        8.52
+      ],
+      "error_m": 4.5776367230132564e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper-1 actual bore rim exists",
+      "passed": true,
+      "vertices_found": 122
+    },
+    {
+      "check": "cylinder_upper-1 cylinder eye position",
+      "passed": true,
+      "measured": [
+        -0.46000000834465027,
+        -0.4599999934434891,
+        6.400000333786011
+      ],
+      "expected": [
+        -0.46,
+        -0.46,
+        6.4
+      ],
+      "error_m": 3.3378601038691613e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper-1 bracket eye position",
+      "passed": true,
+      "measured": [
+        -0.46000002324581146,
+        -0.46000000834465027,
+        6.400000095367432
+      ],
+      "expected": [
+        -0.46,
+        -0.46,
+        6.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper-1 cylinder/bracket coincidence",
+      "passed": true,
+      "measured": [
+        -0.46000000834465027,
+        -0.4599999934434891,
+        6.400000333786011
+      ],
+      "expected": [
+        -0.46000002324581146,
+        -0.46000000834465027,
+        6.400000095367432
+      ],
+      "error_m": 2.384185791015625e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper-1 cartridge pin tunnel axis position",
+      "passed": true,
+      "measured": [
+        -0.46,
+        -0.4600030582468379,
+        6.399983285391512
+      ],
+      "expected": [
+        -0.46,
+        -0.46,
+        6.4
+      ],
+      "error_m": 1.6714608488399563e-05,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper-1 cartridge pin tunnel bore diameter",
+      "passed": true,
+      "measured": 0.09488311990240524,
+      "expected": 0.09503,
+      "error_m": 0.0001468800975947676,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper-1 cartridge pin tunnel axial rim span",
+      "passed": true,
+      "measured": [
+        -0.09903494358062742,
+        0.09903492689132692
+      ],
+      "expected": [
+        -0.1,
+        0.1
+      ],
+      "error_m": 0.0009650731086730813,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper-1 cartridge pin tunnel unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-345-1 ear -1 axis position",
+      "passed": true,
+      "measured": [
+        -0.6005,
+        -0.460000011928158,
+        6.400000095367432
+      ],
+      "expected": [
+        -0.6005,
+        -0.46,
+        6.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-345-1 ear -1 bore diameter",
+      "passed": true,
+      "measured": 0.09502999683272001,
+      "expected": 0.09503,
+      "error_m": 3.1672799938320395e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-345-1 ear -1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021499979019165005,
+        0.0215000038146973
+      ],
+      "expected": [
+        -0.0275,
+        0.0275
+      ],
+      "error_m": 0.006000020980834995,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-345-1 ear -1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-345-1 ear 1 axis position",
+      "passed": true,
+      "measured": [
+        -0.3195,
+        -0.4600000119281573,
+        6.400000200903276
+      ],
+      "expected": [
+        -0.3195,
+        -0.46,
+        6.4
+      ],
+      "error_m": 2.0090327534916241e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-345-1 ear 1 bore diameter",
+      "passed": true,
+      "measured": 0.09503001363465267,
+      "expected": 0.09503,
+      "error_m": 1.3634652670790892e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-345-1 ear 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021500020503997797,
+        0.021499962329864508
+      ],
+      "expected": [
+        -0.0275,
+        0.0275
+      ],
+      "error_m": 0.006000037670135492,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-345-1 ear 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "cylinder_lower-1 actual bore rim exists",
+      "passed": true,
+      "vertices_found": 122
+    },
+    {
+      "check": "cylinder_lower-1 cylinder eye position",
+      "passed": true,
+      "measured": [
+        -0.4399999678134918,
+        -0.4999999701976776,
+        4.300000190734863
+      ],
+      "expected": [
+        -0.44,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower-1 bracket eye position",
+      "passed": true,
+      "measured": [
+        -0.4400000125169754,
+        -0.5,
+        4.300000190734863
+      ],
+      "expected": [
+        -0.44,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower-1 cylinder/bracket coincidence",
+      "passed": true,
+      "measured": [
+        -0.4399999678134918,
+        -0.4999999701976776,
+        4.300000190734863
+      ],
+      "expected": [
+        -0.4400000125169754,
+        -0.5,
+        4.300000190734863
+      ],
+      "error_m": 4.470348358154297e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower-1 cartridge pin tunnel axis position",
+      "passed": true,
+      "measured": [
+        -0.44,
+        -0.49999692068571333,
+        4.300017016963829
+      ],
+      "expected": [
+        -0.44,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.7016963829163956e-05,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower-1 cartridge pin tunnel bore diameter",
+      "passed": true,
+      "measured": 0.09488308940336396,
+      "expected": 0.09503,
+      "error_m": 0.00014691059663604622,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower-1 cartridge pin tunnel axial rim span",
+      "passed": true,
+      "measured": [
+        -0.09903490304946899,
+        0.09903496742248535
+      ],
+      "expected": [
+        -0.1,
+        0.1
+      ],
+      "error_m": 0.0009650969505310136,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower-1 cartridge pin tunnel unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-346-1 ear -1 axis position",
+      "passed": true,
+      "measured": [
+        -0.5805,
+        -0.49999999665302924,
+        4.300000190734863
+      ],
+      "expected": [
+        -0.5805,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-346-1 ear -1 bore diameter",
+      "passed": true,
+      "measured": 0.09502999136991513,
+      "expected": 0.09503,
+      "error_m": 8.630084868954668e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-346-1 ear -1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.02149999809265135,
+        0.021499984741210953
+      ],
+      "expected": [
+        -0.0275,
+        0.0275
+      ],
+      "error_m": 0.006000015258789047,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-346-1 ear -1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-346-1 ear 1 axis position",
+      "passed": true,
+      "measured": [
+        -0.2995,
+        -0.4999999966530289,
+        4.300000296270717
+      ],
+      "expected": [
+        -0.2995,
+        -0.5,
+        4.3
+      ],
+      "error_m": 2.962707172926571e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-346-1 ear 1 bore diameter",
+      "passed": true,
+      "measured": 0.09503000817184873,
+      "expected": 0.09503,
+      "error_m": 8.171848725480046e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-346-1 ear 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021499979972839367,
+        0.021500002861022938
+      ],
+      "expected": [
+        -0.0275,
+        0.0275
+      ],
+      "error_m": 0.006000020027160633,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-346-1 ear 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Cylinder eye distance -1",
+      "passed": true,
+      "measured": 2.100476279460547,
+      "expected": 2.1004761365,
+      "error_m": 1.429605469560613e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper1 actual bore rim exists",
+      "passed": true,
+      "vertices_found": 122
+    },
+    {
+      "check": "cylinder_upper1 cylinder eye position",
+      "passed": true,
+      "measured": [
+        0.46000006794929504,
+        -0.4599999934434891,
+        6.400000333786011
+      ],
+      "expected": [
+        0.46,
+        -0.46,
+        6.4
+      ],
+      "error_m": 3.3378601038691613e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper1 bracket eye position",
+      "passed": true,
+      "measured": [
+        0.46000002324581146,
+        -0.46000000834465027,
+        6.400000095367432
+      ],
+      "expected": [
+        0.46,
+        -0.46,
+        6.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper1 cylinder/bracket coincidence",
+      "passed": true,
+      "measured": [
+        0.46000006794929504,
+        -0.4599999934434891,
+        6.400000333786011
+      ],
+      "expected": [
+        0.46000002324581146,
+        -0.46000000834465027,
+        6.400000095367432
+      ],
+      "error_m": 2.384185791015625e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper1 cartridge pin tunnel axis position",
+      "passed": true,
+      "measured": [
+        0.46,
+        -0.46000306160054977,
+        6.399983280861961
+      ],
+      "expected": [
+        0.46,
+        -0.46,
+        6.4
+      ],
+      "error_m": 1.6719138039356096e-05,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper1 cartridge pin tunnel bore diameter",
+      "passed": true,
+      "measured": 0.0948831241893053,
+      "expected": 0.09503,
+      "error_m": 0.00014687581069469657,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper1 cartridge pin tunnel axial rim span",
+      "passed": true,
+      "measured": [
+        -0.09903486728668215,
+        0.0990350031852722
+      ],
+      "expected": [
+        -0.1,
+        0.1
+      ],
+      "error_m": 0.0009651327133178567,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_upper1 cartridge pin tunnel unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-3451 ear -1 axis position",
+      "passed": true,
+      "measured": [
+        0.3195,
+        -0.460000011928158,
+        6.400000095367432
+      ],
+      "expected": [
+        0.3195,
+        -0.46,
+        6.4
+      ],
+      "error_m": 9.536743128535363e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3451 ear -1 bore diameter",
+      "passed": true,
+      "measured": 0.09502999683272001,
+      "expected": 0.09503,
+      "error_m": 3.1672799938320395e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3451 ear -1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021499962329864508,
+        0.021500020503997797
+      ],
+      "expected": [
+        -0.0275,
+        0.0275
+      ],
+      "error_m": 0.006000037670135492,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3451 ear -1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-3451 ear 1 axis position",
+      "passed": true,
+      "measured": [
+        0.6005,
+        -0.460000011928158,
+        6.39999999903024
+      ],
+      "expected": [
+        0.6005,
+        -0.46,
+        6.4
+      ],
+      "error_m": 1.1928157961360597e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3451 ear 1 bore diameter",
+      "passed": true,
+      "measured": 0.09502999707741136,
+      "expected": 0.09503,
+      "error_m": 2.92258864331707e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3451 ear 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.0215000038146973,
+        0.021499979019165005
+      ],
+      "expected": [
+        -0.0275,
+        0.0275
+      ],
+      "error_m": 0.006000020980834995,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3451 ear 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "cylinder_lower1 actual bore rim exists",
+      "passed": true,
+      "vertices_found": 122
+    },
+    {
+      "check": "cylinder_lower1 cylinder eye position",
+      "passed": true,
+      "measured": [
+        0.4400000274181366,
+        -0.4999999701976776,
+        4.300000190734863
+      ],
+      "expected": [
+        0.44,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower1 bracket eye position",
+      "passed": true,
+      "measured": [
+        0.4400000125169754,
+        -0.5,
+        4.300000190734863
+      ],
+      "expected": [
+        0.44,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower1 cylinder/bracket coincidence",
+      "passed": true,
+      "measured": [
+        0.4400000274181366,
+        -0.4999999701976776,
+        4.300000190734863
+      ],
+      "expected": [
+        0.4400000125169754,
+        -0.5,
+        4.300000190734863
+      ],
+      "error_m": 2.9802322387695312e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower1 cartridge pin tunnel axis position",
+      "passed": true,
+      "measured": [
+        0.44,
+        -0.49999692068571333,
+        4.300017016963829
+      ],
+      "expected": [
+        0.44,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.7016963829163956e-05,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower1 cartridge pin tunnel bore diameter",
+      "passed": true,
+      "measured": 0.09488308940336394,
+      "expected": 0.09503,
+      "error_m": 0.0001469105966360601,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower1 cartridge pin tunnel axial rim span",
+      "passed": true,
+      "measured": [
+        -0.09903490781784058,
+        0.09903496265411377
+      ],
+      "expected": [
+        -0.1,
+        0.1
+      ],
+      "error_m": 0.0009650921821594272,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "cylinder_lower1 cartridge pin tunnel unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-3461 ear -1 axis position",
+      "passed": true,
+      "measured": [
+        0.2995,
+        -0.49999999665302924,
+        4.300000190734863
+      ],
+      "expected": [
+        0.2995,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.9073486345888568e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3461 ear -1 bore diameter",
+      "passed": true,
+      "measured": 0.09502999136991513,
+      "expected": 0.09503,
+      "error_m": 8.630084868954668e-09,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3461 ear -1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021500002861022938,
+        0.021499979972839367
+      ],
+      "expected": [
+        -0.0275,
+        0.0275
+      ],
+      "error_m": 0.006000020027160633,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3461 ear -1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "LG-3461 ear 1 axis position",
+      "passed": true,
+      "measured": [
+        0.5805,
+        -0.4999999966530296,
+        4.30000010359634
+      ],
+      "expected": [
+        0.5805,
+        -0.5,
+        4.3
+      ],
+      "error_m": 1.0359634039502907e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3461 ear 1 bore diameter",
+      "passed": true,
+      "measured": 0.09502997505735346,
+      "expected": 0.09503,
+      "error_m": 2.494264654540057e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3461 ear 1 axial rim span",
+      "passed": true,
+      "measured": [
+        -0.021499984741210953,
+        0.02149999809265135
+      ],
+      "expected": [
+        -0.0275,
+        0.0275
+      ],
+      "error_m": 0.006000015258789047,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "LG-3461 ear 1 unobstructed tunnel",
+      "passed": true,
+      "hits": []
+    },
+    {
+      "check": "Cylinder eye distance 1",
+      "passed": true,
+      "measured": 2.100476279460547,
+      "expected": 2.1004761365,
+      "error_m": 1.429605469560613e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cradle ring 0 centre",
+      "passed": true,
+      "measured": [
+        0.0,
+        -0.7200000357895047,
+        3.9800000175474857
+      ],
+      "expected": [
+        0.0,
+        -0.72,
+        3.98
+      ],
+      "error_m": 3.5789504693184426e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cradle ring 0 outer diameter",
+      "passed": true,
+      "measured": 0.7400003449496835,
+      "expected": 0.74,
+      "error_m": 3.449496834839749e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cradle ring 0 bore diameter",
+      "passed": true,
+      "measured": 0.6399995491037106,
+      "expected": 0.64,
+      "error_m": 4.5089628941674675e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cradle ring 0 length",
+      "passed": true,
+      "measured": 0.10000024262334162,
+      "expected": 0.1,
+      "error_m": 2.426233416119583e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Engine seat 0 centre",
+      "passed": true,
+      "measured": [
+        0.0,
+        -0.6026223399318202,
+        4.004949567631196
+      ],
+      "expected": [
+        0.0,
+        -0.6026222879119433,
+        4.004949402898131
+      ],
+      "error_m": 1.647330654108714e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Engine seat 0 outer diameter",
+      "passed": true,
+      "measured": 0.636000298818877,
+      "expected": 0.636,
+      "error_m": 2.988188769759148e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Engine seat 0 bore diameter",
+      "passed": true,
+      "measured": 0.3399995542950238,
+      "expected": 0.34,
+      "error_m": 4.4570497620410876e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Engine seat 0 length",
+      "passed": true,
+      "measured": 0.4000002720851827,
+      "expected": 0.4,
+      "error_m": 2.7208518266208515e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Nozzle axial ends 0",
+      "passed": true,
+      "measured": [
+        0.09999982265098163,
+        0.7000000552438937
+      ],
+      "expected": [
+        0.1,
+        0.7
+      ],
+      "error_m": 1.7734901837374029e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Nozzle mouth diameter 0",
+      "passed": true,
+      "measured": 0.6400012906203966,
+      "expected": 0.64,
+      "error_m": 1.290620396554587e-06,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Thruster rear envelope 0",
+      "passed": true,
+      "measured_min_y": -1.4712350368499756,
+      "limit": -1.64
+    },
+    {
+      "check": "Thruster rear shroud allowance 0",
+      "passed": true,
+      "clearance_m": 0.10876496315002449,
+      "minimum": 0.08,
+      "assumed_shroud_thickness_m": 0.06
+    },
+    {
+      "check": "Cradle ring 1 centre",
+      "passed": true,
+      "measured": [
+        1.4901161193847656e-08,
+        -0.7200000710277067,
+        2.930000308829027
+      ],
+      "expected": [
+        0.0,
+        -0.72,
+        2.93
+      ],
+      "error_m": 3.088290267960758e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cradle ring 1 outer diameter",
+      "passed": true,
+      "measured": 0.7400003695226504,
+      "expected": 0.74,
+      "error_m": 3.695226503674931e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cradle ring 1 bore diameter",
+      "passed": true,
+      "measured": 0.6399994699775929,
+      "expected": 0.64,
+      "error_m": 5.300224070747817e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Cradle ring 1 length",
+      "passed": true,
+      "measured": 0.1000002545956924,
+      "expected": 0.1,
+      "error_m": 2.5459569238939217e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Engine seat 1 centre",
+      "passed": true,
+      "measured": [
+        0.0,
+        -0.6026223342559341,
+        2.9549493781027794
+      ],
+      "expected": [
+        0.0,
+        -0.6026222879119433,
+        2.9549494028981313
+      ],
+      "error_m": 4.6343990867114826e-08,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Engine seat 1 outer diameter",
+      "passed": true,
+      "measured": 0.6360002052085086,
+      "expected": 0.636,
+      "error_m": 2.0520850863015028e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Engine seat 1 bore diameter",
+      "passed": true,
+      "measured": 0.3399997204348891,
+      "expected": 0.34,
+      "error_m": 2.7956511094995307e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Engine seat 1 length",
+      "passed": true,
+      "measured": 0.4000001873136896,
+      "expected": 0.4,
+      "error_m": 1.8731368955915428e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Nozzle axial ends 1",
+      "passed": true,
+      "measured": [
+        0.09999985963975347,
+        0.7000001197768374
+      ],
+      "expected": [
+        0.1,
+        0.7
+      ],
+      "error_m": 1.4036024653663048e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Nozzle mouth diameter 1",
+      "passed": true,
+      "measured": 0.6400003242982255,
+      "expected": 0.64,
+      "error_m": 3.2429822549584486e-07,
+      "tolerance_m": 0.01
+    },
+    {
+      "check": "Thruster rear envelope 1",
+      "passed": true,
+      "measured_min_y": -1.4712350368499756,
+      "limit": -1.64
+    },
+    {
+      "check": "Thruster rear shroud allowance 1",
+      "passed": true,
+      "clearance_m": 0.10876496315002449,
+      "minimum": 0.08,
+      "assumed_shroud_thickness_m": 0.06
+    }
+  ],
+  "foot": "not audited (leg-only scope)",
+  "blend_sha256": "f1a376a5c3a7e333d6d10a568d8e045184b4f6181a4067b9dff7bb0543dbe807"
+}

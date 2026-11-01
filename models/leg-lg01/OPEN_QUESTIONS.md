@@ -28,3 +28,35 @@ so work could continue; the user can overturn any of them.
 | P3B-03 | 3 | How should the enlarged crossmembers meet the rails without losing their X±650 span? | Use upper half-lap ends, continuous lower rail walls and inward ledge webs outside the nut-plate keeper ears. Preserve all tabled M36 axes and Z430 washer seats; recess the taller hinge beam around its heads. |
 | P3B-04 | 3 | How should Blender 5 handle coincident cuts in the inherited multi-shell generators? | Machine closed integral shells separately, skip remote no-op cuts and use 0.05 mm bore clearance. Relieve the hinge beam front face 0.5 mm to Y1544.5, retaining rear Y1425; this avoids a tangent n-gon at the Y1545 bolt row within the 10 mm model tolerance. |
 | P3B-05 | 3 | Does neutral geometry validation establish full mechanism and wiring clearance? | No. Preserve the repaired pitch branch and original roll/forefoot packaging; measure neutral eye/pin/clevis coincidence and the exact shin plug. Full stop-contact sweeps, flexible harness bend/slack/contact review and tool/extraction paths remain future work. Harness lengths remain trim-to-fit allowances. |
+
+
+## Viewer decisions (P7A)
+
+| # | Phase | Question | Default chosen |
+| --- | --- | --- | --- |
+| P7A-01 | 7 | How can viewer work proceed before armor and the real build sequence arrive? | Export the current 651-part saved scene and generate 40 clearly labeled development steps from the manifest. These are display groups, not verified assembly dependencies or insertion paths. The placeholder generator refuses to overwrite a real sequence. Phase 5 replaces the JSON without viewer code changes. |
+| P7A-02 | 7 | Which parts count as armor, and what does the current ghost capture establish? | The real sequence's `parts[id].armor` is authoritative. Placeholder classification includes armor/accent panels and service guards/covers; the current structural snapshot contains only one matching service guard. 15% opacity and visibility behavior are tested, but full armor appearance awaits new captures after Phase 4/5. |
+| P7A-03 | 7 | Should playback transforms or three.js's cleaned names alter source identity? | No source blend changes. Export evaluated, unparented assembled nodes named exactly by instance ID; recover IDs from GLB associations/extras in the browser and convert approach vectors `(x,y,z)` to `(x,z,-y)`. Unknown IDs warn/skip; unassigned nodes remain assembled. |
+| P7A-04 | 7 | Should the viewer work offline and how should slow local-server startup behave? | Keep the required pinned jsDelivr import map; first use needs internet. The launcher waits for HTTP readiness before opening, allowing 90 s because this Mac's reverse DNS delayed Python HTTPServer startup. Closing its Terminal window or Ctrl-C stops the server; closing only the browser tab does not. |
+
+## Leg armor decisions (P4A)
+
+| # | Phase | Question | Default chosen |
+| --- | --- | --- | --- |
+| P4A-01 | 4 | How can armor top be literally below the carrier roots at Z7.25–7.60 while using the requested Z8.0–8.3 top? | Use Z8.23 for the main upper silhouette, with real top-open channels down to Z7.25 and an open rear service channel. Check neutral R80 cartridge corridors; full articulated hip solid clearance remains open. |
+| P4A-02 | 4 | Should thigh plates stop above Z6.3 to expose the fork pads? | That made the thigh too short in round 1. Extend front/sides to Z5.75/5.77, above the knee mechanism, and retain genuine side openings around Z6.1 pads. All pad-access rays pass. |
+| P4A-03 | 4 | Which lower-calf constraint replaces the old 900×900 first-450 rule? | Lowest 300 mm measures 1.06335 wide; armor begins Z1.65. Use actual FA-02 |X|0.710 inner guard walls. The 3,321-pose vertex/edge sweep has 43.45 mm sampled clearance, 9.93 mm after conservative sampling allowances; full swept-facet solids remain open. |
+| P4A-04 | 4 | How should decals and captive plate features affect inventory? | Join decals, bolt wells/heads, local accent patches and mounting standoffs into their owning plate mesh. Preserve separate LG-460 hatches and LG-470 rails exactly as the CSV specifies; no extra stock rows. |
+| P4A-05 | 4 | How should mirroring handle inherited collapsed bevel geometry without changing read-only P3 sources? | Dissolve coincident edges at 1 micrometre on the temporary reflected copy, then independently check normals, each closed-shell volume, face degeneracy and bounds. Report source degeneracy and cleanup counts; never save the mirrored copy. |
+| P4A-06 | 4 | Does passing the leg scope complete the combined Phase 4 gate? | No. P4B's emptied DEFERRED_ROWS currently breaks the internal-only generator count assertion, and its interim foot geometry checks still fail. Preserve strict default audits, label partial reports leg-only, and leave the foot-owned repair/coordinator rerun explicit. |
+
+
+## FA-02 foot armor decisions (P4B)
+
+| # | Phase | Question | Default chosen / status |
+| --- | --- | --- | --- |
+| P4B-01 | 4 | How can the internal-only count assertion coexist with an empty final `DEFERRED_ROWS`? | Prepared the one-line `foot_fa02.py` import of `ARMOR_ROWS` shown in MODELING_NOTES. Tested it in memory through a fresh complete build; left the protected source unchanged pending the requested scope clarification. This is the sole normal-build acceptance blocker. |
+| P4B-02 | 4 | Should guard crowns follow the narrower illustration or the four specified bolt axes? | Preserve the written axes, 20 mm walls and Z1600 tops. Use broader faceted crowns with no roof. Actual guards, local lands/tabs and receiver arms clear the actual neighboring shin/calf at 231 sampled pitch/roll poses. |
+| P4B-03 | 4 | Where should shell receivers live without adding bracket inventory or changing internal generator files? | Add integral drilled bosses, braces and open locator sockets to the two rear rails, two forefoot rails and fixed cradle from `foot_fa02_armor.py`; the exact additions are recorded in MODELING_NOTES. |
+| P4B-04 | 4 | How should captive retention and tread details be represented? | Separate 4 mm collars seated in dedicated back counterbores, nominal shafts without hidden helical threads, separate washers/sleeves, and real underside grooves interrupted around solid bolt lands. No decorative bolts. |
+| P4B-05 | 4 | Should exploded display positions be mistaken for assembly removal paths? | No. Retain documented per-object removal vectors in the neutral model; turn and lay out all six pads in a foreground row only for the labeled exploded inspection. Stop at three visual fix rounds. |

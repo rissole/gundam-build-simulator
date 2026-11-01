@@ -492,3 +492,395 @@ translated forefoot socket; nominal cable lengths remain trim-to-fit allowances.
 No game behavior, gameplay or user approval is implied. Armor/pads and final
 shell receivers remain Phase 4 work. No game regressions or diagnostics were run,
 and no commit was made by P3B.
+
+
+## Viewer — P7A (2026-11-01)
+
+Implemented against the saved **651-part structural scene**, with a **40-step
+development placeholder**. No model generator, source blend, game file or FA-01
+asset was changed by this task; no commit was made. Phase 4 armor and Phase 5's
+real sequence can replace the inputs without changing the viewer code.
+
+### Export and identity contract
+
+`src/export_viewer.py` opens `output/leg-lg01.blend`, freezes evaluated meshes and
+world matrices into temporary unparented objects, and uses `common.export_glb`
+to export `viewer/leg-lg01.glb`. It never saves over the blend. Presentation
+objects are excluded. Every node name is exactly its `instance_id`; extras retain
+`part_id`, `part_name`, `instance_id`, `subassembly`, `category`, `finish` and `step`
+when present. Materials, vertex colors and assembled transforms are preserved;
+Draco is off. A source receipt inside the GLB records the source blend SHA-256,
+scene part count, evaluated triangle count and used materials.
+
+The audited snapshot is **13.804 MB, 420,574 triangles, 7 materials, 651 nodes**.
+`src/verify_export.py` reads the binary glTF JSON directly with standard Python;
+checks node roots, exact identity/extras, material references/count, triangle
+count and budgets; compares the manifest; and validates the shared step schema,
+unit approach vectors and one-to-one installs/metadata/node coverage. Missing,
+extra and duplicate IDs are explicit in `output/audits/export.json`. A changed
+manifest requires a fresh export and matching sequence.
+
+### Viewer behavior
+
+The local page uses the pinned three.js **0.170.0** import map, GLTFLoader,
+OrbitControls and RoomEnvironment PMREM. Neutral lighting, ACES tone mapping and
+sRGB output sit on `#f3f2ef`. The bottom timeline supports fractional scrubbing
+with easeInOutCubic, per-step ticks, previous/next, playback at 0.5/1/2/4×, arrow
+keys and Space. Base speed is 1.4 seconds per step. The panel groups identical
+part-number/name pairs with quantities; active parts pulse on per-instance
+cloned materials. A hover tooltip names the part.
+
+Positions and bounds are cached at load; scrubbing updates only affected step
+ranges. Blender `(x,y,z)` approach vectors become glTF `(x,z,-y)`. Front faces
+Blender +Y / glTF −Z, back +Z, and the outer side of the left leg is −X. The
+loader recovers dotted instance IDs from GLB node associations/extras rather
+than trusting three.js's sanitized Object3D names. Parent inverse conversion is
+also supported, although this exporter flattens parents. Unknown installs are
+warned/skipped; unassigned GLB parts stay assembled.
+
+Follow step smoothly fits active-part bounds. Armor is shown, ghosted at **15%**,
+or hidden, driven only by the schema's `parts[id].armor`. Show all exploded keeps
+the slider's saved position and restores it when toggled off. Hashes `#t=0`,
+`#t=mid`, `#t=end`, and `#armor=ghost` support deterministic captures (ghost alone
+uses the assembled pose). `window.__viewerState` exposes readiness, load timing,
+mismatches, `snapshot()`, `setTime()`, `setArmor()`, `setExploded()` and `fit()` for
+browser checks. Snapshots include all part positions and interpolation endpoints.
+
+### Verification and inspected presentation
+
+- Export and schema audits pass: all **651 instances appear exactly once** in
+  both the GLB and placeholder installs, with no missing or extra IDs.
+- `src/check_viewer.py --browser` passed **321 slider samples** in eighth-step
+  increments, all **41 step/text states**, and motion of **all 651 parts**. The
+  maximum interpolation error was zero in this snapshot. It also checked reverse
+  scrubbing, exploded-preview restoration, coordinate conversion, every speed,
+  keyboard/button controls, camera directions, follow and armor states.
+- An intercepted mismatched sequence tested unknown-ID skipping and assembled
+  retention without modifying files. Only the two expected mismatch warnings
+  appeared; baseline and mismatch runs had **zero console/page errors**.
+- Page load after server readiness measured **2.41 s on the first run**, and
+  **0.252 s on the final warm run**. The machine's Python HTTPServer startup can
+  separately wait on macOS reverse DNS; the launcher prints startup status and
+  allows 90 seconds for actual HTTP readiness before opening the browser.
+- The executable `open-viewer.command` was launched from `/tmp`, served the page
+  and all assets, opened the default browser, exited 0 on Ctrl-C, and released
+  its port. See `output/audits/viewer-launcher.json`.
+- Inspected the final **1280×800** JPEGs: [start](output/viewer-shots/viewer-start.jpg),
+  [middle](output/viewer-shots/viewer-mid.jpg), [assembled](output/viewer-shots/viewer-end.jpg),
+  and [ghosted](output/viewer-shots/viewer-ghost.jpg). The model is unclipped,
+  controls and step labels fit, and the parts list scrolls. Tightened framing
+  after inspection. Corrected the capture harness to reapply an unchanged hash
+  and assert each capture's exact timeline/armor state.
+
+This is viewer behavior and inspected presentation evidence, **not approval of
+an engineering assembly sequence**. The placeholder groups subassembly/category
+batches for development; it does not establish mount dependencies, retained
+fastener grouping or collision-free approaches. The present model has only one
+armor-classified service guard, so the ghost image differs subtly from assembled;
+full armor presentation still needs fresh captures after Phase 4/5 inputs arrive.
+
+### Run and regenerate
+
+From the repository root (the launcher also works when double-clicked in Finder):
+
+```sh
+blender --background --factory-startup --python-exit-code 1 --python models/leg-lg01/src/export_viewer.py
+python3 models/leg-lg01/work/placeholder_steps.py
+python3 models/leg-lg01/src/verify_export.py
+python3 models/leg-lg01/src/check_viewer.py
+models/leg-lg01/work/viewer-venv/bin/python models/leg-lg01/src/check_viewer.py --browser
+models/leg-lg01/open-viewer.command
+```
+
+The browser check uses Playwright and installed Google Chrome, serves its own
+free localhost port, writes `output/audits/viewer.json`, saves the four JPEGs,
+and shuts down its browser/server. Recreate its local environment if needed:
+
+```sh
+python3 -m venv models/leg-lg01/work/viewer-venv
+models/leg-lg01/work/viewer-venv/bin/pip install playwright
+```
+
+Standard-library static checks need no dependencies. The browser loads the
+pinned modules from jsDelivr, so first use requires internet access. The
+placeholder generator **refuses to overwrite a non-placeholder sequence**; stop
+using it when Phase 5 supplies `viewer/build-steps.json`. Regenerate the GLB and
+rerun the checks/captures after updating the saved model and real sequence.
+
+## Leg armor
+
+P4A, 2026-11-01. `thigh_armor.py`, `knee_armor.py` and
+`shin_calf_armor.py` add **19 objects / 16 CSV rows**. Together with P3 there
+are **68 leg objects / all 41 leg CSV rows**, with exact CSV identity and
+handedness. The module names were already present in `build.py`; its module
+list needed no edit. No leg structure, foot source, shared kit, materials,
+game, FA-01 or approved image files were changed by P4A. No commit was made.
+
+### Geometry and selected dimensions
+
+- Main skins have **60 mm extrusion thickness**, broad **75 mm edge facets**,
+  25×15 mm blind panel grooves, and grouped 25 mm captive hex bolts seated
+  in 42 mm radius / 32 mm deep octagonal wells. The small bridge uses smaller
+  edge facets to fit its 155 mm height. Surface-normal thickness decreases
+  on the steepest folded rear slopes; these remain visualization shells.
+- Thigh front starts at Z5.750 and tops out at Z8.230; side plates start
+  Z5.770 and rear covers Z5.890. The lower sides have real openings around
+  the fork pads at Z6.100. Upper front/side channels extend down to Z7.250,
+  exposing the lug band. The central rear channel remains open around LG-230.
+  Neutral R80 cartridge corridors to the three mirrored upper eyes pass.
+  The hip ball/neck gap follows the requested Z8.0–8.3 armor-top default;
+  no torso-owned guards were added. Full articulated hip solid clearance is
+  still open; the sampled endpoint box is not treated as an exact swept solid.
+- LG-310 was already present on the upper shin and was reused. LG-300 is a
+  thin folded ochre shield, with a chisel ridge at Z5.170. LG-320/325 have
+  real circular openings; LG-330 covers have integral rear tabs reaching
+  the guards. The rear knee centre remains open and the correct long
+  thigh-to-shin cylinders remain visible.
+- Calf skins start at Z1.650. Side shells have separate through-openings
+  for the two LG-460 hatches and exposed Z2.800 handling pads. Hatches have
+  integral tabs bridging their seams. Ochre LG-470 rails sit over real
+  recesses with mounting feet reaching the shell. LG-420 includes folded
+  60 mm side returns and separate octagonal exhaust apertures; LG-430 is
+  the removable bridge between them. The P3 Ø640 nozzles remain unchanged,
+  recessed behind the Y−1.640 outer rear shroud.
+- All plate standoffs are integral to the owning armor object and meet
+  existing P3 lands/frame ties. **No new structural mounting lands** were
+  needed. Decal sheets are joined into their parent plate mesh, preserving
+  texture/material slots without adding inventory objects. Front/outboard
+  stencil UVs are reversed during construction so lettering reads correctly.
+- Local armor helpers centre plate outlines before kit machining, split
+  faces at each taper break before bending them, and dissolve collapsed
+  bevel edges. This avoids numerical inset errors, twisted groove floors
+  and zero-area armor faces without changing the shared kit.
+
+Final measured envelopes, including service/rail details:
+
+| Section | Measured | Target / permitted maximum |
+| --- | --- | --- |
+| Thigh width / depth | 1.8260 / 1.8000 m | 1.80 / 1.80; maxima 1.85 / 1.85 |
+| Thigh lowest 300 mm width | 1.3200 m | 1.32; permitted 1.20–1.37 |
+| Calf width / depth | 1.6899 / 2.2400 m | 1.65 / 2.24; maxima 1.70 / 2.29 |
+| Calf lowest 300 mm width | 1.06335 m | 1.06; maximum 1.11 |
+| Concurrent FA-02 width / length | 1.4600 / 3.3603 m | 1.46 / 3.36; maxima 1.51 / 3.41 |
+
+The thigh's maximum includes the integral outer ochre accent; the calf maximum
+includes the two grab rails. Both are within −0.10/+0.05 of their targets.
+Excess beyond the old X±0.800 transport bound is reported as **INFO**, not
+shrunk away or treated as workshop approval.
+
+### Audits and ankle clearance
+
+`verify_envelopes.py` clips actual mesh edges against 100 mm Z slabs and
+checks the lowest 300 mm band separately. It also ray-tests handling-pad
+access, the three neutral hip cartridge corridors and the open rear knee.
+The foot check requires all five shells and the three pad families by default;
+`--only-leg` is an explicit temporary scope, not a default exemption.
+
+The ankle check uses the **measured FA-02 guard inner faces at |X|0.710**, with
+conservative guard bounding prisms. It rotates every relevant lower-calf vertex
+and edge samples no more than 25 mm apart around `(0,0,1)`, using
+`Rx(pitch) @ Ry(roll)`: pitch ±20°, roll ±10°, a 0.5° grid (**3,321 poses**).
+Minimum sampled clearance is **43.45 mm**. Subtracting the angular Lipschitz
+allowance (21.02 mm) and edge spacing allowance (12.5 mm) leaves a conservative
+**9.93 mm continuous vertex/edge clearance bound**. This is not a complete
+swept-facet or whole-ankle mechanism proof.
+
+`verify_mirror.py` duplicates meshes, bakes world X scale −1, reverses winding,
+and dissolves coincident bevel edges at 1 micrometre before checking every
+closed shell's outward orientation/positive volume, zero-area faces and mirrored
+bounds. The copy is deleted without saving. P3's unchanged LG-100 mesh contains
+112 collapsed bevel faces; its temporary mirror needs this cleanup. Final
+leg-only mirroring passes all 68 objects. The source structure was not repaired
+or represented as having passed a new zero-area-face audit.
+
+Final retained reports are [envelopes.json](output/audits/envelopes.json),
+[scene-full.json](output/audits/scene-full.json),
+[interfaces-full.json](output/audits/interfaces-full.json) and
+[mirror.json](output/audits/mirror.json). **Scene, interfaces and mirror are
+explicitly `leg-only`** while P4B is unfinished: all 68 meshes and all 319 leg
+interface checks pass. Envelopes include the current foot and pass. Default
+commands remain strict and require the complete combined result.
+
+### Three inspected render rounds
+
+Used the existing `render_quick.py` lighting/render function through a local
+capture driver, with a front camera and front/outboard three-quarter camera.
+P3 images and the renderer source were preserved. Inspected all four views in
+[armor-vs-lg01-assembled.jpg](output/compare/armor-vs-lg01-assembled.jpg), plus
+individual front, three-quarter and rear images where details were ambiguous.
+
+1. Found over-short thigh armor, misplaced rail transforms and a 2 mm lower
+   calf slice excess. Extended the thigh while cutting pad windows, corrected
+   rail transforms, tightened the lower taper and closed rear-shroud side gaps.
+2. Found mirrored stencils, partly buried rails and triangulation artifacts
+   across taper breaks. Corrected UV assignment, recessed the rails, split
+   the bending faces, and opened the lug channels down to their root band.
+3. Inspected the final plated leg with the parallel foot armor as context.
+   Stencils read correctly; rails, pad windows, hatches, open rear knee,
+   rear cable channel and two recessed nozzle mouths are visible. Stopped at
+   the three-round limit.
+
+Remaining presentation differences: the explicit hip channels are much more
+open than the drawing, and the long exposed neck/corrected knee drive make
+larger mechanical gaps. The side calf remains flatter and boxier, the frame
+and bronze interiors lighter, and wear/detail density lower than the painted
+reference. These are recorded limits, not a claim of final visual approval.
+Foot presentation and foot geometry repairs belong to P4B.
+
+### Shared scene and unresolved combined build
+
+The last successful whole-source `build.py` run preceded P4B's completed armor
+rows. A subsequent full build fails in `foot_fa02.py`: its internal-only count
+assertion imports `checks_foot.DEFERRED_ROWS`, which P4B has now emptied for
+final verification. Its internal boundary must instead exclude the separately
+built armor rows. P4B has supplied `work/foot-internal-boundary.patch`; P4A did
+not apply it because foot files are read-only for this task.
+
+An interim combined audit also found a non-manifold/non-positive toe-cap shell
+and foot receiver-bore checks still under P4B repair. Those are not waived.
+P4A captured its final scene at `work/p4a/final-preview.blend`, then merged
+**only its 19 owned meshes** into the latest `output/leg-lg01.blend` and updated
+manifests. Per-mesh digests prove all **794 unowned meshes** were preserved.
+`work/p4a/final-merge.json` records this boundary; `work/p4a/round3/` holds the
+capture evidence. The four final reports were rerun on the merged shared scene.
+The final capture's foot is context and can become stale as P4B continues.
+After the foot integration fix, the coordinator must rebuild and rerun the
+unscoped scene/interface/envelope/mirror commands. No more P4A render-fix rounds
+were performed, and no game regressions or gameplay approval are claimed.
+
+P4A final inspection fingerprints:
+
+- Comparison JPEG SHA-256: `1cf1b7f58ac76d81939bb1c6433e8b76a4a6a3157fb5e6e7324524de6149b8cd`.
+- Captured scene SHA-256: `c6fd5cf5ce8b99268a6d76336bdcd4fa5603bb9242d029bb04b7a280ff113406`.
+- Merged shared scene / final audit SHA-256: `f1a376a5c3a7e333d6d10a568d8e045184b4f6181a4067b9dff7bb0543dbe807`.
+
+
+## FA-02 foot armor
+
+P4B, 2026-11-01. `src/foot_fa02_armor.py` implements the **14 formerly deferred
+CSV rows / 143 independent physical objects**: five shells, six pads, 24
+compression sleeves, 20 captive retaining collars, 44 bolts and 44 separate
+washers. The complete foot now has **745 objects / 182 complete rows** and
+**436,404 triangles**, below the 800,000 foot budget. The existing `build.py`
+module list already includes `foot_fa02_armor`; no list change was needed.
+`checks_foot.DEFERRED_ROWS` is empty. No commit was made.
+
+### Geometry and receiving parts
+
+- Shells use warm off-white, a painted ochre toe band/nose and a small red heel
+  caution bar. Plan corners are 60–120 mm facets, with broad folded roof edges
+  and real 20 mm skins; the front upper plate has one 25 mm shallow panel score.
+  The toe preserves the two-stage roof and moving-frame ownership. The upper
+  plate has the rear-open X±590 notch and the fixed outer actuator relief.
+  The 290 mm hinge channel remains open between Y1210 and Y1500.
+- Guard wall faces are X±710…730, with tops Z1600. The guards have open front,
+  rear and top, and no bridge over the shin. Their small local 30 mm lands reach
+  |X|684 and locator tabs reach |X|680. Those local features, the supporting
+  cradle arms and actual neighboring lower shin/calf meshes passed the sampled
+  sweep below. This uses the present `shin_calf_armor.py`, rather than the
+  fallback assumption for an absent leg model.
+- Each shell has exactly four captive M12×50 bolts, four W-12 washers, four
+  separate FA-405 collars and two 10 mm engagement sliding locators. The bolt
+  wells are 16 mm deep; 30 mm lands and 2.5 mm washers leave 17.5 mm receiver
+  engagement. Each 4 mm collar occupies its own back counterbore. Head planes
+  are recessed, with vertical toe/upper axes, rearward heel access and lateral
+  guard access. Per-object owner and removal-direction metadata are retained.
+- **All receiver additions are made by the armor module to existing registered
+  objects.** FA-104-A/B each gain two toe bolt bosses and one locator socket;
+  FA-100-A/B each gain two upper-plate and two heel bosses plus two locator
+  sockets; FA-103-L gains eight guard bosses/posts and four locator sockets.
+  Their support braces are drilled through the receiving axes. These are
+  integral features, not new inventory parts. Crossmembers, existing bearing
+  interfaces, carrier holes and the internal generator source are unchanged.
+- The six pads use the FA-02 paired limits, a 50 mm center gap, 20 mm bevels,
+  30×12 grooves on 120 mm pitch, protected circular bolt lands and Ø56
+  counterbores. Sleeves are ID26/OD42×76 at Z64…140; washers are Z60…64;
+  upward M24×120 bolts have their lowest head points at Z36 and tips at Z180.
+  The existing carriers supply 40 mm engagement. Rear/forefoot ownership stays
+  separate. Pads remain interchangeable within each pair.
+- Closed manufactured features are machined separately before rejoining their
+  one inventory mesh. This prevents Boolean welding of coincident folded-skin
+  seams. All final geometry has applied modifiers, outward normals and closed,
+  positive-volume feature shells, under the existing visualization-solid rule.
+
+### Verified results and the protected build boundary
+
+Blender **5.2.3 LTS** verified the fresh scene. `verify_scene.py -- --expect full`
+passes **813 objects, zero failures**, including every foot row and the present
+leg armor. `checks_foot.checks()` passes **1,414 checks** with no deferred rows.
+The checks measure actual vertices and bore/seat ray intersections: all 24 pad
+stacks, 20 shell lands/receivers/collars/washer planes, pad grooves, ownership,
+guard tops, open notch/actuator relief/channel, and the existing internal checks.
+Triangle intersection checks find no guard or cradle-arm contact with the actual
+shin beam and calf shells at **231 poses**, pitch −20…20 and roll −10…10 in
+2-degree increments. This is sampled geometric evidence, not a continuous
+motion or extraction-path certification.
+
+Measured bounds are X **−0.730…0.730**, Y **−0.900300…2.460**, Z **0…1.600**.
+The extra 0.3 mm at the rear is the caution-paint geometry and is inside the
+10 mm model tolerance. Non-guard shells stay at or below Z700.
+
+**One source-boundary change remains pending the requested scope clarification.**
+`foot_fa02.py` currently imports `DEFERRED_ROWS` to validate its internal-only
+602-object stage. Emptying that public set makes the ordinary `build.py` fail
+before the separate armor module runs. The task makes this file read-only except
+for receivers; it was therefore left unchanged. The precise prepared fix is:
+
+```diff
+-from checks_foot import DEFERRED_ROWS
++from foot_fa02_armor import ARMOR_ROWS as DEFERRED_ROWS
+```
+
+The local `work/build_foot_armor_candidate.py` applies **only that replacement in
+memory**, then calls the unchanged `build.main()`. That fresh build exits **0**,
+produces the final 813-object scene and manifests, and is the source of the final
+passed audits and renders. This is not a claim that the unmodified normal build
+command passes. `work/foot-internal-boundary.patch` contains the reviewable patch;
+the coordinator must apply/authorize it and rerun `build.py` to close acceptance.
+Reports/logs are in `work/foot-armor-scene.json`, `work/foot-armor-checks.json`
+and `work/foot-armor-candidate-build.log`.
+
+### Render inspection
+
+Inspected the final [assembled comparison](output/compare/foot-vs-fa02-assembled.jpg)
+and [armor/soles comparison](output/compare/foot-vs-fa02-armor.jpg) beside the two
+FA-02 references, plus the [underside](output/renders/foot-armor-underside.jpg)
+and top/three-quarter/side/front/rear views. Seven final JPEG captures use quality
+90. The exploded view turns and lays out the pads for inspection; it is explicitly
+labeled as display offsets, not insertion paths. Five detached shells, two
+carriers and all six pads are separately visible; the underside shows all 24
+recessed pad bolts, groove interruptions, bevels and the separated hinge region.
+
+Completed **three fix rounds**: (1) broad folded edge facets, corrected exploded
+pad transforms and uncropped/lit underside; (2) more separated pad display
+positions; (3) a foreground row making all six pads independently countable.
+No further visual iteration was performed. Earlier comparisons and capture hashes
+are retained under `work/foot-armor-round1/`, `round2/` and `round3/` (each directory
+uses the full `foot-armor-` prefix). The final recipe is
+`work/render_foot_armor.py`; hashes and inspection decisions are in
+`work/foot-armor-evidence.json`.
+
+The guards have broader crowns than the drawing because the specified two upper
+bolt axes at Y±500/Z1450 need material around them. The written rear notch and
+hinge channel also leave more machinery visible than the concept sheet. Exact
+M12/M24 sizes produce smaller-looking fasteners than its exaggerated wells.
+Surfaces are cleaner and less weathered. These differences are recorded rather
+than replacing the specified geometry or adding unlisted cosmetic fasteners,
+guard ochre, extra panels or a roof across the shin. Full continuous sweeps,
+flexible service motion and extraction/tool paths remain outside this static
+source-model evidence. No game tests, game changes or user visual approval are
+implied.
+
+## Coordinator verification, phase 4 (2026-11-01)
+
+Fresh isolated rebuild: 813 objects (68 leg, 745 foot), 572,656 triangles. Scene
+(`--expect full`), interface (320 leg + 1,414 foot checks), envelope and mirror
+audits all pass. Integration fix applied by the coordinator: `foot_fa02.py` now
+checks its own rows against `foot_fa02_armor.ARMOR_ROWS` instead of the emptied
+`checks_foot.DEFERRED_ROWS`.
+
+**Open mesh-quality item:** 22 source meshes (for example LG-100, FA-103-L,
+FA-104-A/B, FA-106, FA-200) contain 1,969 zero-area faces left by collapsed
+bevels. They render correctly, and the mirror audit dissolves them (1 µm)
+before checking winding and volume, but a clean-up pass in the generators
+would remove them at source.

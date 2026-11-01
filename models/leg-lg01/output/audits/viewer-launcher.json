@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "launch_cwd": "/tmp",
+  "executable": true,
+  "http_status": 200,
+  "assets_loaded": [
+    "index.html",
+    "style.css",
+    "viewer.js",
+    "build-steps.json",
+    "leg-lg01.glb"
+  ],
+  "ctrl_c_exit": 0,
+  "port_released": true,
+  "notes": "macOS gethostbyaddr delayed HTTPServer startup; readiness wait allows 90 seconds and opens only after HTTP 200."
+}

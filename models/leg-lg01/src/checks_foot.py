@@ -1,4 +1,4 @@
-"""Measured neutral FA-02 interfaces. All tolerances are <=10 mm.
+"""Measured FA-02 interfaces and sampled shin/guard clearance. Tolerances <=10 mm.
 
 No geometric check compares custom-property datums. Bore rings are selected and
 fitted from actual world-space vertices, with ray checks through receiver solids.
@@ -13,10 +13,7 @@ from mathutils import Vector
 
 CSV=Path(__file__).resolve().parents[3]/'design/legs/foot-and-ankle/foot-components.csv'
 ROWS=list(csv.DictReader(CSV.open()))
-DEFERRED_ROWS={(r['part_id'],r['name']) for r in ROWS
-               if r['part_id'] in {'FA-302','FA-303','FA-304','FA-305','FA-400','FA-401-L',
-                                   'FA-402','FA-403-L','FA-404-L','FA-405'}
-               or r['name'].endswith((' - Sole pad mounts',' - Armor captive bolts'))}
+DEFERRED_ROWS=set()
 TOL=.010
 
 
@@ -66,9 +63,8 @@ def checks():
         return measured
     counts=Counter((o['part_id'],o['part_name']) for o in objs)
     expected=Counter({(r['part_id'],r['name']):int(r['qty_per_leg']) for r in ROWS if (r['part_id'],r['name']) not in DEFERRED_ROWS})
-    # Phase 4 can add the deferred complete rows later.
     active=Counter({k:v for k,v in counts.items() if k not in DEFERRED_ROWS})
-    record('FA02 internal row counts',active==expected,{'actual':sum(active.values()),'expected':sum(expected.values())})
+    record('FA02 complete row counts',active==expected,{'actual':sum(active.values()),'expected':sum(expected.values())})
     record('FA02 independent meshes',len({o.data.as_pointer() for o in objs})==len(objs),{'objects':len(objs)})
     if not get('FA-201'):return result+[Check('FA02 geometry exists',False,'Missing adapter')]
     for pid,axis,rad,centers,span in [
@@ -139,6 +135,110 @@ def checks():
             cc=circle(kind+str(i)+' clevis',clevis,c,axis,r+.0004 if kind=='P' else r,.132 if kind=='P' else .097,True)
             if bc is not None and pc is not None:near(kind+str(i)+' eye/pin alignment',bc,pc)
             if bc is not None and cc is not None:near(kind+str(i)+' eye/clevis alignment',bc,cc)
+    # P4B: independent measurements of the six pads and all 44 new fastener
+    # stacks. Expected sites come from the written FA-02 schedule, not extras.
+    def first_hit(o,start,direction,distance):
+        inv=o.matrix_world.inverted()
+        hit,p,normal,index=o.ray_cast(inv@Vector(start),(inv.to_3x3()@Vector(direction)).normalized(),distance=distance)
+        return np.array(o.matrix_world@p) if hit else None
+    for pid,y0,y1 in [('FA-302',-.850,-.110),('FA-303',-.070,1.220),('FA-304',1.480,2.440)]:
+        for i,pad in enumerate(get(pid)):
+            x0,x1=(-.695,-.025) if i==0 else (.025,.695)
+            near(pid+f' pad {i} bounds',bounds(pad),[[x0,y0,0],[x1,y1,.140]],.001)
+            carrier=get('FA-301' if pid=='FA-304' else 'FA-300')[0]
+            for x in (x0+.100,x1-.100):
+                for y in (y0+.100,y1-.100):
+                    name=pid+f' pad seat {x} {y}'
+                    circle(name+' counterbore',pad,(x,y,.032),(0,0,1),.028,.064,True)
+                    circle(name+' carrier thread',carrier,(x,y,.170),(0,0,1),.012,.060,True)
+                    sleeve=min(get('FA-305'),key=lambda o:np.linalg.norm((sum(bounds(o))/2)[:2]-[x,y]))
+                    circle(name+' sleeve',sleeve,(x,y,.102),(0,0,1),.013,.076,True)
+                    bolt=min(get('H-24120'),key=lambda o:np.linalg.norm((sum(bounds(o))/2)[:2]-[x,y]))
+                    lo,hi=bounds(bolt)
+                    near(name+' bolt axis and ends',[(lo[0]+hi[0])/2,(lo[1]+hi[1])/2,lo[2],hi[2]],[x,y,.036,.180],.001)
+                    washer=next(o for o in objs if o['instance_id']==bolt['paired_instance_id'])
+                    near(name+' washer planes',[bounds(washer)[0][2],bounds(washer)[1][2]],[.060,.064],.0001)
+                    record(name+' physical owner',bolt.get('owner_instance')==pad['instance_id'] and sleeve.get('owner_instance')==pad['instance_id'],{})
+            q=first_hit(pad,((x0+x1)/2,y0+.220,-.020),(0,0,1),.1)
+            record(pid+f' groove {i} exists',q is not None,{})
+            if q is not None:near(pid+f' groove {i} depth',q[2],.012,.001)
+    def ztoe(y):return .600-(y-1.500)*(.080/.900)
+    schedule=[('FA-400',[((x,y,ztoe(y)),(0,0,1)) for x in (-.560,.560) for y in (1.630,2.310)]),
+              ('FA-401-L',[((x,y,.700),(0,0,1)) for x in (-.650,.650) for y in (-.300,1.060)]),
+              ('FA-402',[((x,-.900,z),(0,-1,0)) for x in (-.560,.560) for z in (.300,.500)]),
+              ('FA-403-L',[((.730,y,z),(1,0,0)) for y,z in ((-.600,.720),(.700,.720),(-.500,1.450),(.500,1.450))]),
+              ('FA-404-L',[((-.730,y,z),(-1,0,0)) for y,z in ((-.600,.720),(.700,.720),(-.500,1.450),(.500,1.450))])]
+    for pid,sites in schedule:
+        shell=get(pid)[0];lo,hi=bounds(shell)
+        expected_height=1.600 if pid in {'FA-403-L','FA-404-L'} else .700 if pid=='FA-401-L' else .600
+        near(pid+' top',hi[2],expected_height,.001)
+        record(pid+' lateral envelope',lo[0]>=-.7301 and hi[0]<=.7301,{'min_x':float(lo[0]),'max_x':float(hi[0])})
+        fasteners=[o for o in get('H-12050-C') if o.get('owner_instance')==shell['instance_id']]
+        collars=[o for o in get('FA-405') if o.get('owner_instance')==shell['instance_id']]
+        record(pid+' four complete captive mounts',len(fasteners)==len(collars)==4,{})
+        for j,(p,n) in enumerate(sites):
+            p=np.array(p);n=np.array(n);name=pid+f' shell mount {j}'
+            if pid in {'FA-400','FA-401-L','FA-402'}:
+                receiver=get(('FA-104-' if pid=='FA-400' else 'FA-100-')+('A' if p[0]<0 else 'B'))[0]
+            else:receiver=get('FA-103-L')[0]
+            circle(name+' land',shell,p-n*.029,n,.0065,.026,True)
+            circle(name+' receiver',receiver,p-n*.059,n,.006,.026,True)
+            bolt=min(fasteners,key=lambda o:np.linalg.norm((sum(bounds(o))/2)-p))
+            v=vertices(bolt)-p
+            axial=v@n;radial=np.linalg.norm(v-n[None,:]*axial[:,None],axis=1)
+            near(name+' shaft and head',[axial.min(),axial.max()],[-.0635,-.0015],.001)
+            axis=(vertices(bolt).min(axis=0)+vertices(bolt).max(axis=0))/2
+            near(name+' coaxial',np.cross(axis-p,n),[0,0,0],.001)
+            head=axial[radial>.0065];near(name+' under-head',head.min(),-.0135,.001)
+            washer=next(o for o in objs if o['instance_id']==bolt['paired_instance_id'])
+            axial=(vertices(washer)-p)@n
+            near(name+' washer', [axial.min(),axial.max()],[-.016,-.0135],.0001)
+            collar=min(collars,key=lambda o:np.linalg.norm((sum(bounds(o))/2)-p))
+            circle(name+' collar',collar,p-n*.044,n,.006,.004,True)
+            tangent=np.cross(n,[0,1,0] if abs(n[1])<.9 else [1,0,0])*.011
+            for target,label,depth in [(shell,'washer seat',.016),(receiver,'thread seat',.046)]:
+                q=first_hit(target,p+tangent+n*.040,-n,.150)
+                record(name+' '+label+' exists',q is not None,{})
+                if q is not None:near(name+' '+label+' plane',np.dot(q-p,n),-depth,.001)
+    # Check an actual central open corridor, including both guard objects.
+    for pid in ('FA-403-L','FA-404-L'):
+        v=vertices(get(pid)[0]);record(pid+' lateral wall / no roof',np.min(abs(v[:,0]))>=.679,{'innermost_x':float(np.min(abs(v[:,0])))})
+    upper=get('FA-401-L')[0]
+    for y in (-.500,-.250,0,.250,.530):
+        record('Upper rear-open notch '+str(y),first_hit(upper,(0,y,.800),(0,0,-1),.5) is None,{})
+    record('Upper actuator relief',first_hit(upper,(-.535,.710,.800),(0,0,-1),.5) is None,{})
+    for pid in ('FA-400','FA-401-L'):
+        lo,hi=bounds(get(pid)[0]);record(pid+' leaves hinge channel open',lo[1]>=1.499 if pid=='FA-400' else hi[1]<=1.211,{})
+    # Sample the actual neighboring shin/calf meshes through the specified
+    # pitch/roll range, testing triangle intersection with both guard walls.
+    # This is explicitly a sampled sweep (2-degree pitch/roll increments).
+    from mathutils import Matrix
+    from mathutils.bvhtree import BVHTree
+    guard_trees=[BVHTree.FromPolygons([Vector(v) for v in vertices(get(pid)[0])],
+                 [tuple(f.vertices) for f in get(pid)[0].data.polygons],epsilon=.0001)
+                 for pid in ('FA-403-L','FA-404-L','FA-103-L')]
+    shin=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.get('part_id') in {'LG-150','LG-400','LG-410','LG-415','LG-420'}]
+    collisions=[];poses=0
+    if shin:
+        # Higher vertices cannot enter the 1.6 m guard box; retain crossing
+        # triangles by selecting faces with at least one vertex below 2.15 m.
+        meshsets=[]
+        for o in shin:
+            verts=vertices(o);faces=[tuple(f.vertices) for f in o.data.polygons if min(verts[k,2] for k in f.vertices)<2.15]
+            used=sorted({k for f in faces for k in f});remap={k:i for i,k in enumerate(used)}
+            meshsets.append((verts[used],[[remap[k] for k in f] for f in faces]))
+        c=np.array([0,0,1.])
+        for pitch in range(-20,21,2):
+            for roll in range(-10,11,2):
+                poses+=1
+                rot=np.array(Matrix.Rotation(math.radians(-pitch),3,'X')@Matrix.Rotation(math.radians(roll),3,'Y'))
+                for verts,faces in meshsets:
+                    moved=(verts-c)@rot.T+c
+                    tree=BVHTree.FromPolygons([Vector(v) for v in moved],faces,epsilon=.0001)
+                    if any(tree.overlap(guard) for guard in guard_trees):collisions.append((pitch,roll));break
+        record('Guards and receiver arms clear sampled actual shin sweep',not collisions,{'poses':poses,'collisions':collisions,'pitch_step_deg':2,'roll_step_deg':2})
+    else:record('Guard default without leg geometry',all(np.min(abs(vertices(get(pid)[0])[:,0]))>=.700 for pid in ('FA-403-L','FA-404-L')),{'shin_geometry_present':False})
+
     allp=np.concatenate([vertices(o) for o in objs]);lo=allp.min(axis=0);hi=allp.max(axis=0)
     record('Foot stays above ground',lo[2]>=-.010,{'min_z':float(lo[2])})
     record('Foot within FA02 neutral envelope',lo[0]>=-.740 and hi[0]<=.740 and lo[1]>=-.910 and hi[1]<=2.470 and hi[2]<=1.610,{'min':lo.tolist(),'max':hi.tolist()})

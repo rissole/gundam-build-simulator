@@ -76,7 +76,7 @@ def build(ctx):
             old='__'.join(source[:2]); obj['owner_instance']=old_to_new.get(old,obj['owner_instance'])
     for col in g.COLLECTIONS.values():
         if not col.objects:bpy.data.collections.remove(col)
-    from checks_foot import DEFERRED_ROWS
+    from foot_fa02_armor import ARMOR_ROWS as DEFERRED_ROWS
     actual=Counter((o['part_id'],o['part_name']) for o in g.PARTS)
     expected={(r['part_id'],r['name']):int(r['qty_per_leg']) for r in rows
               if (r['part_id'],r['name']) not in DEFERRED_ROWS}
