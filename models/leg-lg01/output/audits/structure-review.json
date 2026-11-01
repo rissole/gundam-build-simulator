@@ -1,0 +1,183 @@
+{
+  "task": "P3A2 leg structure fix",
+  "reviewed_at_utc": "2026-11-01T04:55:02.213149+00:00",
+  "reviewer": "Codex rendered inspection",
+  "render_rounds": 3,
+  "scene": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01/work/p3a2/structure.blend",
+  "blend_sha256": "690592489188720fcb1a1413e05710320ee988921980e3ec2780b33790109581",
+  "leg_interfaces": {
+    "passed": true,
+    "checks": 319
+  },
+  "scene_mesh_audit": {
+    "passed": true,
+    "objects": 651,
+    "triangles": 421086
+  },
+  "leg_structure": {
+    "objects": 49,
+    "triangles": 102686,
+    "triangle_limit": 600000
+  },
+  "combined_interfaces_passed": false,
+  "foot_snapshot_failures": [
+    [
+      "FA-106 land bore -0.395 -0.045 clear bore",
+      false,
+      {
+        "hits": [
+          [
+            -0.39500001072883606,
+            1.5449999570846558,
+            0.4299500286579132
+          ],
+          [
+            -0.38359999656677246,
+            1.5449999570846558,
+            0.4299500286579132
+          ],
+          [
+            -0.40639999508857727,
+            1.5449999570846558,
+            0.4299500286579132
+          ],
+          [
+            -0.39500001072883606,
+            1.5335999727249146,
+            0.4299500286579132
+          ]
+        ]
+      }
+    ],
+    [
+      "FA-106 land bore 0.395 -0.045 clear bore",
+      false,
+      {
+        "hits": [
+          [
+            0.39500001072883606,
+            1.5449999570846558,
+            0.4299500286579132
+          ],
+          [
+            0.40639999508857727,
+            1.5449999570846558,
+            0.4299500286579132
+          ],
+          [
+            0.38359999656677246,
+            1.5449999570846558,
+            0.4299500286579132
+          ],
+          [
+            0.39500001072883606,
+            1.5335999727249146,
+            0.4299500286579132
+          ]
+        ]
+      }
+    ]
+  ],
+  "render_evidence": {
+    "blend": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01/work/p3a2/structure.blend",
+    "blend_sha256": "690592489188720fcb1a1413e05710320ee988921980e3ec2780b33790109581",
+    "armor": "hidden",
+    "views": [
+      "frame",
+      "three-quarter",
+      "side",
+      "back",
+      "knee"
+    ],
+    "blender": "5.2.3 LTS",
+    "images": {
+      "frame": "91cdebaadcf1def850c0554af7f84e019ba7de465ef40462c929ddb1d1e5012b",
+      "three-quarter": "2f29e9db85bed8ed7903d40ad7c8642fef966c79bb699c96901b36020048dc55",
+      "side": "ba429a4ef80ea2c14839b7c6fcb75d855f7dde0ec16271f20700d3b90bcdb516",
+      "back": "26acfcea065679fb99215f99eda31f76fd1b0ccbefb0cd25395769a9253e1bb3",
+      "knee": "ada66888f650911df65ecae5a4d55677f7b2ec8382fa9f6c6855b8c0fb53e864"
+    },
+    "source_sha256": {
+      "thigh.py": "de42ccc192fae4a5672c7232394636bbf36dee5d969117bed15fe217507962a7",
+      "knee.py": "d1226482b1c985384628c3b6feafafdb5bdeccd8c99c0f9f4ae86acd7bd8d35f",
+      "shin_calf.py": "a74ad388baed4d80ec3425e625773a837b3fa1032b149d1fe511bd573e76ffe1",
+      "render_quick.py": "c5b6afe5552352e9e4909df8a906f2a81687503f77935737ab2d7a2783e11f82"
+    },
+    "frame_coverage": {
+      "frame": {
+        "alpha_bounds_px": [
+          231,
+          100,
+          633,
+          1400
+        ],
+        "height_fraction": 0.8666666666666667
+      },
+      "three-quarter": {
+        "alpha_bounds_px": [
+          231,
+          100,
+          636,
+          1400
+        ],
+        "height_fraction": 0.8666666666666667
+      },
+      "side": {
+        "alpha_bounds_px": [
+          171,
+          102,
+          698,
+          1381
+        ],
+        "height_fraction": 0.8526666666666667
+      },
+      "back": {
+        "alpha_bounds_px": [
+          392,
+          102,
+          608,
+          1380
+        ],
+        "height_fraction": 0.852
+      },
+      "knee": {
+        "alpha_bounds_px": [
+          308,
+          0,
+          1107,
+          1400
+        ],
+        "height_fraction": 1.0
+      }
+    },
+    "comparison_sha256": "e984215f7dd192ddf2a1e4073552b1bfb2408b223f70cf6455cbbc2cc081dd13"
+  },
+  "inspected_images": [
+    "output/compare/skeleton-vs-lg01-structure.jpg",
+    "output/renders/skeleton-frame.jpg",
+    "output/renders/skeleton-three-quarter.jpg",
+    "output/renders/skeleton-side.jpg",
+    "output/renders/skeleton-back.jpg",
+    "output/renders/skeleton-knee.jpg"
+  ],
+  "rounds": [
+    "Round 1: broad structural webs, hex rings and chamfers readable; light too pale; knee inset included too much of upper thruster.",
+    "Round 2: reduced light/exposure restores gunmetal; full views cover 85-87 percent height; side view shows gap across lug band.",
+    "Round 3: rear rails bridge lug band without blocking sampled pin/tool routes; front shin armor lands added; labeled engines-removed view exposes open cradle; inspected compare, knee, assembled three-quarter, side and rear."
+  ],
+  "remaining": [
+    "Two FA-106 bore failures in concurrently developed foot snapshot; foot code untouched.",
+    "No armor is modeled in this stage. Packaging allowance uses 60 mm future armor; actual shroud openings and swept articulation remain Phase 4.",
+    "Longer knee rams and open middle knee follow thigh-to-shin specification; source illustration has known incorrect cylinder attachment.",
+    "Cleaner surfaces and more regular structural panels than painted reference. No textures, fabrication-solid or complete moving-clearance approval claimed."
+  ],
+  "audit_reports": {
+    "interfaces-structure-leg.json": "86ff9dba9e6d88df2e852c535b16e94a66ba1e5200b6f0b7975f439856d5f32b",
+    "interfaces-structure-p3a2.json": "71b35dc84abe83437736e558f003265b34c5c5e10d81b544c6204e903ce3d6bd",
+    "scene-structure-p3a2.json": "b839408bb1e1efcef640de3d19e9ab63862aedbfd93b0f5e1da7f4a1beb042fb"
+  },
+  "audit_source_sha256": {
+    "verify_interfaces.py": "8a9ceb621e59ea49015244c7365c56a04986662490a252ee929e21c64168a07b",
+    "verify_scene.py": "33dc67a03dd4b880b86e6eeca75a02b3be5bf76c794bedfb31cd97aa01c606ed"
+  }
+}
