@@ -1,6 +1,6 @@
 # Whole-robot visual design
 
-Started 2026-11-01 · **Silhouette approved (for now); direction B, industrial service, selected; step 3 turnaround in progress**
+Started 2026-11-01 · **Silhouette approved (for now); reference turnaround and style guide approved; component sheets next**
 
 [Design index](../../ROBOT_DESIGN.md) · [Shared design rules](../global.md) ·
 [Proportions](../proportions.md) · [Reference-image workflow](../reference-images.md)
@@ -17,8 +17,8 @@ before any further component art or detailed in-game models.
 | Step | Output | Status |
 | --- | --- | --- |
 | 1. Silhouette | [Blender mannequin and turnaround sheets](../../models/silhouette-mannequin/README.md) | **Approved for now, 2026-11-01**, after two rounds of studies; envelopes recorded in [proportions.md](../proportions.md) |
-| 2. Concept exploration | Four whole-robot directions, each a front/side/back turnaround plus a three-quarter view, generated from the brief below with the mannequin as proportion guide | Done 2026-11-01: [four directions](concepts/README.md); the user selected **B, industrial service, turnaround v1** |
-| 3. Approved turnaround and style sheet | One iterated front/side/back reference plus a style sheet: edge treatment, plate layering, panel lines, detail density and placement, palette, markings | Not started |
+| 2. Concept exploration | Four whole-robot directions, each a front/side/back turnaround plus a three-quarter view, generated from the brief below with the mannequin as proportion guide | Done 2026-11-01: four directions; the user selected [**B, industrial service, turnaround v1**](concepts/README.md) |
+| 3. Approved turnaround and style sheet | One iterated front/side/back reference plus a style sheet: edge treatment, plate layering, panel lines, detail density and placement, palette, markings | **Approved 2026-11-01:** [turnaround and style guide](turnaround/README.md) |
 | 4. Component concept sheets | Per-section sheets consistent with step 3, starting with the leg; the FA-01 foot sheets are redrawn | Not started |
 | 5. In-game visual models | Generated visual meshes per part from traced profiles, layered over the unchanged gameplay geometry | Not started |
 

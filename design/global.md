@@ -37,7 +37,7 @@ Read this alongside the relevant component specification. These rules apply acro
 | Surface detail | Broad, clean armor surfaces; a few recessed bolts and access panels; mechanical detail concentrated in gaps |
 | Rear-leg treatment | More visible mechanisms around the back, particularly calf thrusters; engine bodies remain mostly housed |
 | Feet | Elongated toes for a mechanical silhouette |
-| Color and markings | *Selected direction, 2026-11-01, pending the step 3 turnaround:* industrial service. Warm off-white armor, gunmetal frame and joints, safety-ochre accents, stencilled markings, visible access panels and grab rails. [Concepts](visual-design/concepts/README.md) |
+| Color and markings | *Approved 2026-11-01:* industrial service. Warm off-white armor, gunmetal frame and joints, safety-ochre accents on edges and corners, red caution stencils, visible access hatches and grab rails. Palette, surfaces and signature details: [reference turnaround and style guide](visual-design/turnaround/README.md) |
 
 ## Detail-development approach
 
