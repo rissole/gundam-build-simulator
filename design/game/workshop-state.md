@@ -1,6 +1,6 @@
 # Workshop: current state
 
-Updated 2026-10-31. Read this before continuing workshop development. Keep it short:
+Updated 2026-11-02. Read this before continuing workshop development. Keep it short:
 current state, active rules and open decisions. Record player findings in the
 [playtest checklist](robot-workshop-playtest-checklist.md). When a piece of
 work finishes, move its narrative and evidence into [history/](history/) and leave
@@ -18,6 +18,14 @@ last version before consolidation.
   ([proportions](../proportions.md), [silhouette](../../models/silhouette-mannequin/README.md)).
   The game still builds the earlier envelopes; nothing in the workshop changed.
   Revising components and workshop clearances to it is open design work.
+- **Left leg 3D model (2026-11-01, robot design):** the
+  [LG-01-3D-01 model](../../models/leg-lg01/README.md) builds the whole left leg,
+  hip ball to sole, with the FA-02 foot and all armor (813 separate objects), plus
+  a [69-step build viewer](../legs/viewer/) opened with
+  [open-viewer.command](../legs/open-viewer.command). Audits pass; remaining
+  concept mismatches and engineering limits are in its notes. Not in the game.
+  Modelling questions were answered with defaults so work could continue; they
+  need the user's answers (Next, item 4).
 - **Crane streamlining (2026-10-31):** after the crane lowers a load, its
   magnetic connectors release and stow themselves once detaching is allowed:
   straight away on a rig, or when the last retaining hardware is in on a
@@ -432,6 +440,11 @@ checks; retain the broader playtest obligations below.
 2. Playtest free platform driving/nudging and the other machines' shared
    waiting/resuming behavior (see “Where things stand”).
 3. Pick from the deferred items below only after a decision.
+4. Answer the left leg model's open questions in
+   [OPEN_QUESTIONS.md](../../models/leg-lg01/OPEN_QUESTIONS.md): 11 open,
+   6 working defaults and 1 partly resolved, then confirm or overturn the defaults
+   recorded as resolved. Also decide on its
+   [remaining concept mismatches](../../models/leg-lg01/MODELING_NOTES.md#remaining-mismatches-with-the-concept-sheets).
 
 ## Active rules
 

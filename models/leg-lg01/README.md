@@ -54,7 +54,7 @@ locally. Keep the scene, manifests, audit reports, comparison JPEGs and viewer s
 | Whole-robot comparison | [Turnaround leg region](output/compare/cmp-turnaround-leg.jpg) |
 | Review evidence | [Round 1](output/compare/review-r1.md), [round 2](output/compare/review-r2.md), [round 3](output/compare/review-r3.md), [render receipt](output/compare/notes-render.md) |
 | Individual renders | [output/renders/](output/renders/); current comparison views use the `r-` prefix; earlier development views remain alongside them |
-| Viewer and sequence | [viewer/](viewer/), [69 build steps](viewer/build-steps.json), generated `viewer/leg-lg01.glb`: 22.452 MB, 813 nodes, 13 materials |
+| Viewer and sequence | [design/legs/viewer/](../../design/legs/viewer/), [69 build steps](../../design/legs/viewer/build-steps.json), generated `design/legs/viewer/leg-lg01.glb`: 22.452 MB, 813 nodes, 13 materials; launcher [design/legs/open-viewer.command](../../design/legs/open-viewer.command) |
 | Viewer captures | [Start](output/viewer-shots/viewer-start.jpg), [middle](output/viewer-shots/viewer-mid.jpg), [assembled](output/viewer-shots/viewer-end.jpg), [ghost armor](output/viewer-shots/viewer-ghost.jpg) |
 | Shape/material reference | [Test board](output/kit/test-board.jpg), [style comparison](output/kit/test-board-compare.jpg), [GLB reload audit](output/kit/glb-reload.json) |
 
@@ -81,10 +81,11 @@ blender --background models/leg-lg01/output/leg-lg01.blend --python-exit-code 1 
 blender --background --factory-startup --python-exit-code 1 --python models/leg-lg01/src/export_viewer.py
 python3 models/leg-lg01/src/verify_export.py
 models/leg-lg01/work/viewer-venv/bin/python models/leg-lg01/src/check_viewer.py --browser
-models/leg-lg01/open-viewer.command
+design/legs/open-viewer.command
 ```
 
-The launcher serves the viewer on a free localhost port and opens the default
+The viewer app lives with the leg design documents in `design/legs/viewer/`; its
+generator, checks and evidence stay in this package. The launcher serves the viewer on a free localhost port and opens the default
 browser. It waits for HTTP readiness, allowing up to 90 seconds for slow local
 DNS. First use needs internet for pinned jsDelivr modules. Close the launcher
 Terminal window or press Ctrl-C to stop the server; closing the browser is not

@@ -13,6 +13,7 @@ import struct
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+VIEWER = ROOT.parents[1] / 'design/legs/viewer'  # viewer app lives with the leg design docs
 SCHEMA = 'leg-lg01-build-steps/1'
 MAX_BYTES = 150_000_000
 MAX_TRIANGLES = 2_500_000
@@ -139,7 +140,7 @@ def validate_steps(steps, nodes):
                 installs_without_metadata=sorted(installed - set(parts)))
 
 
-def audit(glb=ROOT / 'viewer/leg-lg01.glb', steps=ROOT / 'viewer/build-steps.json',
+def audit(glb=VIEWER / 'leg-lg01.glb', steps=VIEWER / 'build-steps.json',
           manifest=ROOT / 'output/parts-manifest.json'):
     document, _ = read_glb(glb)
     nodes = document.get('nodes', [])
@@ -200,8 +201,8 @@ def audit(glb=ROOT / 'viewer/leg-lg01.glb', steps=ROOT / 'viewer/build-steps.jso
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--glb', type=Path, default=ROOT / 'viewer/leg-lg01.glb')
-    parser.add_argument('--steps', type=Path, default=ROOT / 'viewer/build-steps.json')
+    parser.add_argument('--glb', type=Path, default=VIEWER / 'leg-lg01.glb')
+    parser.add_argument('--steps', type=Path, default=VIEWER / 'build-steps.json')
     parser.add_argument('--manifest', type=Path, default=ROOT / 'output/parts-manifest.json')
     parser.add_argument('--report', type=Path, default=ROOT / 'output/audits/export.json')
     argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]

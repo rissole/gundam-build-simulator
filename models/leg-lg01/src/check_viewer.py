@@ -15,7 +15,7 @@ from pathlib import Path
 import threading
 import time
 
-from verify_export import ROOT, audit
+from verify_export import ROOT, VIEWER, audit
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -115,7 +115,7 @@ SCRUB = r"""() => {
 
 def browser_check(args):
     from playwright.sync_api import sync_playwright
-    handler = partial(QuietHandler, directory=str(ROOT / 'viewer'))
+    handler = partial(QuietHandler, directory=str(VIEWER))
     server = ThreadingHTTPServer(('127.0.0.1', 0), handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
@@ -138,7 +138,7 @@ def browser_check(args):
                 scrub = page.evaluate(SCRUB)
                 # Validate Blender → glTF approach conversion independently of
                 # the browser's reported start/assembled interpolation endpoints.
-                installed = {i['instance_id']: i for s in json.loads((ROOT / 'viewer/build-steps.json').read_text())['steps'] for i in s['installs']}
+                installed = {i['instance_id']: i for s in json.loads((VIEWER / 'build-steps.json').read_text())['steps'] for i in s['installs']}
                 snap = page.evaluate('window.__viewerState.snapshot()')
                 for part in snap['parts']:
                     install = installed[part['id']]
@@ -248,7 +248,7 @@ def browser_check(args):
                         height = (framing[name]['max'][1] - framing[name]['min'][1]) / 2
                         assert .79 < height < .9, f'Whole-leg height {height:.1%}'
                     assert all(-1 < v < 1 for v in framing[name]['min'] + framing[name]['max']), f'{name} capture clipped subject'
-                    section_steps = json.loads((ROOT / 'viewer/build-steps.json').read_text())['steps']
+                    section_steps = json.loads((VIEWER / 'build-steps.json').read_text())['steps']
                     progress = ' · '.join(f'{section.title()} {sum(s["section"] == section for s in section_steps[:capture_state["step"]])}/{sum(s["section"] == section for s in section_steps)}' for section in ('foot', 'leg'))
                     assert capture_state['sectionProgress'] == progress, f'{name} section progress'
                     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), 'Horizontal layout overflow'
@@ -258,7 +258,7 @@ def browser_check(args):
                 assert not console_errors and not page_errors, f'Browser errors: {console_errors + page_errors}'
                 # A deliberately mismatched sequence verifies graceful skipping
                 # and assembled retention, without modifying the files on disk.
-                mismatched = json.loads((ROOT / 'viewer/build-steps.json').read_text())
+                mismatched = json.loads((VIEWER / 'build-steps.json').read_text())
                 first = mismatched['steps'][0]['installs'][0]
                 unassigned = first['instance_id']
                 first['instance_id'] = '__unknown_test_instance__'

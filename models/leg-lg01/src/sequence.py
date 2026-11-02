@@ -1,7 +1,7 @@
 """Authoritative LG-01 build sequence, in Blender metres.
 
 Run with Blender (with or without the blend on its command line). Only the
-package's output/leg-lg01.blend and viewer/build-steps.json are written. --steps
+package's output/leg-lg01.blend and design/legs/viewer/build-steps.json are written. --steps
 can select a different JSON destination. Plain Python --manifest PATH exports
 steps without touching Blender. The audit imports make_sequence independently.
 
@@ -18,6 +18,7 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+VIEWER = ROOT.parents[1] / 'design/legs/viewer'  # viewer app lives with the leg design docs
 SCHEMA = 'leg-lg01-build-steps/1'
 COORDINATES = ('Blender: X right (inner side of left leg), Y forward, Z up; '
                'the viewer converts to glTF Y-up (x, z, -y)')
@@ -597,7 +598,7 @@ def scene_rows():
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--steps',type=Path,default=ROOT/'viewer/build-steps.json')
+    parser.add_argument('--steps',type=Path,default=VIEWER / 'build-steps.json')
     parser.add_argument('--manifest',type=Path)
     argv=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else (sys.argv[1:] if 'bpy' not in sys.modules else [])
     args=parser.parse_args(argv)

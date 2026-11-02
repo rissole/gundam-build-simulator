@@ -24,7 +24,7 @@ import sys
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from sequence import ROOT, SCHEMA, make_sequence, scene_rows
+from sequence import ROOT, VIEWER, SCHEMA, make_sequence, scene_rows
 
 SHRINK = .005
 SAMPLES = tuple(n / 10 for n in range(11))
@@ -260,7 +260,7 @@ def audit(rows, document, check_scene_steps=False, mesh_clearance=None):
 def main():
     start=time.monotonic()
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--steps',type=Path,default=ROOT/'viewer/build-steps.json')
+    parser.add_argument('--steps',type=Path,default=VIEWER / 'build-steps.json')
     parser.add_argument('--report',type=Path,default=ROOT/'output/audits/sequence.json')
     parser.add_argument('--manifest',type=Path)
     parser.add_argument('--blend',type=Path,default=ROOT/'output/leg-lg01.blend')

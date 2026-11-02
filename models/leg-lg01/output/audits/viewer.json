@@ -2,7 +2,7 @@
   "contract": {
     "ok": true,
     "errors": [],
-    "glb": "/Users/blakeyboy/gundam-leg-model/models/leg-lg01/viewer/leg-lg01.glb",
+    "glb": "/Users/blakeyboy/gundam-leg-model/design/legs/viewer/leg-lg01.glb",
     "glb_sha256": "6f29170e2a061b24c657844b8dd98acb639909a277176b699caca7f2102c8489",
     "bytes": 22452080,
     "megabytes": 22.452,
@@ -53,7 +53,7 @@
       1280,
       800
     ],
-    "load_seconds": 0.437,
+    "load_seconds": 0.368,
     "scrub": {
       "samples": 553,
       "unique_steps": 70,
@@ -74,10 +74,10 @@
     },
     "keyboard": true,
     "playback_positions": {
-      "0.5": 0.22617857142857145,
-      "1": 0.41671428571428565,
-      "2": 0.8332857142857143,
-      "4": 1.6668571428571415
+      "0.5": 0.20835714285714285,
+      "1": 0.41664285714285704,
+      "2": 0.8332857142857137,
+      "4": 1.6662857142857133
     },
     "camera_presets": true,
     "follow": true,

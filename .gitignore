@@ -36,5 +36,5 @@ models/silhouette-mannequin/output/mannequin-back.png
 # Leg LG-01 model: scratch work, regenerable GLBs and Blender backups.
 models/leg-lg01/work/
 models/leg-lg01/output/*.glb
-models/leg-lg01/viewer/*.glb
+design/legs/viewer/*.glb
 models/leg-lg01/output/frames/

@@ -6492,7 +6492,7 @@
   "source_sha256": "f45531bd2e6e738aa54363204ebca64c6f42c9b43b2a256ffc14a5dabb2b6fbc",
   "scope": "full saved Blender scene",
   "steps_sha256": "44f5a062801da3c8c54a6bf1b21845d1d7b63cf0db864211d3cce083a932d494",
-  "sequence_source_sha256": "f61e2f6b2c8908d9f5afacca1199a9ab62c917f72a2ee4012fdd57596b03f358",
-  "audit_source_sha256": "5ccf770a0575e2dadcf08211d57adf464c6c285f66942b98f05799480c74c4aa",
-  "elapsed_seconds": 1.548
+  "sequence_source_sha256": "ae9b91e47f867d640acf7a45686e5857a922f6e861f88d8bfc10c60e24a50dd0",
+  "audit_source_sha256": "daa148ccc1c1f2ae724b9321415b9bd040d9e7d488e8d42e4d6bba4b84da9590",
+  "elapsed_seconds": 1.478
 }

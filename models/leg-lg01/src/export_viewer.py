@@ -9,12 +9,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import bpy
 from common import ROOT, export_glb
+VIEWER = ROOT.parents[1] / 'design/legs/viewer'  # viewer app lives with the leg design docs
 from verify_export import read_glb, write_glb, triangle_count, MAX_BYTES
 
 
 def main():
     source = ROOT / 'output/leg-lg01.blend'
-    target = ROOT / 'viewer/leg-lg01.glb'
+    target = VIEWER / 'leg-lg01.glb'
     source_hash = hashlib.sha256(source.read_bytes()).hexdigest()
     bpy.ops.wm.open_mainfile(filepath=str(source))
     scene = bpy.context.scene
